@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -53,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
@@ -124,6 +126,10 @@ public class TotalWorkingTime {
 	//実働時間
 	private AttendanceTime actualTime;
 	
+	/** 計算差異時間 */
+	@Setter
+	private AttendanceTime calcDiffTime = new AttendanceTime(0);
+	
 	//日別実績の所定内時間 - 所定内時間 (new)
 	private WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily;
 	 
@@ -161,6 +167,9 @@ public class TotalWorkingTime {
 	@Setter
 	private AttendanceTime vacationAddTime = new AttendanceTime(0);
 	
+	/** インターバル時間: 日別勤怠のインターバル時間 */
+	private IntervalTimeOfDaily intervalTime;
+	
 	/**
 	 * Construtor
 	 * @param totalTime
@@ -175,6 +184,7 @@ public class TotalWorkingTime {
 	 * @param raiseSalaryTimeOfDailyPerfor
 	 * @param workTimes
 	 * @param temporaryTime
+	 * @param intervalTime
 	 */
 	public TotalWorkingTime(AttendanceTime totalTime, AttendanceTime totalCalcTime, AttendanceTime actualTime,
 			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily,
@@ -182,7 +192,8 @@ public class TotalWorkingTime {
 			List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily, BreakTimeOfDaily breakTimeOfDaily,
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
-			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime,HolidayOfDaily holidayOfDaily) {
+			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTime,HolidayOfDaily holidayOfDaily,
+			IntervalTimeOfDaily intervalTime) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -198,6 +209,7 @@ public class TotalWorkingTime {
 		this.temporaryTime = temporaryTime;
 		this.shotrTimeOfDaily = shotrTime;
 		this.holidayOfDaily = holidayOfDaily;
+		this.intervalTime = intervalTime;
 	}
 	
 	
@@ -212,7 +224,11 @@ public class TotalWorkingTime {
 		return new TotalWorkingTime(new AttendanceTime(0),
 									new AttendanceTime(0),
 									new AttendanceTime(0),
-									WithinStatutoryTimeOfDaily.defaultValue(),
+									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
+																								new AttendanceTime(0), 
+																								new AttendanceTime(0), 
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
+																								new AttendanceTime(0)),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 																	 Optional.of(new OverTimeOfDaily(Collections.emptyList(), 
 																			 						 Collections.emptyList(), 
@@ -254,7 +270,9 @@ public class TotalWorkingTime {
 													   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new TransferHolidayOfDaily(new AttendanceTime(0))),
+									IntervalTimeOfDaily.empty());
 	}
 	
 	/**
@@ -411,7 +429,8 @@ public class TotalWorkingTime {
 				workCount,
 				tempTime,
 				shotrTime,
-				vacationOfDaily);
+				vacationOfDaily,
+				IntervalTimeOfDaily.empty());
 		
 		//休暇加算時間の計算
 		returnTotalWorkingTimereturn.setVacationAddTime(
@@ -556,7 +575,9 @@ public class TotalWorkingTime {
 									this.leaveEarlyTimeOfDaily,
 									this.breakTimeOfDaily,
 									this.outingTimeOfDailyPerformance,
-									this.raiseSalaryTimeOfDailyPerfor, this.workTimes, this.temporaryTime, this.shotrTimeOfDaily, this.holidayOfDaily); 
+									this.raiseSalaryTimeOfDailyPerfor, this.workTimes, 
+									this.temporaryTime, this.shotrTimeOfDaily, this.holidayOfDaily,
+									this.intervalTime);  
 		result.setVacationAddTime(this.vacationAddTime);
 		return result;
 	}
