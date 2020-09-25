@@ -37,7 +37,7 @@ public class CompanyApproverHistoryWebService extends WebService {
     @POST
     public void register(CompanyApproveHistoryAddEmployeeIdDto dto){
         val command = new CompanyApproverHistoryAddEmployeeIdCommand(dto.getCompanyId(),
-                new DatePeriod(dto.getStarDate(),dto.getStarDate()),dto.getApproveList(),dto.getConfirmedList());
+                new DatePeriod(dto.getStarDate(),dto.getEndDate()),dto.getApproveList(),dto.getConfirmedList());
         this.addCommandHandler.handle(command);
     }
     @Path("screen/a/update")
