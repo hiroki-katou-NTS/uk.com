@@ -270,20 +270,76 @@ public class OutputItemDailyWorkScheduleFinder {
 				throw new BusinessException("Msg_3");
 			}
 		}
-		DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
-		//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
-		if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
+		
+		// define data return
+		DataReturnDto dataReturnDto = new DataReturnDto();
+
+		// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
+		List<DataInforReturnDto> dataInforReturnDtos = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
+
+		if (dataInforReturnDtos.isEmpty()) {
 			throw new BusinessException("Msg_1411");
-		} 
+		}
+
+		// get list data was showed in kwr001
+		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
+		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
+		
+		List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
+												.map(dto -> { 
+													OutputItemDailyWorkScheduleCopyCommand dtoClientReturn = new OutputItemDailyWorkScheduleCopyCommand();
+													dtoClientReturn.setCode(String.valueOf(dto.getAttendanceItemDisplayNumber()));
+													dtoClientReturn.setId(dto.getAttendanceItemId());
+													dtoClientReturn.setName(dto.getAttendanceItemName());
+													return dtoClientReturn;
+												}).collect(Collectors.toList());
+		
+		
+		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
+				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
+										  OutputItemDailyWorkScheduleCopyCommand::getName));
+		// compare data return from kdw008 to kwr001
+		// if item of kwr008 exist in kwr001, it will be save
+		int sizeData = dataInforReturnDtos.size();
+		dataInforReturnDtos = dataInforReturnDtos.stream()
+				.filter(domain -> mapIdName.containsKey(domain.getId()))
+				.map(domain -> {
+					domain.setName(mapIdName.get(domain.getId()));
+					return domain;
+				}).collect(Collectors.toList());
+		
+		if (sizeData != dataInforReturnDtos.size()) {
+			List<String> lstMsgErr = new ArrayList<String>();
+			lstMsgErr.add("Msg_1476");
+			dataReturnDto.setMsgErr(lstMsgErr);
+		}
+		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
+		
+		dataReturnDto.setDataInforReturnDtos(dataInforReturnDtos);
+		
+		// 　・大の場合：48件までとする
+		int numberDisplayItem = 48;
+
+		// 表示項目の件数を最大表示件数とチェックする(Check số hạng mục hiển thị)
+		if (fontSize == FontSizeEnum.SMALL.value) {
+			// 小の場合：60件までとする
+			numberDisplayItem = 60;
+		}
+		
+		if (dataInforReturnDtos.size() > numberDisplayItem) {
+			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(numberDisplayItem)
+					.collect(Collectors.toList());
+			dataReturnDto.setDataInforReturnDtos(lstDto);
+		}
+
 		return dataReturnDto;
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private DataReturnDto getDomConvertDailyWork(String companyId, String codeSourceSerivce, Integer fontSize) {
+	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce, Integer fontSize) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
-		
-		DataReturnDto dataReturnDto = new DataReturnDto();
+
 		List<DataInforReturnDto> lstDataReturn = new ArrayList<>();
 		
 		if (optFormatPerformanceImport.isPresent()) {
@@ -319,59 +375,8 @@ public class OutputItemDailyWorkScheduleFinder {
 					break;
 			}
 		}
-		
-		// get list data was showed in kwr001
-		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
-		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
-		
-		List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
-												.map(dto -> { 
-													OutputItemDailyWorkScheduleCopyCommand dtoClientReturn = new OutputItemDailyWorkScheduleCopyCommand();
-													dtoClientReturn.setCode(String.valueOf(dto.getAttendanceItemDisplayNumber()));
-													dtoClientReturn.setId(dto.getAttendanceItemId());
-													dtoClientReturn.setName(dto.getAttendanceItemName());
-													return dtoClientReturn;
-												}).collect(Collectors.toList());
-		
-		
-		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
-				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
-										  OutputItemDailyWorkScheduleCopyCommand::getName));
-		// compare data return from kdw008 to kwr001
-		// if item of kwr008 exist in kwr001, it will be save
-		int sizeData = lstDataReturn.size();
-		lstDataReturn = lstDataReturn.stream()
-				.filter(domain -> mapIdName.containsKey(domain.getId()))
-				.map(domain -> {
-					domain.setName(mapIdName.get(domain.getId()));
-					return domain;
-				}).collect(Collectors.toList());
-		
-		if (sizeData != lstDataReturn.size()) {
-			List<String> lstMsgErr = new ArrayList<String>();
-			lstMsgErr.add("Msg_1476");
-			dataReturnDto.setMsgErr(lstMsgErr);
-		}
-		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
-		
-		dataReturnDto.setDataInforReturnDtos(lstDataReturn);
-		
-		// 　・大の場合：48件までとする
-		int numberDisplayItem = 48;
 
-		// 表示項目の件数を最大表示件数とチェックする(Check số hạng mục hiển thị)
-		if (fontSize == FontSizeEnum.SMALL.value) {
-			// 小の場合：60件までとする
-			numberDisplayItem = 60;
-		}
-		if (lstDataReturn.size() <= numberDisplayItem) {
-			return dataReturnDto;
-		} else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
-			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(numberDisplayItem)
-					.collect(Collectors.toList());
-			dataReturnDto.setDataInforReturnDtos(lstDto);
-			return dataReturnDto;
-		}
+		return lstDataReturn;
 	}
 	
 	/**

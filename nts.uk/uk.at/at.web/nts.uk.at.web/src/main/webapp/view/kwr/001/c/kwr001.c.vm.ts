@@ -375,15 +375,24 @@ module nts.uk.at.view.kwr001.c {
                                 $('#C3_2').focus();
                             }
 
+                            // Order by data by id
                             dataScrD.lstAtdChoose.dataInforReturnDtos = _.sortBy(dataScrD.lstAtdChoose.dataInforReturnDtos, (o: any) => o.id);
+
+                            // Inputパラメータ.出力項目一覧とアルゴリズム「画面で使用可能な勤怠項を取得する」で取得したList<勤怠項目ID>を比較する
+                            // (Compare the list of input parameter.Output item with List<勤怠項目ID> acquired by algorithm「画面で使用可能な勤怠項を取得する」)
                             let chosen = _.filter(self.outputItemPossibleLst()
                                                 , item => _.some(dataScrD.lstAtdChoose.dataInforReturnDtos
-                                                , (atd: any) => atd.id == item.id));
+                                                , (atd: any) => atd.id === item.code)); 
                             
                             let sortArr = _.map(dataScrD.lstAtdChoose.dataInforReturnDtos, 'id');
                             chosen = _.sortBy(chosen, function(item) {
                                 return sortArr.indexOf(item.id)
                             });
+
+                            // 比較した結果、合致した項目の件数をチェック (Check the compare result and the number of  matched items)
+                            if (!_.isUndefined(chosen) && !_.isEmpty(chosen)) {
+                                nts.uk.ui.dialog.error({ messageId: "Msg_1411" });
+                            }
 
                             let arrTemp: any[] = [];
                             _.forEach(self.outputItemPossibleLst(), function(value) {
