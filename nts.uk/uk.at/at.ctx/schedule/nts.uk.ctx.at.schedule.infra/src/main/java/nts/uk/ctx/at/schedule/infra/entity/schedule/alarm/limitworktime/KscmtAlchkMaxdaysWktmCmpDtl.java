@@ -35,7 +35,7 @@ public class KscmtAlchkMaxdaysWktmCmpDtl extends ContractUkJpaEntity{
 	
 	public static List<KscmtAlchkMaxdaysWktmCmpDtl> fromDomain(String companyId, MaxDayOfWorkTimeCompany domain) {
 		
-		return domain.getMaxDayOfWorkTime().getWorktimeCodeLst().stream()
+		return domain.getMaxDayOfWorkTime().getWorkTimeCodeList().stream()
 				.map( wt -> new KscmtAlchkMaxdaysWktmCmpDtl(
 						new KscmtAlchkMaxdaysWktmCmpDtlPk( companyId, domain.getCode().v(), wt.v())))
 				.collect(Collectors.toList());

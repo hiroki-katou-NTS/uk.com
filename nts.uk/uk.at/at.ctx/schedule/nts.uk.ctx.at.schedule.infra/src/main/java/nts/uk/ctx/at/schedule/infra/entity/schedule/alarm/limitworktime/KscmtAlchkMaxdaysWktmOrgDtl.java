@@ -39,7 +39,7 @@ public class KscmtAlchkMaxdaysWktmOrgDtl extends ContractUkJpaEntity {
 	
 	public static List<KscmtAlchkMaxdaysWktmOrgDtl> fromDomain(String companyId, MaxDayOfWorkTimeOrganization domain) {
 		
-		return domain.getMaxDayOfWorkTime().getWorktimeCodeLst().stream()
+		return domain.getMaxDayOfWorkTime().getWorkTimeCodeList().stream()
 				.map( wt -> new KscmtAlchkMaxdaysWktmOrgDtl(
 								new KscmtAlchkMaxdaysWktmOrgDtlPk(
 									companyId, 

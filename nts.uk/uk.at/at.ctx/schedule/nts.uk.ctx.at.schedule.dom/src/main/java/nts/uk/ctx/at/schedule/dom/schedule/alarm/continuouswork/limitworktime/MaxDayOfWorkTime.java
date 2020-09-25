@@ -16,11 +16,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 public class MaxDayOfWorkTime implements DomainValue{
 	
 	/**  就業時間帯コードリスト*/
-	private final List<WorkTimeCode> worktimeCodeLst;
+	private final List<WorkTimeCode> workTimeCodeList;
 	
 	/**
 	 * 勤務上限日数 
 	 */
-	private MaxDay maxDay;
+	private final MaxDay maxDay;
 
 }
