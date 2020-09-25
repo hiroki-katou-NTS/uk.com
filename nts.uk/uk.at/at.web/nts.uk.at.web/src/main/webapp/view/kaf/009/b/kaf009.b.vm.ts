@@ -169,6 +169,16 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
+			if (vm.model) {
+                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode()) {
+                   // $('#workSelect').focus();
+					let el = document.getElementById('workSelect');
+	                if (el) {
+	                    el.focus();                                                    
+	                }
+                    return;
+                } 
+			}
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
@@ -187,6 +197,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 goBackApp.dataWork = dw;
 
             }
+			
             vm.$blockui("show");
 
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
