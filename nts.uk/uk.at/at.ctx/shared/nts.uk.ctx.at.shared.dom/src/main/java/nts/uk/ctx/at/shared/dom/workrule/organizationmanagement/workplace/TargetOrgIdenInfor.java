@@ -115,6 +115,15 @@ public class TargetOrgIdenInfor implements DomainValue {
 		result.addAll(require.getWKPID(this.workplaceGroupId.get()));
 		return result;
 	}
+	
+	/**
+	 * [3] 対象IDを返す
+	 * @return unit = 職場 : 職場ID, unit = 職場グループ :  職場グループID
+	 */
+	public String getTargetId () {
+		return this.unit == TargetOrganizationUnit.WORKPLACE ? 
+				this.workplaceId.get() : this.workplaceGroupId.get();
+	}
 
 	
 
