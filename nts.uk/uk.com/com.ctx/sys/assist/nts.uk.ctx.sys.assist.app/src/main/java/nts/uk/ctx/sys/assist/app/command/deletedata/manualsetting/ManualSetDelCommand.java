@@ -59,7 +59,7 @@ public class ManualSetDelCommand {
 				Optional.ofNullable(referenceDate), executionDateAndTime, 
 				Optional.ofNullable(dayStartDate), Optional.ofNullable(dayEndDate), 
 				Optional.ofNullable(monthStartDate), Optional.ofNullable(monthEndDate), 
-				Optional.ofNullable(startYear), Optional.ofNullable(endYear));			
+				Optional.ofNullable(startYear), Optional.ofNullable(endYear), null);			
 	}
 	
 	public List<EmployeeDeletion> getEmployees(String delId) {
@@ -71,8 +71,9 @@ public class ManualSetDelCommand {
 	
 	
 	public List<CategoryDeletion> getCategories(String delId) {
+		//TODO-CMF005: Thêm systemType thay vì null
 		return categories.stream().map(x -> {
-			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion());
+			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), 1);
 		}).collect(Collectors.toList());
 	}
 }

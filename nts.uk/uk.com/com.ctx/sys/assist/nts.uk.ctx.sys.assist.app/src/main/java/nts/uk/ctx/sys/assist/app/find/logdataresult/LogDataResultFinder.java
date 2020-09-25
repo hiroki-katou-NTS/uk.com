@@ -17,6 +17,8 @@ import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationDto
 import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationFinder;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingFinder;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
@@ -55,6 +57,7 @@ public class LogDataResultFinder {
 						employeeCode = personEmpBasicInfo.getEmployeeCode();
 						employeeName= personEmpBasicInfo.getBusinessName();
 					}
+					 String id = resultOfSaving.getStoreProcessingId();
 					 String ipAddress = resultOfSaving.getLoginInfo().getIpAddress();
 					 String pcName = resultOfSaving.getLoginInfo().getPcName();
 					 String account = resultOfSaving.getLoginInfo().getAccount();
@@ -69,25 +72,25 @@ public class LogDataResultFinder {
 					 Integer targetNumberPeople = resultOfSaving.getTargetNumberPeople();
 					 String setCode = resultOfSaving.getSaveSetCode();
 					 int isDeletedFilesFlg = -1;
-					 List<LogResultDto> logResult = new ArrayList<LogResultDto>();
+					 List<LogResultDto> logResults = new ArrayList<LogResultDto>();
 					 for(ResultLogSaving resultLogSaving :resultOfSaving.getListResultLogSavings()) {
 						 int logNumber = resultLogSaving.getLogNumber();
 						 String processingContent = resultLogSaving.getLogContent().v();
 						 String errorContent = resultLogSaving.getErrorContent().v();
-						 String contentSql = null;
+						 String contentSql = "";
 						 GeneralDate errorDate = resultLogSaving.getErrorDate();
 						 String errorEmployeeId = resultLogSaving.getErrorEmployeeId();
-						 logResult.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
+						 logResults.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
 					 }
 					
 					 LogDataResultDto logDataResult =  
 							 new LogDataResultDto(
-									 	ipAddress,pcName, account,
+									 	id, ipAddress,pcName, account,
 										employeeCode,employeeName,
 										startDateTime, endDateTime,
 										form, name,fileId,fileName,
 										fileSize,status,targetNumberPeople,
-										setCode,isDeletedFilesFlg,logResult
+										setCode,isDeletedFilesFlg,logResults
 									);
 				//step F：各種記録の絞り込み処理
 				if(filterLogResultOfSaving(logDataResult,logDataParams.getListCondition())) {
@@ -98,70 +101,125 @@ public class LogDataResultFinder {
 			//step 作った「データ保存・復旧・削除の操作ログ」を返す
 			return logDataResults;
 		} else if(recordType == 10) {
-//			//step データ復旧の結果を取得
-//			List<ResultOfRestorationDto> resultOfRestorations = resultOfRestorationFinder.getResultOfRestoration(logDataParams);
-//			for( ResultOfRestorationDto resultOfRestoration : resultOfRestorations) {
-//				
-//				//step 社員ID(List)から個人社員基本情報を取得
-//				String employeeCode = "";
-//				String employeeName = "";
-//				List<EmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfRestoration.getPractitioner());
-//				if (!CollectionUtil.isEmpty(personEmpBasicInfos)) {
-//					EmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
-//					employeeCode = personEmpBasicInfo.getEmployeeCode();
-//					employeeName= personEmpBasicInfo.getBusinessName();
-//				}
-//				 String ipAddress = resultOfRestoration.getLoginInfo().getIpAddress();
-//				 String pcName = resultOfRestoration.getLoginInfo().getPcName();
-//				 String account = resultOfRestoration.getLoginInfo().getAccount();
-//				 GeneralDateTime startDateTime = resultOfRestoration.getStartDateTime();
-//				 GeneralDateTime endDateTime = resultOfRestoration.getEndDateTime();
-//				 int form = resultOfRestoration.getSaveForm();
-//				 String name = resultOfRestoration.getSaveName();
-//				 String fileId = "";
-//				 String fileName = "";
-//				 long fileSize = -1;
-//				 Integer status = resultOfRestoration.get();
-//				 Integer targetNumberPeople = resultOfRestoration.getTargetNumberPeople();
-//				 String setCode = resultOfRestoration.getSaveSetCode();
-//				 int isDeletedFilesFlg = -1;
-//				 List<LogResultDto> logResult = new ArrayList<LogResultDto>();
-//				 for(ResultLogSaving resultLogSaving :resultOfSaving.getListResultLogSavings()) {
-//					 int logNumber = resultLogSaving.getLogNumber();
-//					 String processingContent = resultLogSaving.getLogContent().v();
-//					 String errorContent = resultLogSaving.getErrorContent().v();
-//					 String contentSql = null;
-//					 GeneralDate errorDate = resultLogSaving.getErrorDate();
-//					 String errorEmployeeId = resultLogSaving.getErrorEmployeeId();
-//					 logResult.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
-//				 }
-//				
-//				 LogDataResultDto logDataResult =  
-//						 new LogDataResultDto(
-//								 	ipAddress,pcName, account,
-//									employeeCode,employeeName,
-//									startDateTime, endDateTime,
-//									form, name,fileId,fileName,
-//									fileSize,status,targetNumberPeople,
-//									setCode,isDeletedFilesFlg,logResult
-//								);
-//			//step F：各種記録の絞り込み処理
-//			if(filterLogResultOfSaving(logDataResult,logDataParams.getListCondition())) {
-//				//step 「データ保存・復旧・削除の操作ログ」を作る
-//				 logDataResults.add(logDataResult);
-//			}
-//		}
-//		//step 作った「データ保存・復旧・削除の操作ログ」を返す
-//		return logDataResults;
+			//step データ復旧の結果を取得
+			List<ResultOfRestorationDto> resultOfRestorations = resultOfRestorationFinder.getResultOfRestoration(logDataParams);
+			for( ResultOfRestorationDto resultOfRestoration : resultOfRestorations) {
+				
+				//step 社員ID(List)から個人社員基本情報を取得
+				String employeeCode = "";
+				String employeeName = "";
+				List<EmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfRestoration.getPractitioner());
+				if (!CollectionUtil.isEmpty(personEmpBasicInfos)) {
+					EmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
+					employeeCode = personEmpBasicInfo.getEmployeeCode();
+					employeeName= personEmpBasicInfo.getBusinessName();
+				}
+				 String id = resultOfRestoration.getDataRecoveryProcessId();
+				 String ipAddress = resultOfRestoration.getLoginInfo().getIpAddress();
+				 String pcName = resultOfRestoration.getLoginInfo().getPcName();
+				 String account = resultOfRestoration.getLoginInfo().getAccount();
+				 GeneralDateTime startDateTime = resultOfRestoration.getStartDateTime();
+				 GeneralDateTime endDateTime = resultOfRestoration.getEndDateTime();
+				 int form = resultOfRestoration.getSaveForm();
+				 String name = resultOfRestoration.getSaveName();
+				 String fileId = "";
+				 String fileName = "";
+				 long fileSize = -1;
+				 Integer status = -1;
+				 Integer targetNumberPeople = -1;
+				 String setCode = resultOfRestoration.getPatternCode();
+				 int isDeletedFilesFlg = -1;
+				 List<LogResultDto> logResults = new ArrayList<LogResultDto>();
+				 for(DataRecoveryLog dataRecoveryLog :resultOfRestoration.getListDataRecoveryLogs()) {
+					 int logNumber = dataRecoveryLog.getLogSequenceNumber();
+					 String processingContent = dataRecoveryLog.getProcessingContent().v();
+					 String errorContent = dataRecoveryLog.getErrorContent().v();
+					 String contentSql = dataRecoveryLog.getContentSql().v();
+					 GeneralDate errorDate = dataRecoveryLog.getTargetDate();
+					 String errorEmployeeId = dataRecoveryLog.getTarget();
+					 logResults.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
+				 }
+				
+				 LogDataResultDto logDataResult =  
+						 new LogDataResultDto(
+								    id, ipAddress,pcName, account,
+									employeeCode,employeeName,
+									startDateTime, endDateTime,
+									form, name,fileId,fileName,
+									fileSize,status,targetNumberPeople,
+									setCode,isDeletedFilesFlg,logResults
+								);
+			//step F：各種記録の絞り込み処理
+			if(filterLogResultOfRestoration(logDataResult,logDataParams.getListCondition())) {
+				//step 「データ保存・復旧・削除の操作ログ」を作る
+				 logDataResults.add(logDataResult);
+			}
+		}
+		//step 作った「データ保存・復旧・削除の操作ログ」を返す
+		return logDataResults;
 		} else if(recordType == 11) {
 			//step データ削除の保存結果を取得
-			List<ResultOfDeletionDto> getResultOfDeletion = resultOfDeletionFinder.getResultOfDeletion(logDataParams);
+			List<ResultOfDeletionDto> resultOfDeletions = resultOfDeletionFinder.getResultOfDeletion(logDataParams);
+				for( ResultOfDeletionDto resultOfDeletion : resultOfDeletions) {
+					
+					//step 社員ID(List)から個人社員基本情報を取得
+					String employeeCode = "";
+					String employeeName = "";
+					List<EmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfDeletion.getSId());
+					if (!CollectionUtil.isEmpty(personEmpBasicInfos)) {
+						EmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
+						employeeCode = personEmpBasicInfo.getEmployeeCode();
+						employeeName= personEmpBasicInfo.getBusinessName();
+					}
+					 String id = resultOfDeletion.getDelId();
+					 String ipAddress = resultOfDeletion.getLoginInfo().getIpAddress();
+					 String pcName = resultOfDeletion.getLoginInfo().getPcName();
+					 String account = resultOfDeletion.getLoginInfo().getAccount();
+					 GeneralDateTime startDateTime = resultOfDeletion.getStartDateTimeDel();
+					 GeneralDateTime endDateTime = resultOfDeletion.getEndDateTimeDel();
+					 int form = resultOfDeletion.getDelType();
+					 String name = resultOfDeletion.getDelName();
+					 String fileId = resultOfDeletion.getFileId();
+					 String fileName = resultOfDeletion.getFileName();
+					 long fileSize = resultOfDeletion.getFileSize();
+					 Integer status = resultOfDeletion.getStatus();
+					 Integer targetNumberPeople = resultOfDeletion.getNumberEmployees();
+					 String setCode = resultOfDeletion.getDelCode();
+					 int isDeletedFilesFlg = -1;
+					 List<LogResultDto> logResults = new ArrayList<LogResultDto>();
+						 for(ResultLogDeletion resultLogDeletion :resultOfDeletion.getListResultLogDeletions()) {
+							 int logNumber = resultLogDeletion.getSeqId();
+							 String processingContent = resultLogDeletion.getProcessingContent().v();
+							 String errorContent = resultLogDeletion.getErrorContent().v();
+							 String contentSql = "";
+							 GeneralDate errorDate = resultLogDeletion.getErrorDate();
+							 String errorEmployeeId = resultLogDeletion.getErrorEmployeeId();
+							 logResults.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
+						 }
+					
+					 LogDataResultDto logDataResult =  
+							 new LogDataResultDto(
+									    id, ipAddress,pcName, account,
+										employeeCode,employeeName,
+										startDateTime, endDateTime,
+										form, name,fileId,fileName,
+										fileSize,status,targetNumberPeople,
+										setCode,isDeletedFilesFlg,logResults
+									);
+				//step F：各種記録の絞り込み処理
+				if(filterLogResultOfDeletion(logDataResult,logDataParams.getListCondition())) {
+					//step 「データ保存・復旧・削除の操作ログ」を作る
+					 logDataResults.add(logDataResult);
+				}
+			}
+		//step 作った「データ保存・復旧・削除の操作ログ」を返す
+		return logDataResults;
 		}
 		return null;
 	}
 	
 	
-    private boolean filterLogResultOfSaving(LogDataResultDto logDataResult, List<Condition> listCondition) {
+    private boolean filterLogResultOfSaving(LogDataResultDto logDataResult, List<ConditionDto> listCondition) {
 
         if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
             return false;
@@ -226,7 +284,7 @@ public class LogDataResultFinder {
         return true;
     }
     
-    private boolean filterLogResultOfRestoration(LogDataResultDto logDataResult, List<Condition> listCondition) {
+    private boolean filterLogResultOfRestoration(LogDataResultDto logDataResult, List<ConditionDto> listCondition) {
 
         if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
             return false;
@@ -279,7 +337,7 @@ public class LogDataResultFinder {
         return true;
     }
     
-    private boolean filterLogResultOfDeletion(LogDataResultDto logDataResult, List<Condition> listCondition) {
+    private boolean filterLogResultOfDeletion(LogDataResultDto logDataResult, List<ConditionDto> listCondition) {
 
         if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
             return false;
@@ -341,15 +399,15 @@ public class LogDataResultFinder {
         return true;
     }
     
-    private boolean filterLogByItemNo(String content,int  itemNo, List<Condition> listCondition) {
-    	List<Condition> conditionArray = listCondition.stream().filter(condition -> condition.itemNo == itemNo).collect(Collectors.toList());
+    private boolean filterLogByItemNo(String content,int  itemNo, List<ConditionDto> listCondition) {
+    	List<ConditionDto> conditionArray = listCondition.stream().filter(condition -> condition.itemNo == itemNo).collect(Collectors.toList());
         if (conditionArray.size() == 0) {
             return true;
         }
         if (content == null || content.equals("")) {
             return false;
         }
-        for (Condition condition : conditionArray) {
+        for (ConditionDto condition : conditionArray) {
         	//EQUAL
             if (condition.symbol == 0) { 
                 return (content == condition.condition);

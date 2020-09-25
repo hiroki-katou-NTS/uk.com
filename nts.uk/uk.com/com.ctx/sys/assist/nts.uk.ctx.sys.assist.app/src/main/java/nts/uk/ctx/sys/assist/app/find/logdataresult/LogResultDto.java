@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.assist.app.find.logdataresult;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @AllArgsConstructor
 @Value

@@ -1,12 +1,16 @@
 package nts.uk.ctx.sys.assist.infra.entity.deletedata;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -132,6 +136,11 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	@Column(name = "END_YEAR_OF_MONTHLY")
 	public Integer endYearOfMonthly;
 	
+	/**
+	 * 対象カテゴリ
+	 */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "manualSetDeletion", orphanRemoval = true)
+	private List<SspdtCategoryDeletion> categoriesDeletion; 
 
 	@Override
 	protected Object getKey() {
@@ -146,7 +155,8 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				this.delName, isSaveBeforeDeleteFlg, isExistCompressPassFlg, this.passwordCompressFileEncrypt,
 				haveEmployeeSpecifiedFlg, this.sId, this.supplementExplanation, this.referenceDate,
 				this.executionDateTime, this.startDateOfDaily, this.endDateOfDaily,
-				this.startMonthOfMonthly, this.endMonthOfMonthly, this.startYearOfMonthly, this.endYearOfMonthly);
+				this.startMonthOfMonthly, this.endMonthOfMonthly, this.startYearOfMonthly, this.endYearOfMonthly,
+				this.categoriesDeletion.stream().map(SspdtCategoryDeletion::toDomain).collect(Collectors.toList()));
 	}
 
 	public static SspdtManualSetDeletion toEntity(ManualSetDeletion manualSetting) {
@@ -169,6 +179,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				startMonthly.isPresent() ? startMonthly.get() : null, 
 				endMonthly.isPresent() ? endMonthly.get() : null, 
 				manualSetting.getStartYearOfMonthly().isPresent() ? manualSetting.getStartYearOfMonthly().get() : null, 
-				manualSetting.getEndYearOfMonthly().isPresent() ? manualSetting.getEndYearOfMonthly().get() : null);
+				manualSetting.getEndYearOfMonthly().isPresent() ? manualSetting.getEndYearOfMonthly().get() : null,
+				manualSetting.getCategories().stream().map(SspdtCategoryDeletion::toEntity).collect(Collectors.toList()));
 	}
 }

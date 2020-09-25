@@ -9,6 +9,8 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 @Value
 public class LogDataResultDto {
+	
+	private String id;
 
 	//field IPアドレス
 	private String ipAddress;

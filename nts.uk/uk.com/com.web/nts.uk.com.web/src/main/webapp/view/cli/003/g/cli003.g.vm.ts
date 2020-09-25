@@ -648,7 +648,6 @@ module nts.uk.com.view.cli003.g.viewmodel {
             
             const logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
                 self.currentName(), dataType, self.recordType(),self.systemType(),  self.logSetOutputItems());
-                console.log(logDisplaySet);
             block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {

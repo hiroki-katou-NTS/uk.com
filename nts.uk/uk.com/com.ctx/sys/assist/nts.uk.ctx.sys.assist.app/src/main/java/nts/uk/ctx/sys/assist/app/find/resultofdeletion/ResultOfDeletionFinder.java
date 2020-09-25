@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
+import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -15,7 +18,8 @@ public class ResultOfDeletionFinder {
 	@Inject
 	private ResultDeletionRepository finder;
 	
-
+	@Inject
+	private ManualSetDeletionRepository manualSetDeletionRepository;
 	
 	//step データ削除の保存結果を取得
 	public List<ResultOfDeletionDto> getResultOfDeletion (LogDataParams logDataParams) {
@@ -30,16 +34,20 @@ public class ResultOfDeletionFinder {
 				.map(item -> ResultOfDeletionDto.fromDomain(item))
 				.collect(Collectors.toList());
 		
-		//step   空のList<データ削除の結果>を作成する。
 		List<ResultOfDeletionDto> listResultOfDeletion = new ArrayList<ResultOfDeletionDto>();
 		
 		for(ResultOfDeletionDto resultOfDeletion : resultOfDeletions) {
-			//TODO step ドメインモデル「データ削除の手動設定」を取得する。
-			//TODO step 取得した「データ削除の手動設定．対象カテゴリ」リストから「対象カテゴリ」を取得する。
-			
-			//step List<データ削除の結果>に、ループ中の「データ削除の保存結果」を追加する。
-			if(true) {
-				listResultOfDeletion.add(resultOfDeletion);
+			//step 処理IDでドメインモデル「データ削除の手動設定」を取得する
+			List<ManualSetDeletion> manualSetDeletions = manualSetDeletionRepository.getManualSetDeletionsSystemTypeAndId(logDataParams.getSystemType(),resultOfDeletion.getDelId());
+			if(manualSetDeletions.size() > 0) {
+				for(ManualSetDeletion manualSetDeletion : manualSetDeletions) {
+					for(CategoryDeletion categoryDeletion : manualSetDeletion.getCategories()) {
+						if(logDataParams.getSystemType() == categoryDeletion.getSystemType()) {
+							listResultOfDeletion.add(resultOfDeletion);
+							break;
+						}
+					}
+				}
 			}
 		}
 		//step List<データ削除の結果>を返す。
