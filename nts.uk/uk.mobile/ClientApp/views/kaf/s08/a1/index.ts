@@ -208,7 +208,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
-
+            
+            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
             this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
