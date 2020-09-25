@@ -16,11 +16,11 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetYearAndMultiMonthAgr
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * 実装：36協定時間の取得

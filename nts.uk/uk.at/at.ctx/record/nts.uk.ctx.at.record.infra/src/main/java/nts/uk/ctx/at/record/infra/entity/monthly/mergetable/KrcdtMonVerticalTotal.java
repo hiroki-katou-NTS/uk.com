@@ -25,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
@@ -85,6 +83,8 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.Reser
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;

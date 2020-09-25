@@ -7,11 +7,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * 36協定時間の取得
