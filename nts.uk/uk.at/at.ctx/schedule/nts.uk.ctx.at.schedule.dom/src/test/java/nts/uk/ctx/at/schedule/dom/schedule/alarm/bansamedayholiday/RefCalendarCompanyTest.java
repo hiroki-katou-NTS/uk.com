@@ -33,8 +33,9 @@ public class RefCalendarCompanyTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision
-	 * excepted: WORKPLACE
+	 * excepted: empty
 	 */
 	@Test
 	public void getWorkdayDivisionIsEmpty() {
@@ -50,6 +51,7 @@ public class RefCalendarCompanyTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision 
 	 * excepted: WORKINGDAYS
 	 */
@@ -69,6 +71,7 @@ public class RefCalendarCompanyTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision 
 	 * excepted: NON_WORKINGDAY_INLAW
 	 */
@@ -89,6 +92,7 @@ public class RefCalendarCompanyTest {
 	
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision 
 	 * excepted： NON_WORKINGDAY_EXTRALEGAL
 	 */

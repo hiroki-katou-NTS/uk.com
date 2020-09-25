@@ -39,6 +39,7 @@ public class RefCalendarWorkplaceTest {
 	}
 	
 	/**
+	 *  稼働日区分を取得する
 	 *  check BusinessDaysCalendarType
 	 *  excepted: WORKPLACE
 	 */
@@ -49,6 +50,7 @@ public class RefCalendarWorkplaceTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision
 	 * excepted： empty
 	 */
@@ -67,6 +69,7 @@ public class RefCalendarWorkplaceTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision
 	 * excepted： WORKINGDAYS
 	 */
@@ -87,6 +90,7 @@ public class RefCalendarWorkplaceTest {
 	}
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision 
 	 * excepted： NON_WORKINGDAY_INLAW
 	 */
@@ -107,6 +111,7 @@ public class RefCalendarWorkplaceTest {
 	
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision 
 	 * excepted： NON_WORKINGDAY_EXTRALEGAL
 	 */

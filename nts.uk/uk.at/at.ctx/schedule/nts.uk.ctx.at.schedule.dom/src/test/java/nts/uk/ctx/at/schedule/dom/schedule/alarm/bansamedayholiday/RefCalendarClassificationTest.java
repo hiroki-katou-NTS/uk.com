@@ -44,6 +44,7 @@ public class RefCalendarClassificationTest {
 	}
 	
 	/**
+	 * 
 	 *  check BusinessDaysCalendarType
 	 *  excepted: BusinessDaysCalendarType.CLASSSICATION
 	 */	
@@ -55,6 +56,7 @@ public class RefCalendarClassificationTest {
 	
 	
 	/**
+	 * 稼働日区分を取得する
 	 * get WorkdayDivision
 	 * excepted：empty
 	 */
