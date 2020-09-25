@@ -79,6 +79,7 @@ public class AttendanceRecordExportSettingFinder {
 			// convert domain to Dto
 			standardSettingLst = standardSetting.get().getAttendanceRecordExportSettings().stream().map(item -> {
 				AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
+				dto.setLayoutId(item.getLayoutId());
 				dto.setCode(item.getCode().toString());
 				dto.setName(item.getName().toString());
 				dto.setSealUseAtr(item.getSealUseAtr());
@@ -95,6 +96,7 @@ public class AttendanceRecordExportSettingFinder {
 			// convert domain to Dto
 			freeSettingLst = freeSetting.get().getAttendanceRecordExportSettings().stream().map(item -> {
 				AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
+				dto.setLayoutId(item.getLayoutId());
 				dto.setCode(item.getCode().toString());
 				dto.setName(item.getName().toString());
 				dto.setSealUseAtr(item.getSealUseAtr());

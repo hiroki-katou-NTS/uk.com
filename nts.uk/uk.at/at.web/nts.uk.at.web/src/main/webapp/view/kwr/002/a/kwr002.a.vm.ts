@@ -418,81 +418,96 @@ module nts.uk.com.view.kwr002.a {
             public print() {
                 // mode = 1 for export file excel
                 let self = this;
-                let selectedCode = self.selectedCodeA8_5() === 0 ? self.selectedCode() : self.selectedCodeA8_8();
-                console.log(self.currentCodeList());
-                if (self.selectedEmployeeCode().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
-                    return;
-                }
-                // 「お待ちください」を表示する
-                nts.uk.ui.block.grayout();
-                self.exportDto(new ExportDto(
-                        self.findEmployeeIdsByCodes(self.selectedEmployeeCode()),
-                        self.toDate(self.dateValue().startDate),
-                        self.toDate(self.dateValue().endDate),
-                        selectedCode,
-                        1,
-                        self.closureId(),
-                        self.selectedCodeA8_5()));
-                service.exportService(self.exportDto()).done((response: any) => {
-                    if (response.taskDatas.length > 0) {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
-                    }
-                    nts.uk.ui.block.clear();
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.error(res);
-                    /*if (res.message !== "" && res.businessException) {
-                        nts.uk.ui.dialog.caution(res).then(() => {
-                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                self.saveAttendanceRecordCondition().done(() => {
+                    let companyId: string = __viewContext.user.companyId;
+                    let userId: string = __viewContext.user.employeeId;
+                    service.restoreCharacteristic(companyId,userId).done(() => {
+                        let selectedCode = self.selectedCodeA8_5() === 0 ? self.selectedCode() : self.selectedCodeA8_8();
+                        if (self.selectedEmployeeCode().length <= 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
+                            return;
+                        }
+                        //「お待ちください」を表示する
+                        let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
+                            self.selectedCodeA8_5()
+                            , ''
+                            , ''
+                            , companyId
+                            , userId
+                            , 0
+                            , ''
+                            , '');
+                        nts.uk.ui.block.grayout();
+                        self.exportDto(new ExportDto(
+                                self.findEmployeeIdsByCodes(self.selectedEmployeeCode()),
+                                self.toDate(self.dateValue().startDate),
+                                self.toDate(self.dateValue().endDate),
+                                selectedCode,
+                                1,
+                                self.closureId(),
+                                self.selectedCodeA8_5(),
+                                attendanceRecordOutputConditionsDto));
+                        service.exportService(self.exportDto()).done((response: any) => {
+                            if (response.taskDatas.length > 0) {
+                                nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
+                            }
+                            nts.uk.ui.block.clear();
+                        }).fail((res: any) => {
+                            nts.uk.ui.block.clear();
+                            nts.uk.ui.dialog.error(res);
                         });
-                    } else {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
+                    })
+                }).always(() => nts.uk.ui.block.clear());
 
-                    }*/
-
-                });
             }
 
             public exportExcel() {
                 // mode = 2 for export file excel
                 let self = this;
-                let selectedCode = self.selectedCodeA8_5() === 0 ? self.selectedCode() : self.selectedCodeA8_8();
-                if (self.selectedEmployeeCode().length <= 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
-                    return;
-                }
-                //「お待ちください」を表示する
-                nts.uk.ui.block.grayout();
-                self.exportDto(new ExportDto(
-                    self.findEmployeeIdsByCodes(self.selectedEmployeeCode()),
-                    self.toDate(self.dateValue().startDate),
-                    self.toDate(self.dateValue().endDate),
-                    selectedCode,
-                    2,
-                    self.closureId(),
-                    self.selectedCodeA8_5()));
-                service.exportService(self.exportDto()).done((response: any) => {
-                    if (response.taskDatas.length > 0) {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
-                    }
-                    nts.uk.ui.block.clear();
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.error(res);
-                    /*if (res.message !== "" && res.businessException) {
-                        nts.uk.ui.dialog.caution(res).then(() => {
-                            nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
+                self.saveAttendanceRecordCondition().done(() => {
+                    let companyId: string = __viewContext.user.companyId;
+                    let userId: string = __viewContext.user.employeeId;
+                    service.restoreCharacteristic(companyId, userId).done((data: any) => {
+                        const code: any = self.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? self.selectedCode() : self.selectedCodeA8_8();
+                        //「お待ちください」を表示する
+                        let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
+                            self.selectedCodeA8_5()
+                            , self.selectedCode()
+                            , self.selectedCodeA8_8()
+                            , companyId
+                            , userId
+                            , 0
+                            , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
+                            , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING));
+
+                        if (self.selectedEmployeeCode().length <= 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
+                            return;
+                        }
+
+                        nts.uk.ui.block.grayout();
+                        self.exportDto(new ExportDto(
+                            self.findEmployeeIdsByCodes(self.selectedEmployeeCode()),
+                            self.toDate(self.dateValue().startDate),
+                            self.toDate(self.dateValue().endDate),
+                            code,
+                            2,
+                            self.closureId(),
+                            self.selectedCodeA8_5(),
+                            attendanceRecordOutputConditionsDto));
+                        service.exportService(self.exportDto()).done((response: any) => {
+                            if (response.taskDatas.length > 0) {
+                                nts.uk.ui.dialog.error({ messageId: "Msg_1269", messageParams: [response.taskDatas[0].valueAsString] });
+                            }
+                            nts.uk.ui.block.clear();
+                        }).fail((res: any) => {
+                            nts.uk.ui.block.clear();
+                            nts.uk.ui.dialog.error(res);
                         });
-
-
-                    } else {
-                        nts.uk.ui.dialog.error({ messageId: "Msg_37" });
-
-                    }*/
-
-
-                });
+                    });
+                }).fail((err:any) => {
+                    nts.uk.ui.dialog.alertError({ messageId: err.message, messageParams: null});
+                }).always(() => nts.uk.ui.block.clear());
             }
 
 
@@ -627,6 +642,56 @@ module nts.uk.com.view.kwr002.a {
                     self.selectedDataZeroDisplayType(condition.zeroDisplayType);
                 })
             }
+
+            private saveAttendanceRecordCondition(): JQueryPromise<void> {
+                const self = this;
+                const dfd = $.Deferred<void>();
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                let attendanceRecordOutputConditionsDto;
+                service.restoreCharacteristic(companyId, userId).done((data: any) => {
+                    if (_.isUndefined(data)) {
+                        attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
+                            ItemSelectionType.STANDARD_SETTING
+                            , ''
+                            , ''
+                            , companyId
+                            , userId
+                            , 0
+                            , ''
+                            , '');
+                    } else {
+                        attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
+                            self.selectedCodeA8_5()
+                            , self.selectedCode()
+                            , self.selectedCodeA8_8()
+                            , companyId
+                            , userId
+                            , 0
+                            , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
+                            , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
+                        );
+                    }
+                    self.selectedDataZeroDisplayType = data.zeroDisplayType;
+                    service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);
+                    dfd.resolve(data);
+                });
+                return dfd.promise();
+            }
+
+            private filterLayoutId(code: string, type: number): string {
+                const vm = this;
+                let layoutId: string = '';
+                let obj: any;
+                if (type === ItemSelectionType.STANDARD_SETTING) {
+                    obj = _.filter(vm.attendanceRecordList(), code);
+                    layoutId = obj[0].layoutId;
+                } else {
+                    obj = _.filter(vm.freeSettingLst(), code);
+                    layoutId = obj[0].layoutId;
+                }
+                return layoutId;
+            }
         }
 
         export class ListType {
@@ -730,8 +795,9 @@ module nts.uk.com.view.kwr002.a {
             mode: number;
             closureId: number;
             selectionType: number;
+            condition : AttendanceRecordOutputConditionsDto
 
-            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number, closureId: number, selectionType: number) {
+            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number, closureId: number, selectionType: number,condition: AttendanceRecordOutputConditionsDto) {
                 this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;
@@ -739,6 +805,7 @@ module nts.uk.com.view.kwr002.a {
                 this.mode = mode;
                 this.closureId = closureId;
                 this.selectionType = selectionType;
+                this.condition = condition;
             }
         }
 

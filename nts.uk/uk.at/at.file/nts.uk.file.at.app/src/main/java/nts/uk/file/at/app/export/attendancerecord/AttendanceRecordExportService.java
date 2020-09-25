@@ -191,6 +191,19 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			throw new BusinessException("Msg_1141");
 		}
 		
+		int columnDailyData;	
+		int columnMonthlyData;
+		if (optionalAttendanceRecExpSet.get().getExportFontSize().value == ExportFontSize.CHAR_SIZE_LARGE.value) {
+			columnDailyData = 9;
+			columnMonthlyData = 12;
+		} else if (optionalAttendanceRecExpSet.get().getExportFontSize().value == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			columnDailyData = 11;
+			columnMonthlyData = 14;
+		} else {
+			columnDailyData = 13;
+			columnMonthlyData = 16;
+		}
+		
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
@@ -443,20 +456,22 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							// TODO lst err
 							//	エラーリストに「社員コード」「社員名」を書き出す
 						}
-						if (!monthResultCheck.isCheckResult()) {
-							// 雇用コードが一致しなかったのでこの月別実績は処理しない
-							// →次の月別実績データの処理に移行(continue)
-							continue;
-
-						}
-						//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
-						//	社員の指定期間中の所属期間を取得する RequestList 588
-						List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
-
-						// (UK2)出勤簿を出力する
-						if (statusEmps.isEmpty()) {
-							continue;
-						}
+//						if (!monthResultCheck.isCheckResult()) {
+//							// 雇用コードが一致しなかったのでこの月別実績は処理しない
+//							// →次の月別実績データの処理に移行(continue)
+//							yearMonth = yearMonth.addMonths(1);
+//							continue;
+//
+//						}
+//						//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
+//						//	社員の指定期間中の所属期間を取得する RequestList 588
+//						List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs, monthPeriod);
+//
+//						// (UK2)出勤簿を出力する
+//						if (statusEmps.isEmpty()) {
+//							yearMonth = yearMonth.addMonths(1);
+//							continue;
+//						}
 
 						// amount day in month
 						int flag = 0;
@@ -697,15 +712,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
 							// Set data daily
 							dailyData.setDate(startDateByClosure);
-							int columnData;
-							if (request.getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-								columnData = 9;
-							} else if (request.getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
-								columnData = 11;
-							} else {
-								columnData = 13;
-							}
-							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnData];
+							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnDailyData];
 							int index = 0;
 							for (AttendanceRecordResponse item : upperDailyRespond) {
 								columnDatasArray[index] = new AttendanceRecordReportColumnData("", "");
@@ -907,15 +914,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						// Convert to AttendanceRecordReportColumnData
 						List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
 
-						int columnData;
-						if (request.getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-							columnData = 12;
-						} else if (request.getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
-							columnData = 14;
-						} else {
-							columnData = 16;
-						}
-						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[columnData];
+						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[columnMonthlyData];
 						int index = 0;
 						for (String item : upperResult) {
 							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
@@ -1074,7 +1073,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(layoutId);
 		List<AttendanceRecordExport> dailyRecordTotal = new ArrayList<>();
 
-		for (int i = 1; i <= 9; i++) {
+		for (int i = 1; i <= columnDailyData; i++) {
 			if (this.findIndexInList(i, dailyRecord) == null) {
 				AttendanceRecordExport item = new AttendanceRecordExport();
 				item.setLowerPosition(null);
@@ -1088,7 +1087,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// get monthly header info
 		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(layoutId);
 		List<AttendanceRecordExport> monthlyRecordTotal = new ArrayList<>();
-		for (int i = 1; i <= 12; i++) {
+		for (int i = 1; i <= columnMonthlyData; i++) {
 			if (this.findIndexInList(i, monthlyRecord) == null) {
 				AttendanceRecordExport item = new AttendanceRecordExport();
 				item.setLowerPosition(null);

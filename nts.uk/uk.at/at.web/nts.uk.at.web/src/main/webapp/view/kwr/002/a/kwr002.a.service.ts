@@ -35,7 +35,7 @@ module nts.uk.com.view.kwr002.a {
                                     + "_companyId_" + companyId
                                     + "_userId_" + userId, obj);
         }
-        
+
         export function restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
             return nts.uk.characteristics.restore("AttendanceRecordOutputConditions"
                                     + "_companyId_" + companyId
