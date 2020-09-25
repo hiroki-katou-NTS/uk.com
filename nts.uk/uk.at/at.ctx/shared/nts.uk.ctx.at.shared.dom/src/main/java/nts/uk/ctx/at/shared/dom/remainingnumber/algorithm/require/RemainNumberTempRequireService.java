@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
@@ -64,6 +65,25 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
@@ -186,6 +206,26 @@ public class RemainNumberTempRequireService {
 	protected WorkdayoffFrameRepository workdayoffFrameRepo;
 	@Inject
 	protected YearHolidayRepository yearHolidayRepo;
+	@Inject
+	protected UsageUnitSettingRepository usageUnitSettingRepo;
+	@Inject
+	protected RegularLaborTimeComRepo regularLaborTimeComRepo;
+	@Inject
+	protected DeforLaborTimeComRepo deforLaborTimeComRepo;
+	@Inject
+	protected RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+	@Inject
+	protected DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+	@Inject
+	protected RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+	@Inject
+	protected DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+	@Inject
+	protected RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+	@Inject
+	protected DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+	@Inject
+	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
@@ -194,24 +234,26 @@ public class RemainNumberTempRequireService {
 			OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1, 
 			AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM4,
 			AbsenceTenProcess.RequireM3, AbsenceReruitmentMngInPeriodQuery.RequireM2,
-			WorkingConditionService.RequireM1 {
+			WorkingConditionService.RequireM1, DailyStatutoryLaborTime.RequireM1 {
 
 	}
 
 	public Require createRequire() {
-		return new RequireImp(comSubstVacationRepo, compensLeaveComSetRepo,
-				specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
-				annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, 
-				specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, 
-				interimRemainRepo, substitutionOfHDManaDataRepo,
+		return new RequireImp(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo,
+				empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, 
+				interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo, interimRecAbasMngRepo, 
+				empSubstVacationRepo, interimRemainRepo, substitutionOfHDManaDataRepo, 
 				payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo,
 				companyAdapter, shareEmploymentAdapter, leaveManaDataRepo, workingConditionItemRepo,
-				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, 
-				flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo,
-				predetemineTimeSettingRepo, closureRepo, closureEmploymentRepo, 
-				workTypeRepo, remainCreateInforByApplicationData, compensLeaveEmSetRepo, 
-				employmentSettingRepo, retentionYearlySettingRepo, annualPaidLeaveSettingRepo,
-				outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo);
+				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, 
+				diffTimeWorkSettingRepo, flexWorkSettingRepo, predetemineTimeSettingRepo, closureRepo,
+				closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData, 
+				compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo, 
+				annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, 
+				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
+				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, 
+				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo, 
+				sharedAffWorkPlaceHisAdapter);
 	}
 	
 	@AllArgsConstructor
@@ -292,6 +334,26 @@ public class RemainNumberTempRequireService {
 		protected WorkdayoffFrameRepository workdayoffFrameRepo;
 		
 		protected YearHolidayRepository yearHolidayRepo;
+		
+		protected UsageUnitSettingRepository usageUnitSettingRepo;
+		 
+		protected RegularLaborTimeComRepo regularLaborTimeComRepo;
+		
+		protected DeforLaborTimeComRepo deforLaborTimeComRepo;
+		 
+		protected RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+		
+		protected DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+		 
+		protected RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+		
+		protected DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+		 
+		protected RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+		
+		protected DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+		
+		protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 
 		@Override
 		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
@@ -493,7 +555,6 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
-
 			return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
 		}
 		@Override
@@ -558,6 +619,57 @@ public class RemainNumberTempRequireService {
 		@Override
 		public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
 			return retentionYearlySettingRepo.findByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+			return usageUnitSettingRepo.findByCompany(companyId);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+			return regularLaborTimeComRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+			return deforLaborTimeComRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+			return regularLaborTimeWkpRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+			return deforLaborTimeWkpRepo.find(cid, wkpId);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+			return regularLaborTimeEmpRepo.findById(cid, employmentCode);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+			return deforLaborTimeEmpRepo.find(cid, employmentCode);
+		}
+
+		@Override
+		public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+			return regularLaborTimeShaRepo.find(Cid, EmpId);
+		}
+
+		@Override
+		public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+			return deforLaborTimeShaRepo.find(cid, empId);
+		}
+
+		@Override
+		public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
+				GeneralDate baseDate) {
+			return sharedAffWorkPlaceHisAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
 		}
 	}
 

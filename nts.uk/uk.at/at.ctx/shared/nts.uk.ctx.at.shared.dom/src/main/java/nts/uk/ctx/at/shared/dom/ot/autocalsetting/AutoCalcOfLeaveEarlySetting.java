@@ -24,4 +24,11 @@ public class AutoCalcOfLeaveEarlySetting {
 		return new AutoCalcOfLeaveEarlySetting(false, false);
 	}
 
+	/**
+	 * 全てtrueで作成する
+	 * @return 全てtrueのインスタンス
+	 */
+	public static AutoCalcOfLeaveEarlySetting createAllTrue() {
+		return new AutoCalcOfLeaveEarlySetting(true, true);
+	}
 }

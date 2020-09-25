@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -106,5 +109,31 @@ public class KshmtPersonalDayOfWeek extends UkJpaEntity implements Serializable 
 	@Override
 	protected Object getKey() {
 		return this.kshmtPersonalDayOfWeekPK;
+	}
+
+	public KshmtPersonalDayOfWeek(KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK, String sid,
+			String workTypeCode, String workTimeCode, List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones) {
+		super();
+		this.kshmtPersonalDayOfWeekPK = kshmtPersonalDayOfWeekPK;
+		this.sid = sid;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.kshmtDayofweekTimeZones = kshmtDayofweekTimeZones;
+	}
+	
+	public SingleDaySchedule toDomain() {
+		return new SingleDaySchedule(this.workTypeCode,
+				kshmtDayofweekTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				Optional.ofNullable(this.workTimeCode));
+	}
+	
+	public static KshmtPersonalDayOfWeek toEntity(SingleDaySchedule domain,String historyId,String sid,int perWorkDayOffAtr) {
+		return new KshmtPersonalDayOfWeek(
+				new KshmtPersonalDayOfWeekPK(historyId, perWorkDayOffAtr),
+				sid, 
+				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
+				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,
+				domain.getWorkingHours().stream().map(c->KshmtDayofweekTimeZone.toEntity(c, historyId, perWorkDayOffAtr)).collect(Collectors.toList())
+				);
 	}
 }

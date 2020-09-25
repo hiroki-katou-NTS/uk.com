@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.AmountRange;
-import nts.uk.ctx.at.record.dom.optitem.CalcRangeCheck;
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRangeSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.NumberRange;
-import nts.uk.ctx.at.record.dom.optitem.TimeRange;
+import nts.uk.ctx.at.shared.dom.optitem.AmountRange;
+import nts.uk.ctx.at.shared.dom.optitem.CalcRangeCheck;
+import nts.uk.ctx.at.shared.dom.optitem.CalcResultRangeSetMemento;
+import nts.uk.ctx.at.shared.dom.optitem.NumberRange;
+import nts.uk.ctx.at.shared.dom.optitem.TimeRange;
 
 /**
  * The Class CalculationResultRangeDto.

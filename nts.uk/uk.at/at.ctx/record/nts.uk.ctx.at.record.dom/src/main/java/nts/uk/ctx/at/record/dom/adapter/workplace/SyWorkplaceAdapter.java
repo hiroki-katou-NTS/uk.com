@@ -19,4 +19,6 @@ public interface SyWorkplaceAdapter {
 			List<String> wpkCodes, List<GeneralDate> baseDates);
 	
 	Optional<SWkpHistRcImported> findBySid(String employeeId, GeneralDate baseDate);
+	
+	List<SWkpHistRcImported> findBySid(List<String>employeeIds, GeneralDate baseDate);
 }

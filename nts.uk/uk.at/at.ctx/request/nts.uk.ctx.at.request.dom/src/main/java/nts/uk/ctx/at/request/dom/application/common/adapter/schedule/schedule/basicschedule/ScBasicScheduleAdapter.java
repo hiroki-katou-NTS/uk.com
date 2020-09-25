@@ -13,8 +13,10 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 public interface ScBasicScheduleAdapter {
 	
-	public Optional<ScBasicScheduleImport> findByID(String employeeID, GeneralDate date);
+	public Optional<ScBasicScheduleImport_Old> findByID(String employeeID, GeneralDate date);
 	
-	public List<ScBasicScheduleImport> findByID(List<String> employeeID, DatePeriod date);
+	public List<ScBasicScheduleImport_Old> findByID(List<String> employeeID, DatePeriod date);
+	
+	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date);
 	
 }

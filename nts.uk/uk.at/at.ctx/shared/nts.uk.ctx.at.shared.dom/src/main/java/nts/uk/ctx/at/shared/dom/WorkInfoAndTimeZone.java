@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author tutk
  *
  */
-
 public class WorkInfoAndTimeZone {
 
 	/**
@@ -43,17 +42,12 @@ public class WorkInfoAndTimeZone {
 	 * @param workTime
 	 * @param listTimezoneUse
 	 */
-	public WorkInfoAndTimeZone(WorkType workType, WorkTimeSetting workTime, List<TimeZone> listTimeZone) {
-		super();
+	public static WorkInfoAndTimeZone create(WorkType workType, WorkTimeSetting workTime, List<TimeZone> listTimeZone) {
 		// [inv-1] case @就業時間帯.isEmpty() : @補正済み所定時間帯.size() == 0
 		if (workTime == null) {
-			this.workTime = Optional.empty();
-			this.listTimeZone = new ArrayList<>();
-		} else {
-			this.workTime = Optional.ofNullable(workTime);
-			this.listTimeZone = listTimeZone;
-		}
-		this.workType = workType;
+			return new WorkInfoAndTimeZone(workType, null, new ArrayList<>());
+		} 
+		return new WorkInfoAndTimeZone(workType, workTime, listTimeZone);
 	}
 	
 	/**
@@ -65,6 +59,13 @@ public class WorkInfoAndTimeZone {
 		this.workType = workType;
 		this.workTime = Optional.empty();
 		this.listTimeZone = new ArrayList<>();
+	}
+
+	public WorkInfoAndTimeZone(WorkType workType, WorkTimeSetting workTime, List<TimeZone> listTimeZone) {
+		super();
+		this.workType = workType;
+		this.workTime = Optional.ofNullable(workTime);
+		this.listTimeZone = listTimeZone;
 	}
 
 }

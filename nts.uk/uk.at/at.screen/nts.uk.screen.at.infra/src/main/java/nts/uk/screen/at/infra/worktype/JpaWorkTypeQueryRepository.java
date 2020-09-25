@@ -31,6 +31,7 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	private static final String SELECT_BOUNCE_KAF022;
 	private static final String SELECT_HDTIME_KAF022;
 	private static final String SELECT_HDSHIP_KAF022;
+	private static final String SELECT_BUSINESS_TRIP_KAF022;
 
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -191,6 +192,16 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append(" OR (c.worktypeAtr = 1 AND c.morningAtr IN :morningAtr5 AND c.afternoonAtr = :afternoon5 ))");
 		stringBuilder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		SELECT_HDSHIP_KAF022 = stringBuilder.toString();
+
+		SELECT_BUSINESS_TRIP_KAF022 = new StringBuilder()
+				.append("SELECT NEW " + WorkTypeDto.class.getName())
+				.append("(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, o.dispOrder) ")
+				.append("FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o ")
+				.append("ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ")
+				.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ")
+				.append(" AND c.worktypeAtr = 0 AND c.oneDayAtr IN :oneDayAtr ")
+				.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC")
+				.toString();
 		
 	}
 	
@@ -349,6 +360,14 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	public List<WorkTypeDto> findAllWorkTypeDisp(String companyId, int abolishAtr) {
 		return this.queryProxy().query(SELECT_ALL_WORKTYPE_DISP, WorkTypeDto.class).setParameter("companyId", companyId)
 				.setParameter("abolishAtr", abolishAtr).getList();
+	}
+
+	@Override
+	public List<WorkTypeDto> findBusinessTripKaf022(String companyId, List<Integer> listOneDayAtr) {
+		return this.queryProxy().query(SELECT_BUSINESS_TRIP_KAF022, WorkTypeDto.class)
+				.setParameter("companyId", companyId)
+				.setParameter("oneDayAtr", listOneDayAtr)
+				.getList();
 	}
 
 }
