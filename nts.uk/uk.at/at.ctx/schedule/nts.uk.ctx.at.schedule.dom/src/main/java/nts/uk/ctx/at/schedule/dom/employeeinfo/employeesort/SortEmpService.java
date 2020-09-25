@@ -57,9 +57,9 @@ public class SortEmpService {
 			SortSetting sortSetting) {
 		List<String> result = new ArrayList<>();
 		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
-		if (sortPriorities.size() == 0)
+		if (sortPriorities.size() <= 0) {
 			return lstEmpId;
-		if (sortPriorities.size() > 0) {
+		} else {
 			long start = System.nanoTime();
 			result = sort(require, ymd, lstEmpId, sortSetting);
 			System.out.println("time run sortService  " + ((System.nanoTime() - start) / 1000000) + "ms");
@@ -88,7 +88,7 @@ public class SortEmpService {
 			case POSITION:
 				compare2  = Comparator.comparing(EmployeeInfo::getJobtitleCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
-			case CLASSIFY:
+			default : // CLASSIFY:
 				compare2  = Comparator.comparing(EmployeeInfo::getClassificationCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			}
@@ -182,7 +182,7 @@ public class SortEmpService {
 					listEmployeePositionResult = listEmployeePosition;
 				}
 				break;
-			case CLASSIFY:
+			default: // CLASSIFY
 				listEmpClassifiImport =  require.get(ymd, empIDs);
 				listEmpClassifiImport.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				break;
