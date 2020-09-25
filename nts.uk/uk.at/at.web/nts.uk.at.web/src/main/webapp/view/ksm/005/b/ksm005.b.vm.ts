@@ -285,7 +285,7 @@ module nts.uk.at.view.ksm005.b {
                     settingWorkDays: self.lstHolidaysPattern().length > 0 ? self.monthlyPatternSettingBatchWorkDays() : null,
                     settingStatutoryHolidays: self.monthlyPatternSettingBatchStatutoryHolidays(),
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
-                    settingPublicHolidays: self.monthlyPatternSettingBatchPublicHolidays(),
+                    settingPublicHolidays: self.settingForHolidays() ? self.monthlyPatternSettingBatchPublicHolidays() : null,
                     overwrite: self.overwirte(),
                     startYearMonth: Number(self.dateValue().startDate.toString().substring(0, 6)),
                     endYearMonth: Number(self.dateValue().endDate.toString().substring(0, 6)),
