@@ -256,15 +256,15 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 		try {
 			//実行区分をチェックする
-			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
+			if(command.getContent().getRecreateCondition().isPresent() && command.getContent().getRecreateCondition().get().getReOverwriteRevised()) {
 				//勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
-			} else {
+			} 
 				//勤務予定作成する  ↓
 				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
 				// ----------↑
-			}
+			
 		} finally {
 			CalculationCache.clear();
 		}
@@ -589,7 +589,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 					creator.getEmployeeId());
-			this.scheduleErrorLogRepository.add(scheduleErrorLog);
+			//this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value), null, null, null);
 			return result;
@@ -1238,7 +1238,7 @@ public class ScheduleCreatorExecutionTransaction {
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			} else {
 
-				// 取得した勤務予定一覧をメモリにキャッシュする chưa làm
+				// 取得した勤務予定一覧をメモリにキャッシュする
 				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
 			}
 		}

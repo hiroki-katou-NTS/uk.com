@@ -62,7 +62,7 @@ public class AsposeAppStamp {
 							+ appRecordImage.getAppStampGoOutAtr().get().nameId + "）")
 					: (appRecordImage.getAppStampCombinationAtr().name));
 			Cell cellD9 = cells.get("D9");
-			cellD9.setValue(new TimeWithDayAttr(appRecordImage.getAttendanceTime().v()).getFullText());
+			cellD9.setValue(new TimeWithDayAttr(appRecordImage.getAttendanceTime().v()).getInDayTimeWithFormat());
 		} else {
 			String workHour = EMPTY, workHour2 = EMPTY, temporaryTime = EMPTY, temporaryTime2 = EMPTY,
 					temporaryTime3 = EMPTY, outTime = EMPTY, outTime2 = EMPTY, outTime3 = EMPTY, outTime4 = EMPTY, outTime5 = EMPTY, outTime6 = EMPTY, outTime7 = EMPTY, outTime8 = EMPTY, outTime9 = EMPTY, outTime10 = EMPTY,
@@ -92,13 +92,13 @@ public class AsposeAppStamp {
 						// Start time workHour1
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 0
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							workHour = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							workHour = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time workHour1
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 0
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							workHour += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							workHour += timeStampApp.getTimeOfDay().getFullText();
 						}
 
 						if (appStampOutputOp.get().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
@@ -109,13 +109,13 @@ public class AsposeAppStamp {
 							// Start time workHour2
 							if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 0
 									&& destTimeApp.getStartEndClassification().value == 0) {
-								workHour2 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+								workHour2 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 										+ HALF_WIDTH_SPACE;
 							}
 							// End time workHour2
 							if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 0
 									&& destTimeApp.getStartEndClassification().value == 1) {
-								workHour2 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+								workHour2 += timeStampApp.getTimeOfDay().getFullText();
 							}
 						}
 					}
@@ -128,13 +128,13 @@ public class AsposeAppStamp {
 						// Start time temporaryTime
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							temporaryTime = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							temporaryTime = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time temporaryTime
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							temporaryTime += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							temporaryTime += timeStampApp.getTimeOfDay().getFullText();
 						}
 						/*
 						 * temporaryTime2
@@ -142,13 +142,13 @@ public class AsposeAppStamp {
 						// Start time temporaryTime2
 						if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							temporaryTime2 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							temporaryTime2 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time temporaryTime2
 						if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							temporaryTime2 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							temporaryTime2 += timeStampApp.getTimeOfDay().getFullText();
 						}
 						/*
 						 * temporaryTime3
@@ -156,13 +156,13 @@ public class AsposeAppStamp {
 						// Start time temporaryTime3
 						if (destTimeApp.getEngraveFrameNo() == 3 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							temporaryTime3 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							temporaryTime3 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time temporaryTime3
 						if (destTimeApp.getEngraveFrameNo() == 3 && destTimeApp.getTimeStampAppEnum().value == 1
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							temporaryTime3 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							temporaryTime3 += timeStampApp.getTimeOfDay().getFullText();
 						}
 					}
 
@@ -174,13 +174,13 @@ public class AsposeAppStamp {
 						// Start time outTime
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 1 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -191,13 +191,13 @@ public class AsposeAppStamp {
 						// Start time outTime2
 						if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime2 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime2 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime2
 						if (destTimeApp.getEngraveFrameNo() == 2 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime2 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime2 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime2 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -208,13 +208,13 @@ public class AsposeAppStamp {
 						// Start time outTime3
 						if (destTimeApp.getEngraveFrameNo() == 3 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime3 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime3 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 3 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime3 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime3 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime3 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -225,13 +225,13 @@ public class AsposeAppStamp {
 						// Start time outTime4
 						if (destTimeApp.getEngraveFrameNo() == 4 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime4 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime4 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 4 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime4 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime4 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime4 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -242,13 +242,13 @@ public class AsposeAppStamp {
 						// Start time outTime5
 						if (destTimeApp.getEngraveFrameNo() == 5 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime5 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime5 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 5 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime5 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime5 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime5 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -259,13 +259,13 @@ public class AsposeAppStamp {
 						// Start time outTime6
 						if (destTimeApp.getEngraveFrameNo() == 6 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime6 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime6 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 6 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime6 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime6 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime6 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -276,13 +276,13 @@ public class AsposeAppStamp {
 						// Start time outTime7
 						if (destTimeApp.getEngraveFrameNo() == 7 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime7 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime7 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 7 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime7 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime7 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime7 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -293,13 +293,13 @@ public class AsposeAppStamp {
 						// Start time outTime3
 						if (destTimeApp.getEngraveFrameNo() == 8 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime8 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime8 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 8 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime8 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime8 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime8 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -310,13 +310,13 @@ public class AsposeAppStamp {
 						// Start time outTime9
 						if (destTimeApp.getEngraveFrameNo() == 9 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime9 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime9 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 9 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime9 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime9 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime9 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -327,13 +327,13 @@ public class AsposeAppStamp {
 						// Start time outTime
 						if (destTimeApp.getEngraveFrameNo() == 10 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 0) {
-							outTime10 = timeStampApp.getTimeOfDay().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							outTime10 = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 						}
 						// End time outTime
 						if (destTimeApp.getEngraveFrameNo() == 10 && destTimeApp.getTimeStampAppEnum().value == 2
 								&& destTimeApp.getStartEndClassification().value == 1) {
-							outTime10 += timeStampApp.getTimeOfDay().getRawTimeWithFormat();
+							outTime10 += timeStampApp.getTimeOfDay().getFullText();
 							if(timeStampApp.getAppStampGoOutAtr().isPresent()) {
 								outTime10 += HALF_WIDTH_SPACE + "（" + timeStampApp.getAppStampGoOutAtr().get().nameId + "）";
 							}
@@ -400,10 +400,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 1
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -411,10 +411,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 2
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime2 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime2 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime2 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime2 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -422,10 +422,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 3
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime3 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime3 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime3 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime3 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -433,10 +433,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 4
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime4 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime4 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime4 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime4 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -444,10 +444,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 5
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime5 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime5 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime5 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime5 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -455,10 +455,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 6
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime6 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime6 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime6 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime6 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -466,10 +466,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 7
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime7 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime7 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime7 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime7 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -477,10 +477,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 8
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime8 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime8 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime8 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime8 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -488,10 +488,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 9
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime9 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime9 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime9 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime9 += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -499,10 +499,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 10
 								& destTimeZone.getTimeZoneStampClassification().value == 2) {
-							breakTime10 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							breakTime10 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								breakTime10 += timeZone.getEndTime().getRawTimeWithFormat();
+								breakTime10 += timeZone.getEndTime().getFullText();
 							}
 						}
 					}
@@ -514,10 +514,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 1
 								& destTimeZone.getTimeZoneStampClassification().value == 0) {
-							childCareTime = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							childCareTime = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								childCareTime += timeZone.getEndTime().getRawTimeWithFormat();
+								childCareTime += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -525,10 +525,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 2
 								& destTimeZone.getTimeZoneStampClassification().value == 0) {
-							childCareTime2 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							childCareTime2 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								childCareTime2 += timeZone.getEndTime().getRawTimeWithFormat();
+								childCareTime2 += timeZone.getEndTime().getFullText();
 							}
 						}
 					}
@@ -540,10 +540,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 1
 								& destTimeZone.getTimeZoneStampClassification().value == 1) {
-							nursingTime = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							nursingTime = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								nursingTime += timeZone.getEndTime().getRawTimeWithFormat();
+								nursingTime += timeZone.getEndTime().getFullText();
 							}
 						}
 						/*
@@ -551,10 +551,10 @@ public class AsposeAppStamp {
 						 */
 						if (destTimeZone.getEngraveFrameNo() == 2
 								& destTimeZone.getTimeZoneStampClassification().value == 1) {
-							nursingTime2 = timeZone.getStartTime().getRawTimeWithFormat() + HALF_WIDTH_SPACE + "～"
+							nursingTime2 = timeZone.getStartTime().getFullText() + HALF_WIDTH_SPACE + "～"
 									+ HALF_WIDTH_SPACE;
 							if (timeZone.getEndTime() != null) {
-								nursingTime2 += timeZone.getEndTime().getRawTimeWithFormat();
+								nursingTime2 += timeZone.getEndTime().getFullText();
 							}
 						}
 					}
@@ -918,10 +918,10 @@ public class AsposeAppStamp {
 			// set style for bottom
 
 			cells.setRowHeightPixel(38 - deleteCnt - 2, 5);
-			cells.setRowHeightPixel(38 - deleteCnt - 1, 120);
+			cells.setRowHeightPixel(38 - deleteCnt - 1, 130);
 			cells.setRowHeightPixel(38 - deleteCnt, 5);
 			cells.setRowHeightPixel(38 - deleteCnt + 1, 5);
-			cells.setRowHeightPixel(38 - deleteCnt + 2, 120);
+			cells.setRowHeightPixel(38 - deleteCnt + 2, 130);
 			cells.setRowHeightPixel(38 - deleteCnt + 3, 5);
 
 			// before reason
@@ -1007,8 +1007,12 @@ public class AsposeAppStamp {
 					.setLineStyle(CellBorderType.THIN);
 
 			bReasonLabelStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+			bReasonLabelStyle.setVerticalAlignment(TextAlignmentType.TOP);
 			bReasonLabelStyle.setIndentLevel(1);
 			dReasonLabelStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+			dReasonLabelStyle.setVerticalAlignment(TextAlignmentType.TOP);
+			dReasonLabelStyle.getFont().setSize(9);
+			dReasonLabelStyle.getFont().setName("源ノ角ゴシック JP Normal");
 			dReasonLabelStyle.setIndentLevel(1);
 
 			dReasonLabelStyle.setTextWrapped(true);

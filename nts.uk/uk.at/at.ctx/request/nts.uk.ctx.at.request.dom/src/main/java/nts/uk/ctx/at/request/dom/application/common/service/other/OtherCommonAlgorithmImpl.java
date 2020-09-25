@@ -30,9 +30,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
@@ -522,9 +522,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate) {
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
-		if(Strings.isNotBlank(recordWorkInfoImport.getWorkTypeCode())){
-			String workTypeCd = recordWorkInfoImport.getWorkTypeCode();
+		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfoRefactor(employeeID, appDate);
+		if(recordWorkInfoImport.getWorkTypeCode() != null){
+			String workTypeCd = recordWorkInfoImport.getWorkTimeCode().v();
 			// ドメインモデル「勤務種類」を1件取得する
 			Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCd);
 			if(!opWorkType.isPresent()){
@@ -534,9 +534,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			return workType;
 		}
 		// Imported(申請承認)「勤務予定」を取得する
-		Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = scBasicScheduleAdapter.findByID(employeeID, appDate);
-		if(opScBasicScheduleImport.isPresent()){
-			String workTypeCd = opScBasicScheduleImport.get().getWorkTypeCode();
+		ScBasicScheduleImport opScBasicScheduleImport = scBasicScheduleAdapter.findByIDRefactor(employeeID, appDate);
+		if(opScBasicScheduleImport != null){
+			String workTypeCd = opScBasicScheduleImport.getWorkTypeCode();
 			// ドメインモデル「勤務種類」を1件取得する
 			Optional<WorkType> opWorkType = workTypeRepository.findByPK(companyID, workTypeCd);
 			if(!opWorkType.isPresent()){

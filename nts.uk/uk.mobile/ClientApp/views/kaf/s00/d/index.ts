@@ -34,6 +34,7 @@ export class KafS00DComponent extends Vue {
         let lstAppID = [self.params.appID];
         self.$modal('cmms45c', { 'listAppMeta': lstAppID, 'currentApp': self.params.appID })
             .then((res: any) => {
+                self.$emit('close-modal', res);
                 self.$close(res);
             });
     }

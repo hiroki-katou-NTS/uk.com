@@ -53,7 +53,7 @@ public class LateLeaveEarlyCommandHandler extends CommandHandlerWithResult<LateL
 						: Optional.of(new ApplicationDate(
 								GeneralDate.fromString(dto.getApplication().getOpAppEndDate(), "yyyy/MM/dd"))),
 				Optional.of(new AppReason(dto.getApplication().getOpAppReason())),
-				Optional.of(new AppStandardReasonCode(dto.getApplication().getOpAppStandardReasonCD())));
+				dto.getApplication().getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(dto.getApplication().getOpAppStandardReasonCD())));
 
 		return this.service.register(dto.getAppType(), dto.getInfoOutput().toDomain(), application);
 	}

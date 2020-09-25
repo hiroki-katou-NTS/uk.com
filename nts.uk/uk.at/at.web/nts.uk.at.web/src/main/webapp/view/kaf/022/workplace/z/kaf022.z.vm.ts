@@ -65,7 +65,9 @@ module nts.uk.at.view.kaf022.z.viewmodel {
     export class SettingData {
         label: string;
         appType: number;
+        // 利用区分
         useAtr: KnockoutObservable<number>;
+        // 備考
         memo: KnockoutObservable<string>;
 
         constructor(label: string, appType: number, radioValue?: number, textAreaValue?: string) {

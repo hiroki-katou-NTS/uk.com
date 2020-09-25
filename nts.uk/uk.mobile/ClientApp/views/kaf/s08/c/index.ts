@@ -16,11 +16,11 @@ import { ScreenMode } from 'views/kaf/s00/b';
     constraints: []
 })
 export class KafS08CComponent extends Vue {
-    @Prop({default: () => ({})})
-    public title: string = 'KafS08C';
+
     public kafS00DParams: any = null;
     public params?: any;
-    public mode: boolean = true;
+    
+    @Prop({ }) public readonly mode!: boolean;
 
     @Prop({default : ' '}) public readonly appID!: string;
 
@@ -30,5 +30,10 @@ export class KafS08CComponent extends Vue {
             mode : vm.mode == true ? ScreenMode.NEW : ScreenMode.DETAIL,
             appID : vm.appID
         };
+    }
+
+    public BackToStepOne(res: any) {
+        const vm =this;
+        vm.$emit('backToStepOne', res);
     }
 }

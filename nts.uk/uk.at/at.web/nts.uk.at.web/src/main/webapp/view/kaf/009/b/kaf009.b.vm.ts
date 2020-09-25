@@ -5,17 +5,17 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     const template = `
         <div>
-    <div data-bind="component: { name: 'kaf000-b-component1', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput  
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component2', 
+    <div data-bind="component: { name: 'kaf000-b-component1',
                                 params: {
                                     appType: appType,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component3', 
+    <div data-bind="component: { name: 'kaf000-b-component2',
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component3',
                                 params: {
                                     appType: appType,
                                     approvalReason: approvalReason,
@@ -35,26 +35,26 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                                 appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
                             } }"></div>
     </div>
-    <div data-bind="component: { name: 'kaf000-b-component5', 
+    <div data-bind="component: { name: 'kaf000-b-component5',
                                 params: {
                                     appType: appType,
                                     application: application,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component6', 
+    <div data-bind="component: { name: 'kaf000-b-component6',
                                 params: {
                                     appType: appType,
                                     application: application,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
     <div data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component7', 
+    <div data-bind="component: { name: 'kaf000-b-component7',
                                 params: {
                                     appType: appType,
                                     application: application,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component8', 
+    <div data-bind="component: { name: 'kaf000-b-component8',
                                 params: {
                                     appType: appType,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         template: template
     })
     class Kaf009BViewModel extends ko.ViewModel {
-        
+
 		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
@@ -88,15 +88,15 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 
 
         };
-    
-    
+
+
         created(
-            params: { 
+            params: {
 				appType: any,
 				application: any,
 				printContentOfEachAppDto: PrintContentOfEachAppDto,
             	approvalReason: any,
-                appDispInfoStartupOutput: any, 
+                appDispInfoStartupOutput: any,
                 eventUpdate: (evt: () => void ) => void,
 				eventReload: (evt: () => void) => void
             }
@@ -107,10 +107,10 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 			vm.appType = params.appType;
             vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';    
+                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
             }
             vm.createParamKAF009();
-            
+
             vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
             vm.approvalReason = params.approvalReason;
             // gui event con ra viewmodel cha
@@ -121,15 +121,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         }
 
 		reload() {
-			
+			const vm = this;
+			if(vm.appType() === AppType.GO_RETURN_DIRECTLY_APPLICATION) {
+				vm.createParamKAF009();
+			}
 		}
 
         createParamKAF009() {
             let vm = this;
             vm.$blockui('show');
-            vm.$ajax(API.getDetail, {
+            return vm.$ajax(API.getDetail, {
                 companyId: vm.$user.companyId,
-                applicationId: ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.application.appID
+                applicationId: vm.application().appID()
             }).done(res => {
                 console.log(res);
                 if (res) {
@@ -146,13 +149,13 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 vm.handleError(err);
             }).always(() => vm.$blockui('hide'));
         }
-        
- 
-    
+
+
+
         mounted() {
             const vm = this;
         }
-        
+
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
@@ -161,10 +164,10 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
             let application = ko.toJS(vm.application);
             vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-            
+
             vm.applicationTest.prePostAtr = application.prePostAtr;
             vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
@@ -174,20 +177,23 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             // is change can be null
             if (!_.isNull(model.checkbox3)) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+
+            }
+            if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
                 let dw = new DataWork( model.workTypeCode );
                 if ( model.workTimeCode ) {
                     dw.workTime = model.workTimeCode
                 }
                 goBackApp.dataWork = dw;
-                
-            } 
+
+            }
             vm.$blockui("show");
-            
+
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
                         return true;
-                        
+
                     }
                 }).then(result => {
                     if(!result) return;
@@ -199,8 +205,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                             inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
                             mode: false
                         };
-                    
-                    
+
+
                     return vm.$ajax(API.checkRegister, param);
                 }).then(res => {
                     if (res == undefined) return;
@@ -211,21 +217,21 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         return vm.handleConfirmMessage( listTemp, goBackApp );
 
                     }
-                    
+
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
                             location.reload();
-                        });                
+                        });
                     }
                 }).fail(err => {
                     vm.handleError(err);
-                    
+
                 }).always(() => vm.$blockui("hide"));
-                
-                
-                
-             
+
+
+
+
         }
         public handleConfirmMessage(listMes: any, res: any) {
             let vm = this;
@@ -243,17 +249,17 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 });
             }
         }
-        
+
         registerData(goBackApp) {
             let vm = this;
             let paramsUpdate = {
                 applicationDto: vm.applicationTest,
                 goBackDirectlyDto: goBackApp,
-                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)        
+                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)
             }
-            
+
              return vm.$ajax(API.updateApplication, paramsUpdate);
-                
+
         }
         public handleError(err: any) {
             const vm = this;
@@ -261,7 +267,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             if (err.message && err.messageId) {
                 param = {messageId: err.messageId, messageParams: err.parameterIds};
             } else {
-                
+
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};
                 } else {
@@ -274,15 +280,15 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }
             });
         }
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         dispose() {
             const vm = this;
-            
+
         }
     }
     export class GoBackReflect {
@@ -315,8 +321,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             this.dataWork = dataWork;
         }
     }
-   
-   
+
+
     export class DataWork {
         workType: string;
         workTime?: string;

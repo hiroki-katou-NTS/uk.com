@@ -15,4 +15,6 @@ public interface GoBackDirectlyRepository {
 	void update(GoBackDirectly domain);
 	
 	void remove(GoBackDirectly domain);
+	
+	void delete(String companyId, String appId);
 }
