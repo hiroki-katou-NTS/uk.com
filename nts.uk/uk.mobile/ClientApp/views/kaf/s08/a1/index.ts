@@ -214,37 +214,39 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
             
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-            this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+            vm.application.prePostAtr = vm.kaf000_B_Params.output.prePostAtr;
+            vm.application.appDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            vm.application.opAppStartDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
             } else {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
             }
 
-            this.$http.post('at', API.changeAppDate, {
+            vm.$mask('show');
+
+            vm.$http.post('at', API.changeAppDate, {
                 isNewMode: true,
                 isError: 0,
-                application: this.application,
+                application: vm.application,
                 businessTrip: null,
-                businessTripInfoOutput: this.data.businessTripInfoOutput
+                businessTripInfoOutput: vm.data.businessTripInfoOutput
                 //businessTrip: vm.mode ? null : vm.data.appWorkChange
             }).then((res: any) => {
                 let response = res.data;
                 if (response.result) {
                     // this.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
                     if (response.confirmMsgOutputs.length != 0) {
-                        this.handleConfirmMessage(response.confirmMsgOutputs, response);
+                        vm.handleConfirmMessage(response.confirmMsgOutputs, response);
                     }
                     vm.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
                 }
-                this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
-            }).catch((err) => {
-                this.handleErrorMessage(err);
-                this.listDate = [];
+                vm.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
 
-                return;
+                vm.$mask('hide');
+            }).catch((err) => {
+                vm.handleErrorMessage(err);
+                vm.$mask('hide');
             });
         }
 
@@ -429,8 +431,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                         }
                     }
                 }
-
-                return vm.listDate;
             });
             
         }

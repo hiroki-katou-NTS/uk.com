@@ -108,6 +108,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
         }).then((loadData: any) => {
             if (loadData) {
+                vm.$mask('show');
+
                 return vm.$http.post('at', API.startKAFS08, {
                     mode: vm.mode,
                     companyId: vm.user.companyId,
@@ -118,6 +120,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 }).then((res: any) => {
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
+                    vm.$mask('hide');
                 });
             }
 
@@ -136,13 +139,14 @@ export class KafS08A2Component extends KafS00ShrComponent {
             businessTripInfoOutput: vm.data.businessTripInfoOutput,
             application: vm.application,
         };
+        vm.$mask('show');
 
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
+            vm.$mask('hide');
             vm.$emit('nextToStepThree', res.data.appID);
         }).catch(() => {
+            vm.$mask('hide');
             vm.$modal.error({ messageId: 'Msg_1912' });
-
-            return ;
         });
     }
 
@@ -225,6 +229,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             returnTime: vm.returnTime,
             tripInfos
         };
+        vm.$mask('show');
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
@@ -237,10 +242,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             if (_.isEmpty(res.data)) {
                 vm.$modal.error({ messageId: 'Msg_1703', messageParams: ['Com_Employment'] }).then(() => vm.$close());
             }
-
-            return;
-        }
-        );
+        });
     }
 
     //handle mess dialog
@@ -292,14 +294,11 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 }
                 vm.$mask('hide');
             }).catch(() => {
+                vm.$mask('hide');
                 vm.$modal.error({ messageId: 'Msg_1912' });
-
-                return ;
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });
-
-            return;
         }
     }
 }
