@@ -200,8 +200,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //nhảy đến step three với các điều kiện
     public nextToStepThree() {
         const vm = this;
-        vm.mode ? vm.registerData() : vm.updateBusinessTrip();
-        //vm.checkBeforeRegister();
+        vm.checkBeforeRegister();
         //vm.toggleErrorAlert();
         //this.$emit('nextToStepThree');
     }
@@ -227,7 +226,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         let paramsBusinessTrip = {
             departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
-            tripInfos
+            tripInfos,
         };
         vm.$mask('show');
         // check before registering application
@@ -235,12 +234,17 @@ export class KafS08A2Component extends KafS00ShrComponent {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
             businessTripDto: paramsBusinessTrip
         }).then((res: any) => {
-            vm.registerData();
-        }).catch((res: any) => {
-            vm.hidden = true;
-            vm.$mask('hide');
-            if (_.isEmpty(res.data)) {
-                vm.$modal.error({ messageId: 'Msg_1703', messageParams: ['Com_Employment'] }).then(() => vm.$close());
+            vm.mode ? vm.registerData() : vm.updateBusinessTrip();
+        }).catch((err: any) => {
+            let param;
+
+            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913' ) {
+                err.message = err.parameterIds[0] + err.message;
+                param = err;
+
+                return vm.$modal.error(param);
+            } else {
+                vm.handleErrorMessage(err);
             }
         });
     }
