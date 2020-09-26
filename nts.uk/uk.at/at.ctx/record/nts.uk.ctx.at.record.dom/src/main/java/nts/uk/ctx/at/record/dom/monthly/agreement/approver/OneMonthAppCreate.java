@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.agreementbasicsettings.AgreementsOneMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
