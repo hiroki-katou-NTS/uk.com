@@ -135,11 +135,11 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			KfnmtRptWkDaiOutnote entity = new KfnmtRptWkDaiOutnote();
 			KfnmtRptWkDaiOutnotePK key = new KfnmtRptWkDaiOutnotePK();
 			key.setLayoutId(this.layoutId);
-			key.setPrintItem(obj.getPrintItem().value);
+			key.setPrintItem(BigDecimal.valueOf(obj.getPrintItem().value));
 			entity.setId(key);
 			entity.setCid(this.cid);
 			entity.setContractCd(this.contractCd);
-			entity.setUseCls(new BigDecimal(obj.isUsedClassification() ? 1 : 0));
+			entity.setUseCls(obj.isUsedClassification());
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -181,7 +181,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	public List<PrintRemarksContent> getLstRemarkContent() {
 		return this.lstKfnmtRptWkDaiOutnotes.stream()
 			.map(entity -> {
-				return new PrintRemarksContent(entity.getUseCls().intValue(), (int) entity.getId().getPrintItem());
+				return new PrintRemarksContent(entity.isUseCls() ? 1 : 0, entity.getId().getPrintItem().intValue());
 			}).collect(Collectors.toList());
 	}
 

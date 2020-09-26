@@ -5,7 +5,10 @@
 package nts.uk.ctx.at.function.infra.entity.dailyworkschedule;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +34,7 @@ public class KfnmtRptWkDaiOutnotePK implements Serializable {
 
 	/** The print item. */
 	@Column(name="PRINT_ITEM")
-	private long printItem;
+	private BigDecimal printItem;
 
 
 	/* (non-Javadoc)
@@ -59,7 +62,7 @@ public class KfnmtRptWkDaiOutnotePK implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (printItem ^ (printItem >>> 32));
+		result = prime * result + (printItem.intValue() ^ (printItem.intValue() >>> 32));
 		return result;
 	}
 }

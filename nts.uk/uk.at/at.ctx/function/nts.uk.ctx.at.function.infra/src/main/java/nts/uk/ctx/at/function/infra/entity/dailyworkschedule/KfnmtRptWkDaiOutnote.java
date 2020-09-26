@@ -5,14 +5,17 @@
 package nts.uk.ctx.at.function.infra.entity.dailyworkschedule;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import java.math.BigDecimal;
 
 
 /**
@@ -39,7 +42,7 @@ public class KfnmtRptWkDaiOutnote extends UkJpaEntity implements Serializable {
 
 	/** The use cls. */
 	@Column(name="USE_CLS")
-	private BigDecimal useCls;
+	private boolean useCls;
 
 	/** The contract cd. */
 	@Column(name="CONTRACT_CD")

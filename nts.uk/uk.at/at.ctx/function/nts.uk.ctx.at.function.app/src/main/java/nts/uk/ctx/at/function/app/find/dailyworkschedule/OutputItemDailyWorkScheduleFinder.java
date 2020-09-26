@@ -23,8 +23,6 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
@@ -50,7 +48,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemUsedRepository;
-//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.DailyItemDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -61,12 +58,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class OutputItemDailyWorkScheduleFinder {
-	
-	@Inject
-	private AttendanceTypeRepository attendanceTypeRepository;
-	
-//	@Inject
-//	private OptionalItemRepository optionalItemRepository;
 	
 	@Inject
 	private BusinessTypesRepository businessTypesRepository;
@@ -103,9 +94,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	/** The daily attendance item used repository. */
 	@Inject
 	private DailyAttendanceItemUsedRepository dailyAttendanceItemUsedRepository;
-	
-	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
-	private static final int DAILY_WORK_SCHEDULE = 19;
 	
 	/** The Constant USE. */
 	private static final int USE = 1;
@@ -281,11 +269,11 @@ public class OutputItemDailyWorkScheduleFinder {
 			throw new BusinessException("Msg_1411");
 		}
 
-		// get list data was showed in kwr001
-		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
-		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
+		// 画面で使用可能な日次勤怠項目を取得する(Get daily attendance items available on screen)
+		List<Integer> attendanceId = this.getDailyAttendanceItemsAvaiable(companyId,
+				FormCanUsedForTime.DAILY_WORK_SCHEDULE, TypeOfItem.Daily);
 		
-		List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
+		List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy = companyDailyItemService.getDailyItems(companyId, Optional.empty(), attendanceId, new ArrayList<>()).stream()
 												.map(dto -> { 
 													OutputItemDailyWorkScheduleCopyCommand dtoClientReturn = new OutputItemDailyWorkScheduleCopyCommand();
 													dtoClientReturn.setCode(String.valueOf(dto.getAttendanceItemDisplayNumber()));
@@ -301,6 +289,9 @@ public class OutputItemDailyWorkScheduleFinder {
 		// compare data return from kdw008 to kwr001
 		// if item of kwr008 exist in kwr001, it will be save
 		int sizeData = dataInforReturnDtos.size();
+		
+		// Inputパラメータ.出力項目一覧とアルゴリズム「画面で使用可能な勤怠項を取得する」で取得したList<勤怠項目ID>を比較する 
+		// (Compare the list of input parameter.Output item with List<勤怠項目ID> acquired by algorithm「画面で使用可能な勤怠項を取得する」)
 		dataInforReturnDtos = dataInforReturnDtos.stream()
 				.filter(domain -> mapIdName.containsKey(domain.getId()))
 				.map(domain -> {
@@ -308,27 +299,35 @@ public class OutputItemDailyWorkScheduleFinder {
 					return domain;
 				}).collect(Collectors.toList());
 		
+		if (dataInforReturnDtos.isEmpty()) {
+			throw new BusinessException("Msg_1411");
+		}
+		
+		// すべて合致するか (Does it all match) = 一部合致しない
 		if (sizeData != dataInforReturnDtos.size()) {
 			List<String> lstMsgErr = new ArrayList<String>();
+			// 情報メッセージ(#Msg_1476)を表示する(Display information message (#Msg_1476)
 			lstMsgErr.add("Msg_1476");
 			dataReturnDto.setMsgErr(lstMsgErr);
 		}
+
 		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
-		
 		dataReturnDto.setDataInforReturnDtos(dataInforReturnDtos);
-		
-		// 　・大の場合：48件までとする
-		int numberDisplayItem = 48;
 
 		// 表示項目の件数を最大表示件数とチェックする(Check số hạng mục hiển thị)
-		if (fontSize == FontSizeEnum.SMALL.value) {
-			// 小の場合：60件までとする
-			numberDisplayItem = 60;
-		}
-		
+		// 　・大の場合：48件までとする
+		// 小の場合：60件までとする
+		int numberDisplayItem = fontSize == FontSizeEnum.SMALL.value ? 60 : 48;
+
 		if (dataInforReturnDtos.size() > numberDisplayItem) {
 			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(numberDisplayItem)
 					.collect(Collectors.toList());
+			
+			// 合致している勤怠項目が最終的に何件になったかチェック
+			if (lstDto.isEmpty()) {
+				// エラーメッセージ(#Msg_1411)を表示 (Display error message (#Msg_1411))
+				throw new BusinessException("Msg_1411");
+			}
 			dataReturnDto.setDataInforReturnDtos(lstDto);
 		}
 
