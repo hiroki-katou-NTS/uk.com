@@ -7,15 +7,15 @@ import { Kdl001Component } from '../../../kdl/001';
 interface Parameter {
     rowDate: any;
     businessTripInfoOutput: any;
-    derpartureTime: number;
-    returnTime: number;
+    startWorkTime: number;
+    endWorkTime: number;
 }
 
 const defaultParam = (): Parameter => ({
     rowDate: {},
     businessTripInfoOutput: {},
-    derpartureTime: 0,
-    returnTime: 0,
+    startWorkTime: 0,
+    endWorkTime: 0,
 });
 
 @component({
@@ -60,11 +60,6 @@ export class KafS08DComponent extends Vue {
         });
     }
 
-    public openA2Screen() {
-
-    }
-
-
     public openKDLS02() {
         const vm = this;
 
@@ -97,8 +92,9 @@ export class KafS08DComponent extends Vue {
                 currentRow.opAchievementDetail.opWorkTypeName = f.selectedWorkType.name;
                 currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
                 currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
-                currentRow.opAchievementDetail.opWorkTime = f.selectedWorkTime.firstStartTime;
-                currentRow.opAchievementDetail.opLeaveTime = f.selectedWorkTime.firstEndTime;
+                vm.params.startWorkTime = f.selectedWorkTime.firstStartTime;
+                vm.params.endWorkTime = f.selectedWorkTime.firstEndTime;
+                currentRow.opAchievementDetail.opWorkTime1 = f.selectedWorkTime.workTime1;
             }
         }).catch((res: any) => {
             if (res.messageId) {
@@ -131,8 +127,9 @@ export class KafS08DComponent extends Vue {
             if (f) {
                 currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
                 currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
-                currentRow.opAchievementDetail.opWorkTime = f.selectedWorkTime.firstStartTime;
-                currentRow.opAchievementDetail.opLeaveTime = f.selectedWorkTime.firstEndTime;
+                vm.params.startWorkTime = f.selectedWorkTime.firstStartTime;
+                vm.params.endWorkTime = f.selectedWorkTime.firstEndTime;
+                currentRow.opAchievementDetail.opWorkTime1 = f.selectedWorkTime.workTime1;
             }
         }).catch((res: any) => {
             if (res.messageId) {
@@ -156,20 +153,17 @@ export class KafS08DComponent extends Vue {
 
     public accepEvent() {
         const vm = this;
-        const { rowDate, derpartureTime, returnTime } = vm.params;
-        // dda why rowDate is any?
-        const { opWorkTypeName, opWorkTimeName, opWorkTime, opLeaveTime, workTimeCD, workTypeCD} = rowDate.opAchievementDetail;
+        const { rowDate, startWorkTime, endWorkTime } = vm.params;
+        
+        const { opWorkTypeName, opWorkTimeName, workTimeCD, workTypeCD} = rowDate.opAchievementDetail;
 
         const { date } = rowDate ;
 
-        // nhay sang viewmodel goi modal nay giup anh
         vm.$close({
-            derpartureTime,
-            returnTime,
             opWorkTypeName,
             opWorkTimeName,
-            opWorkTime,
-            opLeaveTime,
+            startWorkTime,
+            endWorkTime,
             date,
             workTypeCD,
             workTimeCD
