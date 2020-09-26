@@ -12,12 +12,6 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonth
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

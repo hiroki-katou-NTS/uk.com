@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonth
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneYear;
 import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -35,10 +35,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author khai.dh
  */
 @RunWith(JMockit.class)
-public class OneMonthAppUpdateTest {
+public class AnnualAppUpdateTest {
 
 	@Injectable
-	private OneMonthAppUpdate.Require require;
+	private AnnualAppUpdate.Require require;
 
 	/**
 	 * R1 returns empty
@@ -49,23 +49,23 @@ public class OneMonthAppUpdateTest {
 	public void test01() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
+		AgreementOneYearTime oneYearTime = new AgreementOneYearTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 
-		NtsAssert.businessException("Msg_1262", () -> OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason));
+		NtsAssert.businessException("Msg_1262", () -> AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason));
 	}
 
 	/**
 	 * R1 returns normal result
 	 * checkErrorTimeExceeded returns true
 	 * <p>
-	 * Expected: result with type ResultType MONTHLY_LIMIT_EXCEEDED should be returned.
+	 * Expected: result with type ResultType YEARLY_LIMIT_EXCEEDED should be returned.
 	 */
 	@Test
 	public void test02() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
+		AgreementOneYearTime oneYearTime = new AgreementOneYearTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 		val dummyApp = createDummyApp();
 
@@ -75,18 +75,18 @@ public class OneMonthAppUpdateTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		val oneMonth = new AgreementsOneMonth(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
+		val oneYear = new AgreementsOneYear(
+				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
+						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+						new AgreementOneYearTime(0)
 				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
+				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
+						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+						new AgreementOneYearTime(0)
 				)
 		);
 
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(oneMonth, null, null, null), null);
+		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(null, oneYear, null, null), null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
 			public BasicAgreementSettings getBasicSet(
@@ -100,33 +100,29 @@ public class OneMonthAppUpdateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(true, new AgreementOneMonthTime(0));
-
-		new MockUp<AgreementsOneMonth>() {
+		val errCheckResult = new ImmutablePair<Boolean, AgreementOneYearTime>(true, new AgreementOneYearTime(0));
+		new MockUp<AgreementsOneYear>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-
+			public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
 				return errCheckResult;
 			}
 		};
 
-		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.MONTHLY_LIMIT_EXCEEDED);
+		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
+		assertThat(actual.getResultType()).isEqualTo(ResultType.YEARLY_LIMIT_EXCEEDED);
 	}
 
 	/**
 	 * R1 returns normal result
 	 * checkErrorTimeExceeded returns false
 	 * <p>
-	 * Expected:
-	 * result with type ResultType NO_ERROR should be returned.
-	 * R2 should be called
+	 * Expected: result with type ResultType NO_ERROR should be returned.
 	 */
 	@Test
 	public void test03() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
+		AgreementOneYearTime oneYearTime = new AgreementOneYearTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 		val dummyApp = createDummyApp();
 
@@ -136,18 +132,18 @@ public class OneMonthAppUpdateTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		val oneMonth = new AgreementsOneMonth(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
+		val oneYear = new AgreementsOneYear(
+				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
+						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+						new AgreementOneYearTime(0)
 				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
+				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
+						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+						new AgreementOneYearTime(0)
 				)
 		);
 
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(oneMonth, null, null, null), null);
+		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(null, oneYear, null, null), null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
 			public BasicAgreementSettings getBasicSet(
@@ -161,22 +157,16 @@ public class OneMonthAppUpdateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
-
-		new MockUp<AgreementsOneMonth>() {
+		val errCheckResult = new ImmutablePair<Boolean, AgreementOneYearTime>(false, new AgreementOneYearTime(0));
+		new MockUp<AgreementsOneYear>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-
+			public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
 				return errCheckResult;
 			}
 		};
 
-		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
+		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
 		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
-		NtsAssert.atomTask(
-				()-> actual.getAtomTask().get(),
-				any -> require.updateApp(any.get())
-		);
 	}
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {
@@ -191,7 +181,7 @@ public class OneMonthAppUpdateTest {
 		);
 
 		ApplicationTime applicationTime = new ApplicationTime(
-				TypeAgreementApplication.ONE_MONTH,
+				TypeAgreementApplication.ONE_YEAR,
 				Optional.of(oneMonthTime),
 				Optional.of(oneYearTime));
 

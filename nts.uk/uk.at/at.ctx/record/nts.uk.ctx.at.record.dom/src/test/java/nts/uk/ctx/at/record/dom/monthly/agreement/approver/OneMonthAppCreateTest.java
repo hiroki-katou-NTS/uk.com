@@ -1,21 +1,17 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.val;
-import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
 import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
@@ -25,8 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,45 +29,52 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author khai.dh
  */
 @RunWith(JMockit.class)
-public class OneMonthAppUpdateTest {
+public class OneMonthAppCreateTest {
 
 	@Injectable
-	private OneMonthAppUpdate.Require require;
+	private OneMonthAppCreate.Require require;
 
 	/**
-	 * R1 returns empty
+	 * 承認者を取得する#取得する returns empty result
 	 * <p>
-	 * Expected: BusinessException with Msg_1262
+	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType APPROVER_NOT_SET
+	 * should be returned
 	 */
 	@Test
 	public void test01() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
+		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
+				new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
-		NtsAssert.businessException("Msg_1262", () -> OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason));
+		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getResultType()).isEqualTo(ResultType.APPROVER_NOT_SET);
 	}
 
 	/**
-	 * R1 returns normal result
+	 * 承認者を取得する#取得する returns empty result
 	 * checkErrorTimeExceeded returns true
 	 * <p>
-	 * Expected: result with type ResultType MONTHLY_LIMIT_EXCEEDED should be returned.
+	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType MONTHLY_LIMIT_EXCEEDED
+	 * should be returned
 	 */
 	@Test
 	public void test02() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
-		val dummyApp = createDummyApp();
+		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
+				new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
-		// R1
-		new Expectations() {{
-			require.getApp(aplId);
-			result = Optional.of(dummyApp);
-		}};
+		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
+		new MockUp<GettingApproverDomainService>() {
+			@Mock
+			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
+				return Optional.of(approverItem);
+			}
+		};
 
 		val oneMonth = new AgreementsOneMonth(
 				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
@@ -101,40 +102,41 @@ public class OneMonthAppUpdateTest {
 		};
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(true, new AgreementOneMonthTime(0));
-
 		new MockUp<AgreementsOneMonth>() {
 			@Mock
 			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-
 				return errCheckResult;
 			}
 		};
 
-		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
+		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
 		assertThat(actual.getResultType()).isEqualTo(ResultType.MONTHLY_LIMIT_EXCEEDED);
 	}
 
 	/**
-	 * R1 returns normal result
+	 * 承認者を取得する#取得する returns empty result
 	 * checkErrorTimeExceeded returns false
+	 *
 	 * <p>
-	 * Expected:
-	 * result with type ResultType NO_ERROR should be returned.
-	 * R2 should be called
+	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType NO_ERROR
+	 * should be returned
 	 */
 	@Test
 	public void test03() {
 		String cid = "dummyCid";
 		String aplId = "dummyApplicantId";
-		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
-		val dummyApp = createDummyApp();
+		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
+				new AgreementOneMonthTime(2), new AgreementOneMonthTime(1), reason);
 
-		// R1
-		new Expectations() {{
-			require.getApp(aplId);
-			result = Optional.of(dummyApp);
-		}};
+		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
+		new MockUp<GettingApproverDomainService>() {
+			@Mock
+			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
+				return Optional.of(approverItem);
+			}
+		};
 
 		val oneMonth = new AgreementsOneMonth(
 				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
@@ -162,50 +164,16 @@ public class OneMonthAppUpdateTest {
 		};
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
-
 		new MockUp<AgreementsOneMonth>() {
 			@Mock
 			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-
 				return errCheckResult;
 			}
 		};
 
-		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
+		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
 		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
-		NtsAssert.atomTask(
-				()-> actual.getAtomTask().get(),
-				any -> require.updateApp(any.get())
-		);
 	}
 
-	private static SpecialProvisionsOfAgreement createDummyApp() {
-		OneMonthTime oneMonthTime = new OneMonthTime(
-				new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-				new YearMonth(0)
-		);
-
-		OneYearTime oneYearTime = new OneYearTime(
-				new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-				new Year(0)
-		);
-
-		ApplicationTime applicationTime = new ApplicationTime(
-				TypeAgreementApplication.ONE_MONTH,
-				Optional.of(oneMonthTime),
-				Optional.of(oneYearTime));
-
-		List<String> listConfirmSID = new ArrayList<String>() {{
-			add("confirmerSID");
-		}};
-
-		return SpecialProvisionsOfAgreement.create(
-				"enteredPersonSID",
-				"dummyApplicantId",
-				applicationTime,
-				new ReasonsForAgreement("reasonsForAgreement"),
-				new ArrayList<>()
-				, listConfirmSID,
-				new ScreenDisplayInfo());
-	}
 }
