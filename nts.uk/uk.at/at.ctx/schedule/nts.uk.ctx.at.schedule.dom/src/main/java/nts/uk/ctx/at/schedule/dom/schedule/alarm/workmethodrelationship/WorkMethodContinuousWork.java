@@ -13,14 +13,14 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  */
 @AllArgsConstructor
 public class WorkMethodContinuousWork implements WorkMethod{
-
+	
 	@Override
 	public WorkMethodClassfication getWorkMethodClassification() {
 		return WorkMethodClassfication.CONTINUOSWORK;
 	}
 
 	@Override
-	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
+	public boolean determineIfApplicable(WorkMethod.Require require, WorkInformation workInfo) {
 		Optional<WorkType> workType = require.getWorkType(workInfo.getWorkTypeCode().v());
 		if (workType.isPresent()) {
 			return workType.get().getDailyWork().isOneDay() && workType.get().getDailyWork().isContinueWork();
@@ -29,4 +29,9 @@ public class WorkMethodContinuousWork implements WorkMethod{
 		return false;
 	}
 
+	public interface Require{
+		//[R-1] 勤務種類を取得する	
+		Optional<WorkType> getWorkType(String workTypeCode);
+		
+	}
 }
