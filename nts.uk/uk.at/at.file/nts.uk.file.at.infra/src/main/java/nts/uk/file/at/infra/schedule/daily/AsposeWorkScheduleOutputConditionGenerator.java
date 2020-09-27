@@ -284,7 +284,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int LIMIT_REMARK_INPUT = 19;
 	
 	/** The Constant DATA_COLUMN_INDEX. */
-	private static final int[] DATA_COLUMN_INDEX = {3, 8, 10, 14, 16, 39};
+	private static final int[] DATA_COLUMN_INDEX = {3};
 	
 	/** The Constant MASTER_UNREGISTERED. */
 	private static final String MASTER_UNREGISTERED = "マスタ未登録";
@@ -457,9 +457,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Copy footer
 			//copyFooter(sheet, sheetCollection.get(6));
-			 	
+			// if font size is big remark position is 35 else 39
+			int remarkPosition = outputItemDailyWork.getFontSize() == FontSizeEnum.BIG ? 35 : 43;
 			// Set all fixed cell
-			setFixedData(condition, sheet, reportData, currentRow);
+			setFixedData(condition, sheet, reportData, currentRow, remarkPosition);
 			
 			// Write display map
 			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize, chunkSize);
@@ -976,6 +977,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
+		int remarkPosition = outSche.getFontSize() == FontSizeEnum.BIG ? 35 : 43;
 		
 		// Get all data from query data container
 		List<GeneralDate> datePeriod = queryData.getDatePeriod();
@@ -1082,7 +1084,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 								String remarkContentStr = lstRemarkContentStr.get(i);
 								int bufferedLength = personalPerformanceDate.detailedErrorData .length() + 5;
-								if (bufferedLength >= 35 && dataRowCount == 1) {
+								if (bufferedLength >= remarkPosition && dataRowCount == 1) {
                                     stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
 								}
 								else {
@@ -1201,6 +1203,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
+		int remarkPosition = outSche.getFontSize() == FontSizeEnum.BIG ? 35 : 43;
 		
 		// Get all data from query data container
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
@@ -1273,7 +1276,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
-//							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
 							if (value != null) {
 								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 							}
@@ -1315,7 +1317,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 					String remarkContentStr = lstRemarkContentStr.get(i);
 					int bufferedLength = detailedDate.errorDetail.length() + 5;
-					if (bufferedLength >= 35 && dataRowCount == 1) {
+					if (bufferedLength >= remarkPosition && dataRowCount == 1) {
 						errorDetails.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
 					} else {
 						errorDetails.append(" ").append(remarkContentStr);
@@ -2086,7 +2088,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param reportData the report data
 	 * @param currentRow the current row
 	 */
-	private void setFixedData(WorkScheduleOutputCondition condition, Worksheet sheet, DailyPerformanceReportData reportData, int currentRow) {
+	private void setFixedData(WorkScheduleOutputCondition condition
+			, Worksheet sheet
+			, DailyPerformanceReportData reportData
+			, int currentRow
+			, int remarkPosition) {
 		DailyPerformanceHeaderData headerData = reportData.getHeaderData();
 		// Set fixed value
 		Cells cells = sheet.getCells();
@@ -2099,17 +2105,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell dateCell = cells.get(currentRow, 1);
 			// A2_2
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
-			
-//			// A2_3
-//			Cell dayMonCell = cells.get(currentRow + 1, 1);
-//			dayMonCell.setValue(headerData.getFixedHeaderData().get(2));
-//			
-//			// A2_4
-//			Cell dayCell = cells.get(currentRow + 1, 2);
-//			dayCell.setValue(headerData.getFixedHeaderData().get(3));
-			
+
 			// A2_6
-			Cell remarkCell = cells.get(currentRow, 35);
+			Cell remarkCell = cells.get(currentRow, remarkPosition);
 			remarkCell.setValue(headerData.getFixedHeaderData().get(4));
 		}
 		else {
@@ -2122,7 +2120,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
 			// B2_4
-			Cell remarkCell = cells.get(currentRow, 35);
+			Cell remarkCell = cells.get(currentRow, remarkPosition);
 			remarkCell.setValue(headerData.getFixedHeaderData().get(2));
 		}
 		
@@ -2160,8 +2158,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
             	cell.setValue(outputItem.getItemName());
             	
-            	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2); 
-//            	cell.setValue(outputItem.getItemCode());
+            	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2);
             }
         }
 	}
@@ -2188,6 +2185,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, int chunkSize
 			, FontSizeEnum fontSize) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
+
+		int remarkPosition = fontSize == FontSizeEnum.BIG ? 35 : 43;
+		
+		int contentPosition = fontSize == FontSizeEnum.BIG ? 39 : 47;
 		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getSettingDetailTotalOutput();
 		List<EmployeeReportData> lstEmployeeReportData = workplaceReportData.getLstEmployeeReportData();
@@ -2205,7 +2206,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
 	                String workplaceTitle = TextResource.localize("KWR001_90") + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 	                // A3_1
-	                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+	                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
 	                departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
 				if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())
@@ -2223,7 +2224,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	                		+ TextResource.localize("KWR001_93") + "　"			   // A4_6
 	                        + employeeReportData.position;
 
-	                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
+	                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle, contentPosition);
 	                departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
 				if (rowPageTracker.checkRemainingRowSufficient(3) <= 0) {
@@ -2237,7 +2238,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					String workplaceTitle = TextResource.localize("KWR001_90") + "　"
 							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 					// A3_1
-					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
 				}
 
                 rowPageTracker.useRemainingRow(2);
@@ -2245,7 +2246,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 if(condition.isPrivatePerson()){
 					Range employeeRangeTemp = templateSheetCollection
 							.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
-					Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
+					Range employeeRange = cells.createRange(currentRow, 0, 1, contentPosition);
 					employeeRange.copy(employeeRangeTemp);
 					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
 						rowPageTracker.useRemainingRow(dataRowCount);
@@ -2294,16 +2295,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					                        + employeeReportData.position;
 					                departmentCode.add(workplaceReportData.getWorkplaceCode());
 					                // A3_1
-					                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+					                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
 					                // A4_1
-					                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
+					                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle, contentPosition);
 					                rowPageTracker.useRemainingRow(2);
 						}
 						if (colorWhite) // White row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
 						else // Light blue row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
-						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 						dateRange.copy(dateRangeTemp);
 						dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2357,20 +2358,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				        // A5_5
 				        Cell remarkCell;
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
-				        if (errorDetail.length() >= 35 && dataRowCount == 1) {
-				        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 35);
+				        if (errorDetail.length() >= remarkPosition && dataRowCount == 1) {
+				        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / remarkPosition);
 							int curRowRemark = currentRow;
 							String remarkContentRow;
 							
 				        	for(int i = 0; i < numOfChunksRemark; i++) {
-					            start = i * 35;
-					            length = Math.min(errorDetail.length() - start, 35);
+					            start = i * remarkPosition;
+					            length = Math.min(errorDetail.length() - start, remarkPosition);
 		
 					            remarkContentRow = errorDetail.substring(start, start + length);
 					            
 					            for (int j = 0; j < length; j++) {
 					            	// Column 4, 6, 8,...
-					            	remarkCell = cells.get(curRowRemark, 35);
+					            	remarkCell = cells.get(curRowRemark, remarkPosition);
 					            	Style style = remarkCell.getStyle();
 					            	remarkCell.setValue(remarkContentRow);
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -2382,7 +2383,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					        }
 				        }
 				        else {
-				        	remarkCell = cells.get(currentRow,35);
+				        	remarkCell = cells.get(currentRow,remarkPosition);
 				        	remarkCell.setValue(errorDetail);
 				        }
 				        
@@ -2402,7 +2403,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 					
 					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 					personalTotalRange.copy(personalTotalRangeTemp);
 					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2450,7 +2451,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 			        
 			        Range dayCountRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAYCOUNT_ROW);
-					Range dayCountRange = cells.createRange(currentRow, 0, 2, 39);
+					Range dayCountRange = cells.createRange(currentRow, 0, 2, contentPosition);
 					dayCountRange.copy(dayCountRangeTemp);
 					dayCountRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(2) == 0) {
@@ -2506,7 +2507,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				rowPageTracker.resetRemainingRow();
 			}
 			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
 				rowPageTracker.useRemainingRow(dataRowCount);
 				rowPageTracker.resetRemainingRow();
@@ -2552,7 +2553,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 			wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2593,7 +2594,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
 				mapChildWorkplace.size() > 0 ) && workplaceReportData.level != 0) { /* Trick to not page break between detailed data and total data */
-			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, contentPosition);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
 				cells = sheetInfo.getSheet().getCells();
@@ -2680,7 +2681,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
                         cells = sheetInfo.getSheet().getCells();
 						Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-						Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+						Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 						wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 						wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2771,6 +2772,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	private int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, DailyReportData dailyReport,
 			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, FontSizeEnum fontSize) throws Exception {
+		int contentPosition = fontSize == FontSizeEnum.BIG ? 39 : 47;
 		Cells cells = sheetInfo.getSheet().getCells();
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
@@ -2832,7 +2834,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 rowPageTracker.resetRemainingRow();
 			}
 			Range wkpGrossTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 			wkpGrossTotalRange.copy(wkpGrossTotalRangeTemp);
 			wkpGrossTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2883,6 +2885,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, int chunkSize
 			, FontSizeEnum fontSize) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
+		int remarkPosition = fontSize == FontSizeEnum.BIG ? 35 : 43;
+		int contentPosition = fontSize == FontSizeEnum.BIG ? 39 : 47;
+		int contentPosition1 = fontSize == FontSizeEnum.BIG ? 42 : 50;
         String workplaceTitle = TextResource.localize("KWR001_90") + "　" + rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
 
         boolean colorWhite = true; // true = white, false = light blue, start with white row
@@ -2901,8 +2906,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //                rowPageTracker.useRemainingRow(2);
             }
 			// B4_1
-            currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-            currentRow = this.printWorkplaceByDate(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+            currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+            currentRow = this.printWorkplaceByDate(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition1);
             rowPageTracker.useRemainingRow(2);
 			Iterator<DailyPersonalPerformanceData> dataIterator = employeeReportData.iterator();
 			
@@ -2920,8 +2925,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                         cells = sheetInfo.getSheet().getCells();
                         currentRow = sheetInfo.getStartDataIndex();
                     }
-                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
                     rowPageTracker.useRemainingRow(2);
 				}
 				
@@ -2930,7 +2935,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
 				else // Light blue row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
-				Range dateRange = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+				Range dateRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 				dateRange.copy(dateRangeTemp);
 				dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -2986,20 +2991,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			        // B5_4
 			        Cell remarkCell;
 			        String errorDetail = employee.getDetailedErrorData();
-			        if (errorDetail.length() >= 35 && dataRowCount == 1) {
-			        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 35);
+			        if (errorDetail.length() >= remarkPosition && dataRowCount == 1) {
+			        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / remarkPosition);
 						int curRowRemark = currentRow;
 						String remarkContentRow;
 						
 			        	for(int i = 0; i < numOfChunksRemark; i++) {
-				            start = i * 35;
-				            length = Math.min(errorDetail.length() - start, 35);
+				            start = i * remarkPosition;
+				            length = Math.min(errorDetail.length() - start, remarkPosition);
 	
 				            remarkContentRow = errorDetail.substring(start, start + length);
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, 35); 
+				            	remarkCell = cells.get(curRowRemark, remarkPosition); 
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -3011,7 +3016,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				        }
 			        }
 			        else {
-			        	remarkCell = cells.get(currentRow,35);
+			        	remarkCell = cells.get(currentRow,remarkPosition);
 			        	remarkCell.setValue(errorDetail);
 			        }
 				}
@@ -3021,7 +3026,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        // Only break when has next iterator
 		        if (dataIterator.hasNext() && condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) {
 		        	// Thin border for last row of page
-		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, contentPosition);
 		        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		        	
 		        	// Page break by employee
@@ -3030,8 +3035,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                         cells = sheetInfo.getSheet().getCells();
                         currentRow = sheetInfo.getStartDataIndex();
                     }
-                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
                     rowPageTracker.useRemainingRow(2);
 		        }
 			}
@@ -3045,12 +3050,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                     cells = sheetInfo.getSheet().getCells();
                     currentRow = sheetInfo.getStartDataIndex();
                 }
-                currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+                currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
                 rowPageTracker.useRemainingRow(2);
 			}
 			Range workplaceTotalTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range workplaceTotal = cells.createRange(currentRow, 0, dataRowCount, DATA_COLUMN_INDEX[5]);
+			Range workplaceTotal = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 			workplaceTotal.copy(workplaceTotalTemp);
 			workplaceTotal.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
 			workplaceTotal.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -3084,7 +3089,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 				condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) &&
 				mapChildWorkplace.size() > 0) && rootWorkplace.level != 0) {
-			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, contentPosition);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
             if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
                 cells = sheetInfo.getSheet().getCells();
@@ -3097,7 +3102,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || 
 					condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE) && !firstWorkplace) {
-				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 39);
+				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, contentPosition);
 	        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
                 if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
                     cells = sheetInfo.getSheet().getCells();
@@ -3143,12 +3148,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                         cells = sheetInfo.getSheet().getCells();
                         currentRow = sheetInfo.getStartDataIndex();
                     }
-                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate);
-                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+                    currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
                     rowPageTracker.useRemainingRow(2);
 				}
 				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 				wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -3804,10 +3809,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 
 	private int printWorkplace(int currentRow, WorksheetCollection templateSheetCollection,
-		WorkSheetInfo sheetInfo, String title) throws Exception {
+		WorkSheetInfo sheetInfo, String title, int contentPosition) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
-		Range workplaceRange = cells.createRange(currentRow, 0, 1, 39);
+		Range workplaceRange = cells.createRange(currentRow, 0, 1, contentPosition);
 		workplaceRange.copy(workplaceRangeTemp);
 		Cell workplaceTagCell = cells.get(currentRow, 0);
 		workplaceTagCell.setValue(title);
@@ -3816,10 +3821,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 
 	private int printPersonal(int currentRow, WorksheetCollection templateSheetCollection,
-		WorkSheetInfo sheetInfo, String title) throws Exception {
+		WorkSheetInfo sheetInfo, String title, int contentPosition) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
-		Range employeeRange = cells.createRange(currentRow, 0, 1, 39);
+		Range employeeRange = cells.createRange(currentRow, 0, 1, contentPosition);
 		employeeRange.copy(employeeRangeTemp);
 		Cell employeeTagCell = cells.get(currentRow, 0);
 		employeeTagCell.setValue(title);
@@ -3828,10 +3833,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 
 	private int printDateBracket(int currentRow, WorksheetCollection templateSheetCollection,
-								 WorkSheetInfo sheetInfo, String titleDate) throws Exception {
+								 WorkSheetInfo sheetInfo, String titleDate, int contentPosition) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
-		Range dateRange = cells.createRange(currentRow, 0, 1, 42);
+		Range dateRange = cells.createRange(currentRow, 0, 1, contentPosition);
 		dateRange.copy(dateRangeTemp);
 		Cell dateTagCell = cells.get(currentRow, 0);
 		dateTagCell.setValue(titleDate);
@@ -3840,10 +3845,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 
     private int printWorkplaceByDate(int currentRow, WorksheetCollection templateSheetCollection,
-                               WorkSheetInfo sheetInfo, String workplaceTitle) throws Exception {
+                               WorkSheetInfo sheetInfo, String workplaceTitle, int contentPosition) throws Exception {
         Cells cells = sheetInfo.getSheet().getCells();
         Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAILY_WORKPLACE_ROW);
-        Range workplaceRange = cells.createRange(currentRow, 0, 1, 42);
+        Range workplaceRange = cells.createRange(currentRow, 0, 1, contentPosition);
         workplaceRange.copy(workplaceRangeTemp);
         Cell workplaceTagCell = cells.get(currentRow, 0);
         workplaceTagCell.setValue(workplaceTitle);
