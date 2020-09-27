@@ -1038,20 +1038,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								
 								// Append 備考入力
 								if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
-									Optional<AttendanceItemValueImport> optRemarkInput = attResultImport.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
+									Optional<AttendanceItemValueImport> optRemarkInput = attResultImport.getAttendanceItems().stream()
+											.filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833)
+											.findFirst();
 									if (optRemarkInput.isPresent()) {
 										String value = optRemarkInput.get().getValue();
-//										value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
 										if(value != null) {
 											value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 										}
 										personalPerformanceDate.detailedErrorData += (value == null? "" : value + " ");
 									}
-								}
 								// Append マスタ未登録
-								else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
+								} else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 									List<AttendanceItemValueImport> lstItemMasterUnregistered = attResultImport.getAttendanceItems().stream().
-											filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
+											filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE)
+											.collect(Collectors.toList());
 									
 									List<String> names = lstItemMasterUnregistered.stream()
 											.map(item -> this.getNameFromCode(item.getItemId(),
@@ -1065,13 +1066,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 									}
-								} else {
+								// append 乖離理由
+								} else if (remark.getPrintItem() == RemarksContentChoice.DIVERGENCE_REASON) {
+									// TODO
+								}  else {
 									// Get possible content based on remark choice
 									Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId // 社員ID
 											, workingDate // 期間(年月日)
 											, remark.getPrintItem() // 日別勤務表の出力項目.備考内容
 											, lstErAlCode // 日別勤務表の出力条件.エラーアラームコード
-											, queryData.getRemarkDataContainter()); // 
+											, queryData.getRemarkDataContainter());
 									if (optContent.isPresent()) {
 										// Add to remark
 										lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().shortName));
@@ -1251,7 +1255,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			workplaceData.lstEmployeeReportData.add(employeeData);
 		}	
 		
-		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getWorkingDate().compareTo(o2.getWorkingDate())).forEach(x -> {
+		lstAttendanceResultImport.stream()
+			.filter(x -> x.getEmployeeId().equals(employeeId))
+			.sorted((o1,o2) -> o1.getWorkingDate().compareTo(o2.getWorkingDate()))
+			.forEach(x -> {
+
 			GeneralDate workingDate = x.getWorkingDate();
 			
 			DetailedDailyPerformanceReportData detailedDate = new DetailedDailyPerformanceReportData();
@@ -1273,7 +1281,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
 					// Append 備考入力
 					if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
-						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
+						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream()
+								.filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833)
+								.findFirst();
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
 							if (value != null) {
@@ -1283,8 +1293,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						}
 					// Append マスタ未登録
 					} else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
-						List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
-								filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
+						List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream()
+								.filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE)
+								.collect(Collectors.toList());
 						
 						List<String> names = lstItemMasterUnregistered.stream()
 								.map(item -> this.getNameFromCode(item.getItemId(),
@@ -1298,6 +1309,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						}
+					// append 乖離理由
+					} else if (remark.getPrintItem() == RemarksContentChoice.DIVERGENCE_REASON) {
+						// TODO
 					} else {
 						// Get other possible content based on remark choice
 						Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId
@@ -3596,11 +3610,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (deviationAlarm.isPresent() && choice == RemarksContentChoice.DEVIATION_ALARM) {
 			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DEVIATION_ALARM.value);
 		}
-		
-		// 乖離理由
-		IntStream.range(1, 10).forEach(i -> {
-			// TODO
-		});
 		
 		return Optional.ofNullable(printRemarksContent);
 	}
