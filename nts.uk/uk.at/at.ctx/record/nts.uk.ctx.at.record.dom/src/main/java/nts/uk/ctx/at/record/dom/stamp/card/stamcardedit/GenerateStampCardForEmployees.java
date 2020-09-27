@@ -29,19 +29,23 @@ public class GenerateStampCardForEmployees {
 	 */
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons) {
-
-		List<ImprintedCardGenerationResult> results = targetPersons.stream().map(m -> {
-			Optional<String> stampCard = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
+		
+		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
+			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
 					m.getEmployeeCd());
-
-			if (!stampCard.isPresent()) {
-				throw new BusinessException("Msg_1756");
-			}
-
-			StampCard card = new StampCard(companyCd, stampCard.get(), companyCd);
-			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(stampCard.get(), contractCd);
+			
+			return s;
+		}).collect(Collectors.toList());
+		
+		if (stampCards.isEmpty()) {
+			throw new BusinessException("Msg_1756");
+		}
+		
+		List<ImprintedCardGenerationResult> results = stampCards.stream().map(m -> {
+			StampCard card = new StampCard(companyCd,m.get(), AppContexts.user().employeeId());
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
-
+			
 			return result;
 		}).collect(Collectors.toList());
 
@@ -57,7 +61,6 @@ public class GenerateStampCardForEmployees {
 	 * @param employeeCd       社員コード
 	 * @return 				       打刻カード番号
 	 */
-	@SuppressWarnings("static-access")
 	private static Optional<String> generateEmbossedCardNumber(Require require, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, String employeeCd) {
 
