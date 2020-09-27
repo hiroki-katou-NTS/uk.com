@@ -14,6 +14,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         input: any
         dataCell: any; // data để paste vào grid
         isDisableWorkTime : boolean;
+        isRedColor : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         workPlaceId: KnockoutObservable<string>      = ko.observable('');
         workTimeCode:KnockoutObservable<string>;
@@ -25,6 +26,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             self.isDisableWorkTime = false;
+            self.isRedColor = false;
             self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
             self.listWorkType = ko.observableArray([]);
             if (id != undefined) {
@@ -93,61 +95,162 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             __viewContext.viewModel.viewA.dataCell = self.dataCell;
 
             if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
-                $("#extable").exTable("stickData", {
-                    workTypeCode: objWorkType[0].workTypeCode,
-                    workTypeName: objWorkType[0].name,
-                    workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
-                    workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : '',
-                    startTime:    (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
-                    endTime:      (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
-                });
-                
+                //貼り付けのパターン1
+                if (objWorkType[0].workTimeSetting == 2) {
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
+                    //貼り付けのパターン2
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
+                    $("#extable").exTable("stickFields", ["workTypeName"]);
+                    // 貼り付けのパターン3
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else {
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: (objWorkTime.length > 0) ? (objWorkTime[0].code) : null,
+                        workTimeName: (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : null,
+                        startTime   : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
+                        endTime     : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
+                    });
+                    self.isRedColor = false;
+                }
+
             } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
-                $("#extable").exTable("stickData", {
-                    workTypeCode: objWorkType[0].workTypeCode,
-                    workTypeName: objWorkType[0].name,
-                    workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
-                    workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : ''
-                });
+                //貼り付けのパターン1
+                if (objWorkType[0].workTimeSetting == 2) {
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
+                    //貼り付けのパターン2
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
+                    $("#extable").exTable("stickFields", ["workTypeName"]);
+                    // 貼り付けのパターン3
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: null,
+                        workTimeName: null,
+                        startTime   : '',
+                        endTime     : ''
+                    });
+                    self.isRedColor = true;
+                } else {
+                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].name,
+                        workTimeCode: (objWorkTime.length > 0) ? (objWorkTime[0].code) : null,
+                        workTimeName: (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : null
+                    });
+                    self.isRedColor = false;
+                }
             }
 
-            // set style text 貼り付けのパターン1
-            if (self.isDisableWorkTime) {
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    return { textColor: "red" };
+            // set style text 貼り付けのパターン1 
+            if (self.isDisableWorkTime || self.isRedColor) {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
+                        if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
+                        else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                    } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                        if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
+                    }
                 });
             } else {
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
                     let workInfo = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
-                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time'
-                        || __viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
                         if (workInfo.length > 0) {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                return { textColor: "#0000ff" }; // color-attendance
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                return { textColor: "#FF7F27" };// color-half-day-work
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                return { textColor: "#FF7F27" };// color-half-day-work
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                return { textColor: "#ff0000" };// color-holiday
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
                                 // デフォルト（黒）  Default (black)
-                                return { textColor: "#000000" }
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
+                            }
+                        }
+                    } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                        if (workInfo.length > 0) {
+                            let workStyle = workInfo[0].workStyle;
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                            }
+                            if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                            }
+                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
                             }
                         }
                     }
-                });
-            }
-            
-            // 貼り付けのパターン2
-            if (self.isDisableWorkTime == false && objWorkTime[0].code == '') {
-                $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    return { textColor: "red" };
                 });
             }
             
@@ -155,12 +258,11 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             if (item.isPresent()) {
                 let userInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
-                    $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                    $("#extable").exTable("stickStyler", function(rowIdx, key,innerIdx, data) {
                         return { textColor: "" };
                     });
                 }
             }
-            let obj = {};
         }
     }
     

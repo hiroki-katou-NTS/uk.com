@@ -2305,6 +2305,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (_.isNil(cellData.workTimeName)) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                             dfd.resolve(false);
+                        } else {
+                            dfd.resolve(true);
                         }
                     } else {
                         dfd.resolve(true);
