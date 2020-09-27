@@ -39,7 +39,7 @@ public class GenerateStampCardForEmployees {
 			}
 
 			StampCard card = new StampCard(companyCd, stampCard.get(), companyCd);
-			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(contractCd, stampCard.get());
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(stampCard.get(), contractCd);
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
 
 			return result;
@@ -57,12 +57,13 @@ public class GenerateStampCardForEmployees {
 	 * @param employeeCd       社員コード
 	 * @return 				       打刻カード番号
 	 */
+	@SuppressWarnings("static-access")
 	private static Optional<String> generateEmbossedCardNumber(Require require, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, String employeeCd) {
 
 		StampCardEditing stampCardEditing = require.get(AppContexts.user().companyId());
 
-		if (makeEmbossedCard.value == 1) {
+		if (makeEmbossedCard.value == makeEmbossedCard.COMPANY_CODE_AND_EMPLOYEE_CODE.value) {
 
 			return stampCardEditing.createStampCard(companyCd, employeeCd);
 		}
