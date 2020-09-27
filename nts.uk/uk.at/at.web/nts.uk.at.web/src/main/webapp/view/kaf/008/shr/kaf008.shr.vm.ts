@@ -534,10 +534,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         }
                         vm.dataFetch.valueHasMutated();
                     }
+
+                    setTimeout(() => {
+                        return $('#' + data.id).focus();
+                    }, 50);
+
                 });
-
-                $('#' + data.id).focus();
-
             });
 
         }
