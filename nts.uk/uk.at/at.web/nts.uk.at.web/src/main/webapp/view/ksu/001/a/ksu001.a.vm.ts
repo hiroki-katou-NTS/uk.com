@@ -407,7 +407,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                getActualData: false,
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid(),
                 unit: item.isPresent() ? userInfor.unit : 0,
@@ -1328,7 +1328,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = JSON.parse(data);
 
                 // A4_7
-                self.achievementDisplaySelected(userInfor.achievementDisplaySelected == false ? 2 : 1);
+                self.achievementDisplaySelected(2);
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
                 self.backgroundColorSelected(userInfor.backgroundColor);
 
