@@ -2169,13 +2169,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let arrLockCellAfterSave = $("#extable").exTable("lockCells");
+            self.confirmModeToeditMode();
+            
+            $("#extable").exTable("updateMode", "determine");
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
-                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
-                    $("#extable").exTable("updateMode", "copyPaste");
-                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "determine");
+                    
                     if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                         $("#extable").exTable("stickMode", "single");
                         self.pasteData();
@@ -2291,9 +2293,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (userInfor.disPlayFormat == 'time' || userInfor.disPlayFormat == 'shortName') {
                     let workType = self.dataCell.objWorkType;
                     let workTime = self.dataCell.objWorkTime;
-                    if ((workType.workTimeSetting == 0 && workTime.code == '') || (workType.workTimeSetting == 0 && workTime.code == ' ')) {
+                    // truong hop chon workType = required va workTime = 選択なし 
+                    if ((workType.workTimeSetting == 0 && workTime.code == '')) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                         dfd.resolve(false);
+                    } else if ((workType.workTimeSetting == 0 && workTime.code == ' ')) {
+                        // truong hop chon workType = required va workTime = 据え置き 
+                        // neu cell dc stick ma khong co workTime se alertError 435
+                        let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+                        let cellData = dataSource[rowIdx][key];
+                        if (_.isNil(cellData.workTimeName)) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
+                            dfd.resolve(false);
+                        }
                     } else {
                         dfd.resolve(true);
                     }

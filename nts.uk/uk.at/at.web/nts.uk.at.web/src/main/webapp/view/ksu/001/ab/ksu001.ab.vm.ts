@@ -77,6 +77,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.listWorkTime(listWorkTime);
         }
 
+        // set stick data
         updateDataCell(objWorkTime: any) {
             let self = this;
 
@@ -84,7 +85,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 return;
 
             let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
-            // stick data
+            
             self.dataCell = {
                 objWorkType : objWorkType[0],
                 objWorkTime : objWorkTime[0]
@@ -92,18 +93,16 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             __viewContext.viewModel.viewA.dataCell = self.dataCell;
 
             if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
-                let dataWorkType = __viewContext.viewModel.viewA.dataCell;
                 $("#extable").exTable("stickData", {
                     workTypeCode: objWorkType[0].workTypeCode,
                     workTypeName: objWorkType[0].name,
                     workTimeCode: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0) ? (objWorkTime[0].code) : '',
                     workTimeName: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : '',
-                    startTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
-                    endTime: (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
+                    startTime:    (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
+                    endTime:      (objWorkType[0].workTimeSetting == 2) ? '' : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
                 });
                 
             } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
-                let dataWorkType = __viewContext.viewModel.viewA.dataCell;
                 $("#extable").exTable("stickData", {
                     workTypeCode: objWorkType[0].workTypeCode,
                     workTypeName: objWorkType[0].name,
