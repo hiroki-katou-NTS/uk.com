@@ -595,15 +595,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shift');
-                 //WORKPLACE(0), //WORKPLACE_GROUP(1);
-                if (data.dataBasicDto.unit === 0) {
-                    __viewContext.viewModel.viewAC.workplaceModeName(getText("Com_Workplace"));
-                    $($("#Aa1_2 > button")[1]).html(getText("Com_Workplace"));
-                } else if (data.dataBasicDto.unit === 1) {
-                    __viewContext.viewModel.viewAC.workplaceModeName(getText("Com_WorkplaceGroup"));
-                    $($("#Aa1_2 > button")[1]).html(getText("Com_WorkplaceGroup"));
-                }
-                
+                //WORKPLACE(0), //WORKPLACE_GROUP(1);
+                __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
+                $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data Header
                 self.bindingToHeader(data);
@@ -818,20 +813,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             // set data shiftPallet
             __viewContext.viewModel.viewAC.flag = false;
-             //WORKPLACE(0), //WORKPLACE_GROUP(1);
-            if (data.dataBasicDto.unit === 0) {
-                __viewContext.viewModel.viewAC.workplaceModeName(getText("Com_Workplace"));
-                __viewContext.viewModel.viewAC.palletUnit([
-                    { code: 1, name: getText("Com_Company") },
-                    { code: 2, name: getText("Com_Workplace") }
-                ]);
-            } else if (data.dataBasicDto.unit === 1) {
-                __viewContext.viewModel.viewAC.workplaceModeName(getText("Com_WorkplaceGroup"));
-                __viewContext.viewModel.viewAC.palletUnit([
-                    { code: 1, name: getText("Com_Company") },
-                    { code: 2, name: getText("Com_WorkplaceGroup") }
-                ]);
-            }
+            __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
+            __viewContext.viewModel.viewAC.palletUnit([
+                { code: 1, name: getText("Com_Company") },
+                { code: 2, name: data.dataBasicDto.designation }
+            ]);
             
             __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
             if (userInfor.shiftPalletUnit == 1) {
