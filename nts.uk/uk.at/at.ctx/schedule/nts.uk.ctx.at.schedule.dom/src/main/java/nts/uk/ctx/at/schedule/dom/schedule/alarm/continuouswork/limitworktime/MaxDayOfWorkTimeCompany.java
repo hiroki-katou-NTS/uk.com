@@ -12,19 +12,12 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 @AllArgsConstructor
 public class MaxDayOfWorkTimeCompany implements DomainAggregate{
-
-	/**
-	 * コード 
-	 */
+	/** コード  */
 	private WorkTimeMaximumCode code;
 	
-	/**
-	 * 名称 
-	 */
+	/** 名称  */
 	private WorkTimeMaximumName name;
 	
-	/**
-	 * 上限勤務
-	 */
+	/** 上限勤務 */
 	private MaxDayOfWorkTime maxDayOfWorkTime;
 }

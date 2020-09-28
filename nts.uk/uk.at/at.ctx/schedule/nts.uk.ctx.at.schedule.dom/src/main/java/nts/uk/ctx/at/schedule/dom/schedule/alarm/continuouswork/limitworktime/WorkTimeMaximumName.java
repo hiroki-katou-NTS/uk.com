@@ -7,9 +7,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lan_lt
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class WorkTimeMaximumName extends StringPrimitiveValue<WorkTimeMaximumName>{
-
 	/** serialVersionUID	 */
 	private static final long serialVersionUID = 1L;
 

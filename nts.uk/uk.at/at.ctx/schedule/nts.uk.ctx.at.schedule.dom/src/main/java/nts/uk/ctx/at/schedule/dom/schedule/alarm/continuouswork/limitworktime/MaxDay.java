@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author lan_lt
  *
  */
-@IntegerRange(min = 1, max = 31)
+@IntegerRange(min = 1, max = 30)
 public class MaxDay extends IntegerPrimitiveValue<MaxDay>{
 
 	/**	serialVersionUID */
