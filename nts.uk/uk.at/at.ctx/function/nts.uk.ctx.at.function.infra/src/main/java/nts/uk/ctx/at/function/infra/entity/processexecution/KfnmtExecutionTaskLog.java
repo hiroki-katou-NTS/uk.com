@@ -72,8 +72,7 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	@ManyToOne(optional = false)
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false),
-		@JoinColumn(name="EXEC_ID", referencedColumnName="EXEC_ID", insertable = false, updatable = false)})
+		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)})
 	public KfnmtProcessExecutionLog procExecLogItem;
 	
 	@ManyToOne(optional = false)
