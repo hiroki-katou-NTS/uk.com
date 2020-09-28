@@ -55,7 +55,7 @@ public class OneMonthAppUpdate {
 				cid,
 				app.getApplicantsSID(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
 		val oneMonth = setting.getBasicAgreementSetting().getOneMonth();
 
