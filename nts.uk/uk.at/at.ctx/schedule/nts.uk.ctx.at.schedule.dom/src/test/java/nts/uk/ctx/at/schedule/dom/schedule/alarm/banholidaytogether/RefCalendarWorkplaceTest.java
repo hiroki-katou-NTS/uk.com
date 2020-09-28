@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,9 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday.ReferenceCalendar.Require;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BusinessDaysCalendarType;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendarWorkplace;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendar.Require;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 

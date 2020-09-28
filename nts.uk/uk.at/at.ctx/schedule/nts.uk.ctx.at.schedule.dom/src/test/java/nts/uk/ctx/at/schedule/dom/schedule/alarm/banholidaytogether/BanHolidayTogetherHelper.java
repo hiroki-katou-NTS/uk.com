@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendar;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendarCompany;
 
 public class BanHolidayTogetherHelper {
 	/**

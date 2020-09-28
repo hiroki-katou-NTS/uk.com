@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
 
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;

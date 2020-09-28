@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
 
 import java.util.Optional;
 
