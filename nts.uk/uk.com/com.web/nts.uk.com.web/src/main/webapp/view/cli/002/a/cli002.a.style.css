@@ -2,13 +2,23 @@
   float: left;
 }
 
-.view-cli .model-component {
-  margin-left: 37px;
+.view-cli .float-right {
+  float: right;
+}
+
+@media only screen and (max-width: 800px) {
+  .view-cli .model-component {
+    position: absolute;
+  }
 }
 
 .model-component {
-  float: right;
-  margin-right: -13px;
+  margin-left: 40px;
+}
+
+.list-component > .caret-right.caret-background.bg-green {
+  width: 200px;
+  padding: 30px 10px 30px 20px;
 }
 
 .ntsSearchBox {

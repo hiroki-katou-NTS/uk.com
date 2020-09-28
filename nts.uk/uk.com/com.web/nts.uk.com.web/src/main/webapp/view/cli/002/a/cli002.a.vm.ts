@@ -178,7 +178,7 @@ module nts.uk.com.view.cli002.a {
             headerText: this.$i18n("CLI002_7"),
             key: "functionName",
             dataType: "string",
-            width: "336x",
+            width: "350x",
           },
           {
             headerText: this.$i18n("CLI002_4"),
