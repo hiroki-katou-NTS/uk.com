@@ -11,8 +11,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkHours;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkingHoursDto;
@@ -90,7 +92,7 @@ public class GetWorkHoursWs {
 					? predetemineTimeSettings.get(i.getWorktimeCode().v())
 					: null;
 			if (setting != null) {
-				return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeAbName().v(),
+				return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v(),
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
 								.filter((x) -> x.getWorkNo() == 1).findFirst().get().getStart().v(),
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
@@ -99,8 +101,8 @@ public class GetWorkHoursWs {
 								.filter((x) -> x.getWorkNo() == 2).findFirst().get().getStart().v(),
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
 								.filter((x) -> x.getWorkNo() == 2).findFirst().get().getEnd().v(),
-						String.valueOf(i.getWorkTimeDivision().getWorkTimeDailyAtr().description) == "フレックス勤務用"
-								? "フレックス勤務用"
+						i.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK
+								? I18NText.getText("KCP013_13")
 								: String.valueOf(i.getWorkTimeDivision().getWorkTimeMethodSet().description),
 						i.getNote().v(), 0);
 			} else {
