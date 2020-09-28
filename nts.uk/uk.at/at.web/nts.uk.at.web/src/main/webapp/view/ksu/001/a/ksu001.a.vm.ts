@@ -126,6 +126,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         widthMid : number = 0;
         undoNumberClick = 0;
         redoNumberClick = 0;
+        numberCellsUpdatedAfterUndo = 0;
         
         constructor() {
             let self = this;
@@ -424,7 +425,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
-                self.getSettingDisplayWhenStart(viewMode);
+                self.getSettingDisplayWhenStart(viewMode, true);
                 
                  if (viewMode == 'shift') {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
@@ -595,7 +596,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart('shift');
+                self.getSettingDisplayWhenStart('shift', false);
                 //WORKPLACE(0), //WORKPLACE_GROUP(1);
                 __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
                 $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
@@ -674,7 +675,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart('shortName');
+                self.getSettingDisplayWhenStart('shortName',false);
                 // set data Header
                 self.bindingToHeader(data);
                 // set data Grid
@@ -730,7 +731,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
-                self.getSettingDisplayWhenStart('time');
+                self.getSettingDisplayWhenStart('time', false);
                 // set data Header
                 self.bindingToHeader(data);
                 // set data Grid
@@ -1339,7 +1340,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * get setting ban dau
          */
-        getSettingDisplayWhenStart(viewMode) {
+        getSettingDisplayWhenStart(viewMode, isStart) {
             let self = this;
             
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
@@ -1349,7 +1350,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = JSON.parse(data);
 
                 // A4_7
-                self.achievementDisplaySelected(2);
+                if(isStart){
+                    self.achievementDisplaySelected(2);
+                }else{
+                    self.achievementDisplaySelected(userInfor.achievementDisplaySelected == false ? 2 : 1);
+                }
+                
                 // A4_12 背景色の初期選択   (Chọn default màu nền)
                 self.backgroundColorSelected(userInfor.backgroundColor);
 
@@ -2482,22 +2488,45 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     self.enableBtnUndo(false);
                 }
-                
-                
 
                 if (arrCellUpdated.length == 0) {
                     let x = self.undoNumberClick;
                     self.redoNumberClick = (-1) * x;
                     self.undoNumberClick = 0;
+                } else {
+                    
+                    
+                    
                 }
 
-                if (self.undoNumberClick == self.redoNumberClick) {
+                if (self.undoNumberClick == self.redoNumberClick  ) {
                     self.enableBtnRedo(false);
                 }
 
-                
+                let numberCellsUpdated = self.calculatorCellUpdated(arrCellUpdated);
+                console.log(numberCellsUpdated.length);
 
             }, 1);
+        }
+        
+        calculatorCellUpdated(arrCellUpdated) {
+            let self = this;
+            var result = self.groupBy(arrCellUpdated, function(item) {
+                return [item.columnKey, item.rowIndex];
+            });
+            return result;
+        }
+        
+        groupBy(array, f) {
+            var groups = {};
+            array.forEach(function(o) {
+                var group = JSON.stringify(f(o));
+                groups[group] = groups[group] || [];
+                groups[group].push(o);
+            });
+            return Object.keys(groups).map(function(group) {
+                return groups[group];
+            })
         }
 
         /**
