@@ -28,12 +28,12 @@ public class AppConfirmation {
 	 * @param confirmStatus 確認状態
 	 * @return AtomTask
 	 */
-	public AtomTask change(Require require,
+	public static AtomTask change(Require require,
 						   String applicantId,
 						   String confirmerId,
 						   ConfirmationStatus confirmStatus) {
 
-		val optApp = require.getApp(applicantId);
+		val optApp = require.getApp(applicantId); // R1
 		if (!optApp.isPresent()){
 			throw new BusinessException("Msg_1262");
 		}
@@ -42,7 +42,7 @@ public class AppConfirmation {
 		app.confirmApplication(confirmerId, confirmStatus);
 
 		return AtomTask.of(() -> {
-			require.updateApp(app);
+			require.updateApp(app); // R2
 		});
 	}
 

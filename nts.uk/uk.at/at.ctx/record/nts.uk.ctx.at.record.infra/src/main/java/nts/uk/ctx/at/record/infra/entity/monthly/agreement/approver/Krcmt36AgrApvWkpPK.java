@@ -30,11 +30,6 @@ public class Krcmt36AgrApvWkpPK implements Serializable {
 
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CID")
-	public String cid;
-
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WKP_ID")
 	public String workplaceID;
 

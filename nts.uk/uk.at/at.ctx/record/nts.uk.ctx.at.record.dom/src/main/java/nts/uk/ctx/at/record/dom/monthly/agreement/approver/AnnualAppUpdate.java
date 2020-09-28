@@ -33,13 +33,13 @@ public class AnnualAppUpdate {
 	 * @param reason 36協定申請理由
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult create(Require require,
+	public static AppCreationResult update(Require require,
 									String cid,
 									String applicantId,
 									AgreementOneYearTime agrOneYearTime,
 									ReasonsForAgreement reason) {
 		// $36協定申請
-		Optional<SpecialProvisionsOfAgreement> optApp = require.getApp(applicantId);
+		Optional<SpecialProvisionsOfAgreement> optApp = require.getApp(applicantId); // R1
 
 		if (!optApp.isPresent()) {
 			throw new BusinessException("Msg_1262");
@@ -51,7 +51,7 @@ public class AnnualAppUpdate {
 				cid,
 				applicantId,
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
 		val oneYear = setting.getBasicAgreementSetting().getOneYear();
 

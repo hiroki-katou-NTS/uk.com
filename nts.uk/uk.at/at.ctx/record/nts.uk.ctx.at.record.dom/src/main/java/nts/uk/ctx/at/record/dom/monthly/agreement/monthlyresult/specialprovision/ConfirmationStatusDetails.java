@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import org.eclipse.persistence.internal.xr.ValueObject;
 
 import java.util.Optional;
 
@@ -14,14 +15,13 @@ import java.util.Optional;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ConfirmationStatusDetails {
+public class ConfirmationStatusDetails extends ValueObject {
 
     /** 確認状態 */
     private ConfirmationStatus confirmationStatus;
 
     /** 確認者 */
-    private String confirmerSID;
-
+    private final String confirmerSID;
 
     /** 確認日 */
     private Optional<GeneralDate> confirmDate;

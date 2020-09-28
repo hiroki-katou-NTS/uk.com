@@ -18,7 +18,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 	/**
 	 * 会社別の承認者（36協定）の履歴を削除して、直前の履歴の終了日を変更する
 	 */
-	public AtomTask deleteApproverHistory(Require require, Approver36AgrByCompany histToDel){
+	public static AtomTask deleteApproverHistory(Require require, Approver36AgrByCompany histToDel){
 
 		return AtomTask.of(() -> {
 			require.deleteHistory(histToDel);
@@ -33,7 +33,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 		});
 	}
 
-	public static interface Require {
+	public interface Require {
 		/**
 		 * [R-1] 直前の履歴を取得する Get previous history
 		 */

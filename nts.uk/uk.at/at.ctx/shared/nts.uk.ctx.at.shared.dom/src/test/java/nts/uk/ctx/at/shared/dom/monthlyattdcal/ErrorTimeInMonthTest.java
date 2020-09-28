@@ -10,63 +10,59 @@ import org.junit.Test;
 
 public class ErrorTimeInMonthTest {
 
-	private ErrorTimeInMonth create(){
-		return new ErrorTimeInMonth(new AgreementOneMonthTime(3), new AgreementOneMonthTime(2));
-	}
-
 	@Test
 	public void getters() {
-		ErrorTimeInMonth errorTimeInMonth = create();
+		ErrorTimeInMonth errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20));
 		NtsAssert.invokeGetters(errorTimeInMonth);
 	}
 
 	@Test
 	public void createTest_1() {
 		NtsAssert.businessException("Msg_59", ()->{
-			new ErrorTimeInMonth(new AgreementOneMonthTime(1),new AgreementOneMonthTime(2));
+			ErrorTimeInMonth.create(new AgreementOneMonthTime(20),new AgreementOneMonthTime(50));
 		});
 	}
 
 	@Test
 	public void createTest_2() {
-		ErrorTimeInMonth target = create();
+		ErrorTimeInMonth target = ErrorTimeInMonth.create(new AgreementOneMonthTime(50),new AgreementOneMonthTime(20));
 
-		Assert.assertEquals(target.getErrorTime(), new AgreementOneMonthTime(3));
-		Assert.assertEquals(target.getAlarmTime(), new AgreementOneMonthTime(2));
+		Assert.assertEquals(new AgreementOneMonthTime(50),target.getErrorTime());
+		Assert.assertEquals(new AgreementOneMonthTime(20),target.getAlarmTime());
 	}
 
 	@Test
 	public void checkErrorTimeExceededTest_1() {
-		ErrorTimeInMonth target = create();
-		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(4));
+		ErrorTimeInMonth target = ErrorTimeInMonth.create(new AgreementOneMonthTime(50),new AgreementOneMonthTime(20));
+		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(60));
 
-		Assert.assertEquals(result.getLeft(), true);
-		Assert.assertEquals(result.getRight(), new AgreementOneMonthTime(3));
+		Assert.assertEquals(true,result.getLeft());
+		Assert.assertEquals(new AgreementOneMonthTime(50),result.getRight());
 	}
 
 	@Test
 	public void checkErrorTimeExceededTest_2() {
-		ErrorTimeInMonth target = create();
-		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(1));
+		ErrorTimeInMonth target = ErrorTimeInMonth.create(new AgreementOneMonthTime(50),new AgreementOneMonthTime(20));
+		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(10));
 
-		Assert.assertEquals(result.getLeft(), false);
-		Assert.assertEquals(result.getRight(), new AgreementOneMonthTime(3));
+		Assert.assertEquals(false,result.getLeft());
+		Assert.assertEquals(new AgreementOneMonthTime(50),result.getRight());
 	}
 
 	@Test
 	public void calculateAlarmTimeTest_1() {
-		ErrorTimeInMonth target = create();
-		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(4));
+		ErrorTimeInMonth target = ErrorTimeInMonth.create(new AgreementOneMonthTime(50),new AgreementOneMonthTime(20));
+		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(40));
 
-		Assert.assertEquals(result,new AgreementOneMonthTime(3));
+		Assert.assertEquals(new AgreementOneMonthTime(10),result);
 	}
 
 	@Test
 	public void calculateAlarmTimeTest_2() {
-		ErrorTimeInMonth target = create();
-		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(1));
+		ErrorTimeInMonth target = ErrorTimeInMonth.create(new AgreementOneMonthTime(50),new AgreementOneMonthTime(20));
+		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(30));
 
-		Assert.assertEquals(result,new AgreementOneMonthTime(0));
+		Assert.assertEquals(new AgreementOneMonthTime(0),result);
 	}
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -14,6 +15,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * １ヶ月時間
  */
 @Getter
+@AllArgsConstructor
 public class OneMonthTime extends ValueObject {
 
     /**
@@ -29,16 +31,25 @@ public class OneMonthTime extends ValueObject {
     /**
      * [C-1] １ヶ月時間
      */
-    public OneMonthTime(ErrorTimeInMonth errorTimeInMonth, AgreementOneMonthTime upperLimitTime) {
-        if (upperLimitTime.v() <= errorTimeInMonth.getErrorTime().v()) {
+    public static OneMonthTime create(ErrorTimeInMonth errorTimeInMonth, AgreementOneMonthTime upperLimitTime) {
+        if (upperLimitTime.v() < errorTimeInMonth.getErrorTime().v()) {
             throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
         }
-        this.errorTimeInMonth = errorTimeInMonth;
-        this.upperLimitTime = upperLimitTime;
+        return new OneMonthTime(errorTimeInMonth, upperLimitTime);
     }
 
     /**
      * [1] エラーチェック
+     * input.対象時間 <= エラーアラーム時間.アラーム時間：
+     * 　超過状態←"正常"
+     * else
+     * input.対象時間 <= エラーアラーム時間.エラー時間：
+     * 　超過状態←"アラーム時間超過"
+     * else
+     * input.対象時間 <= 上限時間：
+     * 　超過状態←"エラー時間超過"
+     * else
+     * 　超過状態←"上限時間超過"
      */
     public OverState errorCheck(AttendanceTimeMonth applicationTime) {
         int value;

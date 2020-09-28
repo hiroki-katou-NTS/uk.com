@@ -33,7 +33,7 @@ public class AnnualAppCreate {
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult create(
+	public static AppCreationResult create(
 			Require require,
 			String cid,
 			String empId,
@@ -57,7 +57,7 @@ public class AnnualAppCreate {
 				cid,
 				annualAppContent.getApplicant(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
 		val oneYear = setting.getBasicAgreementSetting().getOneYear();
 
@@ -78,7 +78,7 @@ public class AnnualAppCreate {
 		annualAppContent.setAlarmTime(oneYear.getBasicSetting().calculateAlarmTime(annualAppContent.getErrTime()));
 
 		// $申請
-		val app = this.createAnnualApp(
+		val app = createAnnualApp(
 				empId,
 				annualAppContent,
 				optApproverItem.get().getApproverList(),
@@ -109,7 +109,7 @@ public class AnnualAppCreate {
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 36協定特別条項の適用申請
 	 */
-	private SpecialProvisionsOfAgreement createAnnualApp(
+	private static SpecialProvisionsOfAgreement createAnnualApp(
 			String applicantId,
 			AnnualAppContent annualAppContent,
 			List<String> approverList,

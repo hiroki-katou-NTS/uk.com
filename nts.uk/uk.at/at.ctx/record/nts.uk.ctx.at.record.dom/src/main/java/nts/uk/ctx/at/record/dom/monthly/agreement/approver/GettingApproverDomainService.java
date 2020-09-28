@@ -8,6 +8,7 @@ import java.util.Optional;
 
 /**
  * 承認者を取得する
+ *
  * @author khai.dh
  */
 @Stateless
@@ -17,8 +18,10 @@ public class GettingApproverDomainService {
 	 * [1] 取得する
 	 * 36協定特別条項の適用申請の申請対象者から承認者を取得する
 	 */
-	public static Optional<ApproverItem> getApprover(Require require, String empId){
-		Optional<ApproverItem> optWorkplaceApproverItem = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, empId);
+	public static Optional<ApproverItem> getApprover(Require require, String empId) {
+
+		Optional<ApproverItem> optWorkplaceApproverItem
+				= GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, empId);
 
 		if (optWorkplaceApproverItem.isPresent()) {
 			return optWorkplaceApproverItem;

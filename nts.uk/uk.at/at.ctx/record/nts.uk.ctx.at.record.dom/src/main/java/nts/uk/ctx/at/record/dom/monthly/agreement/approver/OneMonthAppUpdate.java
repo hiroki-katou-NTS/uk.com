@@ -34,7 +34,7 @@ public class OneMonthAppUpdate {
 	 * @param reason       36協定申請理由
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult update(
+	public static AppCreationResult update(
 			Require require,
 			String cid,
 			String applicantId,
@@ -42,10 +42,11 @@ public class OneMonthAppUpdate {
 			ReasonsForAgreement reason) {
 
 		// $36協定申請
-		val optApp = require.getApp(applicantId);
+		val optApp = require.getApp(applicantId); // R1
 		if (!optApp.isPresent()){
 			throw new BusinessException("Msg_1262");
 		}
+
 		val app = optApp.get();
 
 		// $３６協定設定
@@ -54,7 +55,7 @@ public class OneMonthAppUpdate {
 				cid,
 				app.getApplicantsSID(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
 		val oneMonth = setting.getBasicAgreementSetting().getOneMonth();
 
