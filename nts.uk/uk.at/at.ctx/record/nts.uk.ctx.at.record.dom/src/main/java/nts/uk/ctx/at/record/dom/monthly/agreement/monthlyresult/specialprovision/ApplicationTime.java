@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.eclipse.persistence.internal.xr.ValueObject;
 
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ApplicationTime {
+public class ApplicationTime extends ValueObject {
 
     /**３６協定申請種類*/
     private TypeAgreementApplication typeAgreement;
