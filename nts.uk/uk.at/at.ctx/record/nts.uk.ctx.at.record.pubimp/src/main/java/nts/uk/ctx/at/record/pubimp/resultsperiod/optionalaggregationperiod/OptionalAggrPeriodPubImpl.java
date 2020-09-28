@@ -58,7 +58,7 @@ public class OptionalAggrPeriodPubImpl implements OptionalAggrPeriodPub {
 	 * @return true, if successful
 	 */
 	@Override
-	public boolean checkExit(String companyId, String aggrFrameCode) {
+	public boolean checkExist(String companyId, String aggrFrameCode) {
 		return this.optionalAggrPeriodRepository.checkExit(companyId, aggrFrameCode);
 	}
 

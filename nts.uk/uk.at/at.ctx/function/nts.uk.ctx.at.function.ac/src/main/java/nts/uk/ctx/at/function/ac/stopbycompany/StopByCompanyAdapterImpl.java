@@ -12,12 +12,13 @@ public class StopByCompanyAdapterImpl implements StopByCompanyAdapter {
 
 	/** The pub. */
 	@Inject
-	private StopByCompanyPub pub;
+//	private StopByCompanyPub pub;
 	
 	@Override
 	public UsageStopOutputImport checkUsageStop(String contractCD, String companyCD) {
+		return null;
 		// TODO QA111645
-		return this.pub.checkUsageStop(contractCD, companyCD);
+//		return this.pub.checkUsageStop(contractCD, companyCD);
 	}
 
 }
