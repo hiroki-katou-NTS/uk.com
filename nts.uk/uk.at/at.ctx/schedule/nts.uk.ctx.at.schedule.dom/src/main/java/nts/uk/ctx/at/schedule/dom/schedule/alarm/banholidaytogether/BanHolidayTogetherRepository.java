@@ -22,7 +22,7 @@ public interface BanHolidayTogetherRepository {
 	 * delete (会社ID, 対象組織識別情報, 同日休日禁止コード)			
 	 * @param banHdTogether
 	 */
-	void delete(String cid, BanHolidayTogether banHdTogether, BanHolidayTogetherCode code);
+	void delete(String cid, TargetOrgIdenInfor targetInfo, BanHolidayTogetherCode code);
 	
 	/**
 	 * getAll ( 会社ID, 対象組織識別情報 )
