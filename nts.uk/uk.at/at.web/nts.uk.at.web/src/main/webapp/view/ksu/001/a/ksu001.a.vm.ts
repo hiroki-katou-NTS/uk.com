@@ -442,6 +442,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                 self.setUpdateMode();
                 self.setDataWorkType(data.listWorkTypeInfo);
+                self.checkEnableCombWTime();
                 self.setPositionButonToRightToLeft();
                 self.flag = false;
                 dfd.resolve();
@@ -655,8 +656,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (listWorkType.length > 0) {
                     __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
                         userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
-                }else{
-                    setWorkTypeTime = true;    
+                } else {
+                    setWorkTypeTime = true;
                 }
             }
             
@@ -668,6 +669,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (setWorkTypeTime) {
                     self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
                 }
+                
+                //self.checkEnableCombWTime();
                 
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
@@ -723,6 +726,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
                 }
                 
+                //self.checkEnableCombWTime();
+                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time');
@@ -752,10 +757,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
             __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
                 userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
-            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
+            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave.get());
 
         }
-    
+        
+        checkEnableCombWTime() {
+            let self = this;
+            if (self.selectedModeDisplayInBody() == 'shift')
+                return;
+            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
+            if (!workTypeCodeSave.isPresent()) {
+                if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
+                    $("#listWorkTime").addClass("disabledWorkTime");
+                }
+            } else {
+                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
+                if (objWtime[0].workTimeSetting == 2) {
+                    $("#listWorkTime").addClass("disabledWorkTime");
+                }
+            }
+        }
         
         destroyAndCreateGrid(dataBindGrid,viewMode){
             let self = this;
@@ -1357,10 +1378,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
                         __viewContext.viewModel.viewAB.isDisableWorkTime = true;
-                        $("#listWorkType").addClass("disabledWorkTime");
+                        $("#listWorkTime").addClass("disabledWorkTime");
                     } else {
                         __viewContext.viewModel.viewAB.isDisableWorkTime = false;
-                        $("#listWorkType").removeClass("disabledWorkTime");
+                        $("#listWorkTime").removeClass("disabledWorkTime");
                     }
                 }
             });
@@ -2102,7 +2123,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    self.editModeToConfirmMode();
+                    self.editModeAct();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
                     // tam thoi dung cach thay doi mode nay de load lai data ban dau
@@ -2116,18 +2137,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                     }
                 }).ifNo(() => {
-                    self.editModeToConfirmMode();
+                    self.editModeAct();
                     self.pasteData();
                 });
             } else {
-                self.editModeToConfirmMode();
+                self.editModeAct();
                 self.enableBtnRedo(false);
                 self.enableBtnUndo(false);
                 self.pasteData();
             }
         }
         
-        editModeToConfirmMode() {
+        editModeAct() {
             let self = this;
             nts.uk.ui.block.grayout();
             self.mode('edit');
@@ -2142,14 +2163,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnCoppy(true);
             self.enableHelpBtn(true);
 
-            if (self.selectedModeDisplayInBody() == 'time') {
-                self.visibleBtnInput(true);
-                self.enableBtnInput(true);
+            if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                // enable combobox workType, workTime
+                __viewContext.viewModel.viewAB.enableListWorkType(true);
+                let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
+                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
+                if (objWtime[0].workTimeSetting != 2) {
+                    $("#listWorkTime").removeClass("disabledWorkTime");
+                }
+                if (self.selectedModeDisplayInBody() == 'time') {
+                    self.visibleBtnInput(true);
+                    self.enableBtnInput(true);
+                }
             } else {
                 self.visibleBtnInput(false);
                 self.enableBtnInput(false);
+                $("#shiftPallet-Control").removeClass("disabledShiftControl");
             }
-
             nts.uk.ui.block.clear();
         }
         
@@ -2169,13 +2199,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let arrLockCellAfterSave = $("#extable").exTable("lockCells");
-            self.confirmModeToeditMode();
+            self.confirmModeAct();
             
             $("#extable").exTable("updateMode", "determine");
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    self.confirmModeToeditMode();
+                    self.confirmModeAct();
                     $("#extable").exTable("updateMode", "determine");
                     
                     if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
@@ -2186,16 +2216,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                     }
                 }).ifNo(() => {
-                    self.confirmModeToeditMode();
+                    self.confirmModeAct();
                     self.pasteData();
                 });
             } else {
-                self.confirmModeToeditMode();
+                self.confirmModeAct();
                 self.pasteData();
             }
         }
         
-        confirmModeToeditMode() {
+        confirmModeAct() {
             let self = this;
             nts.uk.ui.block.grayout();
             self.mode('confirm');
@@ -2213,12 +2243,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnRedo(false);
             self.enableBtnUndo(false);
 
-            if (self.selectedModeDisplayInBody() == 'time') {
-                self.visibleBtnInput(true);
-                self.enableBtnInput(false);
+            if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                // disable combobox workType, workTime
+                __viewContext.viewModel.viewAB.enableListWorkType(false);
+                if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
+                    $("#listWorkTime").addClass("disabledWorkTime");
+                }
+                if (self.selectedModeDisplayInBody() == 'time') {
+                    self.visibleBtnInput(true);
+                    self.enableBtnInput(false);
+                }
+                
             } else {
                 self.visibleBtnInput(false);
                 self.enableBtnInput(false);
+                $("#shiftPallet-Control").addClass("disabledShiftControl");
             }
             nts.uk.ui.block.clear();
         }
