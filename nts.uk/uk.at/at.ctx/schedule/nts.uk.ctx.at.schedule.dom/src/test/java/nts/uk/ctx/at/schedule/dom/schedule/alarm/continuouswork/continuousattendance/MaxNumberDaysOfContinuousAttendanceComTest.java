@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,15 +16,5 @@ public class MaxNumberDaysOfContinuousAttendanceComTest {
 
 		NtsAssert.invokeGetters(maxNoDaysOfContinuousAttCom);
 
-	}
-	
-	@Test
-	public void create_maxNumberDaysOfContinuousAttendanceCompany_success() {
-		MaxNumberDaysOfContinuousAttendanceCom maxNoDaysOfContinuousAttCom = new MaxNumberDaysOfContinuousAttendanceCom(
-				new MaxNumberDaysOfContinuousAttendance(new NumberOfConsecutiveDays(5)));
-		
-		
-		assertThat(maxNoDaysOfContinuousAttCom.getNumberOfDays().getNumberOfDays().v()).isEqualTo(5);
-	
 	}
 }
