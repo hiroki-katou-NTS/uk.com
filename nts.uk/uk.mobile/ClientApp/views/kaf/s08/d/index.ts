@@ -14,8 +14,8 @@ interface Parameter {
 const defaultParam = (): Parameter => ({
     rowDate: {},
     businessTripInfoOutput: {},
-    startWorkTime: 0,
-    endWorkTime: 0,
+    startWorkTime: null,
+    endWorkTime: null,
 });
 
 @component({
@@ -92,8 +92,8 @@ export class KafS08DComponent extends Vue {
                 currentRow.opAchievementDetail.opWorkTypeName = f.selectedWorkType.name;
                 currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
                 currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
-                vm.params.startWorkTime = f.selectedWorkTime.firstStartTime;
-                vm.params.endWorkTime = f.selectedWorkTime.firstEndTime;
+                vm.params.startWorkTime = f.selectedWorkTime.code ? f.selectedWorkTime.firstStartTime : null;
+                vm.params.endWorkTime = f.selectedWorkTime.code ? f.selectedWorkTime.firstEndTime : null;
                 currentRow.opAchievementDetail.opWorkTime1 = f.selectedWorkTime.workTime1;
             }
         }).catch((res: any) => {
@@ -127,8 +127,8 @@ export class KafS08DComponent extends Vue {
             if (f) {
                 currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
                 currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
-                vm.params.startWorkTime = f.selectedWorkTime.firstStartTime;
-                vm.params.endWorkTime = f.selectedWorkTime.firstEndTime;
+                vm.params.startWorkTime = f.selectedWorkTime.code ? f.selectedWorkTime.firstStartTime : null;
+                vm.params.endWorkTime = f.selectedWorkTime.code ? f.selectedWorkTime.firstEndTime : null;
                 currentRow.opAchievementDetail.opWorkTime1 = f.selectedWorkTime.workTime1;
             }
         }).catch((res: any) => {
@@ -159,20 +159,49 @@ export class KafS08DComponent extends Vue {
 
         const { date } = rowDate ;
 
-        vm.$close({
-            opWorkTypeName,
-            opWorkTimeName,
-            startWorkTime,
-            endWorkTime,
-            date,
-            workTypeCD,
-            workTimeCD
-        });
+        if (workTimeCD) {
+            vm.$mask('show');
+            vm.$http.post('at', API.checkWorkTypeWorkTime + workTypeCD + '/' + workTimeCD).then((res: any) => {
+                vm.$mask('hide');
+                vm.$close({
+                    opWorkTypeName,
+                    opWorkTimeName,
+                    startWorkTime,
+                    endWorkTime,
+                    date,
+                    workTypeCD,
+                    workTimeCD
+                });
+            }).catch((error) => {
+                vm.$mask('hide');
+                vm.$modal.error(error);
+            });
+        } else {
+            vm.$mask('show');
+            vm.$http.post('at', API.checkWorkTypeWorkTime2 + workTypeCD).then((res: any) => {
+                vm.$mask('hide');
+                vm.$close({
+                    opWorkTypeName,
+                    opWorkTimeName,
+                    startWorkTime,
+                    endWorkTime,
+                    date,
+                    workTypeCD,
+                    workTimeCD
+                });
+            }).catch((error) => {
+                vm.$mask('hide');
+                vm.$modal.error(error);
+            });
+        }
+        
     }
 }
 
 const API = {
-    callKDLS02: 'at/request/application/businesstrip/mobile/startKDLS02'
+    callKDLS02: 'at/request/application/businesstrip/mobile/startKDLS02',
+    checkWorkTypeWorkTime : 'at/schedule/basicschedule/checkPairWorkTypeWorkTime/',
+    checkWorkTypeWorkTime2 : 'at/schedule/basicschedule/checkPairWorkTypeWorkTime2/'
 };
 
 export class Model {
