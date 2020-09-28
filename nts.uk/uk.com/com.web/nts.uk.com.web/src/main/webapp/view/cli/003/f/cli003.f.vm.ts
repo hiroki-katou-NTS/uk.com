@@ -643,12 +643,9 @@ module nts.uk.com.view.cli003.f {
                                         vm.LogDataResultSubHeader = LogDataResultSubHeader;
                                     }
                                 }
-                                LogDataResultDto.startDateTime = moment.utc(LogDataResultDto.startDateTime, format).toISOString(),
-                                LogDataResultDto.endDateTime = moment.utc(LogDataResultDto.endDateTime, format).toISOString(),
-                                console.log(moment.utc('2019-04-25T14:03:52.000Z', format).format)
                                 vm.listLogDataResult.push(LogDataResultDto);
                             });
-                            //Check listLogBasicInforModel after filter
+                            //Check after filter
                             if (vm.listLogDataResult.length <= 0) {
                                 vm.$dialog.alert({ messageId: "Msg_1220" });
                                 vm.$blockui('clear');
