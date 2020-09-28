@@ -281,7 +281,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Set header value
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&"+ dataSource.getData().getFontSize() + " " + dataSource.getData().getReportName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&"+ FONT_SIZE + " " + dataSource.getData().getReportName());
 					// Get current date and format it
 					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
