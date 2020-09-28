@@ -13,6 +13,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
         alreadySettingList: KnockoutObservableArray<any>;
         employmentName: KnockoutObservable<string> = ko.observable('');
         workTypeList: Array<any>;
+        // 申請別対象勤務種類
         appSetData: KnockoutObservable<PreBeforeAppSetData> = ko.observable(new PreBeforeAppSetData(''));
         alreadySettingData: Array<any>;
 
@@ -1031,8 +1032,11 @@ module nts.uk.at.view.kaf022.l.viewmodel {
         employmentCode: string;
         appType: number;
         holidayOrPauseType: number;
+        // 表示する勤務種類を設定する
         displayFlag: KnockoutObservable<boolean> = ko.observable(false);
+        // 休暇種類を利用しない
         holidayTypeUseFlg: KnockoutObservable<number> = ko.observable(null);
+        // 勤務種類リスト
         lstWorkType: KnockoutObservableArray<any> = ko.observableArray();
         displayWorkTypes: KnockoutObservable<string> = ko.observable('');
         optionName: KnockoutObservable<string> = ko.observable('');

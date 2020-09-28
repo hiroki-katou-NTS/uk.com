@@ -8,8 +8,11 @@ module nts.uk.at.view.kaf022.e.viewmodel {
 
         constructor() {
             const self = this;
+            // コメント
             self.texteditorD9 = ko.observable(null);
+            // 文字色
             self.valueD10 = ko.observable("#000000");
+            // 太字
             self.enableD11 = ko.observable(false);
 
             $("#fixed-table-e").ntsFixedTable({});
