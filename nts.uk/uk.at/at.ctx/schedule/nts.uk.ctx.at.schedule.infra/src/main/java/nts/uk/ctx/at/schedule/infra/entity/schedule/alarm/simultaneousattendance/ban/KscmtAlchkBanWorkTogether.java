@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -85,7 +86,12 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 		return entity;
 	}
 	
-	public BanWorkTogether toDomain (KscmtAlchkBanWorkTogetherDtl dtl) {
+	/**
+	 * convert to domain
+	 * @param dtl
+	 * @return
+	 */
+	public BanWorkTogether toDomain (List<KscmtAlchkBanWorkTogetherDtl> dtl) {
 		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.createFromTargetUnit(
 				  TargetOrganizationUnit.valueOf(this.pk.targetUnit)
 				, this.pk.targetId);
@@ -96,6 +102,6 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 				, new BanWorkTogetherName(this.name)
 				, ApplicableTimeZoneCls.of(this.applyTs)
 				, new MaxOfNumberEmployeeTogether(this.upperLimit)
-				, Collections.emptyList());
+				, dtl.stream().map(x -> x.pk.employeeId).collect(Collectors.toList()));
 	}
 }
