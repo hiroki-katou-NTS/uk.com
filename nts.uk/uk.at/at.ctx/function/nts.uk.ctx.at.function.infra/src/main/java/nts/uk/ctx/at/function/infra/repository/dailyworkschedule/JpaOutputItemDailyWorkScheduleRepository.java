@@ -17,7 +17,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleR
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
@@ -64,12 +63,18 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 
 	@Override
 	public void update(OutputItemDailyWorkSchedule domain, int selectionType, String companyId, String employeeId) {
-		KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-		entity.setItemSelType(selectionType);
-		entity.setCid(companyId);
-		entity.setSid(employeeId);
-		entity.setContractCd(AppContexts.user().contractCode());
-		domain.saveToMemento(entity);
-		this.commandProxy().update(entity);
+		Optional<KfnmtRptWkDaiOutItem> oEntity = this.getOutItemByLayoutId(domain.getLayoutId());
+		if (oEntity.isPresent()) {
+			KfnmtRptWkDaiOutItem entity = oEntity.get();
+			domain.saveToMemento(entity);
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	private Optional<KfnmtRptWkDaiOutItem> getOutItemByLayoutId(String layoutId) {
+		return this.queryProxy()
+				.query(SELECT_BY_LAYOUT_ID, KfnmtRptWkDaiOutItem.class)
+				.setParameter("layoutId", layoutId)
+				.getSingle();
 	}
 }

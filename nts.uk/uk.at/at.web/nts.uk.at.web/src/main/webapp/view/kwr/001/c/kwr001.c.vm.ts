@@ -66,11 +66,11 @@ module nts.uk.at.view.kwr001.c {
 
             // combobox C5_1
             itemProjectType: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KWR001_156") },
-                { code: 1, name: nts.uk.resource.getText("KWR001_157") },
+                { code: -1, name: nts.uk.resource.getText("KWR001_156") },
+                { code: 5, name: nts.uk.resource.getText("KWR001_157") },
                 { code: 2, name: nts.uk.resource.getText("KWR001_158") },
-                { code: 3, name: nts.uk.resource.getText("KWR001_159") },
-                { code: 4, name: nts.uk.resource.getText("KWR001_160") },
+                { code: 0, name: nts.uk.resource.getText("KWR001_159") },
+                { code: -2, name: nts.uk.resource.getText("KWR001_160") },
             ]);
             selectedProjectType: KnockoutObservable<number> = ko.observable(0);
 
@@ -183,8 +183,7 @@ module nts.uk.at.view.kwr001.c {
                 });
 
                 self.selectedProjectType.subscribe((value) => {
-                    let fillterLst = self.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === value); 
-                    self.items(fillterLst);
+                    self.fillterByAttendanceType(value);
                 });
             }
 
@@ -576,6 +575,38 @@ module nts.uk.at.view.kwr001.c {
               */
             private convertDBRemarkInputToValue(args: number): string {
                 return _.toString(args + 1);
+            }
+
+            private fillterByAttendanceType(code: number) {
+                const vm = this;
+                const NOT_USE_ATR = 9;  // 日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                const CODE = 0;         // 日次勤怠項目の属性=0:コード
+                const NUMBEROFTIME = 2; // 日次勤怠項目の属性=2:回数
+                const TIME = 5;         //日次勤怠項目の属性=5:時間
+                let lstResult = vm.outputItemPossibleLst();
+                switch (code) {
+                    case -1:
+                        // 「全件」⓪の場合は、絞り込み不要とする。
+                        lstResult = vm.outputItemPossibleLst();
+                        break;
+                    case -2:
+                        // 「その他」④の場合は、「全体」⓪から時間①、回数②、計算項目③を除いたものを表示する。
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt !== NUMBEROFTIME
+                                                                                  || item.attendanceItemAtt !== TIME 
+                                                                                  || item.attendanceItemAtt !== CODE);
+                        break;
+                    case CODE:
+                        //「計算項目」③の場合は、日次勤怠項目の属性=0:コード　かつ　日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === CODE
+                                                                                  && item.masterType
+                                                                                  && item.masterType === NOT_USE_ATR);
+                    default:
+                        //「時間」①の場合は、日次勤怠項目の属性=5:時間
+                        //「回数」②の場合は、日次勤怠項目の属性=2:回数
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === code);
+                        break;
+                }
+                vm.items(lstResult);
             }
         }
         class ItemModel {

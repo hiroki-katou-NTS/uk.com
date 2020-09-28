@@ -536,7 +536,7 @@ module nts.uk.at.view.kwr001.a {
                 return codeChoose.code;
             }
 
-            private getLayoutIdFromLst(pos: string, lstCode: ItemModel[]): string {
+            private getLayoutIdFromLst(pos: string, lstCode: OutputItemSettingDto[]): string {
                 let self = this;
                 let codeChoose = _.find(lstCode, function(o) { 
                     return pos == o.code; 
@@ -836,7 +836,7 @@ module nts.uk.at.view.kwr001.a {
                     
                     errorAlarmCode = data.errorAlarmCode;
                     let selectionType = self.selectionType();
-                    let standardSelectionLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_3(), self.outputItemDailyWorkSchedules());
+                    let standardSelectionLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_3(), self.itemListCodeTemplate());
                     let freeSettingLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
                     let freeSettingCode = self.getCodeFromListCode(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
                     let zeroDisplayType = self.selectedDataZeroDisplayType();
