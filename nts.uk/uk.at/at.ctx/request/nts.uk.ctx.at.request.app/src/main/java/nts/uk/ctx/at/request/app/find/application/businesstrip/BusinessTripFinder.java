@@ -563,7 +563,6 @@ public class BusinessTripFinder {
                 result.setConfirmMsgOutputs(confirmMsgOutputs);
                 result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
             }
-
         }
         return result;
     }

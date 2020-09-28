@@ -40,11 +40,12 @@ module nts.uk.at.view.kaf022.n.viewmodel {
     }
 
     interface IOptionalItemAppSet {
+        // コード
         code: string;
+        // 申請種類名
         name: string
+        // 利用区分
         useAtr: number;
-        note: string;
-        settingItems: Array<any>;
     }
 
     function makeIcon(value) {

@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
-	import m = nts.uk.ui.at.ksu002.memento;
+	import m = nts.uk.ui.memento;
 	import c = nts.uk.ui.at.ksu002.calendar;
 
 	const API = {
@@ -28,7 +28,7 @@ module nts.uk.ui.at.ksu002.a {
 		currentUser!: KnockoutComputed<string>;
 
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(defaultBaseDate());
-		schedules: MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
+		schedules: m.MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
 
 		created() {
 			const vm = this;
@@ -46,12 +46,8 @@ module nts.uk.ui.at.ksu002.a {
 			vm.$ajax('com', API.UNAME)
 				.then((name: string) => bussinesName(name));
 
-			vm.baseDate
-				.subscribe((data) => {
-					console.log(data.begin);
-					// call to api and get data
-					vm.schedules.reset(ko.unwrap(vm.schedules));
-				});
+			// call to api and get data
+			vm.baseDate.subscribe(() => vm.schedules.reset());
 		}
 
 		mounted() {
@@ -72,10 +68,18 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		clickDayCell(type: string, date: any) {
+		clickDayCell(type: string, data: c.DayData) {
 			const vm = this;
 
-			console.log(vm, type, date);
+			const wrap: c.DayData[] = ko.toJS(vm.schedules);
+
+			const exist = _.find(wrap, f => moment(f.date).isSame(data.date, 'date'));
+
+			if (exist) {
+				exist.data = Date.now();
+			}
+
+			vm.schedules.memento(wrap);
 		}
 	}
 }

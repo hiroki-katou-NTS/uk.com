@@ -69,6 +69,9 @@ public class TemporarilyReflectStampDailyAttd {
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
+			}else {
+				//打刻。反映区分＝反映済み
+				stamp.setReflectedCategory(true);
 			}
 			// 勤務情報を反映する
 			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(true, true, companyId, integrationOfDaily.getEmployeeId(),
@@ -84,10 +87,13 @@ public class TemporarilyReflectStampDailyAttd {
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
-				// 勤務情報を反映する
-				listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, true, companyId, integrationOfDaily.getEmployeeId(),
-						integrationOfDaily.getYmd(), stamp, integrationOfDaily));
+			}else {
+				//打刻。反映区分＝反映済み
+				stamp.setReflectedCategory(true);
 			}
+			// 勤務情報を反映する
+			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, true, companyId, integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		case GO_OUT://外出 or 戻り
 		case RETURN:

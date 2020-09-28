@@ -8,8 +8,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.shr.com.time.AttendanceClock;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +32,7 @@ public class AppRecordImageDto extends ApplicationDto{
 	public AppRecordImage toDomain() {
 		return new AppRecordImage(
 				EnumAdaptor.valueOf(appStampCombinationAtr, EngraveAtr.class),
-				new AttendanceTime(attendanceTime),
+				new AttendanceClock(attendanceTime),
 				appStampGoOutAtr != null ? Optional.of(EnumAdaptor.valueOf(appStampGoOutAtr, GoingOutReason.class)) : Optional.empty());
 	}
 }

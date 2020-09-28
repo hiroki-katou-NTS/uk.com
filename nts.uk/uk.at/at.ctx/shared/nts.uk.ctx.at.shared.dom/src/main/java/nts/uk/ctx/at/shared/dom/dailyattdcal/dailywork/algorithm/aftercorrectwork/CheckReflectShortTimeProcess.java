@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectatt.ChangeDailyAttendanceProcess;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -87,10 +88,20 @@ public class CheckReflectShortTimeProcess {
 		// input.日別勤怠の出退勤を受け取る
 		return timeLeaving.getTimeLeavingWorks().stream().filter(att -> {
 			// 出退勤の条件を確認する。
-			return changeDailyAtt.checkHasAtt(att) || changeDailyAtt.checkHasLeav(att);
+			return checkHasAtt(att) || checkHasLeav(att);
 		}).findFirst().isPresent();
 	}
 
+	private boolean checkHasAtt(TimeLeavingWork timeLeav) {
+		return timeLeav.getAttendanceStamp().isPresent() && timeLeav.getAttendanceStamp().get().getStamp().isPresent()
+				&& timeLeav.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
+	}
+
+	private boolean checkHasLeav(TimeLeavingWork timeLeav) {
+		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent()
+				&& timeLeav.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
+	}
+	
 	public static enum CheckReflectShortTimerResult {
 		/**
 		 * 反映する
