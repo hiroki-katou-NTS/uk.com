@@ -12,6 +12,12 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
+/**
+ * シフトの勤務希望
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.勤務希望
+ * @author dan_pv
+ *
+ */
 @AllArgsConstructor
 public class ShiftExpectation implements WorkExpectation {
 

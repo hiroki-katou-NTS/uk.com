@@ -9,6 +9,11 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
+/**
+ * 時間帯の勤務希望
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.勤務希望
+ * @author dan_pv
+ */
 @AllArgsConstructor
 public class TimeZoneExpectation implements WorkExpectation{
 	

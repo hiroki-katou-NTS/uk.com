@@ -8,6 +8,12 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
+/**
+ * 休日の勤務希望
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.勤務希望
+ * @author dan_pv
+ *
+ */
 public class HolidayExpectation implements WorkExpectation{
 
 	@Override
