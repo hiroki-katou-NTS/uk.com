@@ -12,13 +12,11 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -75,21 +73,10 @@ public class OneMonthAppUpdateTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		val oneMonth = new AgreementsOneMonth(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
-				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
-				)
-		);
-
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(oneMonth, null, null, null), null);
+		val setting = new BasicAgreementSetting(new AgreementOneMonth(), null, null, null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
-			public BasicAgreementSettings getBasicSet(
+			public BasicAgreementSetting getBasicSet(
 					AgreementDomainService.RequireM3 require,
 					String companyId,
 					String employeeId,
@@ -102,7 +89,7 @@ public class OneMonthAppUpdateTest {
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(true, new AgreementOneMonthTime(0));
 
-		new MockUp<AgreementsOneMonth>() {
+		new MockUp<AgreementOneMonth>() {
 			@Mock
 			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
 
@@ -136,21 +123,10 @@ public class OneMonthAppUpdateTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		val oneMonth = new AgreementsOneMonth(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
-				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime(
-						new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-						new AgreementOneMonthTime(0)
-				)
-		);
-
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(oneMonth, null, null, null), null);
+		val setting = new BasicAgreementSetting(new AgreementOneMonth(), null, null, null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
-			public BasicAgreementSettings getBasicSet(
+			public BasicAgreementSetting getBasicSet(
 					AgreementDomainService.RequireM3 require,
 					String companyId,
 					String employeeId,
@@ -163,7 +139,7 @@ public class OneMonthAppUpdateTest {
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
 
-		new MockUp<AgreementsOneMonth>() {
+		new MockUp<AgreementOneMonth>() {
 			@Mock
 			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
 
@@ -181,12 +157,12 @@ public class OneMonthAppUpdateTest {
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {
 		OneMonthTime oneMonthTime = new OneMonthTime(
-				new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
+				new OneMonthErrorAlarmTime(),
 				new YearMonth(0)
 		);
 
 		OneYearTime oneYearTime = new OneYearTime(
-				new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+				new OneYearErrorAlarmTime(),
 				new Year(0)
 		);
 

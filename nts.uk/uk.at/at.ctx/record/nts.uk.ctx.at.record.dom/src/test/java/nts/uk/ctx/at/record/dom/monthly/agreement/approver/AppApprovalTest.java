@@ -8,16 +8,10 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -139,7 +133,7 @@ public class AppApprovalTest {
 		}};
 
 		val existingAgr36MonthSetting = new AgreementMonthSetting(
-				aplId, new YearMonth(0), new ErrorOneMonth(0), new AlarmOneMonth(0));
+				aplId, new YearMonth(0), new OneMonthErrorAlarmTime());
 		val yearMonth = dummyApp.getApplicationTime().getOneMonthTime().get().getYearMonth();
 
 		// R2
@@ -181,7 +175,7 @@ public class AppApprovalTest {
 			dummyApp.approveApplication(aplId, apprSts, cmt);
 		}};
 
-		val existingAgr36YearSetting = new AgreementYearSetting(aplId, 0, new ErrorOneYear(0), new AlarmOneYear(0));
+		val existingAgr36YearSetting = new AgreementYearSetting(aplId, 0, new OneYearErrorAlarmTime());
 		val year = dummyApp.getApplicationTime().getOneYearTime().get().getYear();
 
 		NtsAssert.atomTask(
@@ -218,7 +212,7 @@ public class AppApprovalTest {
 		}};
 
 		val existingAgr36YearSetting = new AgreementYearSetting(
-				aplId, 0, new ErrorOneYear(0), new AlarmOneYear(0));
+				aplId, 0, new OneYearErrorAlarmTime());
 		val year = dummyApp.getApplicationTime().getOneYearTime().get().getYear();
 
 		new Expectations() {{
@@ -234,21 +228,10 @@ public class AppApprovalTest {
 	}
 
 	private static SpecialProvisionsOfAgreement createDummyApp(TypeAgreementApplication type) {
-		OneMonthTime oneMonthTime = new OneMonthTime(
-				new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
-				new YearMonth(0)
-		);
-
-		OneYearTime oneYearTime = new OneYearTime(
-				new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-				new Year(0)
-		);
-
+		OneMonthTime oneMonthTime = new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0));
+		OneYearTime oneYearTime = new OneYearTime(new OneYearErrorAlarmTime(), new Year(0));
 		ApplicationTime applicationTime = new ApplicationTime(type, Optional.of(oneMonthTime), Optional.of(oneYearTime));
-
-		List<String> listConfirmSID = new ArrayList<String>(){{
-			add("confirmerSID");
-		}};
+		List<String> listConfirmSID = new ArrayList<String>() {{ add("confirmerSID"); }};
 
 		return SpecialProvisionsOfAgreement.create(
 				"enteredPersonSID",
