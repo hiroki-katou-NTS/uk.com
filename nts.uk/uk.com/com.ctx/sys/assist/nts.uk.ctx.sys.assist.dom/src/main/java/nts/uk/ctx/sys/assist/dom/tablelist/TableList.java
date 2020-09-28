@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.assist.dom.tablelist;
 import java.util.List;
 import java.util.Optional;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;

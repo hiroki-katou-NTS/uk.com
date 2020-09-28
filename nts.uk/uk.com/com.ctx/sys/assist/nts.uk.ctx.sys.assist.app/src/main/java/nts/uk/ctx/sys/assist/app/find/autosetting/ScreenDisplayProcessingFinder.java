@@ -1,0 +1,67 @@
+package nts.uk.ctx.sys.assist.app.find.autosetting;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
+import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInChargeService;
+import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
+import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
+
+/**
+ * アルゴリズム「画面表示処理」
+ */
+@Stateless
+public class ScreenDisplayProcessingFinder {
+	
+	@Inject
+	private LoginPersonInChargeService picService;
+	
+	@Inject
+	private DataStoragePatternSettingRepository dataStoragePatternSettingRepository;
+	
+	public ScreenDisplayProcessingDto findScreenDisplayProcessing() {
+		LoginUserContext user = AppContexts.user();
+		
+		/**
+		 * ドメインモデル「パターン設定」を取得する
+		 */
+		List<DataStoragePatternSetting> patterns = dataStoragePatternSettingRepository.findByContractCd(user.contractCode());
+		
+		/**
+		 * ログイン者が担当者か判断する
+		 */
+		LoginPersonInCharge pic = picService.getPic(user.roles());
+		
+		try {
+			
+			/**
+			 * List<システム種類>に「システム種類」を追加する。
+			 */
+			List<SystemType> systemTypes = picService.getSystemTypes(pic);
+			
+			/**
+			 * 取得したList＜パターン設定>をチェックする。
+			 */
+			if (patterns.size() > 0) {
+				ScreenDisplayProcessingDto dto = new ScreenDisplayProcessingDto();
+				dto.setPatterns(patterns);
+				dto.setSystemTypes(systemTypes.stream()
+						.map(t -> t.value)
+						.collect(Collectors.toList()));
+				return dto;
+			} else {
+				throw new BusinessException("Msg_1736");
+			}
+		} catch(Exception e) {
+			return null;
+		}
+	}
+}
