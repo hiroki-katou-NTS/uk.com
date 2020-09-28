@@ -145,8 +145,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
             if (vm.model) {
-                if (vm.model.checkbox3() == true && !vm.model.workTimeCode()) {
-                    $('#workSelect').focus();
+                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode()) {
+                   // $('#workSelect').focus();
+					let el = document.getElementById('workSelect');
+	                if (el) {
+	                    el.focus();                                                    
+	                }
                     return;
                 } 
             }
@@ -157,13 +161,18 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             );
             // is change can be null
 //            if (!_.isNull(model.checkbox3)) {
-                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                if (!_.isEmpty(vm.model.workTypeCode())) {
-                    let dw = new DataWork( model.workTypeCode );
-                    if ( model.workTimeCode ) {
-                        dw.workTime = model.workTimeCode
+                if (!_.isNull(model.checkbox3)) {
+                    goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;                    
+                }
+                if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                    if (!_.isEmpty(vm.model.workTypeCode())) {
+                        let dw = new DataWork( model.workTypeCode );
+                        if ( model.workTimeCode ) {
+                            dw.workTime = model.workTimeCode
+                        }
+                        goBackApp.dataWork = dw;
+                        
                     }
-                    goBackApp.dataWork = dw;
                     
                 }
 //            }
@@ -236,9 +245,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     if (listActual[0].opAchievementDetail) {
                         let workType = listActual[0].opAchievementDetail.workTypeCD;
                         let workTime = listActual[0].opAchievementDetail.workTimeCD;
-                        if (!_.isNull(model.checkbox3)) {
-                            dataClone.workTime(workTime);
-                            dataClone.workType(workType);                            
+                        if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                            if (!_.isNull(dataClone)) {
+                                dataClone.workTime(workTime);
+                                dataClone.workType(workType);                                                            
+                            }
                         }
                     }
                 }

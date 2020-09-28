@@ -223,7 +223,7 @@ public class AppContentServiceImpl implements AppContentService {
 							item.getOpStartTime().map(x -> x.getFullText()).orElse("") + I18NText.getText("CMM045_100") + item.getOpEndTime().map(x -> x.getFullText()).orElse(""));
 				} else {
 					// 申請内容＋＝$.項目名＋'　'＋#CMM045_292(取消)
-					result += item.getOpItemName().get() + I18NText.getText("CMM045_292");
+					result += MessageFormat.format(item.getOpItemName().orElse(""), I18NText.getText("CMM045_292"));
 				}
 			}
 		}

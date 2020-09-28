@@ -19,4 +19,7 @@ public class KrcmtAppReasonPk implements Serializable {
 
     @Column(name = "REASON_CD")
     public int reasonCode;
+
+    @Column(name = "HD_TYPE")
+    public Integer holidayAppType;
 }

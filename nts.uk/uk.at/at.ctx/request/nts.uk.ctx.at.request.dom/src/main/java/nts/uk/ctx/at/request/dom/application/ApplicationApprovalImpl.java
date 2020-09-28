@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
@@ -53,7 +54,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private OvertimeRepository overtimeRepository;
 
 	@Inject
-	private GoBackDirectlyRepository_Old goBackDirectlyRepository;
+	private GoBackDirectlyRepository goBackDirectlyRepository;
 
 	@Inject
 	private AppWorkChangeRepository workChangeRepository;

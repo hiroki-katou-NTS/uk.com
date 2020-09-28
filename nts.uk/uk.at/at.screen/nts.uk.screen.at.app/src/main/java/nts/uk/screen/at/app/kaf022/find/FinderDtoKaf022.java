@@ -149,9 +149,12 @@ public class FinderDtoKaf022 {
 	@Inject
 	private StampAppReflectRepository stampAppReflectRepo;
 
+	/**
+	 * 起動初期の処理
+	 */
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
-		// get Application Settings
+		// 申請設定の取得
 		ApplicationSettingDto applicationSetting = appSettingRepo.findByCompanyId(companyId).map(ApplicationSettingDto::fromDomain).orElse(null);
 		List<DisplayReasonDto> displayReasons = displayReasonRepo.findByCompanyId(companyId).stream().map(DisplayReasonDto::fromDomain).collect(Collectors.toList());
 		OvertimeAppSetDto overTimeAppSetting = overtimeAppSetRepo.findSettingByCompanyId(companyId).map(OvertimeAppSetDto::fromDomain).orElse(null);
@@ -165,7 +168,7 @@ public class FinderDtoKaf022 {
 		SubstituteHdWorkAppSetDto substituteHdWorkAppSetDto = substituteHdWorkAppSetRepo.findSettingByCompany(companyId).map(SubstituteHdWorkAppSetDto::fromDomain).orElse(null);
 		List<OptionalItemAppSetDto> optionalItemAppSetDtos = optionalItemAppSetRepo.findByCompany(companyId).stream().map(OptionalItemAppSetDto::fromDomain).collect(Collectors.toList());
 
-		// get Reflection Settings
+		// 反映設定の取得
 		Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
         ReflectWorkChangeApp reflectWorkChangeApp = appWorkChangeSetRepo.findByCompanyIdReflect(companyId).orElse(null);
@@ -178,7 +181,7 @@ public class FinderDtoKaf022 {
 		SubLeaveAppReflectDto substituteLeaveAppReflectDto = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId).map(SubLeaveAppReflectDto::fromDomain).orElse(null);
 		SubstituteWorkAppReflectDto substituteWorkAppReflectDto = substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyId).map(SubstituteWorkAppReflectDto::fromDomain).orElse(null);
 
-		// get menu
+		// メニューの表示名を取得する
 		List<StandardMenuNameQuery> queries = new ArrayList<>();
 		queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=0")));
 		queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=1")));

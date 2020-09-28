@@ -32,7 +32,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
-        mode: number = 0; // 0 ->a, 1->b, 2->b(view)
+        mode: KnockoutObservable<number> = ko.observable(0); // 0 ->a, 1->b, 2->b(view)
+        reasonList: Array<GoOutTypeDispControl>;
+
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
@@ -114,11 +116,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return self.$ajax(API.start, command);
             }
         }).done((res: any) => {
-            self.data = res;
-            self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-            self.bindReasonList(self.data);
-            self.bindTabM(self.data);
-            self.bindComment(self.data);
+            if (res) {
+                self.data = res;
+                self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                self.bindReasonList(self.data);
+                self.bindTabM(self.data);
+                self.bindComment(self.data);
+                let el = document.getElementById('kaf000-a-component4-singleDate');
+                if (el) {
+                    el.focus();                                                    
+                }
+            }
         }).fail(res => {
             self.showError(res);
         }).always(() => {
@@ -127,7 +135,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // do not have actual data, or date is not selected
         self.initData();
     }
-    reasonList: Array<GoOutTypeDispControl>;
     bindReasonList(data: any) {
         const self = this;
         let reasonList = data.appStampSetting.goOutTypeDispControl;
@@ -273,7 +280,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                      messageId: res.messageId,
                      messageParams: res.parameterIds
              }
-            self.$dialog.error(param);
+            self.$dialog.error(param).then(() => {
+                if (res.messageId == 'Msg_1757') {
+                    self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                }
+            });
          }
     }
     public register() {
@@ -286,7 +297,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.bindActualData();
         let dataClone = _.clone(self.data);
-        if (!_.isNull(dataClone)) {
+        if (dataClone) {
             return;
         }
         self.$blockui( "show" );
@@ -298,10 +309,18 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         };
         self.$ajax(API.start, command)
             .done((res: any) => {
-                self.data = res;
-                self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-                self.bindTabM(self.data);
-                self.bindComment(self.data);
+                if (res) {
+                    self.data = res;
+                    self.initData();
+                    self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.bindReasonList(self.data);
+                    self.bindTabM(self.data);
+                    self.bindComment(self.data);
+                    let el = document.getElementById('kaf000-a-component4-singleDate');
+                    if (el) {
+                        el.focus();                                                    
+                    }
+                }
             }).fail(res => {
                 self.showError(res);
             }).always(() => {
@@ -584,7 +603,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 if (index == 0 || index == 1) {                    
                     _.forEach(items, (el: GridItem) => {                       
                         if (!ko.toJS(el.flagObservable)) {
-                            if (ko.toJS(el.startTimeRequest)) {
+                            if (!_.isNull(ko.toJS(el.startTimeRequest)) && ko.toJS(el.startTimeRequest) !== '') {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
@@ -600,7 +619,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 
                             }
                             
-                            if (ko.toJS(el.endTimeRequest)) {
+                            if (!_.isNull(ko.toJS(el.endTimeRequest)) && ko.toJS(el.endTimeRequest) !== '') {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
@@ -635,7 +654,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 } else {
                     _.forEach(items, (el: GridItem) => {
                         if (!ko.toJS(el.flagObservable)) {
-                            if (ko.toJS(el.startTimeRequest) || ko.toJS(el.endTimeRequest)) {
+                            if ((!_.isNull(ko.toJS(el.startTimeRequest)) && ko.toJS(el.startTimeRequest)) || (!_.isNull(ko.toJS(el.endTimeRequest) && ko.toJS(el.endTimeRequest) !== ''))) {
                                 let timeStampAppOtherDto = new TimeStampAppOtherDto();
                                 let tz = new TimeZone();
                                 let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
@@ -643,11 +662,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 destinationTimeZoneAppDto.engraveFrameNo = el.id;
                                 timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
                                 timeStampAppOtherDto.timeZone = tz;
-                                if (ko.toJS(el.startTimeRequest)) {
+                                if (ko.toJS(el.startTimeRequest) !== '' && !_.isNull(ko.toJS(el.startTimeRequest))) {
                                     tz.startTime = ko.toJS(el.startTimeRequest);
                                     
                                 }
-                                if (ko.toJS(el.endTimeRequest)) {
+                                if (ko.toJS(el.endTimeRequest) !== '' && !_.isNull(ko.toJS(el.endTimeRequest))) {
                                     tz.endTime = ko.toJS(el.endTimeRequest);                             
                                 }
                                 listTimeStampAppOther.push(timeStampAppOtherDto);                               
@@ -719,6 +738,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.content = content;
             this.isBold = isBold;
             this.color = color;
+        }
+        toHtml() {
+            const self = this;
+            return '<div style= {}>' + self.content + '</div>'
         }
         
     }

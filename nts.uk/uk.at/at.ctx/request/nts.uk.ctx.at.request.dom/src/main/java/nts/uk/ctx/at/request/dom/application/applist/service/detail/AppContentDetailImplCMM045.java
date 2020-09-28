@@ -845,7 +845,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				result += I18NText.getText("CMM045_230", appRecordImage.getAppStampGoOutAtr().get().nameId);
 			}
 			// 申請内容＋＝’　’＋レコーダイメージ申請.申請時刻
-			result += " " + appRecordImage.getAttendanceTime().v();
+			result += " " + new TimeWithDayAttr(appRecordImage.getAttendanceTime().v()).getFullText();
 			// アルゴリズム「申請内容の申請理由」を実行する
 			String appReasonContent = appContentService.getAppReasonContent(
 					appReasonDisAtr,
@@ -854,7 +854,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					application.getOpAppStandardReasonCD().orElse(null),
 					application.getAppType(),
 					Optional.empty());
-			result += appReasonContent;
+			if(Strings.isNotBlank(appReasonContent)) {
+				result += "\n" + appReasonContent;
+			}
 			return new AppStampDataOutput(
 					result,
 					Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD));
@@ -944,7 +946,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.GOOUT_RETURNING.value) {
 				// 項目名＝#KAF002_67（外出時間）：枠NO
 				// 項目名＋＝#CMM045_230（）：{0}=打刻申請出力用Tmp.外出理由
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67") + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().map(x -> x.nameId).orElse(""))));
+				if(itemTmp.getOpGoOutReasonAtr().isPresent()) {
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67") + I18NText.getText("CMM045_230", itemTmp.getOpGoOutReasonAtr().get().nameId)));
+				} else {
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_67")));
+				}
 			}
 			if(itemTmp.getTimeItem() == 1 && itemTmp.getStampAtr() == TimeZoneStampClassification.BREAK.value) {
 				// 項目名＝#KAF002_75（休憩時間）：枠NO

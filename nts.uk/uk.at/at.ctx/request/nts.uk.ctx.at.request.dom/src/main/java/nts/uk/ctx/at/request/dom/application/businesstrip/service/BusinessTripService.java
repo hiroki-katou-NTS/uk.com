@@ -48,8 +48,10 @@ public interface BusinessTripService {
      * @param wkTypeCd
      * @param wkTimeCd
      * @param inputDate
+     * @param startWorkTime
+     * @param endWorkTime
      */
-    void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate);
+    void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate, Integer startWorkTime, Integer endWorkTime);
 
     /**
      * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
