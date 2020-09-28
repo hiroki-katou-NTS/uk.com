@@ -9,9 +9,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameName;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameTargetWork;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.AggregateFrameName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.AggregateFrameTargetWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.OuenAggregateFrameOfMonthly;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

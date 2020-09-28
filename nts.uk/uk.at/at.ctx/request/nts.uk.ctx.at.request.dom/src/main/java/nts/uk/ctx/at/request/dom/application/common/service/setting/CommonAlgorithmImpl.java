@@ -702,6 +702,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 法定区分をチェックする
 		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
 		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
+			return;
+		}
 		if(appWorkTypeSet.getHolidayAtr() == actualWorkTypeSet.getHolidayAtr()) {
 			return;
 		}

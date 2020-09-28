@@ -7,7 +7,7 @@ import java.util.Optional;
 //import org.eclipse.persistence.exceptions.IntegrityException;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 public interface AgreementMonthSettingRepository {
 

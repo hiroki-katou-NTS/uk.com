@@ -5,18 +5,13 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 /**
  * 
  * @author Doan Duy Hung
@@ -30,7 +25,8 @@ public interface AgreementTimeAdapter {
 	
 	public AgreTimeYearStatusOfMonthly timeYear(AgreementTimeYear agreementTimeYear, Optional<AttendanceTimeYear> requestTimeOpt);
 	
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
+	/** TODO: 36協定時間対応により、コメントアウトされた */
+//	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
 	
 	public AgreMaxAverageTimeMulti maxAverageTimeMulti(
 			String companyId,
@@ -42,7 +38,8 @@ public interface AgreementTimeAdapter {
 	
 //	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria);
 	
-	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			GeneralDate criteria, ScheRecAtr scheRecAtr);
+	/** TODO: 36協定時間対応により、コメントアウトされた */
+//	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+//			GeneralDate criteria, ScheRecAtr scheRecAtr);
 	
 }
