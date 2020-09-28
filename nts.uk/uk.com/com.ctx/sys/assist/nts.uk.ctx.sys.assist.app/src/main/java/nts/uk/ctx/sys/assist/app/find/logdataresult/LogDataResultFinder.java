@@ -61,8 +61,8 @@ public class LogDataResultFinder {
 					 String ipAddress = resultOfSaving.getLoginInfo().getIpAddress();
 					 String pcName = resultOfSaving.getLoginInfo().getPcName();
 					 String account = resultOfSaving.getLoginInfo().getAccount();
-					 GeneralDateTime startDateTime = resultOfSaving.getSaveStartDatetime();
-					 GeneralDateTime endDateTime = resultOfSaving.getSaveEndDatetime();
+					 String startDateTime = resultOfSaving.getSaveStartDatetime().toString();
+					 String endDateTime = resultOfSaving.getSaveEndDatetime().toString();
 					 int form = resultOfSaving.getSaveForm();
 					 String name = resultOfSaving.getSaveName();
 					 String fileId = resultOfSaving.getFileId();
@@ -118,8 +118,8 @@ public class LogDataResultFinder {
 				 String ipAddress = resultOfRestoration.getLoginInfo().getIpAddress();
 				 String pcName = resultOfRestoration.getLoginInfo().getPcName();
 				 String account = resultOfRestoration.getLoginInfo().getAccount();
-				 GeneralDateTime startDateTime = resultOfRestoration.getStartDateTime();
-				 GeneralDateTime endDateTime = resultOfRestoration.getEndDateTime();
+				 String startDateTime = resultOfRestoration.getStartDateTime().toString();
+				 String endDateTime = resultOfRestoration.getEndDateTime().toString();
 				 int form = resultOfRestoration.getSaveForm();
 				 String name = resultOfRestoration.getSaveName();
 				 String fileId = "";
@@ -175,8 +175,8 @@ public class LogDataResultFinder {
 					 String ipAddress = resultOfDeletion.getLoginInfo().getIpAddress();
 					 String pcName = resultOfDeletion.getLoginInfo().getPcName();
 					 String account = resultOfDeletion.getLoginInfo().getAccount();
-					 GeneralDateTime startDateTime = resultOfDeletion.getStartDateTimeDel();
-					 GeneralDateTime endDateTime = resultOfDeletion.getEndDateTimeDel();
+					 String startDateTime = resultOfDeletion.getStartDateTimeDel().toString();
+					 String endDateTime = resultOfDeletion.getEndDateTimeDel().toString();
 					 int form = resultOfDeletion.getDelType();
 					 String name = resultOfDeletion.getDelName();
 					 String fileId = resultOfDeletion.getFileId();
