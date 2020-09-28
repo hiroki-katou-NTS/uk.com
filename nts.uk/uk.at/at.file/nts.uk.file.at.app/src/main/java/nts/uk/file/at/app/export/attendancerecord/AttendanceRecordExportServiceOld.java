@@ -633,7 +633,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 							dailyData.setDate(startDateByClosure);
 //							dailyData.setDayOfWeek(DayOfWeekJP
 //									.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
-							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[13];
+							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnDailyData];
 							int index = 0;
 							for (AttendanceRecordResponse item : upperDailyRespond) {
 								columnDatasArray[index] = new AttendanceRecordReportColumnData("", "");
@@ -665,7 +665,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 								weeklyData.setDailyDatas(dailyDataList);
 								// Set total result in week
 								AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
-								summaryWeeklyData = this.getSumWeeklyValue(dailyDataList);
+								summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 								weeklyData.setWeeklySumaryData(summaryWeeklyData);
 
@@ -683,7 +683,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 							AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
 							weeklyData.setDailyDatas(dailyDataList);
 							AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
-							summaryWeeklyData = this.getSumWeeklyValue(dailyDataList);
+							summaryWeeklyData = this.getSumWeeklyValue(dailyDataList, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 							weeklyData.setWeeklySumaryData(summaryWeeklyData);
 
@@ -1182,7 +1182,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 	 *            the list
 	 * @return the sum weekly value
 	 */
-	public AttendanceRecordReportWeeklySumaryData getSumWeeklyValue(List<AttendanceRecordReportDailyData> list) {
+	public AttendanceRecordReportWeeklySumaryData getSumWeeklyValue(List<AttendanceRecordReportDailyData> list, int fontSize) {
 		AttendanceRecordReportWeeklySumaryData result = new AttendanceRecordReportWeeklySumaryData();
 
 		String upperValue7th = "";
@@ -1213,22 +1213,27 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
 				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
 			}
-			if (item.getColumnDatas().get(9) != null) {
-				upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
-				lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+			if (fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value || fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) { 
+				if (item.getColumnDatas().get(9) != null) {
+					upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
+					lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+				}
+				if (item.getColumnDatas().get(10) != null) {
+					upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
+					lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+				}
 			}
-			if (item.getColumnDatas().get(10) != null) {
-				upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
-				lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+			if (fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) { 
+				if (item.getColumnDatas().get(11) != null) {
+					upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
+					lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
+				}
+				if (item.getColumnDatas().get(12) != null) {
+					upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
+					lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
+				}
 			}
-			if (item.getColumnDatas().get(11) != null) {
-				upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
-				lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
-			}
-			if (item.getColumnDatas().get(12) != null) {
-				upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
-				lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
-			}
+			
 
 		}
 		List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
@@ -1241,18 +1246,22 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		AttendanceRecordReportColumnData columnData9 = new AttendanceRecordReportColumnData(upperValue9th,
 				lowerValue9th);
 		columnDatas.add(columnData9);
-		AttendanceRecordReportColumnData columnData10 = new AttendanceRecordReportColumnData(upperValue10th,
-				lowerValue10th);
-		columnDatas.add(columnData10);
-		AttendanceRecordReportColumnData columnData11 = new AttendanceRecordReportColumnData(upperValue11th,
-				lowerValue11th);
-		columnDatas.add(columnData11);
-		AttendanceRecordReportColumnData columnData12 = new AttendanceRecordReportColumnData(upperValue12th,
-				lowerValue12th);
-		columnDatas.add(columnData12);
-		AttendanceRecordReportColumnData columnData13 = new AttendanceRecordReportColumnData(upperValue13th,
-				lowerValue13th);
-		columnDatas.add(columnData13);
+		if (fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value || fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) {
+			AttendanceRecordReportColumnData columnData10 = new AttendanceRecordReportColumnData(upperValue10th,
+					lowerValue10th);
+			columnDatas.add(columnData10);
+			AttendanceRecordReportColumnData columnData11 = new AttendanceRecordReportColumnData(upperValue11th,
+					lowerValue11th);
+			columnDatas.add(columnData11);
+		}
+		if (fontSize == ExportFontSize.CHARS_SIZE_SMALL.value) {
+			AttendanceRecordReportColumnData columnData12 = new AttendanceRecordReportColumnData(upperValue12th,
+					lowerValue12th);
+			columnDatas.add(columnData12);
+			AttendanceRecordReportColumnData columnData13 = new AttendanceRecordReportColumnData(upperValue13th,
+					lowerValue13th);
+			columnDatas.add(columnData13);
+		}
 
 		result.setDateRange(list.get(0).getDate() + "-" + list.get(list.size() - 1).getDate());
 		result.setColumnDatas(columnDatas);
