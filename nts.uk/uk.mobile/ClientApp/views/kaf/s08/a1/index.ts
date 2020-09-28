@@ -179,24 +179,24 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
-        let validAll: boolean = true;
-        for (let child of vm.$children) {
-            child.$validate();
-            if (!child.$valid) {
-                this.hidden = true;
-                validAll = false;
-            }
-        }
-
-        if (!validAll) {
-            window.scrollTo(500, 0);
-            
-            return;
-        } else {
-            vm.hidden = false;
-        }
         //check date when press next
         if (vm.mode) {
+            let validAll: boolean = true;
+            for (let child of vm.$children) {
+                child.$validate();
+                if (!child.$valid) {
+                    this.hidden = true;
+                    validAll = false;
+                }
+            }
+
+            if (!validAll) {
+                window.scrollTo(500, 0);
+                
+                return;
+            } else {
+                vm.hidden = false;
+            }
             //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
             let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
             let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
@@ -387,7 +387,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
                     let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
                     if (_.isNull(startDate)) {
-                        
+
                         return;
                     }
                     
