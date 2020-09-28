@@ -30,8 +30,8 @@ public class OneMonthTimeTest {
     @Test
     public void createTest_2() {
         ErrorTimeInMonth errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30));
-        OneMonthTime target = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
-                new AgreementOneMonthTime(50));
+
+        OneMonthTime target = OneMonthTime.create(errorTimeInMonth,new AgreementOneMonthTime(50));
 
         Assert.assertEquals(errorTimeInMonth.getErrorTime(), target.getErrorTimeInMonth().getErrorTime());
         Assert.assertEquals(errorTimeInMonth.getAlarmTime(), target.getErrorTimeInMonth().getAlarmTime());

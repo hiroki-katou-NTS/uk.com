@@ -16,11 +16,6 @@ import java.util.List;
 public class Approver36AgrByWorkplace extends AggregateRoot {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
 	 * 職場ID
 	 */
 	private String workplaceId;
@@ -44,7 +39,6 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 	 * 新しい職場別の承認者（36協定）を作る。
 	 */
 	public Approver36AgrByWorkplace(
-			String cid,
 			String workplaceId,
 			DatePeriod period,
 			List<String> approverIds,
@@ -65,7 +59,6 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 			throw new BusinessException("Msg_1792");
 		}
 
-		this.cid = cid;
 		this.workplaceId = workplaceId;
 		this.period = period;
 		this.approverIds = approverIds;

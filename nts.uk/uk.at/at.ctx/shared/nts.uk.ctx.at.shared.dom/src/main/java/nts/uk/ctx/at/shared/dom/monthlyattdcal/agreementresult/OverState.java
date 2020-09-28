@@ -23,7 +23,7 @@ public enum OverState {
 	/** The name id. */
 	public String nameId;
 
-	private OverState(int value,String nameId) {
+	OverState(int value,String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}

@@ -45,7 +45,7 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 			fromDomain(domain);
 		}};
 
-		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.PK, Krcmt36AgrApvCmp.class);
+		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvCmp target = findResult.get();
 			target.endDate = domainData.endDate;
@@ -75,7 +75,7 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 			fromDomain(domain);
 		}};
 
-		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.PK, Krcmt36AgrApvCmp.class);
+		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvCmp target = findResult.get();
 			this.commandProxy().remove(target);

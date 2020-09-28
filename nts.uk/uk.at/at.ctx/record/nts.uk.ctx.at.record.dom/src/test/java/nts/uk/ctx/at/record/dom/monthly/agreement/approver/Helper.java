@@ -42,7 +42,6 @@ public class Helper {
 
 	public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
 		return new Approver36AgrByWorkplace(
-				cid,
 				workplaceId,
 				period,
 				createApproverList(5),
