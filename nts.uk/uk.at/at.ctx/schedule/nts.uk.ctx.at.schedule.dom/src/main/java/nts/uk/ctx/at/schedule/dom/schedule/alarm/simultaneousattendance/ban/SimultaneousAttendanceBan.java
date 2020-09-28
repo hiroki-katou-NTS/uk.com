@@ -9,37 +9,38 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 /**
  * 同時出勤禁止
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同時出勤.同時出勤禁止.同時出勤禁止
  * @author lan_lt
  *
  */
 @AllArgsConstructor
 @Getter
 public class SimultaneousAttendanceBan implements DomainAggregate{
-	//対象組織
+	/** 対象組織 */
 	private final TargetOrgIdenInfor targetOrg;
 	
-	//同時出勤禁止コード
+	/** 同時出勤禁止コード */
 	private final SimultaneousAttendanceBanCode simultaneousAttBanCode;
 	
-	//同時出勤禁止名称
+	/** 同時出勤禁止名称 */
 	private SimultaneousAttendanceBanName simultaneousAttendanceBanName;
 	
-	//適用する時間帯
+	/** 適用する時間帯 */
 	private final ApplicableTimeZoneCls applicableTimeZoneCls;
 	
-	//禁止する社員の組み合わせ
+	/** 禁止する社員の組み合わせ */
 	private List<String> empBanWorkTogetherLst;
 	
-	//許容する人数
+	/** 許容する人数 */
 	private MaxOfNumberEmployeeTogether allowableNumberOfEmp;
 
 	/**
 	 * 終日を指定して作成する
-	 * @param targetOrg
-	 * @param simultaneousAttBanCode
-	 * @param simultaneousAttendanceBanName
-	 * @param empBanWorkTogetherLst
-	 * @param allowableNumberOfEmp
+	 * @param targetOrg 対象組織
+	 * @param simultaneousAttBanCode 同時出勤禁止コード
+	 * @param simultaneousAttendanceBanName 同時出勤禁止名称 
+	 * @param empBanWorkTogetherLst 禁止する社員の組み合わせ
+	 * @param allowableNumberOfEmp 許容する人数
 	 * @return
 	 */
 	public static SimultaneousAttendanceBan createBySpecifyingAllDay(TargetOrgIdenInfor targetOrg, 
@@ -64,11 +65,11 @@ public class SimultaneousAttendanceBan implements DomainAggregate{
 
 	/**
 	 * 夜勤時間帯を指定して作成する
-	 * @param targetOrg
-	 * @param simultaneousAttBanCode
-	 * @param simultaneousAttendanceBanName
-	 * @param empBanWorkTogetherLst
-	 * @param allowableNumberOfEmp
+	 * @param targetOrg 対象組織
+	 * @param simultaneousAttBanCode 同時出勤禁止コード
+	 * @param simultaneousAttendanceBanName 同時出勤禁止名称 
+	 * @param empBanWorkTogetherLst 禁止する社員の組み合わせ
+	 * @param allowableNumberOfEmp 許容する人数
 	 * @return
 	 */
 	public static SimultaneousAttendanceBan createByNightShift(TargetOrgIdenInfor targetOrg, 
