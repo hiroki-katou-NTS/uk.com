@@ -11,10 +11,13 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetWorkActualOfWorkInfo002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsCloseDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.TheInitialDisplayDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 
 @Path("screen/ksu/ksu002/")
 @Produces("application/json")
@@ -23,6 +26,10 @@ public class Ksu002AWebService extends WebService {
 	// 初期表示の年月を取得する
 	@Inject
 	private TheInitialDisplayDate theInitialDisplayDate;
+	
+	// 締めに応じる期間リストを取得する
+	@Inject
+	private ListOfPeriodsClose listOfPeriodsClose;
 	
 	// 勤務予定（勤務情報）を取得する
 	@Inject
@@ -41,6 +48,12 @@ public class Ksu002AWebService extends WebService {
 	@Path("getInitialDate")
 	public TheInitialDisplayDateDto get() {
 		return this.theInitialDisplayDate.getInitialDisplayDate();
+	}
+	
+	@POST
+	@Path("getListOfPeriodsClose")
+	public List<PeriodsCloseDto> getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
+		return this.listOfPeriodsClose.get(param);
 	}
 	
 	@POST

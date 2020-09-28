@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
@@ -22,16 +21,17 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsCloseDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * 締めに応じる期間リストを取得する
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU002_個人スケジュール修正(個人別).A:メイン画面.メニュー別OCD.締めに応じる期間リストを取得する
  * @author chungnt
  *
  */
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ListOfPeriodsClose {
 
 	@Inject
@@ -55,7 +55,7 @@ public class ListOfPeriodsClose {
 		
 		List<PeriodsCloseDto> dtos = new ArrayList<>();
 		
-		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, input.getSid(), GeneralDate.today(), input.getBaseDate());
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, input.getSid(), GeneralDate.today(), YearMonth.of(input.getYearMonth()));
 		
 		for (ClosurePeriod closurePeriod : periods) {
 			PeriodsCloseDto closeDto = new PeriodsCloseDto();
@@ -65,6 +65,8 @@ public class ListOfPeriodsClose {
 			Optional<Closure> closure = this.closureRepository.findById(companyId, closurePeriod.getClosureId().value);
 			
 			closeDto.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
+			
+			dtos.add(closeDto);
 			
 		}
 		
