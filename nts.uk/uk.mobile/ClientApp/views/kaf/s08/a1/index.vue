@@ -11,7 +11,11 @@
           {{ 'KAFS08_13' | i18n }}
         </button>
       </div>
-      <div>
+      <div v-if="mode">
+        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+        <!-- <template v-else /> -->
+      </div>
+      <div v-else>
         <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
         <!-- <template v-else /> -->
       </div>
