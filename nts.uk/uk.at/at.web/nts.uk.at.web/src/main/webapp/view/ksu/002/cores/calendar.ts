@@ -1,50 +1,70 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.calendar {
+	export interface DayData {
+		data: any;
+		date: Date;
+		inRange: boolean;
+		startDate: boolean;
+	}
+
+	export interface DateRange {
+		begin: Date;
+		finish: Date;
+	}
+
+	export interface Parameter {
+		width: KnockoutObservable<number>;
+		baseDate: KnockoutObservable<Date | DateRange>;
+		schedules: KnockoutObservableArray<DayData>;
+		clickCell: (target: 'title' | 'event' | 'holiday' | 'body', day: DayData) => void;
+	}
+
 	const D_FORMAT = 'YYYYMM';
 	const COMPONENT_NAME = 'scheduler';
 	const COMPONENT_TEMP = `
         <div class="filter cf">
             <label class="filter-title" data-bind="i18n: 'KSU002_30'"></label>
             <div data-bind="ntsComboBox: {
-                width: '100px',
-                name: $component.$i18n('KSU002_30'),
-                value: $component.startDate,
-                options: $component.dateOptions,
-                optionsValue: 'id',
-                optionsText: 'title',
-                editable: false,
-                selectFirstIfNull: true,
-                columns: [
-                    { prop: 'title', length: 10 },
-                ]}"></div>
-        </div>
+					width: '100px',
+					name: $component.$i18n('KSU002_30'),
+					value: $component.baseDate.start,
+					options: $component.baseDate.options,
+					optionsValue: 'id',
+					optionsText: 'title',
+					editable: false,
+					selectFirstIfNull: true,
+					columns: [
+						{ prop: 'title', length: 10 },
+					]}
+				"></div>
+		</div>
         <div class="calendar-container">
-            <div data-bind="if: !!ko.unwrap($component.showBaseDate), css: { 'title': !!ko.unwrap($component.showBaseDate) }">
-                <div data-bind="ntsDatePicker: { value: baseDate, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', showJumpButtons: true }"></div>
+            <div data-bind="if: !!ko.unwrap($component.baseDate.show), css: { 'title': !!ko.unwrap($component.baseDate.show) }">
+                <div data-bind="ntsDatePicker: { value: $component.baseDate.model, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', showJumpButtons: true }"></div>
             </div>
             <div class="calendar title">
-                <div class="week cf" data-bind="foreach: { data: titleDays, as: 'day' }">
+                <div class="week cf" data-bind="foreach: { data: ko.unwrap($component.schedules).titles, as: 'day' }">
                     <div class="day" data-bind="scheduler-class: day">
                         <div class="status cf">
-                            <span data-bind="date: day, format: 'ddd'"></span>
+                            <span data-bind="date: day.date, format: 'ddd'"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="calendar" data-bind="foreach: { data: schedules, as: 'days' }">
+            <div class="calendar" data-bind="foreach: { data:ko.unwrap($component.schedules).days, as: 'days' }">
                 <div class="week cf" data-bind="foreach: { data: days, as: 'day' }">
                     <div class="day" data-bind="scheduler-class: day">
                         <div class="status cf">
                             <span data-bind="scheduler-date: day"></span>
-                            <svg data-bind="scheduler-daisy: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['event', day]); }"></svg>
+                            <svg data-bind="scheduler-daisy: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['event', day, evt]); }"></svg>
                         </div>
-                        <div class="status cf" data-bind="scheduler-holiday: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['holiday', day]); }"></div>
-                        <div class="data-info" data-bind="scheduler-data-info: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['info', day]); }"></div>
+                        <div class="status cf" data-bind="scheduler-holiday: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['holiday', day, evt]); }"></div>
+                        <div class="data-info" data-bind="scheduler-data-info: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['info', day, evt]); }"></div>
                     </div>
                 </div>
             </div>
-        </div>
+		</div>
         <style type="text/css" rel="stylesheet">
             .scheduler {
                 display: inline-block;
@@ -236,7 +256,7 @@ module nts.uk.ui.at.ksu002.calendar {
 		bindingName: 'scheduler-class'
 	})
 	export class ClassDayComponentBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
+		update(element: any, valueAccessor: () => Date | DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
 			const day = ko.unwrap(valueAccessor());
 
 			if (_.isDate(day)) {
@@ -260,11 +280,11 @@ module nts.uk.ui.at.ksu002.calendar {
 		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
 			const data = ko.unwrap(valueAccessor());
 
-			if (data.inRange) {
+			if (!data.inRange) {
 				element.innerHTML = '&nbsp;';
 			}
 			else {
-				element.innerHTML = '&nbsp;'; //moment(data.date).format('D');
+				element.innerHTML = '&nbsp;';
 			}
 		}
 	}
@@ -274,16 +294,18 @@ module nts.uk.ui.at.ksu002.calendar {
 	})
 	export class SchedulerDateBindingHandler implements KnockoutBindingHandler {
 		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
-			const data = ko.unwrap(valueAccessor());
+			const dayData = ko.unwrap(valueAccessor());
 
-			if (!data.inRange) {
+			if (!dayData.inRange) {
 				element.innerHTML = '&nbsp;';
 			}
 			else {
-				if (!data.startDate) {
-					element.innerHTML = moment(data.date).format('D');
+				const date = moment(dayData.date);
+
+				if (!dayData.startDate) {
+					element.innerHTML = date.format('D');
 				} else {
-					element.innerHTML = moment(data.date).format('M/D');
+					element.innerHTML = date.format('M/D');
 				}
 			}
 		}
@@ -294,13 +316,13 @@ module nts.uk.ui.at.ksu002.calendar {
 	})
 	export class SchedulerInfoBindingHandler implements KnockoutBindingHandler {
 		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
-			const data = ko.unwrap(valueAccessor());
+			const dayData = ko.unwrap(valueAccessor());
 
-			if (data.inRange) {
-				element.innerHTML = ko.toJSON(data.data);
+			if (!dayData.inRange) {
+				element.innerHTML = '&nbsp;';
 			}
 			else {
-				element.innerHTML = '&nbsp;'; //moment(data.date).format('D');
+				element.innerHTML = ko.toJSON(dayData.data);
 			}
 		}
 	}
@@ -344,14 +366,15 @@ module nts.uk.ui.at.ksu002.calendar {
 	})
 	export class CalendarComponent extends ko.ViewModel {
 		style: KnockoutObservable<string> = ko.observable('');
-		baseDate: KnockoutObservable<string | null> = ko.observable(null);
-		startDate: KnockoutObservable<number | null> = ko.observable(null);
-		dateOptions: KnockoutObservableArray<DateOption> = ko.observableArray([]);
 
-		schedules!: KnockoutComputed<DayData[][]>;
-		titleDays!: KnockoutComputed<Date[]>;
+		baseDate: BaseDate = {
+			show: ko.computed(() => true),
+			model: ko.observable(null),
+			start: ko.observable(null),
+			options: ko.observableArray([])
+		};
 
-		showBaseDate!: KnockoutComputed<boolean>;
+		schedules!: KnockoutComputed<Schedule>;
 
 		constructor(private data: Parameter) {
 			super();
@@ -363,7 +386,7 @@ module nts.uk.ui.at.ksu002.calendar {
 				vm.data = {
 					width: ko.observable(630),
 					baseDate: ko.observable(date),
-					schedules: ko.observableArray([]).extend({ memento: { size: 20 } }) as any,
+					schedules: ko.observableArray([]),
 					clickCell: () => { }
 				};
 			}
@@ -390,7 +413,7 @@ module nts.uk.ui.at.ksu002.calendar {
 				if (ko.isObservable(schedules)) {
 					vm.data.schedules([]);
 				} else {
-					vm.data.schedules = ko.observableArray([]).extend({ memento: { size: 20 } }) as any;
+					vm.data.schedules = ko.observableArray([]);
 				}
 			}
 
@@ -406,21 +429,25 @@ module nts.uk.ui.at.ksu002.calendar {
 			const startDate = moment().startOf('week');
 			const listDates = _.range(0, 7)
 				.map(m => startDate.clone().add(m, 'day'))
-				.map(d => ({ id: d.get('day'), title: d.format('dddd') }));
+				.map(d => ({
+					id: d.get('day'),
+					title: d.format('dddd')
+				}));
 
-			vm.dateOptions(listDates);
+			vm.baseDate.options(listDates);
 
 			ko.computed({
 				read: () => {
 					const date = ko.unwrap(data.baseDate);
 
 					if (_.isDate(date)) {
-						vm.baseDate(moment(date).format(D_FORMAT));
+						vm.baseDate.model(moment(date).format(D_FORMAT));
 					}
-				}
+				},
+				owner: vm
 			});
 
-			vm.baseDate
+			vm.baseDate.model
 				.subscribe((date: string) => {
 					if (date && date.match(/^\d{6}$/)) {
 						data.baseDate(moment(date, D_FORMAT).toDate());
@@ -443,12 +470,15 @@ module nts.uk.ui.at.ksu002.calendar {
 
 			vm.schedules = ko.computed({
 				read: () => {
-					const startDate = ko.unwrap(vm.startDate);
-					const schedules = ko.unwrap(data.schedules);
 					const locale = moment.locale();
+					const schedules = ko.unwrap(data.schedules);
+					const startDate = ko.unwrap(vm.baseDate.start);
 
 					if (!schedules.length) {
-						return [];
+						return {
+							days: [],
+							titles: []
+						};
 					}
 
 					moment.updateLocale(locale, {
@@ -486,22 +516,15 @@ module nts.uk.ui.at.ksu002.calendar {
 
 					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
 
-					return _.chunk([...befores, ...schedules, ...afters], 7);
+					const days = _.chunk([...befores, ...schedules, ...afters], 7);
+					const [titles] = days;
+
+					return { days, titles };
 				},
 				owner: vm
 			});
 
-			vm.titleDays = ko.computed({
-				read: () => {
-					const scheds = ko.unwrap(vm.schedules);
-					const dates = (scheds[0] || []).map((m) => m.date);
-
-					return dates;
-				},
-				owner: vm
-			});
-
-			vm.showBaseDate = ko.computed({
+			vm.baseDate.show = ko.computed({
 				read: () => {
 					const bDate = ko.unwrap(data.baseDate);
 
@@ -528,7 +551,7 @@ module nts.uk.ui.at.ksu002.calendar {
 						return false;
 					};
 					const initRange = (diff: number) => {
-						const daysOfMonth = _.range(0, diff + 1, 1)
+						const daysOfMonth = _.range(0, Math.abs(diff + 1), 1)
 							.map((d) => start.clone().add(d, 'day'))
 							.map((d) => ({
 								date: d.toDate(),
@@ -541,10 +564,10 @@ module nts.uk.ui.at.ksu002.calendar {
 					};
 
 					if (_.isDate(baseDate)) {
-						if (!start.isSame(first.date, 'month')) {
+						if (!schedules.length || !start.isSame(first.date, 'month')) {
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
-							const diff = start.diff(end, 'day');
+							const diff = end.diff(start, 'day');
 
 							initRange(diff);
 						}
@@ -568,9 +591,17 @@ module nts.uk.ui.at.ksu002.calendar {
 						}
 					}
 				});
+
+			if (_.isDate(ko.unwrap(data.baseDate))) {
+				vm.baseDate.model.valueHasMutated();
+			}
 		}
 
 		mounted() {
+			const vm = this;
+		}
+
+		destroyed() {
 			const vm = this;
 		}
 	}
@@ -580,22 +611,15 @@ module nts.uk.ui.at.ksu002.calendar {
 		title: string;
 	}
 
-	export interface DayData {
-		date: Date;
-		data: any;
-		inRange: boolean;
-		startDate: boolean;
+	interface BaseDate {
+		show: KnockoutComputed<boolean>;
+		model: KnockoutObservable<string | null>;
+		start: KnockoutObservable<number | null>;
+		options: KnockoutObservableArray<DateOption>;
 	}
 
-	export interface DateRange {
-		begin: Date;
-		finish: Date;
-	}
-
-	export interface Parameter {
-		width: KnockoutObservable<number>;
-		baseDate: KnockoutObservable<Date | DateRange>;
-		schedules: KnockoutObservableArray<DayData>;
-		clickCell: (target: 'title' | 'event' | 'holyday' | 'body', day: DayData) => void;
+	interface Schedule {
+		days: DayData[][];
+		titles: DayData[];
 	}
 }
