@@ -1,12 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -15,6 +8,12 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
+
+import javax.ejb.Stateless;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Optional;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogHistRepository extends JpaRepository
@@ -38,6 +37,9 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	private static final String SELECT_All_BY_CID_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd ";
+	private static final String SELECT_ALL_BY_CID_START_DATE_END_DATE = SELECT_ALL
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate ORDER BY pelh.prevExecDateTime DESC";
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String companyId, String execItemCd, String execId) {
 		return this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
@@ -192,4 +194,11 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				.setParameter("endDate", endDate1).getList(c -> c.toDomain());
 	}
 
+	@Override
+	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+		return this.queryProxy().query(SELECT_ALL_BY_CID_START_DATE_END_DATE, KfnmtProcessExecutionLogHistory.class)
+				.setParameter("companyId", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(c -> c.toDomain());
+	}
 }

@@ -1,41 +1,20 @@
 package nts.uk.ctx.at.record.ws.resultsperiod.optionalaggregationperiod;
 
-import java.util.List;
+import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.task.AsyncTaskInfo;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.*;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.*;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorInfoExportService;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import nts.arc.layer.app.command.JavaTypeResult;
-import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.arc.task.AsyncTaskInfo;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommand;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandHandler;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.AddAggrPeriodCommandResult;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodCommandHandler;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommand;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommandHandler;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommandHandler;
-import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.UpdateOptionalAggrPeriodCommandHandler;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodExcutionDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodExecLogFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodInforDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.PeriodTargetDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorInfoExportService;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.exportcsv.AggrPeriodErrorQuery;
+import java.util.List;
 
 @Path("ctx/at/record/optionalaggr/")
 @Produces("application/json")
