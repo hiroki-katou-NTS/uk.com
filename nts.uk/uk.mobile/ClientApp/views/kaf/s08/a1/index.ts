@@ -181,7 +181,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         let validAll: boolean = true;
         for (let child of vm.$children) {
-            if (child.$el.className != 'kafs00b') {
+            if (vm.mode || child.$el.className != 'kafs00b') {
                 child.$validate();
                 if (!child.$valid) {
                     this.hidden = true;
