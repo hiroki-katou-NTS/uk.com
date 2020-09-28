@@ -48,9 +48,8 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.baseDate
 				.subscribe((data) => {
-					console.log(data.begin);
 					// call to api and get data
-					vm.schedules.reset(ko.unwrap(vm.schedules));
+					// vm.schedules.reset(ko.unwrap(vm.schedules));
 				});
 		}
 
@@ -72,10 +71,18 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		clickDayCell(type: string, date: any) {
+		clickDayCell(type: string, data: c.DayData) {
 			const vm = this;
 
-			console.log(vm, type, date);
+			const wrap: c.DayData[] = ko.toJS(vm.schedules);
+
+			const exist = _.find(wrap, f => moment(f.date).isSame(data.date, 'date'));
+
+			if (exist) {
+				exist.data = Date.now();
+			}
+
+			vm.schedules.memento(wrap);
 		}
 	}
 }

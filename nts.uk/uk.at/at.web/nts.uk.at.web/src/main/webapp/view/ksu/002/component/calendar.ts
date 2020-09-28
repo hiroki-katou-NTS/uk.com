@@ -8,33 +8,11 @@ module nts.uk.ui.at.ksu002.memento {
 	}
 
 	interface Memento {
-		size: number;
-		stopWatch: boolean;
 		undo: KnockoutObservableArray<any>;
 		redo: KnockoutObservableArray<any>;
 	}
 
-	const defaultMemento = (size: number): Memento => ({
-		size,
-		stopWatch: false,
-		undo: ko.observableArray([]),
-		redo: ko.observableArray([])
-	});
-
-	const resetMemento = (memento: Memento, size: number) => {
-		memento.size = size;
-		memento.stopWatch = false;
-		memento.undo([]);
-		memento.redo([]);
-	};
-
-	const stripMemory = (memory: KnockoutObservableArray<any>, size: number) => {
-		while (ko.unwrap(memory).length > size) {
-			memory.shift();
-		}
-	};
-
-	const memento = function (target: KnockoutObservableArray<any>, options: Options) {
+	const memento = function(target: KnockoutObservableArray<any>, options: Options) {
 		if (!options) {
 			options = {
 				size: 9999
@@ -45,38 +23,43 @@ module nts.uk.ui.at.ksu002.memento {
 			options.size = 9999;
 		}
 
-		const $memento: Memento = defaultMemento(options.size);
+		const $memento: Memento = {
+			undo: ko.observableArray([]),
+			redo: ko.observableArray([])
+		};
 
-		target
-			.subscribe((data: any[]) => {
-				if (!$memento.stopWatch) {
-					// reset redo data
-					$memento.redo([]);
-
-					// push old data to memories
-					$memento.undo.unshift(data);
-
-					// remove old record when memory size has large than config
-					stripMemory($memento.undo, options.size);
-				}
-			}, null, 'beforeChange');
+		const stripMemory = () => {
+			while (ko.unwrap($memento.undo).length > options.size) {
+				$memento.undo.pop();
+			}
+			
+			while (ko.unwrap($memento.redo).length > options.size) {
+				$memento.redo.pop();
+			}
+		};
 
 		_.extend(target, {
-			mock: function $mock(data: any[]) {
-				$memento.stopWatch = true;
-
-				target(data);
-
-				$memento.stopWatch = false;
-			},
-			reset: function $reset(data?: any[]) {
-				if (data) {
+			reset: function $$reset(data?: any[]) {
+				if (data !== undefined) {
 					target(data);
 				}
 
-				resetMemento($memento, options.size);
+				$memento.undo([]);
+				$memento.redo([]);
 			},
-			undo: function $undo() {
+			memento: function $$memento(data?: any) {
+				$memento.redo([]);
+				// push old data to memories			
+				$memento.undo.unshift(ko.toJS(target));
+
+				if (data !== undefined) {
+					target(data);
+				}
+
+				// remove old record when memory size has large than config
+				stripMemory();
+			},
+			undo: function $$undo() {
 				if (ko.unwrap($memento.undo).length) {
 					const current = ko.unwrap(target);
 					const preview = $memento.undo.shift();
@@ -84,9 +67,7 @@ module nts.uk.ui.at.ksu002.memento {
 					$memento.redo.unshift(current);
 
 					// remove old record when memory size has large than config
-					stripMemory($memento.redo, options.size);
-
-					$memento.stopWatch = true;
+					stripMemory();
 
 					if (!options.replace) {
 						target(preview);
@@ -94,12 +75,10 @@ module nts.uk.ui.at.ksu002.memento {
 						options.replace(current, preview);
 						target(current);
 					}
-
-					$memento.stopWatch = false;
 				}
 			},
 			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
-			redo: function $redo() {
+			redo: function $$redo() {
 				if (ko.unwrap($memento.redo).length) {
 					const current = ko.unwrap(target);
 					const forward = $memento.redo.shift();
@@ -107,9 +86,7 @@ module nts.uk.ui.at.ksu002.memento {
 					$memento.undo.unshift(current);
 
 					// remove old record when memory size has large than config
-					stripMemory($memento.undo, options.size);
-
-					$memento.stopWatch = true;
+					stripMemory();
 
 					if (!options.replace) {
 						target(forward);
@@ -117,8 +94,6 @@ module nts.uk.ui.at.ksu002.memento {
 						options.replace(current, forward);
 						target(current);
 					}
-
-					$memento.stopWatch = false;
 				}
 			},
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length)
@@ -135,8 +110,8 @@ module nts.uk.ui.at.ksu002.memento {
 interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
 	undo(): void;
 	redo(): void;
-	mock(data: any): void;
-	reset(data?: any[]): void;
+	reset(data?: any): void;
+	memento(data?: any): void;
 	undoAble: KnockoutComputed<boolean>;
 	redoAble: KnockoutComputed<boolean>;
 }
@@ -438,7 +413,7 @@ module nts.uk.ui.at.ksu002.calendar {
 			const data = ko.unwrap(valueAccessor());
 
 			if (data.inRange) {
-				element.innerHTML = '&nbsp;';
+				element.innerHTML = ko.toJSON(data.data);
 			}
 			else {
 				element.innerHTML = '&nbsp;'; //moment(data.date).format('D');
@@ -531,7 +506,7 @@ module nts.uk.ui.at.ksu002.calendar {
 				if (ko.isObservable(schedules)) {
 					vm.data.schedules([]);
 
-					if (!vm.data.schedules.mock) {
+					if (!vm.data.schedules.memento) {
 						vm.data.schedules.extend({ memento: { size: 20 } });
 					}
 				} else {
@@ -612,7 +587,7 @@ module nts.uk.ui.at.ksu002.calendar {
 							date: d.toDate(),
 							inRange: false,
 							startDate: false,
-							data: ko.observable({})
+							data: null
 						}));
 
 					const start1 = moment(begin.date).startOf('week');
@@ -679,7 +654,7 @@ module nts.uk.ui.at.ksu002.calendar {
 								date: d.toDate(),
 								inRange: true,
 								startDate: isStartDate(d),
-								data: ko.observable({})
+								data: null
 							}));
 
 						data.schedules.reset(daysOfMonth);
@@ -727,7 +702,7 @@ module nts.uk.ui.at.ksu002.calendar {
 
 	export interface DayData {
 		date: Date;
-		data: KnockoutObservable<any>;
+		data: any;
 		inRange: boolean;
 		startDate: boolean;
 	}
