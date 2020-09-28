@@ -1,121 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.ui.at.ksu002.memento {
-
-	export interface Options {
-		size: number;
-		replace?: (data: any, replacer: any) => void;
-	}
-
-	interface Memento {
-		undo: KnockoutObservableArray<any>;
-		redo: KnockoutObservableArray<any>;
-	}
-
-	const memento = function(target: KnockoutObservableArray<any>, options: Options) {
-		if (!options) {
-			options = {
-				size: 9999
-			};
-		}
-
-		if (options.size < 1) {
-			options.size = 9999;
-		}
-
-		const $memento: Memento = {
-			undo: ko.observableArray([]),
-			redo: ko.observableArray([])
-		};
-
-		const stripMemory = () => {
-			while (ko.unwrap($memento.undo).length > options.size) {
-				$memento.undo.pop();
-			}
-			
-			while (ko.unwrap($memento.redo).length > options.size) {
-				$memento.redo.pop();
-			}
-		};
-
-		_.extend(target, {
-			reset: function $$reset(data?: any[]) {
-				if (data !== undefined) {
-					target(data);
-				}
-
-				$memento.undo([]);
-				$memento.redo([]);
-			},
-			memento: function $$memento(data?: any) {
-				$memento.redo([]);
-				// push old data to memories			
-				$memento.undo.unshift(ko.toJS(target));
-
-				if (data !== undefined) {
-					target(data);
-				}
-
-				// remove old record when memory size has large than config
-				stripMemory();
-			},
-			undo: function $$undo() {
-				if (ko.unwrap($memento.undo).length) {
-					const current = ko.unwrap(target);
-					const preview = $memento.undo.shift();
-
-					$memento.redo.unshift(current);
-
-					// remove old record when memory size has large than config
-					stripMemory();
-
-					if (!options.replace) {
-						target(preview);
-					} else {
-						options.replace(current, preview);
-						target(current);
-					}
-				}
-			},
-			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
-			redo: function $$redo() {
-				if (ko.unwrap($memento.redo).length) {
-					const current = ko.unwrap(target);
-					const forward = $memento.redo.shift();
-
-					$memento.undo.unshift(current);
-
-					// remove old record when memory size has large than config
-					stripMemory();
-
-					if (!options.replace) {
-						target(forward);
-					} else {
-						options.replace(current, forward);
-						target(current);
-					}
-				}
-			},
-			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length)
-		});
-
-		_.extend(window, { memento: { target, $memento } });
-
-		return target;
-	};
-
-	_.extend(ko.extenders, { memento });
-}
-
-interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
-	undo(): void;
-	redo(): void;
-	reset(data?: any): void;
-	memento(data?: any): void;
-	undoAble: KnockoutComputed<boolean>;
-	redoAble: KnockoutComputed<boolean>;
-}
-
 module nts.uk.ui.at.ksu002.calendar {
 	const D_FORMAT = 'YYYYMM';
 	const COMPONENT_NAME = 'scheduler';
@@ -153,10 +37,10 @@ module nts.uk.ui.at.ksu002.calendar {
                     <div class="day" data-bind="scheduler-class: day">
                         <div class="status cf">
                             <span data-bind="scheduler-date: day"></span>
-                            <svg data-bind="scheduler-daisy: day, click: function() { $component.data.clickCell.apply($vm, ['event', day]); }"></svg>
+                            <svg data-bind="scheduler-daisy: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['event', day]); }"></svg>
                         </div>
-                        <div class="status cf" data-bind="scheduler-holiday: day, click: function() { $component.data.clickCell.apply($vm, ['holiday', day]); }"></div>
-                        <div class="data-info" data-bind="scheduler-data-info: day, click: function() { $component.data.clickCell.apply($vm, ['info', day]); }"></div>
+                        <div class="status cf" data-bind="scheduler-holiday: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['holiday', day]); }"></div>
+                        <div class="data-info" data-bind="scheduler-data-info: day, timeClick: -1, click: function() { $component.data.clickCell.apply($vm, ['info', day]); }"></div>
                     </div>
                 </div>
             </div>
@@ -505,10 +389,6 @@ module nts.uk.ui.at.ksu002.calendar {
 			if (!ko.unwrap(schedules)) {
 				if (ko.isObservable(schedules)) {
 					vm.data.schedules([]);
-
-					if (!vm.data.schedules.memento) {
-						vm.data.schedules.extend({ memento: { size: 20 } });
-					}
 				} else {
 					vm.data.schedules = ko.observableArray([]).extend({ memento: { size: 20 } }) as any;
 				}
@@ -657,7 +537,7 @@ module nts.uk.ui.at.ksu002.calendar {
 								data: null
 							}));
 
-						data.schedules.reset(daysOfMonth);
+						data.schedules(daysOfMonth);
 					};
 
 					if (_.isDate(baseDate)) {
@@ -715,7 +595,7 @@ module nts.uk.ui.at.ksu002.calendar {
 	export interface Parameter {
 		width: KnockoutObservable<number>;
 		baseDate: KnockoutObservable<Date | DateRange>;
-		schedules: MementoObservableArray<DayData>;
+		schedules: KnockoutObservableArray<DayData>;
 		clickCell: (target: 'title' | 'event' | 'holyday' | 'body', day: DayData) => void;
 	}
 }
