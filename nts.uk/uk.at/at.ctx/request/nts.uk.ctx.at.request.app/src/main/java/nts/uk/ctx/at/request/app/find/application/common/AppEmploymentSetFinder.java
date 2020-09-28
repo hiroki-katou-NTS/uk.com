@@ -42,6 +42,10 @@ public class AppEmploymentSetFinder {
 //		return new ArrayList<AppEmploymentSettingDto>();
 //	}
 
+	/**
+	 * 起動初期の処理
+	 * ドメイン「雇用別申請承認設定」を取得する
+	 */
 	public List<AppEmploymentSetDto> findAllEmploymentSetting() {
 	    String companyId = AppContexts.user().companyId();
 	    return appEmploymentSetRepo.findByCompanyID(companyId).stream().map(AppEmploymentSetDto::fromDomain).collect(Collectors.toList());

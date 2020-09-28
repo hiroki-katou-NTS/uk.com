@@ -58,14 +58,14 @@
       v-model="params.derpartureTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
-      :columns="{ title: 'col-3', input: 'col-5' }"
+      :columns="{ title: 'col-4', input: 'col-6' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
       v-model="params.returnTime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
-      :columns="{ title: 'col-3', input: 'col-5' }"
+      :columns="{ title: 'col-4', input: 'col-6' }"
     />
     <!-- D50_F1 -->
     <button

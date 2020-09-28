@@ -429,10 +429,18 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．対象日リストをループする
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
+			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
 			Optional<ActualContentDisplay> opActualContentDisplay = actualContentDisplayLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
-			if(!opActualContentDisplay.isPresent()) {
+			if(opActualContentDisplay.isPresent()) {
+				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
+			}
+			if(!opAchievementDetail.isPresent()) {
 				// エラーメッセージ(Msg_1715)を表示
 				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+			}
+			// INPUT．申請する勤務種類リストをチェックする
+			if(CollectionUtil.isEmpty(workTypeLst)) {
+				return;
 			}
 			// 勤務種類を取得する
 			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
@@ -443,6 +451,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if(!opWorkTypeFirst.isPresent() || !opWorkTypeActual.isPresent()) {
 				continue;
 			}
+			// 日ごとに申請の矛盾チェック
+			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+			// 日ごとに休日区分の矛盾チェック
+			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
