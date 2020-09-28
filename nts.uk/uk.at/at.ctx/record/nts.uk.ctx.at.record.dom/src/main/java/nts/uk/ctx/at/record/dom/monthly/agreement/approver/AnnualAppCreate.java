@@ -57,7 +57,7 @@ public class AnnualAppCreate {
 				cid,
 				annualAppContent.getApplicant(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
 		val oneYear = setting.getBasicAgreementSetting().getOneYear();
 
