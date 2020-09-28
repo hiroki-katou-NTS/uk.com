@@ -97,7 +97,10 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	public static SspmtResultOfLog toEntity(ResultLogSaving domain) {
 		return new SspmtResultOfLog
 				(
-				new SspmtResultOfLogPK(domain.getLogNumber(), domain.getProcessingId()), 
+				new SspmtResultOfLogPK(
+				domain.getLogNumber(), 
+				domain.getProcessingId()), 
+				domain.getContractCd(),
 				domain.getCid(), 
 				domain.getLogTime(), 
 				domain.getLogContent().v(), 
@@ -110,6 +113,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	public SspmtResultOfLog
 		(
 			SspmtResultOfLogPK sspmtResultOfLogPK, 
+			String contractCd,
 			String cid, 
 			GeneralDateTime logTime, 
 			String logContent,
@@ -118,6 +122,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 			String errorContent
 			) {
 		this.sspmtResultOfLogPK = sspmtResultOfLogPK;
+		this.contractCd = contractCd;
 		this.cid = cid;
 		this.logTime = logTime;
 		this.logContent = logContent;
