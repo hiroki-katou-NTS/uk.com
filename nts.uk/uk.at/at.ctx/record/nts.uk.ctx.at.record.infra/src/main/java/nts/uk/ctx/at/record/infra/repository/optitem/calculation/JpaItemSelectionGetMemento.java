@@ -9,9 +9,9 @@ import java.util.List;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.collection.LazyList;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.ItemSelectionGetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.SelectedAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.ItemSelectionGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItem;
 
 /**
  * The Class JpaItemSelectionGetMemento.

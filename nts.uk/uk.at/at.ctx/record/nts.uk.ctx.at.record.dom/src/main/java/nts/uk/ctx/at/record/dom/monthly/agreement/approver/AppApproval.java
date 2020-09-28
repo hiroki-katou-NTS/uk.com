@@ -72,8 +72,8 @@ public class AppApproval {
 						ErrorOneMonth errorOneMonth = null;
 						AlarmOneMonth alarmOneMonth = null;
 						if (errorTimeInMonth != null){
-							errorOneMonth = new ErrorOneMonth(errorTimeInMonth.getErrorTime().v());
-							alarmOneMonth = new AlarmOneMonth(errorTimeInMonth.getAlarmTime().v());
+							errorOneMonth = new ErrorOneMonth(errorTimeInMonth.getError().v());
+							alarmOneMonth = new AlarmOneMonth(errorTimeInMonth.getAlarm().v());
 						}
 
 						val newAgr36MonthSetting = new AgreementMonthSetting(
@@ -97,8 +97,8 @@ public class AppApproval {
 						ErrorOneYear errorOneYear = null;
 						AlarmOneYear alarmOneYear = null;
 						if (errorTimeInYear != null) {
-							errorOneYear = new ErrorOneYear(errorTimeInYear.getErrorTime().v());
-							alarmOneYear = new AlarmOneYear(errorTimeInYear.getAlarmTime().v());
+							errorOneYear = new ErrorOneYear(errorTimeInYear.getError().v());
+							alarmOneYear = new AlarmOneYear(errorTimeInYear.getAlarm().v());
 						}
 
 						val agr36YearSetting = new AgreementYearSetting(

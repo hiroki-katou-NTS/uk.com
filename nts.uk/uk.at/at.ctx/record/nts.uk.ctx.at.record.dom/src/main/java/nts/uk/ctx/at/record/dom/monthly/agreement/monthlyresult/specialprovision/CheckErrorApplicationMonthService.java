@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -44,9 +45,10 @@ public class CheckErrorApplicationMonthService {
         WorkingSystem workingSystem = EnumAdaptor.valueOf(1, WorkingSystem.class);
 
         // 1:年度指定して36協定基本設定を取得する(会社ID, 社員ID, 年月日, 年度) :３６協定基本設定
-        BasicAgreementSettings agreementSet = AgreementDomainService.getBasicSet(require, companyId, employeeId, baseDate, workingSystem);
+        BasicAgreementSetting agreementSet = AgreementDomainService.getBasicSet(require, companyId, employeeId, baseDate, workingSystem);
 
-        val errorResult = agreementSet.getUpperAgreementSetting().getUpperMonth();
+        // TODO check lại
+        val errorResult = agreementSet.getOneMonth().getBasic().getUpperLimit();
 
         ExcessErrorContent oneMonthError = ExcessErrorContent.create(EnumAdaptor.valueOf(ErrorClassification.ONE_MONTH_MAX_TIME.value, ErrorClassification.class),
                 Optional.of(new AgreementOneMonthTime(errorResult.v())), Optional.empty(), Optional.empty());
@@ -84,12 +86,12 @@ public class CheckErrorApplicationMonthService {
         AgreementExcessInfo agreementOver = require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
 
         //TODO xem lại cách get agreementSet.getBasicAgreementSetting()
-        if (agreementOver != null && agreementSet.getBasicAgreementSetting().getNumberTimesOverLimitType().value <= agreementOver.getExcessTimes() &&
+        if (agreementOver != null && agreementSet.getOneMonth().getBasic().getUpperLimit().v() <= agreementOver.getExcessTimes() &&
                 !agreementOver.getYearMonths().contains(monthlyAppContent.getYm())) {
 
-            ExcessErrorContent error = ExcessErrorContent.create(EnumAdaptor.valueOf(ErrorClassification.EXCEEDING_MAXIMUM_NUMBER.value, ErrorClassification.class),
-                    Optional.empty(), Optional.empty(),Optional.of(agreementSet.getBasicAgreementSetting().getNumberTimesOverLimitType()));
-            excessErrorInformation.add(error);
+//            ExcessErrorContent error = ExcessErrorContent.create(EnumAdaptor.valueOf(ErrorClassification.EXCEEDING_MAXIMUM_NUMBER.value, ErrorClassification.class),
+//                    Optional.empty(), Optional.empty(),Optional.of(agreementSet.getOneMonth().getBasic().getUpperLimit()));
+//            excessErrorInformation.add(error);
         }
 
         return excessErrorInformation;

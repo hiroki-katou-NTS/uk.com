@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 
 /**
  * 年間時間
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 public class OneYearTime {
 
     /**1年間時間*/
-    private ErrorTimeInYear errorTimeInYear;
+    private OneYearErrorAlarmTime errorTimeInYear;
 
     /**年度*/
     private Year year;
@@ -24,7 +25,7 @@ public class OneYearTime {
     /**
      * [C-0] 年間時間 (年度,1年間時間)
      */
-    public static OneYearTime create(ErrorTimeInYear errorTimeInYear, Year year) {
+    public static OneYearTime create(OneYearErrorAlarmTime errorTimeInYear, Year year) {
 
         return new OneYearTime(errorTimeInYear, year);
     }

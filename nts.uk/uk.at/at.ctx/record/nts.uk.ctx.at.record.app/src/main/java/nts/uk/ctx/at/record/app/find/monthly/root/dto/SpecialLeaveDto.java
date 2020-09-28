@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayAndTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
 
 /** 特別休暇 */
 @AllArgsConstructor

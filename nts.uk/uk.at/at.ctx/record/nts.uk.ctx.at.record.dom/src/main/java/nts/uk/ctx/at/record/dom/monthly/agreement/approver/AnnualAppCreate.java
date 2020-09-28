@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
@@ -59,7 +60,7 @@ public class AnnualAppCreate {
 				GeneralDate.today(),
 				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
-		val oneYear = setting.getBasicAgreementSetting().getOneYear();
+		val oneYear = setting.getOneYear();
 
 		// $エラー結果
 		val errResult = oneYear.checkErrorTimeExceeded(annualAppContent.getErrTime());
@@ -75,7 +76,7 @@ public class AnnualAppCreate {
 		}
 
 		// 申請内容.アラーム時間
-		annualAppContent.setAlarmTime(oneYear.getBasicSetting().calculateAlarmTime(annualAppContent.getErrTime()));
+		annualAppContent.setAlarmTime(oneYear.getBasic().calcAlarmTime(annualAppContent.getErrTime()));
 
 		// $申請
 		val app = createAnnualApp(
@@ -117,7 +118,7 @@ public class AnnualAppCreate {
 			ScreenDisplayInfo screenDisplayInfo) {
 
 		// $エラーアラーム
-		val errorArlarmTime = new ErrorTimeInYear(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
+		val errorArlarmTime = new OneYearErrorAlarmTime(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
 
 		// $１年間時間
 		val oneYearTime = new OneYearTime(errorArlarmTime, annualAppContent.getYear());

@@ -5,15 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
-import nts.uk.ctx.at.shared.dom.standardtime.*;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -198,36 +190,36 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
     }
 
     public static AgreementTimeOfCompany toDomain(Ksrmt36AgrMgtCmp entity){
-        val companyId = entity.getKsrmt36AgrMgtCmpPk().getCompanyID();
-
-        val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtCmpPk().getLaborSystemAtr(),LaborSystemtAtr.class);
-        val  errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
-                ,new AgreementOneMonthTime((int)entity.getBasicMAllTime()));
-        val upperLimitTime = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
-        val basicSettingMonth = new OneMonthTime(errorTimeInMonth,upperLimitTime);
-
-        val errorTimeInMonthUpper =  new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getSpMErTime())
-                ,new AgreementOneMonthTime((int)entity.getSpMAlTime()));
-        val upperLimitTimeMonthUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
-        val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper,upperLimitTimeMonthUpper);
-
-        val  errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getBasicMArlTime())
-                ,new AgreementOneYearTime((int)entity.getBasisYAlTime()));
-        val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
-        val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
-
-        val errorTimeInYearUpper =  new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getSpYErlTime())
-                ,new AgreementOneYearTime((int)entity.getSpYAlTime()));
-        val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
-        val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
-
-
-        val numberTimesOverLimitType = EnumAdaptor.valueOf(entity.getUpperLimitCnt(),TimeOverLimitType.class);
-        val basicAgreementSetting = new BasicAgreementSetting(
-                new AgreementsOneMonth(basicSettingMonth,upperLimitDueToSpecialProvisionsMonth) ,
-                new AgreementsOneYear(basicSettingYear,upperLimitDueToSpecialProvisionsYear),
-                new AgreementsMultipleMonthsAverage(errorTimeInMonth),numberTimesOverLimitType
-        );
+//        val companyId = entity.getKsrmt36AgrMgtCmpPk().getCompanyID();
+//
+//        val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtCmpPk().getLaborSystemAtr(),LaborSystemtAtr.class);
+//        val  errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
+//                ,new AgreementOneMonthTime((int)entity.getBasicMAllTime()));
+//        val upperLimitTime = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
+//        val basicSettingMonth = new OneMonthTime(errorTimeInMonth,upperLimitTime);
+//
+//        val errorTimeInMonthUpper =  new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getSpMErTime())
+//                ,new AgreementOneMonthTime((int)entity.getSpMAlTime()));
+//        val upperLimitTimeMonthUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
+//        val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper,upperLimitTimeMonthUpper);
+//
+//        val  errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getBasicMArlTime())
+//                ,new AgreementOneYearTime((int)entity.getBasisYAlTime()));
+//        val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
+//        val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
+//
+//        val errorTimeInYearUpper =  new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getSpYErlTime())
+//                ,new AgreementOneYearTime((int)entity.getSpYAlTime()));
+//        val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
+//        val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
+//
+//
+//        val numberTimesOverLimitType = EnumAdaptor.valueOf(entity.getUpperLimitCnt(),TimeOverLimitType.class);
+//        val basicAgreementSetting = new BasicAgreementSetting(
+//                new AgreementsOneMonth(basicSettingMonth,upperLimitDueToSpecialProvisionsMonth) ,
+//                new AgreementsOneYear(basicSettingYear,upperLimitDueToSpecialProvisionsYear),
+//                new AgreementsMultipleMonthsAverage(errorTimeInMonth),numberTimesOverLimitType
+//        );
         // TODO wait change domain from Nittsu
         return null;
         //return new AgreementTimeOfCompany(companyId,laborSystemAtr,basicAgreementSetting);
