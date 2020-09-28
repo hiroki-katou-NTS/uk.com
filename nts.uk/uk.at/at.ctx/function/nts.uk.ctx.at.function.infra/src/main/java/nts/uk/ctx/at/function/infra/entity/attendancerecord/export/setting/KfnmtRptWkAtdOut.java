@@ -103,12 +103,12 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
-		
+		// TODO
 	}
 
 	@Override
 	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
-		
+		// TODO
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public Boolean getSealUseAtr() {
-		return this.itemSelType == 1;
+		return BigDecimal.valueOf(1).compareTo(this.sealUseAtr) == 0;
 	}
 
 	@Override
@@ -185,10 +185,13 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public List<SealColumnName> getSealStamp() {
-		return this.lstKfnmtRptWkAtdOutseal.stream().map(t -> {
-			SealColumnName sealColumnName = new SealColumnName(t.getSealStampName());
-			return sealColumnName;
-		}).collect(Collectors.toList());
+		return this.lstKfnmtRptWkAtdOutseal.stream()
+			.sorted((x, y) -> x.getSealOrder().compareTo(y.getSealOrder()))
+			.map(t -> {
+				SealColumnName sealColumnName = new SealColumnName(t.getSealStampName());
+				return sealColumnName;
+			})
+			.collect(Collectors.toList());
 	}
 
 	@Override

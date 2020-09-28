@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
@@ -20,6 +21,9 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 	
 	private static final String SELECT_ATD_BY_LAYOUT_ID = "SELECT outatd FROM KfnmtRptWkAtdOutatd outatd"
 			+ "	WHERE outatd.layoutId = :layoutId";
+	
+	private static final String SELECT_ATD_FRAME_BY_LAYOUT_ID = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ " WHERE frame.id.layoutId = :layoutId";
 	
 	/**
 	 * Find attendance record items.
@@ -63,6 +67,19 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 			this.commandProxy().removeAll(listKfnstAttndRecItem);
 			this.getEntityManager().flush();
 		}
+	}
+	
+	/**
+	 * Get all KfnmtRptWkAtdOutframe by layoutId
+	 * @param layoutId
+	 * @return List KfnmtRptWkAtdOutframe
+	 */
+	List<KfnmtRptWkAtdOutframe> findAllAttendanceRecords(String layoutId) {
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecs = this.queryProxy()
+				.query(SELECT_ATD_FRAME_BY_LAYOUT_ID, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.getList();
+		return kfnstAttndRecs;
 	}
 
 }

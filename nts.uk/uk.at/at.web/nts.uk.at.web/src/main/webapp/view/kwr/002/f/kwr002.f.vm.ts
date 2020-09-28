@@ -72,19 +72,17 @@ module nts.uk.com.view.kwr002.f {
 
             vm.$blockui('show');
 
-            vm.$ajax('at', API.executeCopy, dataCopy).then(response => {
-                if (!!response) {
-                    vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                        // Set shared param to share with screen B
-                        setShared('duplicateItem', {
-                            code: vm.duplicateCode,
-                            name: vm.duplicateName,
-                            layoutId: vm.layoutId
-                        });
-                        // Close screen
-                        vm.$window.close()
+            vm.$ajax('at', API.executeCopy, dataCopy).then(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                    // Set shared param to share with screen B
+                    setShared('duplicateItem', {
+                        code: vm.duplicateCode(),
+                        name: vm.duplicateName(),
+                        layoutId: vm.layoutId
                     });
-                }
+                    // Close screen
+                    vm.$window.close()
+                });
             })
             .fail(err => vm.$dialog.alert({ messageId: err.messageId }))
             .always(() => vm.$blockui('hide'));

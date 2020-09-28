@@ -315,8 +315,9 @@ module nts.uk.com.view.kwr002.b {
         };
 
         public openDialogF() {
-            let vm = this;
-            let data = new OpenDialogFParam({
+            const vm = this;
+            let currentData = vm.currentARES();
+            const data = new OpenDialogFParam({
                 itemSelectedType: vm.selectionType,
                 code: vm.currentARES().code(),
                 name: vm.currentARES().name(),
@@ -324,8 +325,14 @@ module nts.uk.com.view.kwr002.b {
             });
 
             setShared("dataFromScreenB", data, true);
-            modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
-            
+            modal("/view/kwr/002/f/index.xhtml").onClosed(() => {
+                const duplicateItem = getShared('duplicateItem');
+                if (duplicateItem) {
+                    currentData.code(duplicateItem.code);
+                    currentData.name(duplicateItem.name);
+                    vm.layoutId = duplicateItem.layoutId;
+                    vm.callGetAll(vm, currentData);
+                }
             });
         }
 

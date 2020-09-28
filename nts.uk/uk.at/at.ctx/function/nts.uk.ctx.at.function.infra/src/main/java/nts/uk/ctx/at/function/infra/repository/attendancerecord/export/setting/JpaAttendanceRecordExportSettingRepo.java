@@ -106,8 +106,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			
 			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
 			if (ares.isPresent()) {
-				entity.setDailyExportItem(ares.get().getDailyExportItem());
-				entity.setMonthlyExportItem(ares.get().getMonthlyExportItem());
 				// update
 				this.commandProxy().update(entity);
 			} else {
@@ -173,8 +171,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			
 			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
 			if (ares.isPresent()) {
-				entity.setDailyExportItem(ares.get().getDailyExportItem());
-				entity.setMonthlyExportItem(ares.get().getMonthlyExportItem());
 				// update
 				this.commandProxy().update(entity);
 			} else {
