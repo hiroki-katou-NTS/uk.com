@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecutiveDays;
@@ -67,7 +66,6 @@ public class KscmtAlchkConsecutiveWorkCmp extends ContractUkJpaEntity implements
 	 */
 	public MaxNumberDaysOfContinuousAttendanceCom toDomain() {
 		return new MaxNumberDaysOfContinuousAttendanceCom(
-				  this.companyId
-				, new MaxNumberDaysOfContinuousAttendance(new NumberOfConsecutiveDays(this.maxConsDays)));
+				new MaxNumberDaysOfContinuousAttendance(new NumberOfConsecutiveDays(this.maxConsDays)));
 	}
 }
