@@ -5,7 +5,7 @@ module nts.uk.com.view.cmf004.c.service {
     checkPassword: "ctx/sys/assist/datarestoration/checkPassword",
   }
 
-  export function checkPassword(param): JQueryPromise<boolean> {
+  export function checkPassword(param: any): JQueryPromise<boolean> {
       return ajax('com', paths.checkPassword, param);
   }
 }

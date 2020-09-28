@@ -292,7 +292,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       if (fileInfo.id != null && fileInfo.originalName != null) {
         setShared("CMF004lParams", {
           fileId: fileInfo.id,
-          fileName: fileInfo.originalName
+          fileName: fileInfo.originalName,
+          fromServerFile: false
         }, true);
         self.openHandleFileDialog(true);
       }
@@ -607,7 +608,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 fileId: arr[0],
                 fileName: arr[1],
                 storeProcessingId: paramObtainRecovery.storeProcessingId,
-                doUpload: false
+                fromServerFile: true
               }, true);
               self.openHandleFileDialog(true, false);
             } else if (res.message.length > 0) {

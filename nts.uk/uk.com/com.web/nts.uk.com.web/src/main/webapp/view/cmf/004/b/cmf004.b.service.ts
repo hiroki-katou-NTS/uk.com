@@ -28,7 +28,7 @@ module nts.uk.com.view.cmf004.b.service {
     /**
      * get for screen B
     */
-    export function findDataRecoverySelection(paramSearch): JQueryPromise<any> {
+    export function findDataRecoverySelection(paramSearch: any): JQueryPromise<any> {
         return ajax('com', paths.findDataRecoverySelection, paramSearch);
     }
 
@@ -43,7 +43,7 @@ module nts.uk.com.view.cmf004.b.service {
      /**
       * send for screen E
      */
-    export function obtainRecovery(paramObtainRecovery): JQueryPromise<any> {
+    export function obtainRecovery(paramObtainRecovery: any): JQueryPromise<any> {
         return nts.uk.request.ajax('com', paths.obtainRecovery, paramObtainRecovery);
     };
     

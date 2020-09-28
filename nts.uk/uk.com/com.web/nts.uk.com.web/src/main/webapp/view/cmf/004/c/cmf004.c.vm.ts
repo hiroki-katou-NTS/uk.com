@@ -8,7 +8,7 @@ module nts.uk.com.view.cmf004.c {
       fileId: KnockoutObservable<string> = ko.observable('');
       password: KnockoutObservable<string> = ko.observable('');
       storeProcessingId: KnockoutObservable<string> = ko.observable('');
-      doUpload: KnockoutObservable<boolean> = ko.observable(true);
+      fromServerFile: KnockoutObservable<boolean> = ko.observable(false);
 
       constructor() {
         let self = this;
@@ -17,7 +17,7 @@ module nts.uk.com.view.cmf004.c {
           self.fileName(fileInfo.fileName);
           self.fileId(fileInfo.fileId);
           self.storeProcessingId(fileInfo.storeProcessingId);
-          self.doUpload(fileInfo.doUpload);
+          self.fromServerFile(fileInfo.fromServerFile);
         }
       }
 
@@ -28,8 +28,8 @@ module nts.uk.com.view.cmf004.c {
           fileName: self.fileName(),
           password: self.password()
         };
-
-        if (!self.doUpload()) {
+        console.log(self.fromServerFile());
+        if (self.fromServerFile()) {
           var param: any = { storeProcessingId: self.storeProcessingId(), password: self.password() }
           var data: any;
 
