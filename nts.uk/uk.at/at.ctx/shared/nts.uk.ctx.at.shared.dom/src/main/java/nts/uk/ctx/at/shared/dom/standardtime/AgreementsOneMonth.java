@@ -15,34 +15,36 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 
 /**
- * 	３６協定1ヶ月
+ * ３６協定1ヶ月
  */
 @Getter
 @Setter
-public class AgreementsOneMonth extends ValueObject{
+public class AgreementsOneMonth extends ValueObject {
     /**
-     * 	基本設定
+     * 基本設定
      */
-  private OneMonthTime basicSetting;
+    private OneMonthTime basicSetting;
 
     /**
      * 特例条項による上限
      */
-  private OneMonthTime upperLimitDueToSpecialProvisions;
+    private OneMonthTime upperLimitDueToSpecialProvisions;
 
     /**
      * [C-0] ３６協定1ヶ月 (基本設定,特例条項による上限)
+     *
      * @param basicSetting
      * @param upperLimitDueToSpecialProvisions
      */
-  public AgreementsOneMonth(OneMonthTime basicSetting,OneMonthTime upperLimitDueToSpecialProvisions){
-      this.basicSetting = basicSetting;
-      this.upperLimitDueToSpecialProvisions = upperLimitDueToSpecialProvisions;
-  }
- // 	[1] エラーチェック TODO : đang check EA
+    public AgreementsOneMonth(OneMonthTime basicSetting, OneMonthTime upperLimitDueToSpecialProvisions) {
+        this.basicSetting = basicSetting;
+        this.upperLimitDueToSpecialProvisions = upperLimitDueToSpecialProvisions;
+    }
+
+    // 	[1] エラーチェック
     public AgreementTimeStatusOfMonthly checkError(AttendanceTimeMonth agreementTargetTime,
-                                                 AttendanceTimeMonth hoursSubjectToLegalUpperLimit,
-                                                 ErrorTimeInMonth applicationTime ){
+                                                   AttendanceTimeMonth hoursSubjectToLegalUpperLimit,
+                                                   ErrorTimeInMonth applicationTime) {
         //input.対象時間 <= エラーアラーム時間.アラーム時間：
         //        　超過状態←"正常"
         //        else
@@ -53,68 +55,79 @@ public class AgreementsOneMonth extends ValueObject{
         //       　超過状態←"エラー時間超過"
         //        else
         //        　超過状態←"上限時間超過"
-      int value;
-      if (agreementTargetTime.lessThanOrEqualTo(applicationTime.getAlarmTime().v())) {
-          value = OverState.NORMAL.value;
-      } else if (agreementTargetTime.lessThanOrEqualTo(applicationTime.getErrorTime().v())) {
-          value = OverState.ALARM_OVER.value;
-      } else if (agreementTargetTime.lessThanOrEqualTo(upperLimitDueToSpecialProvisions.getUpperLimitTime().v())) {
-          value = OverState.ERROR_OVER.value;
-      } else {
-          value = OverState.UPPER_LIMIT_OVER.value;
-      }
+        int limitTargetTime;
+        if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(basicSetting.getErrorTimeInMonth().getAlarmTime().v())) {
+            limitTargetTime = OverState.NORMAL.value;
+        } else if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(basicSetting.getErrorTimeInMonth().getErrorTime().v())) {
+            limitTargetTime = OverState.ALARM_OVER.value;
+        } else if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(upperLimitDueToSpecialProvisions.getUpperLimitTime().v())) {
+            limitTargetTime = OverState.ERROR_OVER.value;
+        } else {
+            limitTargetTime = OverState.UPPER_LIMIT_OVER.value;
+        }
 
-      int values;
+        int targetTimeOfAgreement;
+        if (agreementTargetTime.lessThanOrEqualTo(basicSetting.getErrorTimeInMonth().getAlarmTime().v())) {
+            targetTimeOfAgreement = OverState.NORMAL.value;
+        } else if (agreementTargetTime.lessThanOrEqualTo(basicSetting.getErrorTimeInMonth().getErrorTime().v())) {
+            targetTimeOfAgreement = OverState.ALARM_OVER.value;
+        } else if (agreementTargetTime.lessThanOrEqualTo(upperLimitDueToSpecialProvisions.getUpperLimitTime().v())) {
+            targetTimeOfAgreement = OverState.ERROR_OVER.value;
+        } else {
+            targetTimeOfAgreement = OverState.UPPER_LIMIT_OVER.value;
+        }
 
-      if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(applicationTime.getAlarmTime().v())) {
-          values = OverState.NORMAL.value;
-      } else if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(applicationTime.getErrorTime().v())) {
-          values = OverState.ALARM_OVER.value;
-      } else if (hoursSubjectToLegalUpperLimit.lessThanOrEqualTo(upperLimitDueToSpecialProvisions.getUpperLimitTime().v())) {
-          values = OverState.ERROR_OVER.value;
-      } else {
-          values = OverState.UPPER_LIMIT_OVER.value;
-      }
-      int rsValue;
+        if (limitTargetTime != OverState.NORMAL.value) {
+            if (limitTargetTime == OverState.ALARM_OVER.value) {
+                limitTargetTime = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value;
+            } else if (limitTargetTime == OverState.ERROR_OVER.value) {
+                limitTargetTime = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value;
+            } else {
+                limitTargetTime = AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY.value;
+            }
+            return EnumAdaptor.valueOf(limitTargetTime, AgreementTimeStatusOfMonthly.class);
+        } else {
+            if (applicationTime == null) {
+                // 超過状態=正常：
+                //　月別実績の36協定時間状態←"正常"
+                //超過状態=アラーム時間超過：
+                // 　月別実績の36協定時間状態←"限度アラーム時間超過"
+                //超過状態=エラー時間超過 or 超過状態=上限時間超過：
+                //　月別実績の36協定時間状態←"限度エラー時間超過"
+                if (targetTimeOfAgreement == OverState.NORMAL.value) {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.NORMAL.value;
+                } else if (targetTimeOfAgreement == OverState.ALARM_OVER.value) {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM.value;
+                } else {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.value;
+                }
+                return EnumAdaptor.valueOf(targetTimeOfAgreement, AgreementTimeStatusOfMonthly.class);
+            } else {
+                //超過状態=正常：
+                //　月別実績の36協定時間状態←"正常(特例あり)"
+                //超過状態=アラーム時間超過：
+                //　月別実績の36協定時間状態←"限度アラーム時間超過(特例あり)"
+                //超過状態=エラー時間超過 or 超過状態=上限時間超過：
+                //　月別実績の36協定時間状態←"限度エラー時間超過(特例あり)"
+                if (targetTimeOfAgreement == OverState.NORMAL.value) {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.NORMAL_SPECIAL.value;
+                } else if (targetTimeOfAgreement == OverState.ALARM_OVER.value) {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP.value;
+                } else {
+                    targetTimeOfAgreement = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value;
+                }
+                return EnumAdaptor.valueOf(targetTimeOfAgreement, AgreementTimeStatusOfMonthly.class);
+            }
+        }
+    }
 
-      //超過状態=アラーム時間超過：
-      //月別実績の36協定時間状態←"特例限度アラーム時間超過"
-      // 超過状態=エラー時間超過：
-      // 月別実績の36協定時間状態←"特例限度エラー時間超過"
-      // 超過状態=上限時間超過：
-      // 月別実績の36協定時間状態←"特別条項の上限時間超過"
-
-      if (value != OverState.NORMAL.value) {
-          if (value == OverState.ALARM_OVER.value) {
-              rsValue = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value;
-          } else if (value == OverState.ERROR_OVER.value) {
-              rsValue = AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value;
-          } else {
-              rsValue = AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY.value;
-          }
-      }
-      // 超過状態=正常：
-      //　月別実績の36協定時間状態←"正常"
-      //超過状態=アラーム時間超過：
-      // 　月別実績の36協定時間状態←"限度アラーム時間超過"
-      //超過状態=エラー時間超過 or 超過状態=上限時間超過：
-      //　月別実績の36協定時間状態←"限度エラー時間超過"
-      if (values == OverState.NORMAL.value) {
-          rsValue = AgreementTimeStatusOfMonthly.NORMAL_SPECIAL.value;
-      } else if (values == OverState.ALARM_OVER.value) {
-          rsValue = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP.value;
-      }else if (values==OverState.ERROR_OVER.value||values==OverState.UPPER_LIMIT_OVER.value){
-          rsValue = AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value;
-      }
-
-      return EnumAdaptor.valueOf(value, AgreementTimeStatusOfMonthly.class);
-  }
-  //	[2] 特例条項による上限のエラー時間を超えているか
-  public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime){
+    //	[2] 特例条項による上限のエラー時間を超えているか
+    public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
 
         return basicSetting.checkErrorTimeExceeded(applicationTime);
-  }
-  // 	[3] アラーム時間を計算する
+    }
+
+    // 	[3] アラーム時間を計算する
     public AgreementOneMonthTime calculateAlarmTime(AgreementOneMonthTime applicationTime) {
         return basicSetting.calculateAlarmTime(applicationTime);
     }
