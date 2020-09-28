@@ -31,7 +31,7 @@ public class OneMonthAppCreate {
 	 * @param appContent	申請内容: 月間の申請内容
 	 * @param displayInfo	画面表示情報
 	 */
-	public AppCreationResult create(
+	public static AppCreationResult create(
 			Require require,
 			String cid,
 			String applicantId,
@@ -75,7 +75,7 @@ public class OneMonthAppCreate {
 
 		// 申請内容
 		appContent.setAlarmTime(agrOneMonth.calculateAlarmTime(appContent.getAlarmTime()));
-		SpecialProvisionsOfAgreement app = this.createOneMonthApp(
+		SpecialProvisionsOfAgreement app = createOneMonthApp(
 				applicantId,
 				appContent,
 				optApprItem.get().getApproverList(),
@@ -106,7 +106,7 @@ public class OneMonthAppCreate {
 	 * @param displayInfo   画面表示情報
 	 * @return 36協定特別条項の適用申請
 	 */
-	private SpecialProvisionsOfAgreement createOneMonthApp(
+	private static SpecialProvisionsOfAgreement createOneMonthApp(
 			String applicantId,
 			MonthlyAppContent appContent,
 			List<String> approverList,
@@ -137,6 +137,10 @@ public class OneMonthAppCreate {
 		);
 	}
 
+	/**
+	 * [R-1] 申請を追加する
+	 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
+	 */
 	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
 		void addApp(SpecialProvisionsOfAgreement app);
 	}

@@ -21,7 +21,7 @@ public class AppCreationResult {
 	private String empId;
 
 	//結果区分
-	private ResultType resultDiff;
+	private ResultType resultType;
 
 	// 永続化処理
 	private final Optional<AtomTask> atomTask;
