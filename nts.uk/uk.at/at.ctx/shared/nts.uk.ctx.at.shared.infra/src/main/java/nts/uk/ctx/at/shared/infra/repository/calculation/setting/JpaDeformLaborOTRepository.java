@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
-import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.setting.KshstDefLaborOtCalc;
 
 @Stateless

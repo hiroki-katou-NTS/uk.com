@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
 
 /**
  * The Class OvertimeNameLangSaveCommand.

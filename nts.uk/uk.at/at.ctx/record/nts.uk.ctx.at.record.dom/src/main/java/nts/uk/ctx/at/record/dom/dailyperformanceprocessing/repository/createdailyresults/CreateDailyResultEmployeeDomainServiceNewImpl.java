@@ -32,10 +32,10 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -128,7 +128,9 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 //					.findByEmploymentCD(companyId, employmentCode);
 
 			//処理する日が締められているかチェックする
-			if (!closureStatusManagement.isPresent() || !closureStatusManagement.get().getPeriod().contains(day)) {
+			if (!closureStatusManagement.isPresent() || 
+					!closureStatusManagement.get().getPeriod().contains(day)) {
+				
 				LockStatus lockStatus = LockStatus.UNLOCK;
                 //「ロック中の計算/集計する」の値をチェックする
                 if(!checkLock.isPresent() || checkLock.get() == false) {
