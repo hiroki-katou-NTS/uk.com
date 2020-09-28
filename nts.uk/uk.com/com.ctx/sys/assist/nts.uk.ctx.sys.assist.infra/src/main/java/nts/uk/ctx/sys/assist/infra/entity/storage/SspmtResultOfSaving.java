@@ -71,7 +71,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "SAVE_FILE_NAME")
 	public String saveFileName;
-
+	
 	/**
 	 * 保存名称
 	 */

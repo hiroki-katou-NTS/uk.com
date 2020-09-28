@@ -29,6 +29,6 @@ public class CategoryDto {
 	private int systemType;
 	
 	public static CategoryDto fromDomain(Category domain) {
-		return new CategoryDto(domain.getCategoryId().v(), domain.getCategoryName().v(), domain.get)
+		return new CategoryDto(domain.getCategoryId().v(), domain.getCategoryName().v(), 0);
 	}
 }

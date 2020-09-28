@@ -51,6 +51,11 @@ public class ResultOfSaving extends AggregateRoot
     private Optional<SaveFileName> saveFileName;
     
     /**
+    * パターン区分
+    */
+    private int patternClassification;
+    
+    /**
     * 保存名称
     */
     private SaveName saveName;

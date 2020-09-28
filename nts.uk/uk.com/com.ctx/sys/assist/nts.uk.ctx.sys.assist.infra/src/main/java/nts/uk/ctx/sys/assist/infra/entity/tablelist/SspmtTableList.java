@@ -39,12 +39,26 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	public String categoryName;
 	
 	/**
+	 * システム種類
+	 */
+//	@Basic(optional = false)
+//	@Column(name = "SYSTEM_TYPE")
+//	public int systemType = 0;
+	
+	/**
 	 * データ復旧処理ID
 	 */
 	@Basic(optional = true)
 	@Column(name = "DATA_RECOVERY_PROCESS_ID")
 	public String dataRecoveryProcessId;
-
+	
+	
+	/**
+	 * データ保存処理ID
+	 */
+//	@Basic(optional = false)
+//	@Column(name = "DATA_STORAGE_PROCESS_ID")
+//	public String dataStorageProcessId;
 	
 	/**
 	 * テーブル日本語名

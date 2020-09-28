@@ -19,6 +19,9 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * データ保存の選択カテゴリ
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

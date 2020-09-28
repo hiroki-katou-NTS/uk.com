@@ -8,7 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
-//import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
 import nts.uk.ctx.sys.assist.dom.storage.SaveName;
 import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
@@ -36,7 +36,7 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * パターンコード
 	 */
-	private String patternCode;
+	private PatternCode patternCode;
 
 	/**
 	 * 実行者
@@ -82,7 +82,7 @@ public class DataRecoveryResult extends AggregateRoot {
 			String saveName, String ipAddress, String pcName, String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.cid                   = cid;
-		this.patternCode           = patternCode;
+		this.patternCode           = new PatternCode(patternCode);
 		this.practitioner          = practitioner;
 		this.executionResult       = executionResult;
 		this.listDataRecoveryLogs  = listDataRecoveryLogs;

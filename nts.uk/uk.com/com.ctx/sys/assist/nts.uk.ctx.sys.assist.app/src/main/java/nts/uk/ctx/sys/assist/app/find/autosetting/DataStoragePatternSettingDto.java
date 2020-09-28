@@ -84,8 +84,26 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	}
 
 	@Override
-	public void setCategories(List<DataStorageSelectionCategory> categories) {
+	public void setAnnualReferMonth(Integer annualReferMonth) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setCategoryId(String categoryId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSystemType(int systemType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+//	@Override
+//	public void setCategories(List<DataStorageSelectionCategory> categories) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

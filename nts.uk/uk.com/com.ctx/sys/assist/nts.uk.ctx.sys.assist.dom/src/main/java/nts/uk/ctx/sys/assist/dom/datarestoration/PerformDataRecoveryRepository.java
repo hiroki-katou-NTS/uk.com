@@ -69,4 +69,7 @@ public interface PerformDataRecoveryRepository {
 	
 	public List<String> getTypeColumnNotNull(String TABLE_NAME);
 	
+	public List<PerformDataRecovery> getPerformDataRecoverByIds(List<String> dataRecoveryProcessIds);
+	
+	List<PerformDataRecovery> findAll();
 }

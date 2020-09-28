@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.infra.repository.storage;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -32,6 +33,13 @@ public class JpaDataStoragePatternSettingRepository extends JpaRepository implem
 
 	@Override
 	public List<DataStoragePatternSetting> findByContractCd(String contractCd) {
+		return this.queryProxy().query(SELECT_PATTERN_BY_CONTRACT_CD, SspmtDataStoragePatternSetting.class)
+				.setParameter("contractCd", contractCd)
+				.getList(DataStoragePatternSetting::createFromMemento);
+	}
+
+	@Override
+	public Optional<DataStoragePatternSetting> findByContractCdAndPatternCd(String contractCd, String patternCd) {
 		// TODO Auto-generated method stub
 		return null;
 	}

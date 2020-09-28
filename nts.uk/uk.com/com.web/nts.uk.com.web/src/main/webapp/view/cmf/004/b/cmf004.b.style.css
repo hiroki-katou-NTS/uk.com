@@ -103,3 +103,11 @@
 	margin-bottom: 20px;
 }
 
+.compressGrid td {
+	padding-right: 10px;
+	height: 100%;
+}
+
+.contentG {
+	margin-left: 100px !important;
+}

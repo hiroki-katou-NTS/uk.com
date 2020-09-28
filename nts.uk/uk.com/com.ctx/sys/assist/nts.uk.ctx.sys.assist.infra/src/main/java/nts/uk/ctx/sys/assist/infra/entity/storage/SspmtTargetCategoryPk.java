@@ -35,4 +35,10 @@ public class SspmtTargetCategoryPk implements Serializable
     @Column(name = "CATEGORY_ID")
     public String categoryId;
     
+//    /**
+//     * システム種類
+//     */
+//    @Basic(optional = false)
+//    @Column(name = "SYSTEM_TYPE")
+//    public int systemType;
 }

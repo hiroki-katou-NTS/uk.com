@@ -32,13 +32,13 @@ public class ResultLogSaving extends DomainObject {
 
 	//field エラー社員	
 	private String errorEmployeeId;
-	
+
 	//field エラー日付	
 	private GeneralDate errorDate;
-		
+
 	//field エラー内容	
 	private ErrorContent errorContent;
-	
+
 
 
 	public static ResultLogSaving createFromJavatype(int logNumber, String processingId, String cid, GeneralDateTime logTime,

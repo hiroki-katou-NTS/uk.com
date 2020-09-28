@@ -79,7 +79,7 @@ public class ResultOfRestorationDto {
 			domain.getDataRecoveryProcessId(),
 			domain.getDataStorageProcessId(),
 			domain.getCid(),
-			domain.getPatternCode(),
+			domain.getPatternCode().v(),
 			domain.getPractitioner(),
 			domain.getExecutionResult(),
 			domain.getListDataRecoveryLogs(),

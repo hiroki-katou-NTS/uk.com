@@ -31,4 +31,8 @@ public interface ResultOfSavingRepository {
 	void update(ResultOfSaving data);
 	
 	void update(String storeProcessingId, long fileSize);
+	
+	List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds);
+	
+	List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes);
 }
