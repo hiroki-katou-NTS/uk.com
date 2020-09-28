@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
@@ -12,6 +15,8 @@ import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
 /**
  * The Class ExecLogFinder.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecLogFinder {
 
 	/** The exac error log repository. */
