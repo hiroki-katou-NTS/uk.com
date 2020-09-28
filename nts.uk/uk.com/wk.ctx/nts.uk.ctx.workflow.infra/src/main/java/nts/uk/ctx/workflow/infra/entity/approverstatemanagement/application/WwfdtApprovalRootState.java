@@ -50,7 +50,7 @@ public class WwfdtApprovalRootState extends UkJpaEntity {
 		return rootStateID; 
 	}
 	
-	public static WwfdtApprovalRootState fromDomain(String companyID, ApprovalRootState approvalRootState){
+	public static WwfdtApprovalRootState fromDomain(ApprovalRootState approvalRootState){
 		return WwfdtApprovalRootState.builder()
 				.rootStateID(approvalRootState.getRootStateID())
 				.employeeID(approvalRootState.getEmployeeID())

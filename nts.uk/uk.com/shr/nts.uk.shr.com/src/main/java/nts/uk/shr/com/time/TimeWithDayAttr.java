@@ -39,6 +39,27 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	public TimeWithDayAttr(int minutesFromZeroOClock) {
 		super(minutesFromZeroOClock);
 	}
+	
+	/**
+	 * 時分から作る
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr hourMinute(int hour, int minute) {
+		return new TimeWithDayAttr(hour * 60 + minute);
+	}
+	
+	/**
+	 * 日区分と時分から作る
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr dayHourMinute(DayAttr day, int hour, int minute) {
+		return hourMinute(day.hours + hour, minute);
+	}
 
 	/**
 	 * OBSOLETE: use dayAttr() instead
@@ -126,13 +147,14 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 		// 対象日は基準日から見て何の日か判断する
 		if (baseDate.equals(targetDate)) { // 当日
 			return new TimeWithDayAttr(timesOfDay);
-		} else if (baseDate.addDays(1).equals(targetDate)) { // 前日
+		} else if (baseDate.addDays(-1).equals(targetDate)) { // 前日
 			return new TimeWithDayAttr(timesOfDay - MAX_MINUTES_IN_DAY);
-		} else if (baseDate.addDays(-1).equals(targetDate)) { // 翌日
+		} else if (baseDate.addDays(1).equals(targetDate)) { // 翌日
 			return new TimeWithDayAttr(timesOfDay + MAX_MINUTES_IN_DAY);
-		} else if (baseDate.addDays(-2).equals(targetDate)) {// 翌々日
+		} else if (baseDate.addDays(2).equals(targetDate)) {// 翌々日
 			return new TimeWithDayAttr(timesOfDay + 2 * MAX_MINUTES_IN_DAY);
 		}
+		
 		throw new RuntimeException("Error convert : 基準日、対象日、対象時刻から日区分付き時刻に変換する ");
 	}
 

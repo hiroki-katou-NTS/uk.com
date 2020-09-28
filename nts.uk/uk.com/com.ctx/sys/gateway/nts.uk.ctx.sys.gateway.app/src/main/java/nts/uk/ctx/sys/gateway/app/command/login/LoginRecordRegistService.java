@@ -11,8 +11,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
+
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -40,9 +39,9 @@ import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
+import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 
 /**
  * The Class LoginRecordRegistService.

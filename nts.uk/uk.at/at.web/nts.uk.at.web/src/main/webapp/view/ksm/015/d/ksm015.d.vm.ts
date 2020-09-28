@@ -61,8 +61,8 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 						self.isWorkplaceAlreadySetting(data && data.length > 0);
 					});
 				}}
-				
-				
+				$('#cre-shift').focus();
+				nts.uk.ui.errors.clearAll();
 			});
 
 			if (self.workplaceGroupList().length === 0) {
@@ -99,7 +99,7 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 			nts.uk.ui.block.invisible();
 			service.startPages(TargetUnit.WORKPLACE_GROUP)
 				.done((data) => {
-					self.forAttendent(!_.isNull(data.forAttendent));
+					self.forAttendent(data.forAttendent);
 					if (data.alreadyConfigWorkplaces) {
 						let alreadySettings = []
 						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
@@ -192,6 +192,12 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 
 		register() {
 			let self = this;
+			
+			if (nts.uk.util.isNullOrEmpty(self.shiftItems())) {
+				let KSM015_12 = nts.uk.resource.getText('KSM015_12');
+				$('#register-btn').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_12]), "MsgB_2");
+				return;
+			};
 
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE_GROUP,
@@ -211,6 +217,8 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 				}).always(function() {
+					$('#cre-shift').focus();
+					$('#cre-shift').focus();
 					nts.uk.ui.block.clear();
 				});
 		}
@@ -245,7 +253,7 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 				self.shiftItems(_.filter(self.shiftItems(), (val) => { return self.selectedShiftMaster().indexOf(val.shiftMasterCode) === -1 }));
 				self.selectedShiftMaster([]);
 			} else {
-				nts.uk.ui.dialog.info({ messageId: "Msg_85" });
+				//nts.uk.ui.dialog.info({ messageId: "Msg_85" });
 			}
 		}
 
@@ -282,6 +290,10 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 					currents = currents.concat(differentFromCurrents);
 					currents = _.sortBy(currents, 'shiftMasterCode');
 					self.shiftItems(currents);
+					if(!nts.uk.util.isNullOrEmpty(self.shiftItems())){
+					nts.uk.ui.errors.clearAll();	
+					}
+					
 				}
 			});
 		}

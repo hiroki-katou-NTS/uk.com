@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script type="text/javascript">
+				var ScreenModel = (function () {
+	                function ScreenModel() {
+	                }
+	                return ScreenModel;
+				}());
+				__viewContext.ready(function() {
+		            __viewContext.bind(new ScreenModel());
+			    });
+
+				function openDailogKDL014() {
+ 				   	nts.uk.ui.windows.setShared('KDL014-PARAM', JSON.parse($('#param').val()));
+ 				   	nts.uk.ui.windows.sub.modal('/view/kdl/014/a/index.xhtml');
+                }
+			</script>
+			
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<textarea rows="20" cols="100" id="param">
+						{
+						  "startDate": "2020/07/01",
+						  "endDate": "2020/07/31",
+						  "mode": "0",
+						  "listEmp": [
+						    {
+						      "employeeId": "4e99b2f5-506c-42d1-a50a-8541dd5bc5e1",
+						      "employeeCode": "SP0009",
+						      "employeeName": "ログテスト　９",
+						      "affiliationName": ""
+						    }
+						  ]
+						}
+					</textarea>
+				</div>
+				<button onClick ="openDailogKDL014()">Open Dailog KDL014</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

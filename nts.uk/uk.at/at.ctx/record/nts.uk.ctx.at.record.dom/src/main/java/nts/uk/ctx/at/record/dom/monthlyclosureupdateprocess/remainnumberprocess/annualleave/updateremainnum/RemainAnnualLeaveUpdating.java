@@ -204,14 +204,14 @@ public class RemainAnnualLeaveUpdating {
 	public static interface RequireM5 extends RequireM4, RequireM3 {
 	}
 
-	private static interface RequireM4 extends RequireM2, RequireM1 {
+	public static interface RequireM4 extends RequireM2, RequireM1 {
 
 		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId);
 		
 		void addOrUpdateAnnualLeaveRemainingHistory(AnnualLeaveRemainingHistory domain);
 	}
 	
-	private static interface RequireM3 {
+	public static interface RequireM3 {
 		
 		Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId);
 		
@@ -222,7 +222,7 @@ public class RemainAnnualLeaveUpdating {
 		void addAnnualLeaveMaxData(AnnualLeaveMaxData maxData);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		void addAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data);
 		
@@ -231,7 +231,7 @@ public class RemainAnnualLeaveUpdating {
 		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId, GeneralDate grantDate);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		void addOrUpdateAnnualLeaveTimeRemainingHistory(AnnualLeaveTimeRemainingHistory domain);
 	}

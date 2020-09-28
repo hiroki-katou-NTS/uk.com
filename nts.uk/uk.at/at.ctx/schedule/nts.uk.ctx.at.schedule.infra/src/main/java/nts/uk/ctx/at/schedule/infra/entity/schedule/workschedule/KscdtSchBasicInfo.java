@@ -10,8 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -23,42 +21,41 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.UseAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -148,7 +145,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// 勤務予定.勤務情報.勤務実績の勤務情報
 		WorkInformation workInformation = workInfoOfDaily.getRecordInfo();
 
-		KscdtSchTime kscdtSchTimes = KscdtSchTime.toEntity(workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily(), sID, yMD, cID);
+		KscdtSchTime kscdtSchTimes = workSchedule.getOptAttendanceTime().isPresent() ? KscdtSchTime.toEntity(workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily(), sID, yMD, cID) : null;
 
 		// 勤務予定.休憩時間帯
 		List<KscdtSchEditState> kscdtEditStates = workSchedule.getLstEditState().stream()
@@ -192,9 +189,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	public WorkSchedule toDomain(String sID, GeneralDate yMD) {
 		
 		// create WorkInfoOfDailyAttendance
-		WorkInformation recordInfo = new WorkInformation(wktmCd == null ? null : new WorkTimeCode(wktmCd),new WorkTypeCode(wktpCd));
+		WorkInformation recordInfo = new WorkInformation(wktpCd, wktmCd);
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
-				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek(), DayOfWeek.class), new ArrayList<>());
+				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>());
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
@@ -218,10 +215,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create Optional<TimeLeavingOfDailyAttd>
 		TimeLeavingOfDailyAttd optTimeLeaving = null;
 		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+		@SuppressWarnings("unused")
 		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
-			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getLwkClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
+			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getLwkClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);
@@ -238,10 +236,15 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime.toDomain(sID, yMD);
-		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
-				null, actualWorkingTimeOfDaily, 
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime != null ? kscdtSchTime.toDomain(sID, yMD) : null;
+		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), 
+				new AttendanceTime(0), new AttendanceTime(0));
+		AttendanceTimeOfDailyAttendance attendance = null;
+		if(actualWorkingTimeOfDaily != null) {
+		attendance = new AttendanceTimeOfDailyAttendance(
+				scheduleTimeOfDaily, actualWorkingTimeOfDaily, 
 				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);
+		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
 				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));

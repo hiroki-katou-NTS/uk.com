@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
@@ -14,21 +16,22 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimePriorityRepository;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriorityRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
@@ -37,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
@@ -50,6 +52,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectAttendanceClock {
 	
 //	@Inject
@@ -135,12 +138,12 @@ public class ReflectAttendanceClock {
 				workStamp = timeActualStamp.get().getStamp();
 			}
 			if(!workStamp.isPresent() 
-					|| !workStamp.get().getLocationCode().isPresent()
+//					|| !workStamp.get().getLocationCode().isPresent()
 					|| !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {
 				return null;
 			}
 			
-			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().get(),
+			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().isPresent()? workStamp.get().getLocationCode().get():null,
 					workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
 					workStamp.get().getTimeDay().getTimeWithDay().get());
 		}
@@ -186,7 +189,7 @@ public class ReflectAttendanceClock {
 		Optional<WorkStamp> workStamp = getWorkStamp(attendanceAtr, actualStampAtr, integrationOfDaily, workNo);
 		
 		//出退勤打刻反映先がNullか確認する 
-		if(timePrintDestinationOutput == null) {
+ 		if(timePrintDestinationOutput == null) {
 			return ReflectStampOuput.REFLECT;	
 		}
 		//実打刻を反映するなのかをチェックする
@@ -215,6 +218,7 @@ public class ReflectAttendanceClock {
 		String companyId = AppContexts.user().companyId();
 		if (integrationOfDaily.getWorkInformation() != null) {
 			WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+			if(recordWorkInformation.getWorkTimeCode() != null) {
 			WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 
 			StampPiorityAtr stampPiorityAtr = StampPiorityAtr.GOING_WORK;
@@ -250,6 +254,7 @@ public class ReflectAttendanceClock {
 				}
 			}
 
+		}
 		}
 		
 		return ReflectStampOuput.REFLECT;
@@ -345,6 +350,7 @@ public class ReflectAttendanceClock {
 				workStamp.get().getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));
 				workStamp.get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
 				workStamp.get().getTimeDay().getReasonTimeChange().setEngravingMethod(Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			}else {
 				WorkStamp workStampNew = new WorkStamp();
 				WorkTimeInformation timeDay = new WorkTimeInformation(
@@ -354,11 +360,24 @@ public class ReflectAttendanceClock {
 				workStampNew.setLocationCode(Optional.empty());
 				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
-				timeActualStamp.get().setStamp(workStamp);
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
+				if(actualStampAtr == ActualStampAtr.STAMP ) {
+					timeActualStamp.get().setStamp(workStamp);
+				}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+					timeActualStamp.get().setActualStamp(workStamp);
+				}
+				
 			}
 			//打刻を丸める (làm tròn 打刻)
-			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp.get(),
+			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
 					attendanceAtr, actualStampAtr);
+			
+			if(actualStampAtr == ActualStampAtr.STAMP ) {
+				timeActualStamp.get().setStamp(workStamp);
+			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				timeActualStamp.get().setActualStamp(workStamp);
+			}
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する
@@ -379,13 +398,15 @@ public class ReflectAttendanceClock {
 			workStamp.setTimeDay(timeDay);
 			workStamp.setLocationCode(Optional.empty());
 			workStamp.setAfterRoundingTime(timeWithDayAttr);
+			workStamp.setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
 				timeActualStamp.setStamp(Optional.of(workStamp));
 			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				timeActualStamp.setActualStamp(Optional.of(workStamp));
 			}
 			
-			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp,
+				this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+						? integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp,
 					attendanceAtr, actualStampAtr);
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
@@ -450,7 +471,8 @@ public class ReflectAttendanceClock {
 				}else {
 					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
 				}
-				workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				//workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				workStamp.setAfterRoundingTime(new TimeWithDayAttr(timeChange));
 			}//end : nếu time khác giá trị default
 		}
 	}

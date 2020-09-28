@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -33,7 +33,7 @@ public class WorkTimeOfDailyService {
 		//就業時間帯の必須チェック
 		SetupType checkNeededOfWorkTime = basicService.checkNeededOfWorkTimeSetting(workType);
 		if(checkNeededOfWorkTime == SetupType.NOT_REQUIRED) {
-			working.getWorkInformation().getRecordInfo().setWorkTimeCode(null);
+			working.getWorkInformation().getRecordInfo().removeWorkTimeInHolydayWorkType();
 		} else if(checkNeededOfWorkTime == SetupType.REQUIRED) {
 			if(working.getWorkInformation().getRecordInfo().getWorkTimeCode() == null) {
 				List<EditStateOfDailyPerformance> lstEditWorktime = working.getEditState().stream().filter(x -> x.getAttendanceItemId() == 29)

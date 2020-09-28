@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 //import java.math.BigDecimal;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.someitems.RaisingSalaryTimeItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.RaisingSalaryTimeItemNo;
 
 /**
  * 加給時間

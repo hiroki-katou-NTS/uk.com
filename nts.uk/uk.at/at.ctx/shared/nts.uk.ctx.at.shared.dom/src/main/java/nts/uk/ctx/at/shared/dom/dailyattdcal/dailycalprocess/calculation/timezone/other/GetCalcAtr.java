@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 
 /**
  * 計算区分取得用のロジック

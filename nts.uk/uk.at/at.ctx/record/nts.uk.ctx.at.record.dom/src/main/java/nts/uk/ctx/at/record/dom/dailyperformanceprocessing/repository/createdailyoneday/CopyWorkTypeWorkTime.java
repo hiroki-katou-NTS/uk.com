@@ -9,17 +9,16 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -46,13 +45,13 @@ public class CopyWorkTypeWorkTime {
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
-		WorkTypeCode workTypeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode()
-				.get();
-		WorkTimeCode workTimeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode() !=null 
-				&& optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode()
-				.isPresent() ? optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get()
-						: null;
-		WorkInformation recordInfo = new WorkInformation(workTimeCode, workTypeCode);
+		
+		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
+			SingleDaySchedule sched = opt.getWorkCategory().getHolidayTime();
+			
+			return new WorkInformation(sched.getWorkTypeCode().orElse(null), sched.getWorkTimeCode().orElse(null));
+		}).orElse(null);
+		
 		//休日の勤務種類を勤務予定に写す
 		workInformation.setScheduleInfo(recordInfo);
 		//休日の勤務種類を勤務実績に写す

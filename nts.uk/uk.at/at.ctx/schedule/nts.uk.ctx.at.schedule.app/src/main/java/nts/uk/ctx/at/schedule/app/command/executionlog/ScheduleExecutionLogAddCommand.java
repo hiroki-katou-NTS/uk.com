@@ -5,27 +5,14 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
+import nts.uk.ctx.at.schedule.dom.executionlog.*;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -268,7 +255,7 @@ public class ScheduleExecutionLogAddCommand {
 	 * The Class ScheduleCreateContentGetMementoImpl.
 	 */
 	class ScheduleCreateContentGetMementoImpl implements ScheduleCreateContentGetMemento {
-
+		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
 		/** The execution id. */
 		private String executionId;
 
@@ -295,31 +282,42 @@ public class ScheduleExecutionLogAddCommand {
 
 		/*
 		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getCopyStartDate()
+		 *
+		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
+		 * getCopyStartDate()
 		 */
 		@Override
-		public GeneralDate getCopyStartDate() {
-			return copyStartDate;
+		public SpecifyCreation getSpecifyCreation() {
+			return new SpecifyCreation(
+					CreationMethod.valueOf(createMethodAtr),
+					Optional.of(copyStartDate),
+					Optional.empty(),
+					Optional.empty()
+
+			);
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getCreateMethodAtr()
+		 *
+		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
+		 * getCreateMethodAtr()
 		 */
 		@Override
-		public CreateMethodAtr getCreateMethodAtr() {
-			return CreateMethodAtr.valueOf(createMethodAtr);
+		public Optional<RecreateCondition> getRecreateCondition() {
+			return Optional.of(new RecreateCondition(
+					false,
+					false,
+					false,
+					Optional.empty()
+			));
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getConfirm()
+		 *
+		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
+		 * getConfirm()
 		 */
 		@Override
 		public Boolean getConfirm() {
@@ -328,108 +326,13 @@ public class ScheduleExecutionLogAddCommand {
 
 		/*
 		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getImplementAtr()
+		 *
+		 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
+		 * getImplementAtr()
 		 */
 		@Override
-		public ImplementAtr getImplementAtr() {
-			return ImplementAtr.valueOf(implementAtr);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getProcessExecutionAtr()
-		 */
-		@Override
-		public ProcessExecutionAtr getProcessExecutionAtr() {
-			return ProcessExecutionAtr.valueOf(processExecutionAtr);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getReCreateAtr()
-		 */
-		@Override
-		public ReCreateAtr getReCreateAtr() {
-			return ReCreateAtr.valueOf(reCreateAtr);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetMasterInfo()
-		 */
-		@Override
-		public Boolean getResetMasterInfo() {
-			return resetMasterInfo;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetWorkingHours()
-		 */
-		@Override
-		public Boolean getResetWorkingHours() {
-			return resetWorkingHours;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetTimeAssignment()
-		 */
-		@Override
-		public Boolean getResetTimeAssignment() {
-			return reTimeAssignment;
-		}
-
-		@Override
-		public Boolean getResetStartEndTime() {
-			return reStartEndTime;
-		}
-
-		@Override
-		public RebuildTargetAtr getRebuildTargetAtr() {
-			return RebuildTargetAtr.valueOf(reTargetAtr);
-		}
-
-		@Override
-		public Boolean getRecreateConverter() {
-			return reConverter;
-		}
-
-		@Override
-		public Boolean getRecreateEmployeeOffWork() {
-			return reEmpOffWork;
-		}
-
-		@Override
-		public Boolean getRecreateDirectBouncer() {
-			return reDirectBouncer;
-		}
-
-		@Override
-		public Boolean getRecreateShortTermEmployee() {
-			return reShortTermEmp;
-		}
-
-		@Override
-		public Boolean getRecreateWorkTypeChange() {
-			return reWorkTypeChange;
-		}
-
-		@Override
-		public Boolean getProtectHandCorrection() {
-			return protectHandCorrect;
+		public ImplementAtr getCreationType() {
+			return ImplementAtr.valueOf(1);
 		}
 	}
 }

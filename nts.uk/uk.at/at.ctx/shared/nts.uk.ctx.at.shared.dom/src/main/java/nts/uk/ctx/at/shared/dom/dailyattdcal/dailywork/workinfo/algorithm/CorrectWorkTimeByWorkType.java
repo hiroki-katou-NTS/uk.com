@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.workinfo.algorithm;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
@@ -29,7 +29,7 @@ public class CorrectWorkTimeByWorkType {
 		if (setupType == SetupType.NOT_REQUIRED) {
 
 			// 就業時間帯コード←null
-			workInfo.getRecordInfo().setWorkTimeCode(null);
+			workInfo.getRecordInfo().removeWorkTimeInHolydayWorkType();;
 		}
 
 		if (setupType == SetupType.REQUIRED && workInfo.getRecordInfo().getWorkTimeCode() == null) {

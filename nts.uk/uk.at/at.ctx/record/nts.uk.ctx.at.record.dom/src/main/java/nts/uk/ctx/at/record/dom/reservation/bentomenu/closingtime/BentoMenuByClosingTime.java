@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.time.ClockHourMinute;
+import nts.arc.time.clock.ClockHourMinute;
 
 /**
  * 	締め時刻別の弁当メニュー

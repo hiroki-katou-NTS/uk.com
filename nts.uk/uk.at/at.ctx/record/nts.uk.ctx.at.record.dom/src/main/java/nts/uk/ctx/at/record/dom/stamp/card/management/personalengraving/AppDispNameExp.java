@@ -12,12 +12,19 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class AppDispNameExp {
-
+	
 	// 会社ID
 	private String companyId;
 	// 申請種類
 	private int appType;
 	// 表示名
 	private String dispName;
+	private String screen;
+	private String screenCd;
+	private String screenId;
+	private String queryString;
+	
+
+	private String url;
 
 }

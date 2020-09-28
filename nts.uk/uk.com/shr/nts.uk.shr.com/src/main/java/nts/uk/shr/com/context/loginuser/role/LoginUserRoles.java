@@ -50,6 +50,15 @@ public interface LoginUserRoles {
 	 */
 	String forGroupCompaniesAdmin();
 	
+	boolean isInChargeAttendance();
+	
+	boolean isInChargePayroll();
+	
+	boolean isInChargePersonnel();
+	
+	boolean isInChargePersonalInfo();
+	
+	
 	/**
 	 * Check if user has role for ...
 	 * @return HavingRole

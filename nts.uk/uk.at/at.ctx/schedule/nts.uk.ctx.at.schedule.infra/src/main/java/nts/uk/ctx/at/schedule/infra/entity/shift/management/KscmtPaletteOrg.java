@@ -65,7 +65,9 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 	}
 
 	public static KscmtPaletteOrg fromDomain(ShiftPalletsOrg shiftPalletsOrg ){
-		KscmtPaletteOrgPk pk = new KscmtPaletteOrgPk(AppContexts.user().companyId(), shiftPalletsOrg.getTargeOrg().getUnit().value ,shiftPalletsOrg.getTargeOrg().getWorkplaceId().get(),shiftPalletsOrg.getPage());
+		KscmtPaletteOrgPk pk = new KscmtPaletteOrgPk(AppContexts.user().companyId(), shiftPalletsOrg.getTargeOrg().getUnit().value ,
+				shiftPalletsOrg.getTargeOrg().getUnit().value == 0 
+				? shiftPalletsOrg.getTargeOrg().getWorkplaceId().get() : shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(), shiftPalletsOrg.getPage());
 		
 		return new KscmtPaletteOrg(pk,
 				shiftPalletsOrg.getShiftPallet().getDisplayInfor().getShiftPalletName().v(),

@@ -2,11 +2,11 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 
 /**
  * @author ThanhNX
@@ -22,19 +22,19 @@ public class DetermineClassifiByWorkInfoCond {
 		AutoStampSetClassifi autoStamp = new AutoStampSetClassifi(NotUseAtr.NOTUSE, null, NotUseAtr.NOTUSE, null);
 		if (workCondItem.getAutoStampSetAtr() == NotUseAtr.USE) {
 			// 「自動打刻セット区分」をセットする
-			autoStamp = new AutoStampSetClassifi(NotUseAtr.USE, StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO,
-					NotUseAtr.USE, StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO);
+			autoStamp = new AutoStampSetClassifi(NotUseAtr.USE, TimeChangeMeans.AUTOMATIC_SET, NotUseAtr.USE,
+					TimeChangeMeans.AUTOMATIC_SET);
 		}
 
 		// INPUT．「日別実績の勤務情報」を確認する
 		if (workInformation.getGoStraightAtr() == NotUseAttribute.Use) {
 			autoStamp.setAttendanceReflect(NotUseAtr.USE);
-			autoStamp.setAttendanceStamp(StampSourceInfo.GO_STRAIGHT);
+			autoStamp.setAttendanceStamp(TimeChangeMeans.DIRECT_BOUNCE);
 		}
 
 		if (workInformation.getBackStraightAtr() == NotUseAttribute.Use) {
 			autoStamp.setLeaveWorkReflect(NotUseAtr.USE);
-			autoStamp.setLeaveStamp(StampSourceInfo.GO_STRAIGHT);
+			autoStamp.setLeaveStamp(TimeChangeMeans.DIRECT_BOUNCE);
 		}
 		return autoStamp;
 	}
@@ -54,7 +54,7 @@ public class DetermineClassifiByWorkInfoCond {
 		/**
 		 * 出勤打刻元
 		 */
-		private StampSourceInfo attendanceStamp;
+		private TimeChangeMeans attendanceStamp;
 
 		/**
 		 * 退勤反映
@@ -64,7 +64,7 @@ public class DetermineClassifiByWorkInfoCond {
 		/**
 		 * 退勤打刻元
 		 */
-		private StampSourceInfo leaveStamp;
+		private TimeChangeMeans leaveStamp;
 
 		public boolean isReflect() {
 			return attendanceReflect == NotUseAtr.USE || leaveWorkReflect == NotUseAtr.USE;
