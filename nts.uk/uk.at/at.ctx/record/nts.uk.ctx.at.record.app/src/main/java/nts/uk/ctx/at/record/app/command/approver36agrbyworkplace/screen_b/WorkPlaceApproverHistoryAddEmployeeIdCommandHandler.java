@@ -29,9 +29,7 @@ public class WorkPlaceApproverHistoryAddEmployeeIdCommandHandler extends Command
 
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryAddEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
         val domain = new Approver36AgrByWorkplace(
-                cid,
                 command.getWorkPlaceId(),
                 command.getPeriod(),
                 command.getApproveList(),
