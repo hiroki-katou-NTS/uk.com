@@ -155,6 +155,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
         const vm = this;
         const { businessTripInfoOutput } = vm.data;
         const { opWorkTime, opLeaveTime } = rowDate.opAchievementDetail;
+        if (opWorkTime && opLeaveTime) {
+            rowDate.opAchievementDetail.opWorkTime1 = vm.$dt.timewd(opWorkTime) + ' ~ ' + vm.$dt.timewd(opLeaveTime);
+        }
 
         vm.$modal(KafS08DComponent, {
             rowDate,
@@ -236,7 +239,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {
-            vm.$mask('hide'); 
+            vm.$mask('hide');  
             let param;
 
             if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913' ) {
