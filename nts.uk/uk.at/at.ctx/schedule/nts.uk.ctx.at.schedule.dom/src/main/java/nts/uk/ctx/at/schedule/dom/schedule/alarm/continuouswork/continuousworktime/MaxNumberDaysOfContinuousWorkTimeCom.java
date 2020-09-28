@@ -12,17 +12,13 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 @AllArgsConstructor
 public class MaxNumberDaysOfContinuousWorkTimeCom implements DomainAggregate{
-
-	//会社ID
-	private final String companyId;
-	
-	//コード
+	/** コード */
 	private WorkTimeContinuousCode code;
 	
-	//名称
+	/** 名称 */
 	private WorkTimeContinuousName name;
 	
-	//日数
-	private MaxNumberOfContinuousWorktime maxNumberDaysOfContinuousWorktime;
+	/** 日数 */
+	private MaxNumberOfContinuousWorktime maxDaysContiWorktime;
 	
 }

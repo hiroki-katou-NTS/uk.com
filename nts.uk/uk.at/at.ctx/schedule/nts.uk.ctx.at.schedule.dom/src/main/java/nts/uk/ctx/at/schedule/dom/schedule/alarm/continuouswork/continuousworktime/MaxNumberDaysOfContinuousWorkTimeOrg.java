@@ -14,17 +14,15 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 @Getter
 @AllArgsConstructor
 public class MaxNumberDaysOfContinuousWorkTimeOrg implements DomainAggregate{
-	
-	//対象組織 
-	
+	/** 対象組織 */
 	private final TargetOrgIdenInfor targeOrg;
 	
-	//コード
+	/** コード */
 	private WorkTimeContinuousCode code;
 	
-	//名称
+	/** 名称 */
 	private WorkTimeContinuousName name;
 	
-	//日数
-	private MaxNumberOfContinuousWorktime MaxNumberDaysOfContinuousWorktime;
+	/** 日数 */
+	private MaxNumberOfContinuousWorktime maxDaysContiWorktime;
 }

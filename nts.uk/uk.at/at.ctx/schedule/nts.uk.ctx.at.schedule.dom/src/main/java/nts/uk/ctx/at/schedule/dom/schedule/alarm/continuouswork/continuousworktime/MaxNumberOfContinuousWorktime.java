@@ -15,10 +15,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  */
 @Value
 public class MaxNumberOfContinuousWorktime implements DomainValue{
-	//就業時間帯コードリスト
+	/** 就業時間帯コードリスト */
 	private final List<WorkTimeCode> worktimeCodeLst;
 	
 	
-	//日数
+	/** 日数 */
 	private NumberOfConsecutiveDays numberOfDays;
 }
