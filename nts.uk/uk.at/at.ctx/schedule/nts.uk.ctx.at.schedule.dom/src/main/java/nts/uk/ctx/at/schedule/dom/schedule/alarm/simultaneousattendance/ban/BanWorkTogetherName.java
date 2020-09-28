@@ -9,11 +9,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(20)
-public class SimultaneousAttendanceBanName extends StringPrimitiveValue<SimultaneousAttendanceBanName>{
+public class BanWorkTogetherName extends StringPrimitiveValue<BanWorkTogetherName>{
 	/**	serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	
-	public SimultaneousAttendanceBanName(String rawValue) {
+	public BanWorkTogetherName(String rawValue) {
 		super(rawValue);
 	}
 

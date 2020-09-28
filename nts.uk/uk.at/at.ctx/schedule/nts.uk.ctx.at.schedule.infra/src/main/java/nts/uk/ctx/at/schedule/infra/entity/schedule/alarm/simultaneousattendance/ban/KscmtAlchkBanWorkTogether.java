@@ -14,9 +14,9 @@ import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.ApplicableTimeZoneCls;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.MaxOfNumberEmployeeTogether;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBan;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBanCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBanName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogether;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogetherCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogetherName;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -68,34 +68,34 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 	 * @param companyId
 	 * @return
 	 */
-	public static KscmtAlchkBanWorkTogether of (SimultaneousAttendanceBan domain, String companyId) {
+	public static KscmtAlchkBanWorkTogether of (BanWorkTogether domain, String companyId) {
 		
 		val pk = new KscmtAlchkBanWorkTogetherPk();
 		pk.companyId = companyId;
 		pk.targetUnit = domain.getTargetOrg().getUnit().value;
 		pk.targetId = domain.getTargetOrg().getTargetId();
-		pk.code = domain.getSimultaneousAttBanCode().v();
+		pk.code = domain.getBanWorkTogetherCode().v();
 		
 		val entity = new KscmtAlchkBanWorkTogether();
 		entity.pk = pk;
-		entity.name = domain.getSimultaneousAttendanceBanName().v();
+		entity.name = domain.getBanWorkTogetherName().v();
 		entity.applyTs = domain.getApplicableTimeZoneCls().value;
-		entity.upperLimit = domain.getAllowableNumberOfEmp().v();
+		entity.upperLimit = domain.getUpperLimit().v();
 		
 		return entity;
 	}
 	
-	public SimultaneousAttendanceBan toDomain (KscmtAlchkBanWorkTogetherDtl dtl) {
+	public BanWorkTogether toDomain (KscmtAlchkBanWorkTogetherDtl dtl) {
 		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.createFromTargetUnit(
 				  TargetOrganizationUnit.valueOf(this.pk.targetUnit)
 				, this.pk.targetId);
 		
-		return new SimultaneousAttendanceBan(
+		return new BanWorkTogether(
 				  targetOrg
-				, new SimultaneousAttendanceBanCode(this.pk.code)
-				, new SimultaneousAttendanceBanName(this.name)
+				, new BanWorkTogetherCode(this.pk.code)
+				, new BanWorkTogetherName(this.name)
 				, ApplicableTimeZoneCls.of(this.applyTs)
-				, Collections.emptyList()
-				, new MaxOfNumberEmployeeTogether(this.upperLimit));
+				, new MaxOfNumberEmployeeTogether(this.upperLimit)
+				, Collections.emptyList());
 	}
 }

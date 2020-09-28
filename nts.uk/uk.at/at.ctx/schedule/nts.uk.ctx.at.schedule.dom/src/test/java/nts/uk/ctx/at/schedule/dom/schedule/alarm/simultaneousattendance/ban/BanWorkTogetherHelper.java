@@ -5,7 +5,7 @@ import java.util.List;
 
 import nts.gul.text.IdentifierUtil;
 
-public class SimultaneousAttendanceBanHelper {
+public class BanWorkTogetherHelper {
 	/**
 	 * creatEmpsCanNotSameHolidays
 	 * @param size

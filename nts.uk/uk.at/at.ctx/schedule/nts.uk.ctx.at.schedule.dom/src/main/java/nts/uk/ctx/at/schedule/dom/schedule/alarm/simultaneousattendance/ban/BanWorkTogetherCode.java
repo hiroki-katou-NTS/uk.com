@@ -15,11 +15,11 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 @StringMaxLength(3)
-public class SimultaneousAttendanceBanCode extends CodePrimitiveValue<SimultaneousAttendanceBanCode>{
+public class BanWorkTogetherCode extends CodePrimitiveValue<BanWorkTogetherCode>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	
-	public SimultaneousAttendanceBanCode(String rawValue) {
+	public BanWorkTogetherCode(String rawValue) {
 		super(rawValue);
 	}
 

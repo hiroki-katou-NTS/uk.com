@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBan;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogether;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -43,7 +43,7 @@ public class KscmtAlchkBanWorkTogetherDtl extends ContractUkJpaEntity implements
 	 * @param companyId
 	 * @return
 	 */
-	public static List<KscmtAlchkBanWorkTogetherDtl> toDetailList(SimultaneousAttendanceBan domain, String companyId) {
+	public static List<KscmtAlchkBanWorkTogetherDtl> toDetailList(BanWorkTogether domain, String companyId) {
 
 		return domain.getEmpBanWorkTogetherLst().stream()
 				.map(sid -> new KscmtAlchkBanWorkTogetherDtl(new KscmtAlchkBanWorkTogetherDtlPk(

@@ -14,10 +14,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.ApplicableTimeZoneCls;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.MaxOfNumberEmployeeTogether;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBan;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBanCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBanName;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.SimultaneousAttendanceBanRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogether;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogetherCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogetherName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban.BanWorkTogetherRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban.KscmtAlchkBanWorkTogether;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban.KscmtAlchkBanWorkTogetherDtl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban.KscmtAlchkBanWorkTogetherPk;
@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implements SimultaneousAttendanceBanRepository {
+public class JpaBanWorkTogetherRepository extends JpaRepository implements BanWorkTogetherRepository {
 
 	private static String SELECT_TARGETUNIT = "SELECT * FROM KSCMT_ALCHK_BAN_WORK_TOGETHER"
 			+ " WHERE CID = @companyId"
@@ -41,31 +41,31 @@ public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implem
 	private static String SELECT_TARGETUNIT_CODE = SELECT_TARGETUNIT + " AND CD = @code";
 	
 	@Override
-	public void insert(String companyId, SimultaneousAttendanceBan simulAttBan) {
+	public void insert(String companyId, BanWorkTogether simulAttBan) {
 		this.commandProxy().insert(KscmtAlchkBanWorkTogether.of(simulAttBan, companyId));
 		this.commandProxy().insertAll(KscmtAlchkBanWorkTogetherDtl.toDetailList(simulAttBan, companyId));
 	}
 
 	@Override
-	public void update(String companyId, SimultaneousAttendanceBan simulAttBan) {
+	public void update(String companyId, BanWorkTogether simulAttBan) {
 		val pk = new KscmtAlchkBanWorkTogetherPk();
 		pk.companyId = companyId;
 		pk.targetUnit = simulAttBan.getTargetOrg().getUnit().value;
 		pk.targetId = simulAttBan.getTargetOrg().getTargetId();
-		pk.code = simulAttBan.getSimultaneousAttBanCode().v();
+		pk.code = simulAttBan.getBanWorkTogetherCode().v();
 		
 		KscmtAlchkBanWorkTogether updata = this.queryProxy().find(pk, KscmtAlchkBanWorkTogether.class).get();
-		updata.name = simulAttBan.getSimultaneousAttendanceBanName().v();
-		updata.upperLimit = simulAttBan.getAllowableNumberOfEmp().v();
+		updata.name = simulAttBan.getBanWorkTogetherName().v();
+		updata.upperLimit = simulAttBan.getUpperLimit().v();
 		this.commandProxy().update(updata);
 		
 		
 	}
 
 	@Override
-	public void delete(String companyId, TargetOrgIdenInfor targetOrg, SimultaneousAttendanceBanCode code) {
+	public void delete(String companyId, TargetOrgIdenInfor targetOrg, BanWorkTogetherCode code) {
 		
-		Optional<SimultaneousAttendanceBan> domain = this.get(companyId, targetOrg, code);
+		Optional<BanWorkTogether> domain = this.get(companyId, targetOrg, code);
 		
 		if (domain.isPresent()) {
 			KscmtAlchkBanWorkTogether entity = KscmtAlchkBanWorkTogether.of(domain.get(), companyId);
@@ -76,7 +76,7 @@ public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implem
 	}
 
 	@Override
-	public List<SimultaneousAttendanceBan> getAll(String companyId, TargetOrgIdenInfor targetOrg) {
+	public List<BanWorkTogether> getAll(String companyId, TargetOrgIdenInfor targetOrg) {
 		String sql = SELECT_TARGETUNIT;
 		
 		
@@ -84,7 +84,7 @@ public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implem
 	}
 
 	@Override
-	public Optional<SimultaneousAttendanceBan> get(String companyId, TargetOrgIdenInfor targetOrg, SimultaneousAttendanceBanCode code) {
+	public Optional<BanWorkTogether> get(String companyId, TargetOrgIdenInfor targetOrg, BanWorkTogetherCode code) {
 		Optional<KscmtAlchkBanWorkTogether> header = new NtsStatement(SELECT_TARGETUNIT_CODE, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("targetUnit", targetOrg.getUnit().value)
@@ -97,7 +97,7 @@ public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implem
 	}
 
 	@Override
-	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, SimultaneousAttendanceBanCode code) {
+	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, BanWorkTogetherCode code) {
 		return this.get(companyId, targetOrg, code).isPresent();
 	}
 
@@ -108,20 +108,20 @@ public class JpaSimultaneousAttendanceBanRepository extends JpaRepository implem
 		
 		List<KscmtAlchkBanWorkTogetherDtl> detailList;
 		
-		public SimultaneousAttendanceBan toDomain() {
+		public BanWorkTogether toDomain() {
 			TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.createFromTargetUnit(
 					  TargetOrganizationUnit.valueOf(this.header.pk.targetUnit)
 					, this.header.pk.targetId);
 			
 			List<String> sidList = this.detailList.stream().map(x -> x.pk.employeeId).collect(Collectors.toList());
 			
-			return new SimultaneousAttendanceBan(
+			return new BanWorkTogether(
 					  targetOrg
-					, new SimultaneousAttendanceBanCode(this.header.pk.code)
-					, new SimultaneousAttendanceBanName(this.header.name)
+					, new BanWorkTogetherCode(this.header.pk.code)
+					, new BanWorkTogetherName(this.header.name)
 					, ApplicableTimeZoneCls.of(this.header.applyTs)
-					, sidList
-					, new MaxOfNumberEmployeeTogether(this.header.upperLimit));
+					, new MaxOfNumberEmployeeTogether(this.header.upperLimit)
+					, sidList);
 		}
 	}
 }
