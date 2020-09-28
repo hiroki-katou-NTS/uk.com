@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.query.ksu.ksu002.a.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -16,6 +15,5 @@ import nts.arc.time.GeneralDate;
 @Data
 public class TheInitialDisplayDateDto {
 
-	private GeneralDate baseDate;
-	
+	private int yearMonth;
 }
