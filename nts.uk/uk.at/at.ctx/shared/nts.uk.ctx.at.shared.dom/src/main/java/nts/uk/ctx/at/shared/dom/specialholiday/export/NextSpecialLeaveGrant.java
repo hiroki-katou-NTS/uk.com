@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
@@ -26,10 +27,15 @@ public class NextSpecialLeaveGrant {
 	private GeneralDate grantDate;
 	/** 付与日数 */
 	private GrantDays grantDays;
-	/** 回数 */
+	/** 付与回数 */
 	private GrantNum times;
 	/** 期限日 */
 	private GeneralDate deadLine;
+	
+	/**
+	 * エラーフラグ
+	 */
+	private Optional<ErrorFlg> errorFlg;
 	
 	/**
 	 * コンストラクタ
@@ -39,6 +45,7 @@ public class NextSpecialLeaveGrant {
 		this.grantDays = new GrantDays(0.0);
 		this.times = new GrantNum(0);
 		this.deadLine = GeneralDate.max();
+		this.errorFlg = Optional.empty();
 	}
 	
 //	/**
