@@ -3,12 +3,9 @@ package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.StartingMonthType;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import java.util.Optional;
 
@@ -20,30 +17,22 @@ public class AgreementOperationSettingDto {
     /** ３６協定起算月 **/
     private StartingMonthType startingMonth;
 
-    /** ３６協定超過上限回数 **/
-    private TimeOverLimitType numberTimesOverLimitType;
+    /** 締め日 **/
+    private ClosureDate closureDate;
 
-    /** ３６協定締め日 **/
-    private ClosingDateType closingDateType;
+    /** 特別条項申請を使用する **/
+    private boolean specicalConditionApplicationUse;
 
-    /** ３６協定締め日区分 **/
-    private ClosingDateAtr closingDateAtr;
-
-    /** ３６協定対象設定 - 年間勤務表 **/
-    private TargetSettingAtr yearlyWorkTableAtr;
-
-    /** ３６協定対象設定 - アラームリスト **/
-    private TargetSettingAtr alarmListAtr;
+    /** 年間の特別条項申請を使用する **/
+    private boolean yearSpecicalConditionApplicationUse;
 
     public static AgreementOperationSettingDto setData(Optional<AgreementOperationSetting> data){
 
-        return data.map(agreementOperationSetting -> new AgreementOperationSettingDto(
-                agreementOperationSetting.getStartingMonth(),
-                agreementOperationSetting.getNumberTimesOverLimitType(),
-                agreementOperationSetting.getClosingDateType(),
-                agreementOperationSetting.getClosingDateAtr(),
-                agreementOperationSetting.getYearlyWorkTableAtr(),
-                agreementOperationSetting.getAlarmListAtr()
+        return data.map(setting -> new AgreementOperationSettingDto(
+                setting.getStartingMonth(),
+                setting.getClosureDate(),
+                setting.isSpecicalConditionApplicationUse(),
+                setting.isYearSpecicalConditionApplicationUse()
         )).orElseGet(AgreementOperationSettingDto::new);
     }
 }

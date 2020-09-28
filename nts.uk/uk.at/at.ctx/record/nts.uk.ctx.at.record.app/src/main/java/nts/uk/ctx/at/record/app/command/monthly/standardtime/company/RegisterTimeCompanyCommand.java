@@ -13,9 +13,6 @@ import lombok.Getter;
 @Getter
 public class RegisterTimeCompanyCommand {
 
-	// 会社ID 1
-	private  String companyId;
-
 	// 労働制 3
 	private int laborSystemAtr;
 

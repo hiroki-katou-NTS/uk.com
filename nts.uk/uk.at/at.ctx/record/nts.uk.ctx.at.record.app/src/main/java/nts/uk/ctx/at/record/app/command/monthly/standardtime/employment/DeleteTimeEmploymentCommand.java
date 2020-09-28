@@ -13,9 +13,6 @@ import lombok.Getter;
 @Getter
 public class DeleteTimeEmploymentCommand {
 
-	// 会社ID 1
-	private  String companyId;
-
 	// 雇用コード 2
 	private String employmentCD;
 

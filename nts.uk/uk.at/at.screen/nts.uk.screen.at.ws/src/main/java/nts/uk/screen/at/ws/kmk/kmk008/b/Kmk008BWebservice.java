@@ -9,9 +9,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-/**
- * 画面表示を行う
- */
 @Path("screen/at/kmk008/b")
 @Produces("application/json")
 public class Kmk008BWebservice {

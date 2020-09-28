@@ -10,6 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
 
+/**
+ * 画面表示を行う
+ */
 @Stateless
 public class AgreeTimeOfClassidicationScreenProcessor {
 

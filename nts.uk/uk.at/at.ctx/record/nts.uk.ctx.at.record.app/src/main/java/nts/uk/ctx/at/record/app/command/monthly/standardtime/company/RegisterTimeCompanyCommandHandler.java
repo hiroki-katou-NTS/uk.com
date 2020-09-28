@@ -65,7 +65,7 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<
                 EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
 
         if (agreementTimeOfCompanyOpt.isPresent()) {
-            AgreementTimeOfCompany newAgreementTimeOfCompany= new AgreementTimeOfCompany(AppContexts.user().companyId(),
+            AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), basicAgreementSetting);
             return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting, newAgreementTimeOfCompany);
         } else {

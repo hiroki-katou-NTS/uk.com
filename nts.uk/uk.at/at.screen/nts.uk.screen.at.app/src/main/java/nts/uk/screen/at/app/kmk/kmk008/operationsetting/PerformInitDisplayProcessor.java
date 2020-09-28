@@ -9,18 +9,19 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * 画面表示を行う
+ * 初期表示を行う
  */
 @Stateless
-public class AgreeOpeSetScreenProcessor {
+public class PerformInitDisplayProcessor {
 
     @Inject
     private AgreementOperationSettingRepository operationSettingRepository;
 
-    public AgreementOperationSettingDto findDataAgreeOpeSet() {
+    public AgreementOperationSettingDto find() {
 
         Optional<AgreementOperationSetting> data = operationSettingRepository.find(AppContexts.user().companyId());
 
         return AgreementOperationSettingDto.setData(data);
     }
+
 }

@@ -15,9 +15,6 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 @Getter
 public class RegisterTimeEmploymentCommand {
 
-	// 会社ID 1
-	private  String companyId;
-
 	// 雇用コード 2
 	private String employmentCD;
 
