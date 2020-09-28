@@ -37,9 +37,6 @@ public class ResultOfDeletionDto {
 
 	//field 対象人数
 	private int numberEmployees;
-
-	//field システム種類
-	private int systemType;
 	
 	//field 実行結果
 	private List<ResultLogDeletion> listResultLogDeletions;
@@ -82,7 +79,6 @@ public class ResultOfDeletionDto {
 			isDeletedFilesFlg,
 			domain.getDelCode().v(),
 			domain.getNumberEmployees(),
-			domain.getSystemType().value,
 			domain.getListResultLogDeletions(),
 			domain.getSId(),
 			domain.getStatus().value,

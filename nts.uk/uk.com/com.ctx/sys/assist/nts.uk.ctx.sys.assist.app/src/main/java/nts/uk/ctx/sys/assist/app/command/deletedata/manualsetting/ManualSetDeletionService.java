@@ -213,7 +213,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		List<ResultLogDeletion> listResultLogDeletions = new ArrayList<ResultLogDeletion>();
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
 				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
-				domain.getSystemType(),listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
+				listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
 				fileSize, null, loginInfo);
 		repoResultDel.add(resultDomain);
 	}

@@ -28,10 +28,10 @@ public class LogDataResultDto {
 	private String employeeName;
 	
 	//field 開始日時　
-	private GeneralDateTime startDateTime;
+	private String startDateTime;
 	
 	//field 終了日時
-	private GeneralDateTime endDateTime;
+	private String endDateTime;
 	
 	//field 形態
 	private int form;

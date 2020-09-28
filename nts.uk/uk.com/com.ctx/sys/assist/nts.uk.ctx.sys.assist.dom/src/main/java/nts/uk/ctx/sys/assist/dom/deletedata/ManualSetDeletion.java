@@ -29,10 +29,6 @@ public class ManualSetDeletion extends AggregateRoot {
 	/** The company Id. */
 	private String companyId;
 
-	// システム種類
-	/** The system type. */
-	private int systemType;
-
 	// 削除名称
 	/** The deletion name. */
 	private DelName delName;
@@ -98,13 +94,13 @@ public class ManualSetDeletion extends AggregateRoot {
 	 */
 	private List<CategoryDeletion> categories;
 
-	public static ManualSetDeletion createFromJavatype(String delId, String companyId, int systemType, String delName,
+	public static ManualSetDeletion createFromJavatype(String delId, String companyId, String delName,
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg, String passwordCompressFileEncrypt,
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
 			Integer startMonthOfMonthly, Integer endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly,
 			List<CategoryDeletion> categories) {
-		return new ManualSetDeletion(delId, companyId, systemType, new DelName(delName), isSaveBeforeDeleteFlg,
+		return new ManualSetDeletion(delId, companyId, new DelName(delName), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, 
 				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)),
 				haveEmployeeSpecifiedFlg, sId, Optional.ofNullable(new  SupplementExplanation(supplementExplanation)), 

@@ -37,11 +37,6 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	@Column(name = "CID")
 	public String companyID;
 	
-	/** The system type. */
-	/** システム種類  */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
 	
 	/** The deletion name. */
 	/** 削除名称 */
@@ -151,7 +146,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 		boolean isSaveBeforeDeleteFlg = this.isSaveBeforeDeleteFlg == 1;
 		boolean isExistCompressPassFlg = this.isExistCompressPassFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
-		return ManualSetDeletion.createFromJavatype(this.sspdtManualSetDeletionPK.delId, this.companyID, this.systemType, 
+		return ManualSetDeletion.createFromJavatype(this.sspdtManualSetDeletionPK.delId, this.companyID,
 				this.delName, isSaveBeforeDeleteFlg, isExistCompressPassFlg, this.passwordCompressFileEncrypt,
 				haveEmployeeSpecifiedFlg, this.sId, this.supplementExplanation, this.referenceDate,
 				this.executionDateTime, this.startDateOfDaily, this.endDateOfDaily,
@@ -167,7 +162,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 		Optional<Integer> endMonthly = ManualSetDeletion.convertYearMonthToInt(manualSetting.getEndMonthOfMonthly());
 		
 		return new SspdtManualSetDeletion(new SspdtManualSetDeletionPK(manualSetting.getDelId()),
-				manualSetting.getCompanyId(), manualSetting.getSystemType(), manualSetting.getDelName().v(), isSaveBeforeDeleteFlg,
+				manualSetting.getCompanyId(), manualSetting.getDelName().v(), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, 
 				manualSetting.getPasswordCompressFileEncrypt().isPresent() ? manualSetting.getPasswordCompressFileEncrypt().get().v() : null, 
 				isHaveEmployeeSpecifiedFlg, manualSetting.getSId(), 

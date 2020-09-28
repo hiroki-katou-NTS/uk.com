@@ -17,6 +17,9 @@ public class ResultLogSaving extends DomainObject {
 
 	//field ログ登録日時
 	private int logNumber;
+	
+	//field 契約コード
+	private String contractCd;
 
 	//field データ保存処理ID
 	private String processingId;
@@ -41,10 +44,11 @@ public class ResultLogSaving extends DomainObject {
 
 
 
-	public static ResultLogSaving createFromJavatype(int logNumber, String processingId, String cid, GeneralDateTime logTime,
+	public static ResultLogSaving createFromJavatype(int logNumber, String contractCd, String processingId, String cid, GeneralDateTime logTime,
 			String logContent, String errorEmployeeId,  GeneralDate errorDate, String errorContent) {
 		return new ResultLogSaving(
 				logNumber, 
+				contractCd,
 				processingId, 
 				cid, 
 				logTime,

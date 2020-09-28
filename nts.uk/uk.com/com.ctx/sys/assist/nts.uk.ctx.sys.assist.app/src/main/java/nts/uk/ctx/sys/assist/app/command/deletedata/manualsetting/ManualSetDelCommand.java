@@ -30,7 +30,6 @@ public class ManualSetDelCommand {
 	
 	private String delName;
 	private String suppleExplanation;
-	private int systemType;
 	private GeneralDate referenceDate;
 	private GeneralDateTime executionDateAndTime;
 	private GeneralDate dayStartDate;
@@ -52,7 +51,7 @@ public class ManualSetDelCommand {
 		boolean isSaveBeforeDeleteFlg = this.isSaveBeforeDeleteFlg == 1;
 		boolean isExistCompressPasswordFlg = this.isExistCompressPasswordFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
-		return new ManualSetDeletion(delId, cid, systemType, new DelName(delName), isSaveBeforeDeleteFlg, 
+		return new ManualSetDeletion(delId, cid, new DelName(delName), isSaveBeforeDeleteFlg, 
 				isExistCompressPasswordFlg, Optional.ofNullable(new PasswordCompressFileEncrypt(passwordForCompressFile)), 
 				haveEmployeeSpecifiedFlg, 
 				sid, Optional.ofNullable(new SupplementExplanation(suppleExplanation)),

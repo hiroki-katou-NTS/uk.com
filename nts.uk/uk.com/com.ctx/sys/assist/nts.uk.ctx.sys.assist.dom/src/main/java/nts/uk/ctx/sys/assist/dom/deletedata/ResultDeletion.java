@@ -47,10 +47,6 @@ public class ResultDeletion extends AggregateRoot {
 	/** The number employees. */
 	private int numberEmployees;
 
-	// システム種類
-	/** The system type. */
-	private SystemTypeEnum systemType;
-
 	//field 実行結果
 	private List<ResultLogDeletion> listResultLogDeletions;
 	
@@ -98,7 +94,6 @@ public class ResultDeletion extends AggregateRoot {
 		boolean isDeletedFilesFlg, 
 		String delCode, 
 		int numberEmployees, 
-		int systemType, 
 		List<ResultLogDeletion> listResultLogDeletions,
 		String sId, 
 		int status,
@@ -119,7 +114,6 @@ public class ResultDeletion extends AggregateRoot {
 				isDeletedFilesFlg,
 				new DelCode(delCode), 
 				numberEmployees, 
-				SystemTypeEnum.valueOf(systemType), 
 				listResultLogDeletions,
 				sId,
 				SaveStatus.valueOf(status), 

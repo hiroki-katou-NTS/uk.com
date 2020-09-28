@@ -66,12 +66,6 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 	@Column(name = "NUMBER_EMPLOYEES")
 	public int numberEmployees;
 	
-	/** The system type. */
-	/** システム種類  */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
-	
 	/** The employee Id. */
 	/** 実行者 */
 	@Basic(optional = false)
@@ -160,7 +154,6 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 				isDeletedFilesFlg,
 				this.delCode, 
 				this.numberEmployees,
-				this.systemType,
 				this.listResultLogDeletions.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				this.sId, 
 				this.status,
@@ -184,7 +177,6 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 			isDeletedFilesFlg,
 			result.getDelCode().v(), 
 			result.getNumberEmployees(),
-			result.getSystemType().value, 
 			result.getSId(), 
 			result.getStatus().value, 
 			result.getStartDateTimeDel(), 
