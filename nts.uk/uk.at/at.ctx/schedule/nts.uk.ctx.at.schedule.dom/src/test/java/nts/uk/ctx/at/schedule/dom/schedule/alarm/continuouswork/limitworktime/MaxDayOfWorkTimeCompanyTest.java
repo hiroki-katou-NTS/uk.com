@@ -5,30 +5,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 @RunWith(JMockit.class)
 public class MaxDayOfWorkTimeCompanyTest {
 	@Test
 	public void getters() {
-		MaxDayOfWorkTimeCompany maxNumberOfWorkingDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
+		val maxNumberDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
 
-		NtsAssert.invokeGetters(maxNumberOfWorkingDayOfPeriodsCom);
+		NtsAssert.invokeGetters(maxNumberDayOfPeriodsCom);
 
 	}
 	
 	@Test
 	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		MaxDayOfWorkTimeCompany maxNumberOfWorkingDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
+		val maxNumberDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
 		
-		assertThat(maxNumberOfWorkingDayOfPeriodsCom).extracting(
-			 com -> com.getCode().v(),
-			 com -> com.getName().v(),
-			 com -> com.getMaxDayOfWorkTime().getMaxDay().v()
-			 ).containsExactly(
-					 "000000000000-0315",
-					 "003",
-					 "シフト１",
-					 3);
+		assertThat(maxNumberDayOfPeriodsCom.getCode().v()).isEqualTo("003");
+		assertThat(maxNumberDayOfPeriodsCom.getName().v()).isEqualTo("シフト１");
 	}
 }

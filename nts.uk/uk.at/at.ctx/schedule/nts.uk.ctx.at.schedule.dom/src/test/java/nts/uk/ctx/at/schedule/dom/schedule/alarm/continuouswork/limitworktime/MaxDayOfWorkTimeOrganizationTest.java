@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -13,27 +14,19 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public class MaxDayOfWorkTimeOrganizationTest {
 	@Test
 	public void getters() {
-		MaxDayOfWorkTimeOrganization maxNumberOfWorkingDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
+		val maxNumberDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
 
-		NtsAssert.invokeGetters(maxNumberOfWorkingDayOfPeriodsOrg);
+		NtsAssert.invokeGetters(maxNumberDayOfPeriodsOrg);
 
 	}
 	
 	@Test
 	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		MaxDayOfWorkTimeOrganization maxNumberOfWorkingDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
+		val maxNumberDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
 		
-		assertThat(maxNumberOfWorkingDayOfPeriodsOrg).extracting(
-			 org -> org.getTargeOrg().getUnit(),
-			 org -> org.getTargeOrg().getWorkplaceId().get(),
-			 org -> org.getCode().v(),
-			 org -> org.getName().v(),
-			 org -> org.getMaxDayOfWorkTime().getMaxDay().v()
-			 ).containsExactly(
-					 TargetOrganizationUnit.WORKPLACE,
-					 "517ef7f8-77d0-4eb0-b539-05e03a23f9e5",
-					 "003",
-					 "シフト１",
-					 3);
+		assertThat(maxNumberDayOfPeriodsOrg.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
+		assertThat(maxNumberDayOfPeriodsOrg.getTargeOrg().getWorkplaceId().get()).isEqualTo("DUMMY");
+		assertThat(maxNumberDayOfPeriodsOrg.getCode().v()).isEqualTo("003");
+		assertThat(maxNumberDayOfPeriodsOrg.getName().v()).isEqualTo("シフト１");
 	}
 }
