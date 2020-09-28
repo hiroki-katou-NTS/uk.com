@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 
 @Value
 public class AgreementTimeOfMonthlyDto {

@@ -7,8 +7,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.shared.dom.byperiod.ExcessOutsideByPeriod;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 

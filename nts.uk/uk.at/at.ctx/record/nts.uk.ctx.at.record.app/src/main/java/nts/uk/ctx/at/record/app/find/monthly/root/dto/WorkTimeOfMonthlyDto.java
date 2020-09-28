@@ -13,20 +13,20 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.interval.IntervalTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.interval.IntervalTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 
 @Data
 @NoArgsConstructor

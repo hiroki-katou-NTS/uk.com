@@ -10,10 +10,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /** 36協定上限複数月平均時間と年間時間の取得 */

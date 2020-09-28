@@ -12,8 +12,8 @@ import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

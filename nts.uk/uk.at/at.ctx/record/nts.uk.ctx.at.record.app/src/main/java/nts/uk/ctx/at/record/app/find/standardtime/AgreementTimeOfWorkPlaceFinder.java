@@ -12,10 +12,10 @@ import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceLi
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 36協定期間を取得

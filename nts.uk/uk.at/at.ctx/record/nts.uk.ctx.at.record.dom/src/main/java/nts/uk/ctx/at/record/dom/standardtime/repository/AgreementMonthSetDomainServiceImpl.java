@@ -8,10 +8,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;

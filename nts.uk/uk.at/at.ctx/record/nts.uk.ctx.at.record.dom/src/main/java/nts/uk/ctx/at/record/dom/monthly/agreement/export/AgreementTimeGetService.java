@@ -9,9 +9,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /** 対象の年月期間の管理期間の36協定時間を取得する */

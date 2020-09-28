@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 
 /**
  * 指定期間36協定時間の取得

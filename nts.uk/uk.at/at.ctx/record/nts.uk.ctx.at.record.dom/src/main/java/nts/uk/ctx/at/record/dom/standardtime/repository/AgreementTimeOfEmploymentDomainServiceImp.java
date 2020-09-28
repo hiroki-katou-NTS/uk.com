@@ -7,9 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 @Stateless
 public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeOfEmploymentDomainService {

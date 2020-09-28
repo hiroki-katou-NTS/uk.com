@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSetPK;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 @Stateless
 public class JpaAgreementMonthSettingRepository extends JpaRepository implements AgreementMonthSettingRepository {

@@ -12,11 +12,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSettingPK;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOneMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOneYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOverMaxTimes;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.upperset.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 @Stateless
 public class JpaBasicAgreementSettingRepository extends JpaRepository implements BasicAgreementSettingRepository {

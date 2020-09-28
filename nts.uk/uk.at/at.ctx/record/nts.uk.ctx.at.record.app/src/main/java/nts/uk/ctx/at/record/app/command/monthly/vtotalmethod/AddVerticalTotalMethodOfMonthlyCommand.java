@@ -4,11 +4,11 @@ package nts.uk.ctx.at.record.app.command.monthly.vtotalmethod;
 
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.SpecCountNotCalcSubject;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.SpecTotalCountMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.TADaysCountCondOfMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.TADaysCountOfMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountCondOfMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountOfMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
 
 /**
  * The Class AddVerticalTotalMethodOfMonthlyCommand.

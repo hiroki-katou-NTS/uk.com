@@ -10,7 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 /**
  * 36協定月間時間
  * @author Doan Duy Hung

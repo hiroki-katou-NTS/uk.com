@@ -14,22 +14,22 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.TimeConsumpVacationDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.TimeConsumpVacationDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
 
 @Data
 @NoArgsConstructor

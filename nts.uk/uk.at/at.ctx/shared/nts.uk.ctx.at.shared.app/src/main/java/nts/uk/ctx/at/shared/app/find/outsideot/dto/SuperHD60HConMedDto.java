@@ -12,9 +12,9 @@ import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedSetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHDOccUnit;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit;
 
 /**
  * The Class SuperHD60HConMedDto.

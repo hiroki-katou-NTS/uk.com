@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.pub.monthlyprocess.agreement;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 
 /**
  * 36協定時間Output

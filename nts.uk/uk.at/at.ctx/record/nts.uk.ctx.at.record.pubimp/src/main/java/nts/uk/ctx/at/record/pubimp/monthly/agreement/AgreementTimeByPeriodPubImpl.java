@@ -17,8 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSetti
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AggregateAgreementTimePub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 
 /**
  * 指定期間36協定時間の取得

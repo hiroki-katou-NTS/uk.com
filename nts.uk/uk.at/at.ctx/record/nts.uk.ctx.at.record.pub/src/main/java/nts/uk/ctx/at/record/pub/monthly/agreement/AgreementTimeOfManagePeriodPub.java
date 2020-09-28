@@ -5,7 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 
 /**
  * 管理期間の36協定時間の取得

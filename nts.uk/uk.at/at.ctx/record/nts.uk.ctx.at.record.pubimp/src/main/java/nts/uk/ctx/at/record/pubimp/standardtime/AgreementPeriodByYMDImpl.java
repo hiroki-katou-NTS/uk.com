@@ -12,8 +12,8 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettin
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDExport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDImport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDPub;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AggregatePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AggregatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 

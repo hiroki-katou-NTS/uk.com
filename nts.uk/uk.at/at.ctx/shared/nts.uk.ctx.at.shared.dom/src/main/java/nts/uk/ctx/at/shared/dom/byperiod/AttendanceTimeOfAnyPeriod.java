@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.dom.byperiod;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.byperiod.anyaggrperiod.AnyAggrFrameCode;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 
 /**
  * 任意期間別実績の勤怠時間

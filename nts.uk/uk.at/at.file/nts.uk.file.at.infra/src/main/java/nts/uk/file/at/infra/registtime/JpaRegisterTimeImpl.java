@@ -13,11 +13,11 @@ import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.ClosingDateAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.ClosingDateType;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.TargetSettingAtr;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOverMaxTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.TargetSettingAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
 import nts.uk.shr.com.context.AppContexts;

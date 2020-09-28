@@ -7,7 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 年間超過回数の取得

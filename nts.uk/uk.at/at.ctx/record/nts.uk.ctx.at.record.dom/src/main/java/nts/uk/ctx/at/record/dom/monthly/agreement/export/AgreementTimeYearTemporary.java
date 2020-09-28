@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 
 /** 36協定年間時間（Temporary） */
 @Data

@@ -15,8 +15,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlace;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository implements AgreementTimeOfWorkPlaceRepository {

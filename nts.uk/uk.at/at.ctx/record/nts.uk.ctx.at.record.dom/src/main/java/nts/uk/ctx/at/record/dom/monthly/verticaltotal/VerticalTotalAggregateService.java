@@ -10,8 +10,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationDetailOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationDetailOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
 import nts.uk.shr.com.context.AppContexts;
 
 public class VerticalTotalAggregateService {

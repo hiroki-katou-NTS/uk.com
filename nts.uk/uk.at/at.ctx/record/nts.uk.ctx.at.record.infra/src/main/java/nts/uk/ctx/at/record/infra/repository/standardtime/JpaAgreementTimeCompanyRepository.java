@@ -10,8 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeCompany;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeCompanyPK;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeCompanyRepository extends JpaRepository implements AgreementTimeCompanyRepository {
