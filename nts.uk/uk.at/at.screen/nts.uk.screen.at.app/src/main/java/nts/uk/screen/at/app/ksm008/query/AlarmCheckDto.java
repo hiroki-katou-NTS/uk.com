@@ -19,7 +19,7 @@ public class AlarmCheckDto {
     private List<SubConditionDto> subConditionList;
 
     public static AlarmCheckDto startScreen(WaitingDomain domain) {
-        return new AlarmCheckDto(domain.getCode(), domain.getName(), Collections.emptyList());
+        return new AlarmCheckDto(domain.getCode(), domain.getName(), domain.getSubConditionList());
     }
 }
 
@@ -28,4 +28,5 @@ public class AlarmCheckDto {
 class WaitingDomain {
     private String code;
     private String name;
+    private List<SubConditionDto> subConditionList;
 }

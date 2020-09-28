@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
-        <com:scriptfile path="ksm008.a.vm.js"/>
+        <com:scriptfile path="./ksm008.a.vm.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
@@ -31,37 +31,40 @@
                 </tr>
                 </thead>
                 <tbody data-bind="foreach: alarmList">
+                <!--                <tbody>-->
                 <tr>
                     <!--A5_1-->
                     <td rowspan="2">
-                        <button>#{i18n.getText('KSM008_8')}</button>
+                        <button data-bind="click: $parent.toScreenB.bind($parent)">#{i18n.getText('KSM008_8')}</button>
                     </td>
                     <!--A5_2_1-->
                     <!--A5_2_2-->
                     <!--A5_2_3-->
                     <td style="border-bottom: none" colspan="2">
-                        <span class="label">A5_2_1</span>
-                        <span class="label" data-bind="with: code">A5_2_2</span>
+                        <span class="label" data-bind="text: code"></span>
+                        <span class="label" data-bind="text: name"></span>
                     </td>
                 </tr>
                 <tr>
                     <!--A5_3-->
                     <td style="border-top: none"></td>
-                    <td>
-                        <div class="label">
-                            A5_3_1
-                        </div>
-                        <div class="flex valign-center">
-                            <!--A5_3_2-->
-                            <div data-bind="ntsFormLabel: {contraint: 'wait', required: true }">#{i18n.getText('KSM008_9')}</div>
-                            <!--A5_3_3-->
-                            <input data-bind="ntsTextEditor: {
-                            value: simpleValue,
-                            required: false,
-                             enable:true,
-                             readonly: false}"/>
-                            <!--A5_3_4-->
-                            <button style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
+                    <td data-bind="foreach: subConditionList">
+                        <div>
+                            <div class="label" data-bind="text: subCode">
+                                A5_3_1
+                            </div>
+                            <div class="flex valign-center">
+                                <!--A5_3_2-->
+                                <div data-bind="ntsFormLabel: {contraint: 'wait', required: true }">#{i18n.getText('KSM008_9')}</div>
+                                <!--A5_3_3-->
+                                <!--                            <input data-bind="ntsTextEditor: {-->
+                                <!--                            value: description,-->
+                                <!--                            required: false,-->
+                                <!--                             enable:true,-->
+                                <!--                             readonly: false}"/>-->
+                                <!--A5_3_4-->
+                                <button style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
+                            </div>
                         </div>
                     </td>
                 </tr>

@@ -6,28 +6,43 @@ module nts.uk.at.ksm008.a {
 
     @bean()
     export class KSM008AViewModel extends ko.ViewModel {
+        alarmList: KnockoutObservableArray<AlarmCondition> = ko.observableArray([]);
 
-        simpleValue: KnockoutObservable<string>;
-        alarmList: KnockoutObservableArray<AlarmCondition> =  ko.observableArray([]);
+        toScreenB() {
+            const vm = this;
+            vm.$jump("../b/index.xhtml");
+        }
+
 
         constructor(params: any) {
             super();
-            var vm = this;
-            vm.simpleValue = ko.observable("123");
-            vm.$ajax(PATH_API.getList).then(data => vm.alarmList = data);
         }
 
+
         created() {
-            var vm = this;
+            const vm = this;
+            vm.$ajax(PATH_API.getList).then(data => {
+                console.log(data);
+                vm.alarmList(data);
+            });
         }
 
         mounted() {
             $("#fixed-table").ntsFixedTable({height: 300, width: 1200});
         }
 
+
     }
 
     interface AlarmCondition {
+        code: string,
+        name: string,
+        subConditionList: KnockoutObservableArray<SubCondition>
+    }
 
+    interface SubCondition {
+        subCode: string,
+        description: string,
+        message: string,
     }
 }
