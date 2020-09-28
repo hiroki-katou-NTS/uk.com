@@ -46,26 +46,41 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
+/**
+ * The class Save process execution command handler.
+ */
 @Stateless
 public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult<SaveProcessExecutionCommand, String> {
 
+	/** The Process execution repository */
 	@Inject
 	private ProcessExecutionRepository procExecRepo;
 
+	/** The Last exec date time repository */
 	@Inject
 	private LastExecDateTimeRepository lastDateTimeRepo;
 	
+	/** The Execution scope item repository */
 	@Inject
 	private ExecutionScopeItemRepository scopeItemRepo;
+
+	/** The Process execution log manage repository */
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManRepo;
 
-	//登録ボタン押下時処理
+	/**
+	 * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.B:実行設定.アルゴリズム.登録ボタン押下時処理.登録ボタン押下時処理
+	 * @param context the context
+	 * @return the <code>String</code>
+	 */
 	@Override
 	protected String handle(CommandHandlerContext<SaveProcessExecutionCommand> context) {
+		// ログイン社員の社員ID
 		String companyId = AppContexts.user().companyId();
 
 		SaveProcessExecutionCommand command = context.getCommand();
+		// 選択している項目の更新処理自動実行項目コード
+		String execItemCd = command.getExecItemCd();
 		
 		List<ProcessExecutionScopeItem> workplaceIdList = command.getWorkplaceList().stream()
 				.map(workplaceId -> ProcessExecutionScopeItem.createSimpleFromJavaType(
@@ -116,7 +131,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				.build();
 		ProcessExecution procExec = ProcessExecution.builder()
 				.companyId(companyId)
-				.execItemCd(new ExecutionCode(command.getExecItemCd()))
+				.execItemCd(new ExecutionCode(execItemCd))
 				.execItemName(new ExecutionName(command.getExecItemName()))
 				.execScope(execScope)
 				.execSetting(execSetting)
@@ -124,13 +139,14 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				.build();
 		procExec.validateVer2();
 		if (command.isNewMode()) {
+			// 新規モード(new mode)
 			//新規登録処理
-			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, command.getExecItemCd());
+			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
 			if (procExecOpt.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
 			// ドメインモデル「更新処理自動実行」に新規登録する
-			procExecRepo.insert(procExec);
+			this.procExecRepo.insert(procExec);
 			
 			//ドメインモデル「更新処理自動実行管理」に新規登録する
 			ProcessExecutionLogManage processExecutionLogManage = new ProcessExecutionLogManage(new ExecutionCode(command.getExecItemCd()),companyId,EndStatus.NOT_IMPLEMENT,CurrentExecutionStatus.WAITING);
@@ -139,8 +155,21 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 																new ExecutionCode(command.getExecItemCd()),
 																null));
 		} else {
+			// 更新モード(update mode)
+			// ドメインモデル「更新処理自動実行管理」を取得し、現在の実行状態を判断する
+			ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManRepo
+																	  .getLogByCIdAndExecCd(companyId, execItemCd)
+																	  .orElseThrow(() -> new BusinessException("Msg_3"));
+			// 更新処理自動実行管理.現在の実行状態　＝　実行中
+			if (processExecutionLogManage.getCurrentStatus() == CurrentExecutionStatus.RUNNING) {
+				throw new BusinessException("Msg_1318");
+			}
+			// 更新処理自動実行管理.現在の実行状態　≠　実行中
 			this.scopeItemRepo.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCd().v());
-			procExecRepo.update(procExec);
+			// ドメインモデル「更新処理自動実行」に更新登録する
+			this.procExecRepo.update(procExec);
+			// Todo ドメインモデル「実行タスク設定」を更新する
+
 			this.scopeItemRepo.insert(procExec.getCompanyId(),
 										procExec.getExecItemCd().v(),
 										procExec.getExecScope().getWorkplaceIdList());
