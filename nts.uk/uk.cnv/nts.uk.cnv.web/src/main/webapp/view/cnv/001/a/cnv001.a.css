@@ -32,14 +32,3 @@ div.form-label{
 button {
 	margin: 0px 10px;
 }
-
-.caret-left.outline {
-	font-size: 10px;
-	margin: 0px 0px;
-	height: 30em;
-}
-
-.caret-left.outline:after {
-	border-width: 1.4em 0.5em;
-	font-size: 5em;
-}

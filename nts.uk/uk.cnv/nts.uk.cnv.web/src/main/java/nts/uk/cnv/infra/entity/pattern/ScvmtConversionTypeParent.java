@@ -2,10 +2,14 @@ package nts.uk.cnv.infra.entity.pattern;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -15,12 +19,14 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.conversionsql.TableName;
+import nts.uk.cnv.dom.pattern.ConversionPattern;
 import nts.uk.cnv.dom.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
-@Embeddable
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SCVMT_CONVERSION_TYPE_PARENT")
@@ -31,9 +37,6 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
 
-	@Column(name = "SOURCE_NO")
-	private int sourceNo;
-
 	@Column(name = "PARENT_TABLE_NAME")
 	private String parentName;
 
@@ -43,8 +46,13 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 	@Column(name = "JOIN_PARENT_COLUMNS")
 	private String joinParentColumns;
 
-	@Column(name = "JOIN_SOURCE_COLUMNS")
-	private String joinSourceColumns;
+	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
+        @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
+        @PrimaryKeyJoinColumn(name="TARGET_TBL_NAME", referencedColumnName="TARGET_TBL_NAME"),
+        @PrimaryKeyJoinColumn(name="RECORD_NO", referencedColumnName="RECORD_NO"),
+        @PrimaryKeyJoinColumn(name="TARGET_COLUMN_NAME", referencedColumnName="TARGET_COLUMN_NAME")
+    })
+	private ScvmtConversionTable conversionTable;
 
 	@Override
 	protected Object getKey() {
@@ -61,6 +69,25 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 					JoinAtr.OuterJoin,
 					new ArrayList<>()),
 				parentColumnName
+			);
+	}
+
+	public static ScvmtConversionTypeParent toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof ParentJoinPattern)) {
+			return null;
+		}
+
+		ParentJoinPattern domain = (ParentJoinPattern) conversionPattern;
+
+		String joinColumns = String.join(",", domain.getParentJoin().getOnSentences().stream()
+				.map(on -> on.getLeft().getName())
+				.collect(Collectors.toList()));
+
+		return new ScvmtConversionTypeParent(pk,
+				domain.getParentJoin().tableName.getName(),
+				domain.getParentColumn(),
+				joinColumns,
+				null
 			);
 	}
 

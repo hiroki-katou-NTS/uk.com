@@ -15,4 +15,6 @@ public interface ConversionRecordRepository {
 
 	void update(ConversionRecord domain);
 
+	void swap(String category, String table, int recordNo1, int recordNo2);
+
 }

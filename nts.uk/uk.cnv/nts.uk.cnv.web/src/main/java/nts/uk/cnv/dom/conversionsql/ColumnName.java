@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.conversionsql;
 import java.util.Arrays;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
  * @author ai_muto
  *
  */
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColumnName {
@@ -18,7 +20,7 @@ public class ColumnName {
 	private String alias;
 	/** 列名 */
 	private String name;
-	
+
 	public String sql() {
 		return String.join(".", Arrays.asList(alias, name));
 	}

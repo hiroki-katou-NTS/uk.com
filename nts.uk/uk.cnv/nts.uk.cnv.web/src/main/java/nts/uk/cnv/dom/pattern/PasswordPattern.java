@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.Arrays;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
@@ -12,6 +13,7 @@ import nts.uk.cnv.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
+@Getter
 public class PasswordPattern extends ConversionPattern {
 
 	private Join sourceJoin;

@@ -11,7 +11,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.cnv.app.command.UkTableDesignImportCommand;
 import nts.uk.cnv.app.command.UkTableDesignImportCommandHandler;
 import nts.uk.cnv.app.dto.ExportToFileDto;
-import nts.uk.cnv.app.dto.GetUkColumnsDto;
+import nts.uk.cnv.app.dto.GetColumnsDto;
 import nts.uk.cnv.app.dto.GetUkTablesDto;
 import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
@@ -58,7 +58,6 @@ public class TableDesignWebService extends WebService{
 		return tdService.importErpFromFile(param);
 	}
 
-
 	@POST
 	@Path("getuktables")
 	public List<GetUkTablesDto> getUkTables() {
@@ -67,7 +66,13 @@ public class TableDesignWebService extends WebService{
 
 	@POST
 	@Path("getukcolumns")
-	public List<GetUkColumnsDto> getUkColumns(String tableName) {
+	public List<GetColumnsDto> getUkColumns(String tableName) {
 		return tdService.getUkColumns(tableName);
+	}
+
+	@POST
+	@Path("geterpcolumns")
+	public List<GetColumnsDto> getErpColumns(String tableName) {
+		return tdService.getErpColumns(tableName);
 	}
 }

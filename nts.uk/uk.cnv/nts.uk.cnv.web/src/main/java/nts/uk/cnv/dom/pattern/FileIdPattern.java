@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
@@ -16,6 +17,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * ファイルID変換
  * @author ai_muto
  */
+@Getter
 public class FileIdPattern extends ConversionPattern  {
 
 	private static String MAPPING_TABLE_NAME = "SCVMT_MAPPING_FILE_ID";

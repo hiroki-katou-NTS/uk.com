@@ -15,11 +15,20 @@ public enum RelationalOperator {
 	LessThanOrEqual("<="),
 	IsNull("IS NULL"),
 	IsNotNull("IS NOT NULL");
-	
+
 	@Getter
 	private final String sign;
-	
+
 	private RelationalOperator( final String sign) {
 		this.sign = sign;
+	}
+
+	public static RelationalOperator parse(String sign) {
+		for (RelationalOperator v : values()) {
+			if(v.getSign().equals(sign)) {
+				return v;
+			}
+		}
+		throw new IllegalArgumentException("undefined : " + sign);
 	}
 }

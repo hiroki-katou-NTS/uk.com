@@ -13,6 +13,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.service.ConversionInfo;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Stateless
 public class JpaConversionTableRepository extends JpaRepository implements ConversionTableRepository {
@@ -37,6 +38,31 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 		return entities.stream()
 			.map(entity -> entity.toDomain(info, columns, source.getCondition()))
 			.findFirst();
+	}
+
+	@Override
+	public boolean isExists(String category, String table, int recordNo, String targetColumn) {
+
+		ScvmtConversionTablePk pk = new ScvmtConversionTablePk(category, table, recordNo, targetColumn);
+		return this.queryProxy()
+				.find(pk, ScvmtConversionTable.class)
+				.isPresent();
+	}
+
+	@Override
+	public void insert(String category, String table, int recordNo, OneColumnConversion domain) {
+		ScvmtConversionTable entity = ScvmtConversionTable.toEntity(category, table, recordNo, domain);
+
+		this.commandProxy().insert(entity);
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void delete(String category, String table, int recordNo, String targetColumn) {
+		ScvmtConversionTablePk pk = new ScvmtConversionTablePk(category, table, recordNo, targetColumn);
+
+		this.commandProxy().remove(ScvmtConversionTable.class, pk);
+		this.getEntityManager().flush();
 	}
 
 }

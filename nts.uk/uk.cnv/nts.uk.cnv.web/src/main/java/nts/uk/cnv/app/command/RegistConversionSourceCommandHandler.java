@@ -10,7 +10,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
 
 @Stateless
-public class RegistConversionSourceCommandHandler  extends CommandHandlerWithResult<RegistConversionSourceCommand, AddSourceResult>{
+public class RegistConversionSourceCommandHandler extends CommandHandlerWithResult<RegistConversionSourceCommand, AddSourceResult>{
 
 	@Inject
 	ConversionSourcesRepository repository;

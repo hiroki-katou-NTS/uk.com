@@ -9,12 +9,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
@@ -50,6 +49,7 @@ import nts.uk.cnv.infra.entity.pattern.ScvmtConversionTypeTimeWithDayAttr;
  */
 @Getter
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SCVMT_CONVERSION_TABLE")
@@ -63,60 +63,40 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 	@Column(name = "CONVERSION_TYPE")
 	private String conversionType;
 
-//	@ManyToOne
-//	@JoinColumns({
-//		@JoinColumn(name = "CATEGORY_NAME", referencedColumnName = "CATEGORY_NAME"),
-//		@JoinColumn(name = "TARGET_TBL_NAME", referencedColumnName = "TARGET_TBL_NAME"),
-//		@JoinColumn(name = "RECORD_NO", referencedColumnName = "RECORD_NO")
-//    })
-//	public ScvmtConversionRecord record;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeNone_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeNone typeNone;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeCodeToId_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeCodeToId typeCodeToId;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeCodeToCode_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeCodeToCode typeCodeToCode;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeFixedValue_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeFixedValue typeFixedValue;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeFixedValueWithCondition_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeFixedValueWithCondition typeFixedValueWithCondition;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeParent_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeParent typeParent;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeStringConcat_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeStringConcat typeStringConcat;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeTimeWithDayAttr_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeTimeWithDayAttr typeTimeWithDayAttr;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeDateTimeMerge_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeDateTimeMerge typeDateTimeMerge;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeGuid_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeGuid typeGuid;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typePassword_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypePassword typePassword;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name="typeFileId_pk", referencedColumnName="pk")
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeFileId typeFileId;
 
 
@@ -141,6 +121,28 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 				this.conversionType,
 				this.createConversionPattern(info, sourceJoin)
 			);
+	}
+
+	public static ScvmtConversionTable toEntity(String category, String table, int recordNo, OneColumnConversion domain) {
+		ScvmtConversionTablePk pk = new ScvmtConversionTablePk(category, table, recordNo, domain.getTargetColumn());
+		ConversionPattern conversionPattern = domain.getPattern();
+
+		return ScvmtConversionTable.builder()
+			.pk(pk)
+			.conversionType(domain.getConversionType())
+			.typeNone(ScvmtConversionTypeNone.toEntity(pk, conversionPattern))
+			.typeCodeToId(ScvmtConversionTypeCodeToId.toEntity(pk, conversionPattern))
+			.typeCodeToCode(ScvmtConversionTypeCodeToCode.toEntity(pk, conversionPattern))
+			.typeFixedValue(ScvmtConversionTypeFixedValue.toEntity(pk, conversionPattern))
+			.typeFixedValueWithCondition(ScvmtConversionTypeFixedValueWithCondition.toEntity(pk, conversionPattern))
+			.typeParent(ScvmtConversionTypeParent.toEntity(pk, conversionPattern))
+			.typeStringConcat(ScvmtConversionTypeStringConcat.toEntity(pk, conversionPattern))
+			.typeTimeWithDayAttr(ScvmtConversionTypeTimeWithDayAttr.toEntity(pk, conversionPattern))
+			.typeDateTimeMerge(ScvmtConversionTypeDateTimeMerge.toEntity(pk, conversionPattern))
+			.typeGuid(ScvmtConversionTypeGuid.toEntity(pk, conversionPattern))
+			.typePassword(ScvmtConversionTypePassword.toEntity(pk, conversionPattern))
+			.typeFileId(ScvmtConversionTypeFileId.toEntity(pk, conversionPattern))
+			.build();
 	}
 
 	private ConversionPattern createConversionPattern(ConversionInfo info, Join sourceJoin) {

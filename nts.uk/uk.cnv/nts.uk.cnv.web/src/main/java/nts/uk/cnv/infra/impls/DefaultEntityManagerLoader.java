@@ -7,7 +7,7 @@ import nts.arc.layer.infra.data.EntityManagerLoader;
 
 public class DefaultEntityManagerLoader implements EntityManagerLoader{
 
-    @PersistenceContext(unitName = "UK")
+    @PersistenceContext(unitName = "UK_CNV")
     private EntityManager entityManager;
 
     @Override

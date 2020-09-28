@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.pattern;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
@@ -19,11 +20,12 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * 変換元テーブル、変換元列名には変換元のコードの列を指定。
  * 変換テーブルをFrom句に追加する
  */
+@Getter
 public class CodeToIdPattern extends ConversionPattern {
 
 	//TODO: 変換タイプを完成させる
 	//TODO: 履歴あるテーブルどうしよう...
-	private enum CodeToIdType{
+	public enum CodeToIdType{
 		TO_CID("SCVMT_CONVERT_TO_CID", "CODE", "ID"),
 		TO_SID("BSYMT_EMP_DTA_MNG_INFO", "SCD", "SID"),
 		TO_JOB_ID("BSYMT_JOB_INFO", "JOB_CD", "JOB_ID");

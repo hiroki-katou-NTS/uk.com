@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.pattern;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.SelectSentence;
@@ -9,6 +10,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * そのまま移送するパターン
  * @author ai_muto
  */
+@Getter
 public class NotChangePattern extends ConversionPattern {
 
 	private Join join;

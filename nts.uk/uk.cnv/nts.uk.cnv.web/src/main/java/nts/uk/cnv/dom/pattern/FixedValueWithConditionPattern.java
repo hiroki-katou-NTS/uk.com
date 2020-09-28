@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.pattern;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.FormatType;
@@ -17,6 +18,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * @author ai_muto
  *
  */
+@Getter
 public class FixedValueWithConditionPattern extends ConversionPattern {
 
 	private Join join;

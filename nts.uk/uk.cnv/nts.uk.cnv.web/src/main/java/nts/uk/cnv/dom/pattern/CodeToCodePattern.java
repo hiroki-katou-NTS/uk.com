@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
@@ -24,6 +25,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * 変換元テーブル、変換元列名には変換元のコードの列を指定。
  * 変換テーブルをFrom句に追加する
  */
+@Getter
 public class CodeToCodePattern extends ConversionPattern  {
 
 	/** 変換元 **/
@@ -34,10 +36,11 @@ public class CodeToCodePattern extends ConversionPattern  {
 	/** 変換種別 変換テーブルの抽出キー **/
 	private String mappingType;
 
-	public CodeToCodePattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
+	public CodeToCodePattern(ConversionInfo info, Join sourceJoin, String sourceColumnName, String mappingType) {
 		super(info);
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
+		this.mappingType = mappingType;
 	}
 
 	@Override

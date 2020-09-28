@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.pattern;
 
 import lombok.Builder;
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.service.ConversionInfo;
@@ -10,6 +11,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * @author ai_muto
  *
  */
+@Getter
 public class DateTimeMergePattern extends ConversionPattern {
 
 	/** 変換元 **/
@@ -25,6 +27,9 @@ public class DateTimeMergePattern extends ConversionPattern {
 	private final String mi;
 	private final String hhmi;
 	private final String ss;
+	private final String minutes;
+	private final String yyyymmddhhmi;
+	private final String yyyymmddhhmiss;
 
 	@Builder
 	public DateTimeMergePattern(
@@ -39,7 +44,10 @@ public class DateTimeMergePattern extends ConversionPattern {
 			String hh,
 			String mi,
 			String hhmi,
-			String ss) {
+			String ss,
+			String minutes,
+			String yyyymmddhhmi,
+			String yyyymmddhhmiss) {
 		super(info);
 		this.sourceJoin = sourceJoin;
 		this.yyyymmdd = yyyymmdd;
@@ -52,6 +60,9 @@ public class DateTimeMergePattern extends ConversionPattern {
 		this.mi = mi;
 		this.hhmi = hhmi;
 		this.ss = ss;
+		this.minutes = minutes;
+		this.yyyymmddhhmi = yyyymmddhhmi;
+		this.yyyymmddhhmiss = yyyymmddhhmiss;
 	}
 
 	@Override

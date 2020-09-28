@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class GetUkColumnsDto {
+public class GetColumnsDto {
 	int id;
 	String columnName;
 	String dataType;

@@ -26,12 +26,13 @@ import nts.uk.cnv.app.command.ErpTableDesignImportCommandHandler;
 import nts.uk.cnv.app.command.UkTableDesignImportCommand;
 import nts.uk.cnv.app.command.UkTableDesignImportCommandHandler;
 import nts.uk.cnv.app.dto.ExportToFileDto;
-import nts.uk.cnv.app.dto.GetUkColumnsDto;
+import nts.uk.cnv.app.dto.GetColumnsDto;
 import nts.uk.cnv.app.dto.GetUkTablesDto;
 import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
+import nts.uk.cnv.dom.databasetype.SqlServerSpec;
 import nts.uk.cnv.dom.databasetype.UkDataType;
 import nts.uk.cnv.dom.service.ExportDdlService;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
@@ -294,7 +295,7 @@ public class TableDesignerService {
 		return erpTableDesignRepository.getAllTableList();
 	}
 
-	public List<GetUkColumnsDto> getUkColumns(String tableName) {
+	public List<GetColumnsDto> getUkColumns(String tableName) {
 		String name = tableName.replace("\"", "");
 		TableDesign td = ukTableDesignRepository.find(name)
 				.orElseThrow(RuntimeException::new);
@@ -303,10 +304,26 @@ public class TableDesignerService {
 
 
 		return td.getColumns().stream()
-				.map(col -> new GetUkColumnsDto(
+				.map(col -> new GetColumnsDto(
 						col.getId(),
 						col.getName(),
 						dataType.dataType(col.getType(), col.getMaxLength(), col.getScale())
+					))
+				.collect(Collectors.toList());
+	}
+
+	public List<GetColumnsDto> getErpColumns(String tableName) {
+		String name = tableName.replace("\"", "");
+		TableDesign td = erpTableDesignRepository.find(name)
+				.orElseThrow(RuntimeException::new);
+
+		SqlServerSpec spec = new SqlServerSpec();
+
+		return td.getColumns().stream()
+				.map(col -> new GetColumnsDto(
+						col.getId(),
+						col.getName(),
+						spec.dataType(col.getType(), col.getMaxLength(), col.getScale())
 					))
 				.collect(Collectors.toList());
 	}

@@ -15,6 +15,10 @@ import nts.uk.cnv.app.command.RegistConversionRecordCommand;
 import nts.uk.cnv.app.command.RegistConversionRecordCommandHandler;
 import nts.uk.cnv.app.command.RegistConversionSourceCommand;
 import nts.uk.cnv.app.command.RegistConversionSourceCommandHandler;
+import nts.uk.cnv.app.command.RegistConversionTableCommand;
+import nts.uk.cnv.app.command.RegistConversionTableCommandHandler;
+import nts.uk.cnv.app.command.SwapConversionRecordCommand;
+import nts.uk.cnv.app.command.SwapConversionRecordCommandHandler;
 import nts.uk.cnv.app.dto.AddSourceResult;
 import nts.uk.cnv.app.dto.GetCategoryTablesDto;
 import nts.uk.cnv.app.service.ConversionTableService;
@@ -39,7 +43,19 @@ public class ConversionTableWebService extends WebService {
 	DeleteConversionRecordCommandHandler deleteRecordHandler;
 
 	@Inject
+	SwapConversionRecordCommandHandler swapRecordHandler;
+
+	@Inject
+	RegistConversionTableCommandHandler handler;
+
+	@Inject
 	ConversionTableService service;
+
+	@POST
+	@Path("regist")
+	public void regist(RegistConversionTableCommand command) {
+		handler.handle(command);
+	}
 
 	@POST
 	@Path("category/regist")
@@ -75,5 +91,11 @@ public class ConversionTableWebService extends WebService {
 	@Path("record/delete")
 	public void registRecord(DeleteConversionRecordCommand command) {
 		deleteRecordHandler.handle(command);
+	}
+
+	@POST
+	@Path("record/swap")
+	public void swapRecord(SwapConversionRecordCommand command) {
+		swapRecordHandler.handle(command);
 	}
 }

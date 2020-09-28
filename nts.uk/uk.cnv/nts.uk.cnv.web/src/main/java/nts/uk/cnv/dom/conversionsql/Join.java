@@ -3,7 +3,9 @@ package nts.uk.cnv.dom.conversionsql;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class Join {
 	/** テーブル名 */
@@ -18,5 +20,5 @@ public class Join {
 				" " + joinAtr.getSql() + " " + tableName.fullName() + " AS " + tableName.getAlias() + "\r\n" +
 				OnSentence.join(onSentences);
 	}
-	
+
 }

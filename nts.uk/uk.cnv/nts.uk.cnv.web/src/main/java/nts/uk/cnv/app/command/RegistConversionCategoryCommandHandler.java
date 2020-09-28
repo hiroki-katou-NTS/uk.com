@@ -9,7 +9,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 
 @Stateless
-public class RegistConversionCategoryCommandHandler  extends CommandHandler<RegistConversionCategoryCommand>{
+public class RegistConversionCategoryCommandHandler extends CommandHandler<RegistConversionCategoryCommand>{
 
 	@Inject
 	ConversionCategoryTableRepository repository;

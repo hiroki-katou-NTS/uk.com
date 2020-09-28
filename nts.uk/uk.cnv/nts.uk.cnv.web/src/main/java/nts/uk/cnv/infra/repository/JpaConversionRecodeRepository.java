@@ -102,4 +102,34 @@ public class JpaConversionRecodeRepository extends JpaRepository implements Conv
 
 	}
 
+	@Override
+	public void swap(String category, String table, int recordNo1, int recordNo2) {
+		updateRecordNo(category, table, recordNo1, -1);
+		updateRecordNo(category, table, recordNo2, recordNo1);
+		updateRecordNo(category, table, -1, recordNo2);
+	}
+
+	private void updateRecordNo(String category, String table, int recordNo, int newRecordNo) {
+
+		String query =
+				 " SET RECORD_NO = @newRecordNo"
+				+ " WHERE CATEGORY_NAME = @category"
+				+ " AND TARGET_TBL_NAME = @table"
+				+ " AND RECORD_NO = @recordNo";
+
+		this.jdbcProxy().query("UPDATE SCVMT_CONVERSION_RECORD" + query)
+			.paramString("category", category)
+			.paramString("table", table)
+			.paramInt("recordNo", recordNo)
+			.paramInt("newRecordNo", newRecordNo)
+			.execute();
+
+		this.jdbcProxy().query("UPDATE SCVMT_CONVERSION_TABLE" + query)
+			.paramString("category", category)
+			.paramString("table", table)
+			.paramInt("recordNo", recordNo)
+			.paramInt("newRecordNo", newRecordNo)
+			.execute();
+	}
+
 }

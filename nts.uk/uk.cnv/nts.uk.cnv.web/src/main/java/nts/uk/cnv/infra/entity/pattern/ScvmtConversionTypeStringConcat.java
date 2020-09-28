@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,12 +16,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.conversionsql.Join;
+import nts.uk.cnv.dom.pattern.ConversionPattern;
 import nts.uk.cnv.dom.pattern.StringConcatPattern;
 import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
-@Embeddable
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "SCVMT_CONVERSION_TYPE_CONCAT")
@@ -29,9 +34,6 @@ public class ScvmtConversionTypeStringConcat extends JpaEntity implements Serial
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
 
-	@Column(name = "SOURCE_NO")
-	private int sourceNo;
-
 	@Column(name = "SOURCE_COLUMN_NAME1")
 	private String sourceColumnName1;
 
@@ -40,6 +42,14 @@ public class ScvmtConversionTypeStringConcat extends JpaEntity implements Serial
 
 	@Column(name = "DELIMITER")
 	private String delimiter;
+
+	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
+        @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
+        @PrimaryKeyJoinColumn(name="TARGET_TBL_NAME", referencedColumnName="TARGET_TBL_NAME"),
+        @PrimaryKeyJoinColumn(name="RECORD_NO", referencedColumnName="RECORD_NO"),
+        @PrimaryKeyJoinColumn(name="TARGET_COLUMN_NAME", referencedColumnName="TARGET_COLUMN_NAME")
+    })
+	private ScvmtConversionTable conversionTable;
 
 	@Override
 	protected Object getKey() {
@@ -53,6 +63,22 @@ public class ScvmtConversionTypeStringConcat extends JpaEntity implements Serial
 				sourceColumnName1,
 				sourceColumnName2,
 				(delimiter == null) ? Optional.empty() : Optional.of(delimiter)
+			);
+	}
+
+	public static ScvmtConversionTypeStringConcat toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof StringConcatPattern)) {
+			return null;
+		}
+
+		StringConcatPattern domain = (StringConcatPattern) conversionPattern;
+
+		return new ScvmtConversionTypeStringConcat(
+				pk,
+				domain.getColumn1(),
+				domain.getColumn2(),
+				(domain.getDelimiter().isPresent()) ? domain.getDelimiter().get() : null,
+				null
 			);
 	}
 

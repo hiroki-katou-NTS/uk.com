@@ -1,9 +1,11 @@
 package nts.uk.cnv.dom.pattern;
 
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
+@Getter
 public class TimeWithDayAttrPattern extends ConversionPattern {
 
 	private Join sourceJoin;
