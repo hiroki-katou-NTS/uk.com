@@ -181,10 +181,12 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         let validAll: boolean = true;
         for (let child of vm.$children) {
-            child.$validate();
-            if (!child.$valid) {
-                this.hidden = true;
-                validAll = false;
+            if (child.$el.className != 'kafs00b') {
+                child.$validate();
+                if (!child.$valid) {
+                    this.hidden = true;
+                    validAll = false;
+                }
             }
         }
 
@@ -372,7 +374,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         };
         // if mode edit
         if (!vm.mode) {
-            //paramb.input.newModeContent = null;
+            paramb.input.newModeContent = null;
             paramb.input.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
@@ -383,51 +385,53 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         vm.kaf000_B_Params = paramb;
         if (vm.mode) {
             vm.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                console.log('changedate' + oldV + '--' + newV);
-                let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
-
-                    return;
+                if (vm.mode) {
+                    let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
+                    let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
+                    if (_.isNull(startDate)) {
+                        
+                        return;
+                    }
+                    
+                    vm.listDate = [];
+                    if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                        vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
+                    } else {
+                        if (!_.isNull(endDate)) {
+                            let isCheckDate = startDate.getTime() <= endDate.getTime();
+                            if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                                while (startDate.getTime() <= endDate.getTime()) {
+                                    vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+                                    startDate.setDate(startDate.getDate() + 1);
+                                }
+                            }
+        
+                        }
+                    }
                 }
-                
-                vm.listDate = [];
-                if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
-                } else {
-                    if (!_.isNull(endDate)) {
+            });
+
+            vm.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
+                if (vm.mode) {
+                    if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+
+                        return;
+                    }
+                    let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
+                    let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
+                    if (_.isNull(endDate)) {
+
+                        return;
+                    }
+                    
+                    vm.listDate = [];
+                    if (!_.isNull(startDate)) {
                         let isCheckDate = startDate.getTime() <= endDate.getTime();
                         if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
                             while (startDate.getTime() <= endDate.getTime()) {
                                 vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
                                 startDate.setDate(startDate.getDate() + 1);
                             }
-                        }
-    
-                    }
-                }
-
-            });
-
-            vm.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-
-                    return;
-                }
-                let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
-
-                    return;
-                }
-                
-                vm.listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
                         }
                     }
                 }
