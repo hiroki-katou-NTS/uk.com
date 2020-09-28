@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +49,7 @@ public class KscmtAlchkBanWorkTogetherDtl extends ContractUkJpaEntity implements
 						companyId
 						, domain.getTargetOrg().getUnit().value
 						, domain.getTargetOrg().getTargetId()
-						, domain.getSimultaneousAttBanCode().v()
+						, domain.getBanWorkTogetherCode().v()
 						, sid)))
 				.collect(Collectors.toList());
 	}
