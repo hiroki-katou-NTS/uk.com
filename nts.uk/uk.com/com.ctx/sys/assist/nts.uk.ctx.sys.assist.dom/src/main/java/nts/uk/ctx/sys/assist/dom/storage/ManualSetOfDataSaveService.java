@@ -134,7 +134,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String	errorEmployeeId = "";
 			GeneralDate errorDate = null;
 			String errorContent = "";
-			listResultLogSavings.add(ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent));
+			String contractCd = AppContexts.user().contractCode();
+			listResultLogSavings.add(ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent));
 			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
 					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
 					compressedPassword, practitioner, listResultLogSavings, targetNumberPeople, saveStatus, saveForInvest, fileId,loginInfo);
@@ -619,7 +620,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				String	errorEmployeeId = "";
 				GeneralDate errorDate = null;
 				String errorContent = "";
-				ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+				String contractCd = AppContexts.user().contractCode();
+				ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
 				List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 				listResultLogSavings.add(resultLogSaving);
 				result.setListResultLogSavings(listResultLogSavings);
@@ -647,7 +649,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 							String	errorEmployeeId = "";
 							GeneralDate errorDate = null;
 							String errorContent = e.getMessage();
-							ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+							String contractCd = AppContexts.user().contractCode();
+							ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
 							List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 							listResultLogSavings.add(resultLogSaving);
 							result.setListResultLogSavings(listResultLogSavings);
@@ -699,7 +702,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String	errorEmployeeId = practitioner;
 			GeneralDate errorDate = GeneralDate.today();
 			String errorContent = e.getMessage();
-			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+			String contractCd = AppContexts.user().contractCode();
+			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
 			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 			listResultLogSavings.add(resultLogSaving);
 			result.setListResultLogSavings(listResultLogSavings);
@@ -743,7 +747,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String	errorEmployeeId = "";
 			GeneralDate errorDate = null;
 			String errorContent = "";
-			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+			String contractCd = AppContexts.user().contractCode();
+			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
 			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 			listResultLogSavings.add(resultLogSaving);
 			result.setListResultLogSavings(listResultLogSavings);

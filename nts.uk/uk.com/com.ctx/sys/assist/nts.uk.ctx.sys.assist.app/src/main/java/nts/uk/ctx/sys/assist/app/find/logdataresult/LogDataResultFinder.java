@@ -61,8 +61,8 @@ public class LogDataResultFinder {
 					 String ipAddress = resultOfSaving.getLoginInfo().getIpAddress();
 					 String pcName = resultOfSaving.getLoginInfo().getPcName();
 					 String account = resultOfSaving.getLoginInfo().getAccount();
-					 String startDateTime = resultOfSaving.getSaveStartDatetime().toString();
-					 String endDateTime = resultOfSaving.getSaveEndDatetime().toString();
+					 String startDateTime = resultOfSaving.getSaveStartDatetime() == null ? "" :  resultOfSaving.getSaveStartDatetime().toString();
+					 String endDateTime = resultOfSaving.getSaveEndDatetime() == null ? "" : resultOfSaving.getSaveEndDatetime().toString();
 					 int form = resultOfSaving.getSaveForm();
 					 String name = resultOfSaving.getSaveName();
 					 String fileId = resultOfSaving.getFileId();
@@ -118,8 +118,8 @@ public class LogDataResultFinder {
 				 String ipAddress = resultOfRestoration.getLoginInfo().getIpAddress();
 				 String pcName = resultOfRestoration.getLoginInfo().getPcName();
 				 String account = resultOfRestoration.getLoginInfo().getAccount();
-				 String startDateTime = resultOfRestoration.getStartDateTime().toString();
-				 String endDateTime = resultOfRestoration.getEndDateTime().toString();
+				 String startDateTime = resultOfRestoration.getStartDateTime() == null ? "" : resultOfRestoration.getStartDateTime().toString();
+				 String endDateTime = resultOfRestoration.getEndDateTime() == null ? "" : resultOfRestoration.getEndDateTime().toString();
 				 int form = resultOfRestoration.getSaveForm();
 				 String name = resultOfRestoration.getSaveName();
 				 String fileId = "";
@@ -175,8 +175,8 @@ public class LogDataResultFinder {
 					 String ipAddress = resultOfDeletion.getLoginInfo().getIpAddress();
 					 String pcName = resultOfDeletion.getLoginInfo().getPcName();
 					 String account = resultOfDeletion.getLoginInfo().getAccount();
-					 String startDateTime = resultOfDeletion.getStartDateTimeDel().toString();
-					 String endDateTime = resultOfDeletion.getEndDateTimeDel().toString();
+					 String startDateTime = resultOfDeletion.getStartDateTimeDel() == null ? "" : resultOfDeletion.getStartDateTimeDel().toString();
+					 String endDateTime = resultOfDeletion.getEndDateTimeDel() == null ? "" : resultOfDeletion.getEndDateTimeDel().toString();
 					 int form = resultOfDeletion.getDelType();
 					 String name = resultOfDeletion.getDelName();
 					 String fileId = resultOfDeletion.getFileId();
