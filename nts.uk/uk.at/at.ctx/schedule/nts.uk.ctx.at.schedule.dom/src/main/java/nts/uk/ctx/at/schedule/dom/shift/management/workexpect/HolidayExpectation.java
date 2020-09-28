@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -14,16 +15,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
  * @author dan_pv
  *
  */
-public class HolidayExpectation implements WorkExpectation{
+public class HolidayExpectation implements WorkExpectation, DomainValue {
 
 	@Override
 	public AssignmentMethod getAssignmentMethod() {
 		return AssignmentMethod.HOLIDAY;
-	}
-
-	@Override
-	public boolean isHolidayExpectation() {
-		return true;
 	}
 
 	@Override
@@ -41,7 +37,8 @@ public class HolidayExpectation implements WorkExpectation{
 
 	@Override
 	public WorkExpectDisplayInfo getDisplayInformation(Require require) {
-		return new WorkExpectDisplayInfo(AssignmentMethod.HOLIDAY, new ArrayList<>(), new ArrayList<>());
+		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
+		return new WorkExpectDisplayInfo(asignmentMethod, Collections.emptyList(), Collections.emptyList());
 	}
 
 }

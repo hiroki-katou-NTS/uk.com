@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WorkExpectationOfOneDayTest {
 	
 	@Injectable
-	WorkExpectation.Require require;
+	WorkExpectationOfOneDay.Require require;
 	
 	@Test
 	public void testCreate_holiday() {

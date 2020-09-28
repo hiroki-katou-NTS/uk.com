@@ -39,8 +39,15 @@ public class WorkExpectationOfOneDay implements DomainAggregate{
 	 */
 	private WorkExpectation workExpectation;
 	
-	/*
+	/**
 	 * 作る
+	 * @param employeeId 希望を出す従業員の社員ID
+	 * @param expectingDate　勤務希望の対象日
+	 * @param memo　勤務希望のメモ
+	 * @param assignmentMethod　勤務希望の指定方法
+	 * @param shiftMasterCodeList　シフトの勤務希望を出す場合のシフトマスタコードリスト
+	 * @param timeZoneList　時間帯の勤務希望を出す場合の時間帯リスト
+	 * @return
 	 */
 	public static WorkExpectationOfOneDay create(
 			String employeeId,
@@ -67,17 +74,23 @@ public class WorkExpectationOfOneDay implements DomainAggregate{
 		return new WorkExpectationOfOneDay(employeeId, expectingDate, memo, workExpectation);
 	}
 	
-	/*
-	 *  休日の勤務希望である	
+	/**
+	 * 休日の勤務希望である	
+	 * 
+	 * @return 出した勤務希望が休日の種類かどうか
 	 */
 	public boolean isHolidayExpectation() {
 		return this.workExpectation.isHolidayExpectation();
 	}
 	
-	/*
+	/**
 	 * 希望に沿っているか
+	 * @param require 
+	 * @param workInformation チェックしたい勤務情報
+	 * @param timeZoneList チェックしたい時間帯リスト
+	 * @return
 	 */
-	public boolean isMatchingExpectation(WorkExpectation.Require require, 
+	public boolean isMatchingExpectation(Require require, 
 			WorkInformation workInformation, 
 			List<TimeSpanForCalc> timeZoneList) {
 		
@@ -85,12 +98,18 @@ public class WorkExpectationOfOneDay implements DomainAggregate{
 				
 	}
 	
-	/*
+	/**
 	 * 表示情報を返す
+	 * @param require
+	 * @return
 	 */
-	public WorkExpectDisplayInfoOfOneDay getDisplayInformation(WorkExpectation.Require require) {
+	public WorkExpectDisplayInfoOfOneDay getDisplayInformation(Require require) {
 		WorkExpectDisplayInfo displayInfo = this.workExpectation.getDisplayInformation(require);
 		return new WorkExpectDisplayInfoOfOneDay(employeeId, expectingDate, memo, displayInfo);
+	}
+	
+	public static interface Require extends WorkExpectation.Require {
+		
 	}
 
 }

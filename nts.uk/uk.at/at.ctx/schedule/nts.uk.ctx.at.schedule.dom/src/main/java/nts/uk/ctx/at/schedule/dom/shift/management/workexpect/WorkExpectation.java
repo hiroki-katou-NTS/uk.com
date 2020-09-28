@@ -18,25 +18,34 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 public interface WorkExpectation {
 	
-	/*
+	/**
 	 * 指定方法を取得する	
+	 * @return
 	 */
 	public AssignmentMethod getAssignmentMethod();
 	
-	/*
+	/**
 	 * 休日の勤務希望である
 	 */
-	public boolean isHolidayExpectation();
+	public default boolean isHolidayExpectation(){ 
+		return this.getAssignmentMethod() == AssignmentMethod.HOLIDAY;
+    } 
 	
-	/*
+	/**
 	 * 希望に沿っているか
+	 * @param require
+	 * @param workInformation
+	 * @param timeZoneList
+	 * @return
 	 */
 	public boolean isMatchingExpectation(Require require, 
 			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList);
 	
-	/*
+	/**
 	 * 表示情報を返す
+	 * @param require
+	 * @return
 	 */
 	public WorkExpectDisplayInfo getDisplayInformation(Require require);
 	

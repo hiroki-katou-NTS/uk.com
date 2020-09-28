@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -18,15 +18,19 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
  * @author dan_pv
  *
  */
-@AllArgsConstructor
-public class ShiftExpectation implements WorkExpectation {
+@Value
+public class ShiftExpectation implements WorkExpectation, DomainValue  {
 
 	/**
 	 * 勤務可能なシフトのリスト
 	 */
-	@Getter
 	private List<ShiftMasterCode> workableShiftCodeList;
 
+	/**
+	 * 作る
+	 * @param workableShiftCodeList 社員の勤務希望シフトリスト
+	 * @return
+	 */
 	public static ShiftExpectation create(List<ShiftMasterCode> workableShiftCodeList) {
 
 		if (workableShiftCodeList.isEmpty()) {
@@ -39,11 +43,6 @@ public class ShiftExpectation implements WorkExpectation {
 	@Override
 	public AssignmentMethod getAssignmentMethod() {
 		return AssignmentMethod.SHIFT;
-	}
-
-	@Override
-	public boolean isHolidayExpectation() {
-		return false;
 	}
 
 	@Override
@@ -68,7 +67,8 @@ public class ShiftExpectation implements WorkExpectation {
 												.stream().map(shiftmaster -> shiftmaster.getDisplayInfor().getName().v())
 												.collect(Collectors.toList());
 		
-		return new WorkExpectDisplayInfo(AssignmentMethod.SHIFT, shiftMasterNameList, new ArrayList<>());
+		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
+		return new WorkExpectDisplayInfo(asignmentMethod, shiftMasterNameList, Collections.emptyList());
 	}
 	
 }

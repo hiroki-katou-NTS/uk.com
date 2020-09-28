@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -14,27 +14,31 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.勤務希望
  * @author dan_pv
  */
-@AllArgsConstructor
-public class TimeZoneExpectation implements WorkExpectation{
+@Value
+public class TimeZoneExpectation implements WorkExpectation, DomainValue {
 	
 	/**
 	 * 勤務可能な時間帯のリスト
 	 */
-	@Getter
 	private List<TimeSpanForCalc> workableTimeZoneList;
 	
+	/**
+	 * 作る
+	 * @param workableTimeZoneList　社員の勤務希望時間帯リスト
+	 * @return
+	 */
 	public static TimeZoneExpectation create(List<TimeSpanForCalc> workableTimeZoneList) {
+		
+		if ( workableTimeZoneList.isEmpty()) {
+			throw new RuntimeException("timezone list is empty!");
+		}
+		
 		return new TimeZoneExpectation(workableTimeZoneList);
 	}
 
 	@Override
 	public AssignmentMethod getAssignmentMethod() {
 		return AssignmentMethod.TIME_ZONE;
-	}
-
-	@Override
-	public boolean isHolidayExpectation() {
-		return false;
 	}
 
 	@Override
@@ -55,7 +59,9 @@ public class TimeZoneExpectation implements WorkExpectation{
 
 	@Override
 	public WorkExpectDisplayInfo getDisplayInformation(Require require) {
-		return new WorkExpectDisplayInfo(AssignmentMethod.TIME_ZONE, new ArrayList<>(), this.workableTimeZoneList);
+		
+		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
+		return new WorkExpectDisplayInfo(asignmentMethod, Collections.emptyList(), this.workableTimeZoneList);
 	}
 	
 	private boolean isScheduleTimeZoneInsideExpectedTimeZone(TimeSpanForCalc expectedTimeZone , TimeSpanForCalc scheduleTimeZone) {
