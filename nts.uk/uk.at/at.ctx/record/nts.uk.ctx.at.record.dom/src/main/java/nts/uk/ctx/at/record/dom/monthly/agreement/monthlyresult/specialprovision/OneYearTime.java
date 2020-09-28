@@ -20,4 +20,12 @@ public class OneYearTime {
 
     /**年度*/
     private Year year;
+
+    /**
+     * [C-0] 年間時間 (年度,1年間時間)
+     */
+    public static OneYearTime create(ErrorTimeInYear errorTimeInYear, Year year) {
+
+        return new OneYearTime(errorTimeInYear, year);
+    }
 }
