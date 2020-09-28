@@ -9,11 +9,11 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author hiroko_miura
  *
  */
-@IntegerRange(min =0, max =15)
-public class FromNoticeDays  extends IntegerPrimitiveValue<FromNoticeDays> {
+@IntegerRange(min = 0, max = 6)
+public class FromNoticeDaysWithWeekMode  extends IntegerPrimitiveValue<FromNoticeDaysWithWeekMode> {
 	private static final long serialVersionUID = 1L;
 	
-	public FromNoticeDays (int rawValue) {
+	public FromNoticeDaysWithWeekMode (int rawValue) {
 		super (rawValue);
 	}
 }

@@ -15,7 +15,7 @@ import nts.arc.time.calendar.seek.DateSeek;
  */
 @Value
 @RequiredArgsConstructor
-public class DeadlineDayofWeek implements DomainValue {
+public class DeadlineDayOfWeek implements DomainValue {
 
 	/** 週 */
 	private final DeadlineWeekAtr weekAtr;
@@ -24,15 +24,31 @@ public class DeadlineDayofWeek implements DomainValue {
 	private final DayOfWeek dayOfWeek;
 	
 	/**
-	 * 直前
+	 * 締切週による直前
 	 * @param targetDate
 	 * @return
 	 */
-	public GeneralDate getLastdeadline(GeneralDate targetDate) {
+	public GeneralDate getLastDeadlineWithWeekAtr(GeneralDate targetDate) {
+		
 		if (this.weekAtr == DeadlineWeekAtr.TWO_WEEK_AGO) {
-			targetDate = targetDate.addDays(7);
+			targetDate = targetDate.addDays(-7);
 		}
 		
 		return targetDate.previous(DateSeek.dayOfWeek(this.dayOfWeek));
+	}
+	
+	
+	/**
+	 * 対象日を含む直後
+	 * @param targetDate
+	 * @return
+	 */
+	public GeneralDate getMostRecentDeadlineIncludeTargetDate(GeneralDate targetDate) {
+		
+		if (targetDate.dayOfWeekEnum() == this.dayOfWeek) {
+			return targetDate;
+		}
+		
+		return targetDate.next(DateSeek.dayOfWeek(this.dayOfWeek));
 	}
 }

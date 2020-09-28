@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.seek.DateSeek;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
 
 /**
@@ -18,18 +19,20 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfO
 @RequiredArgsConstructor
 public class ShiftTableWeekSetting implements ShiftTableSetting {
 
-	private final DayOfWeek firstDayofWeek;
-	
-	private final Optional<DeadlineDayofWeek> deadlineDayofWeek;
+	/**
+	 * 開始曜日
+	 */
+	private final DayOfWeek firstDayOfWeek;
 	
 	/**
-	 * "勤務希望運用しない" で作る
-	 * @param firstDayofWeek
-	 * @return
+	 * 勤務希望の締切曜日
 	 */
-	public static ShiftTableWeekSetting createNotuseAvailability(DayOfWeek firstDayofWeek) {
-		return new ShiftTableWeekSetting(firstDayofWeek, Optional.empty());
-	}
+	private final Optional<DeadlineDayOfWeek> expectDeadLine;
+	
+	/** 
+	 * 締切日の何日前に通知するかの日数 
+	 * */
+	private final Optional<FromNoticeDaysWithWeekMode> fromNoticeDays;
 	
 	/**
 	 * "勤務希望運用する" で作る
@@ -37,44 +40,79 @@ public class ShiftTableWeekSetting implements ShiftTableSetting {
 	 * @param deadlineDayofWeek
 	 * @return
 	 */
-	public static ShiftTableWeekSetting createUseAvailability(DayOfWeek firstDayofWeek, DeadlineDayofWeek deadlineDayofWeek) {
-		return new ShiftTableWeekSetting(firstDayofWeek, Optional.of(deadlineDayofWeek));
+	public static ShiftTableWeekSetting createUseAvailability(
+			DayOfWeek firstDayofWeek, 
+			DeadlineDayOfWeek deadlineDayofWeek,
+			FromNoticeDaysWithWeekMode fromNoticeDays
+			) {
+		
+		return new ShiftTableWeekSetting(
+				firstDayofWeek, 
+				Optional.of(deadlineDayofWeek),
+				Optional.of(fromNoticeDays)
+				);
+	}
+	
+	/**
+	 * "勤務希望運用しない" で作る
+	 * @param firstDayofWeek
+	 * @return
+	 */
+	public static ShiftTableWeekSetting createNotuseAvailability(DayOfWeek firstDayofWeek) {
+		
+		return new ShiftTableWeekSetting(firstDayofWeek, Optional.empty(), Optional.empty());
 	}
 	
 	@Override
 	public ShiftPeriodUnit getShiftPeriodUnit() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return ShiftPeriodUnit.WEEKLY;
 	}
 
 	@Override
-	public boolean isDeadlinePast() {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
+	public boolean isOverDeadline(GeneralDate expectingDate) {
+
+		if ( !this.expectDeadLine.isPresent() ) {
+			return false;
+		}
+		
+		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		GeneralDate deadline = this.expectDeadLine.get().getLastDeadlineWithWeekAtr(startDate);
+		
+		return GeneralDate.today().after(deadline);
 	}
 
 	@Override
 	public boolean isOverHolidayMaxdays(List<WorkExpectationOfOneDay> workExpectList) {
-		// TODO 自動生成されたメソッド・スタブ
 		return false;
 	}
-
+	
 	@Override
 	public GeneralDate getMostRecentDeadlineDate(GeneralDate date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		
+		return this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(date);
 	}
 
 	@Override
-	public DatePeriod getAgainstDeadlinePeriod(GeneralDate date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
+	public NotifyInformation isTodayTheNotify() {
+		
+		GeneralDate today = GeneralDate.today();
 
-	@Override
-	public DatePeriod getAgainstAvailabilityPeriod(GeneralDate date) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		// check whether today is notification date
+		GeneralDate mostRecentDeadline = this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(today);
+		GeneralDate notifyStartDate = mostRecentDeadline.addDays(- this.fromNoticeDays.get().v());
+		if ( today.before(notifyStartDate)) {
+			return NotifyInformation.notNotifyDate();
+		}
+		
+		// get notification period
+		GeneralDate nextDeadline = mostRecentDeadline.addDays(7);
+		if (this.expectDeadLine.get().getWeekAtr() == DeadlineWeekAtr.TWO_WEEK_AGO) {
+			nextDeadline = nextDeadline.addDays(7);
+		}
+		GeneralDate startDate = nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		DatePeriod notifyPeriod = new DatePeriod(startDate, startDate.addDays(6));
+		
+		return NotifyInformation.create(notifyPeriod);
 	}
 
 }

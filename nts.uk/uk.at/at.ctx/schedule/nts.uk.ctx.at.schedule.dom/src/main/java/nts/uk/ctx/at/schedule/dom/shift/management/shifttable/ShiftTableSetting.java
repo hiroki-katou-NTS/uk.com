@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
 
 /**
@@ -24,7 +23,7 @@ public interface ShiftTableSetting {
 	 * 締切日を過ぎているか
 	 * @return
 	 */
-	boolean isDeadlinePast();
+	boolean isOverDeadline(GeneralDate expectingDate);
 	
 	/**
 	 * 休日日数の上限日数を超えているか
@@ -39,14 +38,9 @@ public interface ShiftTableSetting {
 	GeneralDate getMostRecentDeadlineDate(GeneralDate date);
 	
 	/**
-	 * 締切日に対応するシフト勤務期間を取得する
+	 * 今日が通知をする日か
 	 * @return
 	 */
-	DatePeriod getAgainstDeadlinePeriod(GeneralDate date);
+	NotifyInformation isTodayTheNotify();
 	
-	/**
-	 * 希望日を含める期間を取得する
-	 * @return
-	 */
-	DatePeriod getAgainstAvailabilityPeriod(GeneralDate date);
 }
