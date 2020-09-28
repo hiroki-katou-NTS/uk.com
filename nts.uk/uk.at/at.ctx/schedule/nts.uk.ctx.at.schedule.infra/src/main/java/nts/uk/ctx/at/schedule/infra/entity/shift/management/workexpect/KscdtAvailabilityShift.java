@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.ShiftExpectation;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
@@ -23,6 +24,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSCDT_AVAILABILITY_SHIFT")
 @AllArgsConstructor
 public class KscdtAvailabilityShift extends ContractUkJpaEntity{
+	
+	public static final Function<NtsResultRecord, KscdtAvailabilityShift> mapper = s ->  
+			new JpaEntityMapper<>(KscdtAvailabilityShift.class).toEntity(s);
 	
 	@Column(name = "CID")
 	public String companyId;
@@ -36,14 +40,6 @@ public class KscdtAvailabilityShift extends ContractUkJpaEntity{
 		return this.pk;
 	}
 	
-	public static Function<NtsResultRecord, KscdtAvailabilityShift> createKscdtAvailabilityShift = s -> 
-		new KscdtAvailabilityShift(
-			s.getString("CID"),
-			new KscdtAvailabilityShiftPk(
-					s.getString("SID"), 
-					s.getGeneralDate("YMD"), 
-					s.getString("SHIFT_MASTER_CD")));
-		
 	public static List<KscdtAvailabilityShift> fromDomain(
 			WorkExpectationOfOneDay expectation) {
 		

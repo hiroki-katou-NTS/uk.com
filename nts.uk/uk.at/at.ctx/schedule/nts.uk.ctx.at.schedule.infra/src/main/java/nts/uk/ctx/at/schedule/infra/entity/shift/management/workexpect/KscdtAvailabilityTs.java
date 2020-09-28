@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.TimeZoneExpectation;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
@@ -22,6 +23,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSCDT_AVAILABILITY_TS")
 @AllArgsConstructor
 public class KscdtAvailabilityTs extends ContractUkJpaEntity{
+	
+	public static final Function<NtsResultRecord, KscdtAvailabilityTs> mapper = s ->  
+			new JpaEntityMapper<>(KscdtAvailabilityTs.class).toEntity(s);
 
 	@Column(name = "CID")
 	public String companyId;
@@ -34,15 +38,6 @@ public class KscdtAvailabilityTs extends ContractUkJpaEntity{
 		return this.pk;
 	}
 	
-	public static Function<NtsResultRecord, KscdtAvailabilityTs> createKscdtAvailabilityShift = s -> 
-		new KscdtAvailabilityTs(
-			s.getString("CID"),
-			new KscdtAvailabilityTsPk(
-					s.getString("SID"), 
-					s.getGeneralDate("YMD"), 
-					s.getInt("START_CLOCK"),
-					s.getInt("END_CLOCK")));
-		
 	public static List<KscdtAvailabilityTs> fromDomain( WorkExpectationOfOneDay expectation) {
 		
 		if ( expectation.getWorkExpectation().getAssignmentMethod() != AssignmentMethod.TIME_ZONE) {

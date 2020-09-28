@@ -9,13 +9,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.Value;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationMemo;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.workexpect.KscdtAvailability;
@@ -81,13 +78,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 						new TimeWithDayAttr(t.getInt("START_CLOCK")), 
 						new TimeWithDayAttr(t.getInt("END_CLOCK"))));
 		
-		return Optional.of(WorkExpectationOfOneDay.create(
-				employeeID, 
-				expectingDate, 
-				new WorkExpectationMemo(availability.get().memo), 
-				EnumAdaptor.valueOf(availability.get().method, AssignmentMethod.class), 
-				shiftMasterCodeList, 
-				timeZoneList));
+		return Optional.of(availability.get().toDomain(shiftMasterCodeList, timeZoneList));
 		
 	}
 
@@ -98,19 +89,19 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 												.paramString("employeeID", employeeID)
 												.paramDate("startDate", period.start())
 												.paramDate("endDate", period.end())
-												.getList( KscdtAvailability.createKscdtAvailability );
+												.getList( KscdtAvailability.mapper );
 		
 		List<KscdtAvailabilityShift> availabilityShiftList = new NtsStatement(QUERY_SHIFT_EXPECTATION_PERIOD, this.jdbcProxy())
 													.paramString("employeeID", employeeID)
 													.paramDate("startDate", period.start())
 													.paramDate("endDate", period.end())
-													.getList( KscdtAvailabilityShift.createKscdtAvailabilityShift );
+													.getList( KscdtAvailabilityShift.mapper );
 		
 		List<KscdtAvailabilityTs> availabilityTsList = new NtsStatement(QUERY_TS_EXPECTATION_PERIOD, this.jdbcProxy())
 													.paramString("employeeID", employeeID)
 													.paramDate("startDate", period.start())
 													.paramDate("endDate", period.end())
-													.getList( KscdtAvailabilityTs.createKscdtAvailabilityShift );
+													.getList( KscdtAvailabilityTs.mapper );
 													
 		return availabilityList.stream().map( a -> {
 			
@@ -126,13 +117,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 															new TimeWithDayAttr(t.pk.endClock)))
 													.collect(Collectors.toList());
 			
-			return WorkExpectationOfOneDay.create(
-					employeeID, 
-					a.pk.expectingDate, 
-					new WorkExpectationMemo(a.memo), 
-					EnumAdaptor.valueOf(a.method, AssignmentMethod.class), 
-					shiftMasterCodeList, 
-					timeZoneList);
+			return a.toDomain(shiftMasterCodeList, timeZoneList);
 			
 		}).collect(Collectors.toList());
 	}
@@ -158,6 +143,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 
 	@Override
 	public boolean exists(String employeeID, GeneralDate expectingDate) {
+		
 		return this.queryProxy()
 				.find(new KscdtAvailabilityPk(employeeID, expectingDate), KscdtAvailability.class)
 				.isPresent();
@@ -173,7 +159,8 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 	}
 	
 	@Value
-	class Entities {
+	static class Entities {
+		
 		KscdtAvailability availability;
 		
 		List<KscdtAvailabilityShift> availabilityShiftList;
