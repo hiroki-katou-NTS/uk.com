@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.bansamedayholiday;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.banholidaytogether;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
