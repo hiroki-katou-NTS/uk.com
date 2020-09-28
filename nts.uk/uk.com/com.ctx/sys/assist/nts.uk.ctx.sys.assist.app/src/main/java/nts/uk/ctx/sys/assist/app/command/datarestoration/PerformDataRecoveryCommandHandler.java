@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
@@ -52,7 +53,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 
 		// ドメインモデル「データ復旧の結果」を登録する
 		String cid                    = AppContexts.user().companyId();
-		String saveSetCode            = performDataCommand.getSaveSetCode().isEmpty() ? null: performDataCommand.getSaveSetCode();
+		String saveSetCode            = StringUtil.isNullOrEmpty(performDataCommand.getSaveSetCode(), true) ? "": performDataCommand.getSaveSetCode();
 		String practitioner           = AppContexts.user().employeeId();
 		String executionResult        = null;
 		GeneralDateTime startDateTime = GeneralDateTime.now();
