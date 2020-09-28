@@ -13,9 +13,8 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
 
