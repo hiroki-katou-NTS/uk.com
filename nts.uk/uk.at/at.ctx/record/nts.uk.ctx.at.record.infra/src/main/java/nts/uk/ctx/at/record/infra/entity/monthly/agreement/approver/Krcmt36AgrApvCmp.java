@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -31,8 +32,13 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "CONTRACT_CD")
+	public String ccd;
+
 	@EmbeddedId
-	public Krcmt36AgrApvCmpPK PK;
+	public Krcmt36AgrApvCmpPK pk;
 
 	@Basic(optional = false)
 	@NotNull
@@ -74,7 +80,7 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.PK;
+		return this.pk;
 	}
 
 	public Approver36AgrByCompany toDomain() {
@@ -93,20 +99,20 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
 		return new Approver36AgrByCompany(
-				this.PK.companyID,
-				new DatePeriod(this.PK.startDate, this.endDate),
+				this.pk.companyId,
+				new DatePeriod(this.pk.startDate, this.endDate),
 				approverIds,
 				confirmerIds
 		);
 	}
 
 	public void fromDomain(Approver36AgrByCompany domain) {
-		this.PK = new Krcmt36AgrApvCmpPK(domain.getCompanyId(), domain.getPeriod().start());
+		this.pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(), domain.getPeriod().start());
 		fromDomainNoPK(domain);
 	}
 
 	private void fromDomainNoPK(Approver36AgrByCompany domain) {
-
+		this.ccd = AppContexts.user().contractCode();
 		this.endDate = domain.getPeriod().end();
 
 		List<String> approverIds = domain.getApproverList();
