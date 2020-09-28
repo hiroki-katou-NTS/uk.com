@@ -14,9 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -33,6 +35,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KFNMT_EXEC_TASK_LOG")
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.resultsperiod.optionalaggregationperiod;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -9,6 +12,8 @@ import nts.uk.ctx.at.record.pub.resultsperiod.optionalaggregationperiod.ExecuteA
 /**
  * The Class ExecuteAggrPeriodPubImpl.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecuteAggrPeriodPubImpl implements ExecuteAggrPeriodPub {
 
 	/** The service. */

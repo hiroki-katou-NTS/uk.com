@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.pubimp.resultsperiod.optionalaggregationperiod;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
@@ -12,6 +15,8 @@ import nts.uk.ctx.at.record.pub.resultsperiod.optionalaggregationperiod.Optional
 /**
  * The Class OptionalAggrPeriodPubImpl.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OptionalAggrPeriodPubImpl implements OptionalAggrPeriodPub {
 
 	@Inject

@@ -12,5 +12,6 @@ public interface StopByCompanyAdapter {
 	 * @param companyCD the company CD
 	 * @return the usage stop output
 	 */
-	public UsageStopOutputImport checkUsageStop(String contractCD, String companyCD);
+	public void checkUsageStop(String contractCD, String companyCD);
+//	public UsageStopOutputImport checkUsageStop(String contractCD, String companyCD);
 }

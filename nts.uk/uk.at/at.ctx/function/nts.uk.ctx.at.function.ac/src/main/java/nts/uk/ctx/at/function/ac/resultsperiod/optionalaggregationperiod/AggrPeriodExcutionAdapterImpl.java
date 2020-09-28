@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.function.ac.resultsperiod.optionalaggregationperiod;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionAdapter;
@@ -10,6 +13,8 @@ import nts.uk.ctx.at.record.pub.executionstatusmanage.optionalperiodprocess.Aggr
 /**
  * The Class AggrPeriodExcutionAdapterImpl.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AggrPeriodExcutionAdapterImpl implements AggrPeriodExcutionAdapter {
 
 	/** The pub. */

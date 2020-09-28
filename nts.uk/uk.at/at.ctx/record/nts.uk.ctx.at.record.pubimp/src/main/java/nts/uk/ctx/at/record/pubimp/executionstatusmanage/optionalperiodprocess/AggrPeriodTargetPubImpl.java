@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.pubimp.executionstatusmanage.optionalperiodprocess;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
@@ -12,6 +15,8 @@ import nts.uk.ctx.at.record.pub.executionstatusmanage.optionalperiodprocess.Aggr
 /**
  * The Class AggrPeriodTargetPubImpl.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AggrPeriodTargetPubImpl implements AggrPeriodTargetPub {
 
 	/** The repo. */

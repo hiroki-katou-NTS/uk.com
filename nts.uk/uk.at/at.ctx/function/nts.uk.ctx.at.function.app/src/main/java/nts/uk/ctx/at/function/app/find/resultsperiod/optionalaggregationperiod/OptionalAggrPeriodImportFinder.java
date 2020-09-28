@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodAdapter;
@@ -10,7 +11,8 @@ import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.Option
 /**
  * The Class OptionalAggrPeriodFinder.
  */
-public class OptionalAggrPeriodFinder {
+@Stateless
+public class OptionalAggrPeriodImportFinder {
 
 	/** The optional aggr period adapter. */
 	@Inject

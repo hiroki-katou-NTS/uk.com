@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeAdapter;
@@ -24,6 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class AggrPeriodFinder.
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AggrPeriodFinder {
 	
 	/** The log repo. */
@@ -87,7 +92,7 @@ public class AggrPeriodFinder {
 			return AggrPeriodExcutionDto.fromDomain(data.get());
 		}
 
-		return null;
+		return new AggrPeriodExcutionDto();
 		
 	}
 	
@@ -105,7 +110,7 @@ public class AggrPeriodFinder {
 		if (data.isPresent()) {
 			return OptionalAggrPeriodDto.fromDomain(data.get());
 		}
-		return null;
+		return new OptionalAggrPeriodDto();
 	}
 	
 	/**

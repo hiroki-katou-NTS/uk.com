@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodDto;
-import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
+import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 
 /**
  * The Class OptionalAggrPeriodWebService.
@@ -19,7 +19,7 @@ public class OptionalAggrPeriodWebService extends WebService {
 
 	/** The optional aggr period finder. */
 	@Inject
-	private OptionalAggrPeriodFinder optionalAggrPeriodFinder;
+	private OptionalAggrPeriodImportFinder optionalAggrPeriodFinder;
 	
 	/**
 	 * Gets the aggr period dto.
