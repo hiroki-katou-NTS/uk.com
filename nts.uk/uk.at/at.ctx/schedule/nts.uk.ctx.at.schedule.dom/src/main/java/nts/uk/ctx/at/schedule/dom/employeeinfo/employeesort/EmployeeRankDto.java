@@ -10,20 +10,16 @@ import lombok.Setter;
 
 /**
  * @author laitv
- * Imported: 社員職位
  *
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeePosition {
+public class EmployeeRankDto {
 	
-	/** 社員ID **/ 
-	private String empID;
-	/**	職位ID **/
-	private String jobtitleID;
-	
-	private String jobtitleCode;
+	public  String SID;
+	public  String emplRankCode;
+	public  Integer priority;
 
 }

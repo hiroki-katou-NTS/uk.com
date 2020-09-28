@@ -102,10 +102,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        if (shiftMasterName == mami) {
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
+                        if (shiftMasterName == mami || workInfo.length == 0) {
                             isMasterNotReg = true;
                         } else {
-                            arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
+                            arrDataToStick.push(new ExCell(workInfo[0].workTypeCode, '', workInfo[0].workTimeCode, '', '', '', workInfo[0].shiftMasterName, workInfo[0].shiftMasterCode)); 
                         }
                     }
                     if (isMasterNotReg == true) {
@@ -115,32 +116,32 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     $("#extable").exTable("stickData", arrDataToStick);
                     
                     // set color for cell
-                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === data.shiftCode; });
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === stickOrigData.shiftCode; });
                         if (workInfo.length > 0) {
+                            let workStyle = workInfo[0].workStyle;
+                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
+                                return { textColor: "#0000ff", background : "#" + workInfo[0].color }; // color-attendance
+                            }
+                            if (workStyle == AttendanceHolidayAttr.MORNING + '') {
+                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
+                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                            }
+                            if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
+                                return { textColor: "#ff0000", background : "#" + workInfo[0].color };// color-holiday
+                            }
+                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                // デフォルト（黒）  Default (black)
+                                return { textColor: "#000000", background : "#ffffff" }
+                            }
                             /**
                              *  1日休日系  ONE_DAY_REST(0)
                              *  午前出勤系 MORNING_WORK(1)
                              *  午後出勤系 AFTERNOON_WORK(2)
                              *  1日出勤系 ONE_DAY_WORK(3)
                              */
-                            let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
-                                return { textColor: "#0000ff" }; // color-attendance
-                            }
-                            if (workStyle == AttendanceHolidayAttr.MORNING+ '') {
-                                return { textColor: "#FF7F27" };// color-half-day-work
-                            }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON+ '') {
-                                return { textColor: "#FF7F27" };// color-half-day-work
-                            }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY+ '') {
-                                return { textColor: "#ff0000" };// color-holiday
-                            }
-                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                                // デフォルト（黒）  Default (black)
-                                return { textColor: "#000000" }
-                            }
                         }
                     });
                 }
@@ -173,10 +174,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        if (shiftMasterName == mami) {
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
+                        if (shiftMasterName == mami || workInfo.length == 0) {
                             isMasterNotReg = true;
                         } else {
-                            arrDataToStickWkp.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
+                            arrDataToStickWkp.push(new ExCell(workInfo[0].workTypeCode, '', workInfo[0].workTimeCode, '', '', '', workInfo[0].shiftMasterName,workInfo[0].shiftMasterCode)); 
                         }
                     }
                     if (isMasterNotReg == true) {
@@ -186,32 +188,32 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     $("#extable").exTable("stickData", arrDataToStickWkp);
                     
                     // set color for cell
-                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === data.shiftCode; });
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === stickOrigData.shiftCode; });
                         if (workInfo.length > 0) {
-                            /**
-                             *  1日休日系  ONE_DAY_REST(0)
-                             *  午前出勤系 MORNING_WORK(1)
-                             *  午後出勤系 AFTERNOON_WORK(2)
-                             *  1日出勤系 ONE_DAY_WORK(3)
-                             */
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
-                                return { textColor: "#0000ff" }; // color-attendance
+                                return { textColor: "#0000ff", background : "#" + workInfo[0].color }; // color-attendance
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING + '') {
-                                return { textColor: "#FF7F27" };// color-half-day-work
+                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
-                                return { textColor: "#FF7F27" };// color-half-day-work
+                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
-                                return { textColor: "#ff0000" };// color-holiday
+                                return { textColor: "#ff0000", background : "#" + workInfo[0].color };// color-holiday
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
                                 // デフォルト（黒）  Default (black)
-                                return { textColor: "#000000" }
+                                return { textColor: "#000000", background : "#ffffff" }
                             }
+                            /**
+                           *  1日休日系  ONE_DAY_REST(0)
+                           *  午前出勤系 MORNING_WORK(1)
+                           *  午後出勤系 AFTERNOON_WORK(2)
+                           *  1日出勤系 ONE_DAY_WORK(3)
+                           */
                         }
                     });
                 }
@@ -822,6 +824,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             }
         }
     }
+    
     class ExCell {
         workTypeCode: string;
         workTypeName: string;
@@ -830,22 +833,21 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         shiftName: string;
         startTime: any;
         endTime: any;
-        workStyle: number;
         shiftCode: string;
-        
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, workStyle? : any, shiftCode? : any) {
+
+
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, shiftCode?: any) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
             this.shiftName = shiftName !== null ? shiftName : '';
-            this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
-            this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
-            this.workStyle = workStyle !== null ? workStyle : '';
-            this.shiftCode = shiftName !== null ? shiftCode : '';
+            this.startTime = (startTime == undefined || startTime == null) ? '' : startTime;
+            this.endTime = (endTime == undefined || endTime == null) ? '' : endTime;
+            this.shiftCode = shiftCode !== null ? shiftCode : '';
         }
     }
-
+    
     interface IUserInfor {
         disPlayFormat: string;
         backgroundColor: number; // 背景色

@@ -116,7 +116,9 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
         List<GeneralDate> baseDates = lstDomain.stream().map(domainsetting -> domainsetting.getYmdk()).collect(Collectors.toList());
-		lstDomain = lstDomain.stream().filter(x -> !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
+		lstDomain = lstDomain.stream().filter(x -> x.getWorkInformation().getWorkTypeCode() != null &&
+				!StringUtil.isNullOrEmpty(x.getWorkInformation().getWorkTypeCode().v(),false)
+				&& !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
 
 		// check setting work type

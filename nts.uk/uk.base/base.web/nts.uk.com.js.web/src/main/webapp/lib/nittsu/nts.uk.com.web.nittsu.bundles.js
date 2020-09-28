@@ -7669,6 +7669,7 @@ var nts;
                 var COPY_PASTE = "copyPaste";
                 var EDIT = "edit";
                 var STICK = "stick";
+                var DETERMINE = "determine";
                 var Connector = {};
                 var _scrollWidth, emptyCells = {};
                 var ExTable = /** @class */ (function () {
@@ -7709,6 +7710,7 @@ var nts;
                             ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
                         this.errorMessagePopup = options.errorMessagePopup;
+                        this.customValidate = options.customValidate;
                         this.features = options.features;
                         $.data(this.$container, internal.X_OCCUPY, this.windowXOccupation);
                         $.data(this.$container, internal.Y_OCCUPY, this.windowYOccupation);
@@ -7804,10 +7806,6 @@ var nts;
                             options.overflowTooltipOn = this.overflowTooltipOn;
                         }
                     };
-                    ExTable.prototype.getChartRuler = function () {
-                        var self = this;
-                        return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
-                    };
                     /**
                      * Create.
                      */
@@ -7882,6 +7880,7 @@ var nts;
                                 self.bodies[i].width = self.headers[i].width;
                                 self.bodies[i].determination = self.determination;
                                 self.bodies[i].errorMessagePopup = self.errorMessagePopup;
+                                self.bodies[i].customValidate = self.customValidate;
                                 self.setWrapperWidth(self.bodies[i], widthParts);
                                 $bodyWrapper = render.createWrapper(top, left, self.bodies[i]);
                                 pTable.owner.bodies.push($bodyWrapper);
@@ -8487,6 +8486,7 @@ var nts;
                                     //                       cellHandler.rClick(div, column, helper.call(column.rightClick, rData, rowIdx, key));
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
                                 });
+                                // Separate det mode from other update mode
                                 style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                                 tdStyle += "; position: relative; padding: 0px;";
                                 td.style.cssText += tdStyle;
@@ -8537,6 +8537,7 @@ var nts;
                                 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
                             }
                             //                spread.bindSticker(td, rowIdx , key, self.options);
+                            // Separate det mode from other update mode
                             style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
                             td.style.cssText += tdStyle;
                             if (self.options.overflowTooltipOn)
@@ -8599,14 +8600,24 @@ var nts;
                                             var childCells = cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                             if (!uk.util.isNullOrUndefined(colorDef.innerIdx) && childCells.length > 0) {
                                                 var child = childCells[colorDef.innerIdx];
-                                                helper.addClassList(child, colorDef.clazz);
+                                                if (_.startsWith(colorDef.clazz, '#')) {
+                                                    helper.setBackgroundColor(child, colorDef.clazz);
+                                                }
+                                                else {
+                                                    helper.addClassList(child, colorDef.clazz);
+                                                }
                                                 if (colorDef.clazz === style.HIDDEN_CLS) {
                                                     $.data(child, "hide", child.textContent);
                                                     child.innerHTML = "";
                                                 }
                                             }
                                             else {
-                                                helper.addClassList(cell, colorDef.clazz);
+                                                if (_.startsWith(colorDef.clazz, '#')) {
+                                                    helper.setBackgroundColor(cell, colorDef.clazz);
+                                                }
+                                                else {
+                                                    helper.addClassList(cell, colorDef.clazz);
+                                                }
                                                 if (colorDef.clazz == style.HIDDEN_CLS) {
                                                     $.data(cell, "hide", cell.innerText);
                                                     cell.innerText = "";
@@ -9053,7 +9064,7 @@ var nts;
                     /**
                      * Grid cell.
                      */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9071,37 +9082,30 @@ var nts;
                         }
                         var touched, backStyle, cStyle;
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
-                        if (styleMaker && _.isFunction(styleMaker)) {
-                            var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
-                            if (style_1 && $childCells.length === 0) {
-                                if (style_1.class)
-                                    helper.addClass($cell, style_1.class);
-                                else
-                                    $cell.style.color = style_1.textColor;
-                            }
-                            else if (style_1) {
-                                if (style_1.class) {
-                                    helper.addClass($childCells, style_1.class);
-                                }
-                                else {
-                                    _.forEach($childCells, function (c) {
-                                        c.style.color = style_1.textColor;
-                                    });
+                        if (_.isFunction(styleMaker)) {
+                            if ($childCells.length === 0) {
+                                var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj, stickOrigData);
+                                if (style_1) {
+                                    if (style_1.class)
+                                        helper.addClass($cell, style_1.class);
+                                    if (style_1.textColor)
+                                        $cell.style.color = style_1.textColor;
+                                    helper.setBackgroundColor($cell, style_1.background);
+                                    makeUp($grid, rowIdx, columnKey, innerIdx, style_1);
                                 }
                             }
-                            makeUp($grid, rowIdx, columnKey, style_1);
-                        }
-                        else if (styleMaker === true) {
-                            var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
-                            if (cellStyles) {
-                                var styles = cellStyles[rowIdx];
-                                if (styles) {
-                                    styles = _.find(styles, function (c) { return c.columnKey === columnKey; });
-                                    var makeup = void 0;
-                                    if (styles && (makeup = styles.makeup))
-                                        cStyle = styles.makeup.pop();
-                                    backStyle = makeup[makeup.length - 1];
-                                }
+                            else {
+                                _.forEach($childCells, function (c, i) {
+                                    var style = styleMaker(rowIdx, columnKey, i, valueObj, stickOrigData);
+                                    if (style) {
+                                        if (style.class)
+                                            helper.addClass(c, style.class);
+                                        if (style.textColor)
+                                            c.style.color = style.textColor;
+                                        helper.setBackgroundColor(c, style.background);
+                                        makeUp($grid, rowIdx, columnKey, i, style);
+                                    }
+                                });
                             }
                         }
                         if ($childCells.length > 0) {
@@ -9110,24 +9114,52 @@ var nts;
                                 fieldArr_1 = viewFn(viewMode);
                             }
                             if (value.constructor === Array) {
+                                var styles_1;
+                                if (styleMaker === true) {
+                                    var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                                    if (cellStyles) {
+                                        styles_1 = cellStyles[rowIdx];
+                                        if (styles_1) {
+                                            styles_1 = _.filter(styles_1, function (c) { return c.columnKey === columnKey; });
+                                        }
+                                    }
+                                }
                                 _.forEach(value, function (val, i) {
                                     var $c = $childCells[i];
-                                    $c.textContent = val;
+                                    if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                        $.data($c, "hide", val);
+                                        $c.innerHTML = "";
+                                    }
+                                    else {
+                                        $c.textContent = val;
+                                    }
+                                    var innerStyle = _.find(styles_1, function (style) { return style.innerIdx === i; });
+                                    var makeup;
+                                    if (innerStyle && (makeup = innerStyle.makeup)) {
+                                        cStyle = innerStyle.makeup.pop();
+                                        backStyle = makeup[makeup.length - 1];
+                                    }
                                     if (backStyle) {
                                         if (backStyle.textColor) {
                                             $c.style.color = backStyle.textColor;
                                         }
-                                        else if (backStyle.class) {
+                                        if (backStyle.class) {
                                             $c.classList.remove(cStyle.class);
                                             $c.classList.add(backStyle.class);
+                                        }
+                                        if (backStyle.background) {
+                                            helper.setBackgroundColor($c, backStyle.background);
                                         }
                                     }
                                     else if (cStyle) {
                                         if (cStyle.textColor) {
                                             $c.style.color = null;
                                         }
-                                        else if (cStyle.class) {
+                                        if (cStyle.class) {
                                             $c.classList.remove(cStyle.class);
+                                        }
+                                        if (cStyle.background) {
+                                            $c.style.backgroundColor = null;
                                         }
                                     }
                                     if (fieldArr_1) {
@@ -9156,7 +9188,13 @@ var nts;
                             }
                             else {
                                 var $c = $childCells[innerIdx];
-                                $c.textContent = value;
+                                if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                    $.data($c, "hide", value);
+                                    $c.innerHTML = "";
+                                }
+                                else {
+                                    $c.textContent = value;
+                                }
                                 var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, innerIdx);
                                 touched = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                                 if (touched && !touched.dirty) {
@@ -9168,23 +9206,49 @@ var nts;
                             }
                         }
                         else {
-                            $cell.textContent = value;
+                            if (styleMaker === true) {
+                                var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                                if (cellStyles) {
+                                    var style_2 = cellStyles[rowIdx];
+                                    if (style_2) {
+                                        style_2 = _.find(style_2, function (c) { return c.columnKey === columnKey; });
+                                        var makeup = void 0;
+                                        if (style_2 && (makeup = style_2.makeup)) {
+                                            cStyle = style_2.makeup.pop();
+                                            backStyle = makeup[makeup.length - 1];
+                                        }
+                                    }
+                                }
+                            }
                             if (backStyle) {
                                 if (backStyle.textColor) {
                                     $cell.style.color = backStyle.textColor;
                                 }
-                                else if (backStyle.class) {
+                                if (backStyle.class) {
                                     $cell.classList.remove(cStyle.class);
                                     $cell.classList.add(backStyle.class);
+                                }
+                                if (backStyle.background) {
+                                    helper.setBackgroundColor($cell, backStyle.background);
                                 }
                             }
                             else if (cStyle) {
                                 if (cStyle.textColor) {
                                     $cell.style.color = null;
                                 }
-                                else if (cStyle.class) {
+                                if (cStyle.class) {
                                     $cell.classList.remove(cStyle.class);
                                 }
+                                if (cStyle.background) {
+                                    $cell.style.backgroundColor = null;
+                                }
+                            }
+                            if ($cell.classList.contains(style.HIDDEN_CLS)) {
+                                $.data($cell, "hide", value);
+                                $cell.innerHTML = "";
+                            }
+                            else {
+                                $cell.textContent = value;
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
@@ -9201,7 +9265,7 @@ var nts;
                     /**
                      * Grid row.
                      */
-                    function gridRow($grid, rowIdx, data, styleMaker) {
+                    function gridRow($grid, rowIdx, data, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9222,38 +9286,51 @@ var nts;
                                     var cellObj_1;
                                     var $target = $cells[index];
                                     var childCells_1 = $target.querySelectorAll("." + render.CHILD_CELL_CLS);
-                                    var cData = data[key];
-                                    if (styleMaker && _.isFunction(styleMaker)) {
-                                        var style_2 = styleMaker(rowIdx, key, -1, cData);
-                                        if (style_2 && childCells_1.length === 0) {
-                                            if (style_2.class)
-                                                helper.addClass($target, style_2.class);
-                                            else
-                                                $target.style.color = style_2.textColor;
-                                        }
-                                        else if (style_2) {
-                                            if (style_2.class)
-                                                helper.addClass(childCells_1, style_2.class);
-                                            else {
-                                                _.forEach(childCells_1, function (c) {
-                                                    c.style.color = style_2.textColor;
-                                                });
+                                    var cData_1 = data[key];
+                                    if (_.isFunction(styleMaker)) {
+                                        if (childCells_1.length === 0) {
+                                            var styleMake = styleMaker(rowIdx, key, -1, cData_1, stickOrigData && stickOrigData[key]);
+                                            if (styleMake) {
+                                                if (styleMake.class)
+                                                    helper.addClass($target, styleMake.class);
+                                                if (styleMake.textColor)
+                                                    $target.style.color = styleMake.textColor;
+                                                helper.setBackgroundColor($target, styleMake.background);
+                                                makeUp($grid, rowIdx, key, -1, styleMake);
                                             }
                                         }
-                                        makeUp($grid, rowIdx, key, style_2);
+                                        else {
+                                            _.forEach(childCells_1, function (c, i) {
+                                                var style = styleMaker(rowIdx, key, i, cData_1, stickOrigData && stickOrigData[key]);
+                                                if (style) {
+                                                    if (style.class)
+                                                        helper.addClass(c, style.class);
+                                                    if (style.textColor)
+                                                        c.style.color = style.textColor;
+                                                    helper.setBackgroundColor(c, style.background);
+                                                    makeUp($grid, rowIdx, key, i, style);
+                                                }
+                                            });
+                                        }
                                     }
                                     if (childCells_1.length > 0) {
                                         var fieldArr_2;
                                         if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
-                                            if (gen.painter.options.updateMode === STICK) {
-                                                fieldArr_2 = viewFn(viewMode);
-                                            }
+                                            cData_1 = helper.viewData(viewFn, viewMode, data[key]);
+                                            //                                if (gen.painter.options.updateMode === STICK) {
+                                            fieldArr_2 = viewFn(viewMode);
+                                            //                                }
                                         }
-                                        if (cData.constructor === Array) {
-                                            _.forEach(cData, function (d, i) {
+                                        if (cData_1.constructor === Array) {
+                                            _.forEach(cData_1, function (d, i) {
                                                 var $c = childCells_1[i];
-                                                $c.textContent = d;
+                                                if ($c.classList.contains(style.HIDDEN_CLS)) {
+                                                    $.data($c, "hide", d);
+                                                    $c.innerHTML = "";
+                                                }
+                                                else {
+                                                    $c.textContent = d;
+                                                }
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
@@ -9282,10 +9359,21 @@ var nts;
                                         }
                                     }
                                     else {
+                                        var fieldArr = void 0;
                                         if (_.isFunction(viewFn)) {
-                                            cData = helper.viewData(viewFn, viewMode, data[key]);
+                                            cData_1 = helper.viewData(viewFn, viewMode, data[key]);
+                                            fieldArr = viewFn(viewMode);
                                         }
-                                        $target.textContent = cData;
+                                        if ($target.classList.contains(style.HIDDEN_CLS)) {
+                                            $.data($target, "hide", cData_1);
+                                            $target.innerHTML = "";
+                                        }
+                                        else {
+                                            $target.textContent = cData_1;
+                                        }
+                                        if (fieldArr) {
+                                            fields = fieldArr;
+                                        }
                                         cellObj_1 = new selection.Cell(rowIdx, key, data[key], -1);
                                         touched = trace(origDs, $target, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
                                         if (touched && !touched.dirty) {
@@ -9305,11 +9393,11 @@ var nts;
                     /**
                      * Makeup.
                      */
-                    function makeUp($grid, rowIdx, key, hypo) {
+                    function makeUp($grid, rowIdx, key, innerIdx, hypo) {
                         var dCellsStyle = $.data($grid, internal.D_CELLS_STYLE);
                         if (!dCellsStyle) {
                             dCellsStyle = {};
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, innerIdx, [hypo])];
                             $.data($grid, internal.D_CELLS_STYLE, dCellsStyle);
                             return;
                         }
@@ -9317,18 +9405,18 @@ var nts;
                         var cells = dCellsStyle[rowIdx];
                         if (cells) {
                             _.forEach(cells, function (c, i) {
-                                if (c.columnKey === key) {
+                                if (c.columnKey === key && c.innerIdx === innerIdx) {
                                     c.makeup.push(hypo);
                                     dup = true;
                                     return false;
                                 }
                             });
                             if (!dup) {
-                                cells.push(new style.Cell(rowIdx, key, [hypo]));
+                                cells.push(new style.Cell(rowIdx, key, innerIdx, [hypo]));
                             }
                         }
                         else {
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, innerIdx, [hypo])];
                         }
                     }
                     /**
@@ -9434,11 +9522,12 @@ var nts;
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (self.$container.classList.contains(BODY_PRF + DETAIL)) {
                                 //                    self.selectCellsIn();
-                                //                    self.dirtyCellsIn();
+                                //                    self.dirtyCellsIn(manual);
                                 //                    self.errorCellsIn();
-                                self.detCellsIn();
+                                self.detCellsIn(manual);
                                 //                    self.editCellIn();
                                 self.madeUpCellsIn();
+                                //                    self.detModeRemainsChanges();
                             }
                             else if (self.$container.classList.contains(BODY_PRF + LEFTMOST)) {
                                 self.selectedRowsIn();
@@ -9651,9 +9740,13 @@ var nts;
                         /**
                          * Dirty cells in.
                          */
-                        Cloud.prototype.dirtyCellsIn = function () {
+                        Cloud.prototype.dirtyCellsIn = function (manual) {
+                            if (!manual)
+                                return;
                             var self = this;
                             var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            if (!$exTable)
+                                return;
                             var updateMode = $.data($exTable, NAMESPACE).updateMode;
                             var histories, targetHis, otherHis;
                             if (self.options.containerClass === BODY_PRF + LEFTMOST) {
@@ -9700,12 +9793,12 @@ var nts;
                         /**
                          * Det cells in.
                          */
-                        Cloud.prototype.detCellsIn = function () {
+                        Cloud.prototype.detCellsIn = function (manual) {
                             var self = this;
                             var det = $.data(self.$container, internal.DET);
                             if (!det)
                                 return;
-                            self.eachKey(det, function (obj) { return obj.columnKey; }, function (obj) { return !obj.uiReflected; }, function ($cell, obj) {
+                            self.eachKey(det, function (obj) { return obj.columnKey; }, function (obj) { return manual ? true : !obj.uiReflected; }, function ($cell, obj) {
                                 helper.markCellWith(style.DET_CLS, $cell);
                                 obj.uiReflected = true;
                             });
@@ -9741,6 +9834,30 @@ var nts;
                                     obj.uiReflected = true;
                                 }
                             });
+                        };
+                        /**
+                         * Det mode remains changes.
+                         */
+                        Cloud.prototype.detModeRemainsChanges = function () {
+                            var self = this;
+                            var $exTable = helper.closest(self.$container, "." + NAMESPACE);
+                            if (!$exTable)
+                                return;
+                            var exTable = $.data($exTable, NAMESPACE);
+                            if (exTable.updateMode === DETERMINE) {
+                                var modifies = exTable.modifications;
+                                self.eachKey(modifies, function (obj) { return obj.columnKey; }, function (obj) { return true; }, function ($cell, obj) {
+                                    var updateCls = update.OTHER_EDITED_CLS, rowObj = self.dataSource[obj.rowIndex];
+                                    if (!rowObj)
+                                        return;
+                                    if (rowObj[exTable.manipulatorKey] === exTable.manipulatorId) {
+                                        updateCls = update.TARGET_EDITED_CLS;
+                                    }
+                                    if (obj.innerIdx > -1) {
+                                        helper.markCellWith(updateCls, $cell, obj.innerIdx);
+                                    }
+                                });
+                            }
                         };
                         /**
                          * Each key.
@@ -9806,7 +9923,7 @@ var nts;
                      * Cell input.
                      */
                     function cellInput($cell, options, supplier) {
-                        if (uk.util.isNullOrUndefined(options.updateMode) || options.updateMode !== EDIT
+                        if (uk.util.isNullOrUndefined(options.updateMode) /*|| options.updateMode !== EDIT*/
                             || $cell.classList.contains(controls.LABEL_CLS))
                             return;
                         $cell.classList.add(update.EDITABLE_CLS);
@@ -9816,6 +9933,8 @@ var nts;
                                 return;
                             }
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
+                            if ($.data($exTable, NAMESPACE).updateMode !== EDIT)
+                                return;
                             if (!selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
                                 var $detailContent = $exTable.querySelector("." + (BODY_PRF + DETAIL));
                                 var inputSelecting = $.data($detailContent, internal.INPUT_SELECTING);
@@ -9849,8 +9968,7 @@ var nts;
                                 }
                                 return;
                             }
-                            if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination)
-                                return;
+                            //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
                         $cell.addXEventListener(events.KEY_UP, function () {
@@ -10266,9 +10384,10 @@ var nts;
                         var $body = !ui.land ? $exTable.querySelector("." + BODY_PRF + DETAIL) : $exTable.querySelector("." + ui.land);
                         var $cell = selection.cellAt($body, ui.rowIndex, ui.columnKey);
                         var result = validation.validate($body, $cell, ui.rowIndex, ui.columnKey, ui.innerIdx, ui.value, timeRangerDef);
-                        if (!result.isValid)
-                            return;
-                        ui.value = result.value;
+                        //            if (!result.isValid) return;
+                        if (result.isValid) {
+                            ui.value = result.value;
+                        }
                         var res = cellData($exTable, ui);
                         if (!uk.util.isNullOrUndefined(res)) {
                             var newValObj = ui.value;
@@ -10612,22 +10731,42 @@ var nts;
                     /**
                      * Stick grid cell ow.
                      */
-                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value, styleMaker) {
+                    function stickGridCellOw($grid, rowIdx, columnKey, innerIdx, value, styleMaker, stickFields) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
-                        var pk = helper.getPrimaryKey($grid);
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                            || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                        var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
-                        var opt = gen.options;
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
+                        if (!stickFields && sticker && sticker.fields) {
+                            stickFields = sticker.fields;
+                        }
                         if (!exTable.stickOverWrite
                             && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
                             return;
+                        var clonedVal = _.cloneDeep(value);
+                        if (fieldArr && _.isObject(clonedVal)) {
+                            _.forEach(fieldArr, function (f, i) {
+                                if ((!exTable.stickOverWrite && !helper.isEmpty(cData[f]))
+                                    || helper.isXInnerCell($grid, pkVal, columnKey, i, style.HIDDEN_CLS, style.SEAL_CLS)
+                                    || !_.includes(stickFields, f)) {
+                                    clonedVal[f] = cData[f];
+                                    if (f.slice(-4) === "Name") {
+                                        var codeFieldName = f.substr(0, f.length - 4) + "Code";
+                                        if (_.has(clonedVal, codeFieldName)) {
+                                            clonedVal[codeFieldName] = cData[codeFieldName];
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        else if (helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                            return;
                         var changedData = _.cloneDeep(cData);
-                        gen.dataSource[rowIdx][columnKey] = value;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
+                        gen.dataSource[rowIdx][columnKey] = clonedVal;
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker, _.cloneDeep(value));
                         if (!touched || !touched.dirty)
                             return;
                         if (!_.isNil(touched.idx) && touched.idx !== -1) {
@@ -10635,43 +10774,85 @@ var nts;
                         }
                         var cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
                         cellObj.setTarget(touched.updateTarget);
+                        if (stickFields) {
+                            cellObj.stickFields = stickFields;
+                        }
                         pushStickHistory($grid, [cellObj]);
-                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, clonedVal, innerIdx));
                     }
                     update.stickGridCellOw = stickGridCellOw;
                     /**
                      * Stick grid row ow.
                      */
-                    function stickGridRowOw($grid, rowIdx, data, styleMaker) {
+                    function stickGridRowOw($grid, rowIdx, data, styleMaker, stickFields) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid);
+                        var sticker = $.data($grid, internal.STICKER);
+                        if (!stickFields && sticker && sticker.fields) {
+                            stickFields = sticker.fields;
+                        }
                         if (!gen)
                             return;
                         // Create history
                         var changedCells = [];
                         var origData = _.cloneDeep(data);
                         var clonedData = _.cloneDeep(data);
-                        var opt = gen.options, fieldArr = opt.view(opt.viewMode);
+                        var opt = gen.options, fieldArr = opt.view(opt.viewMode), pkVal = gen.dataSource[rowIdx][pk];
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                                || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                || helper.isDetCell($grid, rowIdx, key)) {
                                 src[key] = objVal;
+                                delete origData[key];
                                 return objVal;
                             }
                             if (!uk.util.isNullOrUndefined(src[key])) {
-                                if (fieldArr && _.isObject(srcVal)) {
+                                if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
+                                    var srcValCloned_1 = _.cloneDeep(srcVal), cellPartialUpdate_1 = false;
                                     _.forEach(fieldArr, function (f, i) {
+                                        if ((!exTable.stickOverWrite && !helper.isEmpty(objVal[f]))
+                                            || helper.isXInnerCell($grid, pkVal, key, i, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || !_.includes(stickFields, f)) {
+                                            srcValCloned_1[f] = objVal[f];
+                                            origData[key][f] = objVal[f];
+                                            if (f.slice(-4) === "Name") {
+                                                var codeFieldName = f.substr(0, f.length - 4) + "Code";
+                                                if (_.has(srcValCloned_1, codeFieldName)) {
+                                                    srcValCloned_1[codeFieldName] = objVal[codeFieldName];
+                                                    origData[key][codeFieldName] = objVal[codeFieldName];
+                                                }
+                                            }
+                                            cellPartialUpdate_1 = true;
+                                            return;
+                                        }
                                         if (!helper.isEqual(srcVal[f], objVal[f])) {
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal), i));
                                         }
                                     });
+                                    if (cellPartialUpdate_1)
+                                        return srcValCloned_1;
                                 }
-                                else if (!helper.isEqual(src[key], obj[key])) {
-                                    changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                else {
+                                    if (stickFields && stickFields[0] === fieldArr[0]) {
+                                        var objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
+                                        if (!helper.isEqual(src[key], obj[key], fieldArr)
+                                            && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                            objValCloned[tField] = srcVal[tField];
+                                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                            origData[key] = objValCloned;
+                                            return objValCloned;
+                                        }
+                                        delete origData[key];
+                                        return objVal;
+                                    }
+                                    else if (!helper.isEqual(src[key], obj[key])) {
+                                        changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                    }
+                                    else {
+                                        delete origData[key];
+                                    }
                                 }
                             }
                             else {
@@ -10683,14 +10864,19 @@ var nts;
                             }
                             return srcVal;
                         });
-                        _.forEach(Object.keys(clonedData), function (k) {
-                            if (!helper.isEqual(clonedData[k], origData[k])) {
-                                delete origData[k];
-                            }
-                        });
-                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker);
+                        //            _.forEach(Object.keys(clonedData), function(k: any) {
+                        //                if (!helper.isEqual(clonedData[k], origData[k])) {
+                        //                    delete origData[k];
+                        //                }
+                        //            });
+                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker, _.cloneDeep(data));
                         if (changedCells.length > 0) {
-                            changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
+                            changedCells.forEach(function (c) {
+                                c.setTarget(touched.updateTarget);
+                                if (stickFields) {
+                                    c.stickFields = stickFields;
+                                }
+                            });
                             pushStickHistory($grid, changedCells);
                             events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData, _.cloneDeep(changedCells)));
                         }
@@ -11034,8 +11220,7 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -11081,8 +11266,7 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
-                                    || helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -11316,7 +11500,7 @@ var nts;
                     var Sticker = /** @class */ (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
-                            this.validate = function () { return true; };
+                            this.validate = function () { var dfd = $.Deferred(); dfd.resolve(true); return dfd.promise(); };
                             this.data = data;
                         }
                         return Sticker;
@@ -11366,13 +11550,15 @@ var nts;
                      * Bind row sticker.
                      */
                     function bindRowSticker($row, rowIdx, options) {
-                        if (options.containerClass !== BODY_PRF + DETAIL || uk.util.isNullOrUndefined(options.updateMode)
-                            || options.updateMode !== STICK)
+                        if (options.containerClass !== BODY_PRF + DETAIL /*|| util.isNullOrUndefined(options.updateMode)
+                            || options.updateMode !== STICK*/)
                             return;
                         $row.addXEventListener(events.CLICK_EVT, function (evt) {
-                            if (evt.ctrlKey)
-                                return;
+                            //                if (evt.ctrlKey) return;
                             var $grid = helper.closest($row, "." + BODY_PRF + DETAIL);
+                            var exTable = helper.getExTableFromGrid($grid);
+                            if (exTable && exTable.updateMode !== STICK)
+                                return;
                             var sticker = $.data($grid, internal.STICKER);
                             if (!sticker || uk.util.isNullOrUndefined(sticker.data)
                                 || uk.util.isNullOrUndefined(sticker.validate))
@@ -11389,13 +11575,21 @@ var nts;
                             var colIndex = helper.indexOf(key, visibleColumns);
                             $.data($grid, internal.STICK_REDO_STACK, []);
                             if (sticker.mode === spread.SINGLE) {
-                                var result = void 0;
-                                if ((result = sticker.validate(rowIdx, key, sticker.data)) !== true) {
-                                    // TODO: show error
-                                    result();
-                                    return;
+                                if (_.isFunction(sticker.validate)) {
+                                    var validate = sticker.validate(rowIdx, key, sticker.data);
+                                    if (_.has(validate, "done")) {
+                                        validate.done(function (result) {
+                                            if (result === true) {
+                                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                            }
+                                            else
+                                                result();
+                                        });
+                                    }
                                 }
-                                update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                else {
+                                    update.stickGridCellOw($grid, rowIdx, key, -1, sticker.data, sticker.styleMaker);
+                                }
                                 return;
                             }
                             _.forEach(sticker.data, function (cData) {
@@ -11404,6 +11598,19 @@ var nts;
                                 if (!key)
                                     return false;
                             });
+                            if (_.isFunction(sticker.validate)) {
+                                var validate = sticker.validate(rowIdx, key, data);
+                                if (_.has(validate, "done")) {
+                                    validate.done(function (result) {
+                                        if (result === true) {
+                                            update.stickGridRowOw($grid, rowIdx, data, sticker.styleMaker);
+                                        }
+                                        else
+                                            result();
+                                    });
+                                }
+                                return;
+                            }
                             update.stickGridRowOw($grid, rowIdx, data, sticker.styleMaker);
                         });
                     }
@@ -11440,7 +11647,8 @@ var nts;
                     function validate($body, $cell, rowIdx, columnKey, innerIdx, value, timeRangerDef) {
                         var vtor = validation.mandate($body, columnKey, innerIdx);
                         var gen = $.data($body, internal.TANGI) || $.data($body, internal.CANON);
-                        var rowId = gen.dataSource[rowIdx][gen.primaryKey];
+                        var rowObj = gen.dataSource[rowIdx];
+                        var rowId = rowObj[gen.primaryKey];
                         timeRangerDef = timeRangerDef || $.data($body, internal.TIME_VALID_RANGE);
                         var formatValue;
                         if (vtor) {
@@ -11490,9 +11698,9 @@ var nts;
                                 isValid = true;
                                 formatValue = "";
                             }
-                            var $tbl = helper.closest($body, "." + NAMESPACE);
+                            var $tbl_1 = helper.closest($body, "." + NAMESPACE);
                             if (!isValid) {
-                                errors.add($tbl, $cell, rowIdx, columnKey, innerIdx, value);
+                                errors.add($tbl_1, $cell, rowIdx, columnKey, innerIdx, value);
                                 //                cellData($exTable, rowIdx, columnKey, innerIdx, value);
                                 //                    update.setText($cell, innerIdx, value);
                                 if (gen.options.errorMessagePopup) {
@@ -11501,12 +11709,37 @@ var nts;
                                 return Result.fail();
                             }
                             else {
+                                if (_.isFunction(gen.options.customValidate)) {
+                                    var result = gen.options.customValidate(rowIdx, columnKey, innerIdx, value, rowObj[columnKey]);
+                                    if (result && !result.isValid) {
+                                        errors.add($tbl_1, $cell, rowIdx, columnKey, innerIdx, value);
+                                        $.data($cell, internal.CUSTOM_ERR, true);
+                                        if (gen.options.errorMessagePopup) {
+                                            $.data($cell, internal.ERR_MSG, result.message);
+                                        }
+                                        return Result.fail();
+                                    }
+                                    $.data($cell, internal.CUSTOM_ERR, false);
+                                    _.forEach(result.innerErrorClear, function (innerErr) {
+                                        var $pCell = selection.cellAt($body, rowIdx, columnKey);
+                                        var childCells = $pCell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                        var $oCell = childCells ? childCells[innerErr] : $pCell;
+                                        if ($.data($oCell, internal.CUSTOM_ERR)) {
+                                            if (errors.any($oCell, innerErr))
+                                                errors.remove($tbl_1, $oCell, rowIdx, columnKey, innerErr);
+                                            if (gen.options.errorMessagePopup) {
+                                                $.data($oCell, internal.ERR_MSG, null);
+                                            }
+                                            $.data($oCell, internal.CUSTOM_ERR, false);
+                                        }
+                                    });
+                                }
                                 if (gen.options.errorMessagePopup) {
                                     $.data($cell, internal.ERR_MSG, null);
                                 }
                             }
                             if (errors.any($cell, innerIdx))
-                                errors.remove($tbl, $cell, rowIdx, columnKey, innerIdx);
+                                errors.remove($tbl_1, $cell, rowIdx, columnKey, innerIdx);
                         }
                         return Result.ok(formatValue);
                     }
@@ -11621,12 +11854,11 @@ var nts;
                         var targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
                         if (!targetTime)
                             return false;
-                        var compareMax = compare(targetTime, maxTime);
-                        var compareMin = compare(targetTime, minTime);
+                        var compareMax = compare(targetTime, maxTime), compareMin = compare(targetTime, minTime);
                         if (compareMax > 0 || compareMin < 0)
                             return false;
-                        if ((targetTime.negative && maxTime.negative && compareMax === 0)
-                            || (targetTime.negative && minTime.negative && compareMin === 0))
+                        if ((maxTime.negative && targetTime.negative && compareMax === 0)
+                            || (minTime.negative && targetTime.negative && compareMin === 0))
                             return false;
                         return true;
                     }
@@ -13883,23 +14115,25 @@ var nts;
                     }());
                     style.CellStyleParam = CellStyleParam;
                     var Cell = /** @class */ (function () {
-                        function Cell(rowIndex, columnKey, makeup) {
+                        function Cell(rowIndex, columnKey, innerIdx, makeup) {
                             this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
+                            this.innerIdx = innerIdx;
                             this.makeup = makeup;
                         }
                         return Cell;
                     }());
                     style.Cell = Cell;
                     function detColumn($grid, row, rowIdx, detOpt, $tbl) {
-                        //            let $tbl = helper.closest($grid, "." + NAMESPACE);
-                        //            let detOpt = $.data($tbl, NAMESPACE).determination;
                         if (!detOpt || !$grid.classList.contains(HEADER_PRF + DETAIL))
                             return;
                         _.forEach(detOpt.rows, function (i) {
                             if (i === rowIdx) {
                                 row.addXEventListener(events.MOUSE_DOWN, function (evt) {
-                                    if (!evt.ctrlKey)
+                                    if (!$tbl)
+                                        $tbl = helper.closest($grid, "." + NAMESPACE);
+                                    var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                    if (updateMode !== DETERMINE)
                                         return;
                                     var $main = helper.getMainTable($tbl);
                                     var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
@@ -13909,6 +14143,8 @@ var nts;
                                     var end = gen.endIndex || ds.length - 1;
                                     var $hCell = evt.target;
                                     var coord = helper.getCellCoord($hCell);
+                                    if (!coord)
+                                        return;
                                     var det = $.data($main, internal.DET);
                                     if (!det) {
                                         det = {};
@@ -13986,19 +14222,22 @@ var nts;
                     }
                     style.detColumn = detColumn;
                     function detCell($grid, $cell, rowIdx, columnKey, detOpt, $tbl) {
-                        //            let $tbl = helper.closest($grid, "." + NAMESPACE);
-                        //            let detOpt = $.data($tbl, NAMESPACE).determination;
                         if (!detOpt)
                             return;
                         if ($grid.classList.contains(BODY_PRF + LEFTMOST)) {
                             _.forEach(detOpt.columns, function (key) {
                                 if (key === columnKey) {
                                     $cell.addXEventListener(events.MOUSE_DOWN, function (evt) {
-                                        if (!evt.ctrlKey)
+                                        if (!$tbl)
+                                            $tbl = helper.closest($grid, "." + NAMESPACE);
+                                        var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                        if (updateMode !== DETERMINE)
                                             return;
                                         var $main = helper.getMainTable($tbl);
                                         var ds = internal.getDataSource($main);
                                         var coord = helper.getCellCoord($cell);
+                                        if (!coord)
+                                            return;
                                         var $targetRow = selection.rowAt($main, coord.rowIdx);
                                         if ($targetRow === intan.NULL || !$targetRow)
                                             return;
@@ -14065,12 +14304,22 @@ var nts;
                                 target = childCells;
                                 _.forEach(Array.prototype.slice.call(childCells), function (c) {
                                     c.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                        if (!$tbl)
+                                            $tbl = helper.closest($grid, "." + NAMESPACE);
+                                        var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                        if (updateMode !== DETERMINE)
+                                            return;
                                         onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
                                     });
                                 });
                                 return;
                             }
                             target.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                                if (!$tbl)
+                                    $tbl = helper.closest($grid, "." + NAMESPACE);
+                                var updateMode = $.data($tbl, NAMESPACE).updateMode;
+                                if (updateMode !== DETERMINE)
+                                    return;
                                 onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey);
                             });
                         }
@@ -14080,7 +14329,7 @@ var nts;
                      * On det single cell.
                      */
                     function onDetSingleCell(evt, $tbl, $cell, rowIdx, columnKey) {
-                        if (!evt.ctrlKey || !helper.isDetable($cell))
+                        if (!helper.isDetable($cell))
                             return;
                         var $main = helper.getMainTable($tbl);
                         var ds = internal.getDataSource($main);
@@ -14171,6 +14420,9 @@ var nts;
                                 break;
                             case "stickData":
                                 setStickData(self, params[0]);
+                                break;
+                            case "stickFields":
+                                setStickFields(self, params[0]);
                                 break;
                             case "stickValidate":
                                 setStickValidate(self, params[0]);
@@ -14558,19 +14810,38 @@ var nts;
                             return exTable.updateMode;
                         if (exTable.updateMode === mode)
                             return;
-                        exTable.setUpdateMode(mode);
-                        exTable.modifications = {};
                         if (occupation) {
                             events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
                         }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
-                        selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
-                        if (mode === COPY_PASTE) {
-                            selection.checkUp($container[0]);
-                            copy.on($grid[0], mode);
-                            return;
-                        }
+                        if (mode !== DETERMINE) {
+                            if (exTable.updateMode !== DETERMINE) {
+                                exTable.setUpdateMode(mode);
+                                exTable.modifications = {};
+                                render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
+                                selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                            }
+                            else {
+                                exTable.setUpdateMode(mode);
+                            }
+                            if (mode === COPY_PASTE) {
+                                selection.checkUp($container[0]);
+                                copy.on($grid[0], mode);
+                                return;
+                            }
+                        } /*else {
+                            if (exTable.updateMode === EDIT) {
+                                let editor = $container.data(update.EDITOR);
+                                let inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                                if (editor) {
+                                    update.outsideClick($container[0], null, true);
+                                } else if (inputSelecting) {
+                                    selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                }
+                            }
+                            
+                            exTable.setUpdateMode(mode);
+                        }*/
                         selection.off($container[0]);
                         copy.off($grid[0], mode);
                     }
@@ -14642,7 +14913,9 @@ var nts;
                         }
                         var table = helper.getMainTable($container[0]), updateViewMode = false;
                         var ds = helper.getOrigDS(table);
-                        exTable.modifications = {};
+                        if (updateMode !== DETERMINE) {
+                            exTable.modifications = {};
+                        }
                         if (viewMode && exTable.viewMode !== viewMode) {
                             if (exTable.updateMode === EDIT) {
                                 //                if (errors.occurred($container[0])) return;
@@ -14752,6 +15025,21 @@ var nts;
                         }
                     }
                     /**
+                     * Set stick fields.
+                     */
+                    function setStickFields($container, fields) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var sticker = $grid.data(internal.STICKER);
+                        if (!sticker) {
+                            sticker = new spread.Sticker();
+                            sticker.fields = fields;
+                            $grid.data(internal.STICKER, sticker);
+                        }
+                        else {
+                            sticker.fields = fields;
+                        }
+                    }
+                    /**
                      * Set stick validate.
                      */
                     function setStickValidate($container, validate) {
@@ -14803,7 +15091,7 @@ var nts;
                                     value = data[i.columnKey];
                                     itemsByKey[i.columnKey] = value;
                                 }
-                                currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value });
+                                currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });
                             }
                             update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
                             internal.removeChange($grid[0], i);
@@ -14832,14 +15120,14 @@ var nts;
                             return;
                         if (items.length == 1) {
                             var item = items[0];
-                            update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker);
+                            update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
                         }
                         else {
                             var data_1 = {};
                             _.forEach(items, function (item) {
                                 data_1[item.columnKey] = item.value;
                             });
-                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_1, sticker.styleMaker);
+                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_1, sticker.styleMaker, items[0].stickFields);
                         }
                     }
                     /**
@@ -15267,6 +15555,7 @@ var nts;
                     internal.COLUMN_IN = "column-in";
                     internal.INPUT_SELECTING = "input-selecting";
                     internal.ERR_MSG = "error-msg";
+                    internal.CUSTOM_ERR = "custom-err";
                     internal.ERR_POPUP = "error-popup";
                     internal.PRINTER_INST = "printer-inst";
                     /**
@@ -16076,6 +16365,24 @@ var nts;
                     }
                     helper.isXCell = isXCell;
                     /**
+                     * Is xInnerCell.
+                     */
+                    function isXInnerCell($grid, rowId, key, innerIdx) {
+                        var clazz = [];
+                        for (var _i = 4; _i < arguments.length; _i++) {
+                            clazz[_i - 4] = arguments[_i];
+                        }
+                        var cellsStyle = $.data($grid, internal.CELLS_STYLE);
+                        if (!cellsStyle)
+                            return;
+                        var result = _.find(cellsStyle, function (deco) {
+                            return deco.columnKey === key && deco.rowId === rowId
+                                && (_.isNil(innerIdx) ? true : deco.innerIdx === innerIdx) && clazz.some(function (c) { return deco.clazz === c; });
+                        });
+                        return result !== undefined;
+                    }
+                    helper.isXInnerCell = isXInnerCell;
+                    /**
                      * Is xcell shown.
                      */
                     function isXCellShown($grid, rowIdx, key) {
@@ -16392,7 +16699,9 @@ var nts;
                      * Add class.
                      */
                     function addClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.add(clazz);
                             return;
                         }
@@ -16447,13 +16756,22 @@ var nts;
                      * Add class.
                      */
                     function addClassList(cell, clazz) {
-                        if (!clazz)
+                        if (!cell || !clazz)
                             return;
                         clazz.split(" ").forEach(function (c, i) {
                             cell.classList.add(c);
                         });
                     }
                     helper.addClassList = addClassList;
+                    /**
+                     * Set background color.
+                     */
+                    function setBackgroundColor(cell, colorCode) {
+                        if (!cell || !colorCode)
+                            return;
+                        cell.style.backgroundColor = colorCode;
+                    }
+                    helper.setBackgroundColor = setBackgroundColor;
                 })(helper || (helper = {}));
                 var widget;
                 (function (widget) {
@@ -16547,8 +16865,7 @@ var nts;
                                 return;
                             self.$selector.addXEventListener(event ? event : events.MOUSE_DOWN, function (evt) {
                                 self.getTable();
-                                if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination)
-                                    return;
+                                //                    if (evt.ctrlKey && $.data(helper.closest(self.$table, "." + NAMESPACE), NAMESPACE).determination) return;
                                 self.click(evt);
                             });
                         };

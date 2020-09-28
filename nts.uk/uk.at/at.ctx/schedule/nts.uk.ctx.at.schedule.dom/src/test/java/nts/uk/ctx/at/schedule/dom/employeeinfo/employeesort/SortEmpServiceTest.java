@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class SortEmpServiceTest {
 
 		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
 
-		assertThat(listData).extracting(d -> d).containsExactly("emp3", "emp2", "emp1", "emp4");
+		assertThat(listData).extracting(d -> d).containsExactly("emp2", "emp1", "emp3", "emp4");
 	}
 
 	/**
@@ -196,7 +197,7 @@ public class SortEmpServiceTest {
 
 		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
 
-		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp3", "emp2");
+		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
 
 	/**
@@ -314,7 +315,8 @@ public class SortEmpServiceTest {
 		};
 		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
 
-		assertTrue(listData.isEmpty());
+		assertFalse(listData.isEmpty());
+		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
 	}
 
 	/**
@@ -331,9 +333,9 @@ public class SortEmpServiceTest {
 		SortSetting sortSetting = new SortSetting("cid", listOrderedList);
 
 		List<PositionImport> listPositionImport = Arrays.asList(
-				new PositionImport("job0", "jobCd0", "jobName0", "sequenceCode0"),
-				new PositionImport("job3", "jobCd3", "jobName3", "sequenceCode3"),
-				new PositionImport("job4", "jobCd4", "jobName4", "sequenceCode4"));
+				new PositionImport("job0", "jobCd0", "jobName0"),
+				new PositionImport("job3", "jobCd3", "jobName3"),
+				new PositionImport("job4", "jobCd4", "jobName4"));
 		new Expectations() {
 			{
 				require.get();
@@ -365,10 +367,10 @@ public class SortEmpServiceTest {
 		List<EmployeePosition> listEmployeePosition = Arrays.asList(new EmployeePosition("emp3", "job2"),
 				new EmployeePosition("emp2", "job1"), new EmployeePosition("emp1", "job3"));
 		List<PositionImport> listPositionImport = Arrays.asList(
-				new PositionImport("job0", "jobCd0", "jobName0", "sequenceCode0"),
-				new PositionImport("job2", "jobCd2", "jobName1", "sequenceCode1"),
-				new PositionImport("job1", "jobCd1", "jobName2", "sequenceCode2"),
-				new PositionImport("job3", "jobCd2", "jobName2", "sequenceCode2"));
+				new PositionImport("job0", "jobCd0", "jobName0"),
+				new PositionImport("job2", "jobCd2", "jobName1"),
+				new PositionImport("job1", "jobCd1", "jobName2"),
+				new PositionImport("job3", "jobCd2", "jobName2"));
 		new Expectations() {
 			{
 				require.get();
@@ -435,7 +437,7 @@ public class SortEmpServiceTest {
 		};
 		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
 
-		assertThat(listData).extracting(d -> d).containsExactly("emp1", "emp2", "emp3");
+		assertThat(listData).extracting(d -> d).containsExactly("emp3", "emp2", "emp1");
 	}
 
 	/**
