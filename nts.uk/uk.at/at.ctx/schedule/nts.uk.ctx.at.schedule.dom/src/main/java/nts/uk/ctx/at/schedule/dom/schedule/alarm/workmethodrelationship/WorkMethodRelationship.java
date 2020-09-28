@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 /**
  * 勤務方法の関係性
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.勤務方法の関係性
@@ -47,23 +46,24 @@ public class WorkMethodRelationship implements DomainValue{
 				specifiedMethod);
 	}
 	
-	/**
-	 * [prv-1] 許可されていない勤務方法か判定する
-	 * @param require
-	 * @param workInfo
-	 * @return
-	 */
-	private boolean isNotAllowed(WorkMethod.Require require, WorkInformation workInfo) {
-		return !currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
-	}
- 
-	/**
-	 * [prv-2] 禁止されている勤務方法か判定する
-	 * @param require
-	 * @param workInfo
-	 * @return
-	 */
-	private boolean isBan(WorkMethod.Require require, WorkInformation workInfo) {
-		return currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
-	}
+//	/**
+//	 * [prv-1] 許可されていない勤務方法か判定する
+//	 * @param require
+//	 * @param workInfo
+//	 * @return
+//	 */
+//	private boolean isNotAllowed(WorkMethod.Require require, WorkInformation workInfo) {
+//		return !currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
+//	}
+// 
+//	/**
+//	 * [prv-2] 禁止されている勤務方法か判定する
+//	 * @param require
+//	 * @param workInfo
+//	 * @return
+//	 */
+//	private boolean isBan(WorkMethod.Require require, WorkInformation workInfo) {
+//		return currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
+//	}
+	
 }

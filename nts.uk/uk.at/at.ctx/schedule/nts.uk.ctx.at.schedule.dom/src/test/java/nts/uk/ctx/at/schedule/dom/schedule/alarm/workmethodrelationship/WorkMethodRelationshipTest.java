@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,41 +26,6 @@ public class WorkMethodRelationshipTest {
 				RelationshipSpecifiedMethod.ALLOW_SPECIFY_WORK_DAY
 				);
 		NtsAssert.invokeGetters(workMethodRela);
-	}
-	
-	/**
-	 * 許可
-	 * 勤務方法の関係性を作成する：成功(success)
-	 * 
-	 */
-	@Test
-	public void create_WorkMethodRelationship_Allow_success() {
-		val workMethodRela = new WorkMethodRelationship(
-				new WorkMethodAttendance(new WorkTimeCode("001")), 
-				Arrays.asList(new WorkMethodHoliday()),
-				RelationshipSpecifiedMethod.ALLOW_SPECIFY_WORK_DAY
-				);
-		
-		assertThat(workMethodRela.getSpecifiedMethod()).isEqualTo(RelationshipSpecifiedMethod.ALLOW_SPECIFY_WORK_DAY);
-		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification()).isEqualTo(WorkMethodClassfication.HOLIDAY);
-	}
-	
-	
-	/**
-	 * 許可
-	 * 勤務方法の関係性を作成する：成功(success)
-	 * 
-	 */
-	@Test
-	public void create_WorkMethodRelationship_Not_Allow_success() {
-		val workMethodRela = new WorkMethodRelationship(
-				new WorkMethodHoliday(), 
-				Arrays.asList(new WorkMethodHoliday()),
-				RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY
-				);
-		
-		assertThat(workMethodRela.getSpecifiedMethod()).isEqualTo(RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY);
-		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification()).isEqualTo(WorkMethodClassfication.HOLIDAY);
 	}
 	
 	/**
@@ -89,6 +56,90 @@ public class WorkMethodRelationshipTest {
 					RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY
 					);
 		});
+	}
+	
+	
+	/**
+	 * 許可
+	 * 勤務方法の関係性を作成する：成功(success)
+	 * 
+	 */
+	@Test
+	public void create_WorkMethodRelationship_Allow_success() {
+		val workMethodRela = new WorkMethodRelationship(
+				new WorkMethodAttendance(new WorkTimeCode("001")), 
+				Arrays.asList(new WorkMethodHoliday()),
+				RelationshipSpecifiedMethod.ALLOW_SPECIFY_WORK_DAY
+				);
+		
+		assertThat(workMethodRela.getSpecifiedMethod()).isEqualTo(RelationshipSpecifiedMethod.ALLOW_SPECIFY_WORK_DAY);
+		assertThat(workMethodRela.getPrevWorkMethod().getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.ATTENDANCE);
+		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.HOLIDAY);
+	}
+	
+	/**
+	 * 許可しない。
+	 * 勤務方法の関係性を作成する：成功(success)
+	 * 
+	 */
+	@Test
+	public void create_WorkMethodRelationship_Not_Allow_success() {
+		val prevWorkMethod = new WorkMethodAttendance(new WorkTimeCode("YK1")); /**夜勤*/
+		/**早朝リスト*/
+		List<WorkMethod> currentWorkMethodList = Arrays.asList(
+				new WorkMethodAttendance(new WorkTimeCode("SC1")),
+			    new WorkMethodAttendance(new WorkTimeCode("SC2")),
+			    new WorkMethodAttendance(new WorkTimeCode("SC3")));
+		val workMethodRela = new WorkMethodRelationship(
+				prevWorkMethod, 
+				currentWorkMethodList,
+				RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY
+				);
+		
+		assertThat(workMethodRela.getSpecifiedMethod())
+				.isEqualTo(RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY);
+		assertThat(workMethodRela.getPrevWorkMethod().getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.ATTENDANCE);
+		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.ATTENDANCE);
+		assertThat(convertWorkTimeCodes(workMethodRela.getCurrentWorkMethodList()))
+				.containsExactlyInAnyOrderElementsOf(convertWorkTimeCodes(currentWorkMethodList));
+	}
+	
+	
+	/**
+	 * 許可しない
+	 * 勤務方法の関係性を作成する：成功(success)
+	 * 
+	 */
+	@Test
+	public void create_WorkMethodRelationship_Not_Allow_success1() {
+		val workMethodRela = new WorkMethodRelationship(
+				new WorkMethodHoliday(), 
+				Arrays.asList(new WorkMethodHoliday()),
+				RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY
+				);
+		
+		assertThat(workMethodRela.getSpecifiedMethod())
+				.isEqualTo(RelationshipSpecifiedMethod.NOT_ALLOW_SPECIFY_WORK_DAY);
+		assertThat(workMethodRela.getPrevWorkMethod().getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.HOLIDAY);
+		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification())
+				.isEqualTo(WorkMethodClassfication.HOLIDAY);
+	}
+	
+	/**
+	 * convert (List<WorkMethodAttendance>) -> List<String> (WorkTimeCodes)
+	 * @param currentWorkMethodList
+	 * @return
+	 */
+	private List<String> convertWorkTimeCodes(List<WorkMethod> currentWorkMethodList){
+		return currentWorkMethodList.stream().map(c -> {
+			val workMethodAtt = (WorkMethodAttendance) c;
+			return workMethodAtt.getWorkTimeCode().v();
+		}).collect(Collectors.toList());
 	}
 
 }
