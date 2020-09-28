@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.statutoryworkinghours.monthly.GetWeekStart;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;

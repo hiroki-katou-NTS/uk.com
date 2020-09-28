@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.weekly.WeeklyCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.WeeklyCalculation;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

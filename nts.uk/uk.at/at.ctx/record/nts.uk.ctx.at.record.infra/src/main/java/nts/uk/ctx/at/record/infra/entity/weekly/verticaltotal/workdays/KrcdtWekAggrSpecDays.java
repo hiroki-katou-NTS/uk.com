@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
-import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

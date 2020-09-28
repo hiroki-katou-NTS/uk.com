@@ -14,10 +14,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeComRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshstComRegLaborTime;
 
 /**

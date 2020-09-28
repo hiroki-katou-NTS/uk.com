@@ -11,10 +11,10 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
 

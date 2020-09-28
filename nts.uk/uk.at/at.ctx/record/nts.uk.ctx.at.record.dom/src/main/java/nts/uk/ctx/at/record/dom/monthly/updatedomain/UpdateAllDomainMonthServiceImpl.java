@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMont
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
-import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeeklyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

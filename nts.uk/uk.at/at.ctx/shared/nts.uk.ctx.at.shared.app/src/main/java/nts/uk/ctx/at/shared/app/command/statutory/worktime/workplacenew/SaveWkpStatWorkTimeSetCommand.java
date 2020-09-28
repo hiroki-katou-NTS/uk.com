@@ -22,13 +22,13 @@ import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WkpWorkingTime
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
 
 /**
  * The Class SaveComStatWorkTimeSetCommand.

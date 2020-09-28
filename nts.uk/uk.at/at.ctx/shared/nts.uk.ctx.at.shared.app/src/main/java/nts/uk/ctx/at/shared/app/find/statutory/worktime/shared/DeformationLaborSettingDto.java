@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 
 /**
  * The Class DeformationLaborSettingDto.

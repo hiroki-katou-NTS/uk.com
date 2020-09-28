@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.command.statutory.worktime.common;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 
 /**
  * The Class WorkingTimeSettingDto.
