@@ -24,9 +24,9 @@ module nts.uk.com.view.cmf004.j {
       { headerText: nts.uk.resource.getText('CMF004_240'), key: 'startDatetime', width: '200px', dataType: 'string', ntsControl: "Label" },
       { headerText: nts.uk.resource.getText('CMF004_241'), key: 'practitioner', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: nts.uk.resource.getText('CMF004_242'), key: 'saveName', width: '150px', dataType: 'string', ntsControl: "Label" },
-      { headerText: nts.uk.resource.getText('CMF004_243'), key: 'restoreCount', width: '50px', dataType: 'string', ntsControl: "Label" },
+      { headerText: nts.uk.resource.getText('CMF004_243'), key: 'restoreCount', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: nts.uk.resource.getText('CMF004_244'), key: 'fileName', width: '150px', dataType: 'string', ntsControl: "Label" },
-      { headerText: nts.uk.resource.getText('CMF004_245'), key: 'saveCount', width: '50px', dataType: 'string', ntsControl: "Label" },
+      { headerText: nts.uk.resource.getText('CMF004_245'), key: 'saveCount', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: nts.uk.resource.getText('CMF004_246'), key: 'saveStartDatetime', width: '200px', dataType: 'string', ntsControl: "Label" },
       { headerText: nts.uk.resource.getText('CMF004_247'), key: 'executionResult', width: '100px', dataType: 'string', ntsControl: "Label" }
     ];
