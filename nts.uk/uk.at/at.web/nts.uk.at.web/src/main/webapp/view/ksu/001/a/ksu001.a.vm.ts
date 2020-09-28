@@ -2171,7 +2171,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
-                __viewContext.viewModel.viewAB.enableListWorkType(true);
+                //__viewContext.viewModel.viewAB.enableListWorkType(true);
+                $("#listWorkType").removeClass("disabledWorkTime");
                 let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
                 if (objWtime[0].workTimeSetting != 2) {
@@ -2251,7 +2252,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // disable combobox workType, workTime
-                __viewContext.viewModel.viewAB.enableListWorkType(false);
+                //s__viewContext.viewModel.viewAB.enableListWorkType(false);
+                $("#listWorkType").addClass("disabledWorkTime");
                 if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
                     $("#listWorkTime").addClass("disabledWorkTime");
                 }
