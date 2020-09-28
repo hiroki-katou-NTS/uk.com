@@ -249,12 +249,12 @@ module nts.uk.com.view.cli003.b {
             {
                 headerText: this.$i18n("CLI003_83"),
                 prop: "cond3",
-                width: 125,
+                width: 125,    
             },
             {
                 headerText: this.$i18n("CLI003_84"),
                 prop: "cond4",
-                width: 125,
+                width: 125,     
             },
             {
                 headerText: this.$i18n("CLI003_85"),
