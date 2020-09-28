@@ -18,7 +18,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * ３６協定1ヶ月
  */
 @Getter
-@Setter
 public class AgreementsOneMonth extends ValueObject {
     /**
      * 基本設定

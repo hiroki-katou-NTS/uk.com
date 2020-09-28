@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal;
+package nts.uk.ctx.at.shared.dom.standardtime;
 
-import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
@@ -10,11 +9,8 @@ import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneYear;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(JMockit.class)
 public class AgreementsOneYearTest {
-
     @Test
     public void getters() {
         AgreementsOneYear agreementsOneYear = new AgreementsOneYear(
