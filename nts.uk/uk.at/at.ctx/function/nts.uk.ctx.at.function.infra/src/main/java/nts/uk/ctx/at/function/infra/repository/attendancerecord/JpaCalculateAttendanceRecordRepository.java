@@ -37,6 +37,18 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	/** The subtract formula type. */
 	private static final int SUBTRACT_FORMULA_TYPE = 2;
 
+	private static final String SELECT_ATD_BY_OUT_FRAME_DAI = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ "	WHERE frame.id.layoutId = :layoutId"
+			+ "		AND frame.id.columnIndex >= :columnIndexMin"
+			+ "		AND frame.id.columnIndex <= :columnIndexMax"
+			+ "		AND frame.id.position = :position "
+			+ "		AND frame.id.outputAtr = :outputAtr";
+			
+	
+	private static final String SELECT_ATD_BY_OUT_FRAME_MON = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ "	WHERE frame.id.layoutId = :layoutId"
+			+ "		AND frame.id.outputAtr = :outputAtr"
+			+ "		AND frame.id.position = :position ";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -277,28 +289,16 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		}else {
 			range = 13;
 		}
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnmtRptWkAtdOutframe> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
-		Root<KfnmtRptWkAtdOutframe> root = criteriaQuery.from(KfnmtRptWkAtdOutframe.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-//		predicates.add(criteriaBuilder
-//				.greaterThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex), (long) 7));
-//		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex),
-//				(long) 9));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME_DAI, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("columnIndexMin", 7)
+				.setParameter("columnIndexMax", range)
+				.setParameter("position", position)
+				.setParameter("outputAtr", 1)
+				.getList();
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
 
 		for (int i = 7; i <= range; i++) {
@@ -341,24 +341,15 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		}else {
 			range = 16;
 		}
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnmtRptWkAtdOutframe> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
-		Root<KfnmtRptWkAtdOutframe> root = criteriaQuery.from(KfnmtRptWkAtdOutframe.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
+		
 		// query data
-		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME_MON, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("outputAtr", 2)
+				.setParameter("position", position)
+				.getList();
+
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
 		for (int i = 1; i <= range; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
