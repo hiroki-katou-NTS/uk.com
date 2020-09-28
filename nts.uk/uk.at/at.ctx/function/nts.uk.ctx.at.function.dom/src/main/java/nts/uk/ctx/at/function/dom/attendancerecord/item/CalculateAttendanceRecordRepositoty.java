@@ -69,7 +69,7 @@ public interface CalculateAttendanceRecordRepositoty {
 	 * @param position the position
 	 * @return the id calculate attendance record daily by position
 	 */
-	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String layoutId, long position);
+	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String layoutId, long position, int fontSize);
 	
 	/**
 	 * Gets the id calculate attendance record monthly by position.
@@ -79,5 +79,5 @@ public interface CalculateAttendanceRecordRepositoty {
 	 * @param position the position
 	 * @return the id calculate attendance record monthly by position
 	 */
-	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String layoutId, long position);
+	List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String layoutId, long position, int fontSize);
 }

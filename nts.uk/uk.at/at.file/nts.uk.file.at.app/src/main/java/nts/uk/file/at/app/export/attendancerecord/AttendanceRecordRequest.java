@@ -28,7 +28,7 @@ public class AttendanceRecordRequest {
 	private GeneralDate endDate;
 
 	/** The code */
-	private long layout;
+	private String layout;
 	
 	/** The file type. */
 	private int mode;

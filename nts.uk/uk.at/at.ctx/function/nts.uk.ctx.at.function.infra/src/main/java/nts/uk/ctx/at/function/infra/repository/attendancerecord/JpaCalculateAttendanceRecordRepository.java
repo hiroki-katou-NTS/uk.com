@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -125,8 +126,8 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		if(kfnstAttndRec.getId().getLayoutId()==null)
 			return new CalculateAttendanceRecord();
 		// get KfnmtRptWkAtdOutatd by KfnmtRptWkAtdOutframePK
-		KfnmtRptWkAtdOutframePK KfnmtRptWkAtdOutframePK = kfnstAttndRec.getId();
-		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(KfnmtRptWkAtdOutframePK);
+		KfnmtRptWkAtdOutframePK kfnmtRptWkAtdOutframePK = kfnstAttndRec.getId();
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnmtRptWkAtdOutframePK);
 
 		// create getMemento
 		CalculateAttendanceRecordGetMemento getMemento = new JpaCalculateAttendanceRecordGetMemento(kfnstAttndRec,
@@ -267,7 +268,15 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * long)
 	 */
 	@Override
-	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String layoutId, long position) {
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordDailyByPosition(String layoutId, long position, int fontSize) {
+		int range = 0;
+		if(fontSize == ExportFontSize.CHAR_SIZE_LARGE.value ) {
+			range = 9;
+		}else if(fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			range = 11;
+		}else {
+			range = 13;
+		}
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KfnmtRptWkAtdOutframe> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
@@ -292,7 +301,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
 
-		for (int i = 7; i <= 13; i++) {
+		for (int i = 7; i <= range; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
 				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
 				item.setId(new KfnmtRptWkAtdOutframePK());
@@ -323,7 +332,15 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	 * long)
 	 */
 	@Override
-	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String layoutId, long position) {
+	public List<CalculateAttendanceRecord> getIdCalculateAttendanceRecordMonthlyByPosition(String layoutId, long position , int fontSize) {
+		int range = 0;
+		if(fontSize == ExportFontSize.CHAR_SIZE_LARGE.value ) {
+			range = 12;
+		}else if(fontSize == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			range = 14;
+		}else {
+			range = 16;
+		}
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<KfnmtRptWkAtdOutframe> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
@@ -343,7 +360,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		// query data
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
-		for (int i = 1; i <= 16; i++) {
+		for (int i = 1; i <= range; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
 				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
 				item.setId(new KfnmtRptWkAtdOutframePK());

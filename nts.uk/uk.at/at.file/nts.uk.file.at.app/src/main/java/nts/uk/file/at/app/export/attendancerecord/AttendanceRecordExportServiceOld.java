@@ -40,6 +40,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
@@ -157,10 +158,23 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = this.attendanceRecExpSetRepo.findByCode(condition.getSelectionType(), 
-				companyId, Optional.of(employeeId), String.valueOf(request.getLayout()));
+				companyId, Optional.of(employeeId), request.getLayout());
 		
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		TaskDataSetter setter = context.getDataSetter();
+		
+		int columnDailyData;	
+		int columnMonthlyData;
+		if (optionalAttendanceRecExpSet.get().getExportFontSize().value == ExportFontSize.CHAR_SIZE_LARGE.value) {
+			columnDailyData = 9;
+			columnMonthlyData = 12;
+		} else if (optionalAttendanceRecExpSet.get().getExportFontSize().value == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			columnDailyData = 11;
+			columnMonthlyData = 14;
+		} else {
+			columnDailyData = 13;
+			columnMonthlyData = 16;
+		}
 		// Get layout info
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
@@ -244,7 +258,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		// get upper-daily-calculateItem list
 
 		List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, UPPER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, UPPER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get lower-daily-singleItem list
 		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(layoutId, LOWER_POSITION);
@@ -253,15 +267,15 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		// get lower-daily-CalculateItem list
 
 		List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, LOWER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, LOWER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get upper-monthly-Item list
 		List<CalculateAttendanceRecord> calculateUpperMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get lower-monthly-Item list
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
 				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
@@ -808,7 +822,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 						// Convert to AttendanceRecordReportColumnData
 						List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
 
-						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[16];
+						AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[columnMonthlyData];
 						int index = 0;
 						for (String item : upperResult) {
 							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
@@ -952,7 +966,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(layoutId);
 		List<AttendanceRecordExport> dailyRecordTotal = new ArrayList<>();
 
-		for (int i = 1; i <= 13; i++) {
+		for (int i = 1; i <= columnDailyData; i++) {
 			if (this.findIndexInList(i, dailyRecord) == null) {
 				AttendanceRecordExport item = new AttendanceRecordExport();
 				item.setLowerPosition(null);
@@ -966,7 +980,7 @@ public class AttendanceRecordExportServiceOld extends ExportService<AttendanceRe
 		// get monthly header info
 		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(layoutId);
 		List<AttendanceRecordExport> monthlyRecordTotal = new ArrayList<>();
-		for (int i = 1; i <= 16; i++) {
+		for (int i = 1; i <= columnMonthlyData; i++) {
 			if (this.findIndexInList(i, monthlyRecord) == null) {
 				AttendanceRecordExport item = new AttendanceRecordExport();
 				item.setLowerPosition(null);

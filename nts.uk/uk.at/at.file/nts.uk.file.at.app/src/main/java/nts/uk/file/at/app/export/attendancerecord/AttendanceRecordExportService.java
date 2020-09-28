@@ -184,7 +184,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		
 		//	get domain model by item selection
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = this.attendanceRecExpSetRepo.findByCode(condition.getSelectionType(), 
-				companyId, Optional.of(employeeId), String.valueOf(request.getLayout()));
+				companyId, Optional.of(employeeId), request.getLayout());
 		//	取得できなかった
 		if (!optionalAttendanceRecExpSet.isPresent()) {
 			//	エラーメッセージ(#Msg_1141)を表示する
@@ -289,7 +289,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// get upper-daily-calculateItem list
 
 		List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, UPPER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, UPPER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get lower-daily-singleItem list
 		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(layoutId, LOWER_POSITION);
@@ -298,15 +298,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// get lower-daily-CalculateItem list
 
 		List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, LOWER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, LOWER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get upper-monthly-Item list
 		List<CalculateAttendanceRecord> calculateUpperMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		// get lower-monthly-Item list
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION, optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
 				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);

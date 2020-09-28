@@ -468,6 +468,7 @@ module nts.uk.com.view.kwr002.a {
                     let companyId: string = __viewContext.user.companyId;
                     let userId: string = __viewContext.user.employeeId;
                     service.restoreCharacteristic(companyId, userId).done((data: any) => {
+                        console.log(data)
                         const code: any = self.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? self.selectedCode() : self.selectedCodeA8_8();
                         //「お待ちください」を表示する
                         let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
@@ -477,8 +478,8 @@ module nts.uk.com.view.kwr002.a {
                             , companyId
                             , userId
                             , 0
-                            , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING)
-                            , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING));
+                            , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
+                            , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
 
                         if (self.selectedEmployeeCode().length <= 0) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
@@ -684,11 +685,11 @@ module nts.uk.com.view.kwr002.a {
                 let layoutId: string = '';
                 let obj: any;
                 if (type === ItemSelectionType.STANDARD_SETTING) {
-                    obj = _.filter(vm.attendanceRecordList(), code);
-                    layoutId = obj[0].layoutId;
+                    obj = _.filter(vm.attendanceRecordList(), {"code": code});
+                    layoutId = _.isEmpty(obj) ? "" : obj[0].layoutId;
                 } else {
-                    obj = _.filter(vm.freeSettingLst(), code);
-                    layoutId = obj[0].layoutId;
+                    obj = _.filter(vm.freeSettingLst(), {"code": code});
+                    layoutId = _.isEmpty(obj) ? "" : obj[0].layoutId;
                 }
                 return layoutId;
             }
