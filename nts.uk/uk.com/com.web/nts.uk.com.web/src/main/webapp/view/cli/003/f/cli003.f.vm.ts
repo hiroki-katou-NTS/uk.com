@@ -728,14 +728,13 @@ module nts.uk.com.view.cli003.f {
                         //log setting list start boot history not in use
                         let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
                         let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
-                        //console.log(logSettingEdit);
                         const logSettingEditProgramId = {}
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {}
                         logSettingBoot.forEach(item => logSettingBootProgramId[item.programId] = item);
 
-                    
-                    const listData = _.map(data,(logBasicInfoModel, index) => {
+
+                        const listData = _.map(data, (logBasicInfoModel, index) => {
                             //記録の絞り込み
                             if (index + 1 <= vm.maxlength()) {
                                 // Log LOGIN 
@@ -908,7 +907,7 @@ module nts.uk.com.view.cli003.f {
             if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
                 return false;
             }
-            for(const item of logBasicInfoModel.lstLogPerCateCorrectRecordDto){
+            for (const item of logBasicInfoModel.lstLogPerCateCorrectRecordDto) {
                 if (!vm.filterLogByItemNo(item.categoryName, 23)) {
                     return false;
                 }
@@ -961,7 +960,7 @@ module nts.uk.com.view.cli003.f {
                 return false;
             }
 
-            for(const item of logBasicInfoModel.lstLogDataCorrectRecordRefeDto){
+            for (const item of logBasicInfoModel.lstLogDataCorrectRecordRefeDto) {
                 if (!vm.filterLogByItemNo(item.correctionAttr, 26)) {
                     return false;
                 }
@@ -1173,8 +1172,18 @@ module nts.uk.com.view.cli003.f {
         generateLogDataResultGrid() {
             const vm = this;
             let listLogBasicInfor = vm.listLogDataResult;
+            const $grid = $("#igGridLog");
+            const updateHeight = () => {
+                const uh = (h: number) => $grid.igHierarchicalGrid('option', 'height', `${window.innerHeight - h}px`);
+
+                $.Deferred()
+                    .resolve(true)
+                    .then(() => uh(280))
+                    .then(() => uh(281));
+            };
+
             //generate generateHierarchialGrid
-            $("#igGridLog").igHierarchicalGrid({
+            $grid.igHierarchicalGrid({
                 width: "100%",
                 height: "calc(100% - 15px)",
                 initialDataBindDepth: 1,
@@ -1244,9 +1253,19 @@ module nts.uk.com.view.cli003.f {
                             columnSettings: []
                         }
                     ]
-                }]
+                }],
+                dataRendered() {
+                    updateHeight();
+                },
+                rowCollapsed() {
+                    updateHeight();
+                },
+                rowExpanded() {
+                    updateHeight();
+                },
             });
         }
+
 
         generatePersionInforGrid() {
             const vm = this;
@@ -1340,6 +1359,7 @@ module nts.uk.com.view.cli003.f {
         generateDataCorrectLogGrid() {
             const vm = this;
             let listLogBasicInfor = vm.listLogBasicInforModel;
+
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
