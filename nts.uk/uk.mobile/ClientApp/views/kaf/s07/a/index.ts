@@ -18,11 +18,11 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     resource: require('./resources.json'),
     validations: {
         valueWorkHours1: {
-            timeRange: false,
+            timeRange: true,
             required: true
         },
         valueWorkHours2: {
-            timeRange: false,
+            timeRange: true,
             required: false
         }
     },
@@ -410,25 +410,41 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public bindValueWorkHours(params: any) {
         // *4
         // if (!this.isCondition4)
+        const self = this;
         let time1;
         let time2;
         if (params.appWorkChangeDispInfo.predetemineTimeSetting) {
             time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
             time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
-        }
-        if (!this.mode) {
+        } 
+        if (!self.mode) {
             let appWorkChange = params.appWorkChange;
             if (appWorkChange) {
                 time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
                 time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
             }
-            this.bindWorkHours(time1, time2);
+            self.bindWorkHours(time1, time2);
 
             return;
 
         }
-        if (!this.isCondition4) {
-            this.bindWorkHours(time1, time2);
+        if (!self.isCondition4) {
+            self.bindWorkHours(time1, time2);
+        }
+        if (self.isCondition3 && self.isCondition1) {
+            // self.$updateValidator('valueWorkHours2', {
+            //     timeRange: false,
+            //     required: false
+            // });
+            self.$updateValidator('valueWorkHours1', {
+                timeRange: true,
+                required: true
+            });
+        } else {
+            self.$updateValidator('valueWorkHours1', {
+                timeRange: true,
+                required: false
+            });
         }
 
 
@@ -454,7 +470,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours1', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
@@ -483,11 +499,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
         if (!this.isCondition3) {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
             this.$updateValidator('valueWorkHours1', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
