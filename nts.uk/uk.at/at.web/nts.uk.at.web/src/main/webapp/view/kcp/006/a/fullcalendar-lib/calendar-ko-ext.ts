@@ -165,8 +165,7 @@ module nts.uk.at.view.kcp006.a {
             let yearMonth = moment().format("YYYYMM");
             let startDate = moment(yearMonth, "YYYYMM").startOf('month').date();
             let endDate = moment(yearMonth, "YYYYMM").endOf('month').date();
-			let reloadOnSameYM = false;
-			
+
             //get params
             let data = valueAccessor();
             let optionDates = ko.unwrap(data.optionDates());
@@ -192,9 +191,6 @@ module nts.uk.at.view.kcp006.a {
             };
             if (data.workplaceId()) { workplaceId = ko.unwrap(data.workplaceId()); }
             if (data.workplaceName()) { workplaceName = ko.unwrap(data.workplaceName()); }
-			if (data.reloadOnSameYM) {
-				reloadOnSameYM = data.reloadOnSameYM;	
-			}
             // Container
             let container = $(element);
             //set width
@@ -223,8 +219,7 @@ module nts.uk.at.view.kcp006.a {
             };
             //render view after load db
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-            if (_.difference(lstDate, _lstDate).length > 0 || reloadOnSameYM) {
-				_lstHoliday = [];
+            if (_.difference(lstDate, _lstDate).length > 0) {
                 fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
                     $(container).fullCalendar('option', {
                         firstDay: firstDay,

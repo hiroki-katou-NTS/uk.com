@@ -28,7 +28,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintD
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
-import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
@@ -55,9 +54,6 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AposeBusinessTrip aposeBusinessTrip;
-	
-	@Inject
-	private AsposeGoReturnDirectly asposeGoReturnDirectly;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -148,11 +144,6 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
-		    int deleteCnt = asposeGoReturnDirectly.printContentGoReturn(worksheet, printContentOfApp);
-		    reasonLabel = worksheet.getCells().get("B" + (13 - deleteCnt));
-            remarkLabel = worksheet.getCells().get("B" + (16 - deleteCnt));
-            reasonContent = worksheet.getCells().get("D" + (13 - deleteCnt));
-            printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			break;
@@ -197,7 +188,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case BUSINESS_TRIP_APPLICATION:
 			return "application/KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
-			return "application/KAF009_template.xlsx";
+			return "";
 		case HOLIDAY_WORK_APPLICATION:
 			return "";
 		case STAMP_APPLICATION:

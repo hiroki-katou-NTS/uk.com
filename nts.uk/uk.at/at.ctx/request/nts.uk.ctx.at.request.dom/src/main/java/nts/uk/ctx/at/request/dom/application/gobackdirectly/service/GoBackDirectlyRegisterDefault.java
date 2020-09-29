@@ -206,8 +206,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
 		dateLst.add(appDate);
 		List<String> workTypeLst = new ArrayList<String>();
-		if (goBackDirectly != null) {
-			Optional<WorkInformation> dataWork = goBackDirectly.getDataWork();
+		if (inforGoBackCommonDirectOutput.getGoBackDirectly().isPresent()) {
+			Optional<WorkInformation> dataWork = inforGoBackCommonDirectOutput.getGoBackDirectly().get().getDataWork();
 			if (dataWork.isPresent()) {
 				if (dataWork.get().getWorkTypeCode() != null) {
 					if (StringUtils.isNotBlank(dataWork.get().getWorkTypeCode().v())) {
@@ -249,8 +249,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
 			dateLst.add(appDate);
 			List<String> workTypeLst = new ArrayList<String>();
-			if (goBackDirectly != null) {
-				Optional<WorkInformation> dataWork = goBackDirectly.getDataWork();
+			if (inforGoBackCommonDirectOutput.getGoBackDirectly().isPresent()) {
+				Optional<WorkInformation> dataWork = inforGoBackCommonDirectOutput.getGoBackDirectly().get().getDataWork();
 				if (dataWork.isPresent()) {
 					if (dataWork.get().getWorkTypeCode() != null) {
 						if (StringUtils.isNotBlank(dataWork.get().getWorkTypeCode().v())) {

@@ -73,8 +73,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
-        approvalReason: KnockoutObservable<string>;
-        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
+		approvalReason: KnockoutObservable<string>;
         applicationTest: any = {
             employeeID: this.$user.employeeId,
             appDate: moment(new Date()).format('YYYY/MM/DD'),
@@ -103,7 +102,6 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
         ) {
             const vm = this;
-            vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
 			vm.appType = params.appType;
@@ -146,7 +144,6 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         lstWorkType: ko.observable(res.lstWorkType),
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
-                    vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
             }).fail(err => {
                 vm.handleError(err);
