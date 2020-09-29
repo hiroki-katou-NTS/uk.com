@@ -6,8 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.role.RoleImportAdapter;
+import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
 import nts.uk.ctx.sys.assist.dom.role.RoleImport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 
 @Stateless
 public class RoleImportAdapterImpl implements RoleImportAdapter {
@@ -19,5 +21,17 @@ public class RoleImportAdapterImpl implements RoleImportAdapter {
 	public Optional<RoleImport> findByRoleId(String roleId) {
 		return roleExportRepo.findByRoleId(roleId)
 				.map(r -> new RoleImport(r.getRoleId(), r.getAssignAtr()));
+	}
+
+	@Override
+	public LoginPersonInCharge getInChargeInfo() {
+		LoginPersonInCharge pic = new LoginPersonInCharge();
+		RoleWhetherLoginPubExport exp = roleExportRepo.getWhetherLoginerCharge();
+		pic.setAttendance(exp.isEmployeeCharge());
+		pic.setEmployeeInfo(exp.isPersonalInformation());
+		pic.setOfficeHelper(exp.isOfficeHelperPersonne());
+		pic.setPayroll(exp.isSalaryProfessional());
+		pic.setPersonnel(exp.isHumanResOfficer());
+		return pic;
 	}
 }

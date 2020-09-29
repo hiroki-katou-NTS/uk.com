@@ -11,11 +11,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
+import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -28,6 +30,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SSPMT_RESULT_OF_SAVING")
 public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	// column 排他バージョン
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private long version;
 
 	/**
 	 * データ保存処理ID
@@ -171,7 +178,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	public String pcAccount;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true)
-	private List<SspmtResultOfLog> listResultOfLogs;
+	public List<SspmtResultOfLog> listResultOfLogs;
 
 	@Override
 	protected Object getKey() {
@@ -204,6 +211,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	}
 
 	public static SspmtResultOfSaving toEntity(ResultOfSaving domain) {
+		List<ResultLogSaving> logs = domain.getListResultLogSavings();
 		return new SspmtResultOfSaving
 			(
 				domain.getStoreProcessingId(), 
@@ -226,7 +234,36 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 				domain.getLoginInfo().getIpAddress(),
 				domain.getLoginInfo().getPcName(),
 				domain.getLoginInfo().getAccount(),
-				domain.getListResultLogSavings().stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
+				logs.stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
 			);
+	}
+
+	public SspmtResultOfSaving(String storeProcessingId, String cid, int systemType, long fileSize, String saveSetCode,
+			String saveFileName, String saveName, int saveForm, GeneralDateTime saveEndDatetime,
+			GeneralDateTime saveStartDatetime, int deletedFiles, String compressedPassword, String practitioner,
+			int targetNumberPeople, int saveStatus, int saveForInvest, String fileId, String pcId, String pcName,
+			String pcAccount, List<SspmtResultOfLog> listResultOfLogs) {
+		super();
+		this.storeProcessingId = storeProcessingId;
+		this.cid = cid;
+		this.systemType = systemType;
+		this.fileSize = fileSize;
+		this.saveSetCode = saveSetCode;
+		this.saveFileName = saveFileName;
+		this.saveName = saveName;
+		this.saveForm = saveForm;
+		this.saveEndDatetime = saveEndDatetime;
+		this.saveStartDatetime = saveStartDatetime;
+		this.deletedFiles = deletedFiles;
+		this.compressedPassword = compressedPassword;
+		this.practitioner = practitioner;
+		this.targetNumberPeople = targetNumberPeople;
+		this.saveStatus = saveStatus;
+		this.saveForInvest = saveForInvest;
+		this.fileId = fileId;
+		this.pcId = pcId;
+		this.pcName = pcName;
+		this.pcAccount = pcAccount;
+		this.listResultOfLogs = listResultOfLogs;
 	}
 }

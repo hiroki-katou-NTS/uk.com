@@ -85,7 +85,13 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void update(ResultOfSaving data) {
-		this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
+		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
+		SspmtResultOfSaving oldEntity = this.queryProxy().find(data.getStoreProcessingId(), SspmtResultOfSaving.class).get();
+		oldEntity.pcAccount = entity.pcAccount;
+		oldEntity.pcId = entity.pcId;
+		oldEntity.pcName = entity.pcName;
+		oldEntity.listResultOfLogs = entity.listResultOfLogs;
+		this.commandProxy().update(oldEntity);
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.role.RoleImportAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
@@ -21,18 +20,7 @@ public class LoginPersonInChargeService {
 	private RoleImportAdapter roleAdapter;
 	
 	public LoginPersonInCharge getPic(LoginUserRoles roles) {
-		LoginPersonInCharge pic = new LoginPersonInCharge();
-		if (checkRole(roles.forAttendance()))
-			pic.setAttendance(true);
-		if (checkRole(roles.forPayroll()))
-			pic.setPayroll(true);
-		if (checkRole(roles.forPersonnel()))
-			pic.setPersonnel(true);
-		if (checkRole(roles.forOfficeHelper()))
-			pic.setOfficeHelper(true);
-		if (checkRole(roles.forPersonalInfo()))
-			pic.setEmployeeInfo(true);
-		return pic;
+		return roleAdapter.getInChargeInfo();
 	}
 	
 	public List<SystemType> getSystemTypes(LoginPersonInCharge pic) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -59,9 +47,5 @@ public class LoginPersonInChargeService {
 													.filter(m -> m.getName().toLowerCase().indexOf(name.toLowerCase()) >= 0
 																 && m.getParameterCount() == 0)
 													.findFirst();
-	}
-	
-	private boolean checkRole(String roleId) {
-		return !StringUtil.isNullOrEmpty(roleId, true) && roleAdapter.findByRoleId(roleId).isPresent();
 	}
 }
