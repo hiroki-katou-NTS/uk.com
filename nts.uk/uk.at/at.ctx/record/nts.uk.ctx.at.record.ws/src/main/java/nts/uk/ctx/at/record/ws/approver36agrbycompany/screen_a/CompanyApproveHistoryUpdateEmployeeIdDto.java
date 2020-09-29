@@ -22,7 +22,7 @@ public class CompanyApproveHistoryUpdateEmployeeIdDto {
      * 期間
      */
 
-    private GeneralDate starDate;
+    private GeneralDate startDate;
 
 
     private GeneralDate endDate;
