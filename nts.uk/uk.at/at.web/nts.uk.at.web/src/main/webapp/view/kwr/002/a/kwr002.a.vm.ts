@@ -421,8 +421,8 @@ module nts.uk.com.view.kwr002.a {
                 self.saveAttendanceRecordCondition().done(() => {
                     let companyId: string = __viewContext.user.companyId;
                     let userId: string = __viewContext.user.employeeId;
-                    service.restoreCharacteristic(companyId,userId).done(() => {
-                        let selectedCode = self.selectedCodeA8_5() === 0 ? self.selectedCode() : self.selectedCodeA8_8();
+                    service.restoreCharacteristic(companyId,userId).done((data: any) => {
+                        const code = self.selectedCodeA8_5() === 0 ? self.selectedCode() : self.selectedCodeA8_8();
                         if (self.selectedEmployeeCode().length <= 0) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1310" });
                             return;
@@ -430,19 +430,19 @@ module nts.uk.com.view.kwr002.a {
                         //「お待ちください」を表示する
                         let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
                             self.selectedCodeA8_5()
-                            , ''
-                            , ''
+                            , self.selectedCode()
+                            , self.selectedCodeA8_8()
                             , companyId
                             , userId
                             , 0
-                            , ''
-                            , '');
+                            , self.filterLayoutId(self.selectedCodeA8_8(),ItemSelectionType.FREE_SETTING)
+                            , self.filterLayoutId(self.selectedCode(),ItemSelectionType.STANDARD_SETTING));
                         nts.uk.ui.block.grayout();
                         self.exportDto(new ExportDto(
                                 self.findEmployeeIdsByCodes(self.selectedEmployeeCode()),
                                 self.toDate(self.dateValue().startDate),
                                 self.toDate(self.dateValue().endDate),
-                                selectedCode,
+                                code,
                                 1,
                                 self.closureId(),
                                 self.selectedCodeA8_5(),
@@ -457,6 +457,8 @@ module nts.uk.com.view.kwr002.a {
                             nts.uk.ui.dialog.error(res);
                         });
                     })
+                }).fail((err:any) => {
+                    nts.uk.ui.dialog.alertError({ messageId: err.message, messageParams: null})
                 }).always(() => nts.uk.ui.block.clear());
 
             }
@@ -468,7 +470,6 @@ module nts.uk.com.view.kwr002.a {
                     let companyId: string = __viewContext.user.companyId;
                     let userId: string = __viewContext.user.employeeId;
                     service.restoreCharacteristic(companyId, userId).done((data: any) => {
-                        console.log(data)
                         const code: any = self.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? self.selectedCode() : self.selectedCodeA8_8();
                         //「お待ちください」を表示する
                         let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
