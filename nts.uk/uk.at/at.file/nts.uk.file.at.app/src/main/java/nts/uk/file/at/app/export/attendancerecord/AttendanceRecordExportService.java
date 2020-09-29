@@ -711,7 +711,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 							AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
 							// Set data daily
-							dailyData.setDate(startDateByClosure);
+							dailyData.setDate(String.valueOf(startDateByClosure.day()));
+							dailyData.setDayOfWeek(DayOfWeekJP
+									.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
 							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnDailyData];
 							int index = 0;
 							for (AttendanceRecordResponse item : upperDailyRespond) {
