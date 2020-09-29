@@ -193,7 +193,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 self.stopRequest(false);
                 let viewMode = self.selectedModeDisplayInBody();
-                self.getNewData(viewMode);
+                self.getNewData(viewMode).done(() => {
+                    if (self.mode() == 'confirm') {
+                        $("#extable").exTable("updateMode", "determine");
+                        if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                            // disable combobox workType, workTime
+                            //s__viewContext.viewModel.viewAB.enableListWorkType(false);
+                            $("#listWorkType").addClass("disabledWorkTime");
+                            if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
+                                $("#listWorkTime").addClass("disabledWorkTime");
+                            }
+                        } else {
+                            $("#shiftPallet-Control").addClass("disabledShiftControl");
+                        }
+                    }
+                    self.stopRequest(true);
+                }).fail(function() {
+                    nts.uk.ui.block.clear();
+                });
             });
 
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -379,7 +396,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         startTimeCal = startTimeCal * -1;
                         endTimeCal = endTimeCal * -1;
                     }
-                        
                     
                     if (startTimeCal > endTimeCal) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
@@ -388,7 +404,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     self.checkExitCellUpdated();
                 }
-
             });
             
             $("#extable").on("extablerowupdated", (dataCell) => {
@@ -453,7 +468,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 self.flag = false;
                 dfd.resolve();
-            }).fail(function() {
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
             return dfd.promise();
@@ -517,21 +534,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
 
-        getNewData(viewMode) {
-            let self = this;
+        getNewData(viewMode): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             if (viewMode == 'shift') { // mode シフト表示   
                 self.shiftModeStart().done(() => {
+                    dfd.resolve();
                     self.stopRequest(true);
+                }).fail(function() {
+                    dfd.reject();
                 });
             } else if (viewMode == 'shortName') { // mode 略名表示
                 self.shortNameModeStart().done(() => {
+                    dfd.resolve();
                     self.stopRequest(true);
+                }).fail(function() {
+                    dfd.reject();
                 });
             } else if (viewMode == 'time') {  // mode 勤務表示 
                 self.timeModeStart().done(() => {
+                    dfd.resolve();
                     self.stopRequest(true);
+                }).fail(function() {
+                    dfd.reject();
                 });
             }
+            return dfd.promise();
         }
 
         creatDataLocalStorege(dataBasic: IDataBasicDto) {
