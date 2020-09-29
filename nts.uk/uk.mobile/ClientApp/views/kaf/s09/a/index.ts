@@ -47,6 +47,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     public kaf000_C_Params: any = null;
 
+    public isChangeDate: boolean = false;
     public user: any;
     public application: any = {
         version: 1,
@@ -168,7 +169,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
@@ -317,10 +318,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         let params = self.dataOutput;
         let goBackDirect = self.dataOutput;
-        if (!goBackDirect) {
+        if (!goBackDirect && !self.isChangeDate) {
 
             return;
         }
+        self.isChangeDate = false;
         self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workType ? goBackDirect.goBackApplication.dataWork.workType : null) : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
@@ -342,7 +344,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
 
     public bindCommon() {
-        
+        // this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        // this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        // this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
     }
     public appGoBackDirect: any;
     public bindAppWorkChangeRegister() {
@@ -400,7 +404,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.isChangeDate = true;
                 self.dataOutput = res.data;
+                self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
                 self.bindStart();
                 let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                     msgID = '';
