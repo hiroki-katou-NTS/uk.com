@@ -150,15 +150,15 @@ public class FurikyuMngDataExtractionService {
 			// select 全ての状況
 			if (isPeriod) {
 				// Step ドメイン「振出管理データ」を取得する
-				payoutManagementData = payoutManagementDataRepository.getAllBySid(empId);
+				payoutManagementData = payoutManagementDataRepository.getSid(cid, empId);
 				// Step ドメイン「振休管理データ」を取得する
-				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllBySid(empId);
+				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiD(cid, empId);
 				// select 現在の残数状況
 			} else {
 				// Step ドメイン「振出管理データ」を取得する
-				payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(empId);
+				payoutManagementData = payoutManagementDataRepository.getBySidAndStateAtr(cid, empId);
 				// Step ドメイン「振休管理データ」を取得する
-				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(empId);
+				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiDAndAtr(cid, empId);
 			}
 			// Step 取得したデータをチェック
 			if(payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {

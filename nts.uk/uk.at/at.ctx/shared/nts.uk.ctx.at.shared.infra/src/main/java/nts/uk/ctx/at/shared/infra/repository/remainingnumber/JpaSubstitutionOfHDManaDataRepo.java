@@ -32,7 +32,9 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private static final String QUERY_BY_SID_LIST_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p.sID =:employeeId AND p.cID = :cID AND p.dayOff IN :holidayDate";
 	
-	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid";
+	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid ORDER BY s.dayOff";
+	
+	private static final String QUERY_BYSID_AND_ATR = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid AND s.requiredDays > 0 ORDER BY s.dayOff";
 
 	private static final String QUERY_BYSID_REM_COD = String.join(" ", QUERY_BYSID, "AND s.remainDays > 0");
 
@@ -81,6 +83,13 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid).setParameter("cid", cid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SubstitutionOfHDManagementData> getBysiDAndAtr(String cid, String sid) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_AND_ATR, KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid).setParameter("cid", cid).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
