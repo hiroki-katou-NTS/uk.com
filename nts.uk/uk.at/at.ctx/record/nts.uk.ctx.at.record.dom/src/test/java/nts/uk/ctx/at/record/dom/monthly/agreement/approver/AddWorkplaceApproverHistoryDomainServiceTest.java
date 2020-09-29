@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workplaceapproverhistory;
+package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.val;
 import mockit.Expectations;
@@ -6,7 +6,6 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AddWorkplaceApproverHistoryDomainService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

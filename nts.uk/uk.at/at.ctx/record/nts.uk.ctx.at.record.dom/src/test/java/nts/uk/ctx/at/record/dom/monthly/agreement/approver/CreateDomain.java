@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workplaceapproverhistory;
+package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -22,7 +22,6 @@ public class CreateDomain {
     public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
 
         return new Approver36AgrByWorkplace(
-                cid,
                 workplaceId,
                 period,
                 createApproverList(5),
