@@ -666,7 +666,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 
                 dfd.resolve();
-            }).fail(function() {
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
             return dfd.promise();
@@ -722,7 +724,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 
                 dfd.resolve();
-            }).fail(function() {
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
             return dfd.promise();
@@ -778,7 +782,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 
                 dfd.resolve();
-            }).fail(function() {
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
             return dfd.promise();
