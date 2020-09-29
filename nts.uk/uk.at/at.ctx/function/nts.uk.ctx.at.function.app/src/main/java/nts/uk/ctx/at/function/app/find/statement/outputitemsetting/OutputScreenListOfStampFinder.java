@@ -310,7 +310,7 @@ public class OutputScreenListOfStampFinder {
 				NodeList nodelist = doc.getElementsByTagName("location");
 				if(nodelist.getLength() > 0) {
 					Element element = (Element) nodelist.item(0);
-					return element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent();
+					return element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent();
 				}else {
 					return String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude());
 				}
