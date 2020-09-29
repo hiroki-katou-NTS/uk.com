@@ -122,22 +122,22 @@ export class KdpS01SComponent extends Vue {
                 return vm.screenData.items;
             }
 
-            if (!_.has(item, 'stamp.buttonValueType')) {
+            if (!_.has(item, 'stamp.changeClockArt')) {
 
                 return false;
             }
+            let value = item.stamp.changeClockArt;
             if (vm.selectedValue == 2) {
 
-                return item.stamp.buttonValueType === ButtonType.GOING_TO_WORK || item.stamp.buttonValueType === ButtonType.WORKING_OUT;
+                return [ChangeClockArt.GOING_TO_WORK, ChangeClockArt.WORKING_OUT].indexOf(value) != -1;
             }
             if (vm.selectedValue == 3) {
 
-                return item.stamp.buttonValueType === ButtonType.GO_OUT || item.stamp.buttonValueType === ButtonType.RETURN;
+                return [ChangeClockArt.GO_OUT, ChangeClockArt.RETURN].indexOf(value) != -1;
             }
 
             if (vm.selectedValue == 4) {
-
-                return item.stamp.buttonValueType === ButtonType.RESERVATION_SYSTEM;
+                return [ChangeClockArt.FIX, ChangeClockArt.END_OF_SUPPORT, ChangeClockArt.SUPPORT, ChangeClockArt.TEMPORARY_SUPPORT_WORK].indexOf(value) != -1;
             }
 
         });
@@ -233,4 +233,48 @@ enum ButtonType {
     // 予約系
 
     RESERVATION_SYSTEM = 5
+}
+
+export enum ChangeClockArt {
+    /** 0. 出勤 */
+    GOING_TO_WORK = 0,
+
+    /** 1. 退勤 */
+    WORKING_OUT = 1,
+
+    /** 2. 入門 */
+    OVER_TIME = 2,
+
+    /** 3. 退門 */
+    BRARK = 3,
+
+    /** 4. 外出 */
+    GO_OUT = 4,
+
+    /** 5. 戻り */
+    RETURN = 5,
+
+    /** 6. 応援開始 */
+    FIX = 6,
+
+    /** 7. 臨時出勤 */
+    TEMPORARY_WORK = 7,
+
+    /** 8. 応援終了 */
+    END_OF_SUPPORT = 8,
+
+    /** 9. 臨時退勤 */
+    TEMPORARY_LEAVING = 9,
+
+    /** 10. PCログオン */
+    PC_LOG_ON = 10,
+
+    /** 11. PCログオフ */
+    PC_LOG_OFF = 11,
+
+    /** 12. 応援出勤 */
+    SUPPORT = 12,
+
+    /** 13. 臨時+応援出勤 */
+    TEMPORARY_SUPPORT_WORK = 13
 }
