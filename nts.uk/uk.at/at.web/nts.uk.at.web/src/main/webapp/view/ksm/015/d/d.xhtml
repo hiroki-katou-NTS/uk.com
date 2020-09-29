@@ -4,13 +4,13 @@
 		<span class="title">#{i18n.getText('Com_WorkplaceGroup')}</span>
 		<!-- Go back Style -->
 		<!-- B5 -->
-		<a class="goback" 
+		<a tabindex="2" class="goback" 
 			data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' } , visible: forAttendent">#{i18n.getText('KSM015_11')}</a>
 		<!-- C1 -->
-		<button tabindex="1" class="proceed" id="register-btn"
-			data-bind="click: register, enable: $root.errors.isEmpty ,disable: workplaceGroupList().length == 0">#{i18n.getText('KSM015_8')}</button>
+		<button tabindex="3" class="proceed" id="register-btn-d"
+			data-bind="click: register, enable: workplaceGroupList().length > 0 ,disable: workplaceGroupList().length == 0 ">#{i18n.getText('KSM015_8')}</button>
 		<!-- C2 -->
-		<button class="danger" tabindex="3"
+		<button class="danger" tabindex="4"
 			data-bind="click: deleteShiftMaster, disable: !isWorkplaceAlreadySetting()">
 			#{i18n.getText('KSM015_9')}</button>
 		<!-- C3 -->
@@ -20,7 +20,7 @@
 	<div class="contents-area">
 		<div id="ksm007d">
 			<div class="pull-left" style="width: 480px;">
-			<div id="tree-grid-d">
+			<div tabindex="5" id="tree-grid-d">
 				<workplace-group id ="tree-grid-2"  params="options: options" > </workplace-group></div>
 			</div>
 			<div class="pull-right" style="width: 700px;">
@@ -40,17 +40,17 @@
 
 					<!-- D4_2 -->
 					<div class="valign-center control-group">
-						<button id="cre-shift" class="small" tabindex="8"
+						<button id="cre-shift" class="small" tabindex="6"
 							data-bind="click: openDialogKDL044, disable: workplaceGroupList().length == 0">
 							#{i18n.getText('KSM015_18')}</button>
 							<!-- D4_3 -->
-						<button class="small danger" tabindex="9"
+						<button tabindex="7" class="small danger"
 							data-bind="click: removeShift, disable: shiftItems().length == 0  || selectedShiftMaster().length == 0">
 							#{i18n.getText('KSM015_31')}</button>
 					</div>
 					<!-- A8 -->
 					<div>
-						<table id="workplace-list"
+						<table tabindex="8" id="workplace-list"
 							data-bind="ntsGridList: {
 								height: 327,
                 				width: 663,
