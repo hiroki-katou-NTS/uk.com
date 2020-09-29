@@ -728,7 +728,6 @@ module nts.uk.com.view.cli003.f {
                         //log setting list start boot history not in use
                         let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
                         let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
-                        //console.log(logSettingEdit);
                         const logSettingEditProgramId = {}
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {}
@@ -1265,8 +1264,6 @@ module nts.uk.com.view.cli003.f {
                     updateHeight();
                 },
             });
-
-            _.extend(window, { $grid });
         }
 
 
