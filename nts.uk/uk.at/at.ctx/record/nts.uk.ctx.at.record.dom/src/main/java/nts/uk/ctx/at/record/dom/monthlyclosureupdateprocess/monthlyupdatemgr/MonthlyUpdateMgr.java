@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClo
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -121,10 +121,10 @@ public class MonthlyUpdateMgr {
 		void deleteMonthlyClosureUpdatePersonLog(String monthlyLogId, String empId);
 	}
 	
-	private static interface RequireM3 extends RequireM1, RequireM2 {
+	public static interface RequireM3 extends RequireM1, RequireM2 {
 	}
 
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
 				ClosureId closureId, ClosureDate closureDate);
@@ -132,7 +132,7 @@ public class MonthlyUpdateMgr {
 		void addMonthlyClosureUpdateErrorInfor(MonthlyClosureUpdateErrorInfor domain);
 	}
 	
-	private static interface RequireM1 extends ClosureStatusMng.RequireM1,
+	public static interface RequireM1 extends ClosureStatusMng.RequireM1,
 		MonthlyClosureRemainNumProcess.RequireM1 {
 		
 	}

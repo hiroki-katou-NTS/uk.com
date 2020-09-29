@@ -188,6 +188,8 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		}
 		
 		IntegrationOfDaily data = new IntegrationOfDaily(
+				employeeId,
+				ymd,
 				workInformation.getWorkInformation(), //workInformation
 				calAttrOfDailyPerformance.getCalcategory(),//calAttr
 				employeeState.getAffiliationInforOfDailyPerfor().get(), //affiliationInfor
@@ -204,8 +206,6 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				Collections.emptyList(), //editState
 				Optional.empty(), //tempTime
 				new ArrayList<>());//remarks
-		data.setEmployeeId(employeeId);
-		data.setYmd(ymd);
 		return Optional.of(data);
 	}
 

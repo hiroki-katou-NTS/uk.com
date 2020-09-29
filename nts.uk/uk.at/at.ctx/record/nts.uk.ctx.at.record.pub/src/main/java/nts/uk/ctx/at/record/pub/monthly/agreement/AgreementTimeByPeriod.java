@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 
 /**
  * 指定期間36協定時間
@@ -22,13 +22,13 @@ public class AgreementTimeByPeriod {
 	/** 36協定時間 */
 	private AttendanceTimeYear agreementTime;
 	/** 限度エラー時間 */
-	private LimitOneYear limitErrorTime;
+	private AgreementOneYearTime limitErrorTime;
 	/** 限度アラーム時間 */
-	private LimitOneYear limitAlarmTime;
+	private AgreementOneYearTime limitAlarmTime;
 	/** 特例限度エラー時間 */
-	private Optional<LimitOneYear> exceptionLimitErrorTime;
+	private Optional<AgreementOneYearTime> exceptionLimitErrorTime;
 	/** 特例限度アラーム時間 */
-	private Optional<LimitOneYear> exceptionLimitAlarmTime;
+	private Optional<AgreementOneYearTime> exceptionLimitAlarmTime;
 	/** 状態 */
 	private AgreementTimeStatusOfMonthly status;
 	
@@ -42,8 +42,8 @@ public class AgreementTimeByPeriod {
 		this.startMonth = startMonth;
 		this.endMonth = endMonth;
 		this.agreementTime = new AttendanceTimeYear(0);
-		this.limitErrorTime = new LimitOneYear(0);
-		this.limitAlarmTime = new LimitOneYear(0);
+		this.limitErrorTime = new AgreementOneYearTime(0);
+		this.limitAlarmTime = new AgreementOneYearTime(0);
 		this.exceptionLimitErrorTime = Optional.empty();
 		this.exceptionLimitAlarmTime = Optional.empty();
 		this.status = AgreementTimeStatusOfMonthly.NORMAL;
@@ -65,10 +65,10 @@ public class AgreementTimeByPeriod {
 			YearMonth startMonth,
 			YearMonth endMonth,
 			AttendanceTimeYear agreementTime,
-			LimitOneYear limitErrorTime,
-			LimitOneYear limitAlarmTime,
-			Optional<LimitOneYear> exceptionLimitErrorTime,
-			Optional<LimitOneYear> exceptionLimitAlarmTime,
+			AgreementOneYearTime limitErrorTime,
+			AgreementOneYearTime limitAlarmTime,
+			Optional<AgreementOneYearTime> exceptionLimitErrorTime,
+			Optional<AgreementOneYearTime> exceptionLimitAlarmTime,
 			AgreementTimeStatusOfMonthly status){
 		
 		AgreementTimeByPeriod domain = new AgreementTimeByPeriod(startMonth, endMonth);

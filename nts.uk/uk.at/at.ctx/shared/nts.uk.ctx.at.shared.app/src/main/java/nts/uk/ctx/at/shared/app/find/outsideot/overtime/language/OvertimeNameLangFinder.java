@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OvertimeNameLangDto;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
