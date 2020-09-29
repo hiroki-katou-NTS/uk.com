@@ -86,21 +86,11 @@ export class KdpS01CComponent extends Vue {
                 vm.screenData.employeeName = data.empInfo ? data.empInfo.pname : '';
             });
 
-
-            let items = [];
-            _.forEach(vm.params.attendanceItemIds, (id) => {
-                let item = _.find(data.lstItemDisplayed, ['attendanceItemId', id]);
-                if (item) {
-                    items.push(item);
-                }
-            });
-
-            let timeData = [];
-
-            _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
+            let timeData = _.map(_.filter(data.lstItemDisplayed,(item) => [28, 29, 31, 34].indexOf(item.attendanceItemId) == -1 ) , (item) => {
                 let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
-                timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
-            });
+                
+                return { itemId: item.attendanceItemId, title: item.attendanceName, value } ;                
+            } );
 
             vm.screenData.attendanceItem.timeItems = timeData;
 
@@ -158,7 +148,7 @@ export class KdpS01CComponent extends Vue {
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.AmountOfMoney) {
 
-            result = item.value.toFixed(1).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+            result = parseInt(item.value).toFixed(2).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
         }
 
         return result;
