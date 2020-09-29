@@ -1,7 +1,7 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
-	import c = nts.uk.ui.at.ksu002.calendar;
+	import c = nts.uk.ui.calendar;
 
 	const template = `
 		<div class="cf" data-bind="ntsDatePicker: { 

@@ -36,7 +36,7 @@
 						<div data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
 					</div>
 					<div class="cf" data-bind="if: !!ko.unwrap($vm.showC)">
-						<div data-bind="scheduler: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
+						<div data-bind="calendar: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
 					</div>
 				</div>
 			</div>

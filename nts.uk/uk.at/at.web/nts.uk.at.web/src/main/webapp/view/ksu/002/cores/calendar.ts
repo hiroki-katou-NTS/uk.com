@@ -37,7 +37,7 @@ module nts.uk.ui.calendar {
 	}
 
 	const D_FORMAT = 'YYYYMM';
-	const COMPONENT_NAME = 'scheduler';
+	const COMPONENT_NAME = 'calendar';
 	const COMPONENT_TEMP = `
         <div class="filter cf">
             <label class="filter-title" data-bind="i18n: 'KSU002_30'"></label>
@@ -59,145 +59,145 @@ module nts.uk.ui.calendar {
             <div data-bind="if: !!ko.unwrap($component.baseDate.show), css: { 'title': !!ko.unwrap($component.baseDate.show) }">
                 <div data-bind="ntsDatePicker: { value: $component.baseDate.model, dateFormat: 'yearmonth', valueFormat: 'YYYYMM', showJumpButtons: true }"></div>
             </div>
-            <div class="calendar title">
+            <div class="month title">
                 <div class="week cf" data-bind="foreach: { data: ko.unwrap($component.schedules).titles, as: 'day' }">
-                    <div class="day" data-bind="scheduler-day: day">
+                    <div class="day" data-bind="calendar-day: day">
                         <div class="status cf">
                             <span data-bind="date: day.date, format: 'ddd'"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="calendar" data-bind="foreach: { data:ko.unwrap($component.schedules).days, as: 'days' }">
+            <div class="month" data-bind="foreach: { data:ko.unwrap($component.schedules).days, as: 'days' }">
                 <div class="week cf" data-bind="foreach: { data: days, as: 'day' }">
-                    <div class="day" data-bind="scheduler-day: day">
+                    <div class="day" data-bind="calendar-day: day">
                         <div class="status cf">
-                            <span data-bind="scheduler-date: day"></span>
-                            <svg data-bind="scheduler-daisy: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['event', day, evt]); }"></svg>
+                            <span data-bind="calendar-date: day"></span>
+                            <svg data-bind="calendar-daisy: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['event', day, evt]); }"></svg>
                         </div>
-                        <div class="status cf" data-bind="scheduler-holiday: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['holiday', day, evt]); }"></div>
-                        <div class="data-info" data-bind="scheduler-data-info: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['info', day, evt]); }"></div>
+                        <div class="status cf" data-bind="calendar-holiday: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['holiday', day, evt]); }"></div>
+                        <div class="data-info" data-bind="calendar-data-info: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['info', day, evt]); }"></div>
                     </div>
                 </div>
             </div>
 		</div>
         <style type="text/css" rel="stylesheet">
-            .scheduler {
+            .calendar {
                 display: inline-block;
             }
-            .scheduler .filter {
+            .calendar .filter {
                 padding-bottom: 5px;
             }
-            .scheduler .filter-title {
+            .calendar .filter-title {
                 float: left;
                 margin-right: 10px;
                 line-height: 32px;
             }
-            .scheduler .calendar-container {
+            .calendar .calendar-container {
                 float: left;
                 box-sizing: border-box;
                 border: 1px solid #808080;
             }
-            .scheduler .calendar-container .title {
+            .calendar .calendar-container .title {
                 padding: 5px 0;
                 background-color: #C7F391;
                 border-bottom: 1px solid #808080;
             }
-            .scheduler .calendar-container .title .nts-datepicker-wrapper {
+            .calendar .calendar-container .title .nts-datepicker-wrapper {
                 margin: 0 calc(50% - 76px);
             }
-			.scheduler .calendar-container .title .nts-datepicker-wrapper>input,
-			.scheduler .calendar-container .title .nts-datepicker-wrapper>button {
+			.calendar .calendar-container .title .nts-datepicker-wrapper>input,
+			.calendar .calendar-container .title .nts-datepicker-wrapper>button {
 				vertical-align: top;
 			}
-			.scheduler .calendar-container .title .nts-datepicker-wrapper>input {
+			.calendar .calendar-container .title .nts-datepicker-wrapper>input {
 				height: 20px;
 			}
-			.scheduler .calendar-container .title .nts-datepicker-wrapper>button {
+			.calendar .calendar-container .title .nts-datepicker-wrapper>button {
 				height: 29px;
 			}
-			.scheduler .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:before,
-			.scheduler .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:after {
+			.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:before,
+			.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:after {
 				left: 45px;
 			}
-            .scheduler .calendar-container .calendar.title {
+            .calendar .calendar-container .month.title {
                 padding: 0;
             }
-            .scheduler .calendar-container .calendar.title .week .day .status {
+            .calendar .calendar-container .month.title .week .day .status {
                 background-color: #C7F391 !important;
             }
-            .scheduler .calendar-container .calendar.title .week .day .status span {
+            .calendar .calendar-container .month.title .week .day .status span {
                 color: #000;
                 font-size: 11px;
                 font-weight: 300;
             }
-            .scheduler .calendar-container .calendar.title .week .day.sunday .status span {
+            .calendar .calendar-container .month.title .week .day.sunday .status span {
                 color: #f00;
             }
-            .scheduler .calendar-container .calendar.title .week .day.saturday .status span {
+            .calendar .calendar-container .month.title .week .day.saturday .status span {
                 color: #0000ff;
             }
-            .scheduler .calendar-container .calendar .week {
+            .calendar .calendar-container .month .week {
                 box-sizing: border-box;
             }
-            .scheduler .calendar-container .calendar .week:not(:last-child)  {
+            .calendar .calendar-container .month .week:not(:last-child)  {
                 border-bottom: 1px solid #808080;
             }
-            .scheduler .calendar-container .calendar .week .day {
+            .calendar .calendar-container .month .week .day {
                 float: left;
 				width: 100px;
                 box-sizing: border-box;
             }
-            .scheduler .calendar-container .calendar .week .day:not(:last-child) {
+            .calendar .calendar-container .month .week .day:not(:last-child) {
                 border-right: 1px solid #808080;
             }
-            .scheduler .calendar-container .calendar .week .day .status {
+            .calendar .calendar-container .month .week .day .status {
 				position: relative;
                 text-align: center;
             }
-            .scheduler .calendar-container .calendar .week .day .status span {
+            .calendar .calendar-container .month .week .day .status span {
                 color: gray;
                 font-size: 9px;
                 font-weight: 600;
             }
-            .scheduler .calendar-container .calendar .week .day .status span+svg {
+            .calendar .calendar-container .month .week .day .status span+svg {
 			    top: 1px;
 			    right: 1px;
 			    position: absolute;
 			    width: 14px;
 			    height: 14px;
             }
-            .scheduler .calendar-container .calendar .week .day .status+.status {
+            .calendar .calendar-container .month .week .day .status+.status {
                 border-top: 1px solid #808080;
                 border-bottom: 1px solid #808080;
             }
-            .scheduler .calendar-container .calendar .week .day .status {
+            .calendar .calendar-container .month .week .day .status {
                 background-color: #EDFAC2;
 			}
-            .scheduler .calendar-container .calendar .week .day.saturday .status {
+            .calendar .calendar-container .month .week .day.saturday .status {
                 background-color: #9BC2E6;
             }
-            .scheduler .calendar-container .calendar .week .day.sunday .status,
-            .scheduler .calendar-container .calendar .week .day.holiday .status {
+            .calendar .calendar-container .month .week .day.sunday .status,
+            .calendar .calendar-container .month .week .day.holiday .status {
                 background-color: #FABF8F;
             }
-            .scheduler .calendar-container .calendar .week .day.special .status {
+            .calendar .calendar-container .month .week .day.special .status {
                 color: #f00;
                 background-color: rgb(255, 192, 203);
 			}
-            .scheduler .calendar-container .calendar .week .day.current .status {
+            .calendar .calendar-container .month .week .day.current .status {
                 color: #f00;
                 background-color: #ffff00;
 			}
-            .scheduler .calendar-container .calendar .week .day .data-info {
+            .calendar .calendar-container .month .week .day .data-info {
                 width: 100%;
                 height: 40px;
                 box-sizing: border-box;
             }
-            .scheduler .calendar-container .calendar .week .day.diff-month .data-info {
+            .calendar .calendar-container .month .week .day.diff-month .data-info {
                 background-color: #d9d9d9;
             }
-            .scheduler .calendar-container .calendar .week .day.same-month .data-info {
+            .calendar .calendar-container .month .week .day.same-month .data-info {
                 background-color: #ffffff;
             }
         </style>
@@ -257,9 +257,9 @@ module nts.uk.ui.calendar {
 	].join(' ');
 
 	@handler({
-		bindingName: 'scheduler-day'
+		bindingName: 'calendar-day'
 	})
-	export class SchedulerDayComponentBindingHandler implements KnockoutBindingHandler {
+	export class CalendarDayComponentBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 			const { date, inRange, className, binding } = dayData;
@@ -291,7 +291,7 @@ module nts.uk.ui.calendar {
 	}
 
 	@handler({
-		bindingName: 'scheduler-daisy'
+		bindingName: 'calendar-daisy'
 	})
 	export class DaisyBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
@@ -327,9 +327,9 @@ module nts.uk.ui.calendar {
 	}
 
 	@handler({
-		bindingName: 'scheduler-holiday'
+		bindingName: 'calendar-holiday'
 	})
-	export class SchedulerHolidayBindingHandler implements KnockoutBindingHandler {
+	export class CalendarHolidayBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = valueAccessor();
 			const { binding, inRange, data } = dayData;
@@ -365,9 +365,9 @@ module nts.uk.ui.calendar {
 	}
 
 	@handler({
-		bindingName: 'scheduler-date'
+		bindingName: 'calendar-date'
 	})
-	export class SchedulerDateBindingHandler implements KnockoutBindingHandler {
+	export class CalendarDateBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 			const { date, startDate, binding, inRange } = dayData;
@@ -399,9 +399,9 @@ module nts.uk.ui.calendar {
 	}
 
 	@handler({
-		bindingName: 'scheduler-data-info'
+		bindingName: 'calendar-data-info'
 	})
-	export class SchedulerInfoBindingHandler implements KnockoutBindingHandler {
+	export class CalendarInfoBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 			const { inRange, binding } = dayData;
@@ -440,7 +440,7 @@ module nts.uk.ui.calendar {
 			const component = { name, params };
 
 			element.classList.add('cf');
-			element.classList.add('scheduler');
+			element.classList.add('calendar');
 
 			ko.applyBindingsToNode(element, { component }, bindingContext);
 
@@ -555,7 +555,7 @@ module nts.uk.ui.calendar {
 				read: () => {
 					const width = ko.unwrap(data.width);
 
-					return (`.scheduler .calendar-container .calendar .week .day { width: ${width || 85}px !important; }`)
+					return (`.calendar .calendar-container .month .week .day { width: ${width || 85}px !important; }`)
 						.replace(/\n{1,}/g, ' ')
 						.replace(/\t{1,}/g, ' ')
 						.replace(/\s{1,}/g, ' ')
