@@ -3,7 +3,8 @@ package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -16,8 +17,8 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfO
  * @author hiroko_miura
  *
  */
-@RequiredArgsConstructor
-public class ShiftTableWeekSetting implements ShiftTableSetting {
+@Value
+public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 
 	/**
 	 * 開始曜日

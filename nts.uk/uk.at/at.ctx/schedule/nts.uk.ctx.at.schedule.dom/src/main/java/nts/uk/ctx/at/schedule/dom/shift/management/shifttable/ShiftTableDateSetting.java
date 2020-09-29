@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
@@ -17,8 +18,8 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfO
  * @author hiroko_miura
  *
  */
-@RequiredArgsConstructor
-public class ShiftTableDateSetting implements ShiftTableSetting {
+@Value
+public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 
 	/** 締め日 */
 	private final OneMonth closureDate;
