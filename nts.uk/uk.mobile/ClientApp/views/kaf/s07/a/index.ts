@@ -750,6 +750,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     required: true
                 });
             }
+            if (vm.valueWorkHours2.end != undefined && vm.valueWorkHours2.start == undefined) {
+                vm.$updateValidator('valueWorkHours2', {
+                    timeRange: true,
+                    required: true
+                });
+            }
         }
         // if (this.valueWorkHours2 != null) {
         //     if ((this.valueWorkHours2.start != undefined && this.valueWorkHours2.end == undefined) || (this.valueWorkHours2.end != undefined && this.valueWorkHours2.start == undefined)) {
@@ -780,7 +786,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 timeRange: true,
                 required: false
             });
-            
+
             return;
         }
         if (this.$valid && validAll) {
