@@ -18,11 +18,11 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     resource: require('./resources.json'),
     validations: {
         valueWorkHours1: {
-            timeRange: false,
+            timeRange: true,
             required: true
         },
         valueWorkHours2: {
-            timeRange: false,
+            timeRange: true,
             required: false
         }
     },
@@ -410,25 +410,41 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public bindValueWorkHours(params: any) {
         // *4
         // if (!this.isCondition4)
+        const self = this;
         let time1;
         let time2;
         if (params.appWorkChangeDispInfo.predetemineTimeSetting) {
             time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
             time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
-        }
-        if (!this.mode) {
+        } 
+        if (!self.mode) {
             let appWorkChange = params.appWorkChange;
             if (appWorkChange) {
                 time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
                 time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
             }
-            this.bindWorkHours(time1, time2);
+            self.bindWorkHours(time1, time2);
 
             return;
 
         }
-        if (!this.isCondition4) {
-            this.bindWorkHours(time1, time2);
+        if (!self.isCondition4) {
+            self.bindWorkHours(time1, time2);
+        }
+        if (self.isCondition3 && self.isCondition1) {
+            // self.$updateValidator('valueWorkHours2', {
+            //     timeRange: false,
+            //     required: false
+            // });
+            self.$updateValidator('valueWorkHours1', {
+                timeRange: true,
+                required: true
+            });
+        } else {
+            self.$updateValidator('valueWorkHours1', {
+                timeRange: true,
+                required: false
+            });
         }
 
 
@@ -454,7 +470,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours1', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
@@ -477,17 +493,17 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
         if (!this.isCondition3) {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
             this.$updateValidator('valueWorkHours1', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
@@ -711,6 +727,50 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public register() {
         const vm = this;
         let validAll: boolean = true;
+        if (this.valueWorkHours1 != null) {
+            if (vm.valueWorkHours1.start && vm.valueWorkHours1.end) {
+                if (vm.valueWorkHours1.start > vm.valueWorkHours1.end) {
+                    vm.$modal.error({ messageId: 'Msg_579'});
+
+                    return;
+                }
+            }
+        }
+        if (this.valueWorkHours2 != null) {
+            if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
+                if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
+                    vm.$modal.error({ messageId: 'Msg_580'});
+
+                    return;
+                }
+            }
+            if (vm.valueWorkHours2.start != undefined && vm.valueWorkHours2.end == undefined) {
+                vm.$updateValidator('valueWorkHours2', {
+                    timeRange: true,
+                    required: true
+                });
+            }
+            if (vm.valueWorkHours2.end != undefined && vm.valueWorkHours2.start == undefined) {
+                vm.$updateValidator('valueWorkHours2', {
+                    timeRange: true,
+                    required: true
+                });
+            }
+        }
+        // if (this.valueWorkHours2 != null) {
+        //     if ((this.valueWorkHours2.start != undefined && this.valueWorkHours2.end == undefined) || (this.valueWorkHours2.end != undefined && this.valueWorkHours2.start == undefined)) {
+        //         // this.get
+        //         this.$updateValidator('valueWorkHours2', {
+        //             timeRange: true,
+        //             required: false
+        //         });
+        //     } else {
+        //         this.$updateValidator('valueWorkHours2', {
+        //             timeRange: false,
+        //             required: false
+        //         });
+        //     }
+        // }
         for (let child of vm.$children) {
             child.$validate();
             if (!child.$valid) {
@@ -722,6 +782,10 @@ export class KafS07AComponent extends KafS00ShrComponent {
         this.$validate();
         if (!this.$valid || !validAll) {
             window.scrollTo(500, 0);
+            vm.$updateValidator('valueWorkHours2', {
+                timeRange: true,
+                required: false
+            });
 
             return;
         }

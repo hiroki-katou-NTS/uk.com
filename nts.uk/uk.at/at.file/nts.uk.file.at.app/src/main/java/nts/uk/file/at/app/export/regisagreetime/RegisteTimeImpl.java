@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;

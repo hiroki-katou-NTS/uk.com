@@ -15,14 +15,15 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		if(item == null) {
+		
+		if (item == null) {
 			this.data = Optional.empty();
-		}else {
-			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance = new OutingTimeOfDailyPerformance(getEmployeeId(),
-					getWorkDate(), ((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
-			this.data = item == null || !item.isHaveData() ? Optional.empty()
-					: Optional.of(outingTimeOfDailyPerformance);
+			return;
 		}
+		OutingTimeOfDailyPerformance outingTimeOfDailyPerformance = new OutingTimeOfDailyPerformance(getEmployeeId(),
+				getWorkDate(), ((OutingTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? Optional.empty()
+				: Optional.of(outingTimeOfDailyPerformance);
 	}
 
 	@Override

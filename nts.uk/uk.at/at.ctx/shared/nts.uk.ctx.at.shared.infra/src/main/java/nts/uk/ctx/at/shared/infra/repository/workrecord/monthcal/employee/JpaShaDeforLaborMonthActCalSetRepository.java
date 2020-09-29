@@ -9,8 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSetPK;
 
