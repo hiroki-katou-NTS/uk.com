@@ -18,6 +18,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 public class AlarmCheckConditionScheduleOrder implements DomainAggregate{
 	
+	/** 優先順リスト */
 	private List<AlarmCheckConditionCode> codes;
 
 	public static AlarmCheckConditionScheduleOrder create(List<AlarmCheckConditionCode> codes) {
