@@ -150,7 +150,7 @@ public class SortEmpService {
 					listEmployeeRank1.sort(Comparator.comparing(v-> listRankCode.indexOf(v.getEmplRankCode())));
 					
 					listEmployeeRank1.forEach((EmployeeRankDto employeeRankDto) -> {
-							employeeRankDto.setPriority(listEmployeeRank1.indexOf(employeeRankDto));
+							employeeRankDto.setPriority(listRankCode.indexOf(employeeRankDto.emplRankCode));
 			        });
 					
 					listEmployeeRank2.forEach((EmployeeRankDto employeeRankDto) -> {
