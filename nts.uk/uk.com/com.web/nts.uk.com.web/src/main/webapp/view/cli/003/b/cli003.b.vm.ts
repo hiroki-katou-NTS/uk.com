@@ -291,23 +291,6 @@ module nts.uk.com.view.cli003.b {
         targetEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
         selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        constructor() {
-            super();
-            const vm = this;
-            vm.startDateString.subscribe((value) => {
-                vm.b5_2dateValue().startDate = value;
-                vm.b5_2dateValue.valueHasMutated();
-            });
-            vm.endDateString.subscribe((value) => {
-                vm.b5_2dateValue().endDate = value;
-                vm.b5_2dateValue.valueHasMutated();
-            });
-            vm.b5_2dateValue = ko.observable({
-                startDate: moment.utc().format("YYYY/MM/DD"),
-                endDate: moment.utc().format("YYYY/MM/DD")
-            });
-        }
-
         created() {
             const vm = this;
             vm.$window.storage('VIEW_B_DATA')
