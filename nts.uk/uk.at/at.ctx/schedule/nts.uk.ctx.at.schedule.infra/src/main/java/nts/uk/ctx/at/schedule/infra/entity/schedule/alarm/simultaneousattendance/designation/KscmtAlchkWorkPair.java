@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation.SimultaneousAttendanceDesignation;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * KSCMT_ALCHK_WORK_PAIR
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_ALCHK_WORK_PAIR")
-public class KscmtAlchkWorkPair extends ContractUkJpaEntity implements Serializable {
+public class KscmtAlchkWorkPair extends ContractCompanyUkJpaEntity implements Serializable {
 
 private static final long serialVersionUID = 1L;
 	
