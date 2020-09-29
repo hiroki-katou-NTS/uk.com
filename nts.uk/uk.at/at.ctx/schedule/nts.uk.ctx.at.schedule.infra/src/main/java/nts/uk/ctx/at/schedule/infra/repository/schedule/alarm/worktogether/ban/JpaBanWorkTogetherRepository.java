@@ -14,8 +14,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogether;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban.KscmtAlchkBanWorkTogether;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban.KscmtAlchkBanWorkTogetherDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogether;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban.KscmtAlchkBanWorkTogetherDtl;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**

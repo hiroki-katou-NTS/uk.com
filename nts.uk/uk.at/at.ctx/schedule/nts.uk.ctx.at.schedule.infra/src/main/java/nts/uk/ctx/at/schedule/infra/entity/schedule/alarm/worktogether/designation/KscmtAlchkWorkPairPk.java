@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.designation;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.designation;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

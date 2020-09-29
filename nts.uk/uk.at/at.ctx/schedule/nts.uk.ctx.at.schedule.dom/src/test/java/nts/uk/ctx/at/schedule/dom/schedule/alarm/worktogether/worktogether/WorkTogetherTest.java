@@ -18,7 +18,7 @@ public class WorkTogetherTest {
 	
 	@Test
 	public void getters() {
-		val simultaneousAttendanceDesignation = WorkTogether.create(
+		val workTogether = WorkTogether.create(
 				"517ef7f8-77d0-4eb0-b539-05e03a23f9e0",
 				Arrays.asList(
 						"EMPLOYEE_1", 
@@ -27,7 +27,7 @@ public class WorkTogetherTest {
 						"EMPLOYEE_4",
 						"EMPLOYEE_5"));
 		
-		NtsAssert.invokeGetters(simultaneousAttendanceDesignation);
+		NtsAssert.invokeGetters(workTogether);
 		
 	}
 	
@@ -103,10 +103,10 @@ public class WorkTogetherTest {
 				"EMPLOYEE_8",
 				"EMPLOYEE_9"
 				);
-		val simulAttDesign =  WorkTogether.create("EMPLOYEE_0", employeeIds);
+		val workTogether =  WorkTogether.create("EMPLOYEE_0", employeeIds);
 		
-		assertThat(simulAttDesign.getSid()).isEqualTo("EMPLOYEE_0");
-		assertThat(simulAttDesign.getEmpMustWorkTogetherLst()).containsExactlyInAnyOrderElementsOf(employeeIds);
+		assertThat(workTogether.getSid()).isEqualTo("EMPLOYEE_0");
+		assertThat(workTogether.getEmpMustWorkTogetherLst()).containsExactlyInAnyOrderElementsOf(employeeIds);
 		
 	}
 	

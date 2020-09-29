@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

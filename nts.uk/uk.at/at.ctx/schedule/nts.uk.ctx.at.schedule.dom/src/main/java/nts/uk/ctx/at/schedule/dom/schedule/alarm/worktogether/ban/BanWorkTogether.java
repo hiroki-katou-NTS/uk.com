@@ -19,77 +19,80 @@ public class BanWorkTogether implements DomainAggregate{
 	/** 対象組織 */
 	private final TargetOrgIdenInfor targetOrg;
 	
-	/** 同時出勤禁止コード */
-	private final BanWorkTogetherCode banWorkTogetherCode;
+	/** コード */
+	private final BanWorkTogetherCode code;
 	
-	/** 同時出勤禁止名称 */
-	private BanWorkTogetherName banWorkTogetherName;
+	/** 名称 */
+	private BanWorkTogetherName name;
 	
 	/** 適用する時間帯 */
 	private final ApplicableTimeZoneCls applicableTimeZoneCls;
 	
-	/** 許容する人数 */
-	private MaxOfNumberEmployeeTogether upperLimit;
-	
 	/** 禁止する社員の組み合わせ */
 	private List<String> empBanWorkTogetherLst;
+	
+	/** 許容する人数 */
+	private MaxOfNumberEmployeeTogether upperLimit;
 	
 	/**
 	 * 終日を指定して作成する
 	 * @param targetOrg 対象組織
-	 * @param banWorkTogetherCode 同時出勤禁止コード
-	 * @param banWorkTogetherName 同時出勤禁止名称 
-	 * @param upperLimit 許容する人数
+	 * @param code コード
+	 * @param name 名称 
 	 * @param empBanWorkTogetherLst 禁止する社員の組み合わせ
+	 * @param upperLimit 許容する人数
 	 * @return
 	 */
 	public static BanWorkTogether createBySpecifyingAllDay(TargetOrgIdenInfor targetOrg, 
-			BanWorkTogetherCode banWorkTogetherCode,
-			BanWorkTogetherName banWorkTogetherName,
-			MaxOfNumberEmployeeTogether upperLimit,
-			List<String> empBanWorkTogetherLst
-			) {
+			BanWorkTogetherCode code,
+			BanWorkTogetherName name,
+			List<String> empBanWorkTogetherLst,
+			MaxOfNumberEmployeeTogether upperLimit) {
 		
-		if(empBanWorkTogetherLst.isEmpty() || empBanWorkTogetherLst.size() <= 1) {
-			throw new BusinessException("Msg_1875");
-		}
-		
-		if(empBanWorkTogetherLst.size() < upperLimit.v()) {
-			throw new BusinessException("Msg_1787");
-		}
-		
-		return new BanWorkTogether(targetOrg, banWorkTogetherCode, 
-				banWorkTogetherName, ApplicableTimeZoneCls.ALLDAY,
-				upperLimit, empBanWorkTogetherLst);
+		return create(targetOrg, code, 
+				name, ApplicableTimeZoneCls.ALLDAY,
+				empBanWorkTogetherLst, upperLimit);
 	}
 	
 
 	/**
 	 * 夜勤時間帯を指定して作成する
 	 * @param targetOrg 対象組織
-	 * @param banWorkTogetherCode 同時出勤禁止コード
-	 * @param banWorkTogetherName 同時出勤禁止名称 
-	 * @param upperLimit 許容する人数
+	 * @param code コード
+	 * @param name 名称
 	 * @param empBanWorkTogetherLst 禁止する社員の組み合わせ
+	 * @param upperLimit 許容する人数
 	 * @return
 	 */
 	public static BanWorkTogether createByNightShift(TargetOrgIdenInfor targetOrg, 
-			BanWorkTogetherCode banWorkTogetherCode,
-			BanWorkTogetherName banWorkTogetherName,
-			MaxOfNumberEmployeeTogether upperLimit,
-			List<String> empBanWorkTogetherLst) {
+			BanWorkTogetherCode code,
+			BanWorkTogetherName name,
+			List<String> empBanWorkTogetherLst,
+			MaxOfNumberEmployeeTogether upperLimit) {
 		
-		if(empBanWorkTogetherLst.isEmpty() || empBanWorkTogetherLst.size() <= 1) {
+		return  create(targetOrg, code, 
+				name, ApplicableTimeZoneCls.NIGHTSHIFT,
+				empBanWorkTogetherLst, upperLimit);
+	}
+	
+	private static BanWorkTogether create(TargetOrgIdenInfor targetOrg, 
+			BanWorkTogetherCode code,
+			BanWorkTogetherName name,
+			ApplicableTimeZoneCls timeZoneCls,
+			List<String> empBanWorkTogetherLst,
+			MaxOfNumberEmployeeTogether upperLimit) {
+		
+		if(empBanWorkTogetherLst.size() < 2) {
 			throw new BusinessException("Msg_1875");
 		}
 		
-		if(empBanWorkTogetherLst.size() < upperLimit.v()) {
+		if(empBanWorkTogetherLst.size() <= upperLimit.v()) {
 			throw new BusinessException("Msg_1787");
 		}
 		
-		return new BanWorkTogether(targetOrg, banWorkTogetherCode, 
-				banWorkTogetherName, ApplicableTimeZoneCls.NIGHTSHIFT,
-				upperLimit,	empBanWorkTogetherLst);
+		return new BanWorkTogether(targetOrg, code, 
+				name, timeZoneCls,
+				empBanWorkTogetherLst, upperLimit);
 	}
 	
 }

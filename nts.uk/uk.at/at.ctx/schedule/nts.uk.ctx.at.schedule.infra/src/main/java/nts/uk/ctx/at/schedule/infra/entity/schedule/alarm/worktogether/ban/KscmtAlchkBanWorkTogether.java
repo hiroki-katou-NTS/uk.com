@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.ban;
 
 import java.io.Serializable;
 import java.util.List;
@@ -75,11 +75,11 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 		pk.companyId = companyId;
 		pk.targetUnit = domain.getTargetOrg().getUnit().value;
 		pk.targetId = domain.getTargetOrg().getTargetId();
-		pk.code = domain.getBanWorkTogetherCode().v();
+		pk.code = domain.getCode().v();
 		
 		val entity = new KscmtAlchkBanWorkTogether();
 		entity.pk = pk;
-		entity.name = domain.getBanWorkTogetherName().v();
+		entity.name = domain.getName().v();
 		entity.applyTs = domain.getApplicableTimeZoneCls().value;
 		entity.upperLimit = domain.getUpperLimit().v();
 		
@@ -101,7 +101,8 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 				, new BanWorkTogetherCode(this.pk.code)
 				, new BanWorkTogetherName(this.name)
 				, ApplicableTimeZoneCls.of(this.applyTs)
+				, dtl.stream().map(x -> x.pk.employeeId).collect(Collectors.toList())
 				, new MaxOfNumberEmployeeTogether(this.upperLimit)
-				, dtl.stream().map(x -> x.pk.employeeId).collect(Collectors.toList()));
+				);
 	}
 }

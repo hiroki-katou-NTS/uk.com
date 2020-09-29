@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogether;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogetherRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.designation.KscmtAlchkWorkPair;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.designation.KscmtAlchkWorkPair;
 
 /**
  * 同時出勤指定Repository
