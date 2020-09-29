@@ -25,9 +25,9 @@ public class LogSetOutputItemCommand {
 	/** The log setting item detail */
 	private List<LogSetItemDetailCommand> logSetItemDetails;
 	
-	public LogSetOutputItem toDomain(String logSetId) {
+	public LogSetOutputItem toDomain(String logSetId, String cid) {
 		boolean isUseFlag = this.isUseFlag == 1 ? true : false;
 		return new LogSetOutputItem(logSetId, itemNo, displayOrder
-				, isUseFlag, logSetItemDetails.stream().map(item -> item.toDomain(logSetId)).collect(Collectors.toList()));			
+				, isUseFlag, logSetItemDetails.stream().map(item -> item.toDomain(logSetId,cid)).collect(Collectors.toList()));			
 	}
 }
