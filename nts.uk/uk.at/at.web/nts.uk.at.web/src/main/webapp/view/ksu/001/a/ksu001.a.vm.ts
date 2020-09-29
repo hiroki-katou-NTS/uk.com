@@ -375,10 +375,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let startTimeCal = nts.uk.time.minutesBased.duration.parseString(strTime).toValue();
                     let endTimeCal = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
 
-                    if (startTimeCal < 0)
+                    if (startTimeCal < 0 && endTimeCal < 0) {
                         startTimeCal = startTimeCal * -1;
-                    if (endTimeCal < 0)
                         endTimeCal = endTimeCal * -1;
+                    }
+                        
                     
                     if (startTimeCal > endTimeCal) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
@@ -1569,10 +1570,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
                 }
                 
-                if (startTime < 0)
+                if (startTime < 0 && endTime < 0) {
                     startTime = startTime * -1;
-                if (endTime < 0)
                     endTime = endTime * -1;
+                }
 
                 if (startTime > endTime) {
                     let messInfo = nts.uk.resource.getMessage('Msg_54');
