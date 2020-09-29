@@ -88,16 +88,16 @@ module test.viewmodel {
 				}
 			});
 			self.columns = ko.observableArray([
-				{ headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-				{ headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 100 },
-				{ headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
-				{ headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 },
-				{ headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
+				{ headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50, formatter: _.escape },
+				{ headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 100, formatter: _.escape },
+				{ headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200, formatter: _.escape },
+				{ headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 , formatter: _.escape},
+				{ headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200, formatter: _.escape }
 			]);
 
 			self.filterColumns = ko.observableArray([
-				{ headerText: getText('KDL044_2'), key: "code", dataType: "string", width: 50 },
-				{ headerText: getText('KDL044_3'), key: "name", dataType: "string", width: 100 }
+				{ headerText: getText('KDL044_2'), key: "code", dataType: "string", width: 50, formatter: _.escape },
+				{ headerText: getText('KDL044_3'), key: "name", dataType: "string", width: 100, formatter: _.escape }
 			]);
 			self.modeList = ko.observableArray([
 				new BoxModel(1, '複数選択'),
