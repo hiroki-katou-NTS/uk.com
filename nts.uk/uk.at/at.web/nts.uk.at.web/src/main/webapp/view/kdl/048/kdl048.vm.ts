@@ -40,7 +40,6 @@ module nts.uk.at.view.kdl048.screenModel {
     currentCodeList2: KnockoutObservableArray<any> = ko.observableArray([]);
 
     created() {
-      debugger
       const vm = this;
       //get params
       vm.initParam = getShared("attendanceItem");
@@ -105,7 +104,6 @@ module nts.uk.at.view.kdl048.screenModel {
 
     // event when change item combo box
     private onChangeItemCombo(codeChange: number) {
-      debugger
       const vm = this;
       if (codeChange === 0) {
         return;
@@ -206,18 +204,31 @@ module nts.uk.at.view.kdl048.screenModel {
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能
           if (vm.itemNameLine().displayFlag && vm.itemNameLine().displayInputCategory === 2) {
             // shared with value of A3_2, A5_2, A9_2_1, A9_2_2
-            vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
-            vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            nts.uk.ui.windows.setShared('attendanceRecordExport', {
+              attendanceItemName: vm.attendanceRecordName(),
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName:  vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position:  vm.objectDisplay.position,
+              exportAtr:  vm.objectDisplay.exportAtr,
+              attendanceId: vm.dataSelectedItemList(),
+              attribute: vm.valueCb()
+          });
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
           if (!vm.itemNameLine().displayFlag || vm.itemNameLine().displayInputCategory === 1) {
             // shared with value of A5_2, A9_2_1, A9_2_2
-            vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            nts.uk.ui.windows.setShared('attendanceRecordExport', {
+              attendanceItemName: vm.objectDisplay.itemNameLine.name,
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName:  vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position:  vm.objectDisplay.position,
+              exportAtr:  vm.objectDisplay.exportAtr,
+              attendanceId: vm.dataSelectedItemList(),
+              attribute: vm.valueCb()
+          });
           }
           vm.$window.close();
         }
@@ -239,17 +250,24 @@ module nts.uk.at.view.kdl048.screenModel {
 
   // Display object mock
   export class Display {
-    // タイトル行
-    titleLine: TitleLineObject = new TitleLineObject();
-    // 項目名行
-    itemNameLine: ItemNameLineObject = new ItemNameLineObject();
-    // 属性
-    attribute: AttributeObject = new AttributeObject();
-    // List<勤怠項目>
-    diligenceProjectList: DiligenceProject[] = [];
-    // List<選択済み勤怠項目>
-    selectedTimeList: SelectedTimeList[] = [];
-
+     // タイトル行
+     titleLine: TitleLineObject = new TitleLineObject();
+     // 項目名行
+     itemNameLine: ItemNameLineObject = new ItemNameLineObject();
+     // 属性
+     attribute: Attribute = new Attribute();
+     // List<勤怠項目>
+     attendanceItems: Array<AttributeOfAttendanceItem> = [];
+     // 選択済み勤怠項目ID
+     selectedTime: number;
+     // 加減算する項目
+     attendanceIds: Array<SelectedItem>;
+     // columnIndex
+     columnIndex: number;
+     // position
+     position: number;
+     // exportAtr
+     exportAtr: number;
     constructor(init?: Partial<Display>) {
       $.extend(this, init);
     }
@@ -346,5 +364,30 @@ module nts.uk.at.view.kdl048.screenModel {
     constructor(init?: Partial<DiligenceProject>) {
       $.extend(this, init);
     }
+  }
+
+  export class AttributeOfAttendanceItem {
+    /** 勤怠項目ID */
+    attendanceItemId: number;
+    /** 勤怠項目名称 */
+    attendanceItemName: string;
+    /** 勤怠項目の属性 */
+    attributes: number;
+    /** マスタの種類 */
+    masterTypes: number | null;
+    /** 表示番号 */
+    displayNumbers: number;
+
+    constructor(init?: Partial<DiligenceProject>) {
+      $.extend(this, init);
+    }
+  }
+export class SelectedItem {
+    action: string;
+    code: string;
+      constructor(action: string, code: string) {
+          this.action = action;
+          this.code = code;
+      }
   }
 }
