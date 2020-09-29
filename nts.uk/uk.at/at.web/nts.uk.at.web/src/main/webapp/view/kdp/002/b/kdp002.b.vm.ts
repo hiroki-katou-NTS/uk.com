@@ -131,19 +131,17 @@ module nts.uk.at.view.kdp002.b {
 				let value = sr.buttonValueType;
 				if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 
-					sr.timeStampType = `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
-					return;
+					return `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
 
 				}
 
 				if (ButtonType.WORKING_OUT == value) {
 
-					sr.timeStampType = `<div class='full-width' style='text-align: right'>` + sr.stampArtName + '</div>';
-					return;
+					return `<div class='full-width' style='text-align: right'>` + sr.stampArtName + '</div>';
 
 				}
 
-				sr.timeStampType = sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
+				return sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
 
 			}
 
