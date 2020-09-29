@@ -39,8 +39,7 @@ public class ShiftTableDateSetting implements ShiftTableSetting {
 	public static ShiftTableDateSetting createWithExpectationMode(
 			OneMonth oneMonth, 
 			DateInMonth expectDeadLine, 
-			HolidayExpectationMaxdays holidayMaxDays, 
-			FromNoticeDays fromNoticeDays) {
+			HolidayExpectationMaxdays holidayMaxDays) {
 		
 		return new ShiftTableDateSetting(
 				oneMonth, 
