@@ -23,7 +23,7 @@ public class OneYearTime {
 	public OneYearTime(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
 		super();
 		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
-		if (this.upperLimit.lessThan(erAlTime.getError())) {
+		if (upperLimit.lessThan(erAlTime.getError())) {
 			throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
 		}
 		this.erAlTime = erAlTime;
