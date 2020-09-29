@@ -163,7 +163,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 // アルゴリズム「出力項目画面設定」を実行する (Thực thi thuật toán Setting màn hình hạng mục output)
                 self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText);
-                
 
                 var link: string;
                 if (exportAtr == 1 && columnIndex <= 6) link = '/view/kdl/047/a/index.xhtml';
@@ -247,9 +246,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
          * @param position 上段/下段
          * @param exportAtr 日次/月次
          */
-        settingOutputScreen(attendanceItemName: String, columnIndex: number, position: any, exportAtr: number, positionText: string): JQueryPromise<any> {
+        settingOutputScreen(attendanceItemName: String, columnIndex: number, position: any, exportAtr: number, positionText: string) {
             const vm = this;
-            const dfd = $.Deferred();
             let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
             attendanceItem.titleLine.displayFlag = true;
             attendanceItem.titleLine.layoutCode = vm.attendanceCode();
@@ -300,8 +298,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         setShared('attendanceItem', attendanceItem, true);
 
                     })
-                    .fail(() => dfd.reject())
-                    .always(() => dfd.resolve(attendanceItem));
             }
 
             if (exportAtr === 1 && columnIndex > 6) {
@@ -350,8 +346,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         setShared('attendanceItem', attendanceItem, true);
 
                     })
-                    .fail(() => dfd.reject())
-                    .always(() => dfd.resolve());
             }
 
             if (exportAtr === 2) {
@@ -401,11 +395,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         setShared('attendanceItem', attendanceItem, true);
 
                     })
-                    .fail(() => dfd.reject())
-                    .always(() => dfd.resolve());
             }
-
-            return dfd.promise();
         }
 
         decision(): void {

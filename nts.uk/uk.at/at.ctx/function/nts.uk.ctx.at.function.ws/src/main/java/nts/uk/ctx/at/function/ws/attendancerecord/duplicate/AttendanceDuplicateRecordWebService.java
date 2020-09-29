@@ -22,8 +22,8 @@ public class AttendanceDuplicateRecordWebService {
 	
 	@Path("executeCopy")
 	@POST
-	public Boolean executeCopy(AttendanceRecordDuplicateDto dto) {
-		return this.attendanceRecordDuplicateFinder.executeCopy(dto);
+	public void executeCopy(AttendanceRecordDuplicateDto dto) {
+		this.attendanceRecordDuplicateFinder.executeCopy(dto);
 	}
 	
 	@POST
