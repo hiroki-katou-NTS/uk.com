@@ -70,7 +70,7 @@ public class SurfaceItemDto {
 	private String saveForm;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
-		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode().orElse(""),
+		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getPatternCode(),
 				domain.getSaveSetName(), domain.getSupplementaryExplanation().orElse(""),
 				domain.getAnotherComCls().value, domain.getCategoryId(), domain.getTableNo(),
 				domain.getDataStorageProcessingId(), domain.getCategoryName(), domain.getRetentionPeriodCls().value,

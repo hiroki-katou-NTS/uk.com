@@ -8,11 +8,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,35 +36,38 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneMonth limitOneMonth = new LimitOneMonth(0);
+		AgreementOneMonthTime limitOneMonth = new AgreementOneMonthTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
+//					}					
 				}
 			} else {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
+//					}					
 				}
 			}
 		}
 		
-		if(agreementMonthSetting.getAlarmOneMonth().v().compareTo(agreementMonthSetting.getErrorOneMonth().v()) > 0){
-			errors.add("Msg_59,KMK008_43,KMK008_42");
-		}
-		
-		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
-			errors.add("Msg_59,KMK008_42,KMK008_44");
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		if(agreementMonthSetting.getAlarmOneMonth().v().compareTo(agreementMonthSetting.getErrorOneMonth().v()) > 0){
+//			errors.add("Msg_59,KMK008_43,KMK008_42");
+//		}
+//		
+//		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
+//			errors.add("Msg_59,KMK008_42,KMK008_44");
+//		}
 		Optional<AgreementMonthSetting> agreementMonth = this.agreementMonthSettingRepository.findByKey(agreementMonthSetting.getEmployeeId(), agreementMonthSetting.getYearMonthValue()); 
 		if(agreementMonth.isPresent()){
 			errors.add("Msg_61,KMK008_30");
@@ -83,35 +85,38 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneMonth limitOneMonth = new LimitOneMonth(0);
+		AgreementOneMonthTime limitOneMonth = new AgreementOneMonthTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
+//					}					
 				}
 			} else {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneMonth = basicAgreementSetting.get().getLimitOneMonth();
+//					}					
 				}
 			}
 		}
 		
-		if(agreementMonthSetting.getAlarmOneMonth().v().compareTo(agreementMonthSetting.getErrorOneMonth().v()) > 0){
-			errors.add("Msg_59,KMK008_43,KMK008_42");
-		}
-		
-		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
-			errors.add("Msg_59,KMK008_42,KMK008_44");
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		if(agreementMonthSetting.getAlarmOneMonth().v().compareTo(agreementMonthSetting.getErrorOneMonth().v()) > 0){
+//			errors.add("Msg_59,KMK008_43,KMK008_42");
+//		}
+//		
+//		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
+//			errors.add("Msg_59,KMK008_42,KMK008_44");
+//		}
 		if (errors.isEmpty()) {
 			// fix bug 100605
 			// this.agreementMonthSettingRepository.update(agreementMonthSetting);

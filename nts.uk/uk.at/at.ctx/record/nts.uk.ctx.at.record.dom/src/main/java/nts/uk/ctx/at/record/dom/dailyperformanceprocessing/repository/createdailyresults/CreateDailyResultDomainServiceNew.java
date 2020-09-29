@@ -444,11 +444,13 @@ public class CreateDailyResultDomainServiceNew {
 		List<GeneralDate> historyStartDateList = new ArrayList<>();
 		historyStartDateList.add(periodTime.start());
 		// add all startDate
-		if (workPlaceHistory.size() > 1) {
-			for (DatePeriod workPlaceDate : workPlaceHistory) {
+//		if (workPlaceHistory.size() > 1) {
+		for (DatePeriod workPlaceDate : workPlaceHistory) {
+			if(workPlaceDate.start().after(periodTime.start()) && !historyStartDateList.contains(periodTime.start())) {
 				historyStartDateList.add(workPlaceDate.start());
 			}
 		}
+//		}
 
 		// get 所属職場の履歴
 		List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoImport
@@ -462,13 +464,14 @@ public class CreateDailyResultDomainServiceNew {
 			workplaceItems.addAll(item.getWorkplaceItems());
 		});
 		// add all startDate
-		if (workplaceItems.size() > 1) {
+//		if (workplaceItems.size() > 1) {
 			for (ExWorkplaceHistItemImport itemImport : workplaceItems) {
-				if (!historyStartDateList.stream().anyMatch(item -> item.equals(itemImport.getPeriod().start()))) {
+				if (!historyStartDateList.stream().anyMatch(item -> item.equals(itemImport.getPeriod().start())) 
+						&& !historyStartDateList.contains(itemImport.getPeriod().start())) {
 					historyStartDateList.add(itemImport.getPeriod().start());
 				}
 			}
-		}
+//		}
 
 		// get 所属職位の履歴
 		List<ExJobTitleHistoryImport> exJobTitleHistoryImports = employeeGeneralInfoImport
@@ -482,26 +485,27 @@ public class CreateDailyResultDomainServiceNew {
 			jobTitleItems.addAll(item.getJobTitleItems());
 		});
 		// add all startDate
-		if (jobTitleItems.size() > 1) {
+//		if (jobTitleItems.size() > 1) {
 			for (ExJobTitleHistItemImport jobTitleHistItemImport : jobTitleItems) {
-				if (!historyStartDateList.stream()
-						.anyMatch(item -> item.equals(jobTitleHistItemImport.getPeriod().start()))) {
+				if (!historyStartDateList.stream().anyMatch(item -> item.equals(jobTitleHistItemImport.getPeriod().start()))
+						&& !historyStartDateList.contains(jobTitleHistItemImport.getPeriod().start())) {
 					historyStartDateList.add(jobTitleHistItemImport.getPeriod().start());
 				}
 			}
-		}
+//		}
 
 		// 労働条件の履歴が区切られている年月日を判断する
 		// filter 労働条件の履歴 follow employeeID
 		if (mapLstDateHistoryItem.containsKey(employeeID)) {
 			List<DateHistoryItem> dateHistoryItems = mapLstDateHistoryItem.get(employeeID);
-			if (dateHistoryItems.size() > 1) {
+//			if (dateHistoryItems.size() > 1) {
 				for (DateHistoryItem dateHistoryItem : dateHistoryItems) {
-					if (!historyStartDateList.stream().anyMatch(item -> item.equals(dateHistoryItem.start()))) {
+					if (!historyStartDateList.stream().anyMatch(item -> item.equals(dateHistoryItem.start()))
+							&& !historyStartDateList.contains(dateHistoryItem.start())) {
 						historyStartDateList.add(dateHistoryItem.start());
 					}
 				}
-			}
+//			}
 		}
 
 		historyStartDateList.sort((item1, item2) -> item1.compareTo(item2));

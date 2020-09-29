@@ -1,11 +1,15 @@
 package nts.uk.ctx.sys.assist.infra.entity.storage;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -165,6 +169,9 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true)
+	private List<SspmtResultOfLog> listResultOfLogs;
 
 	@Override
 	protected Object getKey() {
@@ -172,21 +179,54 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	}
 
 	public ResultOfSaving toDomain() {
-		return new ResultOfSaving(this.storeProcessingId, this.cid, this.systemType, this.fileSize, this.saveSetCode,
-				this.saveFileName, this.saveName, this.saveForm, this.saveEndDatetime, this.saveStartDatetime,
-				this.deletedFiles, this.compressedPassword, this.practitioner, this.targetNumberPeople, this.saveStatus,
-				this.saveForInvest, this.fileId, new LoginInfo(pcId,pcName,pcAccount));
+		return new ResultOfSaving
+			(
+				this.storeProcessingId, 
+				this.cid, 
+				this.systemType, 
+				this.fileSize, 
+				this.saveSetCode,
+				this.saveFileName, 
+				this.saveName, 
+				this.saveForm, 
+				this.saveEndDatetime, 
+				this.saveStartDatetime,
+				this.deletedFiles, 
+				this.compressedPassword, 
+				this.practitioner,
+				this.listResultOfLogs.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
+				this.targetNumberPeople,
+				this.saveStatus,
+				this.saveForInvest,
+				this.fileId, 
+				new LoginInfo(pcId,pcName,pcAccount)
+			);
 	}
 
 	public static SspmtResultOfSaving toEntity(ResultOfSaving domain) {
-		return new SspmtResultOfSaving(domain.getStoreProcessingId(), domain.getCid(), domain.getSystemType().value,
+		return new SspmtResultOfSaving
+			(
+				domain.getStoreProcessingId(), 
+				domain.getCid(), 
+				domain.getSystemType().value,
 				domain.getFileSize().orElse(null),
 				domain.getSaveSetCode().map(i -> i.v()).orElse(null),
-				domain.getSaveFileName().map(i -> i.v()).orElse(null), domain.getSaveName().v(),
-				domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null), domain.getSaveStartDatetime().orElse(null),
-				domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
-				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null),
-				domain.getSaveStatus().map(i->i.value).orElse(null), domain.getSaveForInvest().value, domain.getFileId().orElse(null),
-				domain.getLoginInfo().getIpAddress(),domain.getLoginInfo().getPcName(),domain.getLoginInfo().getAccount());
+				domain.getSaveFileName().map(i -> i.v()).orElse(null), 
+				domain.getSaveName().v(),
+				domain.getSaveForm().value, 
+				domain.getSaveEndDatetime().orElse(null), 
+				domain.getSaveStartDatetime().orElse(null),
+				domain.getDeletedFiles().value, 
+				domain.getCompressedPassword().map(i -> i.v()).orElse(null),
+				domain.getPractitioner(), 
+				domain.getTargetNumberPeople().orElse(null),
+				domain.getSaveStatus().map(i->i.value).orElse(null),
+				domain.getSaveForInvest().value,
+				domain.getFileId().orElse(null),
+				domain.getLoginInfo().getIpAddress(),
+				domain.getLoginInfo().getPcName(),
+				domain.getLoginInfo().getAccount(),
+				domain.getListResultLogSavings().stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
+			);
 	}
 }

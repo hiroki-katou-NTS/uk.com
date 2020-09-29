@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 
 @Getter
 @AllArgsConstructor

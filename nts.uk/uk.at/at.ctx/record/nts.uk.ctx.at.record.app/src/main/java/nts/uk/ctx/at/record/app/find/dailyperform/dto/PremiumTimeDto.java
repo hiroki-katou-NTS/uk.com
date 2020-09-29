@@ -17,13 +17,18 @@ public class PremiumTimeDto implements ItemConst {
 	/** 割増時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PREMIUM)
 	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer premitumTime;
+	private int premitumTime;
 
 	/** 割増時間NO: 割増時間NO */
-	private Integer no;
+	private int no;
+
+	/** 割増時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = AMOUNT)
+	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
+	private int premitumAmount;
 
 	@Override
 	public PremiumTimeDto clone() {
-		return new PremiumTimeDto(premitumTime, no);
+		return new PremiumTimeDto(premitumTime, no, premitumAmount);
 	}
 }

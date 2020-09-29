@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -46,10 +47,9 @@ public class ResultDeletion extends AggregateRoot {
 	/** The number employees. */
 	private int numberEmployees;
 
-	// システム種類
-	/** The system type. */
-	private SystemTypeEnum systemType;
-
+	//field 実行結果
+	private List<ResultLogDeletion> listResultLogDeletions;
+	
 	// 実行者
 	/** The practitioner id. */
 	private String sId;
@@ -85,13 +85,45 @@ public class ResultDeletion extends AggregateRoot {
 	//field ログイン情報
     private LoginInfo loginInfo;
     
-	public static ResultDeletion createFromJavatype(String delId, String companyId, String delName, int delType,
-			boolean isDeletedFilesFlg, String delCode, int numberEmployees, int systemType, String sId, int status,
-			GeneralDateTime startDateTimeDel, GeneralDateTime endDateTimeDel, String fileId, String fileName,
-			Integer fileSize, String passwordCompressFileEncrypt, LoginInfo loginInfo) {
-		return new ResultDeletion(delId, companyId, new DelName(delName), DelType.valueOf(delType), isDeletedFilesFlg,
-				new DelCode(delCode), numberEmployees, SystemTypeEnum.valueOf(systemType), sId,
-				SaveStatus.valueOf(status), startDateTimeDel, endDateTimeDel, fileId, new FileName(fileName), fileSize,
-				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)), loginInfo);
+	public static ResultDeletion createFromJavatype
+		(
+		String delId, 
+		String companyId, 
+		String delName, 
+		int delType,
+		boolean isDeletedFilesFlg, 
+		String delCode, 
+		int numberEmployees, 
+		List<ResultLogDeletion> listResultLogDeletions,
+		String sId, 
+		int status,
+		GeneralDateTime startDateTimeDel,
+		GeneralDateTime endDateTimeDel, 
+		String fileId, 
+		String fileName,
+		Integer fileSize, 
+		String passwordCompressFileEncrypt, 
+		LoginInfo loginInfo
+		){
+			return new ResultDeletion
+				(
+				delId, 
+				companyId, 
+				new DelName(delName), 
+				DelType.valueOf(delType), 
+				isDeletedFilesFlg,
+				new DelCode(delCode), 
+				numberEmployees, 
+				listResultLogDeletions,
+				sId,
+				SaveStatus.valueOf(status), 
+				startDateTimeDel, 
+				endDateTimeDel, 
+				fileId, 
+				new FileName(fileName), 
+				fileSize,
+				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)), 
+				loginInfo
+				);
 	}
 }

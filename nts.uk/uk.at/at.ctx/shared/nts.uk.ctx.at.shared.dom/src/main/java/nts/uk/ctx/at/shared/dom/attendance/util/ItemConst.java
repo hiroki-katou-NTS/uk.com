@@ -296,4 +296,11 @@ public interface ItemConst extends Cloneable {
 	public final String DETAIL = "明細";
 	public final String OTHER = "その他";
 	public final String FRAME = "枠";
+	public final String INTERVAL = "インターバル";
+	public final String CORE_OUT = "コアタイム外";
+	public final String STRAIGHT_GO = "直行";
+	public final String STRAIGHT_BACK = "直帰";
+	public final String STRAIGHT_GO_BACK = "直行直帰";
+	public final String TOPPAGE = "トップページ";
+	public final String TRANSFER_HOLIDAY = "振休";
 }
