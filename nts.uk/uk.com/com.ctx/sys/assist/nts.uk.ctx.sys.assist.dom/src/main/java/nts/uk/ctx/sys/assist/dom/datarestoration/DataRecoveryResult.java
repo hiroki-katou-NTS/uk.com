@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 
 /**
  * データ復旧の結果
@@ -56,10 +57,13 @@ public class DataRecoveryResult extends AggregateRoot {
 	 * 保存名称
 	 */
 	private String saveName;
+	
+    //field ログイン情報
+    private LoginInfo loginInfo;
 
 	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String saveSetCode,
 			String practitioner, String executionResult, GeneralDateTime startDateTime,
-			GeneralDateTime endDateTime, Integer saveForm, String saveName) {
+			GeneralDateTime endDateTime, Integer saveForm, String saveName, LoginInfo loginInfo) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.cid                   = cid;
 		this.saveSetCode           = Optional.ofNullable(saveSetCode);
@@ -69,5 +73,6 @@ public class DataRecoveryResult extends AggregateRoot {
 		this.endDateTime           = Optional.ofNullable(endDateTime);
 		this.saveForm              = saveForm;
 		this.saveName              = saveName;
+		this.loginInfo			   = loginInfo;
 	}
 }

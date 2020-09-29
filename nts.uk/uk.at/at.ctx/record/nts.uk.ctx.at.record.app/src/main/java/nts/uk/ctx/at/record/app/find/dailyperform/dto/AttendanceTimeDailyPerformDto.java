@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
@@ -16,6 +14,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -64,6 +65,23 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		if(domain != null){
 			items.setEmployeeID(domain.getEmployeeId());
 			items.setDate(domain.getYmd());
+			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getTime().getActualWorkingTimeOfDaily()));
+			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setBudgetTimeVariance(getAttendanceTime(domain.getTime().getBudgetTimeVariance()));
+			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getTime().getMedicalCareTime()));
+			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getTime().getWorkScheduleTimeOfDaily()));
+			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getTime().getStayingTime()));
+			items.setUnemployedTime(getAttendanceTime(domain.getTime().getUnEmployedTime()));
+			items.exsistData();
+		}
+		return items;
+	}
+	
+	public static AttendanceTimeDailyPerformDto getDto(String employeeID,GeneralDate ymd,AttendanceTimeOfDailyAttendance domain) {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		if(domain != null){
+			items.setEmployeeID(employeeID);
+			items.setDate(ymd);
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
 			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setBudgetTimeVariance(getAttendanceTime(domain.getBudgetTimeVariance()));
@@ -107,7 +125,7 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 	}
 	
 	@Override
-	public AttendanceTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public AttendanceTimeOfDailyAttendance toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -117,11 +135,13 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new AttendanceTimeOfDailyPerformance(emp, date,
+		AttendanceTimeOfDailyPerformance domain =  new AttendanceTimeOfDailyPerformance(emp, date,
+				new AttendanceTimeOfDailyAttendance(
 				scheduleTime == null ? WorkScheduleTimeOfDaily.defaultValue() : scheduleTime.toDomain(), 
 				actualWorkTime == null ? ActualWorkingTimeOfDaily.defaultValue() : actualWorkTime.toDomain(),
 				stayingTime == null ? StayingTimeDto.defaultDomain() : stayingTime.toDomain(), 
 				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
-				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime));
+				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime)));
+		return domain.getTime();
 	}
 }

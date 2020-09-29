@@ -27,8 +27,8 @@ public class KscmtMonthPatternPK implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The m pattern cd. */
-    @Column(name = "M_PATTERN_CD")
+    /** The month pattern cd. */
+    @Column(name = "CD")
     private String mPatternCd;
 
     /**

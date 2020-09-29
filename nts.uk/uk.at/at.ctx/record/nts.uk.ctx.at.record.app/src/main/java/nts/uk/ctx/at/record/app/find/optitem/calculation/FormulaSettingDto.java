@@ -6,10 +6,10 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItem;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
 
 /**
  * The Class FormulaSettingDto.

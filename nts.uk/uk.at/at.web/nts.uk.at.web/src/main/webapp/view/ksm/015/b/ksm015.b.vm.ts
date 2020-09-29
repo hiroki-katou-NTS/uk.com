@@ -21,15 +21,21 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.selectedShiftMaster.subscribe((value) => {
 				if (!value) {
 					self.createNew();
+					
 				} else {
 					nts.uk.ui.errors.clearAll();
 					self.bindShiftMasterInfoToForm(value);
 					$('.b73-desc').show();
-
+					$('#requiredName').focus();
 				}
 				self.clearPreviewColor();
 				self.getWorkStyle();
 			});
+			
+			self.registrationForm().color.subscribe((value) => {
+				if(value)
+				nts.uk.ui.errors.clearAll();
+			})
 
 			/*	self.registrationForm().workTypeCd.subscribe((value) => {
 					if(!value){
@@ -58,10 +64,12 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.shiftMasters(sorted);
 				if (data.shiftMasters && data.shiftMasters.length > 0) {
 					self.selectedShiftMaster(sorted[0].shiftMasterCode);
-					self.getWorkStyle();
+					//self.getWorkStyle();
+					$('#requiredName').focus();
 				} else {
 					self.clearPreviewColor();
 					self.createNew();
+					$('#requiredCode').focus();
 				}
 
 			}).fail(function(error) {
@@ -76,10 +84,18 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		public getWorkStyle() {
 			let self = this;
 			let dfd = $.Deferred();
+			if (_.isNil(self.registrationForm().color())) {
+				let KSM015_19 = nts.uk.resource.getText('KSM015_19');
+				$('#colorpicker').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_19]), "MsgB_2");
+			};
+
+			if (nts.uk.ui.errors.hasError()) {
+				return;
+			};
 			nts.uk.ui.block.grayout();
 			if (self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == ""
-				|| self.registrationForm().workTimeSetName().search("マスタ未登録") != -1
-				|| self.registrationForm().workTypeName().search("マスタ未登録") != -1) {
+				|| self.registrationForm().workTimeSetName().search(nts.uk.resource.getText('KSM015_29')) != -1
+				|| self.registrationForm().workTypeName().search(nts.uk.resource.getText('KSM015_29')) != -1) {
 				nts.uk.ui.block.clear();
 				return;
 			}
@@ -110,7 +126,7 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.workStyle().borderColor('solid');
 				self.workStyle().backGroundColor(self.registrationForm().color());
 				self.workStyle().workTimeSetDisplay(self.registrationForm().shiftMasterName());
-
+				
 			}).fail(function(error) {
 				nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 			}).always(function() {
@@ -164,15 +180,21 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.registrationForm().trimData();
 
 			$(".nts-input").trigger("validate");
+			
+			// fix bug 111259
+			if (_.isNil(self.registrationForm().color())) {
+				let KSM015_19 = nts.uk.resource.getText('KSM015_19');
+				$('#colorpicker').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_19]), "MsgB_2");
+			};
 
 			if (!self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() == '') {
 				let KSM015_17 = nts.uk.resource.getText('KSM015_17');
 				$('#worktype-chose').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_17]), "MsgB_2");
-			}
+			};
 
 			if (nts.uk.ui.errors.hasError()) {
 				return;
-			}
+			};
 
 			nts.uk.ui.block.grayout();
 			let param = new RegisterShiftMasterDto(self.registrationForm());

@@ -1,0 +1,678 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:com="http://xmlns.jcp.org/jsf/component"
+				xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table id="fixed-table-j1">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_242')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_695')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListD13,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: cancelAtr,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-j2">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_246')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_703')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+									options: itemListD13,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: workTimeReflectAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="d6">#{i18n.getText('KAF022_702')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+									options: itemListD13,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: extraWorkTimeReflectAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true
+									}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: workComment1Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div data-bind="ntsColorPicker: {
+										value: workComment1Color,
+										enable: true,
+										width: 40
+									}"/>
+						<div data-bind="ntsCheckBox: {
+										checked: workComment1Bold
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true
+									}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: workComment2Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div data-bind="ntsColorPicker: {
+										value: workComment2Color,
+										name: '#[KAF022_184]',
+										enable: true,
+										width: 40
+									}"/>
+						<div data-bind="ntsCheckBox: {
+										checked: workComment2Bold
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-j3">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_247')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_696')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: goOutTimeReflectAtr,
+										enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_251')}</td>
+				<td/>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_252')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: goOutPrivateDispAtr,
+										enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_253')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: goOutOfficeDispAtr,
+										enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_254')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+									options: itemListD13,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: goOutCompensationDispAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_255')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+									options: itemListD13,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: goOutUnionDispAtr,
+									enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true
+									}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: goOutComment1Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div data-bind="ntsColorPicker: {
+										value: goOutComment1Color,
+										enable: true,
+										width: 40
+									}"/>
+						<div data-bind="ntsCheckBox: {
+										checked: goOutComment1Bold
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+										constraint: 'Comment',
+										inline: true
+									}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+										name: '#[KAF022_183]',
+										value: goOutComment2Content,
+										constraint: 'Comment',
+										required: false,
+										enable: true,
+										readonly: false
+									}" />
+						<div data-bind="ntsColorPicker: {
+										value: goOutComment2Color,
+										name: '#[KAF022_184]',
+										enable: true,
+										width: 40
+									}"/>
+						<div data-bind="ntsCheckBox: {
+										checked: goOutComment2Bold
+									}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+    <table id="fixed-table-j4">
+        <colgroup>
+            <col width="270px"/>
+            <col width="650px"/>
+        </colgroup>
+        <thead>
+        <tr>
+            <th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_697')}</th>
+        </tr>
+        </thead>
+        <tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_696')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: breakTimeReflectAtr,
+										enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: breakComment1Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+						<div data-bind="ntsColorPicker: {
+											value: breakComment1Color,
+											enable: true,
+											width: 40
+										}"/>
+						<div data-bind="ntsCheckBox: {
+											checked: breakComment1Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: breakComment2Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+						<div data-bind="ntsColorPicker: {
+											value: breakComment2Color,
+											name: '#[KAF022_184]',
+											enable: true,
+											width: 40
+										}"/>
+						<div data-bind="ntsCheckBox: {
+											checked: breakComment2Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+        </tbody>
+    </table>
+
+    <table id="fixed-table-j5">
+        <colgroup>
+            <col width="270px"/>
+            <col width="650px"/>
+        </colgroup>
+        <thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_698')}</th>
+			</tr>
+        </thead>
+        <tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_696')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: childCareTimeReflecAtr,
+										enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: childCareComment1Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+						<div data-bind="ntsColorPicker: {
+											value: childCareComment1Color,
+											enable: true,
+											width: 40
+										}"/>
+						<div data-bind="ntsCheckBox: {
+											checked: childCareComment1Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header" id="d4">
+					<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: childCareComment2Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+						<div data-bind="ntsColorPicker: {
+											value: childCareComment2Color,
+											name: '#[KAF022_184]',
+											enable: true,
+											width: 40
+										}"/>
+						<div data-bind="ntsCheckBox: {
+											checked: childCareComment2Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+        </tbody>
+    </table>
+
+	<table id="fixed-table-j6">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+		<tr>
+			<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_699')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr class="inline-radio">
+			<td class="color-header">#{i18n.getText('KAF022_696')}</td>
+			<td class="two-radio">
+				<div data-bind="ntsRadioBoxGroup: {
+										options: itemListD13,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: careTimeReflectAtr,
+										enable: true}">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="border-bottom: none" class="color-header">
+				<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_256')}</div>
+			</td>
+			<td>
+				<div class="control-group valign-center">
+					<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: careComment1Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+					<div data-bind="ntsColorPicker: {
+											value: careComment1Color,
+											enable: true,
+											width: 40
+										}"/>
+					<div data-bind="ntsCheckBox: {
+											checked: careComment1Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="border-bottom: none" class="color-header">
+				<div data-bind="ntsFormLabel: {
+											constraint: 'Comment',
+											inline: true
+										}">#{i18n.getText('KAF022_257')}</div>
+			</td>
+			<td>
+				<div class="control-group valign-center">
+					<input data-bind="ntsTextEditor: {
+											name: '#[KAF022_183]',
+											value: careComment2Content,
+											constraint: 'Comment',
+											required: false,
+											enable: true,
+											readonly: false
+										}" />
+					<div data-bind="ntsColorPicker: {
+											value: careComment2Color,
+											name: '#[KAF022_184]',
+											enable: true,
+											width: 40
+										}"/>
+					<div data-bind="ntsCheckBox: {
+											checked: careComment2Bold
+										}">#{i18n.getText('KAF022_185')}</div>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-j7">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+		<tr>
+			<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_700')}</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_696')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+											options: itemListD13,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: supportTimeReflecAtr,
+											enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_243')}</td>
+				<td>
+					<div class="a4_8"
+						 data-bind="ntsComboBox: {
+                            options: supportFrames,
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: supportFrameDispNO,
+                            optionsText: 'name',
+                            columns: [
+                                { prop: 'name', length: 8 }
+                            ]}" />
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+												constraint: 'Comment',
+												inline: true
+											}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+												name: '#[KAF022_183]',
+												value: supportComment1Content,
+												constraint: 'Comment',
+												required: false,
+												enable: true,
+												readonly: false
+											}" />
+						<div data-bind="ntsColorPicker: {
+												value: supportComment1Color,
+												enable: true,
+												width: 40
+											}"/>
+						<div data-bind="ntsCheckBox: {
+												checked: supportComment1Bold
+											}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+												constraint: 'Comment',
+												inline: true
+											}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+												name: '#[KAF022_183]',
+												value: supportComment2Content,
+												constraint: 'Comment',
+												required: false,
+												enable: true,
+												readonly: false
+											}" />
+						<div data-bind="ntsColorPicker: {
+												value: supportComment2Color,
+												name: '#[KAF022_184]',
+												enable: true,
+												width: 40
+											}"/>
+						<div data-bind="ntsCheckBox: {
+												checked: supportComment2Bold
+											}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-j8">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_701')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+												constraint: 'Comment',
+												inline: true
+											}">#{i18n.getText('KAF022_256')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+												name: '#[KAF022_183]',
+												value: imageRecordComment1Content,
+												constraint: 'Comment',
+												required: false,
+												enable: true,
+												readonly: false
+											}" />
+						<div data-bind="ntsColorPicker: {
+												value: imageRecordComment1Color,
+												enable: true,
+												width: 40
+											}"/>
+						<div data-bind="ntsCheckBox: {
+												checked: imageRecordComment1Bold
+											}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="border-bottom: none" class="color-header">
+					<div data-bind="ntsFormLabel: {
+												constraint: 'Comment',
+												inline: true
+											}">#{i18n.getText('KAF022_257')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+												name: '#[KAF022_183]',
+												value: imageRecordComment2Content,
+												constraint: 'Comment',
+												required: false,
+												enable: true,
+												readonly: false
+											}" />
+						<div data-bind="ntsColorPicker: {
+												value: imageRecordComment2Color,
+												name: '#[KAF022_184]',
+												enable: true,
+												width: 40
+											}"/>
+						<div data-bind="ntsCheckBox: {
+												checked: imageRecordComment2Bold
+											}">#{i18n.getText('KAF022_185')}</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</ui:composition>

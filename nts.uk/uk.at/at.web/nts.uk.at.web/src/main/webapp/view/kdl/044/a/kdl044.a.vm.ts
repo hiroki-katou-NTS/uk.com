@@ -84,9 +84,14 @@ module nts.uk.at.view.kdl044.a {
                                 }   
                             }
                             self.listShifuto();
+                            let differentFromCurrents = null;
+                            if (data.isMultiSelect == true) {
+								differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
+							} else {
+								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpel });
+                            }
                             
-							let differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
-							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
+                            self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }
@@ -105,23 +110,23 @@ module nts.uk.at.view.kdl044.a {
                 let self = this;
                 if (!isUse) {
                     self.columns = ko.observableArray([
-                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
+                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50, formatter: _.escape},
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 , formatter: _.escape},
 /*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 300 },
-                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 300 , formatter: _.escape},
+                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 , formatter: _.escape}
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"];
                 } else {
                     self.columns = ko.observableArray([
-                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
+                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 , formatter: _.escape},
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 , formatter: _.escape},
 /*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
-                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 },
-                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 , formatter: _.escape},
+                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 , formatter: _.escape},
+                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 , formatter: _.escape}
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"];
                 }

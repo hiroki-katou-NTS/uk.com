@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 620,
+                height : 350
+            };
+        </script>
+
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="./kmr001.d.vm.js" />
+    </ui:define>
+
+    <!-- PAGE CONTENT -->
+    <ui:define name="content">
+        <div id="contents-area" class="fixed-flex-layout">
+
+                <div class="fixed-flex-layout-left">
+                    <div class="valign-center control-group" style="padding-top: 20px" >
+                        <!--KMR001_52-->
+                        <button tabindex="1" data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('KMR001_52')}</button>
+                        <!--KMR001_53-->
+                        <button tabindex="2" data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('KMR001_53')}</button>
+                        <!--KMR001_54-->
+                        <button tabindex="3" class="danger" data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('KMR001_54')}</button>
+                    </div>
+
+                    <div tabindex="4" id="B1_4"
+                         data-bind="ntsListBox: {
+						name: '#[KMR001_55]',
+						options: lstWpkHistory,
+						optionsValue: 'historyId',
+						optionsText: 'displayText',
+						multiple: false,
+						value: selectedHistoryId,
+						enable: true,
+						rows: 5,
+						columns: [
+							{ key: 'displayText', length: 15 }
+						]}">
+                    </div>
+                </div>
+
+            <div class="fixed-flex-layout-right">
+                <div class="valign-center control-group" style="width: 323px; padding-top: 20px">
+                    <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('KMR001_88')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('KMR001_89')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('KMR001_90')}</span>
+                </div>
+                <div class="valign-center control-group">
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
+                    <div  id="B3_5" data-bind="ntsDatePicker: {
+							name: '#[KMR001_57]',
+							required: true,
+							value: selectedStartDateInput,
+							dateFormat: 'YYYY/MM/DD',
+							enable: true}, visible: screenMode() == 1 || screenMode() == 2 || screenMode() == 3"></div>
+                    <span class="label" data-bind="text: selectedStartDateText, visible: screenMode() == 0"></span>
+                    <span class="label">#{i18n.getText('KMR001_58')}</span>
+                    <span class="label" data-bind="text: selectedEndDate"></span>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button class="large proceed" tabindex="5" data-bind="click: registerConfig, enable: !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR001_59')}</button>
+            <button class="medium" tabindex="6" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

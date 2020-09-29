@@ -1,15 +1,31 @@
-body {
-	overflow-y: hidden ;
-}
-
 #table-top {
-	margin-top: 13px;
-	margin-left: 76px;
+	width: 440px;
+	margin-top: 10px;
+	margin-left: 10px;
 }
 
-#table-bottom {
-	margin-left: 170px;
-	margin-top: 5px;
+#table-top tr td:nth-child(1){
+	width: 80px;
+}
+#table-top tr td:nth-child(2){
+	width: 360px;
+}
+
+#table-top .ntsCheckBox{
+	padding-left: 0px;
+}
+
+#daterangepicker .ntsControl.nts-datepicker-wrapper{
+	display: block;
+}
+
+.nts-fixed-table{
+	margin-left: 90px;
+	margin-top: 10px;
+}
+
+.nts-fixed-table th{
+	height: 37px;
 }
 
 .tbDay {
@@ -33,7 +49,7 @@ body {
 }
 
 .nts-first-radio>.ntsRadioBox:first-child {
-	background-color: #CCFFFF;
+	background-color: #D5FFFF;
 	
 }
 .nts-second-radio>.ntsRadioBox:nth-child(2) {
@@ -41,7 +57,7 @@ body {
 	
 }
 .nts-thirt-radio>.ntsRadioBox:nth-child(3) {
-	background-color: #DAEEF3;
+	background-color: #FDEADA;
 	
 }
 .ntsRadioBox{
@@ -49,14 +65,9 @@ body {
     padding: 5px;
 }
 .ntsCheckBox-label-bottom{
-	background-color: #F7EFD4;
-    padding: 3px;
-    margin: 10px;
+    margin: 2px 0 10px 0;
 }
 
-div.form-label{
-	height: 30px;
-}
 #functions-area-bottom{
-	    height: 110px;
+	 height: 110px;
 }

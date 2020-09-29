@@ -2,7 +2,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.Optional;
 
-import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
+import nts.uk.ctx.at.function.dom.adapter.standardmenu.StandardMenuNameQueryImport;
 
 public enum ApplicationType {
 	/** 残業申請（早出） */
@@ -77,7 +77,7 @@ public enum ApplicationType {
 		this.queryString = queryString;
 	}
 	
-	public StandardMenuNameQuery toStandardMenuNameQuery() {
-		return new StandardMenuNameQuery(this.programId, this.screenId, Optional.ofNullable(this.queryString));
+	public StandardMenuNameQueryImport toStandardMenuNameQuery() {
+		return new StandardMenuNameQueryImport(this.programId, this.screenId, Optional.ofNullable(this.queryString));
 	}
 }

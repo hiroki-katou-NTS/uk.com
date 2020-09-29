@@ -31,7 +31,7 @@ public class InsertShiftPalletComCommandHandler extends CommandHandler<InsertShi
 	protected void handle(CommandHandlerContext<InsertShiftPalletComCommand> context) {
 		InsertShiftPalletComCommand command = context.getCommand();
 		
-		if (StringUtils.isEmpty(command.workplaceId)) {
+		if (command.unit == 2) {
 			val existed = repo.findShiftPallet(AppContexts.user().companyId(), command.groupNo);
 			ShiftPalletsCom newShiftPalletsCom = command.toDomain();
 
@@ -43,7 +43,7 @@ public class InsertShiftPalletComCommandHandler extends CommandHandler<InsertShi
 				repo.update(newShiftPalletsCom);
 			}
 		} else {
-			val existedOrg = orgRepository.findShiftPalletOrg(0, command.getWorkplaceId(), command.groupNo);
+			val existedOrg = orgRepository.findShiftPalletOrg(command.unit, command.getWorkplaceId(), command.groupNo);
 			ShiftPalletsOrg newShiftPalletsOrg = command.toDom();
 			
 			if (!existedOrg.isPresent())
