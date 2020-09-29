@@ -173,7 +173,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
 			if (vm.model) {
-                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication !== 0) {
+                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 0 || vm.dataFetch().goBackReflect().reflectApplication === 2)) {
                    // $('#workSelect').focus();
 					let el = document.getElementById('workSelect');
 	                if (el) {
