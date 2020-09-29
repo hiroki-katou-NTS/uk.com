@@ -22,7 +22,7 @@ public class AttendanceRecordReportDailyData {
 	private String employeeId;
 	
 	//	年月日
-	private GeneralDate date;
+	private String date;
 	
 	//	上段/下段
 	private List<AttendanceRecordReportColumnData> columnDatas;
@@ -40,4 +40,7 @@ public class AttendanceRecordReportDailyData {
 	private String editedAchievementValue;
 	
 	private boolean secondCol;
+	
+	/** The day of week. */
+	private String dayOfWeek;
 }

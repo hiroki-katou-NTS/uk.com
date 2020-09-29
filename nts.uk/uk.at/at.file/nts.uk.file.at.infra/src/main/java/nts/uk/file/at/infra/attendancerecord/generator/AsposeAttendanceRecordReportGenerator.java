@@ -192,38 +192,40 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			MAX_ROW_PER_EMPL = 80;
 			
-			SEAL_RANGE_TMPL_ADDR = "AY14:BV17";
+			SEAL_RANGE_TMPL_ADDR = "AY14:AZ17";
 			
 			FONT_SIZE = 14;
 			
 			SEAL_COL_ADDR = Arrays
-					.asList(new String[] { "AW1", "AU1", "AS1", "AQ1", "AO1", "AM1" });
+					.asList(new String[] { "AV1", "AT1", "AR1", "AP1", "AN1", "AL1" });
 			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
-			MONTHLY_DATA_ADDR = "C%d:AD%d";
+			MONTHLY_DATA_ADDR = "C%d:AH%d";
 			
-			REPORT_PAGE_ADDR = "A1:BB";
+			REPORT_PAGE_ADDR = "A1:BE";
 			
-			REPORT_LEFT_COL_ADDR = "A%d:X%d";
+			REPORT_LEFT_COL_ADDR = "A%d:AB%d";
 			
-			REPORT_RIGHT_COL_ADDR = "Z%d:AX%d";
+			REPORT_RIGHT_COL_ADDR = "AD%d:BE%d";
 			
-			END_REPORT_PAGE_BREAK = "AT";
+			END_REPORT_PAGE_BREAK = "BF";
 			
-			DAILY_W_RANGE_TMPL_ADDR = "AY1:BV2";
+			DAILY_W_RANGE_TMPL_ADDR = "BG1:CH2";
 			
-			DAILY_B_RANGE_TMPL_ADDR = "AY4:BV5";
+			DAILY_B_RANGE_TMPL_ADDR = "BG4:CH5";
 			
-			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
+			WEEKLY_RANGE_TMPL_ADDR = "BG11:CH12";
 			
 			MAX_ROW_PER_EMPL = 80;
+			
+			SEAL_RANGE_TMPL_ADDR = "BG14:BH17";
 			
 			FONT_SIZE = 12;
 			
 			SEAL_COL_ADDR = Arrays
-					.asList(new String[] { "BE1", "BC1", "BA1", "AY1", "AW1", "AU1" });
+					.asList(new String[] { "BD1", "BB1", "AZ1", "AX1", "AV1", "AT1" });
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
@@ -289,11 +291,11 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-						worksheet.getCells().deleteColumns(58, 28, true);
+						worksheet.getCells().deleteColumns(42, 20, true);
 					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
 						worksheet.getCells().deleteColumns(50, 24, true);
 					} else {
-						worksheet.getCells().deleteColumns(42, 20, true);
+						worksheet.getCells().deleteColumns(58, 28, true);
 					}
 					
 					
@@ -474,7 +476,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// fill data data
 			dailyRange.get(0, 0).setValue(data.getDate());
-			dailyRange.get(0, 1).setValue(data.getDate().dayOfWeek());
+			dailyRange.get(0, 1).setValue(data.getDayOfWeek());
 			List<AttendanceRecordReportColumnData> reportColumnDatas = data.getColumnDatas();
 			for (int k = 0, l = reportColumnDatas.size(); k < l; k++) {
 				dailyRange.get(0, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getUper());
