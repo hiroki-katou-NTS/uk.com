@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,6 +11,11 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.ApplicableTimeZoneCls;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogether;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.MaxOfNumberEmployeeTogether;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 

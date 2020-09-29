@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation.SimultaneousAttendanceDesignation;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogether;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
@@ -42,7 +42,7 @@ private static final long serialVersionUID = 1L;
 	 * @param domain
 	 * @return
 	 */
-	public static List<KscmtAlchkWorkPair> toEntityList (SimultaneousAttendanceDesignation domain) {
+	public static List<KscmtAlchkWorkPair> toEntityList (WorkTogether domain) {
 		
 		return domain.getEmpMustWorkTogetherLst().stream()
 				.map(sid -> {
@@ -52,12 +52,12 @@ private static final long serialVersionUID = 1L;
 				.collect(Collectors.toList());
 	}
 	
-	public static SimultaneousAttendanceDesignation toDomain (String sid, List<KscmtAlchkWorkPair> lstEntity) {
+	public static WorkTogether toDomain (String sid, List<KscmtAlchkWorkPair> lstEntity) {
 		
 		List<String> pairList = lstEntity.stream()
 				.map(e -> e.pk.pairEmployeeId)
 				.collect(Collectors.toList());
 		
-		return new SimultaneousAttendanceDesignation(sid, pairList);
+		return new WorkTogether(sid, pairList);
 	}
 }

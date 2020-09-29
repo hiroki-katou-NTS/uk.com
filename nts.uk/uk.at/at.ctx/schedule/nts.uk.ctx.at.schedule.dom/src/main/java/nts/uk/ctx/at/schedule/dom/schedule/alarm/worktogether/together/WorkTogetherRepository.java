@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,19 +8,19 @@ import java.util.Optional;
  * @author hiroko_miura
  *
  */
-public interface SimultaneousAttendanceDesignationRepository {
+public interface WorkTogetherRepository {
 
 	/**
 	 * insert ( 同時出勤指定 )
 	 * @param simulAttDes
 	 */
-	void insert (SimultaneousAttendanceDesignation simulAttDes);
+	void insert (WorkTogether simulAttDes);
 	
 	/**
 	 * update ( 同時出勤指定 )
 	 * @param simulAttDes
 	 */
-	void update (SimultaneousAttendanceDesignation simulAttDes);
+	void update (WorkTogether simulAttDes);
 	
 	/**
 	 * delete ( 社員ID )
@@ -34,21 +34,21 @@ public interface SimultaneousAttendanceDesignationRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<SimultaneousAttendanceDesignation> getAll (String companyId);
+	List<WorkTogether> getAll (String companyId);
 	
 	/**
 	 * get ( 社員ID )
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<SimultaneousAttendanceDesignation> get (String employeeId);
+	Optional<WorkTogether> get (String employeeId);
 	
 	/**
 	 * *get ( List<社員ID> )
 	 * @param employeeIdList
 	 * @return
 	 */
-	List<SimultaneousAttendanceDesignation> getWithEmpIdList (List<String> employeeIdList);
+	List<WorkTogether> getWithEmpIdList (List<String> employeeIdList);
 	
 	/**
 	 * exists ( 社員ID )

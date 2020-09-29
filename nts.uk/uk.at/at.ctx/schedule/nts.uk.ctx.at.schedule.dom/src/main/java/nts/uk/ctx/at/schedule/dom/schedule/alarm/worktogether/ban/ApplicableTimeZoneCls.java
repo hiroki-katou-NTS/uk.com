@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @AllArgsConstructor
-public class SimultaneousAttendanceDesignation implements DomainAggregate{
+public class WorkTogether implements DomainAggregate{
 	/** 社員ID */
 	private final String sid;
 	
@@ -28,7 +28,7 @@ public class SimultaneousAttendanceDesignation implements DomainAggregate{
 	 * @param empMustWorkTogetherLst 同時に出勤すべき社員の候補
 	 * @return
 	 */
-	public  static SimultaneousAttendanceDesignation create(String sid, List<String> empMustWorkTogetherLst) {
+	public  static WorkTogether create(String sid, List<String> empMustWorkTogetherLst) {
 		
 		if(empMustWorkTogetherLst.isEmpty() || empMustWorkTogetherLst.size() > 10) {
 			throw new BusinessException("Msg_1881");
@@ -38,7 +38,7 @@ public class SimultaneousAttendanceDesignation implements DomainAggregate{
 			throw new BusinessException("Msg_1882");
 		}
 		
-		return new SimultaneousAttendanceDesignation(sid, empMustWorkTogetherLst);
+		return new WorkTogether(sid, empMustWorkTogetherLst);
 		
 	}
 	

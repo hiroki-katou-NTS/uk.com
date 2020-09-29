@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

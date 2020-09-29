@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban;
 
 import java.util.List;
 import java.util.Optional;

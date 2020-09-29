@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.simultaneousattendance.designation;
+package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.worktogether.designation;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +12,8 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation.SimultaneousAttendanceDesignation;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.designation.SimultaneousAttendanceDesignationRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogether;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogetherRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance.designation.KscmtAlchkWorkPair;
 
 /**
@@ -23,21 +23,21 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.simultaneousattendance
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaSimultaneousAttendanceDesignationRepository extends JpaRepository implements SimultaneousAttendanceDesignationRepository {
+public class JpaWorkTogetherRepository extends JpaRepository implements WorkTogetherRepository {
 
 	@Override
-	public void insert(SimultaneousAttendanceDesignation simulAttDes) {
+	public void insert(WorkTogether simulAttDes) {
 		this.commandProxy().insertAll(KscmtAlchkWorkPair.toEntityList(simulAttDes));
 	}
 
 	@Override
-	public void update(SimultaneousAttendanceDesignation simulAttDes) {
+	public void update(WorkTogether simulAttDes) {
 		this.commandProxy().updateAll(KscmtAlchkWorkPair.toEntityList(simulAttDes));
 	}
 
 	@Override
 	public void delete(String employeeId) {
-		Optional<SimultaneousAttendanceDesignation> domain = this.get(employeeId);
+		Optional<WorkTogether> domain = this.get(employeeId);
 		
 		if (domain.isPresent()) {
 			this.commandProxy().removeAll(KscmtAlchkWorkPair.toEntityList(domain.get()));
@@ -45,7 +45,7 @@ public class JpaSimultaneousAttendanceDesignationRepository extends JpaRepositor
 	}
 
 	@Override
-	public List<SimultaneousAttendanceDesignation> getAll(String companyId) {
+	public List<WorkTogether> getAll(String companyId) {
 		String sql = "SELECT * FROM KSCMT_ALCHK_WORK_PAIR"
 				+ " WHERE CID = @cid";
 		
@@ -66,7 +66,7 @@ public class JpaSimultaneousAttendanceDesignationRepository extends JpaRepositor
 	}
 
 	@Override
-	public Optional<SimultaneousAttendanceDesignation> get(String employeeId) {
+	public Optional<WorkTogether> get(String employeeId) {
 		String sql = "SELECT * FROM KSCMT_ALCHK_WORK_PAIR"
 				+ " WHERE SID in :sid";
 		
@@ -82,7 +82,7 @@ public class JpaSimultaneousAttendanceDesignationRepository extends JpaRepositor
 	}
 
 	@Override
-	public List<SimultaneousAttendanceDesignation> getWithEmpIdList(List<String> employeeIdList) {
+	public List<WorkTogether> getWithEmpIdList(List<String> employeeIdList) {
 		String sql = "SELECT * FROM KSCMT_ALCHK_WORK_PAIR"
 				+ " WHERE SID in :sid";
 		
