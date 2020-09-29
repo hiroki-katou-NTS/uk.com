@@ -27,18 +27,18 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 @Stateless
 public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements AgreementTimeOfManagePeriodRepository {
 
-	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonMngAgreTime a "
+	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtAgreementTime a "
 			+ "WHERE a.id.employeeId IN :employeeIds "
 			+ "AND a.id.yearMonth = :yearMonth "
 			+ "ORDER BY a.id.employeeId ";
 	
-	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonMngAgreTime a "
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtAgreementTime a "
 			+ "WHERE a.id.employeeId IN :employeeIds "
 			+ "AND a.id.yearMonth IN :yearMonths "
 			+ "ORDER BY a.id.employeeId, a.id.yearMonth ";
 	
 	private static final String REMOVE_BY_PK =
-			"DELETE FROM KrcdtMonMngAgreTime a "
+			"DELETE FROM KrcdtAgreementTime a "
 			+ "WHERE a.id.employeeId = :employeeId "
 			+ "AND a.id.yearMonth = :yearMonth ";
 	
