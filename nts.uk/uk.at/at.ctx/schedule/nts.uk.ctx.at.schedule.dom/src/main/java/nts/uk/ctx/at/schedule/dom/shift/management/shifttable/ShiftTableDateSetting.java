@@ -29,9 +29,6 @@ public class ShiftTableDateSetting implements ShiftTableSetting {
 	/**	希望休日の上限 */
 	private final Optional<HolidayExpectationMaxdays> holidayMaxDays;
 	
-	/** 締切日の何日前に通知するかの日数 */
-	private final Optional<FromNoticeDaysWithDateMode> fromNoticeDays;
-	
 	/**
 	 * "勤務希望運用する" で作る
 	 * @param oneMonth
@@ -43,13 +40,12 @@ public class ShiftTableDateSetting implements ShiftTableSetting {
 			OneMonth oneMonth, 
 			DateInMonth expectDeadLine, 
 			HolidayExpectationMaxdays holidayMaxDays, 
-			FromNoticeDaysWithDateMode fromNoticeDays) {
+			FromNoticeDays fromNoticeDays) {
 		
 		return new ShiftTableDateSetting(
 				oneMonth, 
 				Optional.of(expectDeadLine), 
-				Optional.of(holidayMaxDays), 
-				Optional.of(fromNoticeDays));
+				Optional.of(holidayMaxDays));
 	}
 	
 	/**
@@ -59,7 +55,7 @@ public class ShiftTableDateSetting implements ShiftTableSetting {
 	 */
 	public static ShiftTableDateSetting createWithoutExpectationMode(OneMonth oneMonth) {
 		
-		return new ShiftTableDateSetting(oneMonth, Optional.empty(), Optional.empty(), Optional.empty());
+		return new ShiftTableDateSetting(oneMonth, Optional.empty(), Optional.empty());
 	}
 	
 	@Override
@@ -95,29 +91,22 @@ public class ShiftTableDateSetting implements ShiftTableSetting {
 	}
 	
 	@Override
-	public GeneralDate getMostRecentDeadlineDate(GeneralDate date) {
+	public ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
-		return this.expectDeadLine.get().after(date);
+		// get deadline
+		GeneralDate mostRecentDeadline = this.expectDeadLine.get().after(baseDate);
+		
+		// get period
+		GeneralDate nextDeadlineDate = mostRecentDeadline.addMonths(1);
+		DatePeriod period =  this.closureDate.periodOf(nextDeadlineDate);
+		
+		return new ShiftTableRuleInfo(mostRecentDeadline, period);
 	}
 
 	@Override
-	public NotifyInformation isTodayTheNotify() {
+	public DatePeriod getPeriodWhichIncludeExpectingDate(GeneralDate expectingDate) {
 		
-		GeneralDate today = GeneralDate.today();
-		
-		// check whether today is notification date
-		GeneralDate mostRecentDeadline = this.expectDeadLine.get().after(today);
-		GeneralDate notifyStartDate = mostRecentDeadline.addDays(- this.fromNoticeDays.get().v());
-		if ( today.before(notifyStartDate) ) {
-			return NotifyInformation.notNotifyDate();
-		}
-		
-		// get notification period
-		GeneralDate nextDeadlineDate = mostRecentDeadline.addMonths(1);
-		DatePeriod notifyPeriod =  this.closureDate.periodOf(nextDeadlineDate);
-		
-		return NotifyInformation.create(notifyPeriod);
-		
+		return this.closureDate.periodOf(expectingDate);
 	}
 
 }

@@ -29,11 +29,6 @@ public class ShiftTableWeekSetting implements ShiftTableSetting {
 	 */
 	private final Optional<DeadlineDayOfWeek> expectDeadLine;
 	
-	/** 
-	 * 締切日の何日前に通知するかの日数 
-	 * */
-	private final Optional<FromNoticeDaysWithWeekMode> fromNoticeDays;
-	
 	/**
 	 * "勤務希望運用する" で作る
 	 * @param firstDayofWeek
@@ -42,14 +37,12 @@ public class ShiftTableWeekSetting implements ShiftTableSetting {
 	 */
 	public static ShiftTableWeekSetting createUseAvailability(
 			DayOfWeek firstDayofWeek, 
-			DeadlineDayOfWeek deadlineDayofWeek,
-			FromNoticeDaysWithWeekMode fromNoticeDays
+			DeadlineDayOfWeek deadlineDayofWeek
 			) {
 		
 		return new ShiftTableWeekSetting(
 				firstDayofWeek, 
-				Optional.of(deadlineDayofWeek),
-				Optional.of(fromNoticeDays)
+				Optional.of(deadlineDayofWeek)
 				);
 	}
 	
@@ -60,7 +53,7 @@ public class ShiftTableWeekSetting implements ShiftTableSetting {
 	 */
 	public static ShiftTableWeekSetting createNotuseAvailability(DayOfWeek firstDayofWeek) {
 		
-		return new ShiftTableWeekSetting(firstDayofWeek, Optional.empty(), Optional.empty());
+		return new ShiftTableWeekSetting(firstDayofWeek, Optional.empty());
 	}
 	
 	@Override
@@ -83,36 +76,32 @@ public class ShiftTableWeekSetting implements ShiftTableSetting {
 
 	@Override
 	public boolean isOverHolidayMaxdays(List<WorkExpectationOfOneDay> workExpectList) {
+		
 		return false;
 	}
 	
 	@Override
-	public GeneralDate getMostRecentDeadlineDate(GeneralDate date) {
+	public ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
-		return this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(date);
-	}
-
-	@Override
-	public NotifyInformation isTodayTheNotify() {
+		// get deadline
+		GeneralDate mostRecentDeadline = this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(baseDate);
 		
-		GeneralDate today = GeneralDate.today();
-
-		// check whether today is notification date
-		GeneralDate mostRecentDeadline = this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(today);
-		GeneralDate notifyStartDate = mostRecentDeadline.addDays(- this.fromNoticeDays.get().v());
-		if ( today.before(notifyStartDate)) {
-			return NotifyInformation.notNotifyDate();
-		}
-		
-		// get notification period
+		// get period
 		GeneralDate nextDeadline = mostRecentDeadline.addDays(7);
 		if (this.expectDeadLine.get().getWeekAtr() == DeadlineWeekAtr.TWO_WEEK_AGO) {
 			nextDeadline = nextDeadline.addDays(7);
 		}
 		GeneralDate startDate = nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
-		DatePeriod notifyPeriod = new DatePeriod(startDate, startDate.addDays(6));
+		DatePeriod period = new DatePeriod(startDate, startDate.addDays(6));
 		
-		return NotifyInformation.create(notifyPeriod);
+		return new ShiftTableRuleInfo(mostRecentDeadline, period);
+	}
+
+	@Override
+	public DatePeriod getPeriodWhichIncludeExpectingDate(GeneralDate expectingDate) {
+		
+		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		return new DatePeriod(startDate, startDate.addDays(6));
 	}
 
 }
