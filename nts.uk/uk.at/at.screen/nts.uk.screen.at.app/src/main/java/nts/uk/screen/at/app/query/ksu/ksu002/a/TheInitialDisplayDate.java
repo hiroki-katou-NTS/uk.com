@@ -48,8 +48,8 @@ public class TheInitialDisplayDate {
 
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
 
-		CurrentMonth currentMonth = closure.getClosureMonth();
-		TheInitialDisplayDateDto date = new TheInitialDisplayDateDto(currentMonth.getProcessingYm().v());
+		CurrentMonth currentMonth = closure.getClosureMonth();;
+		TheInitialDisplayDateDto date = new TheInitialDisplayDateDto(currentMonth.getProcessingYm().nextMonth().v());
 
 		return date;
 	}

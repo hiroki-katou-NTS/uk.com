@@ -60,14 +60,16 @@ public class ListOfPeriodsClose {
 		for (ClosurePeriod closurePeriod : periods) {
 			PeriodsCloseDto closeDto = new PeriodsCloseDto();
 			
-			closeDto.setDatePeriod(closurePeriod.getAggrPeriods().get(0).getPeriod());
+			DatePeriod period = closurePeriod.getAggrPeriods().get(0).getPeriod();
+			
+			closeDto.setStartDate(period.start());
+			closeDto.setEndDate(period.end());
 			
 			Optional<Closure> closure = this.closureRepository.findById(companyId, closurePeriod.getClosureId().value);
 			
 			closeDto.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
 			
 			dtos.add(closeDto);
-			
 		}
 		
 		return dtos;
