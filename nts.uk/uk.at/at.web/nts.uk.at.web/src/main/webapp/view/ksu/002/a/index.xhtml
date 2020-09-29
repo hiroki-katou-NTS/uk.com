@@ -8,18 +8,18 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			
-			<com:scriptfile path="ksu.002a.vm.js" />
 			<com:stylefile path="ksu.002a.style.css" />
 			<com:scriptfile path="../cores/memento.js" />
 			<com:scriptfile path="../cores/calendar.js" />
 			<com:scriptfile path="component/title-date.js" />
 			<com:scriptfile path="component/action-bar.js" />
+			
+			<com:scriptfile path="ksu.002a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="ksu-002a cf">
-					<button class="proceed" data-bind="i18n: 'KSU002_1'"></button>
+					<button class="proceed" data-bind="i18n: 'KSU002_1', timeClick: -1, click: function() { $vm.showC(!ko.unwrap($vm.showC)); }"></button>
 					<button class="" data-bind="i18n: 'KSU002_2'"></button>
 					<button class="" data-bind="i18n: 'KSU002_2'"></button>
 					<button class="btn-right" data-bind="i18n: 'KSU002_4'"></button>
@@ -35,7 +35,7 @@
 					<div class="cf">
 						<div data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
 					</div>
-					<div class="cf">
+					<div class="cf" data-bind="if: !!ko.unwrap($vm.showC)">
 						<div data-bind="scheduler: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
 					</div>
 				</div>

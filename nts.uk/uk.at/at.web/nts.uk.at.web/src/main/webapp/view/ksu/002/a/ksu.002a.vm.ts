@@ -2,7 +2,7 @@
 
 module nts.uk.ui.at.ksu002.a {
 	import m = nts.uk.ui.memento;
-	import c = nts.uk.ui.at.ksu002.calendar;
+	import c = nts.uk.ui.calendar;
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username'
@@ -10,7 +10,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	const memento: m.Options = {
 		size: 20,
-		/*replace: function (data: c.DayData[], replacer: c.DayData[]) {
+		/*replace: function (data: c.DayData[]) {
 			_.each(data, (d: c.DayData) => {
 
 				d.
@@ -26,6 +26,7 @@ module nts.uk.ui.at.ksu002.a {
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		currentUser!: KnockoutComputed<string>;
+		showC: KnockoutObservable<boolean> = ko.observable(true);
 
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(defaultBaseDate());
 		schedules: m.MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
@@ -47,7 +48,33 @@ module nts.uk.ui.at.ksu002.a {
 				.then((name: string) => bussinesName(name));
 
 			// call to api and get data
-			vm.baseDate.subscribe(() => vm.schedules.reset());
+			vm.baseDate
+				.subscribe(() => {
+					vm.$blockui('show');
+					setTimeout(() => {
+						const clones: c.DayData[] = ko.toJS(vm.schedules);
+
+						_.each(clones, (d) => {
+							d.binding = {
+								daisy: 'daisy',
+								dataInfo: d.date.getDate() === 2 ? '' : 'dataInfo',
+								date: '',
+								holiday: 'holiday'
+							};
+
+							d.className = [
+								d.date.getDate() === 16 ? c.COLOR_CLASS.SPECIAL : undefined,
+								d.date.getDate() === 18 ? c.COLOR_CLASS.HOLIDAY : undefined,
+								d.date.getDate() === 19 ? c.COLOR_CLASS.HOLIDAY : undefined,
+								d.date.getDate() === 19 ? c.COLOR_CLASS.SPECIAL : undefined,
+							].filter(f => !!f);
+						})
+
+						vm.schedules.reset(clones);
+
+						vm.$blockui('hide');
+					}, 3000);
+				});
 		}
 
 		mounted() {
@@ -76,7 +103,11 @@ module nts.uk.ui.at.ksu002.a {
 			const exist = _.find(wrap, f => moment(f.date).isSame(data.date, 'date'));
 
 			if (exist) {
-				exist.data = Date.now();
+				const { data, className } = exist;
+
+				exist.data = { ...data, holiday: 'Holiday' };
+
+				exist.className = [...(className || []), c.COLOR_CLASS.HOLIDAY];
 			}
 
 			vm.schedules.memento(wrap);

@@ -1,11 +1,15 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.ui.at.ksu002.calendar {
+module nts.uk.ui.calendar {
+	type BindingKey = 'date' | 'daisy' | 'holiday' | 'dataInfo';
+
 	export interface DayData {
-		data: any;
 		date: Date;
 		inRange: boolean;
 		startDate: boolean;
+		data?: DataInfo & Record<string, any>;
+		binding?: string | Record<BindingKey, string | null>;
+		className?: string[];
 	}
 
 	export interface DateRange {
@@ -18,6 +22,18 @@ module nts.uk.ui.at.ksu002.calendar {
 		baseDate: KnockoutObservable<Date | DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
 		clickCell: (target: 'title' | 'event' | 'holiday' | 'body', day: DayData) => void;
+	}
+
+	export enum COLOR_CLASS {
+		CURRENT = 'current',
+		SPECIAL = 'special',
+		HOLIDAY = 'holiday',
+		SUNDAY = 'sunday',
+		SATURDAY = 'saturday'
+	}
+
+	interface DataInfo {
+		holiday?: string;
 	}
 
 	const D_FORMAT = 'YYYYMM';
@@ -45,7 +61,7 @@ module nts.uk.ui.at.ksu002.calendar {
             </div>
             <div class="calendar title">
                 <div class="week cf" data-bind="foreach: { data: ko.unwrap($component.schedules).titles, as: 'day' }">
-                    <div class="day" data-bind="scheduler-class: day">
+                    <div class="day" data-bind="scheduler-day: day">
                         <div class="status cf">
                             <span data-bind="date: day.date, format: 'ddd'"></span>
                         </div>
@@ -54,7 +70,7 @@ module nts.uk.ui.at.ksu002.calendar {
             </div>
             <div class="calendar" data-bind="foreach: { data:ko.unwrap($component.schedules).days, as: 'days' }">
                 <div class="week cf" data-bind="foreach: { data: days, as: 'day' }">
-                    <div class="day" data-bind="scheduler-class: day">
+                    <div class="day" data-bind="scheduler-day: day">
                         <div class="status cf">
                             <span data-bind="scheduler-date: day"></span>
                             <svg data-bind="scheduler-daisy: day, timeClick: -1, click: function(evt) { $component.data.clickCell.apply($vm, ['event', day, evt]); }"></svg>
@@ -138,7 +154,6 @@ module nts.uk.ui.at.ksu002.calendar {
             .scheduler .calendar-container .calendar .week .day .status {
 				position: relative;
                 text-align: center;
-                background-color: #EDFAC2;
             }
             .scheduler .calendar-container .calendar .week .day .status span {
                 color: gray;
@@ -156,13 +171,25 @@ module nts.uk.ui.at.ksu002.calendar {
                 border-top: 1px solid #808080;
                 border-bottom: 1px solid #808080;
             }
-            .scheduler .calendar-container .calendar .week .day.sunday .status {
-                background-color: #FABF8F;
-            }
+            .scheduler .calendar-container .calendar .week .day .status {
+                background-color: #EDFAC2;
+			}
             .scheduler .calendar-container .calendar .week .day.saturday .status {
                 background-color: #9BC2E6;
             }
-            .scheduler .calendar-container .calendar .week .day .data-info{
+            .scheduler .calendar-container .calendar .week .day.sunday .status,
+            .scheduler .calendar-container .calendar .week .day.holiday .status {
+                background-color: #FABF8F;
+            }
+            .scheduler .calendar-container .calendar .week .day.special .status {
+                color: #f00;
+                background-color: rgb(255, 192, 203);
+			}
+            .scheduler .calendar-container .calendar .week .day.current .status {
+                color: #f00;
+                background-color: #ffff00;
+			}
+            .scheduler .calendar-container .calendar .week .day .data-info {
                 width: 100%;
                 height: 40px;
                 box-sizing: border-box;
@@ -230,16 +257,51 @@ module nts.uk.ui.at.ksu002.calendar {
 	].join(' ');
 
 	@handler({
+		bindingName: 'scheduler-day'
+	})
+	export class SchedulerDayComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+			const dayData = ko.unwrap(valueAccessor());
+			const { date, inRange, className, binding } = dayData;
+
+			if (moment(date).isSame(new Date(), 'date')) {
+				element.classList.add('current');
+			}
+
+			if (!inRange) {
+				element.classList.add('diff-month');
+			} else {
+				element.classList.add('same-month');
+
+				if (className && _.isArray(className)) {
+					className.forEach((c: string) => element.classList.add(c));
+				}
+			}
+
+			if (binding) {
+				if (_.isString(binding)) {
+					ko.applyBindingsToNode(element, { [binding]: dayData }, bindingContext);
+
+					return { controlsDescendantBindings: true };
+				}
+			}
+
+			element.classList.add(moment(date).locale('en').format('dddd').toLowerCase());
+		}
+	}
+
+	@handler({
 		bindingName: 'scheduler-daisy'
 	})
 	export class DaisyBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => DayData): void {
-			const day = ko.unwrap(valueAccessor());
+		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+			const dayData = valueAccessor();
+			const { inRange, binding } = dayData;
 
 			element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 			element.setAttribute('viewBox', '0 0 64 64');
 
-			if (!day.inRange) {
+			if (!inRange) {
 				element.innerHTML = '';
 			} else {
 				const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -248,27 +310,18 @@ module nts.uk.ui.at.ksu002.calendar {
 				p.setAttributeNS(null, 'd', DAISY_FLOWER);
 
 				element.appendChild(p);
-			}
-		}
-	}
 
-	@handler({
-		bindingName: 'scheduler-class'
-	})
-	export class ClassDayComponentBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => Date | DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
-			const day = ko.unwrap(valueAccessor());
+				if (binding) {
+					if (!_.isString(binding)) {
+						const { daisy } = binding;
 
-			if (_.isDate(day)) {
-				element.classList.add(moment(day).locale('en').format('dddd').toLowerCase());
-			} else {
-				if (!day.inRange) {
-					element.classList.add('diff-month');
-				} else {
-					element.classList.add('same-month');
+						if (daisy) {
+							ko.applyBindingsToNode(element, { [daisy]: dayData }, bindingContext);
+
+							return { controlsDescendantBindings: true };
+						}
+					}
 				}
-
-				element.classList.add(moment(day.date).locale('en').format('dddd').toLowerCase());
 			}
 		}
 	}
@@ -277,14 +330,36 @@ module nts.uk.ui.at.ksu002.calendar {
 		bindingName: 'scheduler-holiday'
 	})
 	export class SchedulerHolidayBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
-			const data = ko.unwrap(valueAccessor());
+		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+			const dayData = valueAccessor();
+			const { binding, inRange, data } = dayData;
 
-			if (!data.inRange) {
+			if (!inRange) {
 				element.innerHTML = '&nbsp;';
-			}
-			else {
-				element.innerHTML = '&nbsp;';
+			} else {
+				if (data) {
+					const { holiday } = data;
+
+					if (holiday) {
+						element.innerHTML = holiday;
+					} else {
+						element.innerHTML = '&nbsp;';
+					}
+				} else {
+					element.innerHTML = '&nbsp;';
+				}
+
+				if (binding) {
+					if (!_.isString(binding)) {
+						const { holiday } = binding;
+
+						if (holiday) {
+							ko.applyBindingsToNode(element, { [holiday]: dayData }, bindingContext);
+
+							return { controlsDescendantBindings: true };
+						}
+					}
+				}
 			}
 		}
 	}
@@ -293,19 +368,31 @@ module nts.uk.ui.at.ksu002.calendar {
 		bindingName: 'scheduler-date'
 	})
 	export class SchedulerDateBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
+		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
+			const { date, startDate, binding, inRange } = dayData;
 
-			if (!dayData.inRange) {
+			if (!inRange) {
 				element.innerHTML = '&nbsp;';
-			}
-			else {
-				const date = moment(dayData.date);
+			} else {
+				const mm = moment(date);
 
-				if (!dayData.startDate) {
-					element.innerHTML = date.format('D');
+				if (!startDate) {
+					element.innerHTML = mm.format('D');
 				} else {
-					element.innerHTML = date.format('M/D');
+					element.innerHTML = mm.format('M/D');
+				}
+
+				if (binding) {
+					if (!_.isString(binding)) {
+						const { date } = binding;
+
+						if (date) {
+							ko.applyBindingsToNode(element, { [date]: dayData }, bindingContext);
+
+							return { controlsDescendantBindings: true };
+						}
+					}
 				}
 			}
 		}
@@ -315,14 +402,24 @@ module nts.uk.ui.at.ksu002.calendar {
 		bindingName: 'scheduler-data-info'
 	})
 	export class SchedulerInfoBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void {
+		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
+			const { inRange, binding } = dayData;
 
-			if (!dayData.inRange) {
-				element.innerHTML = '&nbsp;';
-			}
-			else {
-				element.innerHTML = ko.toJSON(dayData.data);
+			element.innerHTML = '&nbsp;';
+
+			if (inRange) {
+				if (binding) {
+					if (!_.isString(binding)) {
+						const { dataInfo } = binding;
+
+						if (dataInfo) {
+							ko.applyBindingsToNode(element, { [dataInfo]: dayData }, bindingContext);
+
+							return { controlsDescendantBindings: true };
+						}
+					}
+				}
 			}
 		}
 	}
@@ -491,13 +588,14 @@ module nts.uk.ui.at.ksu002.calendar {
 					const [begin] = schedules;
 					const [finsh] = schedules.slice(-1);
 
-					const initRange = (start: moment.Moment, diff: number) => _.range(0, Math.abs(diff), 1)
+					const initRange = (start: moment.Moment, diff: number): DayData[] => _.range(0, Math.abs(diff), 1)
 						.map((d) => start.clone().add(d, 'day'))
 						.map((d) => ({
 							date: d.toDate(),
 							inRange: false,
 							startDate: false,
-							data: null
+							data: null,
+							binding: null
 						}));
 
 					const start1 = moment(begin.date).startOf('week');
@@ -557,7 +655,8 @@ module nts.uk.ui.at.ksu002.calendar {
 								date: d.toDate(),
 								inRange: true,
 								startDate: isStartDate(d),
-								data: null
+								data: null,
+								binding: null
 							}));
 
 						data.schedules(daysOfMonth);
@@ -611,15 +710,15 @@ module nts.uk.ui.at.ksu002.calendar {
 		title: string;
 	}
 
+	interface Schedule {
+		days: DayData[][];
+		titles: DayData[];
+	}
+
 	interface BaseDate {
 		show: KnockoutComputed<boolean>;
 		model: KnockoutObservable<string | null>;
 		start: KnockoutObservable<number | null>;
 		options: KnockoutObservableArray<DateOption>;
-	}
-
-	interface Schedule {
-		days: DayData[][];
-		titles: DayData[];
 	}
 }
