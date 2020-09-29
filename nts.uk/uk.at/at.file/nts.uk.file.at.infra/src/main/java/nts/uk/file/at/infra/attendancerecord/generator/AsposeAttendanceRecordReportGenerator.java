@@ -192,12 +192,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			MAX_ROW_PER_EMPL = 80;
 			
-			SEAL_RANGE_TMPL_ADDR = "AY14:BV17";
+			SEAL_RANGE_TMPL_ADDR = "AY14:AZ17";
 			
 			FONT_SIZE = 14;
 			
 			SEAL_COL_ADDR = Arrays
-					.asList(new String[] { "AW1", "AU1", "AS1", "AQ1", "AO1", "AM1" });
+					.asList(new String[] { "AV1", "AT1", "AR1", "AP1", "AN1", "AL1" });
 			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
@@ -220,12 +220,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			MAX_ROW_PER_EMPL = 80;
 			
-			SEAL_RANGE_TMPL_ADDR = "BG14:CH17";
+			SEAL_RANGE_TMPL_ADDR = "BG14:BH17";
 			
 			FONT_SIZE = 12;
 			
 			SEAL_COL_ADDR = Arrays
-					.asList(new String[] { "BE1", "BC1", "BA1", "AY1", "AW1", "AU1" });
+					.asList(new String[] { "BD1", "BB1", "AZ1", "AX1", "AV1", "AT1" });
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
