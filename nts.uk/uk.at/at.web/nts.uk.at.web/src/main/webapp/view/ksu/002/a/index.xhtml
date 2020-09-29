@@ -11,6 +11,7 @@
 			<com:stylefile path="ksu.002a.style.css" />
 			<com:scriptfile path="../cores/memento.js" />
 			<com:scriptfile path="../cores/calendar.js" />
+			<com:scriptfile path="component/scheduler.js" />
 			<com:scriptfile path="component/title-date.js" />
 			<com:scriptfile path="component/action-bar.js" />
 			
@@ -36,7 +37,7 @@
 						<div data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
 					</div>
 					<div class="cf" data-bind="if: !!ko.unwrap($vm.showC)">
-						<div data-bind="calendar: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
+						<div data-bind="scheduler: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
 					</div>
 				</div>
 			</div>

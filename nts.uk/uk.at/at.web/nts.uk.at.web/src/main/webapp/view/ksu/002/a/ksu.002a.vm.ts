@@ -55,20 +55,13 @@ module nts.uk.ui.at.ksu002.a {
 						const clones: c.DayData[] = ko.toJS(vm.schedules);
 
 						_.each(clones, (d) => {
-							d.binding = {
-								daisy: 'daisy',
-								dataInfo: d.date.getDate() === 2 ? '' : 'dataInfo',
-								date: '',
-								holiday: 'holiday'
-							};
-
 							d.className = [
 								d.date.getDate() === 16 ? c.COLOR_CLASS.SPECIAL : undefined,
 								d.date.getDate() === 18 ? c.COLOR_CLASS.HOLIDAY : undefined,
 								d.date.getDate() === 19 ? c.COLOR_CLASS.HOLIDAY : undefined,
 								d.date.getDate() === 19 ? c.COLOR_CLASS.SPECIAL : undefined,
 							].filter(f => !!f);
-						})
+						});
 
 						vm.schedules.reset(clones);
 

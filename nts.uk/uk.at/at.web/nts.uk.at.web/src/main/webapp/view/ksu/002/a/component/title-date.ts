@@ -109,6 +109,10 @@ module nts.uk.ui.at.ksu002.a {
 		}
 	}
 
+	const API = {
+		BASE_DATE: '/screen/ksu/ksu002/getInitialDate'
+	};
+
 	@component({
 		name: COMPONENT_NAME,
 		template
@@ -177,8 +181,13 @@ module nts.uk.ui.at.ksu002.a {
 
 		mounted() {
 			const vm = this;
-			
+
 			vm.yearMonth.valueHasMutated();
+
+			vm.$ajax('at', API.BASE_DATE)
+				.then(() => {
+
+				});
 		}
 	}
 

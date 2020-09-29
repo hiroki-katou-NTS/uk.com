@@ -168,6 +168,8 @@ module nts.uk.ui.calendar {
 			    height: 14px;
             }
             .calendar .calendar-container .month .week .day .status+.status {
+				height: 18px;
+				font-size: 12px;
                 border-top: 1px solid #808080;
                 border-bottom: 1px solid #808080;
             }
@@ -191,7 +193,7 @@ module nts.uk.ui.calendar {
 			}
             .calendar .calendar-container .month .week .day .data-info {
                 width: 100%;
-                height: 40px;
+                min-height: 40px;
                 box-sizing: border-box;
             }
             .calendar .calendar-container .month .week .day.diff-month .data-info {
@@ -537,7 +539,9 @@ module nts.uk.ui.calendar {
 				read: () => {
 					const date = ko.unwrap(data.baseDate);
 
-					if (_.isDate(date)) {
+					if (!_.isDate(date)) {
+						vm.baseDate.model(moment().format(D_FORMAT));
+					} else {
 						vm.baseDate.model(moment(date).format(D_FORMAT));
 					}
 				},
@@ -690,18 +694,12 @@ module nts.uk.ui.calendar {
 						}
 					}
 				});
-
-			if (_.isDate(ko.unwrap(data.baseDate))) {
-				vm.baseDate.model.valueHasMutated();
-			}
 		}
 
 		mounted() {
 			const vm = this;
-		}
 
-		destroyed() {
-			const vm = this;
+			vm.data.baseDate.valueHasMutated();
 		}
 	}
 
