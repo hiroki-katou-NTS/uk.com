@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Getter
 @RequiredArgsConstructor
-public class ShiftTableRuleForOrgannization implements DomainAggregate {
+public class ShiftTableRuleForOrganization implements DomainAggregate {
 
 	/** 対象組織 */
 	private final TargetOrgIdenInfor targetOrg;
