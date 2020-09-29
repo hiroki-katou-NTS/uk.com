@@ -37,7 +37,7 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
         private Approver36AgrByWorkplaceRepo repo;
         @Override
         public Optional<Approver36AgrByWorkplace> getPrevHistory(String workplaceId, GeneralDate lastDate) {
-            return repo.getByWorkplaceIdAndDate(workplaceId,lastDate);
+            return repo.getByWorkplaceIdAndEndDate(workplaceId,lastDate);
         }
 
         @Override

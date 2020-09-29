@@ -51,14 +51,14 @@ public class CompanyApproverHistoryWebService extends WebService {
     @Path("screen/d/update")
     @POST
     public void updateDate(CompanyPlaceApproveHistoryUpdateDateDto dto) {
-        val command = new CompanyApproverHistoryUpdateDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStarDate(), dto.getEndDate())
+        val command = new CompanyApproverHistoryUpdateDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStartDate(), dto.getEndDate())
                 , dto.getStartDateBeforeChange());
         this.updateDateCommandHandler.handle(command);
     }
     @Path("screen/d/delete")
     @POST
     public void deleteDate(CompanyPlaceApproveHistoryDeleteDateDto dto) {
-        val command = new CompanyApproverHistoryDeleteDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStarDate(), dto.getEndDate()) );
+        val command = new CompanyApproverHistoryDeleteDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStartDate(), dto.getEndDate()) );
         this.deleteDateCommandHandler.handle(command);
     }
 

@@ -16,7 +16,7 @@ public class CompanyPlaceApproveHistoryUpdateDateDto {
      * 期間
      */
 
-    private GeneralDate starDate;
+    private GeneralDate startDate;
 
     private GeneralDate endDate;
 

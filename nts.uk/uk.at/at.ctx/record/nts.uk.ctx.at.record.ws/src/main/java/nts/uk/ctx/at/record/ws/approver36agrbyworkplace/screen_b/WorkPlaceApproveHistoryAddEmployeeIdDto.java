@@ -17,7 +17,7 @@ public class WorkPlaceApproveHistoryAddEmployeeIdDto {
      * 期間
      */
 
-    private GeneralDate starDate;
+    private GeneralDate startDate;
 
     private GeneralDate endDate;
 

@@ -18,7 +18,7 @@ public class WorkPlaceApproveHistoryDeleteDateDto {
      * 期間
      */
 
-    private GeneralDate starDate;
+    private GeneralDate startDate;
 
     private GeneralDate endDate;
 
