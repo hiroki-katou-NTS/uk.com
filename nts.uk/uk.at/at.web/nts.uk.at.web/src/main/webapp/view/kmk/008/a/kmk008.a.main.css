@@ -2,34 +2,62 @@
 	width: 1200px !important;
 }
 
-.boder-style {
+.panel-row {
+	float: left;
+	padding: 10px;
+	/*border: 2px solid #B1B1B1;*/
+	/*border-radius: 7px;*/
+}
+#caret-top-container {
+	width: 736.5px;
+	padding-top: 0px;
+}
+
+#row2 {
+	border: 2px solid #B1B1B1;
+	border-radius: 7px;
+	margin-left: 10px;
+}
+
+.border-style {
 	float: left;
 	clear: right;
-	margin-top: 10px;
+
 }
 
-.contents-area-left {
-	height: 250px;
-	width: 230px;
-	margin-left: 20px;
+.panel-frame {
+	height: 255px;
+	width: 190px;
 }
 
-.contents-area-middle {
-	height: 250px;
-	width: 230px;
-}
-
-.contents-area-right {
-	height: 140px;
-	width: 200px;
-	margin-left: 40px;
+.no-border {
+	border:none !important;
 }
 
 .contents-area-caret-right {
-	height: 300px;
-	width: 65px;
+	height: 280px;
+	width: 50px;
 	float: left;
 	clear: right;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.panel-spacing {
+	height: 280px;
+	width: 40px;
+	float: left;
+}
+
+.contents-area-caret-top {
+	height: 30px;
+	width: 210px;
+	float: right;
+	clear: right;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .lbl-before-ready {
@@ -40,15 +68,21 @@
 
 .panel-custom-font-size {
 	font-size: 2em;
+	text-align: center;
 }
 
 .lbl-unit-setting-explanation, .lbl-general-labor-explanation {
 	margin-top: 7px;
 }
 
-.btn-unit-setting, .btn-deformed-labor {
-	margin-left: 10px;
+.btn-unit-setting {
 	margin-top: 10px;
+	width: 100%;
+}
+
+.btn-deformed-labor {
+	margin-top: 10px;
+	width: calc(100% - 10px);
 }
 
 .contents-area-right-caret {
@@ -60,7 +94,8 @@
 }
 
 .caret-right-kmk008 {
-	margin-left: 47px;
+	text-align: center;
+	margin: 3px;
 }
 
 .master_setting_caret.caret-right:after {
@@ -73,9 +108,15 @@
 .master_setting_caret.caret-bottom:after {
 	color: #92D050;
     border-width: 22px 45px;
-    margin-left: 3px;
-    margin-top: 3px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.master_setting_caret.caret-top:after {
+	color: #92D050;
+	border-width: 22px 45px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .setting_caret.caret-right:after {
