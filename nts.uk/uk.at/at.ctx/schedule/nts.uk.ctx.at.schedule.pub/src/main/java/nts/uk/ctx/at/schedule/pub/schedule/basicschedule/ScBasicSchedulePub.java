@@ -48,4 +48,7 @@ public interface ScBasicSchedulePub {
 	 * @return GeneralDate
 	 */
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
+	
+	
+	
 }

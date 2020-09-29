@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.alarmlist.fourweekfourdayoff;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.alarmlist.fourweekfourdayoff.AlarmExtractionValue4W4D;
 import nts.uk.ctx.at.record.dom.workrecord.alarmlist.fourweekfourdayoff.InfoCheckNotRegisterDto;
 import nts.uk.ctx.at.record.dom.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckService;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.alarmlist.fourweekfourdayoff.AlarmExtractionValue4W4DExport;
 import nts.uk.ctx.at.record.pub.workrecord.alarmlist.fourweekfourdayoff.W4D4CheckPub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @Stateless
 public class W4D4CheckPubImpl implements W4D4CheckPub {
@@ -36,6 +39,27 @@ public class W4D4CheckPubImpl implements W4D4CheckPub {
 			return Optional.empty();
 		}
 
+	}
+	
+	@Override
+	public 	List<AlarmExtractionValue4W4DExport> checkHolidayWithSchedule(String workplaceID, String employeeID, DatePeriod period,
+			List<WorkType> legalHolidayWorkTypeCodes, List<WorkType> illegalHolidayWorkTypeCodes,
+			List<InfoCheckNotRegisterPubExport> listWorkInfoOfDailyPerformance,
+			List<InfoCheckNotRegisterPubExport> basicSchedules) {
+		List<AlarmExtractionValue4W4D> alarmExtracts = checkService.checkHolidayWithSchedule(workplaceID, employeeID, period, 
+				legalHolidayWorkTypeCodes,
+				illegalHolidayWorkTypeCodes,
+				listWorkInfoOfDailyPerformance.stream().map(c->convertToDto(c)).collect(Collectors.toList()),
+				basicSchedules.stream().map(b -> convertToDto(b)).collect(Collectors.toList()));
+		
+		if (!alarmExtracts.isEmpty()) {
+			return alarmExtracts.stream().map(a -> new AlarmExtractionValue4W4DExport(workplaceID, employeeID, a.getDatePeriod(),
+					a.getClassification(), a.getAlarmItem(), a.getAlarmValueMessage(),
+					a.getComment(), a.getCheckedValue()))
+			.collect(Collectors.toList());
+		}
+		
+		return Collections.EMPTY_LIST;
 	}
 	
 	private InfoCheckNotRegisterDto convertToDto(InfoCheckNotRegisterPubExport export) {

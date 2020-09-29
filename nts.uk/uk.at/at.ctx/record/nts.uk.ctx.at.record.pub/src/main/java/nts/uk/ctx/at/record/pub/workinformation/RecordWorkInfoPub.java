@@ -20,6 +20,8 @@ public interface RecordWorkInfoPub {
 	List<WorkInfoOfDailyPerExport> findByEmpId(String employeeId);
 
 	Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
+	
+	List<InfoCheckNotRegisterPubExport> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod);
 	/**
 	 * 日別実績の勤務情報を取得する
 	 * @param employeeIds

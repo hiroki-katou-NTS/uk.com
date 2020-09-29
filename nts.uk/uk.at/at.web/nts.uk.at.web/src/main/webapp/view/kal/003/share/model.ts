@@ -14,7 +14,7 @@ module nts.uk.at.view.kal003.share.model {
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
             //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
             new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
-            //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
+            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
             new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
             //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
             new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
@@ -78,6 +78,8 @@ module nts.uk.at.view.kal003.share.model {
                 return this.availableRoles().join(", ");
             }, this);
         }
+
+      
     }
 
 
