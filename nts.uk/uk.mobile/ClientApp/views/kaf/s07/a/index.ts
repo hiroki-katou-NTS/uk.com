@@ -493,7 +493,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: false,
+                timeRange: true,
                 required: false
             });
         }
@@ -727,6 +727,44 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public register() {
         const vm = this;
         let validAll: boolean = true;
+        if (this.valueWorkHours1 != null) {
+            if (vm.valueWorkHours1.start && vm.valueWorkHours1.end) {
+                if (vm.valueWorkHours1.start > vm.valueWorkHours1.end) {
+                    vm.$modal.error({ messageId: 'Msg_579'});
+
+                    return;
+                }
+            }
+        }
+        if (this.valueWorkHours2 != null) {
+            if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
+                if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
+                    vm.$modal.error({ messageId: 'Msg_580'});
+
+                    return;
+                }
+            }
+            if (vm.valueWorkHours2.start != undefined && vm.valueWorkHours2.end == undefined) {
+                vm.$updateValidator('valueWorkHours2', {
+                    timeRange: true,
+                    required: true
+                });
+            }
+        }
+        // if (this.valueWorkHours2 != null) {
+        //     if ((this.valueWorkHours2.start != undefined && this.valueWorkHours2.end == undefined) || (this.valueWorkHours2.end != undefined && this.valueWorkHours2.start == undefined)) {
+        //         // this.get
+        //         this.$updateValidator('valueWorkHours2', {
+        //             timeRange: true,
+        //             required: false
+        //         });
+        //     } else {
+        //         this.$updateValidator('valueWorkHours2', {
+        //             timeRange: false,
+        //             required: false
+        //         });
+        //     }
+        // }
         for (let child of vm.$children) {
             child.$validate();
             if (!child.$valid) {
@@ -738,7 +776,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
         this.$validate();
         if (!this.$valid || !validAll) {
             window.scrollTo(500, 0);
-
+            vm.$updateValidator('valueWorkHours2', {
+                timeRange: true,
+                required: false
+            });
+            
             return;
         }
         if (this.$valid && validAll) {
