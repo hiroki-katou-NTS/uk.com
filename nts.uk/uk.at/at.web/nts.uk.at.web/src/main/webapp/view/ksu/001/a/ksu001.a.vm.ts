@@ -476,7 +476,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        getDataWhenChangeModePeriod(startDate, endDate): JQueryPromise<any> {
+        getDataWhenChangeModePeriod(startDate, endDate) {
             let self = this;
             let viewMode = self.selectedModeDisplayInBody();
             self.stopRequest(false);
@@ -519,6 +519,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
                 self.setUpdateMode();
+                
+                if (self.mode() == 'confirm') {
+                    $("#extable").exTable("updateMode", "determine");
+                }
 
                 self.setPositionButonToRightToLeft();
                 
@@ -529,8 +533,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.stopRequest(true);
-            }).fail(function() {
-                self.stopRequest(true);
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
             });
         }
 
@@ -2074,6 +2079,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.setUpdateMode();
                 
+                if (self.mode() == 'confirm') {
+                    $("#extable").exTable("updateMode", "determine");
+                }
+
                 self.setPositionButonToRightToLeft();
                 
                 // fix khi nextMonth|backMonth dang khong coppyPaste dc 
@@ -2083,8 +2092,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 self.stopRequest(true);
-            }).fail(function() {
+            }).fail(function(error) {
                 self.stopRequest(true);
+                nts.uk.ui.dialog.alertError(error);
             });
         }
 
@@ -2138,7 +2148,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
                 self.setUpdateMode();
-                
+
+                if (self.mode() == 'confirm') {
+                    $("#extable").exTable("updateMode", "determine");
+                }
+
                 self.setPositionButonToRightToLeft();
                 
                 // fix khi nextMonth|backMonth dang khong coppyPaste dc 
@@ -2148,8 +2162,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 self.stopRequest(true);
-            }).fail(function() {
+            }).fail(function(error) {
                 self.stopRequest(true);
+                nts.uk.ui.dialog.alertError(error);
             });
         }
         
