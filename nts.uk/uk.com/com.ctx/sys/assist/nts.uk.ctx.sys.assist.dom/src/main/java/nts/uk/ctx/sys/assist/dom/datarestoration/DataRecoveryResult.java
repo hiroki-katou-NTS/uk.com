@@ -1,11 +1,16 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
+//import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.SaveName;
+import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
 /**
  * データ復旧の結果
@@ -17,6 +22,11 @@ public class DataRecoveryResult extends AggregateRoot {
 	 * データ復旧処理ID
 	 */
 	private String dataRecoveryProcessId;
+	
+	/**
+	 * データ保存処理ID
+	 */
+	private String dataStorageProcessId;
 
 	/**
 	 * 会社ID
@@ -24,9 +34,9 @@ public class DataRecoveryResult extends AggregateRoot {
 	private String cid;
 
 	/**
-	 * 保存セットコード
+	 * パターンコード
 	 */
-	private Optional<String> saveSetCode;
+	private String patternCode;
 
 	/**
 	 * 実行者
@@ -36,8 +46,12 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * 実行結果
 	 */
-	private Optional<String> executionResult;
+	private String executionResult;
 
+	
+	//field 実行結果
+	private List<DataRecoveryLog> listDataRecoveryLogs;
+	
 	/**
 	 * 開始日時
 	 */
@@ -51,28 +65,31 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * 保存形態
 	 */
-	private Integer saveForm;
+	private StorageForm saveForm;
 
 	/**
 	 * 保存名称
 	 */
-	private String saveName;
-	
-    //field ログイン情報
-    private LoginInfo loginInfo;
+	private SaveName saveName;
 
-	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String saveSetCode,
-			String practitioner, String executionResult, GeneralDateTime startDateTime,
-			GeneralDateTime endDateTime, Integer saveForm, String saveName, LoginInfo loginInfo) {
+	 //field ログイン情報
+    private LoginInfo loginInfo;	
+
+    
+	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String patternCode,
+			String practitioner, String executionResult,List<DataRecoveryLog> listDataRecoveryLogs,
+			GeneralDateTime startDateTime, GeneralDateTime endDateTime, Integer saveForm, 
+			String saveName, String ipAddress, String pcName, String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.cid                   = cid;
-		this.saveSetCode           = Optional.ofNullable(saveSetCode);
+		this.patternCode           = patternCode;
 		this.practitioner          = practitioner;
-		this.executionResult       = Optional.ofNullable(executionResult);
+		this.executionResult       = executionResult;
+		this.listDataRecoveryLogs  = listDataRecoveryLogs;
 		this.startDateTime         = startDateTime;
 		this.endDateTime           = Optional.ofNullable(endDateTime);
-		this.saveForm              = saveForm;
-		this.saveName              = saveName;
-		this.loginInfo			   = loginInfo;
+		this.saveForm              = EnumAdaptor.valueOf(saveForm, StorageForm.class);
+		this.saveName              = new SaveName(saveName);
+		this.loginInfo			   = new LoginInfo(ipAddress,pcName,account);
 	}
 }

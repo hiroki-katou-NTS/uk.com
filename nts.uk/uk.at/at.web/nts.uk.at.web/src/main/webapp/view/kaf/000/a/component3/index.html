@@ -1,0 +1,21 @@
+<div id="kaf000-a-component3">
+	<div class="table" data-bind="if: prePostAtrDisp">
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel:{required: true}, text: $i18n('KAF000_46')"></div>
+		</div>
+		<div class="cell valign-center">
+			<div id="kaf000-a-component3-prePost" data-bind="ntsSwitchButton: {
+						name: $i18n('KAF000_46'),
+						options: ko.observableArray([
+                                { prePostCode: 0, prePostName: function() { return $i18n('KAF000_47'); } },
+                                { prePostCode: 1, prePostName: function() { return $i18n('KAF000_48'); } }
+                                ]),
+						optionsValue: 'prePostCode',
+						optionsText: 'prePostName',
+						value: prePostAtr,
+						enable: prePostAtrEnable,
+						required: true }">
+			</div>
+		</div>
+	</div>
+</div>

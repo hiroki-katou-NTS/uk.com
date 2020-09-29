@@ -14,16 +14,16 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementImport;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
 import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxTimeOfMonthlyImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.CheckAgreementTimeStatusAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.StartingMonthTypeImport;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
@@ -33,24 +33,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriod;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
-import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
-import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapter {
@@ -97,36 +88,37 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 
 			YearMonth yearMonth = period.end().yearMonth();
 
-			List<AgreementTimeExport> agreementTimeExport = agreementTimePub.get(AppContexts.user().companyId(),
-					employeeIds, yearMonth, ClosureId.valueOf(closureId));
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			List<AgreementTimeExport> agreementTimeExport = agreementTimePub.get(AppContexts.user().companyId(),
+//					employeeIds, yearMonth, ClosureId.valueOf(closureId));
 
-			List<AgreementTimeExport> exportError = agreementTimeExport.stream()
-					.filter(e -> e.getConfirmed().isPresent()
-							&& (e.getConfirmed().get().getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
-									|| e.getConfirmed().get()
-											.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR))
-					.collect(Collectors.toList());
+//			List<AgreementTimeExport> exportError = agreementTimeExport.stream()
+//					.filter(e -> e.getConfirmed().isPresent()
+//							&& (e.getConfirmed().get().getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
+//									|| e.getConfirmed().get()
+//											.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR))
+//					.collect(Collectors.toList());
+//
+//			List<AgreementTimeExport> exportAlarm = agreementTimeExport.stream()
+//					.filter(e -> e.getConfirmed().isPresent()
+//							&& e.getConfirmed().get().getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM)
+//					.collect(Collectors.toList());
 
-			List<AgreementTimeExport> exportAlarm = agreementTimeExport.stream()
-					.filter(e -> e.getConfirmed().isPresent()
-							&& e.getConfirmed().get().getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM)
-					.collect(Collectors.toList());
-
-			for (AgreementTimeExport error : exportError) {
-				for (AgreeConditionError condError : listCondError) {
-					result.add(CheckedAgreementImport.builder().employeeId(error.getEmployeeId()).datePeriod(period)
-							.alarmCheckId(condError.getId()).period(condError.getPeriod()).errorAlarm(ErrorAlarm.Error)
-							.messageDisp(condError.getMessageDisp()).build());
-				}
-			}
-
-			for (AgreementTimeExport alarm : exportAlarm) {
-				for (AgreeConditionError condAlarm : listCondAlarm) {
-					result.add(CheckedAgreementImport.builder().employeeId(alarm.getEmployeeId()).datePeriod(period)
-							.alarmCheckId(condAlarm.getId()).period(condAlarm.getPeriod()).errorAlarm(ErrorAlarm.Alarm)
-							.messageDisp(condAlarm.getMessageDisp()).build());
-				}
-			}
+//			for (AgreementTimeExport error : exportError) {
+//				for (AgreeConditionError condError : listCondError) {
+//					result.add(CheckedAgreementImport.builder().employeeId(error.getEmployeeId()).datePeriod(period)
+//							.alarmCheckId(condError.getId()).period(condError.getPeriod()).errorAlarm(ErrorAlarm.Error)
+//							.messageDisp(condError.getMessageDisp()).build());
+//				}
+//			}
+//
+//			for (AgreementTimeExport alarm : exportAlarm) {
+//				for (AgreeConditionError condAlarm : listCondAlarm) {
+//					result.add(CheckedAgreementImport.builder().employeeId(alarm.getEmployeeId()).datePeriod(period)
+//							.alarmCheckId(condAlarm.getId()).period(condAlarm.getPeriod()).errorAlarm(ErrorAlarm.Alarm)
+//							.messageDisp(condAlarm.getMessageDisp()).build());
+//				}
+//			}
 		}
 
 		return result;
@@ -141,32 +133,33 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 		for (DatePeriod period : periods) {
 
 			YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
-			Map<String, Map<YearMonth, AttendanceTimeMonth>> agreementMultipEmp = agreementTimeOfManagePub
-					.getTimeByPeriod(employeeIds, yearMonthPeriod);
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			Map<String, Map<YearMonth, AttendanceTimeMonth>> agreementMultipEmp = agreementTimeOfManagePub
+//					.getTimeByPeriod(employeeIds, yearMonthPeriod);
 
-			List<String> employeeIdsError = new ArrayList<>(agreementMultipEmp.keySet());
-			for (String employeeId : employeeIdsError) {
-
-				List<AttendanceTimeMonth> agreementOneEmp = new ArrayList<>(
-						agreementMultipEmp.get(employeeId).values());
-
-				for (AgreeCondOt agreeCond : listCondOt) {
-
-					int count = 0;
-					for (int i = 0; i < agreementOneEmp.size(); i++) {
-						if (agreementOneEmp.get(i).valueAsMinutes() > agreeCond.getOt36().valueAsMinutes())
-							count++;
-					}
-					if (count >= agreeCond.getExcessNum().v()) {
-						result.add(CheckedOvertimeImport.builder().employeeId(employeeId).datePeriod(period)
-								.alarmCheckId(agreeCond.getId()).error(true).no(agreeCond.getNo())
-								.ot36(agreeCond.getOt36()).excessNum(agreeCond.getExcessNum())
-								.messageDisp(agreeCond.getMessageDisp()).countAgreementOneEmp(count).build());
-					}
-
-				}
-
-			}
+//			List<String> employeeIdsError = new ArrayList<>(agreementMultipEmp.keySet());
+//			for (String employeeId : employeeIdsError) {
+//
+//				List<AttendanceTimeMonth> agreementOneEmp = new ArrayList<>(
+//						agreementMultipEmp.get(employeeId).values());
+//
+//				for (AgreeCondOt agreeCond : listCondOt) {
+//
+//					int count = 0;
+//					for (int i = 0; i < agreementOneEmp.size(); i++) {
+//						if (agreementOneEmp.get(i).valueAsMinutes() > agreeCond.getOt36().valueAsMinutes())
+//							count++;
+//					}
+//					if (count >= agreeCond.getExcessNum().v()) {
+//						result.add(CheckedOvertimeImport.builder().employeeId(employeeId).datePeriod(period)
+//								.alarmCheckId(agreeCond.getId()).error(true).no(agreeCond.getNo())
+//								.ot36(agreeCond.getOt36()).excessNum(agreeCond.getExcessNum())
+//								.messageDisp(agreeCond.getMessageDisp()).countAgreementOneEmp(count).build());
+//					}
+//
+//				}
+//
+//			}
 
 		}
 		return result;
@@ -174,8 +167,8 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	@Inject
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
 	
-	@Inject
-	private CheckAgreementTimeStatusAdapter checkAgreementTimeStatusAdapter;
+//	@Inject
+//	private CheckAgreementTimeStatusAdapter checkAgreementTimeStatusAdapter;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -238,28 +231,29 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					if(agreeConditionError.getPeriod() == Period.One_Month ) {
 						for(YearMonth ym = yearMonthPeriod.start();ym.lessThanOrEqualTo(yearMonthPeriod.end()) && ym.greaterThanOrEqualTo(yearMonthPeriod.start());ym = ym.addMonths(1)) {
 							//指定月36協定上限月間時間の取得(RQ 548 JAPAN)
-							List<AgreMaxTimeOfMonthlyImport> agreMaxTimeOfMonthlyImport = agreementTimeByPeriodAdapter.maxTime(
-									companyId, 
-									empId, 
-									new YearMonthPeriod(ym,ym)); //start = end
-							if(agreMaxTimeOfMonthlyImport.isEmpty())
-								continue;
-							//36協定上限時間の状態チェック(RQ 540 JAPAN)
-							AgreMaxTimeStatusOfMonthly agreMaxTimeStatusOfMonthly =  checkAgreementTimeStatusAdapter.maxTime(
-									agreMaxTimeOfMonthlyImport.get(0).getAgreementTime(),
-									agreMaxTimeOfMonthlyImport.get(0).getMaxTime(), 
-									Optional.empty());
+							/** TODO: 36協定時間対応により、コメントアウトされた */
+//							List<AgreMaxTimeOfMonthlyImport> agreMaxTimeOfMonthlyImport = agreementTimeByPeriodAdapter.maxTime(
+//									companyId, 
+//									empId, 
+//									new YearMonthPeriod(ym,ym)); //start = end
+//							if(agreMaxTimeOfMonthlyImport.isEmpty())
+//								continue;
+//							//36協定上限時間の状態チェック(RQ 540 JAPAN)
+//							AgreMaxTimeStatusOfMonthly agreMaxTimeStatusOfMonthly =  checkAgreementTimeStatusAdapter.maxTime(
+//									agreMaxTimeOfMonthlyImport.get(0).getAgreementTime(),
+//									agreMaxTimeOfMonthlyImport.get(0).getMaxTime(), 
+//									Optional.empty());
 							//指定期間36協定時間を生成する
-							AgreementTimeByPeriodImport agreementTimeByPeriodImport = convertToAgreMaxTimeOfMonthly(agreMaxTimeOfMonthlyImport.get(0).getAgreementTime().v(), ym, ym);
+//							AgreementTimeByPeriodImport agreementTimeByPeriodImport = convertToAgreMaxTimeOfMonthly(agreMaxTimeOfMonthlyImport.get(0).getAgreementTime().v(), ym, ym);
 							//36協定チェック結果を生成する
-							checkedAgreementResults.add(
-									CheckedAgreementResult.builder()
-									.checkResult(agreMaxTimeStatusOfMonthly==AgreMaxTimeStatusOfMonthly.NORMAL?false:true)
-									.upperLimit(agreMaxTimeOfMonthlyImport.get(0).getMaxTime().toString())
-									.agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId)
-									.errorAlarm(agreeConditionError.getErrorAlarm())
-									.build());
+//							checkedAgreementResults.add(
+//									CheckedAgreementResult.builder()
+//									.checkResult(agreMaxTimeStatusOfMonthly==AgreMaxTimeStatusOfMonthly.NORMAL?false:true)
+//									.upperLimit(agreMaxTimeOfMonthlyImport.get(0).getMaxTime().toString())
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport)
+//									.empId(empId)
+//									.errorAlarm(agreeConditionError.getErrorAlarm())
+//									.build());
 						}
 					}else if( agreeConditionError.getPeriod() == Period.Months_Average) {
 						int day = agreementSetObj.get().getClosingDateType().value+1;
@@ -277,22 +271,23 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 						if(!agreMaxAverageTimeMulti.isPresent())
 							continue;
 						//36協定上限複数月平均時間の状態チェック(RQ 543 JAPAN)
-						AgreMaxAverageTimeMulti data = checkAgreementTimeStatusAdapter.maxAverageTimeMulti(
-								companyId, agreMaxAverageTimeMulti.get(), Optional.empty(), Optional.empty());
-						
-						for(AgreMaxAverageTime agr : data.getAverageTimeList()) {
-							//指定期間36協定時間を生成する
-							AgreementTimeByPeriodImport agreementTimeByPeriodImport = convertToAgreMaxTimeOfMonthly(agr.getAverageTime().v(), agr.getPeriod().start(), agr.getPeriod().end());
-							//36協定チェック結果を生成する
-							checkedAgreementResults.add(
-									CheckedAgreementResult.builder()
-									.checkResult(agr.getStatus() == AgreMaxTimeStatusOfMonthly.NORMAL ? false : true)
-									.upperLimit(data.getMaxTime().toString())
-									.agreementTimeByPeriod(agreementTimeByPeriodImport)
-									.empId(empId)
-									.errorAlarm(agreeConditionError.getErrorAlarm())
-									.build());
-						}
+						/** TODO: 36協定時間対応により、コメントアウトされた */
+//						AgreMaxAverageTimeMulti data = checkAgreementTimeStatusAdapter.maxAverageTimeMulti(
+//								companyId, agreMaxAverageTimeMulti.get(), Optional.empty(), Optional.empty());
+//						
+//						for(AgreMaxAverageTime agr : data.getAverageTimeList()) {
+//							//指定期間36協定時間を生成する
+//							AgreementTimeByPeriodImport agreementTimeByPeriodImport = convertToAgreMaxTimeOfMonthly(agr.getAverageTime().v(), agr.getPeriod().start(), agr.getPeriod().end());
+//							//36協定チェック結果を生成する
+//							checkedAgreementResults.add(
+//									CheckedAgreementResult.builder()
+//									.checkResult(agr.getStatus() == AgreMaxTimeStatusOfMonthly.NORMAL ? false : true)
+//									.upperLimit(data.getMaxTime().toString())
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport)
+//									.empId(empId)
+//									.errorAlarm(agreeConditionError.getErrorAlarm())
+//									.build());
+//						}
 					}
 					continue;
 				}
@@ -307,18 +302,19 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					PeriodAtrOfAgreement periodAtr = mapPeriodWithPeriodAtrOfAgreement(agreeConditionError.getPeriod());
 					if (periodAtr != null) {
 						//RequestList No.453 指定期間36協定時間の取得
-						List<AgreementTimeByPeriod> agreementTimeByPeriods = agreementTimeByPeriodPub.algorithm(
-								agreeConditionError.getCompanyId(), empId, baseDate.end(),
-								new Month(startingMonth), new Year(fiscalYear), periodAtr, objCheckAgreement);
-						if(!CollectionUtil.isEmpty(agreementTimeByPeriods)){
-							for (AgreementTimeByPeriod agreementTimeByPeriod : agreementTimeByPeriods) {
-								int checkEnd = agreementTimeByPeriod.getEndMonth().compareTo(yearMonthPeriod.start());
-								int checkStart = agreementTimeByPeriod.getStartMonth().compareTo(yearMonthPeriod.end());
-								if(checkStart <= 0 && checkEnd >= 0 ){
-									lstAgreementTimeByPeriod.add(agreementTimeByPeriod);
-								}
-							}
-						}
+						/** TODO: 36協定時間対応により、コメントアウトされた */
+//						List<AgreementTimeByPeriod> agreementTimeByPeriods = agreementTimeByPeriodPub.algorithm(
+//								agreeConditionError.getCompanyId(), empId, baseDate.end(),
+//								new Month(startingMonth), new Year(fiscalYear), periodAtr, objCheckAgreement);
+//						if(!CollectionUtil.isEmpty(agreementTimeByPeriods)){
+//							for (AgreementTimeByPeriod agreementTimeByPeriod : agreementTimeByPeriods) {
+//								int checkEnd = agreementTimeByPeriod.getEndMonth().compareTo(yearMonthPeriod.start());
+//								int checkStart = agreementTimeByPeriod.getStartMonth().compareTo(yearMonthPeriod.end());
+//								if(checkStart <= 0 && checkEnd >= 0 ){
+//									lstAgreementTimeByPeriod.add(agreementTimeByPeriod);
+//								}
+//							}
+//						}
 					}
 				}
 				// Check for list Error

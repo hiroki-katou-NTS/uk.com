@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.app.command.outsideot.setting;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.outsideot.holiday.SuperHD60HConMedSaveDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 
 @Getter
 @Setter

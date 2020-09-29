@@ -11,10 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -67,35 +64,37 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	}
 	
 	public LateOrLeaveEarly toDomain() {
-		LateOrLeaveEarly lateOrLeaveEarly = LateOrLeaveEarly.builder()
-				.application(Application_New.builder().appID(this.krqdtAppLateOrLeavePK.appID).companyID(this.krqdtAppLateOrLeavePK.companyID).build())
-				.actualCancelAtr(this.actualCancelAtr)
-				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
-				.earlyTime1(getEarlyTime1())
-				.late1(EnumAdaptor.valueOf(this.late1, Select.class))
-				.lateTime1(getLateTime1())
-				.early2(EnumAdaptor.valueOf(this.early2, Select.class))
-				.earlyTime2(getEarlyTime2())
-				.late2(EnumAdaptor.valueOf(this.late2, Select.class))
-				.lateTime2(getLateTime2())
-				.build();
-		return lateOrLeaveEarly;
+//		LateOrLeaveEarly lateOrLeaveEarly = LateOrLeaveEarly.builder()
+//				.application(Application_New.builder().appID(this.krqdtAppLateOrLeavePK.appID).companyID(this.krqdtAppLateOrLeavePK.companyID).build())
+//				.actualCancelAtr(this.actualCancelAtr)
+//				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
+//				.earlyTime1(getEarlyTime1())
+//				.late1(EnumAdaptor.valueOf(this.late1, Select.class))
+//				.lateTime1(getLateTime1())
+//				.early2(EnumAdaptor.valueOf(this.early2, Select.class))
+//				.earlyTime2(getEarlyTime2())
+//				.late2(EnumAdaptor.valueOf(this.late2, Select.class))
+//				.lateTime2(getLateTime2())
+//				.build();
+//		return lateOrLeaveEarly;
+		return null;
 	}
 	
 	public static KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
-		return new KrqdtAppLateOrLeave (
-					new KrqdtAppLateOrLeavePK(
-							domain.getApplication().getCompanyID(), 
-							domain.getApplication().getAppID()),
-					domain.getActualCancelAtr(),
-					domain.getEarly1().value,
-					domain.getEarlyTime1AsMinutes(),
-					domain.getLate1().value,
-					domain.getLateTime1AsMinutes(),
-					domain.getEarly2().value,
-					domain.getEarlyTime2AsMinutes(),
-					domain.getLate2().value,
-					domain.getLateTime2AsMinutes());
+//		return new KrqdtAppLateOrLeave (
+//					new KrqdtAppLateOrLeavePK(
+//							domain.getApplication().getCompanyID(), 
+//							domain.getApplication().getAppID()),
+//					domain.getActualCancelAtr(),
+//					domain.getEarly1().value,
+//					domain.getEarlyTime1AsMinutes(),
+//					domain.getLate1().value,
+//					domain.getLateTime1AsMinutes(),
+//					domain.getEarly2().value,
+//					domain.getEarlyTime2AsMinutes(),
+//					domain.getLate2().value,
+//					domain.getLateTime2AsMinutes());
+		return null;
 	}
 	public TimeDay getLateTime1() {
 		return lateTime1 == null ? null : new TimeDay(this.lateTime1);

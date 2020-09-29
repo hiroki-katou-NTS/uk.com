@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.dom.event.DomainEventSubscriber;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemUpdateDomainEvent;
 import nts.uk.ctx.at.shared.dom.scherec.event.OptionalItemAtrExport;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUpdateDomainEvent;
 import nts.uk.ctx.at.shared.dom.scherec.service.AttendanceAtrService;
 
 @Stateless

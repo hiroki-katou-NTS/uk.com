@@ -102,6 +102,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -109,6 +111,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -256,15 +259,15 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 		try {
 			//実行区分をチェックする
-			if(command.getContent().getImplementAtr() == ImplementAtr.DELETE_WORK_SCHEDULE) {
+			if(command.getContent().getRecreateCondition().isPresent() && command.getContent().getRecreateCondition().get().getReOverwriteRevised()) {
 				//勤務予定削除する
 				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
-			} else {
+			} 
 				//勤務予定作成する  ↓
 				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
 				// ----------↑
-			}
+			
 		} finally {
 			CalculationCache.clear();
 		}
@@ -589,7 +592,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod,
 					creator.getEmployeeId());
-			this.scheduleErrorLogRepository.add(scheduleErrorLog);
+			//this.scheduleErrorLogRepository.add(scheduleErrorLog);
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, scheduleErrorLog,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value), null, null, null);
 			return result;
@@ -903,7 +906,31 @@ public class ScheduleCreatorExecutionTransaction {
 					ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
 					integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
 					}
-
+					
+					//出退勤。勤務No = 取得した所定時間帯. 勤務NO
+					//出退勤。出勤。打刻。時間。時刻 = 取得した所定時間帯. 開始
+					//出退勤。出勤。打刻。時間。時刻変更手段＝実打刻
+					//出退勤。退勤。打刻。時間。時刻 = 取得した所定時間帯.  終了
+					//出退勤。退勤。打刻。時間。時刻変更手段＝実打刻
+					//出退勤。遅刻を取り消した＝False
+					//出退勤。早退を取り消した＝False
+					if(integrationOfDaily.getAttendanceLeave().isPresent() && !integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().isEmpty()) {
+					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().forEach(x->{
+						prepareWorkOutput.getScheduleTimeZone().forEach(y->{
+								x.setWorkNo(new WorkNo(y.getWorkNo()));
+								if(x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+								x.getAttendanceStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getStart()));
+								x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+								}
+								if(x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+								x.getLeaveStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getStart()));
+								x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+								}
+								x.setCanceledLate(false);
+								x.setCanceledEarlyLeave(false);
+						});
+					});
+					};
 					// 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
 					// 編集状態あり
 					if (!attendanceItemIdList.isEmpty()) {
@@ -1210,7 +1237,7 @@ public class ScheduleCreatorExecutionTransaction {
 			PrepareWorkOutput prepareWorkOutput, ScheduleCreator creator) {
 
 		List<WorkSchedule> workScheduleRepo = new ArrayList<>();
-		List<WorkSchedule> workSchedules = carrier.get("勤務予定", () -> new ArrayList<WorkSchedule>());
+		List<WorkSchedule> workSchedules = new ArrayList<>();
 		// 勤務予定をコピーして作成する
 		// コピー元勤務予定一覧キャッシュを確認する
 
@@ -1238,7 +1265,7 @@ public class ScheduleCreatorExecutionTransaction {
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			} else {
 
-				// 取得した勤務予定一覧をメモリにキャッシュする chưa làm
+				// 取得した勤務予定一覧をメモリにキャッシュする
 				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
 			}
 		}
