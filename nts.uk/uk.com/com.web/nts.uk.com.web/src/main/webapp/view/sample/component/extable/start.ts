@@ -91,7 +91,7 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
-                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null, null, null);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, "1", "通常８ｈ" + this.empId, "3:30", null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
             
@@ -540,7 +540,7 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "stick",
+            updateMode: "copyPaste",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
