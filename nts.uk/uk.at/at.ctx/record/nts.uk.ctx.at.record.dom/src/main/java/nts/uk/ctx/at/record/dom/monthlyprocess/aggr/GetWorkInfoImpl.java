@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfo;
 
 /**

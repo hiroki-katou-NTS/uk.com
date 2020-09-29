@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf022.f.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelF {
+        // 勤務情報を反映する
         selectedValueF13: KnockoutObservable<number>;
         itemListF13: KnockoutObservableArray<ItemModel> = ko.observableArray([
             new ItemModel(3, text("KAF022_198")),

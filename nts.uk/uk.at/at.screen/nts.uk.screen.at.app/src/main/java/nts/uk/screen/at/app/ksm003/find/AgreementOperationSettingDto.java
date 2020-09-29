@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;

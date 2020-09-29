@@ -8,10 +8,8 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,12 +66,12 @@ public class AppConfirmationTest {
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {
 		OneMonthTime oneMonthTime = new OneMonthTime(
-				new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)),
+				new OneMonthErrorAlarmTime(),
 				new YearMonth(0)
 		);
 
 		OneYearTime oneYearTime = new OneYearTime(
-				new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
+				new OneYearErrorAlarmTime(),
 				new Year(0)
 		);
 

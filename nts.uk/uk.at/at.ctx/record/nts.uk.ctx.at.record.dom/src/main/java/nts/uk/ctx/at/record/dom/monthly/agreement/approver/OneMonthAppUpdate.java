@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
@@ -57,7 +57,7 @@ public class OneMonthAppUpdate {
 				GeneralDate.today(),
 				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
-		val oneMonth = setting.getBasicAgreementSetting().getOneMonth();
+		val oneMonth = setting.getOneMonth();
 
 		// $エラー結果
 		val errResult =  oneMonth.checkErrorTimeExceeded(oneMonthTime);
@@ -76,7 +76,7 @@ public class OneMonthAppUpdate {
 		val oneMonthArlarm = oneMonth.calculateAlarmTime(oneMonthTime);
 
 		// $エラーアラーム
-		val errorArlarmTime = new ErrorTimeInMonth(oneMonthTime, oneMonthArlarm);
+		val errorArlarmTime = new OneMonthErrorAlarmTime(oneMonthTime, oneMonthArlarm);
 
 		// $36協定申請.1ヶ月の申請時間を変更する
 		app.changeApplicationOneMonth(errorArlarmTime,reason);

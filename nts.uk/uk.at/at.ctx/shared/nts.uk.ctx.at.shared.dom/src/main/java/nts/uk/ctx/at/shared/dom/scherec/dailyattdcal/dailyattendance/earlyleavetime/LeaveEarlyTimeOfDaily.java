@@ -80,8 +80,8 @@ public class LeaveEarlyTimeOfDaily {
 		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 										 TimeWithCalculation.sameTime(new AttendanceTime(0)),
 										 new WorkNo(1),
-										 new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-										 new IntervalExemptionTime());
+										 TimevacationUseTimeOfDaily.defaultValue(),
+										 IntervalExemptionTime.defaultValue());
 	}
 	
 	/**
@@ -201,8 +201,8 @@ public class LeaveEarlyTimeOfDaily {
 				leaveEarlyTime,
 				leaveEarlyDeductionTime,
 				workNo,
-				new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-				new IntervalExemptionTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)));
+				TimevacationUseTimeOfDaily.defaultValue(),
+				IntervalExemptionTime.defaultValue());
 		return LeaveEarlyTimeOfDaily;
 	}
 	
