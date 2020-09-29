@@ -34,11 +34,6 @@ export class KdpS01CComponent extends Vue {
         attendanceItem: {
             attendance: '',
             timeItems: [
-                { itemId: 1, title: '就業時間', value: '' },
-                { itemId: 2, title: '残業', value: '' },
-                { itemId: 3, title: '休憩時間', value: '' },
-                { itemId: 4, title: '日別項目', value: '' },
-                { itemId: 5, title: '日別項目', value: '' }
             ]
         }
     };
@@ -110,7 +105,9 @@ export class KdpS01CComponent extends Vue {
             vm.screenData.attendanceItem.timeItems = timeData;
 
         }).catch((res: any) => {
-            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+                vm.$close();
+            });
         });
 
     }
@@ -124,7 +121,11 @@ export class KdpS01CComponent extends Vue {
             return State.SETTING_NULL;
         }
 
-        if (permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
+        let itemHasData = _.filter(vm.screenData.attendanceItem.timeItems, (item) => {
+            return !_.isEmpty(item.value);
+        });
+
+        if (permissionCheck === ReleasedAtr.IMPLEMENT && itemHasData.length > 0) {
             return State.IMPLEMENT;
         } else {
             return State.CAN_NOT_IMPLEMENT;
