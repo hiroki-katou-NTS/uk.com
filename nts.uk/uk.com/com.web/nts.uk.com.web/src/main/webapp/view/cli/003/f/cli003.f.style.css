@@ -69,5 +69,5 @@ div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
 } 
 
 #igGridLog_scroll{
-	overflow-y: overlay;
+	overflow-y: overlay !important;
 }
