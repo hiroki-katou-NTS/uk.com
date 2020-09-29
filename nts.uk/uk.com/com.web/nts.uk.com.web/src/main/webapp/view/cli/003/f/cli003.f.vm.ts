@@ -142,9 +142,9 @@ module nts.uk.com.view.cli003.f {
         correctionAttr: string;
     }
     export interface LogSettingParam {
-        bootHistoryRecord: number
+        startHistoryRecord: number
         companyId: string
-        editHistoryRecord: number
+        updateHistoryRecord: number
         loginHistoryRecord: number
         menuClassification: number
         programId: string
@@ -723,8 +723,9 @@ module nts.uk.com.view.cli003.f {
                             vm.isDisplayText(true);
                         }
                         //log setting list start boot history not in use
-                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
-                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
+                        //console.log(logSettingEdit);
                         const logSettingEditProgramId = {};
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {};
@@ -749,7 +750,6 @@ module nts.uk.com.view.cli003.f {
                                     if (vm.filterLogPersonInfoUpdate(logBasicInfoModel)) {
                                         if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
                                             if (logBasicInfoModel.processAttr !== '新規') {
-                                                // process sub header
                                                 const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
                                                 vm.listLogBasicInforModel.push(logtemp);
                                             };
@@ -1525,7 +1525,7 @@ module nts.uk.com.view.cli003.f {
         }
 
         validateForPersonUpdateInfo(logSettingEditProgramId): boolean {
-            if (!logSettingEditProgramId['PS002']) {
+            if (logSettingEditProgramId['CPS002']) {
                 return true;
             }
             if (logSettingEditProgramId['CPS001']) {
