@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
@@ -15,8 +17,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.Ref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,6 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TemporarilyReflectStampDailyAttd {
 	@Inject
 	private ReflectWork reflectWork;
@@ -66,6 +69,9 @@ public class TemporarilyReflectStampDailyAttd {
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
+			}else {
+				//打刻。反映区分＝反映済み
+				stamp.setReflectedCategory(true);
 			}
 			// 勤務情報を反映する
 			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(true, true, companyId, integrationOfDaily.getEmployeeId(),
@@ -81,10 +87,13 @@ public class TemporarilyReflectStampDailyAttd {
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
-				// 勤務情報を反映する
-				listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, true, companyId, integrationOfDaily.getEmployeeId(),
-						integrationOfDaily.getYmd(), stamp, integrationOfDaily));
+			}else {
+				//打刻。反映区分＝反映済み
+				stamp.setReflectedCategory(true);
 			}
+			// 勤務情報を反映する
+			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, true, companyId, integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		case GO_OUT://外出 or 戻り
 		case RETURN:

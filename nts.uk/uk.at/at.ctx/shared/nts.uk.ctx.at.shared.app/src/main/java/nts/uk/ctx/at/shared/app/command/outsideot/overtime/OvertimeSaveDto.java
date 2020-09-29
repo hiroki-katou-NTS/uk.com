@@ -6,11 +6,11 @@ package nts.uk.ctx.at.shared.app.command.outsideot.overtime;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
 
 /**
  * The Class OvertimeSaveDto.

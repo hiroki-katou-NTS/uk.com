@@ -42,4 +42,6 @@ public class StampPersonalEngravingWs {
 	public void registerDailyIdentify(RegisterDailyIDentifyCommand	 param) throws InterruptedException {
 		registerDailyIDentifyCommandHandler.handle(param);
 	}
+	
+	
 }

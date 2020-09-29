@@ -59,12 +59,21 @@ public class PrepareTimeFrame {
 
 		// 最大使用回数を確認する
 		if (listTimeFrame.size() > maxNumberOfUses) {
-			for (int i = maxNumberOfUses; i < listTimeFrame.size(); i++) {
+			for (int i = listTimeFrame.size(); i > maxNumberOfUses; i--) {
 				listTimeFrame.remove(i);
 			}
 		} else if (listTimeFrame.size() < maxNumberOfUses) {
-			for (int i = listTimeFrame.size(); i < maxNumberOfUses; i++) {
-				listTimeFrame.add(new TimeFrame(0, maxNumberOfUses, Optional.empty(), Optional.empty(), null));
+			for (int i =1; i <= maxNumberOfUses; i++) {
+				boolean checkExist = false;
+				for (int workNo : listTimeFrame.stream().map(c->c.getFrameNo()).collect(Collectors.toList())) {
+					if(workNo == i) {
+						checkExist = true;
+						break;
+					}
+				}
+				if(!checkExist) {
+					listTimeFrame.add(new TimeFrame(0, i, Optional.empty(), Optional.empty(), null));
+				}
 			}
 		}
 

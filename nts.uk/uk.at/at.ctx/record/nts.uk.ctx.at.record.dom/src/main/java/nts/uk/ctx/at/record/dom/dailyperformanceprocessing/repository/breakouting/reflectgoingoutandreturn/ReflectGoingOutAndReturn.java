@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ProcessTimeOutput;
@@ -16,11 +18,12 @@ import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -31,6 +34,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectGoingOutAndReturn {
 	@Inject
 	private OutManageRepository outManageRepository; 
@@ -71,17 +75,13 @@ public class ReflectGoingOutAndReturn {
 				outManage.get().getMaxUsage().v(), listTimeFrame, AttendanceAtr.GO_OUT,workTimeCode);
 		
 		//反映済み時間帯枠（Temporary）を日別実績の外出時間帯の時間帯に上書きする
-		if (outingTime.isPresent()) {
-			for(OutingTimeSheet outingTimeSheet :outingTime.get().getOutingTimeSheets()) {
-				for(TimeFrame tf :listTimeFrame) {
-					if(outingTimeSheet.getOutingFrameNo().v().intValue() == tf.getFrameNo()) {
-						outingTimeSheet.setGoOut(tf.getStart());
-						outingTimeSheet.setComeBack(tf.getEnd());
-						break;
-					}
-				}
-			}
+		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
+		for(TimeFrame tf :listTimeFrame) {
+			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(tf.getFrameNo()),
+					tf.getStart(), null, null, tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : null, tf.getEnd());
+			outingTimeSheets.add(timeSheet);
 		}
+		integrationOfDaily.setOutingTime(Optional.ofNullable(new OutingTimeOfDailyAttd(outingTimeSheets)));		
 		return ReflectStampOuput.REFLECT;
 		
 	}

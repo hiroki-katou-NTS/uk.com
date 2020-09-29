@@ -15,9 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting.GetTightSettingResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.SettingExpirationDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -28,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.GetSettingCompensaLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 
@@ -114,14 +111,14 @@ public class GetUnusedCompenTemporary {
 		// 「逐次発生の休暇明細」．未使用数=未使用数
 		// INPUT．暫定振出管理データを「逐次発生の休暇明細」に追加する
 
-		// 締め設定を取得する
-		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				aggEndDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), remainData.getYmd());
-
-		// 使用期限日を設定
-		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
-				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
-				remainData.getYmd());
+//		// 締め設定を取得する
+//		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
+//				aggEndDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), remainData.getYmd());
+//
+//		// 使用期限日を設定
+//		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
+//				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
+//				remainData.getYmd());
 
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -138,7 +135,7 @@ public class GetUnusedCompenTemporary {
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
-		return new UnbalanceCompensation(detail, dateSettingExp, DigestionAtr.USED, Optional.empty(),
+		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
 				recMng.getStatutoryAtr());
 	}
 

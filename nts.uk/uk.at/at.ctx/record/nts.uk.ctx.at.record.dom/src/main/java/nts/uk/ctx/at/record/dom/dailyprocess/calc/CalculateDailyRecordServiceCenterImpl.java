@@ -37,20 +37,20 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -488,13 +488,14 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, record, nowWorkingItem.get().getValue());
 				if(!personSetting.isPresent())
 					continue;
-				
+		
 				//実績計算
 				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
 													companyCommonSetting,
 													personSetting.get(),
 													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
 													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
+
 				if(result.isCalc()) {
 					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				}

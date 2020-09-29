@@ -73,12 +73,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class ApprovalStatusFinder {
 
+//	@Inject
+//	private ClosureService closureService;
+
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
 
 	@Inject
-	private ClosureEmploymentRepository closureEmpRepo;
+	ClosureEmploymentRepository closureEmpRepo;
 
 	@Inject
 	private ApprovalStatusService appSttService;
@@ -174,7 +177,8 @@ public class ApprovalStatusFinder {
 				processingYm = yearMonth.v();
 				// アルゴリズム「承認状況指定締め期間設定」を実行する
 				// アルゴリズム「当月の期間を算出する」を実行する
-				DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, yearMonth, closureOpt);
+				// DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, yearMonth);
+				DatePeriod closurePeriod = null;
 				startDate = closurePeriod.start();
 				endDate = closurePeriod.end();
 				// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
@@ -215,7 +219,8 @@ public class ApprovalStatusFinder {
 		// 当月の期間を算出する
 		YearMonth processingYm = new YearMonth(processingYmNew);
 		// アルゴリズム「当月の期間を算出する」を実行する
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, closure);
+		// DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+		DatePeriod closurePeriod = null;
 		startDate = closurePeriod.start();
 		endDate = closurePeriod.end();
 		// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
@@ -518,7 +523,8 @@ public class ApprovalStatusFinder {
 				break;
 			// 勤務変更申請
 			case WORK_CHANGE_APPLICATION:
-				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+//				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+				appContent = "";
 				// có endDate
 				break;
 			// 出張申請
@@ -528,10 +534,11 @@ public class ApprovalStatusFinder {
 				break;
 			// 直行直帰申請
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
+//				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
+				appContent = "";
 				break;
 			// 休出時間申請
-			case BREAK_TIME_APPLICATION:
+			case HOLIDAY_WORK_APPLICATION:
 				appContent = contentDtail.getContentHdWorkBf(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
 				break;
 			// 打刻申請
@@ -549,22 +556,6 @@ public class ApprovalStatusFinder {
 			// 振休振出申請
 			case COMPLEMENT_LEAVE_APPLICATION:
 				appContent = contentDtail.getContentComplt(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType);
-				break;
-			// 打刻申請（NR形式）
-			case STAMP_NR_APPLICATION:
-				// TODO
-				break;
-			// 連続出張申請
-			case LONG_BUSINESS_TRIP_APPLICATION:
-				// TODO
-				break;
-			// 出張申請オフィスヘルパー
-			case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER:
-				// TODO
-				break;
-			// ３６協定時間申請
-			case APPLICATION_36:
-				// TODO
 				break;
 
 			default:

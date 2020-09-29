@@ -36,23 +36,27 @@ module nts.uk.at.view.kdp010.i {
             
 			public save() {
 				let self = this;
-                block.grayout();
-                service.save(ko.toJS(self.stampPageLayout())).done(function() {
-                    self.isDel(true);
-                    info({ messageId: "Msg_15" }).then(()=>{
-                        $(document).ready(function() {
-                            $('#pageComment').focus();
-                        });    
-                    });
-                }).fail(function (res) {
-                    error({ messageId: res.messageId }).then(()=>{
-                        $(document).ready(function() {
-                            $('#pageComment').focus();
+                if(nts.uk.ui.errors.hasError()){
+                    return;
+                }else{
+                    block.grayout();
+                    service.save(ko.toJS(self.stampPageLayout())).done(function() {
+                        self.isDel(true);
+                        info({ messageId: "Msg_15" }).then(()=>{
+                            $(document).ready(function() {
+                                $('#pageComment').focus();
+                            });    
                         });
+                    }).fail(function (res) {
+                        error({ messageId: res.messageId }).then(()=>{
+                            $(document).ready(function() {
+                                $('#pageComment').focus();
+                            });
+                        });
+                    }).always(function () {
+                        block.clear();
                     });
-                }).always(function () {
-                    block.clear();
-                });
+                }
 			}
             
 			public deleteSetting() {
@@ -84,7 +88,7 @@ module nts.uk.at.view.kdp010.i {
 
         class StampPageLayout {
             pageNo = 1;
-            stampPageName = getText("KDP010_231");
+            stampPageName = getText("KDP010_236");
             stampPageComment = new StampPageComment();
             buttonLayoutType = 0;
             lstButtonSet = [];

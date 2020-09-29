@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 public interface ICorrectionAttendanceRule {
 

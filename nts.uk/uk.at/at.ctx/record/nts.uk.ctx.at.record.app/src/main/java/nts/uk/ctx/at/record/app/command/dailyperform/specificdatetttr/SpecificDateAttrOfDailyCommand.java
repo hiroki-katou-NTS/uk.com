@@ -15,6 +15,7 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		
 		if (item == null) {
 			this.data = Optional.empty();
 			return;

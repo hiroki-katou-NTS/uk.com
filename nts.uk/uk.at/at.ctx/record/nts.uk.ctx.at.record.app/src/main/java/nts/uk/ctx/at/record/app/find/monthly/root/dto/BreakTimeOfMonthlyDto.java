@@ -8,7 +8,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 
 @Data
 @NoArgsConstructor
@@ -31,12 +32,37 @@ public class BreakTimeOfMonthlyDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private int excessBreakTime;
 
+	/** 所定内休憩時間: 勤怠月間時間 */
+	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_D)
+	@AttendanceItemValue(type = ValueType.COUNT)
+	private int breakTimes;
+
+	/** 所定内控除時間: 勤怠月間時間 */
+	@AttendanceItemLayout(jpPropertyName = WITHIN_STATUTORY + DEDUCTION, layout = LAYOUT_E)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int withinDeductionTime;
+
+	/** 所定外控除時間: 勤怠月間時間 */
+	@AttendanceItemLayout(jpPropertyName = EXCESS_STATUTORY + DEDUCTION, layout = LAYOUT_F)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int excessDeductionTime;
+
 	public static BreakTimeOfMonthlyDto from(BreakTimeOfMonthly domain) {
-		return domain == null ? null : 
-					new BreakTimeOfMonthlyDto(domain.getBreakTime() == null ? 0 : domain.getBreakTime().valueAsMinutes(), 0, 0);
+		return domain == null ? null : new BreakTimeOfMonthlyDto(
+				domain.getBreakTime() == null ? 0 : domain.getBreakTime().valueAsMinutes(),
+				domain.getWithinTime() == null ? 0 : domain.getWithinTime().valueAsMinutes(), 
+				domain.getExcessTime() == null ? 0 : domain.getExcessTime().valueAsMinutes(),
+				domain.getBreakTimes() == null ? 0 : domain.getBreakTimes().v(),
+				domain.getWithinDeductionTime() == null ? 0 : domain.getWithinDeductionTime().valueAsMinutes(),
+				domain.getExcessDeductionTime() == null ? 0 : domain.getExcessDeductionTime().valueAsMinutes());
 	}
 	
 	public BreakTimeOfMonthly toDomain() {
-		return BreakTimeOfMonthly.of(new AttendanceTimeMonth(breakTime));
+		return BreakTimeOfMonthly.of(new AttendanceTimesMonth(breakTimes),
+				new AttendanceTimeMonth(breakTime),
+				new AttendanceTimeMonth(withinBreakTime),
+				new AttendanceTimeMonth(withinDeductionTime),
+				new AttendanceTimeMonth(excessBreakTime), 
+				new AttendanceTimeMonth(excessDeductionTime));
 	}
 }

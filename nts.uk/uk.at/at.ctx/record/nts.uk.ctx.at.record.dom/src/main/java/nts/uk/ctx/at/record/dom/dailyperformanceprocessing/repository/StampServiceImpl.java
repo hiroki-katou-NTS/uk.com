@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -20,16 +22,17 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class StampServiceImpl implements StampDomainService {
 
 	@Inject
@@ -129,18 +132,19 @@ public class StampServiceImpl implements StampDomainService {
 		if(lstStampCard.isEmpty()) {
 			return new ArrayList<>();
 		}
-		int timeStart = s.getStampRange().getStart().v();
-		int timeEnd = s.getStampRange().getEnd().v();
+		int timeStart = s.getStampRange().getStart() !=null?s.getStampRange().getStart().v():0;
+		int timeEnd = s.getStampRange().getEnd()!=null?s.getStampRange().getEnd().v():0;
 		GeneralDateTime start = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
 				.addMinutes(timeStart);
 
-		GeneralDateTime end = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 23, 59, 59)
+		GeneralDateTime end = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
 				.addMinutes(timeEnd);
 		// ドメインモデル「打刻」を取得する (Lấy dữ liệu)
 		if (flag == EmbossingExecutionFlag.ALL) {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end);
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end);
 		} else {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end).stream()
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end)
+					.stream()
 					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
 		}
 		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());

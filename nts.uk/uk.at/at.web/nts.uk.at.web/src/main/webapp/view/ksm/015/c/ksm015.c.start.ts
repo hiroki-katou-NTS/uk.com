@@ -9,10 +9,17 @@ module nts.uk.at.view.ksm015.c {
 		viewModel.viewmodelC.startPage().done(function() {
 			__viewContext.bind(viewModel);
 			viewModel.viewmodelC.reCalGridWidth();
+			$('#add-new-shift').focus();
+			$('#add-new-shift').focus();
 			viewModel.viewmodelD.startPage().done(function() {
-			
+			$('#add-new-shift').focus();
+			$('#add-new-shift').focus();
+			$('#cre-shift').focus();
+			$('#cre-shift').focus();
 			});
         });
+			$('#add-new-shift').focus();
+			$('#add-new-shift').focus();
 	/*	$(window).resize(function () {
 			viewModel.viewmodelC.reCalGridWidth();
 			viewModel.viewmodelD.reCalGridWidth();

@@ -23,13 +23,13 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorInter
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.workrecord.goout.GoingOutReason;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -161,7 +161,7 @@ public class StampReceptionDataTest {
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.FIX, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.NOT_USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
@@ -184,7 +184,7 @@ public class StampReceptionDataTest {
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "1", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.FIX, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "2", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
@@ -204,7 +204,7 @@ public class StampReceptionDataTest {
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "6", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.FIX, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "7", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
@@ -212,7 +212,7 @@ public class StampReceptionDataTest {
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "8", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.FIX, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "9", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
@@ -234,7 +234,7 @@ public class StampReceptionDataTest {
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		assertThatStamp(
-				new StampType(true, nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason.UNION,
+				new StampType(true, GoingOutReason.UNION,
 						SetPreClockArt.NONE, dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()),
 				dataNRA.createStampType(ter));
 
@@ -248,7 +248,7 @@ public class StampReceptionDataTest {
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		assertThatStamp(
-				new StampType(true, nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason.PUBLIC,
+				new StampType(true, GoingOutReason.PUBLIC,
 						SetPreClockArt.NONE, dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()),
 				dataNRA.createStampType(ter));
 

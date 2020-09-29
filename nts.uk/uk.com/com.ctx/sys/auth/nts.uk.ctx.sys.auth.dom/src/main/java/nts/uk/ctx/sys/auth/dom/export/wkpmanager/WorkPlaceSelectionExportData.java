@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.auth.dom.export.wkpmanager;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
