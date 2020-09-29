@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -8,6 +12,22 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 
 public class ShiftExpectationTestHelper {
+	
+	public static ShiftExpectation defaultCreate() {
+		
+		return new ShiftExpectation( Arrays.asList(new ShiftMasterCode("001")));
+	}
+	
+	
+	public static ShiftExpectation createWithShiftCodes(String ...shiftMasterCodes) {
+		
+		List<ShiftMasterCode> shiftMasterCodeList = Arrays.asList(shiftMasterCodes).stream()
+				.map(c -> new ShiftMasterCode(c))
+				.collect(Collectors.toList());
+		
+		return new ShiftExpectation(shiftMasterCodeList);
+		
+	}
 	
 	public static ShiftMaster createShiftMasterWithCode(String shiftMasterCode) {
 		return new ShiftMaster(

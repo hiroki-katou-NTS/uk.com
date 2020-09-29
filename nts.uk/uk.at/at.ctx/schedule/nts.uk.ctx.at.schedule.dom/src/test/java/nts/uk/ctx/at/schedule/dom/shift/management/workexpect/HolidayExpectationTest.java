@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -21,6 +22,14 @@ public class HolidayExpectationTest {
 	
 	@Injectable
     private WorkExpectation.Require require;
+	
+	@Test
+	public void getters() {
+		
+		HolidayExpectation holidayexp = new HolidayExpectation();
+		
+		NtsAssert.invokeGetters(holidayexp);
+	}
 	
 	@Test
 	public void testGetAssignmentMethod() {

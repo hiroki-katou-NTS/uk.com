@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import mockit.Injectable;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -25,6 +26,12 @@ public class TimeZoneExpectationTest {
 		timezoneExp = TimeZoneExpectation.create(Arrays.asList(
 				new TimeSpanForCalc( new TimeWithDayAttr(360), new TimeWithDayAttr(720)), // 6:00~12:00
 				new TimeSpanForCalc( new TimeWithDayAttr(1080), new TimeWithDayAttr(1320)))); // 18:00~22:00
+	}
+	
+	@Test
+	public void getters() {
+		
+		NtsAssert.invokeGetters(timezoneExp);
 	}
 	
 	@Test
