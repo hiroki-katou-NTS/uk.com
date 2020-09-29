@@ -2181,9 +2181,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
             
-            let listLink = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLink.length; i++) {
-                $(listLink[i]).css("pointer-events", "");
+            let listLinkLeftmost = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLinkLeftmost.length; i++) {
+                $(listLinkLeftmost[i]).css("pointer-events", "");
+            }
+            
+            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
+            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
+                $(listLinkHeaderDetail[i]).css("pointer-events", "");
             }
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
@@ -2257,9 +2262,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
              $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
              $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
-            let listLink = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLink.length; i++) {
-                $(listLink[i]).css("pointer-events", "none");
+            let listLinkLeftmost = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLinkLeftmost.length; i++) {
+                $(listLinkLeftmost[i]).css("pointer-events", "none");
+            }
+            
+            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
+            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
+                $(listLinkHeaderDetail[i]).css("pointer-events", "none");
             }
             
             let arrCellUpdated = $("#extable").exTable("updatedCells");
