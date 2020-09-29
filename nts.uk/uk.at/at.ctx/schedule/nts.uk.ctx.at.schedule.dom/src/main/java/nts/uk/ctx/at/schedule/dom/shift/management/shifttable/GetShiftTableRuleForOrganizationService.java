@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author dan_pv
  *
  */
-public class GetShfitTableRuleForOrganizationService {
+public class GetShiftTableRuleForOrganizationService {
 	
 	public static Optional<ShiftTableRule> get(Require require, TargetOrgIdenInfor targetOrg) {
 		
