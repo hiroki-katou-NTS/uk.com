@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import lombok.val;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -65,6 +66,6 @@ public class GetWorkplaceApproveHistoryDomainService {
         Optional<ApproverItem> getApproveHistoryItem(String workplaceId, GeneralDate baseDate);
 
         //	[R-3] 上位職場を取得する 	アルゴリズム.[No.569]職場の上位職場を取得する(会社ID,職場ID,基準日)会社ID Infused from the APP layer
-        List<String> getUpperWorkplace(String workplaceID, GeneralDate date);
+        List<String> getUpperWorkplace( String workplaceID, GeneralDate date);
     }
 }

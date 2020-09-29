@@ -27,8 +27,7 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
     @Override
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
-        val domain = new Approver36AgrByWorkplace(cid,command.getWorkPlaceId(),command.getPeriod(),command.getApprovedList(),command.getConfirmedList());
+        val domain = new Approver36AgrByWorkplace(command.getWorkPlaceId(),command.getPeriod(),command.getApprovedList(),command.getConfirmedList());
         RequireImpl require = new RequireImpl(repo);
         AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(require,command.getStartDateBeforeChange(),domain);
         transaction.execute(persist::run);
@@ -38,7 +37,7 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
         private Approver36AgrByWorkplaceRepo repo;
         @Override
         public Optional<Approver36AgrByWorkplace> getPrevHistory(String workplaceId, GeneralDate lastDate) {
-            return repo.getByWorkplaceIdAndDate(workplaceId,lastDate);
+            return repo.getByWorkplaceIdAndEndDate(workplaceId,lastDate);
         }
 
         @Override

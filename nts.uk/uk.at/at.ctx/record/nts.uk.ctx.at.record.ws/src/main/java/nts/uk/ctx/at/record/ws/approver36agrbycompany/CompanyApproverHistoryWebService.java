@@ -37,28 +37,28 @@ public class CompanyApproverHistoryWebService extends WebService {
     @POST
     public void register(CompanyApproveHistoryAddEmployeeIdDto dto){
         val command = new CompanyApproverHistoryAddEmployeeIdCommand(dto.getCompanyId(),
-                new DatePeriod(dto.getStarDate(),dto.getEndDate()),dto.getApproveList(),dto.getConfirmedList());
+                new DatePeriod(dto.getStartDate(),dto.getEndDate()),dto.getApproveList(),dto.getConfirmedList());
         this.addCommandHandler.handle(command);
     }
     @Path("screen/a/update")
     @POST
     public void update(CompanyApproveHistoryUpdateEmployeeIdDto dto){
         val command = new CompanyApproverHistoryUpdateEmployeeIdCommand(dto.getCompanyId(),
-                new DatePeriod(dto.getStarDate(),dto.getEndDate()),dto.getApproveList(),dto.getConfirmedList(),
+                new DatePeriod(dto.getStartDate(),dto.getEndDate()),dto.getApproveList(),dto.getConfirmedList(),
                 dto.getStartDateBeforeChange());
         this.updateCommandHandler.handle(command);
     }
     @Path("screen/d/update")
     @POST
     public void updateDate(CompanyPlaceApproveHistoryUpdateDateDto dto) {
-        val command = new CompanyApproverHistoryUpdateDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStarDate(), dto.getEndDate())
+        val command = new CompanyApproverHistoryUpdateDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStartDate(), dto.getEndDate())
                 , dto.getStartDateBeforeChange());
         this.updateDateCommandHandler.handle(command);
     }
     @Path("screen/d/delete")
     @POST
     public void deleteDate(CompanyPlaceApproveHistoryDeleteDateDto dto) {
-        val command = new CompanyApproverHistoryDeleteDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStarDate(), dto.getEndDate()) );
+        val command = new CompanyApproverHistoryDeleteDateCommand(dto.getCompanyId(), new DatePeriod(dto.getStartDate(), dto.getEndDate()) );
         this.deleteDateCommandHandler.handle(command);
     }
 

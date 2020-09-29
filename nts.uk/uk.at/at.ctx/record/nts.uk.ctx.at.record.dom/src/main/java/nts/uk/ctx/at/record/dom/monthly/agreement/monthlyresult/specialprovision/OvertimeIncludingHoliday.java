@@ -15,36 +15,36 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonth
 public class OvertimeIncludingHoliday {
 
     /** 1ヶ月前の時間外時間*/
-    private AgreementOneMonthTime OvertimeOneMonthAgo;
+    private AgreementOneMonthTime overtimeOneMonthAgo;
 
     /** 2ヶ月前の時間外時間*/
-    private AgreementOneMonthTime OvertimeTwoMonthAgo;
+    private AgreementOneMonthTime overtimeTwoMonthAgo;
 
     /** 2ヶ月平均の時間外時間*/
-    private AgreementOneMonthTime OvertimeTwoMonthAverage;
+    private AgreementOneMonthTime overtimeTwoMonthAverage;
 
     /** 3ヶ月前の時間外時間*/
-    private AgreementOneMonthTime OvertimeThreeMonthAgo;
+    private AgreementOneMonthTime overtimeThreeMonthAgo;
 
     /** 3ヶ月平均の時間外時間*/
-    private AgreementOneMonthTime OvertimeThreeMonthAverage;
+    private AgreementOneMonthTime overtimeThreeMonthAverage;
 
     /** 4ヶ月前の時間外時間*/
-    private AgreementOneMonthTime OvertimeFourMonthAgo;
+    private AgreementOneMonthTime overtimeFourMonthAgo;
 
     /** 4ヶ月平均の時間外時間*/
-    private AgreementOneMonthTime OvertimeFourMonthAverage;
+    private AgreementOneMonthTime overtimeFourMonthAverage;
 
     /** 5ヶ月前の時間外時間*/
-    private AgreementOneMonthTime OvertimeFiveMonthAgo;
+    private AgreementOneMonthTime overtimeFiveMonthAgo;
 
     /** 5ヶ月平均の時間外時間*/
-    private AgreementOneMonthTime OvertimeFiveMonthAverage;
+    private AgreementOneMonthTime overtimeFiveMonthAverage;
 
     /** 6ヶ月平均の時間外時間*/
-    private AgreementOneMonthTime OvertimeSixMonthAverage;
+    private AgreementOneMonthTime overtimeSixMonthAverage;
 
     /** 対象月度の時間外時間*/
-    private AgreementOneMonthTime OvertimeHoursTargetMonth;
+    private AgreementOneMonthTime overtimeHoursTargetMonth;
 
 }

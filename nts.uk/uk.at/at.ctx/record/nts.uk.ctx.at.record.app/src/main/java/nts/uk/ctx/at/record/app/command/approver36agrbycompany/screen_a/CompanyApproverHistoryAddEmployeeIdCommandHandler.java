@@ -45,7 +45,7 @@ public class CompanyApproverHistoryAddEmployeeIdCommandHandler extends CommandHa
 
         @Override
         public Optional<Approver36AgrByCompany> getLatestHistory(GeneralDate baseDate) {
-            return approver36AgrByCompanyRepo.getByCompanyIdAndDate(cid,baseDate);
+            return approver36AgrByCompanyRepo.getByCompanyIdAndEndDate(cid,baseDate);
         }
 
         @Override

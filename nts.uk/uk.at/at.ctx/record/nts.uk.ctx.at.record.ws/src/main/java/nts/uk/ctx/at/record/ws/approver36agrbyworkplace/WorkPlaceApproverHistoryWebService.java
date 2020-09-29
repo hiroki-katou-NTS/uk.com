@@ -39,7 +39,7 @@ public class WorkPlaceApproverHistoryWebService extends WebService {
     @POST
     public void register(WorkPlaceApproveHistoryAddEmployeeIdDto dto) {
         val command = new WorkPlaceApproverHistoryAddEmployeeIdCommand(dto.getWorkPlaceId(),
-                new DatePeriod(dto.getStarDate(), dto.getEndDate())
+                new DatePeriod(dto.getStartDate(), dto.getEndDate())
                 , dto.getApproveList(), dto.getConfirmedList());
         this.addEmployeeIdCommandHandler.handle(command);
     }
@@ -48,7 +48,7 @@ public class WorkPlaceApproverHistoryWebService extends WebService {
     @POST
     public void updateEmployeeId(WorkPlaceApproverHistoryUpdateEmployeeIdDto dto) {
         val command = new WorkPlaceApproverHistoryUpdateEmployeeIdCommand(dto.getWorkPlaceId(),
-                new DatePeriod(dto.getStarDate(), dto.getEndDate()),
+                new DatePeriod(dto.getStartDate(), dto.getEndDate()),
                 dto.getApprovedList(), dto.getConfirmedList(), dto.getStartDateBeforeChange());
         this.updateEmployeeIdCommandHandler.handle(command);
     }
@@ -56,7 +56,7 @@ public class WorkPlaceApproverHistoryWebService extends WebService {
     @POST
     public void updateDate(WorkPlaceApproveHistoryUpdateDateDto dto) {
         val command = new WorkPlaceApproverHistoryUpdateDateCommand(dto.getWorkPlaceId(),
-                new DatePeriod(dto.getStarDate(), dto.getEndDate())
+                new DatePeriod(dto.getStartDate(), dto.getEndDate())
                 , dto.getStartDateBeforeChange());
         this.updateDateCommandHandler.handle(command);
     }
@@ -64,7 +64,7 @@ public class WorkPlaceApproverHistoryWebService extends WebService {
     @POST
     public void deleteDate(WorkPlaceApproveHistoryDeleteDateDto dto) {
         val command = new WorkPlaceApproverHistoryDeleteDateCommand(dto.getWorkPlaceId(),
-                new DatePeriod(dto.getStarDate(), dto.getEndDate()) );
+                new DatePeriod(dto.getStartDate(), dto.getEndDate()) );
         this.deleteDateCommandHandler.handle(command);
     }
 }
