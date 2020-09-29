@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdps01.c;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultFinder;
@@ -168,7 +170,8 @@ public class DisplayConfirmStampResultScreenC {
 		// 7 <call>
 
 		List<ItemDisplayedDto> attendanceItems = this.DailyAttendanceItemRepo.getListById(companyId, attendanceItemIds)
-				.stream().map(x -> ItemDisplayedDto.fromDomain(x, dailyItems)).collect(Collectors.toList());
+				.stream().sorted(Comparator.comparing(DailyAttendanceItem::getDisplayNumber))
+				.map(x -> ItemDisplayedDto.fromDomain(x, dailyItems)).collect(Collectors.toList());
 
 		result.setLstItemDisplayed(attendanceItems);
 

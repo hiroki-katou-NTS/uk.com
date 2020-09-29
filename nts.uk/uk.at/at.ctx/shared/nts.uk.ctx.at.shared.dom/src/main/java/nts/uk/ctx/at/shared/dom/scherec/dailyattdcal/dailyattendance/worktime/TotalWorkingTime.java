@@ -1214,7 +1214,7 @@ public class TotalWorkingTime {
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
 			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTimeOfDaily, HolidayOfDaily holidayOfDaily,
-			AttendanceTime vacationAddTime) {
+			AttendanceTime vacationAddTime, IntervalTimeOfDaily intervalTime) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -1231,17 +1231,7 @@ public class TotalWorkingTime {
 		this.shotrTimeOfDaily = shotrTimeOfDaily;
 		this.holidayOfDaily = holidayOfDaily;
 		this.vacationAddTime = vacationAddTime;
-	}
-
-
-	public TotalWorkingTime(AttendanceTime attendanceTime, Object object, AttendanceTime attendanceTime2,
-			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily2,
-			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily2, ArrayList<LateTimeOfDaily> arrayList,
-			ArrayList<LeaveEarlyTimeOfDaily> arrayList2, BreakTimeOfDaily breakTimeOfDaily2,
-			ArrayList<OutingTimeOfDaily> arrayList3, RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor2,
-			AttendanceTime attendanceTime3, Object object2, ShortWorkTimeOfDaily shotrTime,
-			HolidayOfDaily holidayOfDaily2, AttendanceTime attendanceTime4) {
-		// TODO Auto-generated constructor stub
+		this.intervalTime = intervalTime;
 	}
 	
 }

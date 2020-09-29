@@ -123,8 +123,6 @@ public class ToppageStartupProcessMobFinder {
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
-	@Inject
-	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
 	
 	@Inject
 	private RecordDomRequireService requireService;
