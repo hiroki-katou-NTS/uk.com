@@ -14,12 +14,13 @@ module nts.uk.at.view.kal003.share.model {
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
             //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
             new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
-            //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
+                       new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
             new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
             //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
             new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
             //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
+            new ItemModel(14, getText('マスタチェック'))
         ];
     }
 
@@ -345,7 +346,8 @@ module nts.uk.at.view.kal003.share.model {
         ANY_PERIOD = 10,
         ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
         _36_AGREEMENT = 12,
-        MAN_HOUR_CHECK = 13
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
 
     export enum DATA_CONDITION_TO_EXTRACT {
@@ -2311,6 +2313,7 @@ module nts.uk.at.view.kal003.share.model {
         fixConWorkRecordNo: number;
         message: string;
         useAtr: boolean;
+		division: string;
     }
 
 
@@ -2322,12 +2325,14 @@ module nts.uk.at.view.kal003.share.model {
         checkName: string;
         message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
+		division: KnockoutObservable<string>;
         constructor(data: IFixedConditionWorkRecord) {
             this.dailyAlarmConID = data.dailyAlarmConID;
             this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
             this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
+			this.division = ko.observable(data.division);
         }
     }
 

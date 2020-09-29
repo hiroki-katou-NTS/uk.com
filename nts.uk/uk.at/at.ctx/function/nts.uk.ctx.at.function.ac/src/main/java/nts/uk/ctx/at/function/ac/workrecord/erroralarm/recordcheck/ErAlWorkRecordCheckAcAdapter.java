@@ -78,6 +78,24 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 			return result;
 		}
 	}
+	
+	@Override
+	public List<ErrorRecordImport> checkV2(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds, Map<String, Integer> mapCheckItem) {
+
+		List<ErrorRecordImport> result = new ArrayList<ErrorRecordImport>();
+
+		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.checkV2(EACheckIDs, workingDate,
+				employeeIds, mapCheckItem);
+		if (listErrorExport.isEmpty())
+			return result;
+		else {
+			result = listErrorExport.stream()
+					.map(e -> new ErrorRecordImport(e.getDate(), e.getEmployeeId(), e.getErAlId(), e.isError(),e.getCheckedValue()))
+					.collect(Collectors.toList());
+			return result;
+		}
+	}
 
 	@Override
 	public Map<String, List<RegulationInfoEmployeeResult>> filterEmployees(DatePeriod targetPeriod,
