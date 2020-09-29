@@ -32,18 +32,18 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	
 	/**
 	 * "勤務希望運用する" で作る
-	 * @param oneMonth
+	 * @param closureDate
 	 * @param dateInmonth
 	 * @param availHdMax
 	 * @return
 	 */
 	public static ShiftTableDateSetting createWithExpectationMode(
-			OneMonth oneMonth, 
+			OneMonth closureDate, 
 			DateInMonth expectDeadLine, 
 			HolidayExpectationMaxdays holidayMaxDays) {
 		
 		return new ShiftTableDateSetting(
-				oneMonth, 
+				closureDate, 
 				Optional.of(expectDeadLine), 
 				Optional.of(holidayMaxDays));
 	}
