@@ -177,8 +177,24 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	@Override
 	public List<AttendanceItemLinking> findByFrameNoTypeAndFramCategory(List<BigDecimal> frameNos, int typeOfItem,
 			List<Integer> frameCategory) {
-		// TODO Auto-generated method stub
-		return null;
+		if (CollectionUtil.isEmpty(frameNos)) {
+			return Collections.emptyList();
+		}
+
+		BigDecimal bTypeOfItem = BigDecimal.valueOf(typeOfItem);
+		List<BigDecimal> categories = frameCategory.stream().map(t -> BigDecimal.valueOf(t)).collect(Collectors.toList());
+		List<AttendanceItemLinking> resultList = new ArrayList<>();
+		CollectionUtil.split(frameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			CollectionUtil.split(categories, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subFrameCategories) -> {
+				resultList.addAll(this.queryProxy().query(FIND_BY_FRAME_NO_FRAME_CATEGORY, KfnmtAttendanceLink.class)
+						.setParameter("frameNos", subList)
+						.setParameter("typeOfItem", bTypeOfItem)
+						.setParameter("frameCategories", subFrameCategories)
+						.getList(KfnmtAttendanceLink::toDomain));
+			});
+		});
+		
+		return resultList;
 	}
 
 	@Override

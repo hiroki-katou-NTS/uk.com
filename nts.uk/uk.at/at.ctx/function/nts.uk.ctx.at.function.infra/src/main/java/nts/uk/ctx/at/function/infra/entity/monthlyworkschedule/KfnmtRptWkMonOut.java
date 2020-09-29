@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Data
 @Entity
-@Table(name = "KDNMT_RPT_WK_MON_OUT")
+@Table(name = "KFNMT_RPT_WK_MON_OUT")
 @EqualsAndHashCode(callSuper = true)
 public class KfnmtRptWkMonOut extends UkJpaEntity
 		implements OutputItemMonthlyWorkScheduleGetMemento, OutputItemMonthlyWorkScheduleSetMemento, Serializable {
