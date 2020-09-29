@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 /*
  * 振休振出管理データを削除 
@@ -27,20 +31,19 @@ public class DeletePaymentManagementDataCmdHandler extends CommandHandler<Delete
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeletePaymentManagementDataCommand> context) {
-		DeletePaymentManagementDataCommand command = context.getCommand();		
-		if(command.getPayoutId() != null) {
-			// step ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」) 
-			this.payoutManagementDataRepo.delete(command.getPayoutId());
-			// step ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
-			this.payoutSubofHDManaRepository.delete(command.getPayoutId());
-		} else {
-			// step ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
-			this.substitutionOfHDManaDataRepo.delete(command.getSubOfHDID()); 
-			this.payoutSubofHDManaRepository.deleteBySubID(command.getSubOfHDID());
-		}
-		
-		
-		
+		DeletePaymentManagementDataCommand command = context.getCommand();
+			//	ドメインモデル「振出管理データ」を取得
+			Optional<PayoutManagementData> dataPayout= payoutManagementDataRepo.findByID(command.getPayoutId());
+			//	ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」) 
+			payoutManagementDataRepo.delete(command.getPayoutId());
+			//	ドメインモデル「振休管理データ」を取得
+			Optional<SubstitutionOfHDManagementData> dataSub = substitutionOfHDManaDataRepo.findByID(command.getSubOfHDID());
+			//	ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
+			substitutionOfHDManaDataRepo.delete(command.getSubOfHDID()); 
+			//	ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
+			this.payoutSubofHDManaRepository.delete(dataPayout.get().getSID(), dataSub.get().getSID()
+					, dataPayout.get().getPayoutDate().getDayoffDate().get()
+					, dataSub.get().getHolidayDate().getDayoffDate().get());			
 	}
 
 }

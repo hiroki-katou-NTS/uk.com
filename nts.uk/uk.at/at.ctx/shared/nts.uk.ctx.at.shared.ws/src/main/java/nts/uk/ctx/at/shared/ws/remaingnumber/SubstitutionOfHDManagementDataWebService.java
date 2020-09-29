@@ -66,11 +66,11 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 		return finder.getBySidRemainDayAndInPayout(employeeId);
 	}
 
-	@POST
-	@Path("getBySidDatePeriod/{empId}/{payoutID}")
-	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("payoutID")String payoutID) {
-		return finder.getBySidDatePeriod(sid,payoutID);
-	}
+//	@POST
+//	@Path("getBySidDatePeriod/{empId}/{payoutID}")
+//	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("payoutID")String payoutID) {
+//		return finder.getBySidDatePeriod(sid,payoutID);
+//	}
 	
 	@POST
 	@Path("insertSubOfHDMan")

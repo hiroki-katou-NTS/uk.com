@@ -13,6 +13,8 @@ public interface PayoutSubofHDManaRepository {
 	
 	void delete(String sid, GeneralDate occDate, GeneralDate digestDate);
 	
+	void delete(String sid1, String sid2, GeneralDate occDate, GeneralDate digestDate);
+	
 	List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate);
 	
 	List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate);

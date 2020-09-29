@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
@@ -21,7 +23,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -55,6 +61,9 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;		
+	
+	@Inject
+	private ClosureRepository closureRepo;
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
@@ -121,7 +130,7 @@ public class FurikyuMngDataExtractionService {
 		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
 	
-	public FurikyuMngDataExtractionData getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
+	public DisplayRemainingNumberDataInformation getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
 		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
@@ -133,9 +142,6 @@ public class FurikyuMngDataExtractionService {
 		boolean haveEmploymentCode = false;
 		// Step 振休管理データを管理するかチェック
 		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
-		if (emplManage.getEmploymentCode() != null) {
-			haveEmploymentCode = true;
-		}
 		// Step 取得した管理区分をチェック
 		if (emplManage.getIsManage() == ManageDistinct.NO) {
 			throw new BusinessException("Msg_1731");
@@ -172,7 +178,7 @@ public class FurikyuMngDataExtractionService {
 			}
 			
 			// Step 振休残数データ情報を作成
-			// TODO getRemainNumDtInfor
+			List<RemainInfoData> lstRemainData = this.getRemainInfoData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, empId);
 			// Step 月初の振休残数を取得
 			useDays = getNumberOfRemainingHolidays(empId);
 			// Step 振休管理設定を取得する
@@ -180,19 +186,17 @@ public class FurikyuMngDataExtractionService {
 			// Step 締めIDを取得する
 			closureId = getClosureId(empId, emplManage.getEmploymentCode());
 			
-			expirationDate = getExpirationDate(empId, emplManage.getEmploymentCode());
-			SWkpHistImport sWkpHistImport = null;
-			if(syWorkplaceAdapter.findBySid(empId, GeneralDate.today()).isPresent()) {
-				sWkpHistImport = syWorkplaceAdapter.findBySid(empId, GeneralDate.today()).get();
-			}
-			List<String> employeeIds = new ArrayList<>();
-			employeeIds.add(empId);
-			List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
-			PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
-			if (!employeeBasicInfo.isEmpty()){
-				personEmpBasicInfoImport = employeeBasicInfo.get(0);
-			}	
-			return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, useDays, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
+			Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
+			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
+					.employeeId(empId)
+					.totalRemainingNumber(useDays)
+					.expirationDate(comSubstVacation.getSetting().getExpirationDate().value)
+					.remainingData(lstRemainData)
+					.startDate(closing.get().getClosureStartDate())
+					.endDate(closing.get().getClosureEndDate())
+					.build();
+				
+		return result;
 		}
 	}
 	
@@ -334,21 +338,137 @@ public class FurikyuMngDataExtractionService {
 			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManagementLinkToPayout.stream()
 					.filter(item -> item.getAssocialInfo().getOutbreakDay() == itemPayout.getPayoutDate().getDayoffDate().get())
 					.collect(Collectors.toList());
+			// 	絞り込みした「振出振休紐付け管理」をチェック
 			if (!listPayoutSub.isEmpty()) {
 				List<GeneralDate> lstDateOfUse = listPayoutSub.stream().map(x -> {
 					return x.getAssocialInfo().getDateOfUse();
 				}).collect(Collectors.toList());
 				// Input．List＜振休管理データ＞を絞り込み
-				List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
+				 List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
 						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().get()))
 						.collect(Collectors.toList());
 				if(listSubstitution.isEmpty()) {
 					// Step ドメインモデル「振休管理データ」を取得
 					listSubstitution = substitutionOfHDManaDataRepository
-							.getBySidListHoliday(empId, lstDateOfUse);
+							.getBySidListHoliday(AppContexts.user().companyId(),empId, lstDateOfUse);
 				}
+				for(SubstitutionOfHDManagementData item :listSubstitution) {
+					//	残数データ情報を作成
+					RemainInfoData itemRemainInfo = RemainInfoData.builder()
+							.accrualDate(itemPayout.getPayoutDate().getDayoffDate())
+							.deadLine(Optional.of(itemPayout.getExpiredDate()))
+							.occurrenceDay(Optional.of(itemPayout.getOccurredDays().v()))
+							.digestionDay(item.getHolidayDate().getDayoffDate())
+							.digestionDays(Optional.of(item.getRequiredDays().v()))
+							.legalDistinction(Optional.of(itemPayout.getLawAtr().value))
+							.occurrenceId(Optional.of(itemPayout.getPayoutId()))
+							.digestionId(Optional.of(item.getSubOfHDID()))
+							.dayLetf(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today())  ? itemPayout.getUnUsedDays().v() : 0.0)
+							.usedDay(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0 : itemPayout.getUnUsedDays().v())
+							.build();
+					// List＜残数データ情報＞に作成した「残数データ情報＞を追加
+					lstRemainInfoData.add(itemRemainInfo);
+				}
+				// Input．List<振出振休紐付け管理＞に絞り込みした「振出振休紐付け管理」を除く
+				payoutSubofHDManagementLinkToPayout.removeIf(x -> listPayoutSub.contains(x));
+				// Input．List＜振休管理データ＞に絞り込みした「振休管理データ」を除く
+				final List<SubstitutionOfHDManagementData> listCopy = listSubstitution;
+				substitutionOfHDManagementData.removeIf(y -> listCopy.contains(y));
+			}else {
+				//	残数データ情報を作成
+				RemainInfoData itemRemainInfo = RemainInfoData.builder()
+						.accrualDate(itemPayout.getPayoutDate().getDayoffDate())
+						.deadLine(Optional.of(itemPayout.getExpiredDate()))
+						.occurrenceDay(Optional.of(itemPayout.getOccurredDays().v()))
+						.digestionDay(Optional.empty())
+						.digestionDays(Optional.empty())
+						.legalDistinction(Optional.of(itemPayout.getLawAtr().value))
+						.occurrenceId(Optional.of(itemPayout.getPayoutId()))
+						.digestionId(Optional.empty())
+						.dayLetf(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today())  ? itemPayout.getUnUsedDays().v() : 0.0)
+						.usedDay(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0 : itemPayout.getUnUsedDays().v())
+						.build();
+				// List＜残数データ情報＞に作成した「残数データ情報＞を追加
+				lstRemainInfoData.add(itemRemainInfo);
 			}
 		}
+		// List＜振休管理データ＞をループする
+		for(SubstitutionOfHDManagementData itemSubstitution: substitutionOfHDManagementData) {
+			// List＜振出振休紐付け管理＞を絞り込みする
+			List<PayoutSubofHDManagement> lstLinkToPayout =  payoutSubofHDManagementLinkToPayout.stream()
+					.filter(item -> item.getAssocialInfo().getDateOfUse() == itemSubstitution.getHolidayDate().getDayoffDate().get())
+					.collect(Collectors.toList());
+			//	絞り込みした「振出振休紐付け管理」をチェック: あるの場合
+			if(!lstLinkToPayout.isEmpty()) {
+				List<GeneralDate> lstDayOff = lstLinkToPayout.stream().map(x -> {
+					return x.getAssocialInfo().getOutbreakDay();
+				}).collect(Collectors.toList());
+				//	ドメインモデル「振出管理データ」を取得する
+				List<PayoutManagementData> listItemPayout = payoutManagementDataRepository.getByListPayoutDate(AppContexts.user().companyId(), empId
+						,lstDayOff);
+				//	残数データ情報を作成
+				for(PayoutManagementData x : listItemPayout) {
+					RemainInfoData itemRemainInfo = RemainInfoData.builder()
+							.accrualDate(x.getPayoutDate().getDayoffDate())
+							.deadLine(Optional.of(x.getExpiredDate()))
+							.occurrenceDay(Optional.of(x.getOccurredDays().v()))
+							.digestionDay(itemSubstitution.getHolidayDate().getDayoffDate())
+							.digestionDays(Optional.of(itemSubstitution.getRequiredDays().v()))
+							.legalDistinction(Optional.of(x.getLawAtr().value))
+							.occurrenceId(Optional.of(x.getPayoutId()))
+							.digestionId(Optional.of(itemSubstitution.getSubOfHDID()))
+							.dayLetf(x.getExpiredDate().beforeOrEquals(GeneralDate.today())  ? x.getUnUsedDays().v() : 0.0)
+							.usedDay(x.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0 : x.getUnUsedDays().v())
+							.build();
+					//	List＜残数データ情報＞に作成した残数データ情報を追加
+					lstRemainInfoData.add(itemRemainInfo);
+				}
+			}else {
+				//	絞り込みした「振出振休紐付け管理」をチェック: ないの場合
+				//	残数データ情報を作成
+				RemainInfoData itemRemainInfo = RemainInfoData.builder()
+						.accrualDate(Optional.empty())
+						.deadLine(Optional.empty())
+						.occurrenceDay(Optional.empty())
+						.digestionDay(itemSubstitution.getHolidayDate().getDayoffDate())
+						.digestionDays(Optional.of(itemSubstitution.getRequiredDays().v()))
+						.legalDistinction(Optional.empty())
+						.occurrenceId(Optional.empty())
+						.digestionId(Optional.of(itemSubstitution.getSubOfHDID()))
+						.dayLetf(0.0)
+						.usedDay(0.0)
+						.build();
+				//	List＜残数データ情報＞に作成した残数データ情報を追加
+				lstRemainInfoData.add(itemRemainInfo);
+			}
+		}
+		//	作成したList＜残数データ情報＞を返す
+		lstRemainInfoData.sort((a, b) -> {
+			return a.getAccrualDate().get().compareTo(b.getAccrualDate().get());
+		});
+
 		return lstRemainInfoData;
+	}
+	
+	public Optional<PresentClosingPeriodExport> find(String cId, int closureId) {
+		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
+
+		// Check exist and active
+		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
+				.equals(UseClassification.UseClass_NotUse)) {
+			return Optional.empty();
+		}
+
+		Closure closure = optClosure.get();
+
+		// Get Processing Ym 処理年月
+		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+
+		// Return
+		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
+				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
+				.build());
 	}
 }

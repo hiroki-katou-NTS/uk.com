@@ -8,6 +8,8 @@ import nts.arc.time.GeneralDate;
 
 @Data
 @Builder
+
+//	残数データ情報パラメータ
 public class RemainInfoData {
 
 	//	発生管理データID
