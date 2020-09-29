@@ -20,6 +20,7 @@ module nts.uk.at.view.kal003.share.model {
             new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
             //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
+            new ItemModel(14, getText('マスタチェック'))
         ];
     }
 
@@ -347,7 +348,8 @@ module nts.uk.at.view.kal003.share.model {
         ANY_PERIOD = 10,
         ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
         _36_AGREEMENT = 12,
-        MAN_HOUR_CHECK = 13
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
 
     export enum DATA_CONDITION_TO_EXTRACT {
@@ -2313,6 +2315,7 @@ module nts.uk.at.view.kal003.share.model {
         fixConWorkRecordNo: number;
         message: string;
         useAtr: boolean;
+		division: string;
     }
 
 
@@ -2324,12 +2327,14 @@ module nts.uk.at.view.kal003.share.model {
         checkName: string;
         message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
+		division: KnockoutObservable<string>;
         constructor(data: IFixedConditionWorkRecord) {
             this.dailyAlarmConID = data.dailyAlarmConID;
             this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
             this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
+			this.division = ko.observable(data.division);
         }
     }
 
