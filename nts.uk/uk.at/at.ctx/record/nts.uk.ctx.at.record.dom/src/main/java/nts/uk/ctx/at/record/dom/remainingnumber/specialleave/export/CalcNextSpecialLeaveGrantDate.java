@@ -388,7 +388,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 			
 			// 定期の付与日一覧を求める
-			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+			GrantDaysInforByDatesInfo grantDaysInforByDatesInfo
 				= getSpecialLeaveGrantInfo(
 						require, 
 						cacheCarrier, 
@@ -399,18 +399,17 @@ public class CalcNextSpecialLeaveGrantDate {
 						period,
 						Optional.ofNullable(grantDate));
 			
+			
 			// 期限日を求める
-			List<NextSpecialLeaveGrant> nextSpecialLeaveGrant
+			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
 				= getExpireDate(
 						require,
 						cacheCarrier,
 						companyId,
 						employeeId,
 						spLeaveCD,
-						nextSpecialLeaveGrantList,
-						grantDaysInforByDates.getGrantDate().get());
-			
-			
+						grantDaysInforByDatesInfo.getLstGrantDaysInfor(),
+						grantDaysInforByDatesInfo.getGrantDate());
 			
 			return nextSpecialLeaveGrantList;
 		}
@@ -984,13 +983,6 @@ public class CalcNextSpecialLeaveGrantDate {
 				}
 			}
 			
-//			SpecialLeaveManagementService.RequireM5 require, 
-//			CacheCarrier cacheCarrier, 
-//			String companyId, 
-//			String employeeId,
-//			int spLeaveCD,
-//			GeneralDate ymd
-			
 			// 利用条件をチェックする
 			ErrorFlg checkUser = checkUseCondition(
 					require, cacheCarrier, cid, sid, spLeaveCD, grantDateTmp);
@@ -1025,7 +1017,6 @@ public class CalcNextSpecialLeaveGrantDate {
 		
 		return new GrantDaysInforByDates(Optional.ofNullable(outputDate), lstOutput);
 	}
-	
 	
 	/**
 	 * 付与日から期限日内に入社日があるかチェックする
@@ -1105,9 +1096,9 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 		}
 		
+		// 付与日←パラメータ「付与日」
+		return grantDate;
 	}
-		
-		
 		
 //		// 「特別休暇」を取得する
 //		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
