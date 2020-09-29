@@ -8,6 +8,7 @@ import nts.uk.shr.com.security.audittrail.basic.IPAddress;
 /**
  * @author thanhpv
  * @name IPアドレス設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.Event.打刻管理.勤務場所.IPアドレス設定
  */
 @Getter
 @AllArgsConstructor

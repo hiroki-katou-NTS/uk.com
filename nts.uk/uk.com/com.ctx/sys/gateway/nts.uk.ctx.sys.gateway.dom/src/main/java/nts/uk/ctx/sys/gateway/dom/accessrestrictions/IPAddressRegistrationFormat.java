@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 /**
  * @author thanhpv
  * @name IPアドレスの登録形式
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.GateWay.アクセス制限.IPアドレスの登録形式
  */
 public enum IPAddressRegistrationFormat {
 	

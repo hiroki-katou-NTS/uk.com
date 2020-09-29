@@ -14,6 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * @author thanhpv
  * @name アクセス制限
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.GateWay.アクセス制限.アクセス制限
  */
 @Getter
 @AllArgsConstructor

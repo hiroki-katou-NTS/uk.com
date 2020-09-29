@@ -8,6 +8,7 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * @author thanhpv 
  * @name: 許可IPアドレス
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.GateWay.アクセス制限.許可IPアドレス
  */
 @Getter
 public class AllowedIPAddress extends DomainObject{

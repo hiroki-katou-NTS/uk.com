@@ -10,6 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * @author thanhpv
  * @name IPアドレスの備考
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.GateWay.アクセス制限.IPアドレスの備考
  */
 
 @StringMaxLength(40)
