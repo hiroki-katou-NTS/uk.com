@@ -27,7 +27,7 @@ public class ShiftTableRule implements DomainValue {
 	/** シフト表の設定 */
 	private final ShiftTableSetting shiftTableSetting;
 	
-	/** 勤務希望の指定できる方法 */
+	/** 勤務希望の指定できる方法リスト */
 	private final List<AssignmentMethod> expectationAssignMethodList;
 	
 	/** 締切日の何日前に通知するかの日数 */
@@ -52,18 +52,16 @@ public class ShiftTableRule implements DomainValue {
 		if ( useWorkExpectationAtr == NotUseAtr.USE) {
 			
 			if (expectationAssignMethodList.isEmpty()) {
-				throw new BusinessException("");
-				// TODO
+				throw new BusinessException("Msg_1937");
 			}
 				
 			if (!fromNoticeDays.isPresent()) {
-				throw new RuntimeException("fromNoticeDays is invalid!");
+				throw new BusinessException("Msg_1938");
 			}
 			
 			int maxFromNoticeDays = shiftTableSetting.getShiftPeriodUnit() == ShiftPeriodUnit.MONTHLY ? 15 : 6;
 			if ( fromNoticeDays.get().v() > maxFromNoticeDays) {
-				throw new RuntimeException("");
-				// TODO
+				throw new BusinessException("Msg_1939", maxFromNoticeDays + "");
 			}
 			
 		}
@@ -87,22 +85,13 @@ public class ShiftTableRule implements DomainValue {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		ShiftTableRuleInfo ruleInfo = this.getcorrespondingDeadlineAndPeriod(GeneralDate.today());
+		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.getcorrespondingDeadlineAndPeriod(GeneralDate.today());
 		GeneralDate startNotifyDate = ruleInfo.getDeadline().addDays( - this.fromNoticeDays.get().v());
 		if (GeneralDate.today().before(startNotifyDate)) {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
 		return NotificationInfo.createNotification(ruleInfo.getDeadline(), ruleInfo.getPeriod());
-	}
-	
-	/**
-	 * 基準日に対応する締切日と期間を取得する
-	 * @return
-	 */
-	ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
-		
-		return this.shiftTableSetting.getcorrespondingDeadlineAndPeriod(baseDate);
 	}
 	
 }
