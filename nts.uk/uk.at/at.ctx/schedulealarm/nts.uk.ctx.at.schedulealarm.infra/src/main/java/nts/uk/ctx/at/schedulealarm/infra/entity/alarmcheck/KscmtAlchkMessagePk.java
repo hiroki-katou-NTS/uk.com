@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class KscmtAlchkMessagePk {
 	/**　会社ID */
 	@Column(name = "CID")
-	public String contractCd;
+	public String cid;
 	/** 条件コード */
 	@Column(name = "CD")
 	public String code;

@@ -15,7 +15,12 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleOrder;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
+/**
+ * 勤務予定のアラームチェック条件・サブ条件
+ * KSCCT_ALCHK_CATEGORY_SUB
+ * @author lan_lt
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -45,7 +50,6 @@ public class KscctAlchkCategorySub extends ContractUkJpaEntity {
 	
 	public static List<KscctAlchkCategorySub> toEntity(String contractCd, AlarmCheckConditionSchedule alarm,
 			AlarmCheckConditionScheduleOrder alarmOrder) {
-		
 		return alarm.getSubConditionLst().stream().map(c -> {
 			val pk = new KscctAlchkCategorySubPk(contractCd, alarm.getCode().v(), c.getSubCode().v());
 			return new KscctAlchkCategorySub(pk, c.getExplanation(), c.getMessage().getDefaultMsg().v(),

@@ -29,10 +29,6 @@ public class KscmtAlchkMessage extends ContractUkJpaEntity  {
 	@EmbeddedId
 	public KscmtAlchkMessagePk pk;
 	
-	/** 契約コード */
-	@Column(name = "CONTRACT_CD")
-	public String contractCd;
-	
 	/** 任意のメッセージ */
 	@Column(name = "MESSAGE")
 	public String message;
@@ -42,11 +38,10 @@ public class KscmtAlchkMessage extends ContractUkJpaEntity  {
 		return this.pk;
 	}
 	
-	public static KscmtAlchkMessage toEntity(String contractCd, 
-			String cid, 
+	public static KscmtAlchkMessage toEntity(String cid, 
 			AlarmCheckConditionCode code, SubCode subCode, AlarmCheckMessage message) {
 		val pk = new KscmtAlchkMessagePk(cid, code.v(), subCode.v());
-		return new KscmtAlchkMessage(pk, contractCd, message.v());
+		return new KscmtAlchkMessage(pk,  message.v());
 	}
 
 }

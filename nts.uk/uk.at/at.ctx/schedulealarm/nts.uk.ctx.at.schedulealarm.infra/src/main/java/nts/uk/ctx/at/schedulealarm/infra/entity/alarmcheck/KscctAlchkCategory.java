@@ -52,10 +52,5 @@ public class KscctAlchkCategory extends ContractUkJpaEntity{
 				alarm.isMedicalOpt() == true ? 1 : 0);
 		return entity;
 	}
-	
-	public static AlarmCheckConditionSchedule toDomain() {
-		
-		return null;
-	}
 
 }
