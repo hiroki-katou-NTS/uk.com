@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "SPTMT_APPROVE_WIDGET")
-public class SptmtApproveWidget extends UkJpaEntity implements Serializable {
+public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
