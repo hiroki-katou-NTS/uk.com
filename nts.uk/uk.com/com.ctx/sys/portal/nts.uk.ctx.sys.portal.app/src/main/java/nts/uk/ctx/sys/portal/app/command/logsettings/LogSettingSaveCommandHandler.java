@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.logsettings;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,16 +34,27 @@ public class LogSettingSaveCommandHandler extends CommandHandler<LogSettingSaveC
 		
 		List<LogSettingDto> listLogSettingDto = context.getCommand().getLogSettings();
 		if (!listLogSettingDto.isEmpty()) {
-			// ループを開始する　
-			for (LogSettingDto logSettingDto : listLogSettingDto) {
-				logSettingDto.setCompanyId(cId);
-				LogSetting domain = LogSetting.createFromMemento(logSettingDto);
-				// ドメインモデル「ログ設定」を削除
-				this.logSettingRepository.delete(cId, logSettingDto.getSystem(), logSettingDto.getProgramId());
-				// ドメインモデル「ログ設定」に追加する
-				this.logSettingRepository.add(contractCode, domain);
+			
+			List<LogSetting> logSettings = this.logSettingRepository.findBySystem(cId, listLogSettingDto.get(0).getSystem());
+			if (logSettings.isEmpty()) {
+				cId = "000000000000-0000";
 			}
+			
+			// Step ドメインモデル「ログ設定」を削除
+			this.logSettingRepository.delete(cId, listLogSettingDto.get(0).getSystem());
+			
+			// Step ドメインモデル「ログ設定」に追加する
+			this.addAll(cId, contractCode, listLogSettingDto);
 		}
+	}
+	
+	private void addAll(String cId, String contractCode, List<LogSettingDto> listLogSettingDto) {
+		this.logSettingRepository.addAll(contractCode, listLogSettingDto.stream()
+				.map(dto -> {
+					dto.setCompanyId(cId);
+					return LogSetting.createFromMemento(dto);
+				})
+				.collect(Collectors.toList()));
 	}
 
 }

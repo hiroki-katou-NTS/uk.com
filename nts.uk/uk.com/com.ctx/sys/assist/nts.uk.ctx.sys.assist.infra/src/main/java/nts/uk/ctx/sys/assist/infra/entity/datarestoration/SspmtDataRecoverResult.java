@@ -1,18 +1,21 @@
 package nts.uk.ctx.sys.assist.infra.entity.datarestoration;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
-import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -31,6 +34,13 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Id
 	@Column(name = "DATA_RECOVERY_PROCESS_ID")
 	public String dataRecoveryProcessId;
+	
+	/**
+	 * データ保存処理ID
+	 */
+//	@Basic(optional = false)
+//	@Column(name = "DATA_STORAGE_PROCESS_ID")
+//	private String dataStorageProcessId;
 
 	/**
 	 * 会社ID
@@ -52,7 +62,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "PRACTITIONER")
 	public String practitioner;
-
+	
 	/**
 	 * 実行結果
 	 */
@@ -87,27 +97,30 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "SAVE_NAME")
 	public String saveName;
-	
+
 	/**
 	 * ログイン情報.IPアドレス
 	 */
 	@Basic(optional = false)
 	@Column(name = "PC_IP")
 	public String pcId;
-	
+
 	/**
 	 * ログイン情報.PC名
 	 */
 	@Basic(optional = false)
 	@Column(name = "PC_NAME")
 	public String pcName;
-	
+
 	/**
 	 * ログイン情報.アカウント
 	 */
 	@Basic(optional = false)
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dataRecoverResult", orphanRemoval = true)
+	private List<SspmtDataRecoverLog> listResultLogRecovers;
 
 	@Override
 	protected Object getKey() {
@@ -115,19 +128,35 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	}
 
 	public DataRecoveryResult toDomain() {
-		return new DataRecoveryResult(this.dataRecoveryProcessId, this.cid, this.saveSetCd, this.practitioner,
-				this.executionResult, this.startDateTime, this.endDateTime, this.saveForm, this.saveName, new LoginInfo(pcId,pcName,pcAccount));
+		return new DataRecoveryResult(
+				this.dataRecoveryProcessId,
+				this.cid, 
+				this.saveSetCd, 
+				this.practitioner,
+				this.executionResult, 
+				this.listResultLogRecovers.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
+				this.startDateTime, 
+				this.endDateTime, 
+				this.saveForm, 
+				this.saveName,
+				this.pcId,
+				this.pcName,
+				this.pcAccount);
 	}
 
 	public static SspmtDataRecoverResult toEntity(DataRecoveryResult domain) {
-		return new SspmtDataRecoverResult(domain.getDataRecoveryProcessId(), domain.getCid(),
-				domain.getSaveSetCode().orElse(null), domain.getPractitioner(),
-				domain.getExecutionResult().orElse(null), domain.getStartDateTime(),
+		return new SspmtDataRecoverResult
+			(
+				domain.getDataRecoveryProcessId(), domain.getCid(),
+				domain.getPatternCode(), domain.getPractitioner(),
+				domain.getExecutionResult(), domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
-				domain.getSaveForm(),
-				domain.getSaveName(),
+				domain.getSaveForm().value,
+				domain.getSaveName().v(),
 				domain.getLoginInfo().getIpAddress(),
 				domain.getLoginInfo().getPcName(),
-				domain.getLoginInfo().getAccount());
+				domain.getLoginInfo().getAccount(),
+				domain.getListDataRecoveryLogs().stream().map(item -> SspmtDataRecoverLog.toEntity(item)).collect(Collectors.toList())
+			);
 	}
 }

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -201,8 +200,8 @@ public class LateTimeOfDaily {
 				lateTime,
 				lateDeductionTime,
 				workNo,
-				new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
-				new IntervalExemptionTime(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)));
+				TimevacationUseTimeOfDaily.defaultValue(),
+				IntervalExemptionTime.defaultValue());
 		return lateTimeOfDaily;
 	}
 	
@@ -314,5 +313,4 @@ public class LateTimeOfDaily {
 		}
 		return result;
 	}
-	
 }
