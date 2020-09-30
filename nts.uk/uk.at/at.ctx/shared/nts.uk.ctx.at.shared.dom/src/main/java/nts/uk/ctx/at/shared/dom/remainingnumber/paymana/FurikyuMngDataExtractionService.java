@@ -478,7 +478,7 @@ public class FurikyuMngDataExtractionService {
 		//	作成したList＜残数データ情報＞を返す
 		if(!lstRemainInfoData.isEmpty()) {
 			lstRemainInfoData.sort((a, b) -> {
-				return  a.getAccrualDate().isPresent() ?  a.getAccrualDate().get().compareTo(b.getAccrualDate().get()) : 0 ;
+				return  a.getAccrualDate().isPresent() && b.getAccrualDate().isPresent() ?  a.getAccrualDate().get().compareTo(b.getAccrualDate().get()) : 0 ;
 			});
 		}
 		return lstRemainInfoData;

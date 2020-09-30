@@ -303,7 +303,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
                         // update data to view
                         self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
-                        self.totalRemainingNumber(res.numberOfDayLeft);
+                        self.totalRemainingNumber(res.totalRemainingNumber);
                         self.expirationDate(self.getExpirationTime(res.expirationDate));
                         self.closureID = res.closureID;
                         self.newDataDisable(false);
