@@ -11,7 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @AllArgsConstructor
 @Getter
-public class WorkMethodRelationshipCom implements DomainAggregate{
+public class WorkMethodRelationshipCompany implements DomainAggregate{
 	
 	/**	勤務方法の関係性*/
 	private WorkMethodRelationship workMethodRelationship;

@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 
 /**
  * 関係性の指定方法
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.関係性の指定方法
  * @author lan_lt
  *
  */

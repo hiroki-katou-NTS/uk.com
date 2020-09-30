@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @Embeddable
@@ -26,7 +26,7 @@ public class KscmtAlchkWorkContextCmpPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	public static KscmtAlchkWorkContextCmpPk fromDomain(String companyId, WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmpPk fromDomain(String companyId, WorkMethodRelationshipCompany domain) {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		

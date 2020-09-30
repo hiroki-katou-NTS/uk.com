@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodContinuousWork;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -46,7 +46,7 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static KscmtAlchkWorkContextCmp fromDomain(String companyId, WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmp fromDomain(String companyId, WorkMethodRelationshipCompany domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 			
@@ -57,9 +57,9 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 			
 	}
 	
-	public WorkMethodRelationshipCom toDomain(List<KscmtAlchkWorkContextCmpDtl> dtlList) {
+	public WorkMethodRelationshipCompany toDomain(List<KscmtAlchkWorkContextCmpDtl> dtlList) {
 		
-		return new WorkMethodRelationshipCom(
+		return new WorkMethodRelationshipCompany(
 				WorkMethodRelationship.create( this.pk.toPrevWorkMethod(), 
 												this.toCurrentWorkMethod(dtlList), 
 												RelationshipSpecifiedMethod.of(this.specifiedMethod)));

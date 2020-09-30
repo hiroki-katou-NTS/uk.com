@@ -11,7 +11,7 @@ import nts.arc.testing.assertion.NtsAssert;
 public class WorkMethodRelationshipComTest {
 	@Test
 	public void getters() {
-		val WorkMethodRelationshipCom = new WorkMethodRelationshipCom(WorkMethodRelationshipHelper.DUMMY);
+		val WorkMethodRelationshipCom = new WorkMethodRelationshipCompany(WorkMethodRelationshipHelper.DUMMY);
 		NtsAssert.invokeGetters(WorkMethodRelationshipCom);
 	}
 	

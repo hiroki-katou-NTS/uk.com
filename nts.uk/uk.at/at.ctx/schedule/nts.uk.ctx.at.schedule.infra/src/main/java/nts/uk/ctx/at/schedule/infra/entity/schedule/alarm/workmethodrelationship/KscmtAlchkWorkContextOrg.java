@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodContinuousWork;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
@@ -46,7 +46,7 @@ public class KscmtAlchkWorkContextOrg  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static KscmtAlchkWorkContextOrg fromDomain(WorkMethodRelationshipOrg domain) {
+	public static KscmtAlchkWorkContextOrg fromDomain(WorkMethodRelationshipOrganization domain) {
 		
 		return new KscmtAlchkWorkContextOrg(
 				KscmtAlchkWorkContextOrgPk.fromDomain(domain), 
@@ -54,10 +54,10 @@ public class KscmtAlchkWorkContextOrg  extends ContractUkJpaEntity {
 				domain.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
 	}
 		
-	public WorkMethodRelationshipOrg toDomain(List<KscmtAlchkWorkContextOrgDtl> dtlList) {
+	public WorkMethodRelationshipOrganization toDomain(List<KscmtAlchkWorkContextOrgDtl> dtlList) {
 		
 		
-		return new WorkMethodRelationshipOrg( this.pk.toTargetOrgIdenInfor(), 
+		return new WorkMethodRelationshipOrganization( this.pk.toTargetOrgIdenInfor(), 
 				new WorkMethodRelationship( 
 						this.pk.toPrevWorkMethod(), 
 						this.toCurrentWorkMethod(dtlList), 

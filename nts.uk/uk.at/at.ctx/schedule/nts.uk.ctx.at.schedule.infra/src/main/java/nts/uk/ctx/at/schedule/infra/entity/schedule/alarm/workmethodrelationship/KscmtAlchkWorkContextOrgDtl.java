@@ -16,7 +16,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -37,7 +37,7 @@ public class KscmtAlchkWorkContextOrgDtl extends ContractUkJpaEntity{
 		return pk;
 	}
 	
-	public static List<KscmtAlchkWorkContextOrgDtl> fromDomain(WorkMethodRelationshipOrg domain) {
+	public static List<KscmtAlchkWorkContextOrgDtl> fromDomain(WorkMethodRelationshipOrganization domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		

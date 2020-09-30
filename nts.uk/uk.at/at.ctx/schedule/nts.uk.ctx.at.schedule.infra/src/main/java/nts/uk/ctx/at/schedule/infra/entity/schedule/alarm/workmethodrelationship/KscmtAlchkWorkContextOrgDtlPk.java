@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,7 +41,7 @@ public class KscmtAlchkWorkContextOrgDtlPk {
 	@Column(name = "TGT_WKTM_CD")
 	public String currentWorkTimeCode;
 	
-	public static List<KscmtAlchkWorkContextOrgDtlPk> fromDomain(WorkMethodRelationshipOrg domain) {
+	public static List<KscmtAlchkWorkContextOrgDtlPk> fromDomain(WorkMethodRelationshipOrganization domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		

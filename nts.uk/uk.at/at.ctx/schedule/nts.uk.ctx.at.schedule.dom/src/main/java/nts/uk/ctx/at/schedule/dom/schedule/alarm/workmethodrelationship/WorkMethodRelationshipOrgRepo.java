@@ -7,9 +7,9 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 
 public interface WorkMethodRelationshipOrgRepo {
 	
-	public void insert(WorkMethodRelationshipOrg domain);
+	public void insert(WorkMethodRelationshipOrganization domain);
 	
-	public void update(WorkMethodRelationshipOrg domain);
+	public void update(WorkMethodRelationshipOrganization domain);
 	
 	/**
 	 * delete ( 会社ID, 対象組織 )
@@ -32,7 +32,7 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * @param targetOrg
 	 * @return
 	 */
-	public List<WorkMethodRelationshipOrg> getAll(String companyId, TargetOrgIdenInfor targetOrg);
+	public List<WorkMethodRelationshipOrganization> getAll(String companyId, TargetOrgIdenInfor targetOrg);
 	
 	/**
 	 * get ( 会社ID, 対象組織, 勤務方法 )	
@@ -41,7 +41,7 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * @param prevWorkMethod
 	 * @return
 	 */
-	public Optional<WorkMethodRelationshipOrg> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
+	public Optional<WorkMethodRelationshipOrganization> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
 	
 	/**
 	 * *get ( 会社ID, 対象組織, List<勤務方法> )
@@ -50,7 +50,7 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * @param prevWorkMethodList
 	 * @return
 	 */
-	public List<WorkMethodRelationshipOrg> getWithWorkMethodList(String companyId, TargetOrgIdenInfor targetOrg, List<WorkMethod> prevWorkMethodList);
+	public List<WorkMethodRelationshipOrganization> getWithWorkMethodList(String companyId, TargetOrgIdenInfor targetOrg, List<WorkMethod> prevWorkMethodList);
 	
 	/**
 	 * exists ( 会社ID, 対象組織, 勤務方法 )

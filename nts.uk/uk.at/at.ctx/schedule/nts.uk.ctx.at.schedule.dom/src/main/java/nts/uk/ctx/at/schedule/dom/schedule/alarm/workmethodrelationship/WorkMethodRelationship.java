@@ -14,20 +14,20 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 @Value
 public class WorkMethodRelationship implements DomainValue{
 	
-	//前日の勤務方法
+	/** 前日の勤務方法 */
 	private final WorkMethod prevWorkMethod;
 	
-	//当日の勤務方法リスト
+	/** 当日の勤務方法リスト*/
 	private final List<WorkMethod> currentWorkMethodList;
 	
-	//指定方法
+	/** 指定方法 */
 	private RelationshipSpecifiedMethod specifiedMethod;
 
 	/**
-	 * [C-1] 作成する
-	 * @param prevWorkMethod
-	 * @param currentWorkMethodList
-	 * @param specifiedMethod
+	 * 作成する
+	 * @param prevWorkMethod 前日の勤務方法
+	 * @param currentWorkMethodList 当日の勤務方法リスト
+	 * @param specifiedMethod 指定方法
 	 * @return
 	 */
 	public static WorkMethodRelationship create(WorkMethod prevWorkMethod, 

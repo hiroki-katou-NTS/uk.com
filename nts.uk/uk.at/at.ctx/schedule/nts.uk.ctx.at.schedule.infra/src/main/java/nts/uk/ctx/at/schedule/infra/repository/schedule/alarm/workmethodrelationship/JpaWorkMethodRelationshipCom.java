@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipComRepo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
@@ -54,7 +54,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
 
 	@Override
-	public void insert(String companyId, WorkMethodRelationshipCom domain) {
+	public void insert(String companyId, WorkMethodRelationshipCompany domain) {
 		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
 		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
 		
@@ -63,7 +63,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	}
 
 	@Override
-	public void update(String companyId, WorkMethodRelationshipCom domain) {
+	public void update(String companyId, WorkMethodRelationshipCompany domain) {
 		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
 		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
 		
@@ -111,7 +111,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	}
 
 	@Override
-	public List<WorkMethodRelationshipCom> getAll(String companyId) {
+	public List<WorkMethodRelationshipCompany> getAll(String companyId) {
 		
 		Entities entities = getAllEntities(companyId);
 		
@@ -119,7 +119,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	}
 
 	@Override
-	public Optional<WorkMethodRelationshipCom> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod) {
+	public Optional<WorkMethodRelationshipCompany> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod) {
 		
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
@@ -143,13 +143,13 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
 				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
-		 WorkMethodRelationshipCom domain = toDomain(Arrays.asList(workContext.get()), workContextDtlList).get(0);
+		 WorkMethodRelationshipCompany domain = toDomain(Arrays.asList(workContext.get()), workContextDtlList).get(0);
 		return Optional.of(domain);
 		
 	}
 
 	@Override
-	public List<WorkMethodRelationshipCom> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList) {
+	public List<WorkMethodRelationshipCompany> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList) {
 		
 		List<String> prevWorkTimeCodeList = prevWorkMethodList.stream().map( p -> 
 			p.getWorkMethodClassification().isAttendance() ? 
@@ -189,7 +189,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		
 	}
 	
-	private List<WorkMethodRelationshipCom> toDomain(List<KscmtAlchkWorkContextCmp> workContextList, 
+	private List<WorkMethodRelationshipCompany> toDomain(List<KscmtAlchkWorkContextCmp> workContextList, 
 			List<KscmtAlchkWorkContextCmpDtl> workContextDtlList) {
 		
 		return workContextList.stream().map( wContext -> {

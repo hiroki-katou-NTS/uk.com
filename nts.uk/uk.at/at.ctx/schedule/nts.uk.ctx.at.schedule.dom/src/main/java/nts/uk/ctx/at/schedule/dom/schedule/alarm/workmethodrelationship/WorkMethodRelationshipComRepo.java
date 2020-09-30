@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface WorkMethodRelationshipComRepo {
 	
-	public void insert(String companyId, WorkMethodRelationshipCom domain);
+	public void insert(String companyId, WorkMethodRelationshipCompany domain);
 	
-	public void update(String companyId, WorkMethodRelationshipCom domain);
+	public void update(String companyId, WorkMethodRelationshipCompany domain);
 	
 	/**
 	 * delete ( 会社ID )	
@@ -27,7 +27,7 @@ public interface WorkMethodRelationshipComRepo {
 	 * @param companyId
 	 * @return
 	 */
-	public List<WorkMethodRelationshipCom> getAll(String companyId);
+	public List<WorkMethodRelationshipCompany> getAll(String companyId);
 	
 	/**
 	 * get ( 会社ID, 勤務方法 )
@@ -35,7 +35,7 @@ public interface WorkMethodRelationshipComRepo {
 	 * @param prevWorkMethod
 	 * @return
 	 */
-	public Optional<WorkMethodRelationshipCom> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod);
+	public Optional<WorkMethodRelationshipCompany> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod);
 	
 	/**
 	 * get ( 会社ID, List<勤務方法> )	
@@ -43,7 +43,7 @@ public interface WorkMethodRelationshipComRepo {
 	 * @param prevWorkMethodList
 	 * @return
 	 */
-	public List<WorkMethodRelationshipCom> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList);
+	public List<WorkMethodRelationshipCompany> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList);
 	
 	/**
 	 * xists ( 会社ID, 勤務方法 )

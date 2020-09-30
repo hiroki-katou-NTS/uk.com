@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -37,7 +37,7 @@ public class KscmtAlchkWorkContextOrgPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	public static KscmtAlchkWorkContextOrgPk fromDomain(WorkMethodRelationshipOrg domain) {
+	public static KscmtAlchkWorkContextOrgPk fromDomain(WorkMethodRelationshipOrganization domain) {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE ?

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public class WorkMethodRelationshipOrgTest {
 	@Test
 	public void getters() {
-		val workMethodRelaOrg = new WorkMethodRelationshipOrg(TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
+		val workMethodRelaOrg = new WorkMethodRelationshipOrganization(TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				WorkMethodRelationshipHelper.DUMMY);
 		NtsAssert.invokeGetters(workMethodRelaOrg);
 	}

@@ -5,7 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 
 /**
  * 勤務方法の種類
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.勤務方法の種類
  * @author lan_lt
  *
  */

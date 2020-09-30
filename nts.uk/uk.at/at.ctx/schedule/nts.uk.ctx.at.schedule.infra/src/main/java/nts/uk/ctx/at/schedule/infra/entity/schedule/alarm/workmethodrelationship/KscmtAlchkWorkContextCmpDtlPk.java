@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 
 @Embeddable
 @EqualsAndHashCode
@@ -38,7 +38,7 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 	 * @param domain
 	 * @return
 	 */
-	public static List<KscmtAlchkWorkContextCmpDtlPk> fromDomain(String companyId, WorkMethodRelationshipCom domain) {
+	public static List<KscmtAlchkWorkContextCmpDtlPk> fromDomain(String companyId, WorkMethodRelationshipCompany domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
