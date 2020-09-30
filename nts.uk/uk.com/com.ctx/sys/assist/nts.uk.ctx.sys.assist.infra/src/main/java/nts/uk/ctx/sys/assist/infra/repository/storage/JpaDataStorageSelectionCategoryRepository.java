@@ -22,4 +22,14 @@ public class JpaDataStorageSelectionCategoryRepository extends JpaRepository imp
 				.getList(DataStorageSelectionCategory::createFromMemento);
 	}
 	
+	@Override
+	public void add(DataStorageSelectionCategory domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+	
+	private SspmtDataStorageSelectionCategory toEntity(DataStorageSelectionCategory domain) {
+		SspmtDataStorageSelectionCategory entity = new SspmtDataStorageSelectionCategory();
+		domain.setMemento(entity);
+		return entity;
+	}
 }

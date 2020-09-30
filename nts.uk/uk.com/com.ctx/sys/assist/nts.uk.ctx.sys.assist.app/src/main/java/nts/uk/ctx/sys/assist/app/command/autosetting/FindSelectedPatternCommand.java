@@ -2,29 +2,24 @@ package nts.uk.ctx.sys.assist.app.command.autosetting;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.sys.assist.app.find.autosetting.CategoryDto;
 
-@Value
-public class AddCategoryCommand {
+@Data
+public class FindSelectedPatternCommand {
 	
 	/**
-	 * 画面モード
-	 */
-	private int screenMode;
-	
-	/**
-	 * パータンコード
+	 * パターンコード
 	 */
 	private String patternCode;
 	
 	/**
-	 * パターン名称
+	 * パターン区分
 	 */
-	private String patternName;
+	private int patternClassification;
 	
 	/**
-	 * 保存するカテゴリ
+	 * List<カテゴリマスタ＞
 	 */
 	private List<CategoryDto> categories;
 }

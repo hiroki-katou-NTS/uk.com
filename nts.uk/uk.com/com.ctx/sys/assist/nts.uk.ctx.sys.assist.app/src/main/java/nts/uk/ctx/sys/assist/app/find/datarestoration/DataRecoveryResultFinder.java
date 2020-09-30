@@ -21,11 +21,9 @@ public class DataRecoveryResultFinder {
 	private DataRecoveryResultRepository dataRecoveryResultRepository;
 	
 	public List<SaveSetDto> getDataRecoveryResultByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
-		/**
-		 * ドメインモデル「データ復旧の結果」から保存セットコードで集約して保存名称を取得する
-		 */
+		//ドメインモデル「データ復旧の結果」から保存セットコードで集約して保存名称を取得する
 		return dataRecoveryResultRepository.getDataRecoveryResultByStartDatetime(from, to)
-											.parallelStream()
+											.stream()
 											.map(SaveSetDto::fromDomain)
 											.collect(Collectors.toList());
 	}

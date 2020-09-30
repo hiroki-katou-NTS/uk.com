@@ -1,11 +1,10 @@
 package nts.uk.ctx.sys.assist.app.command.autosetting;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data
-public class SelectCategoryCommand {
+public class DeletePatternCommand {
+	
 	/**
 	 * パターン区分
 	 */
@@ -15,9 +14,4 @@ public class SelectCategoryCommand {
 	 * パターンコード
 	 */
 	private String patternCode;
-	
-	/**
-	 * List<システム種類>
-	 */
-	private List<Integer> systemType;
 }

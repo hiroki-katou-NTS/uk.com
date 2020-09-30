@@ -1,9 +1,9 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 
-@Value
+@Data
 public class GetSaveSetHistoryCommand {
 	private GeneralDateTime from;
 	private GeneralDateTime to;

@@ -1,6 +1,5 @@
 package storage;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +27,8 @@ public class SysEmployeeStorageAdapterImpl implements SysEmployeeStorageAdapter{
 	}
 
 	@Override
-	public List<TargetEmployees> getByListSid(String... sIds) {
-		return syEmployeePub.getByListSid(Arrays.asList(sIds)).stream()
+	public List<TargetEmployees> getByListSid(List<String> sIds) {
+		return syEmployeePub.getByListSid(sIds).stream()
 				.map(e -> new TargetEmployees(e.getSid(), new BusinessName(e.getBussinessName()), new EmployeeCode(e.getScd())))
 				.collect(Collectors.toList());
 	}

@@ -3,10 +3,10 @@ package nts.uk.ctx.sys.assist.app.find.autosetting;
 import lombok.Data;
 
 /**
- * 選択カテゴリ名称 DTO
+ * 選択カテゴリ名称保存 DTO
  */
 @Data
-public class SelectionCategoryNameDto {
+public class SaveSelectionCategoryNameDto {
 	/**
 	 * カテゴリ名称
 	 */

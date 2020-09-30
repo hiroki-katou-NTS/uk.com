@@ -31,26 +31,22 @@ public class SetScreenItemFinder {
 	private LoginPersonInChargeService picService;
 	
 	public List<ItemSetDto> findScreenItem(String dataStorageProcessId) {
-		/**
-		 * 「ログイン者が担当者か判断する」を取得する。
-		 */
+		// 「ログイン者が担当者か判断する」を取得する。
 		LoginUserRoles roles = AppContexts.user().roles();
 		LoginPersonInCharge pic = picService.getPic(roles);
 		
-		/**
-		 * 1. ドメインオブジェクト「テーブル一覧」を取得する。
-		 * 2. 取得したList<テーブル一覧>から「カテゴリのテーブル」をマッピングする。
-		 */
+		//1. ドメインオブジェクト「テーブル一覧」を取得する。
+		//2. 取得したList<テーブル一覧>から「カテゴリのテーブル」をマッピングする。
 		List<TableListDto> categoryTableLists = tableListRepository.getByProcessingId(dataStorageProcessId)
 																		.stream()
 																		.map(TableListDto::fromDomain)
 																		.collect(Collectors.toList());
-		/**
-		 * List<項目セット>を返す。
-		 */
+		//List<項目セット>を返す。
 		return categoryTableLists.stream()
 				.map(t -> {
+					////システム担当区分状態をチェックする。
 					if (checkSystemChargeStatus(pic, t.getSystemType())) {
+						//ループ中の「カテゴリのテーブル．復旧対象可不可」をチェックする。
 						boolean isCannotBeOld = checkCannotBeOld(t);
 						return new ItemSetDto(t, isCannotBeOld);
 					}
@@ -60,18 +56,10 @@ public class SetScreenItemFinder {
 				.collect(Collectors.toList());
 	}
 	
-	/**
-	 * ループ中の「カテゴリのテーブル．復旧対象可不可」をチェックする。
-	 * @return boolean
-	 */
 	private boolean checkCannotBeOld(TableListDto t) {
 		return t.getCanNotBeOld() == IS_CANNOT_BE_OLD;
 	}
 
-	/**
-	 * システム担当区分状態をチェックする。
-	 * @return boolean
-	 */
 	private boolean checkSystemChargeStatus(LoginPersonInCharge pic, int systemType) {
 		return (systemType == SystemType.ATTENDANCE_SYSTEM.value && pic.isAttendance())
 				|| (systemType == SystemType.OFFICE_HELPER.value && pic.isOfficeHelper())

@@ -11,36 +11,64 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStoragePatternSetting;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStoragePatternSettingPk;
 
 @Stateless
-public class JpaDataStoragePatternSettingRepository extends JpaRepository implements DataStoragePatternSettingRepository {
-	private static final String SELECT_DS_PATTERN_SETTING_BY_PK = "SELECT t from SspmtDataStoragePatternSetting t "
-			+ "WHERE t.contractCode = :contractCd AND t.patternCode IN :patternCd AND t.patternClassification IN :patternAtr";
-	
+public class JpaDataStoragePatternSettingRepository extends JpaRepository
+		implements DataStoragePatternSettingRepository {
 	private static final String SELECT_PATTERN_BY_CONTRACT_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
-			+ "WHERE t.contractCode = :contractCd";
+			+ "WHERE t.pk.contractCode = :contractCd";
+
+	private static final String SELECT_BY_CONTRACT_CD_AND_PATTERN_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
+			+ "WHERE t.pk.contractCode = :contractCd AND t.pk.patternCode = :patternCd";
+
+	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
+			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd";
 
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
-	public List<DataStoragePatternSetting> findByContractCdAndPatternCdAndPatternAtr(String contractCd,
-			String[] patternCd, int[] patternAtr) {
-		return this.queryProxy().query(SELECT_DS_PATTERN_SETTING_BY_PK, SspmtDataStoragePatternSetting.class)
-				.setParameter("contractCode", contractCd)
-				.setParameter("patternCode", patternCd)
-				.setParameter("patternAtr", patternAtr)
-				.getList(DataStoragePatternSetting::createFromMemento);
+	public Optional<DataStoragePatternSetting> findByContractCdAndPatternCdAndPatternAtr(String contractCd,
+			String patternCd, int patternAtr) {
+		return this.queryProxy().find(new SspmtDataStoragePatternSettingPk(contractCd, patternAtr, patternCd),
+				SspmtDataStoragePatternSetting.class).map(DataStoragePatternSetting::createFromMemento);
 	}
 
 	@Override
 	public List<DataStoragePatternSetting> findByContractCd(String contractCd) {
 		return this.queryProxy().query(SELECT_PATTERN_BY_CONTRACT_CD, SspmtDataStoragePatternSetting.class)
-				.setParameter("contractCd", contractCd)
-				.getList(DataStoragePatternSetting::createFromMemento);
+				.setParameter("contractCd", contractCd).getList(DataStoragePatternSetting::createFromMemento);
 	}
 
 	@Override
 	public Optional<DataStoragePatternSetting> findByContractCdAndPatternCd(String contractCd, String patternCd) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_BY_CONTRACT_CD_AND_PATTERN_CD, SspmtDataStoragePatternSetting.class)
+				.setParameter("contractCd", contractCd).setParameter("patternCd", patternCd)
+				.getSingle(DataStoragePatternSetting::createFromMemento);
+	}
+
+	@Override
+	public void add(DataStoragePatternSetting domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update(DataStoragePatternSetting domain) {
+		SspmtDataStoragePatternSetting entity = this.queryProxy()
+				.query(SELECT_BY_PATTERN_ATR_AND_PATTERN_CD, SspmtDataStoragePatternSetting.class)
+				.setParameter("patternAtr", domain.getPatternClassification().value)
+				.setParameter("patternCd", domain.getPatternCode().v()).getSingle().get();
+		entity.setCategories(domain.getCategories());
+		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public void delete(DataStoragePatternSetting domain) {
+		this.commandProxy().remove(toEntity(domain));
+	}
+
+	private SspmtDataStoragePatternSetting toEntity(DataStoragePatternSetting domain) {
+		SspmtDataStoragePatternSetting entity = new SspmtDataStoragePatternSetting();
+		domain.setMemento(entity);
+		return entity;
 	}
 }

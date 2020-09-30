@@ -53,6 +53,14 @@ public class DataStorageSelectionCategory {
 		this.contractCode = new ContractCode(memento.getContractCode());
 	}
 	
+	public void setMemento(MementoSetter memento) {
+		memento.setCategoryId(categoryId.v());
+		memento.setSystemType(systemType.value);
+		memento.setPatternCode(patternCode.v());
+		memento.setPatternClassification(patternClassification.value);
+		memento.setContractCode(contractCode.v());
+	}
+	
 	public static interface MementoSetter {
 		void setCategoryId(String categoryId);
 		void setSystemType(int systemType);

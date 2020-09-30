@@ -100,6 +100,8 @@ module nts.uk.com.view.cmf004.j {
             x.id = nts.uk.util.randomId();
             x.restoreCount += "人";
             x.saveCount += "人";
+            x.startDatetime = moment.utc(x.startDatetime).format("YYYY/MM/DD hh:mm:ss");
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
             res.push(x);
 
             if (x.executionResult === '異常終了') {

@@ -6,11 +6,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,10 +32,10 @@ public class SspmtDataStorageSelectionCategory extends UkJpaEntity implements Se
 		DataStorageSelectionCategory.MementoGetter, DataStorageSelectionCategory.MementoSetter {
 	private static final long serialVersionUID = 1L;
 
-	// column 排他バージョン
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
+//	// column 排他バージョン
+//	@Version
+//	@Column(name = "EXCLUS_VER")
+//	private long version;
 
 	@EmbeddedId
 	public SspmtDataStorageSelectionCategoryPk pk;
@@ -44,7 +44,7 @@ public class SspmtDataStorageSelectionCategory extends UkJpaEntity implements Se
 	@Column(name = "SYSTEM_TYPE")
 	public int systemType;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CONTRACT_CD", referencedColumnName = "CONTRACT_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "PATTERN_ATR", referencedColumnName = "PATTERN_ATR", insertable = false, updatable = false),

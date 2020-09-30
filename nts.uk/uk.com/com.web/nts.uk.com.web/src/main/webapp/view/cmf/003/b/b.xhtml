@@ -9,31 +9,38 @@
 		<div class="contentB">
 			<div class="fixed-flex-layout-left"
 				style="padding-top: 20px; padding-left: 20px">
-				<div class="valign-center control-group">
-					<label id="B3_14">#{i18n.getText('CMF003_26')}</label>
-				</div>
-				<div class="valign-center control-group">
-					<button id="B3_15" data-bind="click: selectCategory" tabindex="1">
-						#{i18n.getText('CMF003_27')}</button>
-				</div>
+        <!-- B3_2 カテゴリパネル -->
+        <div id="B3_2" data-bind="ntsPanel: { width: '80%', height: '550px', direction: 'right', showIcon: true, visible: true }">
+          <!-- B3_4 検索 -->
+          <div data-bind="ntsSearchBox: {
+            targetKey: 'code',
+            mode: 'igGrid',
+            options: patternList,
+            selected: selectedPatternId,
+            comId: 'B3_6',
+            selectedKey: 'code',
+            fields: ['code', 'name']
+          }" tabindex="1"></div>
+          <!-- B3_6 パターン一覧 -->
+          <table id="B3_6" data-bind="ntsGridList: {
+            name: '#[CMF003_22]',
+            options: patternList,
+            optionsValue: 'code',
+            columns: patternColumns,
+            multiple: false,
+            value: selectedPatternId,
+            rows: 20
+          }" tabindex="2"></table>
+        </div>
 			</div>
 			<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 				<div class="valign-center control-group">
 					<div id="B4_1"
-						data-bind="ntsFormLabel: {required: true, constraint: 'SaveSetName'}">#{i18n.getText('CMF003_28')}</div>
-					<input id="B4_2" class="form-B" tabindex="2"
-						data-bind="ntsTextEditor: {
-											name: '#[CMF003_75]',
-											value: dataSaveSetName, required: true,
-											constraint: 'SaveSetName', 
-											option: {width: '275px'}}" />
+						data-bind="ntsFormLabel: {required: true, constraint: 'PatternName'}">#{i18n.getText('CMF003_632')}</div>
+					<label id="B4_2" data-bind="savedName"></label>
 				</div>
 				<div class="valign-center control-group">
 					<div id="B4_3" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_29')}</div>
-					<div class="pull-right">
-						<div id="B4_23" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF003_54')}</div>
-						<span id="B4_24" style="margin-left: 40px; margin-right: 90px;"></span>
-					</div>
 				</div>
 				<div class="valign-center control-group"
 					style="padding-top: 5px; padding-bottom: 5px;">
@@ -138,16 +145,21 @@
 											}" />
 				</div>
 				<div class="valign-center control-group">
-					<div id="B4_36" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_49')}</div>
-					<div id="B4_37" tabindex="11" 
-						data-bind="ntsCheckBox: { checked: isSymbol }">
-						#{i18n.getText('CMF003_50')}</div>
+          <!-- B4_42 対象社員洗選択 -->
+          <div id="B4_42" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_87')}</div>
+          <div class="box-list" data-bind="ntsRadioBoxGroup: {
+            options: itemTitleAtr,
+            optionsValue: 'value',
+            optionsText: 'titleAtrName',
+            value: selectedTitleAtr,	
+            enable: true
+          }"></div>
 				</div>
 				<div class="valign-center control-group button-bottom-area">
 					<button id="B5_1" class="large" tabindex="12" 
 						data-bind="click : backToA">#{i18n.getText('CMF003_52')}</button>
 					<button id="B5_2" class="proceed x-large" tabindex="13"
-						data-bind="click: nextPageEmployee">#{i18n.getText('CMF003_53')}</button>
+						data-bind="click: nextPageEmployee, text: nextButtonText"></button>
 				</div>
 			</div>
 		</div>

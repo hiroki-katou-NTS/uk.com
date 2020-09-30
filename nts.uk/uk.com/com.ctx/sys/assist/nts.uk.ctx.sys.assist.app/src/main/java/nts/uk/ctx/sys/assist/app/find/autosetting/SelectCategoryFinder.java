@@ -29,17 +29,15 @@ public class SelectCategoryFinder {
 
 	@Inject
 	private DataStorageSelectionCategoryRepository dataStorageSelectionCategoryRepository;
-	
+
 	@Inject
 	private DataStoragePatternSettingRepository dataStoragePatternSettingRepository;
 
 	public DataStoragePatternSettingDto findSelectCategoryInfo(SelectCategoryCommand command) {
-		
-		List<SelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
-		
-		/**
-		 * 設定初期表示処理
-		 */
+
+		List<SaveSelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
+
+		// 設定初期表示処理
 		return dataStoragePatternSettingRepository
 				.findByContractCdAndPatternCd(command.getPatternCode(), AppContexts.user().contractCode())
 				.map(pattern -> {
@@ -48,33 +46,25 @@ public class SelectCategoryFinder {
 					dto.setSelectCategories(categoryNames);
 					return dto;
 				}).orElse(null);
-				
 	}
-	
-	private List<SelectionCategoryNameDto> findSelectionCategoryName(SelectCategoryCommand command) {
-		
-		/**
-		 * 選択カテゴリを取得する
-		 */
+
+	private List<SaveSelectionCategoryNameDto> findSelectionCategoryName(SelectCategoryCommand command) {
+
+		// 選択カテゴリを取得する
 		List<DataStorageSelectionCategory> selectCategories = dataStorageSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
 						command.getPatternClassification(), command.getSystemType());
 
-		/**
-		 * ドメインモデル「カテゴリ」を取得する
-		 */
+		// ドメインモデル「カテゴリ」を取得する
 		List<Category> categories = categoryRepository.getCategoryByListId(
 				selectCategories.stream().map(data -> data.getCategoryId().v()).collect(Collectors.toList()));
 
-		/**
-		 * 1. オブジェクト「選択カテゴリ名称」を作成する
-		 * 2. 作成したList<選択カテゴリ名称>を返す。
-		 */
-		return selectCategories.stream()
-		.map(sc -> {
+		// 1. オブジェクト「選択カテゴリ名称」を作成する
+		// 2. 作成したList<選択カテゴリ名称>を返す。
+		return selectCategories.stream().map(sc -> {
 			Category master = categories.stream().filter(c -> c.getCategoryId().v().equals(sc.getCategoryId().v()))
 					.findAny().get();
-			SelectionCategoryNameDto dto = new SelectionCategoryNameDto();
+			SaveSelectionCategoryNameDto dto = new SaveSelectionCategoryNameDto();
 			dto.setCategoryId(sc.getCategoryId().v());
 			dto.setCategoryName(master.getCategoryName().v());
 			dto.setSystemType(sc.getSystemType().value);
@@ -84,8 +74,6 @@ public class SelectCategoryFinder {
 			dto.setStoreRange(master.getStorageRangeSaved().value);
 			dto.setHolder(new TextResourceHolderDto("CMF003_634", sc.getSystemType().nameId));
 			return dto;
-		})
-		.sorted(Comparator.comparing(SelectionCategoryNameDto::getCategoryId))
-		.collect(Collectors.toList());
+		}).sorted(Comparator.comparing(SaveSelectionCategoryNameDto::getCategoryId)).collect(Collectors.toList());
 	}
 }

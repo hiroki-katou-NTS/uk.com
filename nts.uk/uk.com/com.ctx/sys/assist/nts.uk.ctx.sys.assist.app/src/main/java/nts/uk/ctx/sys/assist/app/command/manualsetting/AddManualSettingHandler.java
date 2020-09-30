@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.AsyncCommandHandler;
@@ -34,6 +36,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCommand> {
 	@Inject
 	private ManualSetOfDataSaveRepository manualSetOfDataSaveRepo;

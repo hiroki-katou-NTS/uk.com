@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.assist.app.find.autosetting;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
 
@@ -16,7 +15,7 @@ public class StartupParameterDto {
 	/**
 	 * List<カテゴリ>
 	 */
-	private List<Category> categories;
+	private List<CategoryDto> categories;
 	
 	/**
 	 * List<パターン設定>

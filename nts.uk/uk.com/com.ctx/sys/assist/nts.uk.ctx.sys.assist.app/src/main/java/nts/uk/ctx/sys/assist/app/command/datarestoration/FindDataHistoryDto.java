@@ -1,8 +1,8 @@
-package nts.uk.ctx.sys.assist.app.find.datarestoration;
+package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class FindDataHistoryDto {
 	/**
 	 * 保存セットコード

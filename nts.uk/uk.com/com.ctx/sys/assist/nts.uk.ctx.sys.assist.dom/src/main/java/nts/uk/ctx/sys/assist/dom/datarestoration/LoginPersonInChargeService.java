@@ -1,11 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,29 +19,16 @@ public class LoginPersonInChargeService {
 		return roleAdapter.getInChargeInfo();
 	}
 	
-	public List<SystemType> getSystemTypes(LoginPersonInCharge pic) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public List<SystemType> getSystemTypes(LoginPersonInCharge pic) {
 		List<SystemType> systemTypes = new ArrayList<SystemType>();
-		for(SystemType type: SystemType.values()) {
-			Optional<Method> op = getMethodLike(trimName(type.toString()));
-			if (op.isPresent() && ((boolean) op.get().invoke(pic))) {
-				systemTypes.add(type);
-			}
-		}
+		if (pic.isAttendance())
+			systemTypes.add(SystemType.ATTENDANCE_SYSTEM);
+		if (pic.isPersonnel())
+			systemTypes.add(SystemType.PERSON_SYSTEM);
+		if (pic.isOfficeHelper())
+			systemTypes.add(SystemType.OFFICE_HELPER);
+		if (pic.isPayroll())
+			systemTypes.add(SystemType.PAYROLL_SYSTEM);
 		return systemTypes;
-	}
-	
-	private String trimName(String name) {
-		try {
-			return name.substring(0, name.indexOf("_SYSTEM")).replace("_", "");
-		} catch (StringIndexOutOfBoundsException e) {
-			return name.replace("_", "");
-		}
-	}
-	
-	private Optional<Method> getMethodLike(String name) {
-		return Arrays.stream(LoginPersonInCharge.class.getDeclaredMethods())
-													.filter(m -> m.getName().toLowerCase().indexOf(name.toLowerCase()) >= 0
-																 && m.getParameterCount() == 0)
-													.findFirst();
 	}
 }

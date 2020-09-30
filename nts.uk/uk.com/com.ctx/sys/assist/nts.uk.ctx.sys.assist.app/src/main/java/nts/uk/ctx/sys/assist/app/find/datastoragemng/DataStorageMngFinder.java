@@ -6,10 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
-import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**

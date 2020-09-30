@@ -19,7 +19,7 @@ public class SelectPatternSettingWebService {
 	private ScreenDisplayProcessingFinder screenDisplayProcessingFinder;
 	
 	@Inject
-	private SelectCategoryFinder selectionCategoryNameFinder;
+	private SelectCategoryFinder selectCategoryFinder;
 	
 	@POST
 	@Path("screenDisplayProcessing")
@@ -28,8 +28,8 @@ public class SelectPatternSettingWebService {
 	}
 	
 	@POST
-	@Path("selectionCategoryName")
+	@Path("patternSettingSelect")
 	public DataStoragePatternSettingDto findSelectionCategoryName(SelectCategoryCommand command) {
-		return selectionCategoryNameFinder.findSelectCategoryInfo(command);
+		return selectCategoryFinder.findSelectCategoryInfo(command);
 	}
 }

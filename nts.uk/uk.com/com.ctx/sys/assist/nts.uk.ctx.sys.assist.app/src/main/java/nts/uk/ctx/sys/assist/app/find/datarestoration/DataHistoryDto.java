@@ -74,5 +74,4 @@ public class DataHistoryDto {
 				domain1.getSaveStartDatetime().orElse(null), 
 				domain3.getExecutionResult());
 	}
-	
 }

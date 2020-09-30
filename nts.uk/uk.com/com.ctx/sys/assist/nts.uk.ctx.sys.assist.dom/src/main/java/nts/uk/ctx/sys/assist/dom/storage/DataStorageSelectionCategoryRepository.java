@@ -6,4 +6,5 @@ public interface DataStorageSelectionCategoryRepository {
 	List<DataStorageSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd, 
 																				  int patternAtr,
 																				  List<Integer> systemTypes);
+	void add(DataStorageSelectionCategory domain);	
 }

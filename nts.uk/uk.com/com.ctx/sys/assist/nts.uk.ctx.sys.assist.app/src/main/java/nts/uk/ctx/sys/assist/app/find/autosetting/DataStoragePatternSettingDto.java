@@ -10,9 +10,29 @@ import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategory;
 public class DataStoragePatternSettingDto implements DataStoragePatternSetting.MementoSetter {
 	
 	/**
+	 * パターンコード
+	 */
+	private String patternCode;
+
+	/**
+	 * パターン区分
+	 */
+	private int patternClassification;
+
+	/**
+	 * パターン名
+	 */
+	private String patternName;
+	
+	/**
+	 * 契約コード
+	 */
+	private String contractCode;
+	
+	/**
 	 *List<選択カテゴリ名称> 
 	 */
-	List<SelectionCategoryNameDto> selectCategories;
+	private List<SaveSelectionCategoryNameDto> selectCategories;
 	
 	/**
 	 * 調査用保存可否
@@ -60,50 +80,7 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	private String patternSuppleExplanation;
 
 	@Override
-	public void setPatternCode(String patternCode) {
-		// TODO Auto-generated method stub
-		
+	public void setCategories(List<DataStorageSelectionCategory> categories) {
+		//NOT USED
 	}
-
-	@Override
-	public void setPatternClassification(int patternClassification) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPatternName(String patternName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setContractCode(String contractCode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setAnnualReferMonth(Integer annualReferMonth) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCategoryId(String categoryId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setSystemType(int systemType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-//	@Override
-//	public void setCategories(List<DataStorageSelectionCategory> categories) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }
