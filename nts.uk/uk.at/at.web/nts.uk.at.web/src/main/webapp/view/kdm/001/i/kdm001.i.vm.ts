@@ -5,6 +5,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');

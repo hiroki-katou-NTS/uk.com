@@ -16,7 +16,7 @@ public class DisplayRemainingNumberDataInformation {
 	private Integer expirationDate;
 	
 	//	残数データ
-	private List<RemainInfoData> remainingData;
+	private List<RemainInfoDto> remainingData;
 	
 	//	残数合計
 	private Double totalRemainingNumber;
