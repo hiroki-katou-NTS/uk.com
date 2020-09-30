@@ -40,6 +40,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
         }).then((res: any) => {
             this.fetchData(self.params);
         });
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            this.fetchData(self.params);
+        });
     }
 
 
