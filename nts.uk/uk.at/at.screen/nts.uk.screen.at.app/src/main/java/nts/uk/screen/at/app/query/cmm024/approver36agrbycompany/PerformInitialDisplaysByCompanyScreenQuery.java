@@ -70,7 +70,7 @@ public class PerformInitialDisplaysByCompanyScreenQuery {
             item.setStartDate(e.getPeriod().start());
             item.setPersonalInfoApprove(e.getApproverList().stream().map(i->checkPersonInfor(personInfo,i))
                     .collect(Collectors.toList()));
-            item.setPersonalInfoConfirm(e.getApproverList().stream().map(i->checkPersonInfor(personInfo,i))
+            item.setPersonalInfoConfirm(e.getConfirmerList().stream().map(i->checkPersonInfor(personInfo,i))
                     .collect(Collectors.toList()));
             listDetail.add(item);
         });
