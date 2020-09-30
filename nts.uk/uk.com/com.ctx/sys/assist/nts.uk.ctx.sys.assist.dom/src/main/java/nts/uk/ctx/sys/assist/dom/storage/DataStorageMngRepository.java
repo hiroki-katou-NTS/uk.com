@@ -14,13 +14,6 @@ import java.util.List;
 public interface DataStorageMngRepository {
 
 	List<DataStorageMng> getAllDataStorageMng();
-	
-//	List<DataStorageMng> getDataStorageMng(
-//			 String cid,
-//			 GeneralDateTime startDateOperator,
-//			 GeneralDateTime endDateOperator,
-//			 List<String>  listOperatorEmployeeId
-//		);
 
 	Optional<DataStorageMng> getDataStorageMngById(String storeProcessingId);
 
