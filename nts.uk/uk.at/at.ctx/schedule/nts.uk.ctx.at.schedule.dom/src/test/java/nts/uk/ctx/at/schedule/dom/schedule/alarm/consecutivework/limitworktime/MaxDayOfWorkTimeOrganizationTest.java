@@ -25,7 +25,7 @@ public class MaxDayOfWorkTimeOrganizationTest {
 	
 	@Test
 	public void create_maxDayOfWorkTimeOrg_success() {
-		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
+		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
 				new WorkTimeCode("002"),
 				new WorkTimeCode("003")
 				);
@@ -34,6 +34,7 @@ public class MaxDayOfWorkTimeOrganizationTest {
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new MaxDayOfWorkTimeCode("code"), new MaxDayOfWorkTimeName("name"), maxDayOfWorkTime);
 		
+		assertThat(maxDayOfWorkTimeOrg.getTargeOrg()).isEqualTo(targetOrg);
 		assertThat(maxDayOfWorkTimeOrg.getCode().v()).isEqualTo("code");
 		assertThat(maxDayOfWorkTimeOrg.getName().v()).isEqualTo("name");
 		assertThat(maxDayOfWorkTimeOrg.getMaxDayOfWorkTime()).isEqualTo(maxDayOfWorkTime);
