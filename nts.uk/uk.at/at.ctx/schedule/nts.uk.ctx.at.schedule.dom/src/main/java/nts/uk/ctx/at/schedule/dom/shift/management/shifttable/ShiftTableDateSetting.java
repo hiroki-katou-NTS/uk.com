@@ -44,7 +44,7 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	}
 
 	@Override
-	public boolean isOverHolidayMaxdays(List<WorkExpectationOfOneDay> workExpectList) {
+	public boolean isOverHolidayMaxDays(List<WorkExpectationOfOneDay> workExpectList) {
 		
 		List<WorkExpectationOfOneDay> holidayExpectations = workExpectList.stream()
 																.filter( e -> e.isHolidayExpectation() )
@@ -54,7 +54,7 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	}
 	
 	@Override
-	public ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
+	public ShiftTableRuleInfo getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
 		GeneralDate mostRecentDeadline = this.expectDeadLine.after(baseDate);

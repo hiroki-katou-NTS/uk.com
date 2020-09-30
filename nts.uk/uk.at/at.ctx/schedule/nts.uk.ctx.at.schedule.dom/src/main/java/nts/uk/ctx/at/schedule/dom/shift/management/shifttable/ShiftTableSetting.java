@@ -30,13 +30,13 @@ public interface ShiftTableSetting {
 	 * 休日日数の上限日数を超えているか
 	 * @return
 	 */
-	boolean isOverHolidayMaxdays(List<WorkExpectationOfOneDay> workExpectList);
+	boolean isOverHolidayMaxDays(List<WorkExpectationOfOneDay> workExpectList);
 	
 	/**
 	 * 基準日に対応する締切日と期間を取得する
 	 * @return
 	 */
-	ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate);
+	ShiftTableRuleInfo getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
 	
 	/**
 	* 希望日を含める期間を取得する

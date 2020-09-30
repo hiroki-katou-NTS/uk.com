@@ -89,7 +89,7 @@ public class ShiftTableRule implements DomainValue {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.get().getcorrespondingDeadlineAndPeriod(GeneralDate.today());
+		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.get().getCorrespondingDeadlineAndPeriod(GeneralDate.today());
 		GeneralDate startNotifyDate = ruleInfo.getDeadline().addDays( - this.fromNoticeDays.get().v());
 		if (GeneralDate.today().before(startNotifyDate)) {
 			return NotificationInfo.createWithoutNotify();

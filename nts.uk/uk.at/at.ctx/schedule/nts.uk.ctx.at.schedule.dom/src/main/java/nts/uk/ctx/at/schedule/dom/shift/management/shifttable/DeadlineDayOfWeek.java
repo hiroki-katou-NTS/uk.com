@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
@@ -14,7 +13,6 @@ import nts.arc.time.calendar.seek.DateSeek;
  *
  */
 @Value
-@RequiredArgsConstructor
 public class DeadlineDayOfWeek implements DomainValue {
 
 	/** 週 */
@@ -24,17 +22,17 @@ public class DeadlineDayOfWeek implements DomainValue {
 	private final DayOfWeek dayOfWeek;
 	
 	/**
-	 * 締切週による直前
-	 * @param targetDate
+	 * 締切週による直前の締切日
+	 * @param startWeekDate　週間の開始日
 	 * @return
 	 */
-	public GeneralDate getLastDeadlineWithWeekAtr(GeneralDate targetDate) {
+	public GeneralDate getLastDeadlineWithWeekAtr(GeneralDate startWeekDate) {
 		
 		if (this.weekAtr == DeadlineWeekAtr.TWO_WEEK_AGO) {
-			targetDate = targetDate.addDays(-7);
+			startWeekDate = startWeekDate.addDays(-7);
 		}
 		
-		return targetDate.previous(DateSeek.dayOfWeek(this.dayOfWeek));
+		return startWeekDate.previous(DateSeek.dayOfWeek(this.dayOfWeek));
 	}
 	
 	
