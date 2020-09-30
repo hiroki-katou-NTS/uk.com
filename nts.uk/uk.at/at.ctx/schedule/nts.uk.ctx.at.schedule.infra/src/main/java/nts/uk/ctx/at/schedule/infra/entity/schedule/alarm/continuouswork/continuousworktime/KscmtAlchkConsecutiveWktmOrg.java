@@ -13,11 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecutiveDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.MaxNumberDaysOfContinuousWorkTimeOrg;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.MaxNumberOfContinuousWorktime;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.WorkTimeContinuousCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.WorkTimeContinuousName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberOfContinuousWorktime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousName;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -89,7 +89,7 @@ public class KscmtAlchkConsecutiveWktmOrg extends ContractUkJpaEntity implements
 				.map(dtl -> new WorkTimeCode(dtl.pk.wktmCode))
 				.collect(Collectors.toList());
 		
-		val maxWorktime = new MaxNumberOfContinuousWorktime(worktimeLst, new NumberOfConsecutiveDays(this.maxConsDays));
+		MaxNumberOfContinuousWorktime maxWorktime = new MaxNumberOfContinuousWorktime(worktimeLst, new ConsecutiveNumberOfDays(this.maxConsDays));
 		
 		val domain = new MaxNumberDaysOfContinuousWorkTimeOrg(
 				TargetOrgIdenInfor.createFromTargetUnit(TargetOrganizationUnit.valueOf(this.pk.targetUnit), this.pk.targetId)

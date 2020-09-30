@@ -12,11 +12,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDay;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTime;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeCompany;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCompany;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumName;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity

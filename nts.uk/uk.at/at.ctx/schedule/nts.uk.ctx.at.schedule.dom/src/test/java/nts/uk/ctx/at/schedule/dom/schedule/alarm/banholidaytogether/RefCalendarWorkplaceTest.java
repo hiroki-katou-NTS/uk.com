@@ -37,7 +37,6 @@ public class RefCalendarWorkplaceTest {
 	public void createRefCalendarWorkplace_success() {
 		val calendarWorkplace = new ReferenceCalendarWorkplace("DUMMY");
 		assertThat(calendarWorkplace.getWorkplaceID()).isEqualTo("DUMMY");
-		
 	}
 	
 	/**
@@ -84,8 +83,8 @@ public class RefCalendarWorkplaceTest {
 			}
 		};
 
-		WorkdayDivision excepted = refCalWorkplace.getWorkdayDivision(require, calWorkplace.getDate()).get();
-		assertThat(excepted).isEqualTo(calWorkplace.getWorkDayDivision());
+		WorkdayDivision actual = refCalWorkplace.getWorkdayDivision(require, calWorkplace.getDate()).get();
+		assertThat(actual).isEqualTo(calWorkplace.getWorkDayDivision());
 	}
 
 }

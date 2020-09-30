@@ -135,7 +135,7 @@ public class BanHolidayTogetherTest {
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHdCom.getWorkDayReference()).isNotEmpty();
-		val refCom =  (ReferenceCalendarCompany) banHdCom.getWorkDayReference().get();	
+		val refCom =  banHdCom.getWorkDayReference().get();	
 		assertThat(refCom).isInstanceOf(ReferenceCalendarCompany.class);				
 	}
 	
@@ -154,7 +154,7 @@ public class BanHolidayTogetherTest {
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 
 		assertThat(banHdWorkplace.getWorkDayReference()).isNotEmpty();
-		val refWorkplace =  (ReferenceCalendarWorkplace) banHdWorkplace.getWorkDayReference().get();	
+		val refWorkplace = banHdWorkplace.getWorkDayReference().get();	
 		assertThat(refWorkplace).isInstanceOf(ReferenceCalendarWorkplace.class);				
 
 	}
@@ -174,10 +174,8 @@ public class BanHolidayTogetherTest {
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHolidayClass.getWorkDayReference()).isNotEmpty();
-		val refClass =  (ReferenceCalendarClass) banHolidayClass.getWorkDayReference().get();	
+		val refClass = banHolidayClass.getWorkDayReference().get();	
 		assertThat(refClass).isInstanceOf(ReferenceCalendarClass.class);	
 
 	}
-	
-
 }

@@ -68,8 +68,8 @@ public class RefCalendarCompanyTest {
 			}
 		};
 
-		val excepted = refCalCom.getWorkdayDivision(require, calCom.getDate()).get();
-		assertThat(excepted).isEqualTo(calCom.getWorkDayDivision());
+		val actual = refCalCom.getWorkdayDivision(require, calCom.getDate()).get();
+		assertThat(actual).isEqualTo(calCom.getWorkDayDivision());
 	}
 
 }

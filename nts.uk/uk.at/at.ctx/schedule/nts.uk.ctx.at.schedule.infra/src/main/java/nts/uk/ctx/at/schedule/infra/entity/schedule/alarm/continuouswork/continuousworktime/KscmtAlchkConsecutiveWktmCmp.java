@@ -13,11 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecutiveDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.MaxNumberDaysOfContinuousWorkTimeCom;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.MaxNumberOfContinuousWorktime;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.WorkTimeContinuousCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousworktime.WorkTimeContinuousName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberOfContinuousWorktime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousName;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -88,7 +88,7 @@ public class KscmtAlchkConsecutiveWktmCmp extends ContractUkJpaEntity implements
 				.map(dtl -> new WorkTimeCode(dtl.pk.wktmCode))
 				.collect(Collectors.toList());
 		
-		val maxWorktime = new MaxNumberOfContinuousWorktime(worktimeLst, new NumberOfConsecutiveDays(this.maxConsDays));
+		val maxWorktime = new MaxNumberOfContinuousWorktime(worktimeLst, new ConsecutiveNumberOfDays(this.maxConsDays));
 		
 		val domain = new MaxNumberDaysOfContinuousWorkTimeCom(
 				new WorkTimeContinuousCode(this.pk.code)
