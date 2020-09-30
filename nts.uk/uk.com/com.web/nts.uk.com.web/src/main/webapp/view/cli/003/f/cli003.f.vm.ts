@@ -116,7 +116,7 @@ module nts.uk.com.view.cli003.f {
         infoOperateAttr: string;
     }
 
-    export class conditionByItemNo {
+    export class ConditionByItemNo {
         itemNo: number;
         symbol: number;
         condition: string;
@@ -142,9 +142,9 @@ module nts.uk.com.view.cli003.f {
         correctionAttr: string;
     }
     export interface LogSettingParam {
-        bootHistoryRecord: number
+        startHistoryRecord: number
         companyId: string
-        editHistoryRecord: number
+        updateHistoryRecord: number
         loginHistoryRecord: number
         menuClassification: number
         programId: string
@@ -391,9 +391,9 @@ module nts.uk.com.view.cli003.f {
         isUseFlag: number,
         itemNo: number,
         logSetId: string,
-        logSetItemDetails: Array<logSetItemDetails>
+        logSetItemDetails: Array<LogSetItemDetails>
     }
-    interface logSetItemDetails {
+    interface LogSetItemDetails {
         condition: string,
         frame: number,
         itemNo: number,
@@ -573,82 +573,85 @@ module nts.uk.com.view.cli003.f {
                 service.getLogDataResults(logDataParams).done((data: Array<LogDataResultDto>) => {
                     service.getLogOutputItemsByRecordType(String(vm.logTypeSelectedCode())).done((logOutputItems: Array<LogOutputItem>) => {
                         if (data.length > 0) {
-                            data = _.orderBy(data, ['startDateTime', 'endDateTime', 'employeeCode'], ['desc', 'asc']);
                             if (data.length > vm.maxlength()) {
                                 vm.isDisplayText(true);
                             }
-                            data.map((LogDataResultDto, index) => {
-                                //記録の絞り込み
-                                if (index + 1 <= vm.maxlength()) {
-                                    if (recordType === 9) {
 
-                                        const LogDataResultHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("id", "id", "string", true),
-                                            new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
-                                            new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
-                                            new IgGridColumnModel(logOutputItems[12].itemName, "setCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[14].itemName, "endDateTime", "string", false),
-                                        ]
-                                        vm.LogDataResultHeader = LogDataResultHeader;
-                                        
-                                        const LogDataResultSubHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("logNumber", "logNumber", "string", true),
-                                            new IgGridColumnModel(logOutputItems[15].itemName, "processingContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[16].itemName, "errorContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[17].itemName, "errorDate", "string", false),
-                                            new IgGridColumnModel(logOutputItems[18].itemName, "errorEmployeeId", "string", false),
-                                        ]
-                                        vm.LogDataResultSubHeader = LogDataResultSubHeader;
-                                    } else if (recordType === 10) {
+                            const listData = _
+                                .chain(data)
+                                .orderBy(['startDateTime', 'endDateTime', 'employeeCode'], ['desc', 'asc'])
+                                .map((logDataResultDto, index) => {
+                                    //記録の絞り込み
+                                    if (index + 1 <= vm.maxlength()) {
+                                        if (recordType === 9) {
 
-                                        const LogDataResultHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("id", "id", "string", true),
-                                            new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
-                                            new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
-                                            new IgGridColumnModel(logOutputItems[9].itemName, "setCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[8].itemName, "endDateTime", "string", false),
-                                        ]
-                                        vm.LogDataResultHeader = LogDataResultHeader;
+                                            const LogDataResultHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("id", "id", "string", true),
+                                                new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
+                                                new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
+                                                new IgGridColumnModel(logOutputItems[12].itemName, "setCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[14].itemName, "endDateTime", "string", false),
+                                            ]
+                                            vm.LogDataResultHeader = LogDataResultHeader;
 
-                                        const LogDataResultSubHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("logNumber", "logNumber", "string", true),
-                                            new IgGridColumnModel(logOutputItems[10].itemName, "processingContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[11].itemName, "errorContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[12].itemName, "contentSql", "string", false),
-                                            new IgGridColumnModel(logOutputItems[13].itemName, "errorDate", "string", false),
-                                            new IgGridColumnModel(logOutputItems[14].itemName, "errorEmployeeId", "string", false),
-                                        ]
-                                        vm.LogDataResultSubHeader = LogDataResultSubHeader;
-                                    } else if (recordType === 11) {
+                                            const LogDataResultSubHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("logNumber", "logNumber", "string", true),
+                                                new IgGridColumnModel(logOutputItems[15].itemName, "processingContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[16].itemName, "errorContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[17].itemName, "errorDate", "string", false),
+                                                new IgGridColumnModel(logOutputItems[18].itemName, "errorEmployeeId", "string", false),
+                                            ]
+                                            vm.LogDataResultSubHeader = LogDataResultSubHeader;
+                                        } else if (recordType === 10) {
 
-                                        const LogDataResultHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("id", "id", "string", true),
-                                            new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
-                                            new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
-                                            new IgGridColumnModel(logOutputItems[13].itemName, "setCode", "string", false),
-                                            new IgGridColumnModel(logOutputItems[12].itemName, "endDateTime", "string", false),
-                                        ]
-                                        vm.LogDataResultHeader = LogDataResultHeader;
+                                            const LogDataResultHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("id", "id", "string", true),
+                                                new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
+                                                new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
+                                                new IgGridColumnModel(logOutputItems[9].itemName, "setCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[8].itemName, "endDateTime", "string", false),
+                                            ]
+                                            vm.LogDataResultHeader = LogDataResultHeader;
 
-                                        const LogDataResultSubHeader: Array<IgGridColumnModel> = [
-                                            new IgGridColumnModel("logNumber", "logNumber", "string", true),
-                                            new IgGridColumnModel(logOutputItems[14].itemName, "processingContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[15].itemName, "errorContent", "string", false),
-                                            new IgGridColumnModel(logOutputItems[16].itemName, "errorDate", "string", false),
-                                            new IgGridColumnModel(logOutputItems[17].itemName, "errorEmployeeId", "string", false),
-                                        ]
-                                        vm.LogDataResultSubHeader = LogDataResultSubHeader;
+                                            const LogDataResultSubHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("logNumber", "logNumber", "string", true),
+                                                new IgGridColumnModel(logOutputItems[10].itemName, "processingContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[11].itemName, "errorContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[12].itemName, "contentSql", "string", false),
+                                                new IgGridColumnModel(logOutputItems[13].itemName, "errorDate", "string", false),
+                                                new IgGridColumnModel(logOutputItems[14].itemName, "errorEmployeeId", "string", false),
+                                            ]
+                                            vm.LogDataResultSubHeader = LogDataResultSubHeader;
+                                        } else if (recordType === 11) {
+
+                                            const LogDataResultHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("id", "id", "string", true),
+                                                new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false),
+                                                new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false),
+                                                new IgGridColumnModel(logOutputItems[13].itemName, "setCode", "string", false),
+                                                new IgGridColumnModel(logOutputItems[12].itemName, "endDateTime", "string", false),
+                                            ]
+                                            vm.LogDataResultHeader = LogDataResultHeader;
+
+                                            const LogDataResultSubHeader: Array<IgGridColumnModel> = [
+                                                new IgGridColumnModel("logNumber", "logNumber", "string", true),
+                                                new IgGridColumnModel(logOutputItems[14].itemName, "processingContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[15].itemName, "errorContent", "string", false),
+                                                new IgGridColumnModel(logOutputItems[16].itemName, "errorDate", "string", false),
+                                                new IgGridColumnModel(logOutputItems[17].itemName, "errorEmployeeId", "string", false),
+                                            ]
+                                            vm.LogDataResultSubHeader = LogDataResultSubHeader;
+                                        }
                                     }
-                                }
-                                LogDataResultDto.startDateTime = moment.utc(LogDataResultDto.startDateTime, format).toISOString(),
-                                LogDataResultDto.endDateTime = moment.utc(LogDataResultDto.endDateTime, format).toISOString(),
-                                console.log(moment.utc('2019-04-25T14:03:52.000Z', format).format)
-                                vm.listLogDataResult.push(LogDataResultDto);
-                            });
-                            //Check listLogBasicInforModel after filter
+                                    return logDataResultDto;
+                                })
+                                .value();
+
+                            vm.listLogDataResult = listData;
+                            //Check after filter
                             if (vm.listLogDataResult.length <= 0) {
                                 vm.$dialog.alert({ messageId: "Msg_1220" });
                                 vm.$blockui('clear');
@@ -660,14 +663,12 @@ module nts.uk.com.view.cli003.f {
                         // Generate table
                         vm.generateLogDataResultGrid();
                         dfd.resolve();
+                    }).fail((error: any) => {
+                        vm.$blockui('clear');
+                        vm.$dialog.alert(error);
                     }).always(() => {
                         vm.$blockui('clear');
                         vm.$errors('clear');
-                    }).fail((error: any) => {
-                        vm.$dialog.alert(error);
-                        vm.$blockui('clear');
-                        vm.$errors('clear');
-                        dfd.resolve();
                     });
                 }).always(() => {
                     vm.$blockui('clear');
@@ -689,7 +690,7 @@ module nts.uk.com.view.cli003.f {
                     endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
                     recordType: vm.logTypeSelectedCode(),
                     targetDataType: vm.dataTypeSelectedCode()
-                };
+                }
                 if (vm.checkFormatDate() === '2') {
                     paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
                 } else {
@@ -705,15 +706,14 @@ module nts.uk.com.view.cli003.f {
 
         getLogFromAnother(paramLog: any) {
             const vm = this;
-            let dfd = $.Deferred<any>();
             let recordType = Number(vm.logTypeSelectedCode());
             let dataType = Number(vm.dataTypeSelectedCode());
             let systemType = Number(vm.systemTypeSelectedCode());
             vm.$blockui('grayout');
-            //記録を取得する
-            service.getLogSettingsBySystem(systemType).done((logSettings: Array<LogSettingParam>) => {
+            // 記録を取得する
+            service.getLogSettingsBySystem(systemType).then((logSettings: LogSettingParam[]) => {
                 // Get Log basic info
-                service.getLogBasicInfoByModifyDate(paramLog).done((data: Array<LogBasicInfoModel>) => {
+                service.getLogBasicInfoByModifyDate(paramLog).then((data: Array<LogBasicInfoModel>) => {
                     if (data.length > 0) {
                         // order by list
                         if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
@@ -726,25 +726,27 @@ module nts.uk.com.view.cli003.f {
                             vm.isDisplayText(true);
                         }
                         //log setting list start boot history not in use
-                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
-                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
-                        const logSettingEditProgramId = {};
+                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
+                        const logSettingEditProgramId = {}
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
-                        const logSettingBootProgramId = {};
+                        const logSettingBootProgramId = {}
                         logSettingBoot.forEach(item => logSettingBootProgramId[item.programId] = item);
-                        data.map((logBasicInfoModel, index) => {
+
+
+                        const listData = _.map(data, (logBasicInfoModel, index) => {
                             //記録の絞り込み
                             if (index + 1 <= vm.maxlength()) {
                                 // Log LOGIN 
                                 if (recordType === RECORD_TYPE.LOGIN) {
                                     if (vm.filterLogLogin(logBasicInfoModel)) {
-                                        vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                        return logBasicInfoModel;
                                     }
                                 } else if (recordType === RECORD_TYPE.START_UP) {
                                     // Log START UP
                                     if (vm.filterLogStartUp(logBasicInfoModel)) {
                                         if (!logSettingBootProgramId[logBasicInfoModel.programId]) {
-                                            vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                            return logBasicInfoModel;
                                         }
                                     }
                                 } else if (recordType === RECORD_TYPE.UPDATE_PERSION_INFO) {
@@ -752,13 +754,12 @@ module nts.uk.com.view.cli003.f {
                                     if (vm.filterLogPersonInfoUpdate(logBasicInfoModel)) {
                                         if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
                                             if (logBasicInfoModel.processAttr !== '新規') {
-                                                // process sub header
                                                 const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                                vm.listLogBasicInforModel.push(logtemp);
-                                            };
+                                                return logtemp;
+                                            }
                                         } else {
                                             const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                            vm.listLogBasicInforModel.push(logtemp);
+                                            return logtemp;
                                         }
                                     }
                                 } else if (recordType === RECORD_TYPE.DATA_CORRECT) {
@@ -767,17 +768,13 @@ module nts.uk.com.view.cli003.f {
                                         if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
                                             // process sub header
                                             const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
-                                            vm.listLogBasicInforModel.push(logtemp);
+                                            return logtemp;
                                         }
                                     }
                                 }
                             }
                         });
-                        //Check listLogBasicInforModel after filter
-                        if (vm.listLogBasicInforModel.length <= 0) {
-                            vm.$dialog.alert({ messageId: "Msg_1220" });
-                            vm.$blockui('clear');
-                        }
+                        vm.listLogBasicInforModel = listData;
                     } else {
                         vm.$dialog.alert({ messageId: "Msg_1220" });
                         vm.$blockui('clear');
@@ -790,67 +787,68 @@ module nts.uk.com.view.cli003.f {
                     } else {
                         vm.generateIgGrid();
                     }
-                    dfd.resolve();
                 }).always(() => {
+                    //Check listLogBasicInforModel after filter
+                    if (vm.listLogBasicInforModel.length <= 0) {
+                        vm.$dialog.alert({ messageId: "Msg_1220" });
+                        vm.$blockui('clear');
+                    }
                     vm.$blockui('clear');
                     vm.$errors('clear');
                 }).fail((error: any) => {
                     vm.$dialog.alert(error);
                     vm.$blockui('clear');
                     vm.$errors('clear');
-                    dfd.resolve();
                 });
             }).fail((error: any) => {
                 vm.$blockui('clear');
                 vm.$errors('clear');
                 vm.$dialog.alert(error);
-                dfd.resolve();
             });
         }
 
-        filterLogSetting(): Array<conditionByItemNo> {
+        filterLogSetting(): ConditionByItemNo[] {
             const vm = this;
-            const condition: Array<conditionByItemNo> = [];
-            vm.logSetOutputs()
-                .map((logSetOutput) => {
-                    logSetOutput.logSetItemDetails.map((detail) => {
-                        if (detail.condition) {
-                            condition.push(new conditionByItemNo(logSetOutput.itemNo, detail.sybol, detail.condition));
-                        }
-                    })
-                });
-            return condition;
+            let conditions: ConditionByItemNo[] = [];
+            for (const logSetOutput of vm.logSetOutputs()) {
+                const logSetOutputConditions: ConditionByItemNo[] = _.chain(logSetOutput.logSetItemDetails)
+                    .filter((item) => item.condition)
+                    .map((detail) => new ConditionByItemNo(logSetOutput.itemNo, detail.sybol, detail.condition))
+                    .value();
+                conditions = _.concat(conditions, logSetOutputConditions);
+            }
+            return conditions;
         }
 
         filterLogLogin(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.loginStatus, 19)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.methodName, 20)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.note, 22)) {
                 return false;
-            };
+            }
             return true;
         }
 
@@ -858,25 +856,25 @@ module nts.uk.com.view.cli003.f {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.note, 18)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 19)) {
                 return false;
-            };
+            }
             return true;
         }
 
@@ -884,51 +882,51 @@ module nts.uk.com.view.cli003.f {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
                 return false;
-            };
-            logBasicInfoModel.lstLogPerCateCorrectRecordDto.map(item => {
+            }
+            for (const item of logBasicInfoModel.lstLogPerCateCorrectRecordDto) {
                 if (!vm.filterLogByItemNo(item.categoryName, 23)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.infoOperateAttr, 24)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.itemName, 24)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.valueBefore, 31)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.valueAfter, 32)) {
                     return false;
-                };
-            })
+                }
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
                 return false;
-            };
+            }
             return true;
         }
 
@@ -936,49 +934,49 @@ module nts.uk.com.view.cli003.f {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
                 return false;
-            };
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
                 return false;
-            };
-            logBasicInfoModel.lstLogDataCorrectRecordRefeDto.map(item => {
+            }
 
+            for (const item of logBasicInfoModel.lstLogDataCorrectRecordRefeDto) {
                 if (!vm.filterLogByItemNo(item.correctionAttr, 26)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.itemName, 27)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.valueBefore, 30)) {
                     return false;
-                };
+                }
                 if (!vm.filterLogByItemNo(item.valueAfter, 31)) {
                     return false;
-                };
-            })
+                }
+            }
             if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
                 return false;
-            };
+            }
             return true;
         }
 
@@ -1012,7 +1010,7 @@ module nts.uk.com.view.cli003.f {
             let paramOutputItem = {
                 recordType: vm.logTypeSelectedCode(),
                 itemNos: null,
-            };
+            }
             let checkProcess = false;
             switch (recordType) {
                 case RECORD_TYPE.LOGIN: {
@@ -1174,8 +1172,18 @@ module nts.uk.com.view.cli003.f {
         generateLogDataResultGrid() {
             const vm = this;
             let listLogBasicInfor = vm.listLogDataResult;
+            const $grid = $("#igGridLog");
+            const updateHeight = () => {
+                const uh = (h: number) => $grid.igHierarchicalGrid('option', 'height', `${window.innerHeight - h}px`);
+
+                $.Deferred()
+                    .resolve(true)
+                    .then(() => uh(280))
+                    .then(() => uh(281));
+            };
+
             //generate generateHierarchialGrid
-            $("#igGridLog").igHierarchicalGrid({
+            $grid.igHierarchicalGrid({
                 width: "100%",
                 height: "calc(100% - 15px)",
                 initialDataBindDepth: 1,
@@ -1186,7 +1194,7 @@ module nts.uk.com.view.cli003.f {
                 autoGenerateLayouts: false,
                 hidePrimaryKey: true,
                 virtualizationMode: 'continuous',
-                columns:vm.LogDataResultHeader,
+                columns: vm.LogDataResultHeader,
                 features: [
                     {
                         name: "Tooltips",
@@ -1245,9 +1253,19 @@ module nts.uk.com.view.cli003.f {
                             columnSettings: []
                         }
                     ]
-                }]
+                }],
+                dataRendered() {
+                    updateHeight();
+                },
+                rowCollapsed() {
+                    updateHeight();
+                },
+                rowExpanded() {
+                    updateHeight();
+                },
             });
         }
+
 
         generatePersionInforGrid() {
             const vm = this;
@@ -1341,6 +1359,7 @@ module nts.uk.com.view.cli003.f {
         generateDataCorrectLogGrid() {
             const vm = this;
             let listLogBasicInfor = vm.listLogBasicInforModel;
+
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
@@ -1528,7 +1547,7 @@ module nts.uk.com.view.cli003.f {
         }
 
         validateForPersonUpdateInfo(logSettingEditProgramId): boolean {
-            if (!logSettingEditProgramId['PS002']) {
+            if (logSettingEditProgramId['CPS002']) {
                 return true;
             }
             if (logSettingEditProgramId['CPS001']) {
@@ -1596,7 +1615,7 @@ module nts.uk.com.view.cli003.f {
                     recordType: vm.logTypeSelectedCode(),
                     targetDataType: vm.dataTypeSelectedCode(),
                     systemType: vm.systemTypeSelectedCode(),
-                };
+                }
 
             if (vm.checkFormatDate() === '2') {
                 paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
@@ -1638,7 +1657,7 @@ module nts.uk.com.view.cli003.f {
                     paramOutputItem: paramOutputItem,
                     lstHeaderDto: vm.columnsIgGrid(),
                     lstSupHeaderDto: vm.supColumnsIgGrid()
-                };
+                }
                 vm.$blockui('grayout');
                 //CLI003: fix bug #108971, #108970
                 service.logSettingExportCsv(params).done(() => {

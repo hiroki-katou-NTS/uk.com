@@ -28,14 +28,14 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			+ " WHERE  f.storeProcessingId IN :storeProcessingId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
 				+ " WHERE f.cid =:cid "
-					+ " AND f.saveStartDatetime >=:startDateOperator "
-					+ " AND f.saveStartDatetime <=:endDateOperator ";
+				+ " AND f.saveStartDatetime >=:startDateOperator "
+				+ " AND f.saveStartDatetime <=:endDateOperator ";
 	
 	private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
 				+ " WHERE f.cid =:cid "
-					+ " AND f.saveStartDatetime =:startDateOperator "
-					+ " AND f.saveStartDatetime =:endDateOperator "
-					+ " AND f.practitioner =:practitioner ";
+				+ " AND f.saveStartDatetime =:startDateOperator "
+				+ " AND f.saveStartDatetime =:endDateOperator "
+				+ " AND f.practitioner IN :practitioner ";
 	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.saveSetCode IN :saveSetCodes";
 
@@ -114,15 +114,13 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 		List<ResultOfSaving> resultOfSavings = new ArrayList<ResultOfSaving>();
 		
 		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
-			for (String employeeId : listOperatorEmployeeId) {
-				resultOfSavings.addAll(
+			resultOfSavings.addAll(
 					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
-					.setParameter("practitioner", employeeId)
+					.setParameter("practitioner", listOperatorEmployeeId)
 					.getList(item -> item.toDomain()));
-			}
 		} else {
 			resultOfSavings.addAll(
 					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)

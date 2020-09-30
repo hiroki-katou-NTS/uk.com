@@ -94,6 +94,7 @@
                         width: 500,
                         dataSource: b2_10Datasource,
                         columns: b2_10Columns,
+                        columnResize: true,
                         primaryKey: 'displayItem',
                         value: b2_10CurrentCode,
                         multiple: false,
@@ -150,7 +151,6 @@
                 <com:ko-if bind="showOperator()">
                   <!-- B5-start -->
                   <com:ko-if bind="showPersonInfo()">
-                  
                   <tr>
                     <td>
                       <div id="B5_1" data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_15')}</div>
