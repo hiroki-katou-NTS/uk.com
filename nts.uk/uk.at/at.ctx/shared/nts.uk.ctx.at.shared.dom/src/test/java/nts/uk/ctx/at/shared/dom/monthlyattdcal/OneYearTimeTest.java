@@ -13,7 +13,7 @@ public class OneYearTimeTest {
 
 	@Test
 	public void getters() {
-		OneYearTime oneMonthTime = new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+		OneYearTime oneMonthTime = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
 				new AgreementOneYearTime(40));
 		NtsAssert.invokeGetters(oneMonthTime);
 	}
@@ -21,16 +21,16 @@ public class OneYearTimeTest {
 	@Test
 	public void createTest_1() {
 		NtsAssert.businessException("Msg_59", ()->{
-			new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),
+			OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),
 					new AgreementOneYearTime(20)),new AgreementOneYearTime(10));
 		});
 	}
 
 	@Test
 	public void createTest_2() {
-        OneYearErrorAlarmTime errorTimeInYear = new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20));
+        OneYearErrorAlarmTime errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20));
 
-		OneYearTime target = new OneYearTime(errorTimeInYear,new AgreementOneYearTime(40));
+		OneYearTime target = OneYearTime.of(errorTimeInYear,new AgreementOneYearTime(40));
 
 		Assert.assertEquals(errorTimeInYear.getError(),target.getErAlTime().getError());
 		Assert.assertEquals(errorTimeInYear.getAlarm(),target.getErAlTime().getAlarm());
@@ -39,7 +39,7 @@ public class OneYearTimeTest {
 
 	@Test
 	public void checkErrorTimeExceededTest_1() {
-		OneYearTime target = new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
 				new AgreementOneYearTime(40));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(50));
 
@@ -49,7 +49,7 @@ public class OneYearTimeTest {
 
 	@Test
 	public void checkErrorTimeExceededTest_2() {
-		OneYearTime target = new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
 				new AgreementOneYearTime(40));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(10));
 
@@ -59,7 +59,7 @@ public class OneYearTimeTest {
 
 	@Test
 	public void calculateAlarmTimeTest_1() {
-		OneYearTime target = new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
 				new AgreementOneYearTime(40));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(50));
 
@@ -68,7 +68,7 @@ public class OneYearTimeTest {
 
 	@Test
 	public void calculateAlarmTimeTest_2() {
-		OneYearTime target = new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
 				new AgreementOneYearTime(40));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(10));
 
