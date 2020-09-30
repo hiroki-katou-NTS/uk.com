@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class AppCreationResult {
 	private String empId;
 
 	//結果区分
-	private ResultType resultDiff;
+	private ResultType resultType;
 
 	// 永続化処理
 	private final Optional<AtomTask> atomTask;

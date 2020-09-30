@@ -416,11 +416,15 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(output);
             let contentChanged = vm.dataFetch().businessTripContent.tripInfos[index];
+            let startWorkTime = data.startWorkTime;
+            let endWorkTime = data.endWorkTime;
             let command = {
                 date: data.date,
                 businessTripInfoOutputDto: businessTripInfoOutputDto,
                 wkCode: data.wkTypeCd,
-                timeCode: codeChanged
+                timeCode: codeChanged,
+                startWorkTime,
+                endWorkTime
             };
 
             vm.$blockui("show");

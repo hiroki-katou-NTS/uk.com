@@ -2,109 +2,114 @@ package nts.uk.ctx.at.shared.dom.monthlyattdcal;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.OverState;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class OneMonthTimeTest {
 
-	private OneMonthTime create(){
-		return new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(1),new AgreementOneMonthTime(0)),
-                new AgreementOneMonthTime(2));
-	}
+    @Test
+    public void getters() {
+        OneMonthTime oneMonthTime = new OneMonthTime();
+        NtsAssert.invokeGetters(oneMonthTime);
+    }
 
-	@Test
-	public void getters() {
-		OneMonthTime oneMonthTime = create();
-		NtsAssert.invokeGetters(oneMonthTime);
-	}
+    @Test
+    public void createTest_1() {
+        NtsAssert.businessException("Msg_59", () -> {
+            OneMonthErrorAlarmTime oneMonthErrorAlarmTime = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(30),
+                    new AgreementOneMonthTime(20));
+            OneMonthTime.of(oneMonthErrorAlarmTime, new AgreementOneMonthTime(10));
+        });
+    }
 
-	@Test
-	public void createTest_1() {
-		NtsAssert.businessException("Msg_59", ()->{
-			new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(3),
-					new AgreementOneMonthTime(2)),new AgreementOneMonthTime(1));
-		});
-	}
+    @Test
+    public void createTest_2() {
+        OneMonthErrorAlarmTime errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30));
 
-	@Test
-	public void createTest_2() {
-		ErrorTimeInMonth errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(1), new AgreementOneMonthTime(0));
-		OneMonthTime target = create();
+        OneMonthTime target = OneMonthTime.of(errorTimeInMonth,new AgreementOneMonthTime(50));
 
-		Assert.assertEquals(target.getErrorTimeInMonth().getErrorTime(), errorTimeInMonth.getErrorTime());
-		Assert.assertEquals(target.getErrorTimeInMonth().getAlarmTime(), errorTimeInMonth.getAlarmTime());
-		Assert.assertEquals(target.getUpperLimitTime(), new AgreementOneMonthTime(2));
-	}
+        Assert.assertEquals(errorTimeInMonth.getError(), target.getErAlTime().getError());
+        Assert.assertEquals(errorTimeInMonth.getAlarm(), target.getErAlTime().getAlarm());
+        Assert.assertEquals(new AgreementOneMonthTime(50), target.getUpperLimit());
+    }
 
-	@Test
-	public void errorCheckTest_Normal() {
-		OneMonthTime target = create();
-		OverState result =  target.errorCheck(new AttendanceTimeMonth(0));
+    @Test
+    public void errorCheckTest_Normal() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        ExcessState result = target.check(new AttendanceTimeMonth(30));
 
-		Assert.assertEquals(result.value, OverState.NORMAL.value);
-	}
+        Assert.assertEquals(ExcessState.NORMAL.value,result.value);
+    }
 
-	@Test
-	public void errorCheckTest_AlarmOver() {
-		OneMonthTime target = create();
-		OverState result =  target.errorCheck(new AttendanceTimeMonth(1));
+    @Test
+    public void errorCheckTest_AlarmOver() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        ExcessState result = target.check(new AttendanceTimeMonth(40));
 
-		Assert.assertEquals(result.value, OverState.ALARM_OVER.value);
-	}
+        Assert.assertEquals(ExcessState.ALARM_OVER.value,result.value);
+    }
 
-	@Test
-	public void errorCheckTest_ErrorOver() {
-		OneMonthTime target = create();
-		OverState result =  target.errorCheck(new AttendanceTimeMonth(2));
+    @Test
+    public void errorCheckTest_ErrorOver() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        ExcessState result = target.check(new AttendanceTimeMonth(50));
 
-		Assert.assertEquals(result.value, OverState.ERROR_OVER.value);
-	}
+        Assert.assertEquals(ExcessState.ERROR_OVER.value,result.value);
+    }
 
-	@Test
-	public void errorCheckTest_MaxTime() {
-        OneMonthTime target = create();
-		OverState result =  target.errorCheck(new AttendanceTimeMonth(4));
+    @Test
+    public void errorCheckTest_MaxTime() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        ExcessState result = target.check(new AttendanceTimeMonth(60));
 
-		Assert.assertEquals(result.value, OverState.UPPER_LIMIT_OVER.value);
-	}
+        Assert.assertEquals( ExcessState.UPPER_LIMIT_OVER.value,result.value);
+    }
 
-	@Test
-	public void checkErrorTimeExceededTest_1() {
-		OneMonthTime target = create();
-		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(4));
+    @Test
+    public void checkErrorTimeExceededTest_1() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        Pair<Boolean, AgreementOneMonthTime> result = target.isErrorTimeOver(new AgreementOneMonthTime(60));
 
-		Assert.assertEquals(result.getLeft(), true);
-		Assert.assertEquals(result.getRight(), new AgreementOneMonthTime(1));
-	}
+        Assert.assertEquals(true,result.getLeft());
+        Assert.assertEquals(new AgreementOneMonthTime(40),result.getRight());
+    }
 
-	@Test
-	public void checkErrorTimeExceededTest_2() {
-		OneMonthTime target = create();
-		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(1));
+    @Test
+    public void checkErrorTimeExceededTest_2() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        Pair<Boolean, AgreementOneMonthTime> result = target.isErrorTimeOver(new AgreementOneMonthTime(35));
 
-		Assert.assertEquals(result.getLeft(), false);
-		Assert.assertEquals(result.getRight(), new AgreementOneMonthTime(1));
-	}
+        Assert.assertEquals(false,result.getLeft());
+        Assert.assertEquals(new AgreementOneMonthTime(40),result.getRight());
+    }
 
-	@Test
-	public void calculateAlarmTimeTest_1() {
-		OneMonthTime target = create();
-		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(4));
+    @Test
+    public void calculateAlarmTimeTest_1() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        AgreementOneMonthTime result = target.calcAlarmTime(new AgreementOneMonthTime(50));
 
-		Assert.assertEquals(result,new AgreementOneMonthTime(3));
-	}
+        Assert.assertEquals(new AgreementOneMonthTime(40),result);
+    }
 
-	@Test
-	public void calculateAlarmTimeTest_2() {
-		OneMonthTime target = create();
-		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(1));
+    @Test
+    public void calculateAlarmTimeTest_2() {
+        OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
+                new AgreementOneMonthTime(50));
+        AgreementOneMonthTime result = target.calcAlarmTime(new AgreementOneMonthTime(10));
 
-		Assert.assertEquals(result,new AgreementOneMonthTime(0));
-	}
+        Assert.assertEquals(new AgreementOneMonthTime(0),result);
+    }
 
 }
