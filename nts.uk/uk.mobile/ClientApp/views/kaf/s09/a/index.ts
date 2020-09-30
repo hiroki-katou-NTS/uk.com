@@ -301,7 +301,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public bindStart() {
         const self = this;
         self.bindVisibleView();
-        self.bindCommon();
+        self.bindCommon(self.dataOutput);
         self.bindWork();
         self.bindDirectBounce();
         self.checkChangeWork();
@@ -343,10 +343,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
 
 
-    public bindCommon() {
-        // this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        // this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartupOutput.appDispInfoWithDateOutput;
-        // this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
+    public bindCommon(params: any) {
+        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
     }
     public appGoBackDirect: any;
     public bindAppWorkChangeRegister() {
@@ -459,7 +459,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
                 self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                    self.data = res;
+                    self.dataOutput = res;
+                    // self.bindCommon(self.data);
                     self.mode = false;
                     self.fetchStart();
                     self.$forceUpdate();
@@ -486,7 +487,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                    self.dataOutput = res;
+                    // self.bindCommon(self.data);
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
             }).catch((res: any) => {
                 self.$mask('hide');
                 if (res.messageId) {
