@@ -170,7 +170,7 @@ module nts.uk.com.view.kwr002.b {
                 layoutId: null,
                 sealStamp: []
             };
-            
+
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
             self.newMode(true);
@@ -196,6 +196,7 @@ module nts.uk.com.view.kwr002.b {
                 attendanceRecItemList: getShared('attendanceRecItemList'),
                 sealStamp: _.isNil(getShared('sealStamp')) ? currentData.sealStamp : getShared('sealStamp'),
                 useSeal: _.isNil(getShared('useSeal')) ? currentData.sealUseAtr() : getShared('useSeal'),
+                monthlyDisplay: _.isNil(getShared('monthlyConfirmedDisplay')) ? currentData.monthlyDisplay() : getShared('monthlyConfirmedDisplay'),
 
                 isInvalid: function() {
                     return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
@@ -276,7 +277,8 @@ module nts.uk.com.view.kwr002.b {
                 nameUseAtr: currentData.nameUseAtr(),
                 exportFontSize: currentData.exportFontSize(),
                 itemSelType : self.selectionType,
-                layoutId: currentData.layoutId
+                layoutId: currentData.layoutId,
+                monthlyDisplay: rcdExport.monthlyDisplay
             };
 
             let itemCmd = {
@@ -438,6 +440,7 @@ module nts.uk.com.view.kwr002.b {
         layoutId: string;
         itemSelType: number;
         sealStamp: any;
+        monthlyDisplay: any;
     }
 
     export class AttendanceRecordExportSettingWrapper {
@@ -457,6 +460,7 @@ module nts.uk.com.view.kwr002.b {
         layoutId: string | null;
         itemSelType: number;
         sealStamp: any;
+        monthlyDisplay: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -468,6 +472,7 @@ module nts.uk.com.view.kwr002.b {
             self.layoutId = param.layoutId;
             self.itemSelType = param.itemSelType;
             self.sealStamp = param.sealStamp;
+            self.monthlyDisplay = ko.observable(param.monthlyDisplay);
         };
 
 

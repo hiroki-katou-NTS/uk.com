@@ -42,6 +42,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -470,8 +471,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (!monthResultCheck.isEmployeeResult()) {
 								// エラーリストに「社員コード」「社員名」を書き出す
 								throw new BusinessException("Msg_1724",
-										oAffiliationInfoOfMonthly.get().getFirstInfo().getEmploymentCd().v(),
-										oAffiliationInfoOfMonthly.get().getLastInfo().getEmploymentCd().v());
+										oAffiliationInfoOfMonthly.get().getEmployeeId(),
+										oAffiliationInfoOfMonthly.get().getEmployeeId());
 							}
 							if (!monthResultCheck.isCheckResult()) {
 //								// 雇用コードが一致しなかったのでこの月別実績は処理しない - This monthly performance will not be processed 
@@ -972,11 +973,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							 * title. The work type The year month
 							 **/
 							//	月次確認済表示区分をチェックする - Check the monthly confirmed display category
-							
-							//	表示  - if display 
-							
+							if (optionalAttendanceRecExpSet.get()
+									.getMonthlyConfirmedDisplay() == MonthlyConfirmedDisplay.DISPLAY) {
+								//	表示  - if display 
 								//	月の承認済状況を編集する - Edit the approved status of the month
-							//	TODO
+								
+							}
 
 							// build param
 
@@ -988,7 +990,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.employeeIds(empIDs)
 										.referenceDate(endByClosure)
 										.toGetWorkplace(true)
-										.toGetDepartment(false).toGetPosition(true)
+										.toGetDepartment(false)
+										.toGetPosition(true)
 										.toGetEmployment(true)
 										.toGetClassification(false)
 										.toGetEmploymentCls(true).build();

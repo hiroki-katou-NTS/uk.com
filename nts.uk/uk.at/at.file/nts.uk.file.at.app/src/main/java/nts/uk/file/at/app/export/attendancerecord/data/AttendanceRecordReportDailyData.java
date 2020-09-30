@@ -39,6 +39,7 @@ public class AttendanceRecordReportDailyData {
 	//	編集済み実績値
 	private String editedAchievementValue;
 	
+	/** The second col. */
 	private boolean secondCol;
 	
 	/** The day of week. */

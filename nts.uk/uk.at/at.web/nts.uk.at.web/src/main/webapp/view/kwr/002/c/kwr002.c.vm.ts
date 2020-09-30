@@ -51,7 +51,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
         constructor() {
             var self = this;
-            
+
             self.attendanceCode = ko.observable('');
             self.attendanceName = ko.observable('');
             self.sealStamp = ko.observableArray([]);
@@ -132,7 +132,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 var exportAtr: number;
 
                 var attItem: model.AttendanceRecExp;
-                
+
                 if (position.search("upper") != -1) {
                     position = 1;
                 }
@@ -211,9 +211,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         }
 
                         var item: viewmodel.model.AttendanceRecItem;
-                        
+
                         if (exportAtr == 1 && columnIndex <= 6) {
-                            
+
                             item = new model.AttendanceRecItem(attendanceItem.attendanceItemName, attendanceItem.layoutCode, attendanceItem.layoutName,
                                 attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
                                 attendanceItem.attendanceId, attendanceItem.attribute);
@@ -267,7 +267,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 position: position,
                 exportAtr: exportAtr
             });
-            
+
             if (exportAtr === 1 && columnIndex <= 6) {
                 attendanceItem.titleLine.directText = getText('KWR002_131') + columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133');
 
@@ -288,7 +288,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             attendanceItem.selectedTime = singleAttendanceRecord.itemId;
                             attendanceItem.attribute.selected = singleAttendanceRecord.attribute;
                         }
-                        
+
                         const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
                         if (index >= 0) {
                             attendanceItem.selectedTime = vm.attendanceRecItemList()[index].attendanceId;
@@ -332,7 +332,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             calculateAttendanceRecord.subtractedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
                             });
-                            
+
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
                         }
 
@@ -458,7 +458,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         }
 
         start_page(): JQueryPromise<any> {
-            
+
             blockUI.invisible();
             var self = this;
             var dfd = $.Deferred();
@@ -512,7 +512,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         , item.upperPosition + ""
                         , item.lowwerPosition + "");
                 });
-                
+
                 for (var i: number = 1; i <= 13; i++) {
                     if (!self.attendanceRecExpDaily()[i]) {
                         self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
@@ -528,7 +528,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         , item.lowwerPosition + "");
 
                 });
-                
+
                  for (var i: number = 1; i <= 16; i++) {
                     if (!self.attendanceRecExpMonthly()[i]) {
                         self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
@@ -724,7 +724,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.attendanceTypeName = attendanceTypeName;
             }
         }
-            
+
         // 出勤簿の出力項目設定 Ver25
         export class AttendanceRecordExportSetting {
             // コード
@@ -825,7 +825,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             name: any;
             attributes: any;
             indicatesNumber: any;
-        
+
             constructor(init?: Partial<DiligenceProject>) {
               $.extend(this, init);
             }

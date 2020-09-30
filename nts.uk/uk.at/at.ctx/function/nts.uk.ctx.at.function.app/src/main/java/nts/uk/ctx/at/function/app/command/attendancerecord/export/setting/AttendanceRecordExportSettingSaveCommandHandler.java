@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 
 /**
@@ -43,6 +44,7 @@ public class AttendanceRecordExportSettingSaveCommandHandler
 				command.getSealStamp().stream().map(item -> new SealColumnName(item)).collect(Collectors.toList()));
 		domain.setSealUseAtr(command.getSealUseAtr());
 		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
+		domain.setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay.valueOf(command.getMonthlyDisplay()));
 		// update
 //		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
 	}
