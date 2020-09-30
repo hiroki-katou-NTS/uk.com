@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
