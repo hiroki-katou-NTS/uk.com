@@ -13,8 +13,8 @@ public class AgreementOneYearTest {
     @Test
     public void getters() {
         AgreementOneYear agreementOneYear = new AgreementOneYear(
-                 OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
-                 OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
+                new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
+                new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
         NtsAssert.invokeGetters(agreementOneYear);
@@ -23,8 +23,8 @@ public class AgreementOneYearTest {
     public void checkErrorTimeExceededTest() {
 
         AgreementOneYear agreementOneYear = new AgreementOneYear(
-                 OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
-                 OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
+                new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
+                new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
         Pair<Boolean, AgreementOneYearTime> result =  agreementOneYear.checkErrorTimeExceeded(new AgreementOneYearTime(60));
@@ -37,8 +37,8 @@ public class AgreementOneYearTest {
     public void calculateAlarmTimeTest() {
 
         AgreementOneYear agreementOneYear = new AgreementOneYear(
-                 OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
-                 OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
+                new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
+                new OneYearTime(new OneYearErrorAlarmTime(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
         AgreementOneYearTime result =  agreementOneYear.calculateAlarmTime(agreementOneYear.getBasic().getAlarm());
