@@ -33,12 +33,32 @@ public class GenerateStampCardForEmployeesTest {
 	private String contractCd = "000000";
 	private String companyCd = "0001";
 	private String sid = "123456";
-
+	
 	@Test
 	public void testMsg_1756() {
 		List<TargetPerson> persons = new ArrayList<>();
 		
-		NtsAssert.businessException("Msg_1756", () -> GenerateStampCardForEmployees.generate(require, contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid));
+		NtsAssert.businessException("Msg_1756", () -> 
+					GenerateStampCardForEmployees.generate(require, contractCd, companyCd, 
+							EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid));
+	}
+	
+	@Test
+	public void testMsg_1756_2() {
+		List<TargetPerson> persons = new ArrayList<>();
+		
+		new Expectations() {
+			{
+				require.get(companyId);
+				
+				require.getByCardNoAndContractCode("DUMMY", contractCd);
+				
+			}
+		};
+		
+		NtsAssert.businessException("Msg_1756", () -> 
+					GenerateStampCardForEmployees.generate(require, contractCd, companyCd, 
+							EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid));
 	}
 	
 	
@@ -52,7 +72,7 @@ public class GenerateStampCardForEmployeesTest {
 		
 		new Expectations() {
 			{
-				require.get(companyCd);
+				require.get(companyId);
 				result = new StampCardEditing(companyId, new StampCardDigitNumber(20), StampCardEditMethod.AfterSpace);
 				
 				require.getByCardNoAndContractCode("DUMMY", contractCd);
@@ -65,8 +85,8 @@ public class GenerateStampCardForEmployeesTest {
 		List<ImprintedCardGenerationResult> cardGenerationResults = GenerateStampCardForEmployees.generate(require,
 				contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid);
 		
-		assertThat(cardGenerationResults.get(0).getCardNumber()).isEqualTo("000000000002        ");
-		assertThat(cardGenerationResults.get(0).getDuplicateCards().get()).isEqualTo("0123456");
+		System.out.println(cardGenerationResults);
+		assertThat(cardGenerationResults.get(0).getCardNumber().getStampNumber().v()).isEqualTo("0001000002          ");
 	}
 	
 	@Test
@@ -76,7 +96,7 @@ public class GenerateStampCardForEmployeesTest {
 		
 		new Expectations() {
 			{
-				require.get(companyCd);
+				require.get(companyId);
 				result = new StampCardEditing(companyId, new StampCardDigitNumber(20), StampCardEditMethod.AfterSpace);
 				
 				require.getByCardNoAndContractCode("DUMMY", contractCd);
@@ -89,7 +109,6 @@ public class GenerateStampCardForEmployeesTest {
 		List<ImprintedCardGenerationResult> cardGenerationResults = GenerateStampCardForEmployees.generate(require,
 				contractCd, companyCd, EnumAdaptor.valueOf(0, MakeEmbossedCard.class), persons, companyId,sid);
 		
-		assertThat(cardGenerationResults.get(0).getCardNumber()).isEqualTo("000002              ");
-		assertThat(cardGenerationResults.get(0).getDuplicateCards().get()).isEqualTo("0123456");
+		assertThat(cardGenerationResults.get(0).getCardNumber().getStampNumber().v()).isEqualTo("000002              ");
 	}
 }
