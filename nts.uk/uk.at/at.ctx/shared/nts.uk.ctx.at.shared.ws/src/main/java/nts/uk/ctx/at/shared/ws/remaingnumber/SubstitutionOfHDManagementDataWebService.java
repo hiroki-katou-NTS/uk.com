@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.SubstitutionManag
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.DisplayRemainingNumberDataInformation;
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")
@@ -86,7 +87,7 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	
 	@POST
 	@Path("getExtraHolidayData")
-	public ExtraHolidayManagementDataDto getExtraHolidayData(SubDataSearchConditionDto dto){
-		return subManagementFinder.getExtraHolidayManagementData(dto);
+	public DisplayRemainingNumberDataInformation getExtraHolidayData(SubDataSearchConditionDto dto){
+		return subManagementFinder.getExtraHolidayManagementDataUpdate(dto);
 	}	
 }

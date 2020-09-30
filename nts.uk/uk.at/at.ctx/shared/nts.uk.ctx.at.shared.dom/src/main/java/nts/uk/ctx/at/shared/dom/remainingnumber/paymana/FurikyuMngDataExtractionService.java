@@ -220,7 +220,7 @@ public class FurikyuMngDataExtractionService {
 	// Step 振休管理データを管理するかチェック
 	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
 		// Step 管理区分 ＝ 管理しない
-		EmploymentManageDistinctDto emplManage = new EmploymentManageDistinctDto();
+		EmploymentManageDistinctDto emplManage = EmploymentManageDistinctDto.builder().build();
 		emplManage.setIsManage(ManageDistinct.NO);
 		// Step 社員IDから全ての雇用履歴を取得
 		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);

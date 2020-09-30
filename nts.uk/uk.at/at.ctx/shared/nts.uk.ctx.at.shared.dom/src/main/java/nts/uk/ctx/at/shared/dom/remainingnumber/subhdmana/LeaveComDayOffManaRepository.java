@@ -32,4 +32,13 @@ public interface LeaveComDayOffManaRepository {
 	 * @param comDayOffId
 	 */
 	void deleteByComDayOffId(String sid,  GeneralDate digestDate);
+	
+	/**
+	 * 
+	 * @param sid
+	 * @param lstOccDate
+	 * @param lstDigestDate
+	 * @return
+	 */
+	List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate);
 }

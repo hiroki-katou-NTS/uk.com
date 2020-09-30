@@ -31,7 +31,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
 
-	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
+	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId";
 
 	private static final String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 
@@ -73,6 +73,17 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	
 	// 全ての状況
 	private static final String QUERY_ALL_DATA = "SELECT l FROM KrcmtLeaveManaData l";
+	
+	private static final String QUERY_BY_SID_STATE = "SELECT l from KrcmtLeaveManaData l"
+			+ " WHERE l.cID = :cId"
+			+ " AND l.sID = :sId"
+			+ " AND l.subHDAtr = :subHDAtr"
+			+ " ORDER BY l.dayOff";
+	
+	private static final String QUERY_BY_SID_DAYOFF = "SELECT l from KrcmtLeaveManaData l"
+			+ " WHERE l.sID = :sId"
+			+ " AND l.dayOff IN :dayOffs";
+	
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
@@ -480,6 +491,43 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		
 		return allData.stream()
 				.map(i -> toDomain(i))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 
+	 * @param cid
+	 * @param sid 社員ID
+	 * @param state 消化区分
+	 * @return
+	 */
+	@Override
+	public List<LeaveManagementData> getBySidAndStateAtr(String cid, String sid, DigestionAtr state) {
+		return this.queryProxy().query(QUERY_BY_SID_STATE, KrcmtLeaveManaData.class)
+				.setParameter("cId", cid)
+				.setParameter("sId", sid)
+				.setParameter("subHDAtr", state.value)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Get by SidAndDatOff
+	 * @param cid
+	 * @param sid
+	 * @param state
+	 * @return
+	 */
+	@Override
+	public List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs) {
+		return this.queryProxy().query(QUERY_BY_SID_DAYOFF, KrcmtLeaveManaData.class)
+				.setParameter("sId", sid)
+				.setParameter("dayOffs", dayOffs)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
 	

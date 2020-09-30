@@ -57,6 +57,15 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			+ " AND (a.remainDays > 0 OR a.remainTimes > 0)";
 	private static final String GET_ALL_DATA = "SELECT a FROM KrcmtComDayoffMaData a";
 	
+	private static final String GET_BY_SID_REMAINDAYS = "SELECT a FROM KrcmtComDayoffMaData a"
+			+ " WHERE a.cID = :cId"
+			+ " AND a.sID = :sId"
+			+ " AND a.remainDays > 0";
+	
+	private static final String GET_BY_LST_DAYOFF_DATE = "SELECT a FROM KrcmtComDayoffMaData a"
+			+ " WHERE a.cID = :cId"
+			+ " AND a.dayOff IN :lstDate";
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_SID_DATE, KrcmtComDayoffMaData.class)
@@ -399,6 +408,40 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.getList();
 
 		return allData.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	@Override
+	public List<CompensatoryDayOffManaData> getBySIdAndRemainDays(String cid, String sid) {
+		return this.queryProxy().query(GET_BY_SID_REMAINDAYS, KrcmtComDayoffMaData.class)
+				.setParameter("cId", cid)
+				.setParameter("sId", sid)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Get data by list dayoff date
+	 * @param cid
+	 * @param lstDate
+	 * @return
+	 */
+	@Override
+	public List<CompensatoryDayOffManaData> getByLstDate(String cid, List<GeneralDate> lstDate) {
+		return this.queryProxy().query(GET_BY_LST_DAYOFF_DATE, KrcmtComDayoffMaData.class)
+				.setParameter("cID", cid)
+				.setParameter("lstDate", lstDate)
+				.getList()
+				.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
 	}
 	
 

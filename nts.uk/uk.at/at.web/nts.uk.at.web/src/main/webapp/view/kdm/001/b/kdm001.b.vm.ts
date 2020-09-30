@@ -37,6 +37,7 @@
         tabindex: number = -1;
         /** A4_3  凡例 */        
         legendOptions: any;
+
         constructor() {
             let self = this;
             self.initSubstituteDataList();
@@ -129,6 +130,7 @@
                 }    
             });
         }
+
         openConfirmScreen() {
             let self = this, data;
             data = {
@@ -142,6 +144,7 @@
             };
             nts.uk.request.jump("/view/kdr/003/a/index.xhtml", { 'param': data });
         }
+
         openNewSubstituteData() {
             let self = this;
             setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
@@ -158,9 +161,11 @@
                 $('#substituteDataGrid').focus();
             });
         }
+
         goToScreenA() {
             nts.uk.request.jump("/view/kdm/001/a/index.xhtml");
         }
+
         filterByPeriod() {
             let self = this;
             if (!nts.uk.ui.errors.hasError()) {
@@ -168,6 +173,7 @@
                 $('#substituteDataGrid').focus();
             }
         }
+
         getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
             let self = this;
             if (self.selectedPeriodItem() == 1){
@@ -187,13 +193,11 @@
                     }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
-                        self.listExtractData = result.extraData;
+                        self.listExtractData = result.remainingData;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        if (result.empSettingExpiredDate.length>0){
-                            self.dispExpiredDate(result.empSettingExpiredDate);
-                        } else self.dispExpiredDate(result.companySettingExpiredDate);
+                        self.dispExpiredDate(result.expirationDate);
                     } else {
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -207,6 +211,7 @@
                 });
             }
         }
+
         getSearchCondition() {
             let self = this, searchCondition = null;
             searchCondition = null;
@@ -217,6 +222,7 @@
             }
             return searchCondition;
         }
+
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
             let totalRemain = 0, dayOffDate, occurredDays, remain, expired, requireDays, listData = [];
@@ -235,6 +241,9 @@
                 if (expired != 0) { 
                     expired = expired.toFixed(1) + getText('KDM001_27');
                 }
+
+                totalRemain = data.totalRemainingNumber;
+
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
                         dayOffDate = '※';
@@ -252,20 +261,26 @@
                     this.expiredDateText = getText('KDM001_162', [data.expiredDate]);
                 }
 
+                listData.push(new SubstitutedData(
+                    data.occurrenceId,
+                    data.occurrenceId,
+                    data.digestionId,
+                    data.occurrenceId !== '' || data.occurrenceId !== 0 && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
+                    null,
+                    new Date(data.deadLine).getMonth() === new Date(data.accrualDate).getMonth()
+                    && new Date(data.deadLine).getFullYear() === new Date(data.accrualDate).getFullYear()
+                    ? getText('KDM001_161', [data.deadLine])
+                    : getText('KDM001_162', [data.deadLine]), //B4_4_2
+                    data.digestionId !== '' || data.digestionId !== 0 && data.digestionDay === null ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
+                    null,
+                    data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
+                    data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
+                    null,
+                    null
+                ));
 
-                if (data.type == 0) {
-                    occurredDays = data.occurredDays;
-                    if (occurredDays != 0) {
-                        occurredDays = occurredDays.toFixed(1) + getText('KDM001_27');
-                    }
-                    listData.push(new SubstitutedData(data.id, dayOffDate, occurredDays, data.linked == 1 ? getText('KDM001_130') : "", this.expiredDateText, null ,null, null, remain, expired, data.linked, 0));
-                } else {
-                    requireDays = data.requireDays;
-                    if (requireDays != 0) {
-                        requireDays = requireDays.toFixed(1) + getText('KDM001_27');
-                    }
-                    listData.push(new SubstitutedData(data.comDayOffID, null, null, null, this.expiredDateText,   dayOffDate, requireDays, data.linked == 1 ? getText('KDM001_130') : "", remain, expired, data.linked, 1));
-                }
             });
             if (isShowMsg && self.listExtractData.length == 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
@@ -275,11 +290,13 @@
             
             self.dispTotalRemainHours(totalRemain + getText('KDM001_27'));
         }
+
         initSubstituteDataList() {
             let self = this;
             self.showSubstiteDataGrid();
 
         }
+
         updateSubstituteDataList() {
             let self = this;
             $("#substituteDataGrid").igGrid("dataSourceObject", self.subData).igGrid("dataBind");
@@ -299,6 +316,8 @@
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'dataType', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'occurrenceId', key: 'occurrenceId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
                     { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:right"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
@@ -307,8 +326,6 @@
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },              
                     { headerText: '', key: 'delete', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
-                    
-                    
                 ],
                 features: [
                     {
@@ -342,11 +359,11 @@
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
-            service.getInfoEmLogin().done(function(loginerInfo) {
-                searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: self.selectedEmployee?.employeeId, stateDate: null, endDate: null };
-                service.getSubsitutionData(searchCondition).done(function(result) {
+            service.getInfoEmLogin().done(loginerInfo => {
+                searchCondition = { searchMode: self.selectedPeriodItem() };
+                service.getExtraHolidayData(searchCondition).done(result => {
                     console.log("Data: ",result);
-                    if (result.extraHolidayManagementDataDto.closureEmploy && result.extraHolidayManagementDataDto.sempHistoryImport){
+                    if (result) {
                         let wkHistory = result.wkHistory;
                         self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
                         self.listEmployee = [];
@@ -354,7 +371,7 @@
                         self.listEmployee.push(self.selectedEmployee);
                         self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                             loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
-                        self.listExtractData = result.extraHolidayManagementDataDto.extraData;
+                        self.listExtractData = result.remainingData;
                         self.convertToDisplayList();
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
@@ -381,6 +398,7 @@
             });
             return dfd.promise();
         }
+
         initKCP009() {
             let self = this;
             //_______KCP009_______
@@ -419,6 +437,7 @@
                 return obj.employeeId == selectedItem;
             })
         }
+        
         pegSetting(value) {
             let self = this, rowDataInfo;
             if (value.dataType == 0) {
@@ -469,17 +488,14 @@
                     return x.comDayOffID === value.id;
                 });
             }
-              let  command = {
-                    leaveId: rowDataInfo.id,
-                    employeeId: self.selectedEmployee.employeeId,
-                    expiredDate: new Date(rowDataInfo.expiredDate),
-                    occurredDays: rowDataInfo.occurredDays,
-                    isCheckedExpired: rowDataInfo.subHDAtr == 2,
-                };
+            let command = {
+                    leaveId: value.occurrenceId,
+                    comDayOffID: value.digestionId
+            };
             service.deleteHolidaySetting(command).done(() => {
                 //情報メッセージ　Msg-16を表示する
-                dialog.info({ messageId: "Msg_16" }).then(() => {           
-                    self.closeDialog();               
+                dialog.info({ messageId: "Msg_16" }).then(() => {
+                    self.closeDialog();
                     nts.uk.ui.block.clear();
                 });
             }).fail(error => {
@@ -504,6 +520,8 @@
 
     export class SubstitutedData {
         id: string;
+        occurrenceId: string;
+        digestionId: string;
         substituedWorkingDate: string;
         substituedWorkingHours: string;
         substituedWorkingPeg: string;
@@ -515,10 +533,12 @@
         expiredHolidayHours: string;
         isLinked: number;
         dataType: number;
-        constructor(id: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string, substituedexpiredDate: string,
+        constructor(id: string, occurrenceId: string, digestionId: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string, substituedexpiredDate: string,
             substituedHolidayDate: string, substituteHolidayHours: string, substituedHolidayPeg: string, remainHolidayHours: string,
             expiredHolidayHours: string, isLinked: number, dataType: number) {
             this.id = id;
+            this.occurrenceId = occurrenceId;
+            this.digestionId = digestionId;
             this.substituedWorkingDate = substituedWorkingDate;
             this.substituedWorkingHours = substituedWorkingHours;
             this.substituedWorkingPeg = substituedWorkingPeg;

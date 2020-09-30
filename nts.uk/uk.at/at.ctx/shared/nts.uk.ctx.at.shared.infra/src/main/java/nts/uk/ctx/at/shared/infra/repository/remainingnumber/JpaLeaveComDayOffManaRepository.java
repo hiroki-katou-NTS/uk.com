@@ -37,6 +37,10 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
 			+ " WHERE c.krcmtLeaveDayOffManaPK.sid =:sid and cc.krcmtLeaveDayOffManaPK.occDate = :occDate";
 	
+	private static final String QUERY_BY_LIST_OCC_DIGEST_DATE = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid",
+			" AND (lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate OR lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate)");
+	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -175,5 +179,24 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		if(entity.isPresent()){
 			this.commandProxy().remove(entity.get());
 		}
+	}
+	
+	/**
+	 * 
+	 * @param sid
+	 * @param lstOccDate
+	 * @param lstDigestDate
+	 * @return
+	 */
+	@Override
+	public List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate) {
+		return this.queryProxy().query(QUERY_BY_LIST_OCC_DIGEST_DATE, KrcmtLeaveDayOffMana.class)
+				.setParameter("sid", sid)
+				.setParameter("lstOccDate", lstOccDate)
+				.setParameter("lstDigestDate", lstDigestDate)
+				.getList()
+				.stream()
+				.map(item-> toDomain(item))
+				.collect(Collectors.toList());
 	}
 }
