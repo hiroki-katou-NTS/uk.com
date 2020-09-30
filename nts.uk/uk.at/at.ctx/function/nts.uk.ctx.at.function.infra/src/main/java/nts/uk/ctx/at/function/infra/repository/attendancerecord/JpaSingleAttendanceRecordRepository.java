@@ -36,6 +36,12 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 	/** The single formula type. */
 	private static final int SINGLE_FORMULA_TYPE = 3;
+	
+	private static final String SELECT_ATD_BY_OUT_FRAME = "SELECT atd FROM KfnmtRptWkAtdOutatd atd"
+			+ "	WHERE atd.layoutId = :layoutId"
+			+ "		AND atd.columnIndex <= :columnIndex"
+			+ "		AND atd.outputAtr = :outputAtr"
+			+ "		AND atd.position = :position ";
 
 	/*
 	 * (non-Javadoc)
@@ -259,10 +265,16 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 */
 	@Override
 	public List<Integer> getIdSingleAttendanceRecordByPosition(String layoutId, long position) {
+//		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = this
+//				.findAttendanceRecordItems(new KfnmtRptWkAtdOutframePK(layoutId, (long) 6, 1, position));
 		// query data
-		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = this
-				.findAttendanceRecordItems(new KfnmtRptWkAtdOutframePK(layoutId, (long) 6, 1, position));
-
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems =  this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME, KfnmtRptWkAtdOutatd.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("columnIndex", 6)
+				.setParameter("outputAtr", 1)
+				.setParameter("position", position)
+				.getList();
 		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItemsTotal = new ArrayList<>();
 		for (int i = 1; i <= 6; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {

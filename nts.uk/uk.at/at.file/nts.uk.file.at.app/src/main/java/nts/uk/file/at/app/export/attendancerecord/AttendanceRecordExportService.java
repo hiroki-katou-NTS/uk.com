@@ -1471,8 +1471,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				String stringAmountA = a.replaceAll(",", "");
 				String stringAmountB = b.replaceAll(",", "");
 
-				Integer amountA = Integer.parseInt(stringAmountA);
-				Integer amountB = Integer.parseInt(stringAmountB);
+				Integer amountA = Integer.parseInt(stringAmountA.toString());
+				Integer amountB = Integer.parseInt(stringAmountB.toString());
 
 				Integer totalAmount = amountA + amountB;
 				DecimalFormat format = new DecimalFormat("###,###,###");

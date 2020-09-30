@@ -15,7 +15,7 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 	
 	private static final String SELECT_ATD_BY_OUT_FRAME = "SELECT atd FROM KfnmtRptWkAtdOutatd atd"
 			+ "	WHERE atd.layoutId = :layoutId"
-			+ "		AND atd.columnIndex <= :columnIndex"
+			+ "		AND atd.columnIndex = :columnIndex"
 			+ "		AND atd.outputAtr = :outputAtr"
 			+ "		AND atd.position = :position ";
 	
