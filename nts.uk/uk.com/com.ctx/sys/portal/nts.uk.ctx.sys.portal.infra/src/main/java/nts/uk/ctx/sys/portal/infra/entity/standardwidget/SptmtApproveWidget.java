@@ -33,7 +33,7 @@ public class SptmtApproveWidget extends UkJpaEntity implements Serializable {
 	/**
 	 * 名称
 	 */
-	@Column(name = "CID")
+	@Column(name = "TOPPAGE_PART_NAME")
 	public String topPagePartName;
 
 	/**
