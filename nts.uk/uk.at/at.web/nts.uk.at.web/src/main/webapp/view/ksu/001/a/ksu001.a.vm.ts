@@ -401,7 +401,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         endTimeCal = endTimeCal * -1;
                     }
                     
-                    if (startTimeCal > endTimeCal) {
+                    if (startTimeCal >= endTimeCal) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
                     self.checkExitCellUpdated();
@@ -1617,7 +1617,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endTime = endTime * -1;
                 }
 
-                if (startTime > endTime) {
+                if (startTime >= endTime) {
                     let messInfo = nts.uk.resource.getMessage('Msg_54');
                     return { isValid: false, message: messInfo };
                 }
