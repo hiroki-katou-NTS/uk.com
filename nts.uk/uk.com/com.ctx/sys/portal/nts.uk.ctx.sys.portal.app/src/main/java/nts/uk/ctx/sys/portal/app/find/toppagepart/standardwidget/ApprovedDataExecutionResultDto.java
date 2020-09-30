@@ -1,0 +1,41 @@
+package nts.uk.ctx.sys.portal.app.find.toppagepart.standardwidget;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
+
+/**
+ * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.アルゴリズム.承認すべきデータのウィジェットを起動する.承認すべきデータの実行結果
+ * 
+ * @author tutt
+ *
+ */
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class ApprovedDataExecutionResultDto {
+	// 名称
+	private String topPagePartName;
+
+	// 承認すべき申請データ
+	private Boolean appDisplayAtr;
+
+	// 承認すべき日の実績が存在する
+	private Boolean dayDisplayAtr;
+	
+	//承認すべき月の実績が存在す
+	private Boolean monthDisplayAtr;
+	
+	//承認すべき36協定が存在する
+	private Boolean agrDisplayAtr;
+	
+	//承認すべき申請状況の詳細設定
+	private ApprovedAppStatusDetailedSetting approvedAppStatusDetailedSetting;
+	
+	//締めID, 現在の締め期間
+	private List<Integer> list;
+}
