@@ -33,6 +33,8 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getSid(String cid, String sid);
 	
+	List<PayoutManagementData> getBySidAndStateAtr(String cid, String sid);
+	
 	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
 	void deletePayoutSubOfHDMana(String payoutId);
@@ -50,7 +52,7 @@ public interface PayoutManagementDataRepository {
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<PayoutManagementData> getBySidDatePeriod(String sid, String subOfHDID, int digestionAtr);
 	
-	// ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
+	// 	ドメイン「振出管理データ」より指定されたデータを取得する: 消化区分　≠　未消化
 	List<PayoutManagementData> getBySidStateAndInSub(String sid);
 	
 	// ドメイン「振出管理データ」より指定されたデータを取得する

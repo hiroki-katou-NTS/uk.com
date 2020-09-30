@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPayoutManagementDataRepo extends JpaRepository implements PayoutManagementDataRepository {
 
-	private static final String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
+	private static final String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId ORDER BY p.dayOff";
 	
 	private static final String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :dayoffDate";
 
@@ -80,6 +80,8 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	
 	private static final String QUERY_BY_UNKNOWN_DATE = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.unknownDate IN :unknownDates ORDER BY p.unknownDate ASC";
 	
+	private static final String QUERY_BY_SID_AND_ATR = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.stateAtr = 0 ORDER BY p.dayOff";
+	
  	@Override
 	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
@@ -97,7 +99,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("cid", cid).setParameter("employeeId", sid).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
-
+	@Override
+	public List<PayoutManagementData> getBySidAndStateAtr(String cid, String sid) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_SID_AND_ATR, KrcmtPayoutManaData.class)
+				.setParameter("cid", cid).setParameter("employeeId", sid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 	@Override
 	public List<PayoutManagementData> getSidWithCod(String cid, String sid, int state) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_WITH_COND, KrcmtPayoutManaData.class)

@@ -32,18 +32,25 @@ public class DeletePaymentManagementDataCmdHandler extends CommandHandler<Delete
 	@Override
 	protected void handle(CommandHandlerContext<DeletePaymentManagementDataCommand> context) {
 		DeletePaymentManagementDataCommand command = context.getCommand();
-			//	ドメインモデル「振出管理データ」を取得
-			Optional<PayoutManagementData> dataPayout= payoutManagementDataRepo.findByID(command.getPayoutId());
-			//	ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」) 
+		// ドメインモデル「振出管理データ」を取得
+		Optional<PayoutManagementData> dataPayout = payoutManagementDataRepo.findByID(command.getPayoutId());
+		if (command.getPayoutId() != null) {
+			// ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」)
 			payoutManagementDataRepo.delete(command.getPayoutId());
-			//	ドメインモデル「振休管理データ」を取得
-			Optional<SubstitutionOfHDManagementData> dataSub = substitutionOfHDManaDataRepo.findByID(command.getSubOfHDID());
-			//	ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
-			substitutionOfHDManaDataRepo.delete(command.getSubOfHDID()); 
-			//	ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
-			this.payoutSubofHDManaRepository.delete(dataPayout.get().getSID(), dataSub.get().getSID()
-					, dataPayout.get().getPayoutDate().getDayoffDate().get()
-					, dataSub.get().getHolidayDate().getDayoffDate().get());			
+		}
+		// ドメインモデル「振休管理データ」を取得
+		Optional<SubstitutionOfHDManagementData> dataSub = substitutionOfHDManaDataRepo
+				.findByID(command.getSubOfHDID());
+		if (command.getSubOfHDID() != null) {
+			// ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
+			substitutionOfHDManaDataRepo.delete(command.getSubOfHDID());
+		}
+		// ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
+		if (command.getPayoutId() != null && command.getSubOfHDID() != null) {
+			this.payoutSubofHDManaRepository.delete(dataPayout.get().getSID(), dataSub.get().getSID(),
+					dataPayout.get().getPayoutDate().getDayoffDate().get(),
+					dataSub.get().getHolidayDate().getDayoffDate().get());
+		}
 	}
 
 }

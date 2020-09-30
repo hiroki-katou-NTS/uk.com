@@ -31,6 +31,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
 	
+	List<SubstitutionOfHDManagementData> getBysiDAndAtr(String cid, String sid);
+	
 	List<SubstitutionOfHDManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
 	void deletePayoutSubOfHDMana(String subOfHDID);
