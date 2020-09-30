@@ -60,7 +60,9 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 		if (this.expectDeadLine.getWeekAtr() == DeadlineWeekAtr.TWO_WEEK_AGO) {
 			nextDeadline = nextDeadline.addDays(7);
 		}
-		GeneralDate startDate = nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		
+		GeneralDate startDate = expectDeadLine.getDayOfWeek() == this.firstDayOfWeek ? 
+				nextDeadline : nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		DatePeriod period = new DatePeriod(startDate, startDate.addDays(6));
 		
 		return new ShiftTableRuleInfo(mostRecentDeadline, period);
@@ -72,5 +74,5 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		return new DatePeriod(startDate, startDate.addDays(6));
 	}
-
+	
 }
