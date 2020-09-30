@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ShiftTableRuleForOrganization implements DomainAggregate {
 
 	/** 対象組織 */
