@@ -3,11 +3,11 @@
 module nts.uk.ui.calendar {
 	type BindingKey = 'date' | 'daisy' | 'holiday' | 'dataInfo';
 
-	export interface DayData {
+	export interface DayData<T = DataInfo> {
 		date: Date;
 		inRange: boolean;
 		startDate: boolean;
-		data?: DataInfo & Record<string, any>;
+		data?: T & Record<string, any>;
 		binding?: string | Record<BindingKey, string | null>;
 		className?: string[];
 	}
@@ -18,6 +18,7 @@ module nts.uk.ui.calendar {
 	}
 
 	export interface Parameter {
+		tabIndex: string;
 		width: KnockoutObservable<number>;
 		baseDate: KnockoutObservable<Date | DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
@@ -41,7 +42,11 @@ module nts.uk.ui.calendar {
 	const COMPONENT_TEMP = `
         <div class="filter cf">
             <label class="filter-title" data-bind="i18n: 'KSU002_30'"></label>
-            <div data-bind="ntsComboBox: {
+			<div data-bind="
+				attr: {
+					'tabindex': $component.data.tabIndex
+				},
+				ntsComboBox: {
 					width: '100px',
 					name: $component.$i18n('KSU002_30'),
 					value: $component.baseDate.start,
@@ -52,8 +57,8 @@ module nts.uk.ui.calendar {
 					selectFirstIfNull: true,
 					columns: [
 						{ prop: 'title', length: 10 },
-					]}
-				"></div>
+					]
+				}"></div>
 		</div>
         <div class="calendar-container">
             <div data-bind="if: !!ko.unwrap($component.baseDate.show), css: { 'title': !!ko.unwrap($component.baseDate.show) }">
@@ -68,7 +73,7 @@ module nts.uk.ui.calendar {
                     </div>
                 </div>
             </div>
-            <div class="month" data-bind="foreach: { data:ko.unwrap($component.schedules).days, as: 'days' }">
+            <div class="month" data-bind="foreach: { data: ko.unwrap($component.schedules).days, as: 'days' }">
                 <div class="week cf" data-bind="foreach: { data: days, as: 'day' }">
                     <div class="day" data-bind="calendar-day: day">
                         <div class="status cf">
@@ -264,6 +269,7 @@ module nts.uk.ui.calendar {
 	export class CalendarDayComponentBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
+
 			const { date, inRange, className, binding } = dayData;
 
 			if (moment(date).isSame(new Date(), 'date')) {
@@ -404,7 +410,7 @@ module nts.uk.ui.calendar {
 		bindingName: 'calendar-data-info'
 	})
 	export class CalendarInfoBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+		init(element: HTMLElement, valueAccessor: () => DayData, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 			const { inRange, binding } = dayData;
 
@@ -438,7 +444,8 @@ module nts.uk.ui.calendar {
 			const width = allBindingsAccessor.get('width');
 			const baseDate = allBindingsAccessor.get('baseDate');
 			const clickCell = allBindingsAccessor.get('click-cell');
-			const params = { width, baseDate, schedules, clickCell };
+			const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
+			const params = { width, baseDate, schedules, tabIndex, clickCell };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -483,6 +490,7 @@ module nts.uk.ui.calendar {
 
 			if (!vm.data) {
 				vm.data = {
+					tabIndex: '1',
 					width: ko.observable(630),
 					baseDate: ko.observable(date),
 					schedules: ko.observableArray([]),
@@ -490,13 +498,17 @@ module nts.uk.ui.calendar {
 				};
 			}
 
-			const { width, baseDate, schedules, clickCell } = vm.data;
+			const { tabIndex, width, baseDate, schedules, clickCell } = vm.data;
+
+			if (!tabIndex) {
+				vm.data.tabIndex = '1';
+			}
 
 			if (!ko.unwrap(width)) {
 				if (ko.isObservable(width)) {
 					vm.data.width(630);
 				} else {
-					vm.data.width = ko.observable(630)
+					vm.data.width = ko.observable(630);
 				}
 			}
 
@@ -504,7 +516,7 @@ module nts.uk.ui.calendar {
 				if (ko.isObservable(baseDate)) {
 					vm.data.baseDate(date);
 				} else {
-					vm.data.baseDate = ko.observable(date)
+					vm.data.baseDate = ko.observable(date);
 				}
 			}
 
@@ -572,11 +584,12 @@ module nts.uk.ui.calendar {
 			vm.schedules = ko.computed({
 				read: () => {
 					const locale = moment.locale();
-					const schedules = ko.unwrap(data.schedules);
+					const raws = ko.unwrap(data.schedules);
 					const startDate = ko.unwrap(vm.baseDate.start);
 
-					if (!schedules.length) {
+					if (!raws.length) {
 						return {
+							raws: [],
 							days: [],
 							titles: []
 						};
@@ -589,8 +602,8 @@ module nts.uk.ui.calendar {
 						}
 					});
 
-					const [begin] = schedules;
-					const [finsh] = schedules.slice(-1);
+					const [begin] = raws;
+					const [finsh] = raws.slice(-1);
 
 					const initRange = (start: moment.Moment, diff: number): DayData[] => _.range(0, Math.abs(diff), 1)
 						.map((d) => start.clone().add(d, 'day'))
@@ -607,7 +620,7 @@ module nts.uk.ui.calendar {
 					const diff1 = start1.diff(begin.date, 'day');
 
 					const befores = initRange(start1, diff1);
-					const afters = initRange(start2, 42 - befores.length - schedules.length);
+					const afters = initRange(start2, 42 - befores.length - raws.length);
 
 					moment.updateLocale(locale, {
 						week: {
@@ -618,10 +631,10 @@ module nts.uk.ui.calendar {
 
 					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
 
-					const days = _.chunk([...befores, ...schedules, ...afters], 7);
+					const days = _.chunk([...befores, ...raws, ...afters], 7);
 					const [titles] = days;
 
-					return { days, titles };
+					return { raws, days, titles };
 				},
 				owner: vm
 			});
@@ -709,6 +722,7 @@ module nts.uk.ui.calendar {
 	}
 
 	interface Schedule {
+		raws: DayData[];
 		days: DayData[][];
 		titles: DayData[];
 	}

@@ -55,6 +55,15 @@ module nts.uk.ui.at.ksu002.a {
 						const clones: c.DayData[] = ko.toJS(vm.schedules);
 
 						_.each(clones, (d) => {
+							d.data = {
+								wtype: 'wtype',
+								wtime: 'wtime',
+								value: {
+									begin: 128,
+									finish: 640
+								}
+							};
+
 							d.className = [
 								d.date.getDate() === 16 ? c.COLOR_CLASS.SPECIAL : undefined,
 								d.date.getDate() === 18 ? c.COLOR_CLASS.HOLIDAY : undefined,
