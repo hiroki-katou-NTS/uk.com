@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stamcardedit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +11,6 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.GenerateStampCardForEmployees.Require;
 
 /**
@@ -32,12 +28,13 @@ public class GenerateStampCardForEmployeesTest {
 	private String companyId = "000000000000-0001";
 	private String contractCd = "000000";
 	private String companyCd = "0001";
+	private String sid = "sfsad-der43-sdag-234ag";
 
 	@Test
 	public void testMsg_1756() {
 		List<TargetPerson> persons = new ArrayList<>();
 		
-		NtsAssert.businessException("Msg_1756", () -> GenerateStampCardForEmployees.generate(require, contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons));
+		NtsAssert.businessException("Msg_1756", () -> GenerateStampCardForEmployees.generate(require, contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid));
 	}
 	
 	
@@ -58,6 +55,6 @@ public class GenerateStampCardForEmployeesTest {
 		};
 
 		List<ImprintedCardGenerationResult> cardGenerationResults = GenerateStampCardForEmployees.generate(require,
-				contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons);
+				contractCd, companyCd, EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid);
 	}
 }

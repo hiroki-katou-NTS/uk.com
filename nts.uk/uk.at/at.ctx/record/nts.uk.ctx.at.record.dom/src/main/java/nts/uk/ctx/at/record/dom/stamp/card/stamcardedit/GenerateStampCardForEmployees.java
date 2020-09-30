@@ -28,11 +28,11 @@ public class GenerateStampCardForEmployees {
 	 * @return 				       打刻カード生成結果リスト
 	 */
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
-			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons) {
+			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons, String companyId, String sid ) {
 		
 		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
 			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
-					m.getEmployeeCd());
+					m.getEmployeeCd(), companyId);
 			
 			return s;
 		}).collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class GenerateStampCardForEmployees {
 		}
 		
 		List<ImprintedCardGenerationResult> results = stampCards.stream().map(m -> {
-			StampCard card = new StampCard(companyCd,m.get(), AppContexts.user().employeeId());
+			StampCard card = new StampCard(companyCd,m.get(), sid);
 			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
 			
@@ -62,9 +62,9 @@ public class GenerateStampCardForEmployees {
 	 * @return 				       打刻カード番号
 	 */
 	private static Optional<String> generateEmbossedCardNumber(Require require, String companyCd,
-			MakeEmbossedCard makeEmbossedCard, String employeeCd) {
+			MakeEmbossedCard makeEmbossedCard, String employeeCd, String companyId) {
 
-		StampCardEditing stampCardEditing = require.get(AppContexts.user().companyId());
+		StampCardEditing stampCardEditing = require.get(companyId);
 
 		if (makeEmbossedCard.value == makeEmbossedCard.COMPANY_CODE_AND_EMPLOYEE_CODE.value) {
 

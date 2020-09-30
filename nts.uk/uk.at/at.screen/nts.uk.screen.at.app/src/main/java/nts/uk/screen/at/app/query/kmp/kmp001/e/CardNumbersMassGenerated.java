@@ -38,6 +38,9 @@ public class CardNumbersMassGenerated {
 		
 		String contractCd = AppContexts.user().contractCode();
 		String companyCd = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
+		String sid = AppContexts.user().employeeId();
+		
 		MakeEmbossedCard makeEmbossedCard = EnumAdaptor.valueOf(input.getMakeEmbossedCard(), MakeEmbossedCard.class);
 		
 		List<CardNumbersMassGeneratedDto> result = new ArrayList<>();
@@ -47,7 +50,9 @@ public class CardNumbersMassGenerated {
 				contractCd,
 				companyCd,
 				makeEmbossedCard,
-				input.getTargetPerson());
+				input.getTargetPerson(),
+				companyId,
+				sid);
 		
 		if (cardGenerationResults.isEmpty()) {
 			return result;
