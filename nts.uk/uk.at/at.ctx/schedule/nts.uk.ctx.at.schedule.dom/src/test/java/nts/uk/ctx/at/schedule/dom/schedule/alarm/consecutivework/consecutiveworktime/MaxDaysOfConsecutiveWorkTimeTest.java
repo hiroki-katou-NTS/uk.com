@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,14 +11,14 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberOfContinuousWorktime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfConsecutiveWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @RunWith(JMockit.class)
-public class MaxNumberOfContinuousWorktimeTest {
+public class MaxDaysOfConsecutiveWorkTimeTest {
 	@Test
 	public void getters() {
-		val maxNoDaysOfContWorkTime =  new MaxNumberOfContinuousWorktime(
+		val maxNoDaysOfContWorkTime =  new MaxDaysOfConsecutiveWorkTime(
 				Arrays.asList(new WorkTimeCode("001"),
 						new WorkTimeCode("002"),
 						new WorkTimeCode("003")
@@ -31,21 +31,15 @@ public class MaxNumberOfContinuousWorktimeTest {
 	
 	@Test
 	public void create_maxNumberDaysOfContinuousAttendance_success() {
+		val maxDays = new ConsecutiveNumberOfDays(5);
 		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
 				new WorkTimeCode("002"),
 				new WorkTimeCode("003")
 				);
-		val maxDaysContWorkTime =  new MaxNumberOfContinuousWorktime(
-				workTimeCodes,
-				new ConsecutiveNumberOfDays(5));
+		val maxDaysContWorkTime =  new MaxDaysOfConsecutiveWorkTime(workTimeCodes, maxDays);
 
 		assertThat(maxDaysContWorkTime.getNumberOfDays().v()).isEqualTo(5);
-		assertThat(
-				MaxNumberDaysOfContinuousWorkTimeHelper.convertToWorkTimeCode(maxDaysContWorkTime.getWorktimeCodeLst()))
-						.containsExactlyInAnyOrderElementsOf(
-								MaxNumberDaysOfContinuousWorkTimeHelper.convertToWorkTimeCode(workTimeCodes));
+		assertThat(maxDaysContWorkTime.getWorkTimeCodes()).containsExactlyInAnyOrderElementsOf(workTimeCodes);
 	
 	}
-	
-
 }
