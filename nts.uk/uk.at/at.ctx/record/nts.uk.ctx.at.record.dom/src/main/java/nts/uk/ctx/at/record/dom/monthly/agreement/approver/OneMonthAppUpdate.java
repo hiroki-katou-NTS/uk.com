@@ -76,7 +76,7 @@ public class OneMonthAppUpdate {
 		val oneMonthArlarm = oneMonth.calculateAlarmTime(oneMonthTime);
 
 		// $エラーアラーム
-		val errorArlarmTime = new OneMonthErrorAlarmTime(oneMonthTime, oneMonthArlarm);
+		val errorArlarmTime = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthArlarm);
 
 		// $36協定申請.1ヶ月の申請時間を変更する
 		app.changeApplicationOneMonth(errorArlarmTime,reason);

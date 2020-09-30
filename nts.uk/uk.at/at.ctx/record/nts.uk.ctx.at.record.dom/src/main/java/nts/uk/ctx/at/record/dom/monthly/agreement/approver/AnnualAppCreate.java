@@ -117,7 +117,7 @@ public class AnnualAppCreate {
 			ScreenDisplayInfo screenDisplayInfo) {
 
 		// $エラーアラーム
-		val errorArlarmTime = new OneYearErrorAlarmTime(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
+		val errorArlarmTime = OneYearErrorAlarmTime.of(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
 
 		// $１年間時間
 		val oneYearTime = new OneYearTime(errorArlarmTime, annualAppContent.getYear());
