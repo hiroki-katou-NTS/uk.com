@@ -236,7 +236,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             }
         }
 
-        public openKDL035(){
+        public openKDL035() {
             const vm = this;
             // TODO open kdl 035
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
