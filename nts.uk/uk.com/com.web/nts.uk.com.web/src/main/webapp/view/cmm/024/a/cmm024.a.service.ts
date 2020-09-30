@@ -108,7 +108,17 @@ module nts.uk.com.view.cmm024.a {
 			allowStartDate?: string,
 			scheduleHistoryUpdate?: ScheduleHistoryDto, //最新履歴の期間 startDate & endDate
 			workPlaceCompanyId?: string, //ログイン会社ID | 最新履歴の職場ID
-			sreen?: string,
+			screen?: string,
+		}
+
+		export interface ComponentOption {
+			targetBtnText: string;
+			tabIndex: number;
+		}
+		export interface WorkplaceModel {
+			workplaceId: string;
+			workplaceCode: string;
+			workplaceName: string;
 		}
 
 		/*
@@ -160,7 +170,10 @@ module nts.uk.com.view.cmm024.a {
 		 * @workPlaceId string : 選択されている職場ID
 		 */
 		export function getScheduleHistoryListWorkPlace(workPlaceId: string): JQueryPromise<any> {
-			return nts.uk.request.ajax('at', CMM024_API.screenB_GetScheduleHistoryList + '/' + workPlaceId);
+			if (!nts.uk.util.isNullOrEmpty(workPlaceId))
+				return nts.uk.request.ajax('at', CMM024_API.screenB_GetScheduleHistoryList + '/' + workPlaceId);
+			else
+				return null;
 		}
 
 		/**

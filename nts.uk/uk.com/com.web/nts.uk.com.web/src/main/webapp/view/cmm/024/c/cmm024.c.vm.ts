@@ -49,29 +49,40 @@ module nts.uk.com.view.cmm024.c {
 				isAfter: boolean = true,
 				currentDateHistory = vm.scheduleHistorySelected();
 
-			let newStartDate: Date = vm.newStartDate(); //開始年月日テキストボックス -> A2_6, B2_6
-			let newEndDate: Date = moment(service.END_DATE, 'YYYY/MM/DD').toDate();
+			let newStartDate: Date = vm.newStartDate(), //開始年月日テキストボックス -> A2_6, B2_6
+				newEndDate: Date = moment(service.END_DATE).toDate(),
+				cStartDate: Date = moment(service.END_DATE).toDate();
 
 			if (!nts.uk.util.isNullOrEmpty(currentDateHistory)) {
-
-				isAfter = moment(newStartDate).isAfter(currentDateHistory.startDate);
+				cStartDate = moment(currentDateHistory.startDate).toDate()
+				isAfter = moment(newStartDate).format('YYYYMMDD') > moment(cStartDate).format('YYYYMMDD');
 			}
 
 			if (!isAfter) {
-				vm.$dialog.error('Msg_12').then(() => { });
+				vm.$dialog.error({ messageId: "Msg_156", messageParams: [moment(cStartDate).format('YYYY/MM/DD')] });
 				return;
 			} else {
-				let startDate = moment(newStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD');
-				let newScheduleHistoryDto: ScheduleHistoryDto;
+				let startDate = moment(newStartDate).format('YYYY/MM/DD');
+				let newScheduleHistoryDto: ScheduleHistoryDto,
+					personalInfoApprove = [],
+					personalInfoConfirm = [];
 
 				newScheduleHistoryDto = new ScheduleHistoryDto(startDate, service.END_DATE);
 
 				//履歴から引き継ぐ履歴から引き継ぐ
 				if (vm.registrationHistoryType() === HistoryRes.HISTORY_TRANSFER) {
+
+					if (!nts.uk.util.isNullOrUndefined(currentDateHistory)) {
+						personalInfoApprove = currentDateHistory.personalInfoApprove;
+						personalInfoConfirm = currentDateHistory.personalInfoConfirm;
+					}
+
 					newScheduleHistoryDto = new ScheduleHistoryDto(
-						startDate, '9999/12/31',
-						currentDateHistory.personalInfoApprove,
-						currentDateHistory.personalInfoConfirm);
+						startDate,
+						'9999/12/31', //endDate
+						personalInfoApprove,
+						personalInfoConfirm
+					);
 				}
 
 				vm.$window.storage("newScheduleHistory", {

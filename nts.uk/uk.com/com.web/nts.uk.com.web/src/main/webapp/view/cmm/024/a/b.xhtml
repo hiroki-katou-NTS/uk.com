@@ -21,9 +21,9 @@
                 <div class="panel-left bg-green caret-right caret-background">
                     <div class="buttons">
                         <button class="left"
-                            data-bind="click: screenBDialogC, enable: screenBModeAddNew">#{i18n.getText('CMM024_4')}</button>
+                            data-bind="click: screenBShowDialogC, enable: screenBModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right"
-                            data-bind="click: screenShowDialogD, enable: screenBModeEdit">#{i18n.getText('CMM024_5')}</button>
+                            data-bind="click: function() { screenShowDialogD('B') }, enable: screenBModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
                     <div class="ntsGrid">
                         <table id="historyList" data-bind="ntsGridList: {
@@ -51,10 +51,16 @@
                                 <div class="form" data-bind="ntsFormLabel: { required: true}">
                                     #{i18n.getText('CMM024_10')}</div>
                             </div>
-                            <div class="employee-lists employees-list-approved" data-bind="with: modelB">
+                            <div class="employee-lists-b employee-lists employees-list-approved"
+                                data-bind="with: modelB">
                                 <div data-bind="foreach: approverPanel">
-                                    <a class="hyperlink"
-                                        data-bind="ntsLinkButton: { action: function($data){ vm.showDialogScreenF(1, 'B') } }, text: displayName"></a>
+                                    <a class="hyperlink" data-bind="ntsLinkButton: { 
+                                                action: function($data){ vm.showDialogScreenF(1, 'B') }
+                                            },
+                                            text: displayName,
+                                            css: {
+                                                'link-setting' : (employeeCode == -1)
+                                            }"></a>
                                 </div>
                             </div>
                         </div>
@@ -69,8 +75,13 @@
                             </div>
                             <div class="employee-lists employees-waiting-approve" data-bind="with: modelB">
                                 <div data-bind="foreach: employeesRepresentative">
-                                    <a class="hyperlink"
-                                        data-bind="ntsLinkButton: { action: function($data){ vm.showDialogScreenF(2, 'B') } }, text: displayName"></a>
+                                    <a class="hyperlink" data-bind="ntsLinkButton: { 
+                                                action: function($data){ vm.showDialogScreenF(2, 'B') }
+                                            },
+                                            text: displayName,
+                                            css: {
+                                                'link-setting' : (employeeCode == -1)
+                                            }"></a>
                                 </div>
                             </div>
                         </div>

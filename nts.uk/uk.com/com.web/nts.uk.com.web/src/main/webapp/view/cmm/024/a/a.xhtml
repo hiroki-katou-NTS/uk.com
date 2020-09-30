@@ -22,7 +22,7 @@
                 <div class="panel-left bg-green caret-right caret-background">
                     <div class="buttons">
                         <button class="left"
-                            data-bind="click: screenADialogC, enable: screenAModeAddNew">#{i18n.getText('CMM024_4')}</button>
+                            data-bind="click: screenAShowDialogC, enable: screenAModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right"
                             data-bind="click: function() { screenShowDialogD('A') }, enable: screenAModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
@@ -52,7 +52,8 @@
                                 <div class="form" data-bind="ntsFormLabel: { required: true}">
                                     #{i18n.getText('CMM024_10')}</div>
                             </div>
-                            <div class="employee-lists employees-list-approved" data-bind="with: modelA">
+                            <div class="employee-lists-a employee-lists employees-list-approved"
+                                data-bind="with: modelA">
                                 <div data-bind="foreach: approverPanel">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
                                                         action: function($data){ vm.showDialogScreenF(1, 'A') } 
