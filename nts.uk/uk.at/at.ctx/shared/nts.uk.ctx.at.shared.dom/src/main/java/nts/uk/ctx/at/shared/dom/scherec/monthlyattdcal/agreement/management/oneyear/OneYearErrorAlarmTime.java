@@ -20,15 +20,19 @@ public class OneYearErrorAlarmTime {
 		this.error = new AgreementOneYearTime(0);
 	}
 	
-	public OneYearErrorAlarmTime(AgreementOneYearTime error, AgreementOneYearTime alarm) {
-		super();
+	private OneYearErrorAlarmTime(AgreementOneYearTime error, AgreementOneYearTime alarm) {
+		this.error = error;
+		this.alarm = alarm;
+	}
+	
+	public static OneYearErrorAlarmTime of(AgreementOneYearTime error, AgreementOneYearTime alarm) {
 
 		/** 不変条件: @エラー時間 >= @アラーム時間 */
 		if (alarm.greaterThan(error)) {
 			throw new BusinessException("Msg_59", "KMK008_67", "KMK008_66");
 		}
-		this.error = error;
-		this.alarm = alarm;
+
+		return new OneYearErrorAlarmTime(error, alarm);
 	}
 	
 	/** エラー時間を超えているか */

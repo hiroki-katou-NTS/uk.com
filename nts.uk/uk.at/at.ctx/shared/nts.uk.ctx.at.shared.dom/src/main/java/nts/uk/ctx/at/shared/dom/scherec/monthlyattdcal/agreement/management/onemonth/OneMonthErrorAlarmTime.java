@@ -19,15 +19,19 @@ public class OneMonthErrorAlarmTime {
 		this.error = new AgreementOneMonthTime(0);
 	}
 	
-	public OneMonthErrorAlarmTime(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
-		super();
+	private OneMonthErrorAlarmTime(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
+		this.alarm = error;
+		this.error = alarm;
+	}
+	
+	public static OneMonthErrorAlarmTime of(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
 
 		/** 不変条件: @エラー時間 >= @アラーム時間 */
 		if (alarm.greaterThan(error)) {
 			throw new BusinessException("Msg_59", "KMK008_67", "KMK008_66");
 		}
-		this.error = error;
-		this.alarm = alarm;
+
+		return new OneMonthErrorAlarmTime(error, alarm);
 	}
 	
 	/** エラー時間を超えているか */

@@ -87,11 +87,11 @@ public class DisplayAgreementInfo {
 //						agreeOperationOpt)
 //				: Optional.empty();
 //		result.setExcessFrequency(String.valueOf(agreeExcessOpt.isPresent() ? agreeExcessOpt.get().getExcessTimes() : 0 ));
-		if (Integer.parseInt(result.getExcessFrequency()) > Integer.parseInt(result.getMaxNumber())) {
-			result.setCssFrequency(ERROR);
-		}else if(Integer.parseInt(result.getExcessFrequency()) == Integer.parseInt(result.getMaxNumber())) {
-			result.setCssFrequency(ALARM);
-		}
+//		if (Integer.parseInt(result.getExcessFrequency()) > Integer.parseInt(result.getMaxNumber())) {
+//			result.setCssFrequency(ERROR);
+//		}else if(Integer.parseInt(result.getExcessFrequency()) == Integer.parseInt(result.getMaxNumber())) {
+//			result.setCssFrequency(ALARM);
+//		}
 
 		return result;
 	}
