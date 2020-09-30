@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile path="./ksm008.c.vm.js"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="./ksm008.c.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--C1_1-->
+            <button class=" goback  link-button"
+                    data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_22")}
+            </button>
+            <!--C1_2-->
+            <button>#{i18n.getText("KSM008_23")}</button>
+            <!--C1_3-->
+            <button class="proceed">#{i18n.getText("KSM008_24")}</button>
+            <!--C1_4-->
+            <button class="danger">#{i18n.getText("KSM008_25")}</button>
+        </div>
+        <div id="contents-area">
+            <!--C2_1-->
+            <div class="label">ntslabel: C2_1</div>
+            <!--C3-->
+            <div class="panel">背景色も枠線もなし</div>
+
+            <!--C3_1-->
+            <div class="label">#{i18n.getText("KSM008_26")}</div>
+            <!--C3_2-->
+            <div class="label">ntslabel</div>
+            <div class="flex valign-center">
+                <!--C4_1-->
+                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_27")}</div>
+
+                <!--C4_2-->
+                <button class="">#{i18n.getText("KSM008_28")}</button>
+
+                <!--C4_3-->
+                <div class="label">4-3</div>
+                <!--C4_4-->
+                <div class="label">4-4</div>
+            </div>
+            <hr/>
+            <div style="display: flex">
+                <div>
+                    <!--C6_6-->
+                    <div data-bind="ntsPanel:{width: '265px', height: '505px', direction: 'right', visible: true}">
+                        <!--C6_1-->
+                        <div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText("KSM008_30")}</div>
+                        <!--C6_2-->
+                        <!--C6_3-->
+                        <table id="single-list" data-bind="ntsGridList: {
+                            height: 350,
+                            dataSource: items,
+                             primaryKey: 'code',
+                             columns: columns,
+                             rows: 20,
+                              multiple: false,
+                             value: currentCode}">
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <table>
+                        <tr>
+                            <td style="width: 200px">
+                                <!--C7_1-->
+                                <div data-bind="ntsFormLabel: { contraint: 'wait'}">#{i18n.getText("KSM008_35")}</div>
+                            </td>
+                            <td>
+                                <!--C7_2-->
+                                <input name="#{i18n.getText('KSM008_36')}" data-bind="ntsTextEditor: {value: simpleValue}"/>
+                                <!--C7_3-->
+                                <input name="#{i18n.getText('KSM008_37')}" data-bind="ntsTextEditor: {value: otherValue}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!--C8_1-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_38")}</div>
+                            </td>
+                            <td>
+                                <!--C8_2-->
+                                <div class="cf" data-bind="ntsSwitchButton: {
+                        name: 'Sample Switch',
+                        options: switchOps,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: selectedRuleCode
+                        }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><!--C9_1-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_42")}</div>
+                            </td>
+                            <td><!--C9_2-->
+                                <span class="label">#{i18n.getText("KSM008_43")}</span>
+                                <!--C9_3-->
+                                <input data-bind="ntsTextEditor: {value: simpleValue}"/><!--C9_4-->
+                                <span class="label">#{i18n.getText("KSM008_45")}</span></td>
+                        </tr>
+                    </table>
+                    <table style="margin-top: 10px">
+                        <tr>
+                            <td>
+                                <!--C10_1-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_46")}</div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <!--C10_2-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_47")}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><!--C11_1-->
+                                <div id="sample-component-left"></div>
+                            </td>
+                            <td><!--C11_2-->
+                                <button style="display: block;margin:5px 10px">#{i18n.getText("KSM008_48")}</button>
+                                <!--C11_3-->
+                                <button style="margin:5px 10px">#{i18n.getText("KSM008_49")}</button>
+                            </td>
+                            <td><!--C11_4-->
+                                <div id="sample-component-right"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
