@@ -146,11 +146,11 @@ public class OutputPeriodSetting extends AggregateRoot {
 
 		memento.setStartDateClassification(this.startDateClassification.map(v -> v.value).orElse(null));
 		memento.setStartDateSpecify(this.startDateSpecify.orElse(null));
-		memento.setStartDateAdjustment(this.startDateAdjustment.map(m -> m.v()).orElse(null));
+		memento.setStartDateAdjustment(this.startDateAdjustment.map(DateAdjustment::v).orElse(null));
 
 		memento.setEndDateClassification(this.endDateClassification.map(v -> v.value).orElse(null));
 		memento.setEndDateSpecify(this.endDateSpecify.orElse(null));
-		memento.setEndDateAdjustment(this.endDateAdjustment.map(m -> m.v()).orElse(null));
+		memento.setEndDateAdjustment(this.endDateAdjustment.map(DateAdjustment::v).orElse(null));
 	}
 
 	/**
