@@ -13,6 +13,8 @@ import java.util.List;
 public interface ManualSetDeletionRepository {
 
 	List<ManualSetDeletion> getAllManualSetDeletion();
+	
+	List<ManualSetDeletion> getManualSetDeletionsSystemTypeAndId(int systemType, String delId);
 
 	Optional<ManualSetDeletion> getManualSetDeletionById(String cid, String delId);
 
