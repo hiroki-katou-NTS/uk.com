@@ -136,6 +136,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				.execScope(execScope)
 				.execSetting(execSetting)
 				.processExecType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
+				.cloudCreationFlag(command.getCloudCreationFlag())
 				.build();
 		procExec.validateVer2();
 		if (command.isNewMode()) {

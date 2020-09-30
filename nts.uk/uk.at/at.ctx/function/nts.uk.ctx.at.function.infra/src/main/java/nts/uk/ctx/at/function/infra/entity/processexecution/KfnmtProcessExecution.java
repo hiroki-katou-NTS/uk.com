@@ -145,11 +145,14 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				null
 				);
 
-		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
-				new ExecutionName(this.execItemName), execScope, execSetting,
+		return new ProcessExecution(
+				this.kfnmtProcExecPK.companyId, 
+				new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
+				new ExecutionName(this.execItemName), 
+				execScope, 
+				execSetting,
 				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class),
-				false //TODO
-				);
+				(this.execSetting.cloudCreFlag == 1));
 	}
 
 	public static KfnmtProcessExecution toEntity(ProcessExecution domain) {
@@ -188,21 +191,27 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
 				domain.getExecSetting().getAppRouteUpdateMonthly().value,
 				domain.getExecSetting().getAlarmExtraction().isAlarmAtr()?1:0,
-				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?
-						domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v():null,
-				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:
-						domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get()?1:0,
-				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:
-						domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get()?1:0,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()?null:
-						domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()?null:
-						(domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getMonth()*100
+				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()
+						? domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
+						: null,
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()
+						? null
+						: (domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get() ? 1 : 0),
+				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()
+						? null
+						: (domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get() ? 1 : 0),
+				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()
+						? null
+						: domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
+				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()
+						? null
+						: (domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getMonth() * 100
 						+ domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getDay()),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null:
-						(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
-						+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay())
-				);
+				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()
+						? null
+						: (domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
+						+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay()),
+				domain.getCloudCreationFlag() ? 1 : 0);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
 	}
 }

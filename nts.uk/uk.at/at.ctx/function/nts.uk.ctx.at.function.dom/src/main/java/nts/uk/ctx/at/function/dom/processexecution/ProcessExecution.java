@@ -36,7 +36,7 @@ public class ProcessExecution extends AggregateRoot {
 	private ProcessExecType processExecType;
 	
 	/* クラウド作成フラグ  */
-	private boolean cloudCreationFlag;
+	private Boolean cloudCreationFlag;
 	
 	public void validateVer2() {
 //		List<String> listError = new ArrayList<>();

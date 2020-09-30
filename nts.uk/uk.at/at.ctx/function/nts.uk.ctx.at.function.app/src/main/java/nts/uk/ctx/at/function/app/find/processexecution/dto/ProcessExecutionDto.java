@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 //import javax.persistence.Column;
@@ -16,6 +15,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 @Data
 @AllArgsConstructor
 public class ProcessExecutionDto {
+	
 	/* 会社ID */
 	private String companyId;
 	
@@ -107,7 +107,9 @@ public class ProcessExecutionDto {
 	
 	/* 指定終了月日*/
 	private Integer endMonthDay;
-
+	
+	/* クラウド作成フラグ  */
+	private Boolean cloudCreationFlag;
 	
 	public ProcessExecutionDto() {
 		super();
@@ -147,7 +149,8 @@ public class ProcessExecutionDto {
 				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue(),
 				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()?null:domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
 				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get()),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get())
+				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get()),
+				domain.getCloudCreationFlag()
 				);
 	}
 	

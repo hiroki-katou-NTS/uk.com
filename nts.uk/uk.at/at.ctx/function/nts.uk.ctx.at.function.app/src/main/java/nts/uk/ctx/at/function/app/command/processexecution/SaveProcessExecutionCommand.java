@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.List;
+
 //import java.util.Optional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -105,5 +106,8 @@ public class SaveProcessExecutionCommand {
 	
 	/* 指定終了月日*/
 	private Integer endMonthDay;
+	
+	/* クラウド作成フラグ  */
+	private Boolean cloudCreationFlag;
 
 }

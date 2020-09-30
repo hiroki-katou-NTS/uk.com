@@ -250,7 +250,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int recreateTransfer, int dailyPerfCls, int dailyPerfItem, int midJoinEmployee, int reflectResultCls,
 			int monthlyAggCls, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
 			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear,
-			Integer startMonthDay, Integer endMonthDay) {
+			Integer startMonthDay, Integer endMonthDay, int cloudCreFlag) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -275,6 +275,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.designatedYear = designatedYear;
 		this.startMonthDay = startMonthDay;
 		this.endMonthDay = endMonthDay;
+		this.cloudCreFlag = cloudCreFlag;
 	}
 
 }
