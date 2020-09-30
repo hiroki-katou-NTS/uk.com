@@ -22,7 +22,7 @@ public interface WorkMethod {
 	 * @param workInfor
 	 * @return
 	 */
-	boolean determineIfApplicable(Require require, WorkInformation workInfor );
+	boolean includes(Require require, WorkInformation workInfor );
 	
 	public static interface Require extends WorkMethodContinuousWork.Require, WorkMethodHoliday.Require {
 	

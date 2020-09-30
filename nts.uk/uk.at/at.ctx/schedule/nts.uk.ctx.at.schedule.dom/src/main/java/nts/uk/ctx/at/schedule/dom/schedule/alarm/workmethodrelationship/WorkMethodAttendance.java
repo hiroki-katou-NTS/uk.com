@@ -23,8 +23,11 @@ public class WorkMethodAttendance implements WorkMethod {
 	}
 
 	@Override
-	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
-		return this.workTimeCode.equals(workInfo.getWorkTimeCode().v());
+	public boolean includes(Require require, WorkInformation workInfo) {
+		if (!workInfo.getWorkTimeCodeNotNull().isPresent()) {
+			return false;
+		}
+		return this.workTimeCode.equals(workInfo.getWorkTimeCode());
 	}
 
 }

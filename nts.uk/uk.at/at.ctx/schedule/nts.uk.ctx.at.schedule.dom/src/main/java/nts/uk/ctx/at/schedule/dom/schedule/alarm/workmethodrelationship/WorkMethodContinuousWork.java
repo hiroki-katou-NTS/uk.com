@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 /**
  * 勤務方法(連続勤務)
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.勤務方法(連続勤務)
@@ -20,18 +21,18 @@ public class WorkMethodContinuousWork implements WorkMethod{
 	}
 
 	@Override
-	public boolean determineIfApplicable(WorkMethod.Require require, WorkInformation workInfo) {
-		Optional<WorkType> workType = require.getWorkType(workInfo.getWorkTypeCode().v());
-		if (workType.isPresent()) {
-			return workType.get().getDailyWork().isOneDay() && workType.get().getDailyWork().isContinueWork();
-		}
-
-		return false;
+	public boolean includes(WorkMethod.Require require, WorkInformation workInfo) {
+		Optional<WorkType> workType = require.getWorkType(workInfo.getWorkTypeCode());
+		return workType.isPresent() && workType.get().getDailyWork().isContinueWork();
 	}
 
 	public interface Require{
-		//[R-1] 勤務種類を取得する	
-		Optional<WorkType> getWorkType(String workTypeCode);
+		/**
+		 * [R-1] 勤務種類を取得する
+		 * @param workTypeCode
+		 * @return
+		 */
+		Optional<WorkType> getWorkType(WorkTypeCode workTypeCode);
 		
 	}
 }

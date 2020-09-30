@@ -18,7 +18,7 @@ public class WorkMethodHoliday implements WorkMethod{
 	}
 
 	@Override
-	public boolean determineIfApplicable(WorkMethod.Require require, WorkInformation workInfo) {
+	public boolean includes(WorkMethod.Require require, WorkInformation workInfo) {
 		return require.checkHoliday(workInfo.getWorkTypeCode());
 	}
 	
