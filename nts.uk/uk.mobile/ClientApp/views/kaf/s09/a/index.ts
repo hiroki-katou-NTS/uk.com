@@ -141,17 +141,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.bindStart();
             self.$mask('hide');
         }).catch((err: any) => {
-            self.$mask('hide');
-            if (err.messageId) {
-                this.$modal.error({ messageId: err.messageId });
-            } else {
-
-                if (_.isArray(err.errors)) {
-                    this.$modal.error({ messageId: err.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: err.errors.messageId });
+            self.handleErrorMessage(err).then((res: any) => {
+                if (err.messageId == 'Msg_43') {
+                    self.$goto('ccg008a');
                 }
-            }
+            });
         });
     }
 
@@ -408,41 +402,59 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 self.dataOutput = res.data;
                 self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
                 self.bindStart();
-                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-                    msgID = '';
+                let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = '';
+                if (useDivision == 0) {
+                    self.$modal.error('Msg_323').then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');   
+                        }
+                    });
+                    if (recordDate == 0) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            
+                if (_.isNull(opErrorFlag)) {
+                    return true;    
+                }
                 switch (opErrorFlag) {
                     case 1:
                         msgID = 'Msg_324';
                         break;
-                    case 2:
+                    case 2: 
                         msgID = 'Msg_238';
                         break;
                     case 3:
                         msgID = 'Msg_237';
                         break;
-                    default:
+                    default: 
                         break;
                 }
-                if (!_.isEmpty(msgID)) {
-                    self.$modal.error({ messageId: msgID });
+                if (_.isEmpty(msgID)) { 
+                    return true;
                 }
-                self.$mask('hide');
+                self.$modal.error({ messageId: msgID }).then(() => {
+                    if (recordDate == 0) {
+                        self.$goto('ccg008a');    
+                    }    
+                });
+
+                return false;
+                
             })
             .catch((res: any) => {
                 self.$mask('hide');
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
+                self.handleErrorMessage(res).then((msgId: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
                     }
-                }
-
-
-            });
+                });
+            }); 
 
     }
     public registerData(res: any) {
@@ -466,17 +478,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     self.$forceUpdate();
                 });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
 
         } else {
@@ -495,17 +497,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     self.$forceUpdate();
                 });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
     }
@@ -573,19 +565,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }
 
         }).catch((res: any) => {
-            self.$mask('hide');
-            // show message error
-            if (res.messageId) {
-                self.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    self.$modal.error({ messageId: res.errors[0].messageId });
-                } else {
-                    self.$modal.error({ messageId: res.errors.messageId });
-                }
-            }
-
+            self.handleErrorMessage(res);
         });
 
     }
@@ -650,16 +630,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         } else {
             this.$modal(
@@ -677,22 +648,27 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
 
 
 
 
+    }
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
     }
 
     public dataFetch() {
