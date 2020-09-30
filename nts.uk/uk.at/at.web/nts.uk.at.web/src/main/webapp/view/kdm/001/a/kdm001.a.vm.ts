@@ -227,9 +227,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 let self = this;
                 let data = {
                     payoutId: value.occurrenceId !== '' ? value.occurrenceId : null,
-                    subOfHDID: value.digestionId !== '' ? value.occurrenceId : null
-                    // employeeId: self.selectedEmployeeObject.employeeId,
-                    // dayoffDate: moment.utc(value.accrualDate, 'YYYY/MM/DD').toISOString()
+                    subOfHDID: value.digestionId !== '' ? value.digestionId : null
                 };
 
                 service.removePayout(data).done(() => {
@@ -249,7 +247,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
+            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject});
 
             modal("/view/kdm/001/d/index.xhtml").onClosed(function () {
                 let params = getShared('KDM001_A_PARAMS');
@@ -328,10 +326,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             }
                         });
                     
-                        self.selectedEmployeeObject = {
-                          employeeId: res.employeeId, employeeCode: "", employeeName: "",
-                          workplaceId: "", workplaceCode: "", workplaceName: ""
-                      };
+                      //   self.selectedEmployeeObject = {
+                      //     employeeId: res.employeeId, employeeCode: "", employeeName: "",
+                      //     workplaceId: "", workplaceCode: "", workplaceName: ""
+                      // };
                 }).fail(function (res: any) {
                     dialog.alertError({ messageId: res.messageId });
                     console.log(res);
@@ -353,10 +351,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         // add dialog
                         dialog.alertError({ messageId: "Msg_1306" });
 
-                        self.selectedEmployeeObject = {
-                          employeeId: res.employeeId, employeeCode: "", employeeName: "",
-                          workplaceId: "", workplaceCode: "", workplaceName: ""
-                      };
+                      //   self.selectedEmployeeObject = {
+                      //     employeeId: res.employeeId, employeeCode: "", employeeName: "",
+                      //     workplaceId: "", workplaceCode: "", workplaceName: ""
+                      // };
                 }).fail(function (res: any) {
                     console.log(res);
                 });
@@ -638,138 +636,135 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
-    export class CompositePayOutSubMngData {
-        id: string;
-        occurrenceId: string;
-        accrualDate: string;
-        deadLine: string;
-        legalDistinction: number;
-        occurrenceDay: string;
-        unUsedDays: number;
-        stateAtr: number;
-        payoutTied: string;
-        subOfHDID: string;
-        unknownDateSub: boolean;
-        digestionDay: string;
-        digestionDays: string;
-        remainDays: number;
-        digestionId: string;
+  export class CompositePayOutSubMngData {
+      id: string;
+      occurrenceId: string;
+      accrualDate: string;
+      deadLine: string;
+      legalDistinction: number;
+      occurrenceDay: string;
+      unUsedDays: number;
+      stateAtr: number;
+      payoutTied: string;
+      subOfHDID: string;
+      unknownDateSub: boolean;
+      digestionDay: string;
+      digestionDays: string;
+      remainDays: number;
+      digestionId: string;
 
-        //add to fill grid A4_2_5
-        dayLetf: string;
+      //add to fill grid A4_2_5
+      dayLetf: string;
 
-        //add to fill grid A4_2_6
-        usedDay: string;
+      //add to fill grid A4_2_6
+      usedDay: string;
 
-        dataType: number = 1;
-        //add to set '日' after day number
-        occurredDaysText: string;
-        digestionDaysText: string;
-        dayLetfText: string;
-        usedDayText: string;
-        expiredDateText: string;
+      dataType: number = 1;
+      //add to set '日' after day number
+      occurredDaysText: string;
+      digestionDaysText: string;
+      dayLetfText: string;
+      usedDayText: string;
+      expiredDateText: string;
 
-        constructor(params) {
-            this.id = params.occurrenceId;
-            this.occurrenceId = params.occurrenceId;
-            this.digestionId = params.digestionId;
-            let dayOffPayout = "";
-            if (params.accrualDate) {
-                dayOffPayout = params.accrualDate;
-            }
-            this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
-            this.deadLine = params.deadLine;
-            this.legalDistinction = params.legalDistinction;
-            this.unUsedDays = params.unUsedDays;
-            this.stateAtr = params.stateAtr;
-            this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
-            this.subOfHDID = params.subOfHDID;
-            this.unknownDateSub = params.unknownDateSub;
-            let digestionDay = "";
-            if (params.digestionDay) {
-              digestionDay = params.digestionDay;
-            }
-            this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
-            this.remainDays = params.remainDays;
-
-                if (params.occurrenceDay > 0) {
-                    this.occurredDaysText = getText("KDM001_27");
-                    this.occurrenceDay = params.occurrenceDay.toFixed(1);
-                } else {
-                    this.occurrenceDay = "" + params.occurrenceDay;
-                }
-
-                if (params.digestionDays > 0) {
-                    this.digestionDaysText = getText("KDM001_27");
-                    this.digestionDays = params.digestionDays.toFixed(1);
-                } else {
-                    this.digestionDays = "" + params.digestionDays;
-            }
-
-            if ((params.occurrenceId != null) && (params.occurrenceId != "")) {
-                this.id = params.occurrenceId;
-
-                if ((this.stateAtr !== 2) && moment.utc(params.deadLine, 'YYYY/MM/DD').diff(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD')) >= 0) {
-                    this.dayLetf = params.dayLetf;
-                    this.usedDay = "0";
-                    if (params.dayLetf > 0) {
-                        this.dayLetfText = getText("KDM001_27");
-                        this.dayLetf = params.unUsedDays.toFixed(1);
-                    }
-                } else {
-                    this.dayLetf = "0";
-                    this.usedDay = "" + params.unUsedDays;
-                    if (params.unUsedDays > 0) {
-                        this.usedDayText = getText("KDM001_27");
-                        this.usedDay = params.unUsedDays.toFixed(1);
-                    }
-                }
-            } else if ((params.digestionId != null) && (params.digestionId != "")) {
-                this.id = params.digestionId;
-                this.dayLetf = "" + (params.remainDays * (-1));
-                this.usedDay = "0";
-                if (params.remainDays > 0) {
-                    this.dayLetfText = getText("KDM001_27");
-                    this.dayLetf = (params.remainDays * (-1)).toFixed(1);
-                }
-            }
-
-             if (params.usedDay > 0) {
-                    this.usedDayText = getText("KDM001_27");
-                    this.usedDay = params.usedDay.toFixed(1);
-                } else {
-                    this.usedDay = "" + params.usedDay;
-                }
-
-                if (params.dayLetf > 0) {
-                  this.dayLetf = getText("KDM001_27");
-                  this.dayLetf = params.dayLetf.toFixed(1);
-              } else {
-                  this.dayLetf = "" + params.dayLetf;
-              }
-              
-            if (params.deadLine === null) {
-                this.expiredDateText = '';
-            }
-            else if (new Date(params.deadLine).getMonth() === new Date(params.accrualDate).getMonth() && new Date(params.deadLine).getFullYear() === new Date(params.accrualDate).getFullYear()) {
-                this.expiredDateText = getText('KDM001_161', [params.deadLine]);
-            }
-            else {
-                this.expiredDateText = getText('KDM001_162', [params.deadLine]);
-            }
+      constructor(params) {
+        this.id = params.occurrenceId;
+        this.occurrenceId = params.occurrenceId;
+        this.digestionId = params.digestionId;
+        let dayOffPayout = "";
+        if (params.accrualDate) {
+            dayOffPayout = params.accrualDate;
         }
-    }
+        this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
+        this.deadLine = params.deadLine;
+        this.legalDistinction = params.legalDistinction;
+        this.unUsedDays = params.unUsedDays;
+        this.stateAtr = params.stateAtr;
+        this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
+        this.subOfHDID = params.subOfHDID;
+        this.unknownDateSub = params.unknownDateSub;
+        let digestionDay = "";
+        if (params.digestionDay) {
+          digestionDay = params.digestionDay;
+        }
+        this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
+        this.remainDays = params.remainDays;
 
-    function getLawAtr(value, row) {
-        if (value && value === '0') {
-            return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
-        } else if (value && value === '1') {
-            return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
-        } else if (value && value === '2') {
-            return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
+            if (params.occurrenceDay > 0) {
+                this.occurredDaysText = getText("KDM001_27");
+                this.occurrenceDay = params.occurrenceDay.toFixed(1);
+            } else {
+                this.occurrenceDay = "" + params.occurrenceDay;
+            }
+
+            if (params.digestionDays > 0) {
+                this.digestionDaysText = getText("KDM001_27");
+                this.digestionDays = params.digestionDays.toFixed(1);
+            } else {
+                this.digestionDays = "" + params.digestionDays;
+        }
+
+        if (params.occurrenceId != null && params.occurrenceId != "") {
+          this.id = params.occurrenceId;
+          if(this.stateAtr !== 2 &&moment.utc(params.deadLine, "YYYY/MM/DD").diff( moment.utc(moment.utc().format("YYYY/MM/DD"), "YYYY/MM/DD")) >= 0) {
+            this.dayLetf = params.dayLetf;
+            this.usedDay = "0";
+            if(params.dayLetf > 0) {
+              this.dayLetfText = getText("KDM001_27");
+              this.dayLetf = params.unUsedDays.toFixed(1);
+            }
+          } else {
+            this.dayLetf = "0";
+            this.usedDay = "" + params.unUsedDays;
+            if (params.unUsedDays > 0) {
+              this.usedDayText = getText("KDM001_27");
+              this.usedDay = params.unUsedDays.toFixed(1);
+            }
+          }
+        } else if (params.digestionId != null && params.digestionId != "") {
+          this.id = params.digestionId;
+          this.dayLetf = "" + params.remainDays * -1;
+          this.usedDay = "0";
+          if (params.remainDays > 0) {
+            this.dayLetfText = getText("KDM001_27");
+            this.dayLetf = (params.remainDays * -1).toFixed(1);
+          }
+        }
+
+        if(params.usedDay > 0) {
+          this.usedDayText = getText("KDM001_27");
+          this.usedDay = params.usedDay.toFixed(1);
         } else {
-            return '';
+          this.usedDay = "" + params.usedDay;
+        }
+
+        if(params.dayLetf > 0) {
+          this.dayLetf = getText("KDM001_27");
+          this.dayLetf = params.dayLetf.toFixed(1);
+        } else {
+          this.dayLetf = "" + params.dayLetf;
+        }
+          
+        if(params.deadLine === null) {
+            this.expiredDateText = '';
+        } else if (new Date(params.deadLine).getMonth() === new Date(params.accrualDate).getMonth() && new Date(params.deadLine).getFullYear() === new Date(params.accrualDate).getFullYear()) {
+            this.expiredDateText = getText('KDM001_161', [params.deadLine]);
+        } else {
+            this.expiredDateText = getText('KDM001_162', [params.deadLine]);
         }
     }
+  }
+
+  function getLawAtr(value, row) {
+      if (value && value === '0') {
+          return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
+      } else if (value && value === '1') {
+          return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
+      } else if (value && value === '2') {
+          return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
+      } else {
+          return '';
+      }
+  }
 }
 
