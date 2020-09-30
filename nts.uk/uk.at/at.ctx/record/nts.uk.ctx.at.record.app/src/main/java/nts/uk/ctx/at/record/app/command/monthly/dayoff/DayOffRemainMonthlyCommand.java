@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyWorkCommonCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 
 public class DayOffRemainMonthlyCommand extends MonthlyWorkCommonCommand{
 

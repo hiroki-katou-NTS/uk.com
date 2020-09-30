@@ -5,8 +5,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
@@ -58,7 +58,7 @@ public class OneMonthAppCreate {
 				GeneralDate.today(),
 				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
-		AgreementsOneMonth agrOneMonth = setting.getBasicAgreementSetting().getOneMonth();
+		AgreementOneMonth agrOneMonth = setting.getOneMonth();
 
 		// $エラー結果
 		val errResult = agrOneMonth.checkErrorTimeExceeded(appContent.getErrTime());
@@ -113,7 +113,7 @@ public class OneMonthAppCreate {
 			List<String> confirmerList,
 			ScreenDisplayInfo displayInfo) {
 
-		val errorAlarm = new ErrorTimeInMonth(appContent.getErrTime(), appContent.getAlarmTime());
+		val errorAlarm = OneMonthErrorAlarmTime.of(appContent.getErrTime(), appContent.getAlarmTime());
 
 		// $1ヶ月時間
 		val oneMonthTime = new OneMonthTime(errorAlarm, appContent.getYm());

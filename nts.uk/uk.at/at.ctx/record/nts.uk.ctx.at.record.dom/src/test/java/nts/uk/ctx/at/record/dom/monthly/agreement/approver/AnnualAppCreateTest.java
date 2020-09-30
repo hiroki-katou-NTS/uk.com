@@ -10,11 +10,9 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -76,21 +74,10 @@ public class AnnualAppCreateTest {
 			}
 		};
 
-		val oneYear = new AgreementsOneYear(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
-						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-						new AgreementOneYearTime(0)
-				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
-						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-						new AgreementOneYearTime(0)
-				)
-		);
-
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(null, oneYear, null, null), null);
+		val setting = new BasicAgreementSetting(null, new AgreementOneYear(), null, null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
-			public BasicAgreementSettings getBasicSet(
+			public BasicAgreementSetting getBasicSet(
 					AgreementDomainService.RequireM3 require,
 					String companyId,
 					String employeeId,
@@ -102,7 +89,7 @@ public class AnnualAppCreateTest {
 		};
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneYearTime>(true, new AgreementOneYearTime(0));
-		new MockUp<AgreementsOneYear>() {
+		new MockUp<AgreementOneYear>() {
 			@Mock
 			public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
 				return errCheckResult;
@@ -138,21 +125,10 @@ public class AnnualAppCreateTest {
 			}
 		};
 
-		val oneYear = new AgreementsOneYear(
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
-						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-						new AgreementOneYearTime(0)
-				),
-				new nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime(
-						new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)),
-						new AgreementOneYearTime(0)
-				)
-		);
-
-		val setting = BasicAgreementSettings.of(new BasicAgreementSetting(null, oneYear, null, null), null);
+		val setting = new BasicAgreementSetting(null, new AgreementOneYear(), null, null);
 		new MockUp<AgreementDomainService>() {
 			@Mock
-			public BasicAgreementSettings getBasicSet(
+			public BasicAgreementSetting getBasicSet(
 					AgreementDomainService.RequireM3 require,
 					String companyId,
 					String employeeId,
@@ -164,7 +140,7 @@ public class AnnualAppCreateTest {
 		};
 
 		val errCheckResult = new ImmutablePair<Boolean, AgreementOneYearTime>(false, new AgreementOneYearTime(0));
-		new MockUp<AgreementsOneYear>() {
+		new MockUp<AgreementOneYear>() {
 			@Mock
 			public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
 				return errCheckResult;

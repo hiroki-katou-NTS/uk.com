@@ -5,10 +5,10 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ import java.util.Optional;
 public class SpecialProvisionsOfAgreementTest {
 
 	public static SpecialProvisionsOfAgreement createNewDomain() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -33,8 +33,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void getters() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -47,8 +47,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void calculateAlarmTimeTest() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -71,8 +71,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void confirmApplicationTest() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -92,8 +92,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void changeApplicationOneMonthTest_1() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -101,7 +101,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ErrorTimeInMonth errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
+		OneMonthErrorAlarmTime errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
 
 		target.changeApplicationOneMonth(errorTimeInMonth,new ReasonsForAgreement("Reason"));
 
@@ -112,8 +112,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void changeApplicationOneMonthTest_2() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -123,7 +123,7 @@ public class SpecialProvisionsOfAgreementTest {
 
 		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.APPROVED, Optional.empty(), Optional.empty(), Optional.empty());
 		target.setApprovalStatusDetails(approvalStatusDetails);
-		ErrorTimeInMonth errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
+		OneMonthErrorAlarmTime errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
 
 		target.changeApplicationOneMonth(errorTimeInMonth,new ReasonsForAgreement("Reason"));
 
@@ -136,8 +136,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void changeApplicationYearTest_1() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -145,7 +145,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
+		OneYearErrorAlarmTime errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 
@@ -156,8 +156,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 	@Test
 	public void changeApplicationYearTest_2() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(new ErrorTimeInMonth(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(new ErrorTimeInYear(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -167,7 +167,7 @@ public class SpecialProvisionsOfAgreementTest {
 
 		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.APPROVED, Optional.empty(), Optional.empty(), Optional.empty());
 		target.setApprovalStatusDetails(approvalStatusDetails);
-		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
+		OneYearErrorAlarmTime errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 

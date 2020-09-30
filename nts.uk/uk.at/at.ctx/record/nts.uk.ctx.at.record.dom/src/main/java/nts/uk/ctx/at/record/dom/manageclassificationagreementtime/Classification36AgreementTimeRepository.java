@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.manageclassificationagreementtime;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
+
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 
 import java.util.List;
 import java.util.Optional;
