@@ -21,15 +21,12 @@ public enum SystemTypeEnum {
 	public final int code;
 
 	/** The name id. */
-	public final String name;
+	public final String systemName;
 
-	private SystemTypeEnum(int code, String name) {
+	private SystemTypeEnum(int code, String systemName) {
 		this.code = code;
-		this.name = name;
+		this.systemName = systemName;
 	}
-
-	/** The Constant values. */
-	private final static SystemTypeEnum[] values = SystemTypeEnum.values();
 
 	/**
 	 * Value of.
@@ -39,7 +36,7 @@ public enum SystemTypeEnum {
 	 */
 	public static SystemTypeEnum valueOf(int value) {
 		// Find value.
-		for (SystemTypeEnum val : SystemTypeEnum.values) {
+		for (SystemTypeEnum val : SystemTypeEnum.values()) {
 			if (val.code == value) {
 				return val;
 			}
