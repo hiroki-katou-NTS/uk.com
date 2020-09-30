@@ -14,7 +14,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.shr.com.context.AppContexts;
 
 @Embeddable
 @EqualsAndHashCode
@@ -37,7 +36,7 @@ public class KscmtAlchkWorkContextOrgPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	public static KscmtAlchkWorkContextOrgPk fromDomain(WorkMethodRelationshipOrganization domain) {
+	public static KscmtAlchkWorkContextOrgPk fromDomain(String companyId,WorkMethodRelationshipOrganization domain) {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE ?
@@ -45,7 +44,7 @@ public class KscmtAlchkWorkContextOrgPk {
 				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
 		return new KscmtAlchkWorkContextOrgPk(
-				AppContexts.user().companyId(), 
+				companyId, 
 				domain.getTargetOrg().getUnit().value, 
 				domain.getTargetOrg().getTargetId(), 
 				prevWorkMethod.getWorkMethodClassification().value, 

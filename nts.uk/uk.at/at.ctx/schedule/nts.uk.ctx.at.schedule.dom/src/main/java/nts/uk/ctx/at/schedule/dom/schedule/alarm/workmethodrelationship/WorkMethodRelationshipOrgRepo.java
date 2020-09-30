@@ -7,9 +7,9 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 
 public interface WorkMethodRelationshipOrgRepo {
 	
-	public void insert(WorkMethodRelationshipOrganization domain);
+	public void insert(String companyId, WorkMethodRelationshipOrganization domain);
 	
-	public void update(WorkMethodRelationshipOrganization domain);
+	public void update(String companyId, WorkMethodRelationshipOrganization domain);
 	
 	/**
 	 * delete ( 会社ID, 対象組織 )

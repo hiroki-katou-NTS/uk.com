@@ -46,10 +46,10 @@ public class KscmtAlchkWorkContextOrg  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static KscmtAlchkWorkContextOrg fromDomain(WorkMethodRelationshipOrganization domain) {
+	public static KscmtAlchkWorkContextOrg fromDomain(String companyId, WorkMethodRelationshipOrganization domain) {
 		
 		return new KscmtAlchkWorkContextOrg(
-				KscmtAlchkWorkContextOrgPk.fromDomain(domain), 
+				KscmtAlchkWorkContextOrgPk.fromDomain(companyId, domain), 
 				domain.getWorkMethodRelationship().getSpecifiedMethod().value, 
 				domain.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
 	}

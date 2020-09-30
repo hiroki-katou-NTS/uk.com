@@ -14,8 +14,8 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCompany;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeName;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -52,7 +52,7 @@ public class KscmtAlchkMaxdaysWktmCmp extends ContractUkJpaEntity {
 	public MaxDayOfWorkTimeCompany toDomain(List<KscmtAlchkMaxdaysWktmCmpDtl> dtlList) {
 		
 		return new MaxDayOfWorkTimeCompany(
-				new WorkTimeMaximumCode(this.pk.code), 
+				new MaxDayOfWorkTimeCode(this.pk.code), 
 				new MaxDayOfWorkTimeName(this.name), 
 				new MaxDayOfWorkTime(
 						dtlList.stream().map( dtl -> dtl.toWorkTimeCode()).collect(Collectors.toList()), 

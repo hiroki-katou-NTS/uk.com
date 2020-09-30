@@ -14,8 +14,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgDtl;
@@ -70,8 +70,8 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	
 	
 	@Override
-	public void insert(WorkMethodRelationshipOrganization domain) {
-		KscmtAlchkWorkContextOrg workContext = KscmtAlchkWorkContextOrg.fromDomain(domain);
+	public void insert(String companyId, WorkMethodRelationshipOrganization domain) {
+		KscmtAlchkWorkContextOrg workContext = KscmtAlchkWorkContextOrg.fromDomain(companyId, domain);
 		List<KscmtAlchkWorkContextOrgDtl> workContextDtlList = KscmtAlchkWorkContextOrgDtl.fromDomain(domain);
 		
 		this.commandProxy().insert(workContext);
@@ -79,8 +79,8 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	}
 
 	@Override
-	public void update(WorkMethodRelationshipOrganization domain) {
-		KscmtAlchkWorkContextOrg workContext = KscmtAlchkWorkContextOrg.fromDomain(domain);
+	public void update(String companyId, WorkMethodRelationshipOrganization domain) {
+		KscmtAlchkWorkContextOrg workContext = KscmtAlchkWorkContextOrg.fromDomain(companyId, domain);
 		List<KscmtAlchkWorkContextOrgDtl> workContextDtlList = KscmtAlchkWorkContextOrgDtl.fromDomain(domain);
 		
 		this.commandProxy().update(workContext);
