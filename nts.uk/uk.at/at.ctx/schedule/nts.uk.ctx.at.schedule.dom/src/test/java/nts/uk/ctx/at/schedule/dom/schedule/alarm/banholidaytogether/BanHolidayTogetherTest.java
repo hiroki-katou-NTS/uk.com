@@ -12,31 +12,18 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogether;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherName;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BusinessDaysCalendarType;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.MinNumberEmployeeTogether;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendarClass;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendarWorkplace;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarClass;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarCompany;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkplace;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 @RunWith(JMockit.class)
 public class BanHolidayTogetherTest {
 	
 	@Test
 	public void getters() {
-		BanHolidayTogether banHdTogether = BanHolidayTogether.create(
-				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
-				new BanHolidayTogetherCode("0001"), 
-				new BanHolidayTogetherName("禁止グループA"),
-				Optional.empty(),
-				new MinNumberEmployeeTogether(1),
-				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2)
-				);
-		
+		val banHdTogether = BanHolidayTogetherHelper.banHdTogether;
 		NtsAssert.invokeGetters(banHdTogether);
 	}
 	
@@ -115,16 +102,17 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void create_banSameDayHolidayNotReference_success() {
+		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");
 		val empsCanNotSameHolidays = BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2);
 		val banHdComEmpty = BanHolidayTogether.create(
-				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
+				targetOrg,
 				new BanHolidayTogetherCode("001"),
 				new BanHolidayTogetherName("禁止グループ会社A"), 
 				Optional.empty(),
 				new MinNumberEmployeeTogether(1),
 				empsCanNotSameHolidays);
 		
-		assertThat(banHdComEmpty.getTargetOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
+		assertThat(banHdComEmpty.getTargetOrg()).isEqualTo(targetOrg);
 		assertThat(banHdComEmpty.getBanHolidayTogetherCode().v()).isEqualTo("001");
 		assertThat(banHdComEmpty.getBanHolidayTogetherName().v()).isEqualTo("禁止グループ会社A");
 		assertThat(banHdComEmpty.getWorkDayReference()).isEmpty();
@@ -142,12 +130,13 @@ public class BanHolidayTogetherTest {
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"),
 				new BanHolidayTogetherName("禁止グループ会社A"),
-				BanHolidayTogetherHelper.creatCalendarReferenceCompany(), 
+				Optional.of(new ReferenceCalendarCompany()), 
 				new MinNumberEmployeeTogether(1),
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHdCom.getWorkDayReference()).isNotEmpty();
-		assertThat(banHdCom.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.COMPANY);
+		val refCom =  (ReferenceCalendarCompany) banHdCom.getWorkDayReference().get();	
+		assertThat(refCom).isInstanceOf(ReferenceCalendarCompany.class);				
 	}
 	
 	/**
@@ -160,12 +149,13 @@ public class BanHolidayTogetherTest {
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"),
 				new BanHolidayTogetherName("禁止グループ職場カレンダー"),
-				Optional.ofNullable(new ReferenceCalendarWorkplace(IdentifierUtil.randomUniqueId())),
+				Optional.of(new ReferenceCalendarWorkplace(IdentifierUtil.randomUniqueId())),
 				new MinNumberEmployeeTogether(1),
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 
 		assertThat(banHdWorkplace.getWorkDayReference()).isNotEmpty();
-		assertThat(banHdWorkplace.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.WORKPLACE);
+		val refWorkplace =  (ReferenceCalendarWorkplace) banHdWorkplace.getWorkDayReference().get();	
+		assertThat(refWorkplace).isInstanceOf(ReferenceCalendarWorkplace.class);				
 
 	}
 	
@@ -184,7 +174,8 @@ public class BanHolidayTogetherTest {
 				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHolidayClass.getWorkDayReference()).isNotEmpty();
-		assertThat(banHolidayClass.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.CLASSSICATION);
+		val refClass =  (ReferenceCalendarClass) banHolidayClass.getWorkDayReference().get();	
+		assertThat(refClass).isInstanceOf(ReferenceCalendarClass.class);	
 
 	}
 	

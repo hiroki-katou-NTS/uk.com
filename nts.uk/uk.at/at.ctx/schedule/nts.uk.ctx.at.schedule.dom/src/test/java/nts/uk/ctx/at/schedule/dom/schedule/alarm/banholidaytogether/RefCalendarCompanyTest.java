@@ -12,10 +12,10 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BusinessDaysCalendarType;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendarCompany;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.ReferenceCalendar.Require;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDaysCalendarType;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendar.Require;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 
 
@@ -36,7 +36,7 @@ public class RefCalendarCompanyTest {
 	
 	/**
 	 * 稼働日区分を取得する
-	 * get WorkdayDivision
+	 * 期待値： empty
 	 * excepted: empty
 	 */
 	@Test
@@ -54,62 +54,22 @@ public class RefCalendarCompanyTest {
 	
 	/**
 	 * 稼働日区分を取得する
-	 * get WorkdayDivision 
-	 * excepted: WORKINGDAYS
+	 * 期待値： 稼働日 OR 法定休日 OR 法定外休日
+	 * excepted: WORKINGDAYS OR NON_WORKINGDAY_INLAW OR NON_WORKINGDAY_EXTRALEGAL
 	 */
 	@Test
-	public void getWorkdayDivision_WORKINGDAYS() {
+	public void getWorkdayDivision() {
 		val calCom = new CalendarCompany("000000000000-0315", GeneralDate.today(), WorkdayDivision.WORKINGDAYS);
 		val refCalCom = new ReferenceCalendarCompany();
 		new Expectations() {
 			{
 				require.getCalendarCompanyByDay((GeneralDate)any);
 				result = Optional.of(calCom);
-
 			}
 		};
 
-		assertThat(refCalCom.getWorkdayDivision(require, calCom.getDate()).get()).isEqualTo(calCom.getWorkDayDivision());
+		val excepted = refCalCom.getWorkdayDivision(require, calCom.getDate()).get();
+		assertThat(excepted).isEqualTo(calCom.getWorkDayDivision());
 	}
-	
-	/**
-	 * 稼働日区分を取得する
-	 * get WorkdayDivision 
-	 * excepted: NON_WORKINGDAY_INLAW
-	 */
-	@Test
-	public void getWorkdayDivision_NON_WORKINGDAY_INLAW() {
-		val calCom = new CalendarCompany("000000000000-0315", GeneralDate.today(), WorkdayDivision.NON_WORKINGDAY_INLAW);
-		val refCalCom = new ReferenceCalendarCompany();
-		new Expectations() {
-			{
-				require.getCalendarCompanyByDay((GeneralDate) any);
-				result = Optional.of(calCom);
-
-			}
-		};
-
-		assertThat(refCalCom.getWorkdayDivision(require, calCom.getDate()).get()).isEqualTo(calCom.getWorkDayDivision());
-	}
-	
-	
-	/**
-	 * 稼働日区分を取得する
-	 * get WorkdayDivision 
-	 * excepted： NON_WORKINGDAY_EXTRALEGAL
-	 */
-	@Test
-	public void getWorkdayDivision_NON_WORKINGDAY_EXTRALEGAL() {
-		val calCom = new CalendarCompany("000000000000-0315", GeneralDate.today(), WorkdayDivision.NON_WORKINGDAY_EXTRALEGAL);
-		val refCalCom = new ReferenceCalendarCompany();
-		new Expectations() {
-			{
-				require.getCalendarCompanyByDay((GeneralDate) any);
-				result = Optional.of(calCom);
-
-			}
-		};
-
-		assertThat(refCalCom.getWorkdayDivision(require, calCom.getDate()).get()).isEqualTo(calCom.getWorkDayDivision());	}
 
 }
