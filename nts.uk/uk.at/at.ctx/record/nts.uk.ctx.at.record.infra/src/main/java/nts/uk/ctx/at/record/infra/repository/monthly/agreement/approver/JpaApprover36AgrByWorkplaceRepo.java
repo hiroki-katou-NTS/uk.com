@@ -93,8 +93,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 
@@ -115,8 +115,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), date));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -138,8 +138,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.endDate), endDate));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -162,8 +162,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), refDate));
 			add(cb.greaterThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.endDate), refDate));
 		}};

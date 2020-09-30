@@ -141,5 +141,6 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 	public static class Meta_ {
 		public static volatile SingularAttribute<Krcmt36AgrApvWkp, Krcmt36AgrApvWkpPK> pk;
 		public static volatile SingularAttribute<Krcmt36AgrApvWkp, GeneralDate> endDate;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkp, String> cid;
 	}
 }
