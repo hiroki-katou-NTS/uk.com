@@ -458,7 +458,12 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                    self.data = res;
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
             }).catch((res: any) => {
                 self.$mask('hide');
                 if (res.messageId) {
