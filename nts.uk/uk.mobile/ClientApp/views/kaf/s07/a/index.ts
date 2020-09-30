@@ -138,7 +138,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
         const self = this;
         self.fetchStart();
     }
-
     public fetchStart() {
         const self = this;
         self.$mask('show');
@@ -737,7 +736,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         //         }
         //     }
         // }
-
+        // change work type or worktime that make time selection be can disable
+        if (!this.isCondition3) {
+            vm.$updateValidator('valueWorkHours1', {
+                timeRange: false,
+                required: false
+            });
+        }
         if (this.valueWorkHours1 != null) {
             // if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
             //     if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
