@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,21 +15,21 @@ public interface MaxNumberDaysOfContWorkTimeComRepository {
 	 * @param companyId
 	 * @param domain
 	 */
-	void insert (String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain);
+	void insert (String companyId, MaxDaysOfContinuousWorkTimeCompany domain);
 	
 	/**
 	 * update(会社ID, 会社の就業時間帯の連続勤務できる上限日数)
 	 * @param companyId
 	 * @param domain
 	 */
-	void update (String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain);
+	void update (String companyId, MaxDaysOfContinuousWorkTimeCompany domain);
 	
 	/**
 	 * delete(会社ID, 就業時間帯連続コード)
 	 * @param companyId
 	 * @param code
 	 */
-	void delete (String companyId, WorkTimeContinuousCode code);
+	void delete (String companyId, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * exists(会社ID, 就業時間帯連続コード)
@@ -37,7 +37,7 @@ public interface MaxNumberDaysOfContWorkTimeComRepository {
 	 * @param code
 	 * @return
 	 */
-	boolean exists (String companyId, WorkTimeContinuousCode code);
+	boolean exists (String companyId, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * get
@@ -45,12 +45,12 @@ public interface MaxNumberDaysOfContWorkTimeComRepository {
 	 * @param code
 	 * @return
 	 */
-	Optional<MaxNumberDaysOfContinuousWorkTimeCom> get (String companyId, WorkTimeContinuousCode code);
+	Optional<MaxDaysOfContinuousWorkTimeCompany> get (String companyId, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * get*
 	 * @param companyId
 	 * @return
 	 */
-	List<MaxNumberDaysOfContinuousWorkTimeCom> getAll (String companyId);
+	List<MaxDaysOfContinuousWorkTimeCompany> getAll (String companyId);
 }

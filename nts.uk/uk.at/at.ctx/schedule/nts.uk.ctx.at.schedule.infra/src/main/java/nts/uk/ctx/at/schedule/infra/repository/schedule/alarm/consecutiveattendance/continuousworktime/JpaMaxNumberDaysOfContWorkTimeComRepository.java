@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContWorkTimeComRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeCom;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeCompany;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxNumberDaysOfContWorkTimeComRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmpDtl;
 
@@ -32,20 +32,20 @@ public class JpaMaxNumberDaysOfContWorkTimeComRepository extends JpaRepository i
 	
 	
 	@Override
-	public void insert(String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain) {
+	public void insert(String companyId, MaxDaysOfContinuousWorkTimeCompany domain) {
 		this.commandProxy().insert(KscmtAlchkConsecutiveWktmCmp.of(companyId, domain));
 		this.commandProxy().insertAll(KscmtAlchkConsecutiveWktmCmpDtl.toDetailEntityList(companyId, domain));
 	}
 
 	@Override
-	public void update(String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain) {
+	public void update(String companyId, MaxDaysOfContinuousWorkTimeCompany domain) {
 		this.commandProxy().update(KscmtAlchkConsecutiveWktmCmp.of(companyId, domain));
 		this.commandProxy().updateAll(KscmtAlchkConsecutiveWktmCmpDtl.toDetailEntityList(companyId, domain));
 	}
 
 	@Override
-	public void delete(String companyId, WorkTimeContinuousCode code) {
-		Optional<MaxNumberDaysOfContinuousWorkTimeCom> domain = this.get(companyId, code);
+	public void delete(String companyId, ConsecutiveWorkTimeCode code) {
+		Optional<MaxDaysOfContinuousWorkTimeCompany> domain = this.get(companyId, code);
 		
 		if (domain.isPresent()) {
 			KscmtAlchkConsecutiveWktmCmp entity = KscmtAlchkConsecutiveWktmCmp.of(companyId, domain.get());
@@ -56,12 +56,12 @@ public class JpaMaxNumberDaysOfContWorkTimeComRepository extends JpaRepository i
 	}
 
 	@Override
-	public boolean exists(String companyId, WorkTimeContinuousCode code) {
+	public boolean exists(String companyId, ConsecutiveWorkTimeCode code) {
 		return this.get(companyId, code).isPresent();
 	}
 
 	@Override
-	public Optional<MaxNumberDaysOfContinuousWorkTimeCom> get(String companyId, WorkTimeContinuousCode code) {
+	public Optional<MaxDaysOfContinuousWorkTimeCompany> get(String companyId, ConsecutiveWorkTimeCode code) {
 		
 		Optional<KscmtAlchkConsecutiveWktmCmp> header = new NtsStatement(SELECT_HEADER_WHERE_CID_AND_CODE, this.jdbcProxy())
 				.paramString("companyId", companyId)
@@ -80,7 +80,7 @@ public class JpaMaxNumberDaysOfContWorkTimeComRepository extends JpaRepository i
 	}
 
 	@Override
-	public List<MaxNumberDaysOfContinuousWorkTimeCom> getAll(String companyId) {
+	public List<MaxDaysOfContinuousWorkTimeCompany> getAll(String companyId) {
 		List<KscmtAlchkConsecutiveWktmCmp> headers = new NtsStatement(SELECT_HEADER_WHERE_CID, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.getList(x -> KscmtAlchkConsecutiveWktmCmp.MAPPER.toEntity(x));

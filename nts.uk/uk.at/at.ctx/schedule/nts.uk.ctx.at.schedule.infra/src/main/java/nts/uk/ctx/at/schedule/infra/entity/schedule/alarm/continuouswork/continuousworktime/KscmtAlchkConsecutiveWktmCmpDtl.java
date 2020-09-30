@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeCompany;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -44,9 +44,9 @@ public class KscmtAlchkConsecutiveWktmCmpDtl extends ContractUkJpaEntity impleme
 	 * @param domain
 	 * @return
 	 */
-	public static List<KscmtAlchkConsecutiveWktmCmpDtl> toDetailEntityList (String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain) {
+	public static List<KscmtAlchkConsecutiveWktmCmpDtl> toDetailEntityList (String companyId, MaxDaysOfContinuousWorkTimeCompany domain) {
 		
-		return domain.getMaxDaysContiWorktime().getWorktimeCodeLst().stream()
+		return domain.getMaxDaysContiWorktime().getWorkTimeCodes().stream()
 				.map(wktmCd -> new KscmtAlchkConsecutiveWktmCmpDtl(new KscmtAlchkConsecutiveWktmCmpDtlPk(
 						companyId
 						, domain.getCode().v()

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +16,14 @@ public interface MaxNumberDaysOfContWorkTimeOrgRepository {
 	 * @param companyId
 	 * @param domain
 	 */
-	void insert (String companyId, MaxNumberDaysOfContinuousWorkTimeOrg domain);
+	void insert (String companyId, MaxDaysOfContinuousWorkTimeOrganization domain);
 	
 	/**
 	 * update(会社ID, 組織の就業時間帯の連続勤務できる上限日数)
 	 * @param companyId
 	 * @param domain
 	 */
-	void update (String companyId, MaxNumberDaysOfContinuousWorkTimeOrg domain);
+	void update (String companyId, MaxDaysOfContinuousWorkTimeOrganization domain);
 	
 	/**
 	 * delete (会社ID, 対象組織識別情報, 就業時間帯連続コード)
@@ -31,7 +31,7 @@ public interface MaxNumberDaysOfContWorkTimeOrgRepository {
 	 * @param targeOrg
 	 * @param code
 	 */
-	void delete (String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code);
+	void delete (String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * exists(会社ID, 対象組織識別情報, 就業時間帯連続コード)
@@ -40,7 +40,7 @@ public interface MaxNumberDaysOfContWorkTimeOrgRepository {
 	 * @param code
 	 * @return
 	 */
-	boolean exists (String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code);
+	boolean exists (String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * get
@@ -49,7 +49,7 @@ public interface MaxNumberDaysOfContWorkTimeOrgRepository {
 	 * @param code
 	 * @return
 	 */
-	Optional<MaxNumberDaysOfContinuousWorkTimeOrg> get (String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code);
+	Optional<MaxDaysOfContinuousWorkTimeOrganization> get (String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code);
 	
 	/**
 	 * get*
@@ -57,5 +57,5 @@ public interface MaxNumberDaysOfContWorkTimeOrgRepository {
 	 * @param targeOrg
 	 * @return
 	 */
-	List<MaxNumberDaysOfContinuousWorkTimeOrg> getAll (String companyId, TargetOrgIdenInfor targeOrg);
+	List<MaxDaysOfContinuousWorkTimeOrganization> getAll (String companyId, TargetOrgIdenInfor targeOrg);
 }

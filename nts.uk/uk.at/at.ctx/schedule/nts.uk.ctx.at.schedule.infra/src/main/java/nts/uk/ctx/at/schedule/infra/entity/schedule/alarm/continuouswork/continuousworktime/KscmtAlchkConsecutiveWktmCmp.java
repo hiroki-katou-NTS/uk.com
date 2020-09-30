@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeCom;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberOfContinuousWorktime;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfConsecutiveWorkTime;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeCompany;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -63,7 +63,7 @@ public class KscmtAlchkConsecutiveWktmCmp extends ContractUkJpaEntity implements
 	 * @param domain
 	 * @return
 	 */
-	public static KscmtAlchkConsecutiveWktmCmp of (String companyId, MaxNumberDaysOfContinuousWorkTimeCom domain) {
+	public static KscmtAlchkConsecutiveWktmCmp of (String companyId, MaxDaysOfContinuousWorkTimeCompany domain) {
 		val pk = new KscmtAlchkConsecutiveWktmCmpPk();
 		pk.companyId = companyId;
 		pk.code = domain.getCode().v();
@@ -81,18 +81,18 @@ public class KscmtAlchkConsecutiveWktmCmp extends ContractUkJpaEntity implements
 	 * @param details
 	 * @return
 	 */
-	public MaxNumberDaysOfContinuousWorkTimeCom toDomain(List<KscmtAlchkConsecutiveWktmCmpDtl> details) {
+	public MaxDaysOfContinuousWorkTimeCompany toDomain(List<KscmtAlchkConsecutiveWktmCmpDtl> details) {
 		
 		List<WorkTimeCode> worktimeLst = details.stream()
 				.filter(dtl -> dtl.pk.code == this.pk.code)
 				.map(dtl -> new WorkTimeCode(dtl.pk.wktmCode))
 				.collect(Collectors.toList());
 		
-		val maxWorktime = new MaxNumberOfContinuousWorktime(worktimeLst, new ConsecutiveNumberOfDays(this.maxConsDays));
+		val maxWorktime = new MaxDaysOfConsecutiveWorkTime(worktimeLst, new ConsecutiveNumberOfDays(this.maxConsDays));
 		
-		val domain = new MaxNumberDaysOfContinuousWorkTimeCom(
-				new WorkTimeContinuousCode(this.pk.code)
-				, new WorkTimeContinuousName(this.name)
+		val domain = new MaxDaysOfContinuousWorkTimeCompany(
+				new ConsecutiveWorkTimeCode(this.pk.code)
+				, new ConsecutiveWorkTimeName(this.name)
 				, maxWorktime);
 		
 		return domain;

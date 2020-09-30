@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContWorkTimeOrgRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.MaxNumberDaysOfContinuousWorkTimeOrg;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.continuousworktime.WorkTimeContinuousCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganization;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxNumberDaysOfContWorkTimeOrgRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrgDtl;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -37,31 +37,36 @@ public class JpaMaxNumberDaysOfContWorkTimeOrgRepository extends JpaRepository i
 	
 
 	@Override
-	public void insert(String companyId, MaxNumberDaysOfContinuousWorkTimeOrg domain) {
+	public void insert(String companyId, MaxDaysOfContinuousWorkTimeOrganization domain) {
 		this.commandProxy().insert(KscmtAlchkConsecutiveWktmOrg.of(companyId, domain));
 		this.commandProxy().insertAll(KscmtAlchkConsecutiveWktmOrgDtl.toDetailEntityList(companyId, domain));
 	}
 
 	@Override
-	public void update(String companyId, MaxNumberDaysOfContinuousWorkTimeOrg domain) {
+	public void update(String companyId, MaxDaysOfContinuousWorkTimeOrganization domain) {
 		this.commandProxy().update(KscmtAlchkConsecutiveWktmOrg.of(companyId, domain));
 		this.commandProxy().updateAll(KscmtAlchkConsecutiveWktmOrgDtl.toDetailEntityList(companyId, domain));
 	}
 
 	@Override
-	public void delete(String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code) {
-		// TODO 自動生成されたメソッド・スタブ
+	public void delete(String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code) {
+		Optional<MaxDaysOfContinuousWorkTimeOrganization> domain = this.get(companyId, targeOrg, code);
 		
+		if (domain.isPresent()) {
+			KscmtAlchkConsecutiveWktmOrg entity = KscmtAlchkConsecutiveWktmOrg.of(companyId, domain.get());
+			List<KscmtAlchkConsecutiveWktmOrgDtl> dtlEntity = KscmtAlchkConsecutiveWktmOrgDtl.toDetailEntityList(companyId, domain.get());
+			this.commandProxy().remove(entity);
+			this.commandProxy().removeAll(dtlEntity);
+		}
 	}
 
 	@Override
-	public boolean exists(String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code) {
-		// TODO 自動生成されたメソッド・スタブ
-		return false;
+	public boolean exists(String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code) {
+		return this.get(companyId, targeOrg, code).isPresent();
 	}
 
 	@Override
-	public Optional<MaxNumberDaysOfContinuousWorkTimeOrg> get(String companyId, TargetOrgIdenInfor targeOrg, WorkTimeContinuousCode code) {
+	public Optional<MaxDaysOfContinuousWorkTimeOrganization> get(String companyId, TargetOrgIdenInfor targeOrg, ConsecutiveWorkTimeCode code) {
 		Optional<KscmtAlchkConsecutiveWktmOrg> header = new NtsStatement(SELECT_HEADER_WHERE_ORG_AND_CODE, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("targetUnit", targeOrg.getUnit().value)
@@ -83,7 +88,7 @@ public class JpaMaxNumberDaysOfContWorkTimeOrgRepository extends JpaRepository i
 	}
 
 	@Override
-	public List<MaxNumberDaysOfContinuousWorkTimeOrg> getAll(String companyId, TargetOrgIdenInfor targeOrg) {
+	public List<MaxDaysOfContinuousWorkTimeOrganization> getAll(String companyId, TargetOrgIdenInfor targeOrg) {
 		List<KscmtAlchkConsecutiveWktmOrg> headers = new NtsStatement(SELECT_HEADER_WHERE_ORG, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("targetUnit", targeOrg.getUnit().value)
