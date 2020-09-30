@@ -197,6 +197,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getNewData(viewMode).done(() => {
                     if (self.mode() == 'confirm') {
                         $("#extable").exTable("updateMode", "determine");
+                        $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+                        $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
                         if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                             // disable combobox workType, workTime
                             //s__viewContext.viewModel.viewAB.enableListWorkType(false);
@@ -208,6 +210,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             $("#shiftPallet-Control").addClass("disabledShiftControl");
                         }
                     }
+                    
                     self.stopRequest(true);
                 }).fail(function() {
                     nts.uk.ui.block.clear();
@@ -2576,7 +2579,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickRedo");
-            } else if (userInfor.updateMode = 'copyPaste') {
+            } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyRedo");
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support redo o mode nay');
@@ -2587,31 +2590,47 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         checkExitCellUpdated() {
             let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
             setTimeout(() => {
-                let arrCellUpdated = $("#extable").exTable("updatedCells");
-                if (arrCellUpdated.length > 0) {
-                    self.enableBtnUndo(true);
-                } else {
-                    self.enableBtnUndo(false);
-                }
-
-                if (arrCellUpdated.length == 0) {
-                    let x = self.undoNumberClick;
-                    self.redoNumberClick = (-1) * x;
-                    self.undoNumberClick = 0;
-                } else {
+                if (userInfor.updateMode == 'stick') {
                     
+                    // check undo
+                    let $grid1   = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("stick-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
                     
+                    // check redo
+                    let $grid2 = $("#extable").find(`.${"ex-body-detail"}`);
+                    let redoStack = $grid2.data("stick-redo-stack");
+                    if (!redoStack || redoStack.length === 0){
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
+                } else if (userInfor.updateMode == 'copyPaste') {
+                    // check undo
+                    let $grid1 = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("copy-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
                     
+                    // check redo
+                    let $grid2 = $("#extable").find("." + "ex-body-detail");
+                    let redoStack = $grid2.data("redo-stack");
+                    if (!redoStack || redoStack.length === 0) {
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
                 }
-
-                if (self.undoNumberClick == self.redoNumberClick  ) {
-                    self.enableBtnRedo(false);
-                }
-
-                let numberCellsUpdated = self.calculatorCellUpdated(arrCellUpdated);
-                console.log(numberCellsUpdated.length);
-
             }, 1);
         }
         
