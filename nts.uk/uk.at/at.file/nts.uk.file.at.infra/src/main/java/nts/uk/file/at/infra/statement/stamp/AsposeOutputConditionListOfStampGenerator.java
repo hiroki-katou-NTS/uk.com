@@ -119,8 +119,8 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		/* B1_1, B1_2 */
 		cell.get(0, 0).setStyle(cell.get(0, 0).getStyle());
 		cell.get(0, 0).setValue(TextResource.localize("KDP011_20") + " " + query.getHeader().getDatePeriodHead());
-		cell.get(0, 0).setStyle(cell.get(0, 1).getStyle());
-		cell.get(0, 0).setValue(TextResource.localize("KDP011_51"));
+		cell.get(0, 4).setStyle(cell.get(0, 4).getStyle());
+		cell.get(0, 4).setValue(TextResource.localize("KDP011_51"));
 
 		cell.get(1, 0).setValue(TextResource.localize("KDP011_21"));
 		cell.get(1, 1).setValue(TextResource.localize("KDP011_22"));
