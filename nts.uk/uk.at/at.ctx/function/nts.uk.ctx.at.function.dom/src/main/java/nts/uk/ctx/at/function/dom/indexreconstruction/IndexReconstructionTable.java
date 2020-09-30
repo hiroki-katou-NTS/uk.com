@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -10,8 +8,6 @@ import nts.arc.layer.dom.AggregateRoot;
  * 	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class IndexReconstructionTable extends AggregateRoot {
 
 	/**  カテゴリNO */
@@ -23,6 +19,8 @@ public class IndexReconstructionTable extends AggregateRoot {
 	/** テーブル物理名 */
 	private TableName tablePhysicalName;
 	
+	private IndexReconstructionTable() {}
+	
 	public static IndexReconstructionTable createFromMemento(MementoGetter memento) {
 		IndexReconstructionTable domain = new IndexReconstructionTable();
 		domain.getMemento(memento);
@@ -30,9 +28,9 @@ public class IndexReconstructionTable extends AggregateRoot {
 	}
 	
 	public void getMemento(MementoGetter memento) {
-		this.indexNo = memento.getIndexNo();
-		this.tableJapaneseName = memento.getTableJapaneseName();
-		this.tablePhysicalName = memento.getTablePhysicalName();
+		this.indexNo = new IndexName(memento.getIndexNo());
+		this.tableJapaneseName = memento.getTableJapaneseName() != null ? new TableName(memento.getTableJapaneseName()) : null;
+		this.tablePhysicalName = memento.getTablePhysicalName() != null ? new TableName(memento.getTablePhysicalName()) : null;
 	}
 	
 	public void setMemento(MementoSetter memento) {
@@ -40,7 +38,7 @@ public class IndexReconstructionTable extends AggregateRoot {
 		if (this.tablePhysicalName != null) {
 			memento.setTablePhysicalName(this.tablePhysicalName);
 		}
-		if (this.tablePhysicalName != null) {
+		if (this.tableJapaneseName != null) {
 			memento.setTableJapaneseName(this.tableJapaneseName);
 		}
 	}
@@ -52,8 +50,8 @@ public class IndexReconstructionTable extends AggregateRoot {
 	}
 	
 	public static interface MementoGetter {
-		TableName getTableJapaneseName();
-		TableName getTablePhysicalName();
-		IndexName getIndexNo();
+		String getTableJapaneseName();
+		String getTablePhysicalName();
+		String getIndexNo();
 	}
 }

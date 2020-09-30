@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 	インデックス再構成結果
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Getter
-@NoArgsConstructor
-public class IndexReconstructionResult {
+public class IndexReconstructionResult extends DomainObject {
 
 	/** インデックス名 */
 	private IndexName indexName;

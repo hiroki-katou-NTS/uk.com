@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -9,7 +8,6 @@ import nts.arc.layer.dom.AggregateRoot;
  * 	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
-@NoArgsConstructor
 public class IndexReconstructionCategory extends AggregateRoot {
 
 	/**  カテゴリNO */
@@ -18,6 +16,8 @@ public class IndexReconstructionCategory extends AggregateRoot {
 	/** カテゴリ名 */
 	private CategoryName categoryName;
 	
+	private IndexReconstructionCategory() {}
+	
 	public static IndexReconstructionCategory createFromMemento(MementoGetter memento) {
 		IndexReconstructionCategory domain = new IndexReconstructionCategory();
 		domain.getMemento(memento);
@@ -25,8 +25,8 @@ public class IndexReconstructionCategory extends AggregateRoot {
 	}
 	
 	public void getMemento(MementoGetter memento) {
-		this.indexNo = memento.getIndexNo();
-		this.categoryName = memento.getCategoryName();
+		this.indexNo = new IndexName(memento.getIndexNo());
+		this.categoryName = new CategoryName(memento.getCategoryName());
 	}
 	
 	public void setMemento(MementoSetter memento) {
@@ -40,7 +40,7 @@ public class IndexReconstructionCategory extends AggregateRoot {
 	}
 	
 	public static interface MementoGetter {
-		CategoryName getCategoryName();
-		IndexName getIndexNo();
+		String getIndexNo();
+		String getCategoryName();
 	}
 }

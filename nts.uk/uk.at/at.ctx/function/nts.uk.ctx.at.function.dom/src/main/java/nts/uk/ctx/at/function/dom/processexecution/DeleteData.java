@@ -15,10 +15,13 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @Setter
 @AllArgsConstructor
 public class DeleteData extends DomainObject {
-	/* データの削除区分 */
+	/**
+	 * データの削除区分 
+	 **/
 	private NotUseAtr dataDeletionClassification;
 	
-	/* パターンコード */
-	/* 補助パターンコード */
+	/**
+	 * パターンコード 
+	 **/
 	private Optional<AuxiliaryPatternCode> patternCode;
 }
