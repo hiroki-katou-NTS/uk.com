@@ -43,6 +43,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author anhnm
@@ -262,7 +263,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		if (opAchievementDetail.get().getOpWorkTime().isPresent()) {
 			// 出勤１のデータの状態のチェック
 			LateOrEarlyInfo attend1 = this.checkDataStatus(
-					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1().rawHour()),
+					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime1()),
 					Optional.of(opAchievementDetail.get().getOpWorkTime().get()), listAppSet.getCancelAtr(),
 					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.LATE));
 
@@ -273,7 +274,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		if (opAchievementDetail.get().getOpLeaveTime().isPresent()) {
 			// 退勤１データの状態のチェック
 			LateOrEarlyInfo leave1 = this.checkDataStatus(
-					Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1().rawHour()),
+					Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime1()),
 					Optional.of(opAchievementDetail.get().getOpLeaveTime().get()), listAppSet.getCancelAtr(),
 					new LateOrEarlyInfo(false, 1, false, true, LateOrEarlyAtr.EARLY));
 
@@ -285,7 +286,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpWorkTime2().isPresent()) {
 				// 出勤２のデータの状態のチェック
 				LateOrEarlyInfo attend2 = this.checkDataStatus(
-						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().map(x -> x.rawHour()).orElse(null)),
+						opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2(),
 						Optional.of(opAchievementDetail.get().getOpWorkTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.LATE));
 
@@ -296,7 +297,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpDepartureTime2().isPresent()) {
 				// 退勤２のデータの状態のチェック
 				LateOrEarlyInfo leave2 = this.checkDataStatus(
-						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().map(x -> x.rawHour()).orElse(null)),
+						opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2(),
 						Optional.ofNullable(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.EARLY));
 
@@ -317,9 +318,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 * @param info
 	 * @return
 	 */
-	private LateOrEarlyInfo checkDataStatus(Optional<Integer> scheTime, Optional<Integer> actualTime,
+	private LateOrEarlyInfo checkDataStatus(Optional<TimeWithDayAttr> scheTime, Optional<Integer> actualTime,
 			CancelAtr cancelAtr, LateOrEarlyInfo info) {
-		if (scheTime.isPresent() && actualTime.isPresent() && actualTime.get() > scheTime.get()) {
+		if (scheTime.isPresent() && actualTime.isPresent() && actualTime.get() > scheTime.get().rawHour()) {
 			info.setIsActive(true);
 		}
 		if (cancelAtr.value == 2) {

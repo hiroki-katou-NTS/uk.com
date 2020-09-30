@@ -4,8 +4,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
-import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +44,12 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
 
     @Override
     public void delete(AgreementTimeOfClassification domain) {
-        val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
-                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
-        if(entity.isPresent()){
-            this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
-                    ,domain.getLaborSystemAtr().value));
-        }
+//        val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
+//                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
+//        if(entity.isPresent()){
+//            this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
+//                    ,domain.getLaborSystemAtr().value));
+//        }
     }
 
     @Override

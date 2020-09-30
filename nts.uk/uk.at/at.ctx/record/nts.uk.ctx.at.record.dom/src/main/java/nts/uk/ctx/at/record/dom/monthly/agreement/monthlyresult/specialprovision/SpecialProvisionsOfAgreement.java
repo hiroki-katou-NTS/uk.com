@@ -6,8 +6,8 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +137,7 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
     /**
      * [3] 1ヶ月の申請時間を変更する
      */
-    public void changeApplicationOneMonth(ErrorTimeInMonth errorTimeInMonth, ReasonsForAgreement reasonsForAgreement) {
+    public void changeApplicationOneMonth(OneMonthErrorAlarmTime errorTimeInMonth, ReasonsForAgreement reasonsForAgreement) {
         this.reasonsForAgreement = reasonsForAgreement;
         if (this.applicationTime.getOneMonthTime().isPresent())
             this.applicationTime.getOneMonthTime().get().setErrorTimeInMonth(errorTimeInMonth);
@@ -149,7 +149,7 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
     /**
      * [4] 年間の申請時間を変更する
      */
-    public void changeApplicationYear(ErrorTimeInYear errorTimeInYear, ReasonsForAgreement reasonsForAgreement) {
+    public void changeApplicationYear(OneYearErrorAlarmTime errorTimeInYear, ReasonsForAgreement reasonsForAgreement) {
         this.reasonsForAgreement = reasonsForAgreement;
         if (this.applicationTime.getOneYearTime().isPresent())
             this.applicationTime.getOneYearTime().get().setErrorTimeInYear(errorTimeInYear);

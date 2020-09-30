@@ -53,7 +53,12 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType) {
-		return Optional.empty();
+		List<KrcmtAppReason> entities = this.queryProxy()
+				.query("select a from KrcmtAppReason a where a.pk.applicationType = 1 AND a.pk.companyId = :companyId and a.pk.holidayAppType = :holidayAppType", KrcmtAppReason.class)
+				.setParameter("companyId", companyID)
+				.setParameter("holidayAppType", holidayAppType.value)
+				.getList();
+		return Optional.ofNullable(KrcmtAppReason.toDomain(entities));
 	}
 
 	@Override

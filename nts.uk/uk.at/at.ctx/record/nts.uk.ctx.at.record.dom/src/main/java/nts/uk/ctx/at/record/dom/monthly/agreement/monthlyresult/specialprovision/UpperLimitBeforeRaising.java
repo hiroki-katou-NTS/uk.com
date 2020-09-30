@@ -2,9 +2,10 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+
 
 /**
  * 引き上げる前の上限
@@ -15,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.Erro
 public class UpperLimitBeforeRaising {
 
     /** 1ヶ月の上限*/
-    private ErrorTimeInMonth oneMonthLimit;
+    private OneMonthErrorAlarmTime oneMonthLimit;
 
     /** 1年間の上限*/
-    private ErrorTimeInYear oneYearLimit;
+    private OneYearErrorAlarmTime oneYearLimit;
 
     /** 平均限度時間*/
     private AgreementOneMonthTime averageTimeLimit;

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 
 /**
  * 申請時点の時間外時間（法定休出を含む）

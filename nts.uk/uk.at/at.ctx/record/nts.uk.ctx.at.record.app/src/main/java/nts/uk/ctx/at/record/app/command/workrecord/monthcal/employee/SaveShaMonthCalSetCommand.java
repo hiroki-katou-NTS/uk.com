@@ -9,10 +9,10 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.common.RegularWorkTimeAggrSetDto;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborCalSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforLaborCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaRegulaMonthActCalSet;
 
 /**
  * The Class SaveShaMonthCalSetCommand.
