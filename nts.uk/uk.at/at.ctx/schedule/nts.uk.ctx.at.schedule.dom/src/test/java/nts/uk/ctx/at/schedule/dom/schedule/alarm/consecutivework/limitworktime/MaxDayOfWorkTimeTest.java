@@ -10,8 +10,6 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @RunWith(JMockit.class)
@@ -36,14 +34,11 @@ public class MaxDayOfWorkTimeTest {
 				new WorkTimeCode("002"),
 				new WorkTimeCode("003")
 				);
-		val maxDayOfWorkTime =  new MaxDayOfWorkTime(
-				workTimeCodes,
-				new MaxDay(5));
+		val maxDayOfWorkTime =  new MaxDayOfWorkTime(workTimeCodes, new MaxDay(5));
 
 		assertThat(maxDayOfWorkTime.getMaxDay().v()).isEqualTo(5);
-		assertThat(MaxDayOfWorkTimeHelper.convertToWorkTimeCode(maxDayOfWorkTime.getWorkTimeCodeList()))
-				.containsExactlyInAnyOrderElementsOf(MaxDayOfWorkTimeHelper.convertToWorkTimeCode(workTimeCodes));
-	
+		assertThat(maxDayOfWorkTime.getWorkTimeCodeList()).containsExactlyInAnyOrderElementsOf(workTimeCodes);
+
 	}
 	
 }

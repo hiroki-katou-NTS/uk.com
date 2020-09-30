@@ -2,12 +2,16 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @RunWith(JMockit.class)
 public class MaxDayOfWorkTimeCompanyTest {
 	@Test
@@ -19,10 +23,15 @@ public class MaxDayOfWorkTimeCompanyTest {
 	}
 	
 	@Test
-	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		val maxNumberDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
-		
-		assertThat(maxNumberDayOfPeriodsCom.getCode().v()).isEqualTo("003");
-		assertThat(maxNumberDayOfPeriodsCom.getName().v()).isEqualTo("シフト１");
+	public void create_maxDayOfWorkTimeCompanyTest_success() {
+		val maxDayOfWorkTime = new MaxDayOfWorkTime(
+				Arrays.asList(new WorkTimeCode("001"), new WorkTimeCode("002"), new WorkTimeCode("003")),
+				new MaxDay(5));
+		val maxDayOfWorkTimeCom = new MaxDayOfWorkTimeCompany(new MaxDayOfWorkTimeCode("code"),
+				new MaxDayOfWorkTimeName("name"), maxDayOfWorkTime);
+
+		assertThat(maxDayOfWorkTimeCom.getCode().v()).isEqualTo("code");
+		assertThat(maxDayOfWorkTimeCom.getName().v()).isEqualTo("name");
+		assertThat(maxDayOfWorkTimeCom.getMaxDayOfWorkTime()).isEqualTo(maxDayOfWorkTime);
 	}
 }

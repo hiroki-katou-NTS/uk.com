@@ -28,7 +28,7 @@ public interface MaxDayOfWorkTimeOrganizationRepo {
 	 * @param code
 	 * @return
 	 */
-	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, WorkTimeMaximumCode code);
+	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, MaxDayOfWorkTimeCode code);
 	
 	/**
 	 * delete(対象組織識別情報, 就業時間帯上限コード)
@@ -36,7 +36,7 @@ public interface MaxDayOfWorkTimeOrganizationRepo {
 	 * @param targetOrg
 	 * @param code
 	 */
-	public void delete(String companyId, TargetOrgIdenInfor targetOrg, WorkTimeMaximumCode code);
+	public void delete(String companyId, TargetOrgIdenInfor targetOrg, MaxDayOfWorkTimeCode code);
 	
 	/**
 	 * get
@@ -47,7 +47,7 @@ public interface MaxDayOfWorkTimeOrganizationRepo {
 	 */
 	public Optional<MaxDayOfWorkTimeOrganization> getWithCode(String companyId, 
 															TargetOrgIdenInfor targetOrg, 
-															WorkTimeMaximumCode code);
+															MaxDayOfWorkTimeCode code);
 	
 	/**
 	 * *get

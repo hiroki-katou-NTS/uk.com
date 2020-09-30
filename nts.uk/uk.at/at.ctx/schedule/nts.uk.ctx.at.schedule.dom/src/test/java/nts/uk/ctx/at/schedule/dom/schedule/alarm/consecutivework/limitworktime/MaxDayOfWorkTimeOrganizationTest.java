@@ -2,13 +2,16 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @RunWith(JMockit.class)
 public class MaxDayOfWorkTimeOrganizationTest {
@@ -21,12 +24,18 @@ public class MaxDayOfWorkTimeOrganizationTest {
 	}
 	
 	@Test
-	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		val maxNumberDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
+	public void create_maxDayOfWorkTimeOrg_success() {
+		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
+				new WorkTimeCode("002"),
+				new WorkTimeCode("003")
+				);
+		val maxDayOfWorkTime =  new MaxDayOfWorkTime(workTimeCodes, new MaxDay(5));
+		val maxDayOfWorkTimeOrg = new MaxDayOfWorkTimeOrganization(
+				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
+				new MaxDayOfWorkTimeCode("code"), new MaxDayOfWorkTimeName("name"), maxDayOfWorkTime);
 		
-		assertThat(maxNumberDayOfPeriodsOrg.getTargeOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
-		assertThat(maxNumberDayOfPeriodsOrg.getTargeOrg().getWorkplaceId().get()).isEqualTo("DUMMY");
-		assertThat(maxNumberDayOfPeriodsOrg.getCode().v()).isEqualTo("003");
-		assertThat(maxNumberDayOfPeriodsOrg.getName().v()).isEqualTo("シフト１");
+		assertThat(maxDayOfWorkTimeOrg.getCode().v()).isEqualTo("code");
+		assertThat(maxDayOfWorkTimeOrg.getName().v()).isEqualTo("name");
+		assertThat(maxDayOfWorkTimeOrg.getMaxDayOfWorkTime()).isEqualTo(maxDayOfWorkTime);
 	}
 }

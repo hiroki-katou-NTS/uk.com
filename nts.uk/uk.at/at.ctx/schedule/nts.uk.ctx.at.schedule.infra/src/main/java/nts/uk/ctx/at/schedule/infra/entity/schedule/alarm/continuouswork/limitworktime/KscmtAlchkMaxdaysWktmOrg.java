@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.M
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTime;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumName;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeName;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -63,7 +63,7 @@ public class KscmtAlchkMaxdaysWktmOrg extends ContractUkJpaEntity{
 						TargetOrganizationUnit.valueOf(this.pk.targetUnit), 
 						this.pk.targetId),
 				new WorkTimeMaximumCode(this.pk.code), 
-				new WorkTimeMaximumName(this.name), 
+				new MaxDayOfWorkTimeName(this.name), 
 				new MaxDayOfWorkTime(
 						dtlList.stream().map( dtl -> dtl.toWorkTimeCode()).collect(Collectors.toList()), 
 						new MaxDay(this.maxDays)));

@@ -27,11 +27,9 @@ public class MaxDaysOfConsecutiveAttendanceOrgTest {
 	
 	@Test
 	public void create_maxNumberDaysOfContinuousAttendanceOrg_success() {
-		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");
 		val maxDaysOfConsAtt = new MaxDaysOfConsecutiveAttendance(new ConsecutiveNumberOfDays(5));
-		val maxDaysConsAttOrg = new MaxDaysOfConsecutiveAttendanceOrganization(targetOrg, maxDaysOfConsAtt);
+		val maxDaysConsAttOrg = new MaxDaysOfConsecutiveAttendanceOrganization(TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"), maxDaysOfConsAtt);
 		
-		assertThat(maxDaysConsAttOrg.getTargeOrg()).isEqualTo(targetOrg);
 		assertThat(maxDaysConsAttOrg.getNumberOfDays()).isEqualTo(maxDaysOfConsAtt);
 	}
 

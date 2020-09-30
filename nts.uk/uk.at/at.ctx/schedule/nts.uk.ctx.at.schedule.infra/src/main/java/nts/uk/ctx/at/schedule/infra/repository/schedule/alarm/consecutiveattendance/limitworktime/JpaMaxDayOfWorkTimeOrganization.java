@@ -10,9 +10,9 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumCode;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgDtl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgPk;
@@ -65,7 +65,7 @@ public class JpaMaxDayOfWorkTimeOrganization extends JpaRepository implements Ma
 	}
 
 	@Override
-	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, WorkTimeMaximumCode code) {
+	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, MaxDayOfWorkTimeCode code) {
 		
 		return this.queryProxy()
 				.find(new KscmtAlchkMaxdaysWktmOrgPk(
@@ -78,7 +78,7 @@ public class JpaMaxDayOfWorkTimeOrganization extends JpaRepository implements Ma
 	}
 
 	@Override
-	public void delete(String companyId, TargetOrgIdenInfor targetOrg, WorkTimeMaximumCode code) {
+	public void delete(String companyId, TargetOrgIdenInfor targetOrg, MaxDayOfWorkTimeCode code) {
 		
 		List<KscmtAlchkMaxdaysWktmOrgDtl> maxDaysWktmDtlList = 
 				new NtsStatement( SELECT_MAX_DAYS_WKTM_DTL, this.jdbcProxy())
@@ -102,7 +102,7 @@ public class JpaMaxDayOfWorkTimeOrganization extends JpaRepository implements Ma
 	@Override
 	public Optional<MaxDayOfWorkTimeOrganization> getWithCode(String companyId, 
 														TargetOrgIdenInfor targetOrg,
-														WorkTimeMaximumCode code) {
+														MaxDayOfWorkTimeCode code) {
 		
 		Optional<KscmtAlchkMaxdaysWktmOrg> maxDaysWktm = 
 				new NtsStatement( SELECT_MAX_DAYS_WKTM, this.jdbcProxy())

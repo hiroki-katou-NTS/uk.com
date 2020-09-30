@@ -26,15 +26,14 @@ public class MaxDaysOfContinuousWorkTimeOrgTest {
 	
 	@Test
 	public void create_maxNumberDaysOfContinuousWorkTimeOrg_success() {
-		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");
 		val maxDaysConsWorkTime = new MaxDaysOfConsecutiveWorkTime(
 				Arrays.asList(new WorkTimeCode("001"), new WorkTimeCode("002"), new WorkTimeCode("003")),
 				new ConsecutiveNumberOfDays(5));
 
-		val maxDaysContiAttOrg = new MaxDaysOfContinuousWorkTimeOrganization(targetOrg,
+		val maxDaysContiAttOrg = new MaxDaysOfContinuousWorkTimeOrganization(
+				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new ConsecutiveWorkTimeCode("003"), new ConsecutiveWorkTimeName("name"), maxDaysConsWorkTime);
 
-		assertThat(maxDaysContiAttOrg.getTargeOrg()).isEqualTo(targetOrg);
 		assertThat(maxDaysContiAttOrg.getCode().v()).isEqualTo("003");
 		assertThat(maxDaysContiAttOrg.getName().v()).isEqualTo("name");
 		assertThat(maxDaysContiAttOrg.getMaxDaysContiWorktime()).isEqualTo(maxDaysConsWorkTime);
