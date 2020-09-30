@@ -32,7 +32,7 @@
       </div>
     </div>
     <!-- B2_2 -->
-    <div  v-if="isCondition1" class="paddingSpan">
+    <div class="paddingSpan">
       <span v-if="$app().straight">{{'KAFS07_11' | i18n}}</span>
       <span v-if="!$app().straight">{{'KAFS07_12' | i18n}}</span>
     </div>
