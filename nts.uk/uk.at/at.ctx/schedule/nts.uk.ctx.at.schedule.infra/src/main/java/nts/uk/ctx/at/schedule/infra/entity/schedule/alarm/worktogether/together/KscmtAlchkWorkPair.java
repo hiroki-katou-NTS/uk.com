@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.designation;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.worktogether.together;
 
 import java.io.Serializable;
 import java.util.List;
