@@ -32,8 +32,24 @@ public class WorkTogetherTest {
 	}
 	
 	/**
+	 * inv-2 not 同時に出勤すべき社員の候補.contains( 社員ID )																	
+	 * ケース: 同時に出勤すべき社員の候補の中に社員IDがいる -> Msg_1882
+	 */
+	@Test
+	public void check_inv2_checkEmpMustWorkTogetherLstContainsEmployeeId() {
+		NtsAssert.businessException("Msg_1882", ()-> {
+			WorkTogether.create(
+					"EMPLOYEE_1",
+					Arrays.asList(
+							"EMPLOYEE_1", 
+							"EMPLOYEE_2"
+							));
+		});
+	}
+	
+	/**
 	 * inv-1: 0 <@同時に出勤すべき社員の候補.size() <= 10		
-	 * ケース: 同時に出勤すべき社員の候補がemptyです -> Msg_1881
+	 * ケース: 同時に出勤すべき社員の候補.size() = 0 -> Msg_1881
 	 */
 	@Test
 	public void check_inv1_emptyList() {
@@ -69,25 +85,11 @@ public class WorkTogetherTest {
 		});
 	}
 	
-	/**
-	 * inv-2 not 同時に出勤すべき社員の候補.contains( 社員ID )																	
-	 * ケース: 同時に出勤すべき社員の候補の中に社員IDがいる -> Msg_1882
-	 */
-	@Test
-	public void check_inv2_checkEmpMustWorkTogetherLstContainsEmployeeId() {
-		NtsAssert.businessException("Msg_1882", ()-> {
-			WorkTogether.create(
-					"EMPLOYEE_1",
-					Arrays.asList(
-							"EMPLOYEE_1", 
-							"EMPLOYEE_2"
-							));
-		});
-	}
+
 	
 	/**
 	 * 同時出勤指定を作成する：成功(success)
-	 * 0 <@同時に出勤すべき社員の候補.size() <= 10
+	 * 同時に出勤すべき社員の候補.size() = 10
 	 * 同時に出勤すべき社員の候補の中に社員IDがない
 	 */
 	@Test
@@ -101,7 +103,8 @@ public class WorkTogetherTest {
 				"EMPLOYEE_6", 
 				"EMPLOYEE_7",
 				"EMPLOYEE_8",
-				"EMPLOYEE_9"
+				"EMPLOYEE_9",
+				"EMPLOYEE_10"
 				);
 		val workTogether =  WorkTogether.create("EMPLOYEE_0", employeeIds);
 		
