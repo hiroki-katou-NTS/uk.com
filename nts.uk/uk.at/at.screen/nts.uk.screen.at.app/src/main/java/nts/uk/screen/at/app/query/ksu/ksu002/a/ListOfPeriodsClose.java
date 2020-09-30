@@ -46,16 +46,30 @@ public class ListOfPeriodsClose {
 	@Inject
 	private ClosureRepository closureRepository;
 	
+	@Inject
+	private TheInitialDisplayDate theInitialDisplayDate;
 	
+	
+	@SuppressWarnings("unused")
 	public List<PeriodsCloseDto> get(ListOfPeriodsCloseInput input) {
+		
+		int yearMonth;
+		Integer i = new Integer(input.getYearMonth());
+		
+		if (i != null) {
+			yearMonth = input.yearMonth;
+		} else {
+			yearMonth = this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
+		}
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
 		CacheCarrier cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
+		String sid = AppContexts.user().employeeId();
 		
 		List<PeriodsCloseDto> dtos = new ArrayList<>();
 		
-		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, input.getSid(), GeneralDate.today(), YearMonth.of(input.getYearMonth()));
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(yearMonth));
 		
 		for (ClosurePeriod closurePeriod : periods) {
 			PeriodsCloseDto closeDto = new PeriodsCloseDto();

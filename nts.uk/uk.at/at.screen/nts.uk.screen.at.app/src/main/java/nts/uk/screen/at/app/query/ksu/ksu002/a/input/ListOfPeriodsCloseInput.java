@@ -15,9 +15,5 @@ import lombok.NoArgsConstructor;
 @Data
 
 public class ListOfPeriodsCloseInput {
-
-	public String sid;
-
 	public int yearMonth;
-
 }

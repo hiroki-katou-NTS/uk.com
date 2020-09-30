@@ -16,6 +16,8 @@ import nts.arc.time.GeneralDate;
 @Data
 public class PeriodsCloseDto {
 	
+	public int yearMonth;
+	
 	// 締め名称
 	private String closureName;
 	
