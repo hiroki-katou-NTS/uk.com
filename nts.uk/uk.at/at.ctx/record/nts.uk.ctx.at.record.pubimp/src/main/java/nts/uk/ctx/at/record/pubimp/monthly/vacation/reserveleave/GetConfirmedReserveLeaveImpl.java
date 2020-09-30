@@ -55,7 +55,7 @@ public class GetConfirmedReserveLeaveImpl implements GetConfirmedReserveLeave {
 			val yearMonth = data.getYearMonth();
 			val reserveLeave = data.getReserveLeave();
 			val usedNumber = reserveLeave.getUsedNumber();
-			val remNumber = reserveLeave.getRemainingNumber();
+			val remNumber = reserveLeave.getRemainingNumberInfo().getTotalRemaining();
 			
 			ReserveLeaveUsedDayNumber usedDays =
 					new ReserveLeaveUsedDayNumber(usedNumber.getUsedDays().v());
@@ -114,7 +114,7 @@ public class GetConfirmedReserveLeaveImpl implements GetConfirmedReserveLeave {
 				val yearMonth = data.getYearMonth();
 				val reserveLeave = data.getReserveLeave();
 				val usedNumber = reserveLeave.getUsedNumber();
-				val remNumber = reserveLeave.getRemainingNumber();
+				val remNumber = reserveLeave.getRemainingNumberInfo().getTotalRemaining();
 				
 				ReserveLeaveUsedDayNumber usedDays = new ReserveLeaveUsedDayNumber(usedNumber.getUsedDays().v());
 				ReserveLeaveRemainingDayNumber remainingDays = new ReserveLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());

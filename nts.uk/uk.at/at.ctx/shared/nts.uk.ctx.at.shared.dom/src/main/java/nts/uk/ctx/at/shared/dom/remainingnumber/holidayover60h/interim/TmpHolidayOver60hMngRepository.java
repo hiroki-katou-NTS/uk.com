@@ -34,14 +34,4 @@ public interface TmpHolidayOver60hMngRepository {
 	 * @return
 	 */
 	List<TmpHolidayOver60hMng> getBySidPeriod(String sid, DatePeriod period);
-	
-	/**
-	 * ドメインモデル「暫定60H超休管理データ」を取得
-	 *
-	 * @param employee the employee
-	 * @param date the date
-	 * @param remainType the remain type
-	 * @return the by employee id and date and remain type
-	 */
-	public List<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employee, DatePeriod period, int remainType);
 }

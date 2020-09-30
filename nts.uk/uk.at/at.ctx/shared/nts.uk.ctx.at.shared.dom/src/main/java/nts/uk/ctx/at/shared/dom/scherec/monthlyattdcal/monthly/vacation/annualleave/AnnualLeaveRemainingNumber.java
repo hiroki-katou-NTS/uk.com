@@ -7,24 +7,27 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 
 /**
  * 年休残数
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AnnualLeaveRemainingNumber implements Cloneable {
 
 	/** 合計残日数 */
 	@Setter
 	private AnnualLeaveRemainingDayNumber totalRemainingDays;
+	
 	/** 合計残時間 */
-	private Optional<RemainingMinutes> totalRemainingTime;
+	private Optional<AnnualLeaveRemainingTime> totalRemainingTime;
+	
 	/** 明細 */
 	private List<AnnualLeaveRemainingDetail> details;
 	
@@ -47,7 +50,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 */
 	public static AnnualLeaveRemainingNumber of(
 			AnnualLeaveRemainingDayNumber totalRemainingDays,
-			Optional<RemainingMinutes> totalRemainingTime,
+			Optional<AnnualLeaveRemainingTime> totalRemainingTime,
 			List<AnnualLeaveRemainingDetail> details){
 		
 		AnnualLeaveRemainingNumber domain = new AnnualLeaveRemainingNumber();
@@ -57,13 +60,16 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		return domain;
 	}
 	
+	/**
+	 * クローン
+	 */
 	@Override
 	public AnnualLeaveRemainingNumber clone() {
 		AnnualLeaveRemainingNumber cloned = new AnnualLeaveRemainingNumber();
 		try {
 			cloned.totalRemainingDays = new AnnualLeaveRemainingDayNumber(this.totalRemainingDays.v());
 			if (this.totalRemainingTime.isPresent()){
-				cloned.totalRemainingTime = Optional.of(new RemainingMinutes(this.totalRemainingTime.get().v()));
+				cloned.totalRemainingTime = Optional.of(new AnnualLeaveRemainingTime(this.totalRemainingTime.get().v()));
 			}
 			for (val detail : this.details) cloned.details.add(detail.clone());
 		}
@@ -82,8 +88,9 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
 		this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(0.0);
+		this.totalRemainingTime = Optional.of( new AnnualLeaveRemainingTime(0));
 		
-		// 「年休付与残数データ」を取得
+		// 「年休付与残数データ」を取得  ooooo 順序を考慮する
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		
 		for (val remainingData : remainingDataList){
@@ -107,6 +114,12 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			// 合計残日数　←　「明細．日数」の合計
 			this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(
 					this.totalRemainingDays.v() + remainingNumber.getDays().v());
+			
+			// 合計残時間　←　「明細．時間」の合計
+			if ( remainingNumber.getMinutes().isPresent() ){
+				this.totalRemainingTime = Optional.of( new AnnualLeaveRemainingTime(
+					this.totalRemainingTime.get().v() + remainingNumber.getMinutes().get().v()));
+			}
 		}
 	}
 	
@@ -116,5 +129,22 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 */
 	public void setDaysOfAllDetail(Double days){
 		for (val detail : this.details) detail.setDays(new AnnualLeaveRemainingDayNumber(days));
+	}
+	
+	/**
+	 * 残数がマイナスかチェックしてマイナスのときにはtrueを返す
+	 * @return
+	 */
+	public boolean isMinus(){
+		if ( totalRemainingDays.v() < 0.0 ){
+			return true;
+		}
+		if ( totalRemainingTime.isPresent() ){
+			if ( this.totalRemainingDays.v() == 0.0 
+				&& this.totalRemainingTime.get().v() < 0 ){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -32,7 +32,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.Aggr
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 
 /**
  * 年休　テストコード
@@ -200,18 +200,13 @@ public class TestAnnualLeave {
 						aggrPeriod,
 						mode,
 						criterialDate,
-						isGetNextMonthData,
+//						isGetNextMonthData,
 						isCalcAttendanceRate,
 						Optional.of(isOverWrite),
 						Optional.of(testDataForOverWriteList),
 						Optional.empty(), 	// 前回の年休の集計結果
-						noCheckStartDate,	// 集計開始日を締め開始日とする　（締め開始日を確認しない）
-						Optional.of(isOutShortRemain), // 不足分付与残数データ出力区分
-						Optional.of(aggrPastMonthMode), // 過去月集計モード
-						Optional.empty(),	// 年月
-						Optional.empty(),
-						Optional.empty(),
-						Optional.empty());
+						Optional.of(aggrPastMonthMode) // 過去月集計モード
+						);
 				
 				if ( aggrResultOfAnnualLeaveOpt.isPresent() ){
 					
@@ -271,7 +266,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -362,7 +357,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -455,7 +450,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -547,7 +542,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -640,7 +635,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 半日年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -732,7 +727,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 半日年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					

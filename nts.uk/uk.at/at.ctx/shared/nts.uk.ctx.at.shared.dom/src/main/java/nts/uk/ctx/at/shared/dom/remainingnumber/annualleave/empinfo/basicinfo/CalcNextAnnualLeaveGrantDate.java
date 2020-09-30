@@ -110,6 +110,7 @@ public class CalcNextAnnualLeaveGrantDate {
 	
 	/**
 	 * 次回年休付与を計算
+	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュデータ
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間

@@ -27,6 +27,8 @@ public class NextAnnualLeaveGrant {
 	private GrantDays grantDays;
 	/** 回数 */
 	private GrantNum times;
+	/** 期限日 */
+	private GeneralDate deadLine;
 	/** 時間年休上限日数 */
 	private Optional<LimitedTimeHdDays> timeAnnualLeaveMaxDays;
 	/** 時間年休上限時間 */

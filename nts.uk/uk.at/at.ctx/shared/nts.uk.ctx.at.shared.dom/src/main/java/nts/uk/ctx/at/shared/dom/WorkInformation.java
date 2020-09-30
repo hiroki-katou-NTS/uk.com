@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,16 +8,15 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -26,73 +26,45 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ken_takasu
  *
  */
-public class WorkInformation {
+public class WorkInformation implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private WorkTypeCode workTypeCode;
-	
-	private Optional<WorkTimeCode> workTimeCode;
+	private WorkTimeCode workTimeCode;
 
-	public WorkInformation(String workTypeCode, String workTimeCode) {
-		this.setWorkTypeCode(workTypeCode);
-		this.setWorkTimeCode(workTimeCode);
+	public WorkInformation(String workTimeCode, String workTypeCode) {
+
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
+		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
 
-	public WorkInformation(WorkTypeCode workTypeCode, WorkTimeCode workTimeCode) {
-		this.setWorkTypeCode(workTypeCode);
-		this.setWorkTimeCode(workTimeCode);
+	public WorkInformation(WorkTimeCode workTimeCode, WorkTypeCode workTypeCode) {
+		this.workTimeCode = workTimeCode;
+		this.workTypeCode = workTypeCode;
 	}
-	
-	public WorkInformation clone() {
-		if (workTypeCode != null && workTimeCode != null) {
-			return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
-		}
 
-		if (workTypeCode == null && workTimeCode == null) {
-			return new WorkInformation("", "");
-		}
-
-		if (workTypeCode == null) {
-			return new WorkInformation("", workTimeCode.map(wtc -> wtc.v()).orElse(""));
-		}
-
-		return new WorkInformation(workTypeCode.v(), "");
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode;
 	}
 
 	public WorkTypeCode getWorkTypeCode() {
 		return this.workTypeCode;
 	}
 
-	public void setWorkTypeCode(String workTypeCode) {
-		if (!StringUtils.isEmpty(workTypeCode)) {
-			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
-		}
+	public void removeWorkTimeInHolydayWorkType() {
+		this.workTimeCode = null;
+	}
+
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.workTimeCode = workTimeCode;
 	}
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
-	}
-
-	public WorkTimeCode getWorkTimeCode() {
-		return this.workTimeCode.orElse(null);
-	}
-	
-	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
-		return this.workTimeCode;
-	}
-
-	public void removeWorkTimeInHolydayWorkType() {
-		this.workTimeCode = Optional.empty();
-	}
-
-	public void setWorkTimeCode(String workTimeCode) {
-		if (StringUtils.isEmpty(workTimeCode)) {
-			this.workTimeCode = Optional.empty();
-		} else {
-			this.workTimeCode = Optional.of(new WorkTimeCode(workTimeCode));
-		}
-	}
-
-	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.workTimeCode = Optional.ofNullable(workTimeCode);
 	}
 
 	/**
@@ -119,10 +91,6 @@ public class WorkInformation {
 		if (!workType.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
 		}
-		
-		if(workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
-			return ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED;
-		}
 
 		// require.勤務種類を取得する(@勤務種類コード)
 		SetupType setupType = require.checkNeededOfWorkTimeSetting(this.workTypeCode.v());
@@ -130,34 +98,32 @@ public class WorkInformation {
 		switch (setupType) {
 		case REQUIRED:// 必須
 			// @就業時間帯コード ==null
-			if (!this.workTimeCode.isPresent()) {
+			if (this.getWorkTimeCode() == null) {
 				return ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET;
 			}
 			break;
-		case OPTIONAL:// 任意
+		case OPTIONAL:
 			// @就業時間帯コード ==null
-			if (!this.workTimeCode.isPresent() ) {
+			if (this.getWorkTimeCode() == null) {
 				return ErrorStatusWorkInfo.NORMAL;
 			}
 			break;
-		default: // 不要
-			// @就業時間帯コード.isPresent
-			if (!this.workTimeCode.isPresent() ) {
+		default:
+			// @就業時間帯コード ==null
+			if (this.getWorkTimeCode() == null) {
 				return ErrorStatusWorkInfo.NORMAL;
 			}
+			// @就業時間帯コード.isPresent
 			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 
 		}
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode.isPresent() ? this.workTimeCode.get().v() : null);
+				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.v());
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
-		}
-		if(workTimeSetting.get().getAbolishAtr() == AbolishAtr.ABOLISH ) {
-			return ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED;
 		}
 
 		return ErrorStatusWorkInfo.NORMAL;
@@ -168,12 +134,12 @@ public class WorkInformation {
 	 * 
 	 * @return WorkStyle 出勤休日区分
 	 */
-	public Optional<WorkStyle> getWorkStyle(Require require) {
-		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode == null ? null : this.workTypeCode.v());
+	public WorkStyle getWorkStyle(Require require) {
+		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
 		if (workStyle == null) {
-			return Optional.empty();
+			throw new BusinessException("Msg_1636");
 		}
-		return Optional.of(workStyle);
+		return workStyle;
 	}
 
 	/**
@@ -189,22 +155,22 @@ public class WorkInformation {
 			return Optional.empty();
 		}
 		// @就業時間帯コード.isEmpty()
-		if (!this.workTimeCode.isPresent()) {
+		if (this.getWorkTimeCode() == null) {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
-		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.get().v());
+		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.v());
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		// $就業時間帯の設定.所定時間帯を取得する( $就業時間帯の設定.会社ID, @勤務種類コード, Optional.empty )
-		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.get().v(), this.workTypeCode.v(), null)
+		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.v(), this.workTypeCode.v(), null)
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC
-		listTimezoneUse = listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
+		listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
 				.collect(Collectors.toList());
 		// map 時間帯#時間帯を作る( $.開始, $.終了 )
 		List<TimeZone> listTimeZone = listTimezoneUse.stream().map(i -> new TimeZone(i.getStart(), i.getEnd()))
@@ -265,8 +231,6 @@ public class WorkInformation {
 			return false;
 		}
 		
-		return workTimeCode
-				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
-				.orElse(false);
+		return workTimeCode.equals("102") || workTimeCode.equals("103");
 	}
 }

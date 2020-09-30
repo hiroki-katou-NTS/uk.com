@@ -122,7 +122,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 				tmp.add(new RsvLeaUsedCurrentMonExport(
 						key,
 						withMinus.getUsedNumber().getUsedDays(),
-						withMinus.getRemainingNumber().getTotalRemainingDays()));
+						withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays()));
 			}
 		});
 		List<RsvLeaUsedCurrentMonExport> results = new ArrayList<>();
@@ -201,7 +201,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 				results.add(new RsvLeaUsedCurrentMonExport(
 						key,
 						withMinus.getUsedNumber().getUsedDays(),
-						withMinus.getRemainingNumber().getTotalRemainingDays()));
+						withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays()));
 			}
 		}
 		// 年月毎積立年休の集計結果を返す

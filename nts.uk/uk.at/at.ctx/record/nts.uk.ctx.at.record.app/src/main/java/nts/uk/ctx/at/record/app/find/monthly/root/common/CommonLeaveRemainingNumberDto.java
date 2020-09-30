@@ -7,17 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
 
 @Data
 /** 年休残数 */
@@ -49,18 +48,7 @@ public class CommonLeaveRemainingNumberDto implements ItemConst {
 	public AnnualLeaveRemainingNumber toDomain() {
 		return AnnualLeaveRemainingNumber.of(
 				new AnnualLeaveRemainingDayNumber(totalRemainingDays), 
-				Optional.of(new RemainingMinutes(totalRemainingTime)), 
+				Optional.of(new AnnualLeaveRemainingTime(totalRemainingTime)), 
 				ConvertHelper.mapTo(details, c -> c == null ? new AnnualLeaveRemainingDetail(GeneralDate.today()) : c.toDomain()));
-	}
-	public static CommonLeaveRemainingNumberDto from(ReserveLeaveRemainingNumber domain) {
-		return domain == null ? null : new CommonLeaveRemainingNumberDto(
-				domain.getTotalRemainingDays().v(), 0, 
-				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
-	}
-	
-	public ReserveLeaveRemainingNumber toReserveDomain() {
-		return ReserveLeaveRemainingNumber.of(
-				new ReserveLeaveRemainingDayNumber(totalRemainingDays), 
-				ConvertHelper.mapTo(details, c -> c == null ? null : c.toReserveDomain()));
 	}
 }

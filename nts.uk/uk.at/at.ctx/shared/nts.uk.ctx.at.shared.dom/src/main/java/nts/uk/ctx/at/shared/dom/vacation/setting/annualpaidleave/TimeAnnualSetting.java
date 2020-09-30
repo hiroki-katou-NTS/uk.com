@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -11,12 +13,18 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
- * The Class TimeVacationSetting.
+ * 　時間年休管理設定
+ * The Class TimeAnnualSetting.
  */
 @Getter
-public class TimeAnnualSetting extends DomainObject {
+public class TimeAnnualSetting extends DomainObject implements Serializable {
 
-    /** The time manage type. */
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The time manage type. */
     // 時間年休管理区分
     private ManageDistinct timeManageType;
 

@@ -6,7 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+/**
+ * 年月
+ * @author masaaki_jinno
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -18,9 +19,13 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  *
  */
 @Getter
-public class AnnualLeaveRemainingHistory extends AggregateRoot {
+public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serializable{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String cid;
 	/**
 	 * 社員ID
@@ -67,6 +72,7 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
 
 
+	public AnnualLeaveRemainingHistory(){}
 
 	public AnnualLeaveRemainingHistory(String cID, String employeeId, Integer yearMonth,
 			Integer clousureId, Integer closureDay, Boolean isLastDayOfMonth, GeneralDate grantDate,
@@ -106,7 +112,7 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot {
 		this.deadline = data.getDeadline();
 		this.expirationStatus = data.getExpirationStatus();
 		this.registerType = data.getRegisterType();
-		this.details = data.getDetails();
+		this.details = (AnnualLeaveNumberInfo) data.getDetails();
 		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
 	}
 

@@ -17,9 +17,21 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
@@ -37,21 +49,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -117,26 +117,26 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumber().getUsedDays().getUsedDays());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
 
 			result.setUsedMinutes(
-					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-							.getUsedTime()
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
+							.getUsedNumber().getUsedTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime()
+											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
 											.v())
 									: Optional.empty());
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getRemainingNumber().getTotalRemainingDays());
+					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
 
 			result.setRemainMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+											.getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 											.get().v())
 									: Optional.empty());
 
@@ -145,6 +145,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// 次回年休付与を計算
 			List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier, companyId, employeeId, Optional.empty());
+			
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
 				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
@@ -280,7 +281,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
 			if(asOfPeriodEnd != null){
 				// 年休（マイナスあり）
-				RealAnnualLeave  realAnnualLeave = asOfPeriodEnd.getRemainingNumber().getAnnualLeaveWithMinus();
+				AnnualLeave  realAnnualLeave = asOfPeriodEnd.getRemainingNumber().getAnnualLeaveWithMinus();
 				// 半日年休（マイナスあり）
 				Optional<HalfDayAnnualLeave> halfDayAnnualLeaveWithMinus = asOfPeriodEnd.getRemainingNumber().getHalfDayAnnualLeaveWithMinus();
 				// 時間年休（マイナスあり） 
@@ -325,17 +326,17 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				Integer annualLeaveGrantTime = 0;
 				// set 年休残数日数
 				Double annualLeaveGrantDay = 0.00;
-				if(realAnnualLeave.getRemainingNumberAfterGrant().isPresent()){
-					AnnualLeaveRemainingNumber remainingNumberAfterGrant = realAnnualLeave.getRemainingNumberAfterGrant().get();
+				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
+					AnnualLeaveRemainingNumber remainingNumberAfterGrant = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get();
 					if(remainingNumberAfterGrant.getTotalRemainingTime().isPresent()){
 						annualLeaveGrantPostTime = remainingNumberAfterGrant.getTotalRemainingTime().get().v();
 					}
 					annualLeaveGrantPostDay = remainingNumberAfterGrant.getTotalRemainingDays().v();
 				}
-				if(realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
-					annualLeaveGrantPreTime = realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
+				if(realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()){
+					annualLeaveGrantPreTime = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v();
 				}
-				annualLeaveGrantPreDay = realAnnualLeave.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+				annualLeaveGrantPreDay = realAnnualLeave.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
 				// 取得結果を出力用クラスに格納 
 				AnnualLeaveRemainingNumberExport annualLeaveRemainingNumberExport = new AnnualLeaveRemainingNumberExport(
 						annualLeaveGrantPreDay,
@@ -463,6 +464,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		val cacheCarrier = new CacheCarrier();
 		
 		NextHolidayGrantDate result = new NextHolidayGrantDate();
+		
 		List<NextAnnualLeaveGrant> annLeaGrant = CalcNextAnnualLeaveGrantDate.calNextHdGrantV2(
 				require, cacheCarrier, companyId, employeeId, Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), closureDate);
@@ -579,34 +581,35 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				return null;
 			}
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumber().getUsedDays().getUsedDays());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
 
 			result.setUsedMinutes(
-					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getUsedNumberInfo().getUsedNumber()
 							.getUsedTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumber().getUsedTime().get().getUsedTime()
+											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
 											.v())
 									: Optional.empty());
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getRemainingNumber().getTotalRemainingDays());
+					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
 
 			result.setRemainMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 							.isPresent()
 									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime()
+											.getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime()
 											.get().v())
 									: Optional.empty());
 
 			// ドメインモデル「年休社員基本情報」を取得   
 //			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
-			List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, companyId, employeeId,
-					Optional.empty());
+			List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(require, 
+					cacheCarrier, companyId, employeeId, Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
 				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());

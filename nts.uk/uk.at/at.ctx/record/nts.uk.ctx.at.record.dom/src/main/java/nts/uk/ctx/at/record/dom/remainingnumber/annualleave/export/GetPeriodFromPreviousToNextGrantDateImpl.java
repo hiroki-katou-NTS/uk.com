@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.Ca
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPreviousToNextGrantDate{
 
@@ -52,7 +52,6 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 	public Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-	
 		//ドメインモデル「年休社員基本情報」を取得する
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt = annLeaEmpBasicInfoRepository.get(sid);
 		if(!annualLeaveEmpBasicInfoOpt.isPresent()) {
@@ -67,8 +66,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			DatePeriod period = new DatePeriod(employeeInfor.getEntryDate(), lstAnnGrantNotDate.get(0).getGrantDate().addYears(1));
 			//入社年月日～次回年休付与日までの年休付与日を全て取得
 			lstAnnGrantDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid, 
-					sid, 
-					Optional.of(period));
+					sid, Optional.of(period));
 		}
 		lstAnnGrantDate.addAll(lstAnnGrantNotDate);
 		if(lstAnnGrantDate.isEmpty()) {

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantrem
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 
 /**
  * 60H超休付与残数データ 
@@ -11,6 +11,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  */
 @Getter
 @NoArgsConstructor
-public class HolidayOver60hGrantRemainingData extends LeaveGrantRemainingData {
+public class HolidayOver60hGrantRemainingData extends LeaveGrantRemaining {
 
 }

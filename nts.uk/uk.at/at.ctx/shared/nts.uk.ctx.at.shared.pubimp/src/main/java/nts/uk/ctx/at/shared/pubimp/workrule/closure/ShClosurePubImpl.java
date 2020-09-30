@@ -21,7 +21,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.app.workrule.ClosureCache;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -31,6 +31,8 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class ShortWorkTimePubImpl.
@@ -66,10 +68,15 @@ public class ShClosurePubImpl implements ShClosurePub {
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
 		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		
+		ClosureDate closureDate = closure.getHistoryByYearMonth(processingYm).get().getClosureDate();
 
 		// Return
-		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
-				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
+		return Optional.of(PresentClosingPeriodExport.builder()
+				.processingYm(processingYm)
+				.closureStartDate(closurePeriod.start())
+				.closureEndDate(closurePeriod.end())
+				.closureDate(new ClosureDateExport(closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth()))
 				.build());
 	}
 	

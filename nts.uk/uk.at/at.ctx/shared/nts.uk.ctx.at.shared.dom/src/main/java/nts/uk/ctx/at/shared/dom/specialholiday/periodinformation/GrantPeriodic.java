@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 @Getter
 @Setter
 public class GrantPeriodic extends DomainObject {
+	
 	/** 会社ID */
 	private String companyId;
 	

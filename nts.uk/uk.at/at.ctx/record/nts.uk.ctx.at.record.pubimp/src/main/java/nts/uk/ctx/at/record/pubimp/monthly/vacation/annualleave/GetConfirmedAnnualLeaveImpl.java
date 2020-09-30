@@ -57,11 +57,11 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 			
 			val yearMonth = data.getYearMonth();
 			val annualLeave = data.getAnnualLeave();
-			val usedNumber = annualLeave.getUsedNumber();
-			val remNumber = annualLeave.getRemainingNumber();
+			val usedNumber = annualLeave.getUsedNumberInfo().getUsedNumber();
+			val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 			
 			AnnualLeaveUsedDayNumber usedDays =
-					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDayNumber().v());
 			UsedMinutes usedTime = null;
 			if (usedNumber.getUsedTime().isPresent()){
 				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
@@ -138,11 +138,11 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 				// 「締め済」でないデータは、除く
 				val yearMonth = data.getYearMonth();
 				val annualLeave = data.getAnnualLeave();
-				val usedNumber = annualLeave.getUsedNumber();
-				val remNumber = annualLeave.getRemainingNumber();
+				val usedNumber = annualLeave.getUsedNumberInfo().getUsedNumber();
+				val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 				
 				AnnualLeaveUsedDayNumber usedDays =
-						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDayNumber().v());
 				UsedMinutes usedTime = null;
 				if (usedNumber.getUsedTime().isPresent()){
 					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());

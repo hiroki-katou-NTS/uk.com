@@ -2,13 +2,14 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserve
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 
 /**
  * 積立年休残数
@@ -20,6 +21,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/** 合計残日数 */
 	@Setter
 	private ReserveLeaveRemainingDayNumber totalRemainingDays;
+	
 	/** 明細 */
 	private List<ReserveLeaveRemainingDetail> details;
 	
@@ -100,4 +102,5 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public void setDaysOfAllDetail(Double days){
 		for (val detail : this.details) detail.setDays(new ReserveLeaveRemainingDayNumber(days));
 	}
+	
 }

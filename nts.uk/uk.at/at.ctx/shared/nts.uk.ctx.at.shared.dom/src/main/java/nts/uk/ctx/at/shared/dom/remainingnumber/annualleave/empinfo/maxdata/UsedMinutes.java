@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 @TimeRange(min ="0:00", max="999:59")
-public class UsedMinutes extends TimeDurationPrimitiveValue<UsedMinutes>{
+public class UsedMinutes extends TimeDurationPrimitiveValue<UsedMinutes> implements Serializable{
 
 	private static final long serialVersionUID = -8135525580841453174L;
 

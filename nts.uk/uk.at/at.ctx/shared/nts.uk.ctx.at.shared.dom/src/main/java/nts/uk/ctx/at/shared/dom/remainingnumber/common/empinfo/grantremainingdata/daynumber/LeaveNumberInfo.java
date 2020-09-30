@@ -31,6 +31,7 @@ public class LeaveNumberInfo {
 	/**
 	 * 残数
 	 */
+	@Setter
 	protected LeaveRemainingNumber remainingNumber;
 	
 	/**

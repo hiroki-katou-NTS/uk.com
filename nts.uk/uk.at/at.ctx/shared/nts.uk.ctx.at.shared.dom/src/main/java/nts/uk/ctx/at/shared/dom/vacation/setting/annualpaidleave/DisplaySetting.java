@@ -4,15 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 
 /**
  * The Class DisplaySetting.
  */
 @Builder
-public class DisplaySetting {
+public class DisplaySetting implements Serializable{
     
-    /** The next grant day display. */
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The next grant day display. */
     // 次回付与日数表示区分
     public DisplayDivision nextGrantDayDisplay;
     

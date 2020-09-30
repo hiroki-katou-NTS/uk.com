@@ -1,12 +1,18 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.interimremain;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.残数管理.暫定残数管理
  * 暫定残数管理データ
@@ -16,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class InterimRemain extends AggregateRoot{
 	/**
 	 * 残数管理データID
@@ -46,6 +53,7 @@ public class InterimRemain extends AggregateRoot{
 		this.sID = sID;
 		this.ymd = ymd;
 		this.remainManaID = remainManaID;
+		
 	}
 	public InterimRemain(String employeeId, GeneralDate end) {
 		super();

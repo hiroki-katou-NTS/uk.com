@@ -57,23 +57,23 @@ public class LeaveUndigestNumber {
 	
 	/**
 	 * 残数を加算
-	 * @param aLeaveUndigestNumber
+	 * @param leaveUndigestNumber
 	 */
-	public void add(LeaveUndigestNumber aLeaveUndigestNumber){
+	public void add(LeaveUndigestNumber leaveUndigestNumber){
 		// 日付加算
 		days = days.add(getDays());
 		
 		// 時間加算
-		if ( aLeaveUndigestNumber.getMinutes().isPresent() ){
+		if ( leaveUndigestNumber.getMinutes().isPresent() ){
 			if ( this.getMinutes().isPresent() ){
 				this.setMinutes(Optional.of(
 					this.getMinutes().get().add(
-							aLeaveUndigestNumber.getMinutes().get())));
+							leaveUndigestNumber.getMinutes().get())));
 			}
 			else
 			{
 				this.setMinutes(Optional.of(new LeaveUndigestTime(
-						aLeaveUndigestNumber.getMinutes().get().v())));
+						leaveUndigestNumber.getMinutes().get().v())));
 			}
 		}
 	}

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -12,9 +14,14 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 年休管理設定
 @Getter
-public class ManageAnnualSetting extends DomainObject {
+public class ManageAnnualSetting extends DomainObject implements Serializable{
     
-    /** The maximum day vacation. */
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The maximum day vacation. */
     // 付与上限日数
     private AnnualLeaveGrantDay maxGrantDay;
     

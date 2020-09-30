@@ -18,10 +18,14 @@ public class AggregatePeriodWork {
 
 	/** 期間 */
 	private DatePeriod period;
+	/** 期間終了内 */
+	private boolean dayBeforePeriodEnd;
 	/** 期間終了後翌日 */
 	private boolean nextDayAfterPeriodEnd;
 	/** 付与フラグ */
 	private boolean grantAtr;
+	/** 何回目の付与なのか */
+	private int grantNumber = 0;	
 	/** 付与後 */
 	private boolean afterGrant;
 	/** 消滅フラグ */
@@ -35,6 +39,7 @@ public class AggregatePeriodWork {
 	public AggregatePeriodWork(){
 		
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		this.dayBeforePeriodEnd = false;
 		this.nextDayAfterPeriodEnd = false;
 		this.grantAtr = false;
 		this.afterGrant = false;
@@ -54,6 +59,7 @@ public class AggregatePeriodWork {
 	 */
 	public static AggregatePeriodWork of(
 			DatePeriod period,
+			boolean dayBeforePeriodEnd,
 			boolean nextDayAfterPeriodEnd,
 			boolean grantAtr,
 			boolean afterGrant,
@@ -62,6 +68,7 @@ public class AggregatePeriodWork {
 		
 		AggregatePeriodWork domain = new AggregatePeriodWork();
 		domain.period = period;
+		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;
 		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
 		domain.grantAtr = grantAtr;
 		domain.afterGrant = afterGrant;

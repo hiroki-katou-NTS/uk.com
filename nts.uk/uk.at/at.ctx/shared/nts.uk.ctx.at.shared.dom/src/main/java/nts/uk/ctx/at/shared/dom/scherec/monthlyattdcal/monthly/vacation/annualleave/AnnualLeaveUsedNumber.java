@@ -1,20 +1,31 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 年休使用数
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveUsedNumber implements Cloneable {
+@Setter
+public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptional {
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 使用日数 */
 	private AnnualLeaveUsedDays usedDays;
+	
 	/** 使用時間 */
-	private Optional<TimeAnnualLeaveUsedTime> usedTime;
+	private Optional<AnnualLeaveUsedTime> usedTime;
 	
 	/**
 	 * コンストラクタ
@@ -33,7 +44,7 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 	 */
 	public static AnnualLeaveUsedNumber of(
 			AnnualLeaveUsedDays usedDays,
-			Optional<TimeAnnualLeaveUsedTime> usedTime){
+			Optional<AnnualLeaveUsedTime> usedTime){
 		
 		AnnualLeaveUsedNumber domain = new AnnualLeaveUsedNumber();
 		domain.usedDays = usedDays;
@@ -55,4 +66,25 @@ public class AnnualLeaveUsedNumber implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	/**
+	 * 日数を使用日数に加算する
+	 */
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber){
+		this.usedDays.addUsedDays(usedNumber.getUsedDays().getUsedDayNumber().v());
+		if (this.usedTime.isPresent()){
+			this.usedTime.get().getUsedTime().addMinutes(
+					usedNumber.getUsedTime().get().getUsedTime().v());
+		}
+	}
+	
+	private void writeObject(ObjectOutputStream stream){		
+		writeObjectWithOptional(stream);	
+	}		
+	private void readObject(ObjectInputStream stream){		
+		readObjectWithOptional(stream);	
+	}		
+
+	
 }
+

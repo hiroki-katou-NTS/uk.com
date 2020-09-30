@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 
 /**
@@ -11,9 +13,14 @@ import lombok.Builder;
  */
 // 残数設定
 @Builder
-public class RemainingNumberSetting {
+public class RemainingNumberSetting implements Serializable{
 
-    /** The retention year. */
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The retention year. */
     // 保持年数
     public RetentionYear retentionYear;
 
