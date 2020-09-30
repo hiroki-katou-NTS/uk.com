@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
+package nts.uk.ctx.at.schedule.dom.shift.businesscalendar;
 
 import java.util.Optional;
 
@@ -19,7 +19,6 @@ public class ReferenceCalendarClass implements ReferenceCalendar{
 	/**　分類コード */
 	private final ClassificationCode classCode;
 
-	
 	@Override
 	public BusinessDaysCalendarType getBusinessDaysCalendarType() {
 		return BusinessDaysCalendarType.CLASSSICATION;
@@ -31,7 +30,12 @@ public class ReferenceCalendarClass implements ReferenceCalendar{
 	}
 
 	public static interface Require {
-		// [R-1] 指定日の分類営業日カレンダーを取得する
+		/**
+		 * [R-1] 指定日の分類営業日カレンダーを取得する
+		 * @param classCode
+		 * @param date
+		 * @return
+		 */
 		Optional<CalendarClass> getCalendarClassByDay(ClassificationCode classCode, GeneralDate date);
 	}
 }

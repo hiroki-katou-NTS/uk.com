@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
+package nts.uk.ctx.at.schedule.dom.shift.businesscalendar;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

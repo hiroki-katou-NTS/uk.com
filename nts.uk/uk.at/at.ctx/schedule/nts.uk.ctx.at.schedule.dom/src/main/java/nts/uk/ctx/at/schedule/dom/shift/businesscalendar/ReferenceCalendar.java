@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether;
+package nts.uk.ctx.at.schedule.dom.shift.businesscalendar;
 
 import java.util.Optional;
 
@@ -10,11 +10,18 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
  *
  */
 public interface ReferenceCalendar {
-  
-	// 参照している営業日カレンダーの種類を取得する
+	/**
+	 * 参照している営業日カレンダーの種類を取得する
+	 * @return
+	 */
 	BusinessDaysCalendarType getBusinessDaysCalendarType();
-
-	// 稼働日区分を取得する
+	
+	/**
+	 * 稼働日区分を取得する
+	 * @param require
+	 * @param date
+	 * @return
+	 */
 	Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate date);
 
 	public static interface Require extends ReferenceCalendarClass.Require, ReferenceCalendarCompany.Require, ReferenceCalendarWorkplace.Require {
