@@ -238,7 +238,7 @@ public class StdOutputCondSetService {
 		// ドメインモデル「出力期間設定」を更新する
 		if (oOutputPeriodSetting.isPresent()) {
 			String cid = AppContexts.user().companyId();
-			this.copyOutputPeriodSetting(mode, cid, cndSetCode, oOutputPeriodSetting.get());
+			this.copyOutputPeriodSetting(mode, cid, newCndSetCode, oOutputPeriodSetting.get());
 		}
 	}
 
