@@ -20,12 +20,13 @@ module nts.uk.ui.at.ksu002.a {
         virtual: false
     })
     export class SchedulerComponentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+        init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             const name = COMPONENT_NAME;
             const schedules = valueAccessor();
             const width = allBindingsAccessor.get('width');
             const baseDate = allBindingsAccessor.get('baseDate');
             const clickCell = allBindingsAccessor.get('click-cell');
+            const changeCell = allBindingsAccessor.get('change-cell');
             const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
             const params = { width, baseDate, schedules, clickCell, tabIndex };
             const component = { name, params };
@@ -33,7 +34,7 @@ module nts.uk.ui.at.ksu002.a {
             element.classList.add('scheduler');
             element.removeAttribute('tabindex');
 
-            ko.applyBindingsToNode(element, { component }, bindingContext);
+            ko.applyBindingsToNode(element, { component }, bindingContext.extend({ $change: changeCell }));
 
             return { controlsDescendantBindings: true };
         }
@@ -127,11 +128,11 @@ module nts.uk.ui.at.ksu002.a {
             virtual: false
         })
         export class DataInfoComponentBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = COMPONENT_NAME;
                 const dayData = valueAccessor();
                 const tabIndex = element.getAttribute('tabindex') || '1';
-                const params = { dayData, tabIndex };
+                const params = { dayData, tabIndex, context: bindingContext };
                 const component = { name, params };
 
                 element.removeAttribute('tabindex');
@@ -169,14 +170,14 @@ module nts.uk.ui.at.ksu002.a {
                     wtype: ''
                 };
 
-            constructor(private data: { dayData: c.DayData<ScheduleData>; tabIndex: string; vm: any }) {
+            constructor(private data: { dayData: c.DayData<ScheduleData>; tabIndex: string; context: { $vm: any, $change: Function } }) {
                 super();
             }
 
             created() {
                 const vm = this;
                 const { data, model } = vm;
-                const { dayData } = data;
+                const { context, dayData } = data;
 
                 if (dayData.data) {
                     const { data } = dayData;
@@ -192,14 +193,31 @@ module nts.uk.ui.at.ksu002.a {
                     }
                 }
 
+                let b: number | null = null;
+                let f: number | null = null;
+
                 model.begin
                     .subscribe(c => {
-                        console.log(c);
+                        if (b !== c) {
+                            b = c;
+                            const clone = _.cloneDeep(dayData);
+
+                            clone.data.value.begin = c;
+
+                            context.$change.apply(context.$vm, [clone]);
+                        }
                     });
 
                 model.finish
                     .subscribe(c => {
-                        console.log(c);
+                        if (f !== c) {
+                            f = c;
+                            const clone = _.cloneDeep(dayData);
+
+                            clone.data.value.finish = c;
+
+                            context.$change.apply(context.$vm, [clone]);
+                        }
                     });
             }
         }
@@ -236,9 +254,7 @@ module nts.uk.ui.at.ksu002.a {
                     value: model,
                     inputFormat: 'time',
                     mode: 'time',
-                    enable: true,
-                    readonly: ko.unwrap(click) < 2,
-                    required: false
+                    readonly: readonly
                 }" />
             `
         })
@@ -246,6 +262,8 @@ module nts.uk.ui.at.ksu002.a {
             click: KnockoutObservable<number> = ko.observable(0);
 
             model!: KnockoutObservable<number | null>;
+
+            readonly!: KnockoutComputed<boolean>;
 
             constructor(private data: { value: KnockoutObservable<number | null> }) {
                 super();
@@ -256,6 +274,13 @@ module nts.uk.ui.at.ksu002.a {
                 const { data } = vm;
 
                 vm.model = data.value;
+
+                vm.readonly = ko.computed({
+                    read() {
+                        return ko.unwrap(vm.click) < 2;
+                    },
+                    owner: vm
+                });
             }
 
             mounted() {

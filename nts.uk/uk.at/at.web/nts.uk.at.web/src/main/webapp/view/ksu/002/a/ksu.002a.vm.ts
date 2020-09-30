@@ -75,7 +75,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.schedules.reset(clones);
 
 						vm.$blockui('hide');
-					}, 3000);
+					}, 500);
 				});
 		}
 
@@ -110,6 +110,22 @@ module nts.uk.ui.at.ksu002.a {
 				exist.data = { ...data, holiday: 'Holiday' };
 
 				exist.className = [...(className || []), c.COLOR_CLASS.HOLIDAY];
+			}
+
+			// vm.schedules.memento(wrap);
+		}
+
+		changeDayCell(dayData: c.DayData) {
+			const vm = this;
+
+			const wrap: c.DayData[] = _.cloneDeep(ko.toJS(vm.schedules));
+
+			const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
+
+			if (exist) {
+				const { data } = dayData;
+
+				exist.data = { ...data };
 			}
 
 			vm.schedules.memento(wrap);

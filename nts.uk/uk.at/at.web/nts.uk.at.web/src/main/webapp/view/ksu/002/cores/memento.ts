@@ -20,7 +20,7 @@ module nts.uk.ui.memento {
 		redo: KnockoutObservableArray<any>;
 	}
 
-	const memento = function(target: KnockoutObservableArray<any>, options: Options) {
+	const memento = function (target: KnockoutObservableArray<any>, options: Options) {
 		if (!options) {
 			options = {
 				size: 9999
