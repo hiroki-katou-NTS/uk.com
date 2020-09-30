@@ -31,7 +31,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public kaf000_C_Params: any = null;
     //private seen: boolean = true;
     public step: string = 'KAFS08_10';
-    public mode: Boolean = true;
+
+    @Prop({ default: true })
+    public readonly mode: boolean;
+
     public isVisible: boolean = false;
     public isValidateAll: Boolean = true;
     public date: Date = null;
@@ -86,12 +89,22 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         if (vm.params) {
             console.log(vm.params);
-            vm.mode = false;
+            // vm.mode = false;
             this.data = vm.params;
             vm.derpartureTime = vm.params.businessTripDto.departureTime;
             vm.returnTime = vm.params.businessTripDto.returnTime;
         }
         vm.fetchStart();
+
+        vm.$watch('params', (newV, oldV) => {
+            if (newV) {
+                vm.data.businessTrip = vm.params.businessTripDto;
+                vm.data.businessTripInfoOutput = vm.params.businessTripInfoOutputDto;
+                vm.createParamsB();
+                vm.createParamsC();
+                vm.createParamsA();
+            }
+        });
     }
 
     public fetchStart() {
@@ -133,6 +146,16 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             vm.createParamsC();
             vm.createParamsA();
             vm.$mask('hide');
+
+            setTimeout(function () {
+                let focusElem;
+                if (vm.mode) {
+                    focusElem = document.querySelector('[placeholder=\'yyyy-mm-dd\']');
+                } else {
+                    focusElem = document.querySelector('[placeholder=\'-- --:--\']');
+                }
+                (focusElem as HTMLElement).focus();
+            }, 200);
         }).catch((err: any) => {
             //do something
         });
@@ -185,16 +208,48 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
-            this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
 
+            this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+            } else {
+                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            }
+
+            this.$http.post('at', API.changeAppDate, {
+                isNewMode: true,
+                isError: 0,
+                application: this.application,
+                businessTrip: null,
+                businessTripInfoOutput: this.data.businessTripInfoOutput
+                //businessTrip: vm.mode ? null : vm.data.appWorkChange
+            }).then((res: any) => {
+                let response = res.data;
+                if (response.result) {
+                    // this.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
+                    if (response.confirmMsgOutputs.length != 0) {
+                        this.handleConfirmMessage(response.confirmMsgOutputs, response);
+                    }
+                    vm.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
+                }
+                this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+            }).catch((err) => {
+                this.handleErrorMessage(err);
+                this.listDate = [];
+
+                return;
+            });
         }
 
         vm.checkNextButton();
 
         //mode edit
         if (!vm.mode) {
-            let achievementDetails = vm.data.businessTrip.tripInfos;
-            let businessTripInfoOutput = vm.data;
+            vm.data.businessTrip = vm.params.businessTripDto;
+            vm.data.businessTripInfoOutput = vm.params.businessTripInfoOutputDto;
+            let achievementDetails = vm.data.businessTrip ? vm.data.businessTrip.tripInfos || [] : [];
+            // let businessTripInfoOutput = vm.data;
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             //let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
@@ -204,9 +259,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
             //let endDateFormat = new Date(endDate);
             let listDateEditMode = vm.getDateArray(startDate, endDate);
-            businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
-            businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
-            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+            vm.data.businessTrip.departureTime = vm.derpartureTime;
+            vm.data.businessTrip.returnTime = vm.returnTime;
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, vm.data, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
         }
     }
 
@@ -267,26 +322,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
         }
         this.application.enteredPerson = this.user.employeeId;
-        if (this.mode) {
-            this.$http.post('at', API.changeAppDate, {
-                isNewMode: true,
-                isError: 0,
-                application: this.application,
-                businessTrip: null,
-                businessTripInfoOutput: this.data.businessTripInfoOutput
-                //businessTrip: vm.mode ? null : vm.data.appWorkChange
-            }).then((res: any) => {
-                let response = res.data;
-                if (response.result) {
-                    // this.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
-                    if (response.confirmMsgOutputs.length != 0) {
-                        this.handleConfirmMessage(response.confirmMsgOutputs, response);
-                    }
-                }
-            }).catch((err) => {
-                this.handleErrorMessage(err);
-            });
-        }
+        
     }
 
     public createParamsA() {
@@ -345,20 +381,21 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                     return;
                 }
-                //let listDate = [];
+                
+                vm.listDate = [];
                 if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
                     vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
+                } else {
+                    if (!_.isNull(endDate)) {
+                        let isCheckDate = startDate.getTime() <= endDate.getTime();
+                        if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                            while (startDate.getTime() <= endDate.getTime()) {
+                                vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+                                startDate.setDate(startDate.getDate() + 1);
+                            }
                         }
+    
                     }
-
                 }
 
             });
@@ -374,7 +411,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                     return;
                 }
-                //let listDate = [];
+                
+                vm.listDate = [];
                 if (!_.isNull(startDate)) {
                     let isCheckDate = startDate.getTime() <= endDate.getTime();
                     if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {

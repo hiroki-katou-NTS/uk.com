@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       isParentHours = false;
       isNurseTime = false;
       data: any;
-      mode: number = 1; // 0 ->a, 1->b, 2->b(view)
+      mode: KnockoutObservable<number> = ko.observable(1); // 0 ->a, 1->b, 2->b(view)
       reasonList: Array<GoOutTypeDispControl> = [];
     
     
@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 .done(res => {
                     if (!res) return;
                     self.data = res;
-                    self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode = 2 : self.mode = 1;
+                    self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode(2) : self.mode(1);
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();                        
@@ -744,6 +744,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     if (!res) return;
                     self.data = res;
                     self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
+                    self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode(2) : self.mode(1);
                     self.isAttendence = false;
                     self.isAttendence2 = false;
                     self.isTemporaryAttendence = false;

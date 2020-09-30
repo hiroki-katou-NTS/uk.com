@@ -15,10 +15,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTimePK;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtAgreementTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtAgreementTimePK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 
 /**
  * リポジトリ実装：管理期間の36協定時間
@@ -27,20 +27,20 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRep
 @Stateless
 public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements AgreementTimeOfManagePeriodRepository {
 
-	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonMngAgreTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "ORDER BY a.PK.employeeId ";
+	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtAgreementTime a "
+			+ "WHERE a.id.employeeId IN :employeeIds "
+			+ "AND a.id.yearMonth = :yearMonth "
+			+ "ORDER BY a.id.employeeId ";
 	
-	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonMngAgreTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth ";
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtAgreementTime a "
+			+ "WHERE a.id.employeeId IN :employeeIds "
+			+ "AND a.id.yearMonth IN :yearMonths "
+			+ "ORDER BY a.id.employeeId, a.id.yearMonth ";
 	
 	private static final String REMOVE_BY_PK =
-			"DELETE FROM KrcdtMonMngAgreTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+			"DELETE FROM KrcdtAgreementTime a "
+			+ "WHERE a.id.employeeId = :employeeId "
+			+ "AND a.id.yearMonth = :yearMonth ";
 	
 	/** 検索 */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -48,10 +48,7 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 	public Optional<AgreementTimeOfManagePeriod> find(String employeeId, YearMonth yearMonth) {
 
 		return this.queryProxy()
-				.find(new KrcdtMonMngAgreTimePK(
-						employeeId,
-						yearMonth.v()),
-						KrcdtMonMngAgreTime.class)
+				.find(new KrcdtAgreementTimePK(employeeId, yearMonth.v()), KrcdtAgreementTime.class)
 				.map(c -> c.toDomain());
 	}
 
@@ -62,12 +59,12 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 		
 		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMngAgreTime.class)
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtAgreementTime.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.getList(c -> c.toDomain()));
 		});
-		results.sort(Comparator.comparing(AgreementTimeOfManagePeriod::getEmployeeId));
+		results.sort(Comparator.comparing(AgreementTimeOfManagePeriod::getSid));
 		return results;
 	}
 	
@@ -82,16 +79,16 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
-				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMngAgreTime.class)
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtAgreementTime.class)
 						.setParameter("employeeIds", splitData)
 						.setParameter("yearMonths", lstYearMonth)
 						.getList(c -> c.toDomain()));
 			});
 		});
 		results.sort((o1, o2) -> {
-			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			int tmp = o1.getSid().compareTo(o2.getSid());
 			if (tmp != 0) return tmp;
-			return o1.getYearMonth().compareTo(o2.getYearMonth());
+			return o1.getYm().compareTo(o2.getYm());
 		});
 		return results;
 	}
@@ -101,18 +98,16 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 	public void persistAndUpdate(AgreementTimeOfManagePeriod domain) {
 
 		// キー
-		val key = new KrcdtMonMngAgreTimePK(
-				domain.getEmployeeId(),
-				domain.getYearMonth().v());
+		val key = new KrcdtAgreementTimePK(domain.getSid(), domain.getYm().v());
 
 		// 登録・更新を判断　および　キー値設定
-		KrcdtMonMngAgreTime entity = this.getEntityManager().find(KrcdtMonMngAgreTime.class, key);
+		KrcdtAgreementTime entity = this.getEntityManager().find(KrcdtAgreementTime.class, key);
 		if (entity == null){
-			entity = new KrcdtMonMngAgreTime();
-			entity.fromDomainForPersist(domain);
-			this.getEntityManager().persist(entity);
-		}
-		else entity.fromDomainForUpdate(domain);
+			entity = new KrcdtAgreementTime(key);
+			entity.fromDomainForUpdate(domain);
+			this.commandProxy().insert(entity);
+		} else 
+			entity.fromDomainForUpdate(domain);
 	}
 	
 	/** 削除 */
