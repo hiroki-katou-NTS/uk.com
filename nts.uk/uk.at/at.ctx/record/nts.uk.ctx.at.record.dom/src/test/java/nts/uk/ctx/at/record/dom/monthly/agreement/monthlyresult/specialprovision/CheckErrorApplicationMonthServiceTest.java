@@ -10,11 +10,11 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.*;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Assert;
 import org.junit.Before;
@@ -89,10 +89,10 @@ public class CheckErrorApplicationMonthServiceTest {
         // Mock up
         new Expectations() {{
 
-            AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of( new YearMonthPeriod(new YearMonth(202008), new YearMonth(202009)),new AttendanceTimeYear(0),AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME);
+            AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of( new YearMonthPeriod(new YearMonth(202008), new YearMonth(202009)),new AttendanceTimeYear(0), AgreMaxTimeStatusOfMonthly.ERROR_OVER);
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
-            agreMaxAverageTimeMulti.getAverageTimeList().add(agreMaxAverageTime);
-            require.getMaxAverageMulti("CID", "SID", GeneralDate.today(), monthlyAppContent.getYm());
+            agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
+            require.getMaxAverageMulti("SID", GeneralDate.today(), monthlyAppContent.getYm());
             result = Optional.of(agreMaxAverageTimeMulti);
 
             require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
@@ -106,7 +106,7 @@ public class CheckErrorApplicationMonthServiceTest {
 
     /**
      * チェックする TestCase 3
-     * 1: [R-1] getMaxAverageMulti not null
+     * 1: [R-1] getMaxAverageMulti return null
      * 2: [R-2] timeYear return not null
      * 3: [R-3] algorithm return null
      */
@@ -119,9 +119,10 @@ public class CheckErrorApplicationMonthServiceTest {
 
         // Mock up
         new Expectations() {{
-
-            AgreementTimeYear agreementTimeYear = AgreementTimeYear.of( new LimitOneYear(0),new AttendanceTimeYear(0), AgreTimeYearStatusOfMonthly.EXCESS_LIMIT);
-            require.timeYear("CID", "SID", GeneralDate.today(), new Year(monthlyAppContent.getYm().year()));
+            AgreementTimeOfYear limitTime = AgreementTimeOfYear.of(new AgreementOneYearTime(10),new OneYearTime());
+            AgreementTimeOfYear recordTime = AgreementTimeOfYear.of(new AgreementOneYearTime(20),new OneYearTime());
+            AgreementTimeYear agreementTimeYear = AgreementTimeYear.of( limitTime,recordTime, AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
+            require.timeYear("SID", GeneralDate.today(), new Year(monthlyAppContent.getYm().year()));
             result = Optional.of(agreementTimeYear);
 
             require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
@@ -148,6 +149,18 @@ public class CheckErrorApplicationMonthServiceTest {
 
         // Mock up
         new Expectations() {{
+            AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of( new YearMonthPeriod(new YearMonth(202008), new YearMonth(202009)),new AttendanceTimeYear(0), AgreMaxTimeStatusOfMonthly.ERROR_OVER);
+            AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
+            agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
+            require.getMaxAverageMulti("SID", GeneralDate.today(), monthlyAppContent.getYm());
+            result = Optional.of(agreMaxAverageTimeMulti);
+
+            AgreementTimeOfYear limitTime = AgreementTimeOfYear.of(new AgreementOneYearTime(10),new OneYearTime());
+            AgreementTimeOfYear recordTime = AgreementTimeOfYear.of(new AgreementOneYearTime(20),new OneYearTime());
+            AgreementTimeYear agreementTimeYear = AgreementTimeYear.of( limitTime,recordTime, AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
+            require.timeYear("SID", GeneralDate.today(), new Year(monthlyAppContent.getYm().year()));
+            result = Optional.of(agreementTimeYear);
+
             AgreementExcessInfo agreementExcessInfo = AgreementExcessInfo.of(0,0, Arrays.asList(new YearMonth(202009)));
             require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
             result = agreementExcessInfo;
