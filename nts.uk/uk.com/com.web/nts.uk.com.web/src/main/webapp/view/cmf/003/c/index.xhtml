@@ -76,7 +76,7 @@
       <div id="functions-area">
         <a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF003_80')}</a>
         <!-- C5_1 新規ボタン -->
-        <button class="large functional-button" tabindex="1">#{i18n.getText('CMF003_201')}</button>
+        <button class="large functional-button" data-bind="click: refreshNew" tabindex="1">#{i18n.getText('CMF003_201')}</button>
         <!-- C5_2 登録ボタン -->
         <button class="large functional-button proceed" tabindex="2">#{i18n.getText('CMF003_202')}</button>
         <!-- C5_3 複製ボタン -->
@@ -162,7 +162,7 @@
                 #{i18n.getText('CMF003_61')}</div>
             </div>
             <div class="div-line swap-zone">
-              <!-- TODO: Thêm nút sort -->
+              <!-- C2 保存カテゴリ -->
               <div id="C2" tabindex="11" data-bind="ntsSwapList: {
                 showSearchBox: { showLeft : true},
                 showSort: { showLeft: true, showRight: false },

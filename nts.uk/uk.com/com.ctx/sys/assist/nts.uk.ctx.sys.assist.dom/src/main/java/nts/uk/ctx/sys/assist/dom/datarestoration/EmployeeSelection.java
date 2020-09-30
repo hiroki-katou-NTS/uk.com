@@ -49,5 +49,5 @@ public class EmployeeSelection {
 	/**
 	 * 対象者
 	 */
-	private List<String> targetPerson = new ArrayList<String>();
+	private List<String> targetPerson = new ArrayList<>();
 }

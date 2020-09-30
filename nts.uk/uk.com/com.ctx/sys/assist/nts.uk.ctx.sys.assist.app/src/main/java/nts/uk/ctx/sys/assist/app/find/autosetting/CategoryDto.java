@@ -46,18 +46,25 @@ public class CategoryDto implements DataStorageSelectionCategory.MementoGetter {
 	 */
 	private String contractCode;
 	
+	/**
+	 * 保存期間区分
+	 */
+	private String retentionPeriod;
+	
 	public static CategoryDto fromDomain(Category domain) {
 		CategoryDto dto = new CategoryDto();
 		dto.setCategoryId(domain.getCategoryId().v());
 		dto.setCategoryName(domain.getCategoryName().v());
-		if (domain.getAttendanceSystem().equals(SystemUsability.AVAILABLE))
+		dto.setRetentionPeriod(domain.getTimeStore().nameId);
+		if (domain.getAttendanceSystem().equals(SystemUsability.AVAILABLE)) {
 			dto.setSystemType(SystemType.ATTENDANCE_SYSTEM.value);
-		else if (domain.getPaymentAvailability().equals(SystemUsability.AVAILABLE))
+		} else if (domain.getPaymentAvailability().equals(SystemUsability.AVAILABLE)) {
 			dto.setSystemType(SystemType.PAYROLL_SYSTEM.value);
-		else if (domain.getPossibilitySystem().equals(SystemUsability.AVAILABLE))
+		} else if (domain.getPossibilitySystem().equals(SystemUsability.AVAILABLE)) {
 			dto.setSystemType(SystemType.PERSON_SYSTEM.value);
-		else if (domain.getSchelperSystem().equals(SystemUsability.AVAILABLE))
-			dto.setSystemType(SystemType.OFFICE_HELPER.value);
+		} else if (domain.getSchelperSystem().equals(SystemUsability.AVAILABLE)) {
+			dto.setSystemType(SystemType.OFFICE_HELPER.value); 
+		}
 		return dto;
 	}
 }

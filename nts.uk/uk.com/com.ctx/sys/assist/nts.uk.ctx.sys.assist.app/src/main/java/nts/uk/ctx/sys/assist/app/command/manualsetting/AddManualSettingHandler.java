@@ -24,6 +24,7 @@ import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
@@ -68,7 +69,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 		try {
 			List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 			List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
-				return new TargetCategory(storeProcessingId, item.getCategoryId());
+				return new TargetCategory(storeProcessingId, item.getCategoryId(), SystemType.ATTENDANCE_SYSTEM);
 			}).collect(Collectors.toList());
 			repoTargetCat.add(targetCategory);
 

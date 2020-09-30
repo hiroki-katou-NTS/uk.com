@@ -13,8 +13,6 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInChargeService;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**
  * アルゴリズム「画面項目セット」
@@ -32,8 +30,7 @@ public class SetScreenItemFinder {
 	
 	public List<ItemSetDto> findScreenItem(String dataStorageProcessId) {
 		// 「ログイン者が担当者か判断する」を取得する。
-		LoginUserRoles roles = AppContexts.user().roles();
-		LoginPersonInCharge pic = picService.getPic(roles);
+		LoginPersonInCharge pic = picService.getPic();
 		
 		//1. ドメインオブジェクト「テーブル一覧」を取得する。
 		//2. 取得したList<テーブル一覧>から「カテゴリのテーブル」をマッピングする。

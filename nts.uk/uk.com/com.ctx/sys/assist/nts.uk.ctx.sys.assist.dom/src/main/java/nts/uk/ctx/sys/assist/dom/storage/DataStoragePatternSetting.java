@@ -84,11 +84,6 @@ public class DataStoragePatternSetting extends AggregateRoot {
 	 */
 	private List<DataStorageSelectionCategory> categories;
 
-	/**
-	 * 
-	 * @param memento
-	 * @return
-	 */
 	public static DataStoragePatternSetting createFromMemento(MementoGetter memento) {
 		DataStoragePatternSetting domain = new DataStoragePatternSetting();
 		domain.getMemento(memento);
@@ -119,13 +114,13 @@ public class DataStoragePatternSetting extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setAnnualReferYear(annualReferYear.map(data -> data.value).orElse(null));
+		memento.setAnnualReferYear(annualReferYear.map(TargetYear::getValue).orElse(null));
 		memento.setContractCode(contractCode.v());
-		memento.setDailyReferMonth(dailyReferMonth.map(data -> data.value).orElse(null));
-		memento.setDailyReferYear(dailyReferYear.map(data -> data.value).orElse(null));
+		memento.setDailyReferMonth(dailyReferMonth.map(TargetMonth::getValue).orElse(null));
+		memento.setDailyReferYear(dailyReferYear.map(TargetYear::getValue).orElse(null));
 		memento.setIdenSurveyArch(idenSurveyArch.value);
-		memento.setMonthlyReferMonth(monthlyReferMonth.map(data -> data.value).orElse(null));
-		memento.setMonthlyReferYear(monthlyReferYear.map(data -> data.value).orElse(null));
+		memento.setMonthlyReferMonth(monthlyReferMonth.map(TargetMonth::getValue).orElse(null));
+		memento.setMonthlyReferYear(monthlyReferYear.map(TargetYear::getValue).orElse(null));
 		memento.setPatternClassification(patternClassification.value);
 		memento.setPatternCode(patternCode.v());
 		memento.setPatternCompressionPwd(patternCompressionPwd.map(FileCompressionPassword::v).orElse(null));

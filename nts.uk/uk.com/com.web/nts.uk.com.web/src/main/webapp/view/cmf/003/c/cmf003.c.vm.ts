@@ -226,7 +226,7 @@ module nts.uk.com.view.cmf003.c {
     rightColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: getText('CMF003_65'), key: 'categoryId', width: 70 },
       { headerText: getText('CMF003_66'), key: 'categoryName', width: 180 },
-      { headerText: getText('CMF003_636'), key: 'retentionPeriod', width: 70 }
+      { headerText: getText('CMF003_636'), key: 'retentionPeriod', width: 100 }
     ]);
     currentCateSelected: KnockoutObservableArray<ItemSystemType> = ko.observableArray([]);
     systemTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -290,15 +290,16 @@ module nts.uk.com.view.cmf003.c {
       vm.$blockui("grayout");
       service.initDisplay().done((res) => {
         console.log(res);
-        _.map(res.categories, (x :any) => {
+        _.map(res.categories, (x: any) => {
           let c = new Category();
           c.categoryId = x.categoryId;
           c.categoryName = x.categoryName;
+          c.retentionPeriod = getText(x.retentionPeriod);
           vm.categoriesDefault.push(c);
         })
       }).always(() => {
         vm.$blockui("clear");
-      })
+      });
     }
 
     public refreshNew() {

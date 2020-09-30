@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
 import nts.uk.ctx.sys.assist.dom.storage.EmployeeCode;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 
@@ -53,7 +54,7 @@ public class ManualSettingCommand {
 					return new TargetEmployees(storeProcessingId, x.getSid(), new BusinessName(x.getBusinessname()),
 							new EmployeeCode(x.getScd()));
 				}).collect(Collectors.toList()), category.stream().map(x1 -> {
-					return new TargetCategory(storeProcessingId, x1.getCategoryId());
+					return new TargetCategory(storeProcessingId, x1.getCategoryId(), SystemType.ATTENDANCE_SYSTEM);
 				}).collect(Collectors.toList()));
 	}
 }

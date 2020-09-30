@@ -8,19 +8,18 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.dom.role.RoleImportAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 @Stateless
 public class LoginPersonInChargeService {
 	@Inject 
 	private RoleImportAdapter roleAdapter;
 	
-	public LoginPersonInCharge getPic(LoginUserRoles roles) {
+	public LoginPersonInCharge getPic() {
 		return roleAdapter.getInChargeInfo();
 	}
 	
 	public List<SystemType> getSystemTypes(LoginPersonInCharge pic) {
-		List<SystemType> systemTypes = new ArrayList<SystemType>();
+		List<SystemType> systemTypes = new ArrayList<>();
 		if (pic.isAttendance())
 			systemTypes.add(SystemType.ATTENDANCE_SYSTEM);
 		if (pic.isPersonnel())

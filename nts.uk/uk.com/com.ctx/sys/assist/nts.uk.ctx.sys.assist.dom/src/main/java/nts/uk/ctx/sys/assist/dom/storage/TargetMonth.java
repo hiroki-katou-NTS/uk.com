@@ -1,8 +1,11 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
+import lombok.Getter;
+
 /**
  * 対象月
  */
+@Getter
 public enum TargetMonth {
 	/**
 	 * 当月
@@ -53,8 +56,8 @@ public enum TargetMonth {
 	 */
 	ELEVEN_MONTH_AGO(1, "Enum_TargetMonth_ELEVEN_MONTH_AGO");
 	
-	public int value;
-	public String nameId;
+	private final int value;
+	private final String nameId;
 	
 	private TargetMonth(int value, String nameId) {
 		this.value = value;

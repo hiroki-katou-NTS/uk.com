@@ -38,7 +38,7 @@ public class ScreenDisplayProcessingFinder {
 				.findByContractCd(user.contractCode());
 
 		// ログイン者が担当者か判断する
-		LoginPersonInCharge pic = picService.getPic(user.roles());
+		LoginPersonInCharge pic = picService.getPic();
 
 		// List<システム種類>に「システム種類」を追加する。
 		List<SystemType> systemTypes = picService.getSystemTypes(pic);
