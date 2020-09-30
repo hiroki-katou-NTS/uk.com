@@ -1,25 +1,40 @@
-.tabpanel-1-contents-area-right-screen-c {
-	width: 400px;
-	margin-left: 40px;
-	margin-top: 10px;
+@CHARSET "UTF-8";
+
+.contents-area {
+	margin-top: 20px;
+	margin-left: 50px;
+	min-width: 560px;
+	height: 700px;
 }
 
-.table-basic-setting-list-td-label {
-	background-color: #F7EFD4 !important;
+.form-default {
+	width: 100%;
 }
 
-.table-basic-setting-list {
-	width: 400px;
+.form-default td {
+	padding-top: 10px;
 }
 
-.table-basic-setting-list, th, td {
-	border: 1px solid gray;
+.row_head {
+	border-bottom: 1px solid #7F7F7F;
 }
 
-.time-editor-custom-width {
-	width: 75px !important;
-	margin: 5px !important;
+#left-content {
+	width: 300px;
+	min-height: 200px;
+	padding: 25px;
+	padding-top: 25px;
 }
-.table-basic-setting-list th {
-	height: 35px;
+
+#right-content {
+	padding-left: 30px;
+	padding-top: 15px;
+	width: 600px;
+	vertical-align: top;
+}
+
+.set-row {
+	margin-left: -134px;
+	margin-top: 43px;
+	width: 143%;
 }
