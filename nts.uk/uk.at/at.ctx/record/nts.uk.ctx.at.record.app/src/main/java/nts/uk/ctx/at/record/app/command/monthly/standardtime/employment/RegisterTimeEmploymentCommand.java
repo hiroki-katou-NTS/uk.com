@@ -6,8 +6,6 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.employment;
 
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
 /**
  * 選択した雇用の目安時間設定を登録する
@@ -61,16 +59,8 @@ public class RegisterTimeEmploymentCommand {
 	// 上限時間
 	private int upperLimitTimeYear2;
 
-	/** 複数月平均  */
-
-	//エラー時間
-	private int errorTime;
-
-	//アラーム時間
-	private int alarmTime;
-
 	/** 超過上限回数  */
 	//超過上限回数
-	private int numberTimesOverLimitType;
+	private int overMaxTimes;
 
 }

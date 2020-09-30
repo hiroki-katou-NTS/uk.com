@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.OneMonthErrorAlarmTime;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.*;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 
 import java.util.Optional;
 

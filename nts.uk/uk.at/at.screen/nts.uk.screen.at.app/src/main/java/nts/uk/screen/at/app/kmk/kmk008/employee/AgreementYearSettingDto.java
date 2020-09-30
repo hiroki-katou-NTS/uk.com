@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.OneYearErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 
 import java.util.Optional;
 

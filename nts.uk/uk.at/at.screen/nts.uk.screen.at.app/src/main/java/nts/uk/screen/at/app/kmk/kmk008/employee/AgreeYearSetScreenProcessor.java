@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.kmk.kmk008.employee;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

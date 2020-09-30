@@ -3,9 +3,11 @@ package nts.uk.screen.at.app.kmk.kmk008.classification;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+
 
 import java.util.Optional;
 
@@ -32,9 +34,9 @@ public class AgreementTimeClassificationDto {
         }
         return data.map(x -> new AgreementTimeClassificationDto(
                 x.getCompanyId(),
-                x.getClassificationCode(),
+                x.getClassificationCode().v(),
                 x.getLaborSystemAtr(),
-                x.getBasicAgreementSetting()
+                x.getSetting()
         )).orElseGet(AgreementTimeClassificationDto::new);
     }
 }

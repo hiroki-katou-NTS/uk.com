@@ -56,16 +56,8 @@ public class RegisterTimeCompanyCommand {
 	// 上限時間
 	private int upperLimitTimeYear2;
 
-	/** 複数月平均  */
-
-	//エラー時間
-	private int errorTime;
-
-	//アラーム時間
-	private int alarmTime;
-
 	/** 超過上限回数  */
 	//超過上限回数
-	private int numberTimesOverLimitType;
+	private int overMaxTimes;
 
 }
