@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime;
 
 import java.util.List;
 import java.util.function.Function;

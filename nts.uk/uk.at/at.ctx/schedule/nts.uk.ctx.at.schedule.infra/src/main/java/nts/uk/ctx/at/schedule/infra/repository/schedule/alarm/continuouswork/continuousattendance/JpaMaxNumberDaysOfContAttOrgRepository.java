@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.continuouswork;
+package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.continuouswork.continuousattendance;
 
 import java.util.Optional;
 
@@ -10,8 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContAttOrgRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContinuousAttendanceOrg;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.KscmtAlchkConsecutiveWorkOrg;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.KscmtAlchkConsecutiveWorkOrgPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousattendance.KscmtAlchkConsecutiveWorkOrg;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousattendance.KscmtAlchkConsecutiveWorkOrgPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**

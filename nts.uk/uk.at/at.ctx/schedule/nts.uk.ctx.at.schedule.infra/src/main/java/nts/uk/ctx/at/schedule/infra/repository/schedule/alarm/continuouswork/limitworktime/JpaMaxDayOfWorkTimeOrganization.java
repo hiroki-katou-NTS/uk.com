@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.limitworktime;
+package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.continuouswork.limitworktime;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +13,9 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumCode;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrg;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrgDtl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrgPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrg;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 @Stateless

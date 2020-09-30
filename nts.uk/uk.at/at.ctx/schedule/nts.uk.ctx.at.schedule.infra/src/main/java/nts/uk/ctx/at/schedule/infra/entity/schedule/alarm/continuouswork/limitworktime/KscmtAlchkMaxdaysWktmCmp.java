@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime;
 
 import java.util.List;
 import java.util.function.Function;
@@ -10,29 +10,25 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDay;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTime;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeOrganization;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeCompany;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumName;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KSCMT_ALCHK_MAXDAYS_WKTM_ORG")
+@Table(name = "KSCMT_ALCHK_MAXDAYS_WKTM_CMP")
 @AllArgsConstructor
-@NoArgsConstructor
-public class KscmtAlchkMaxdaysWktmOrg extends ContractUkJpaEntity{
+public class KscmtAlchkMaxdaysWktmCmp extends ContractUkJpaEntity {
 	
-	public static final Function<NtsResultRecord, KscmtAlchkMaxdaysWktmOrg> mapper = 
-			s -> new JpaEntityMapper<>(KscmtAlchkMaxdaysWktmOrg.class).toEntity(s);
+	public static final Function<NtsResultRecord, KscmtAlchkMaxdaysWktmCmp> mapper = 
+			s -> new JpaEntityMapper<>(KscmtAlchkMaxdaysWktmCmp.class).toEntity(s);
 	
 	@EmbeddedId
-	public KscmtAlchkMaxdaysWktmOrgPk pk;
+	public KscmtAlchkMaxdaysWktmCmpPk pk;
 	
 	@Column(name = "NAME")
 	public String name;
@@ -45,23 +41,17 @@ public class KscmtAlchkMaxdaysWktmOrg extends ContractUkJpaEntity{
 		return pk;
 	}
 	
-	public static KscmtAlchkMaxdaysWktmOrg fromDomain(String companyId, MaxDayOfWorkTimeOrganization domain) {
-		return new KscmtAlchkMaxdaysWktmOrg(
-				new KscmtAlchkMaxdaysWktmOrgPk(
-						companyId, 
-						domain.getTargeOrg().getUnit().value, 
-						domain.getTargeOrg().getTargetId(), 
-						domain.getCode().v()), 
+	public static KscmtAlchkMaxdaysWktmCmp fromDomain(String companyId, MaxDayOfWorkTimeCompany domain) {
+		
+		return new KscmtAlchkMaxdaysWktmCmp(
+				new KscmtAlchkMaxdaysWktmCmpPk( companyId, domain.getCode().v()), 
 				domain.getName().v(), 
 				domain.getMaxDayOfWorkTime().getMaxDay().v());
 	}
 	
-	public MaxDayOfWorkTimeOrganization toDomain(List<KscmtAlchkMaxdaysWktmOrgDtl> dtlList) {
+	public MaxDayOfWorkTimeCompany toDomain(List<KscmtAlchkMaxdaysWktmCmpDtl> dtlList) {
 		
-		return new MaxDayOfWorkTimeOrganization(
-				TargetOrgIdenInfor.createFromTargetUnit(
-						TargetOrganizationUnit.valueOf(this.pk.targetUnit), 
-						this.pk.targetId),
+		return new MaxDayOfWorkTimeCompany(
 				new WorkTimeMaximumCode(this.pk.code), 
 				new WorkTimeMaximumName(this.name), 
 				new MaxDayOfWorkTime(

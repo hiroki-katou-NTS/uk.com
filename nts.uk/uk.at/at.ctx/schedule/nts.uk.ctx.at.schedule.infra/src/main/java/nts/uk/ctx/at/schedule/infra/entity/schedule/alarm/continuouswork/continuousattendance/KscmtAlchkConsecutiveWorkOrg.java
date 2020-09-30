@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousattendance;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ * KSCMT_ALCHK_CONSECUTIVE_WORK_ORG
  * @author hiroko_miura
  *
  */
