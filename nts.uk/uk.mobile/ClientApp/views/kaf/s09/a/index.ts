@@ -338,9 +338,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
 
     public bindCommon(params: any) {
-        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartupOutput.appDispInfoWithDateOutput;
-        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
+        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartup.appDispInfoNoDateOutput;
+        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartup.appDispInfoWithDateOutput;
+        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartup.appDetailScreenInfo;
     }
     public appGoBackDirect: any;
     public bindAppWorkChangeRegister() {
@@ -398,6 +398,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.$mask('hide');
                 self.isChangeDate = true;
                 self.dataOutput = res.data;
                 self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
