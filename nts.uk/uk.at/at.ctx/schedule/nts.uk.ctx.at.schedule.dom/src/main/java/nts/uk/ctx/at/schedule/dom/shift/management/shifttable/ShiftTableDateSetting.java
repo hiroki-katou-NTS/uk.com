@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -25,38 +24,10 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	private final OneMonth closureDate;
 	
 	/** 勤務希望の締切日 */
-	private final Optional<DateInMonth> expectDeadLine;
+	private final DateInMonth expectDeadLine;
 	
 	/**	希望休日の上限 */
-	private final Optional<HolidayExpectationMaxdays> holidayMaxDays;
-	
-	/**
-	 * "勤務希望運用する" で作る
-	 * @param closureDate
-	 * @param dateInmonth
-	 * @param availHdMax
-	 * @return
-	 */
-	public static ShiftTableDateSetting createWithExpectationMode(
-			OneMonth closureDate, 
-			DateInMonth expectDeadLine, 
-			HolidayExpectationMaxdays holidayMaxDays) {
-		
-		return new ShiftTableDateSetting(
-				closureDate, 
-				Optional.of(expectDeadLine), 
-				Optional.of(holidayMaxDays));
-	}
-	
-	/**
-	 * "勤務希望運用しない" で作る
-	 * @param oneMonth
-	 * @return
-	 */
-	public static ShiftTableDateSetting createWithoutExpectationMode(OneMonth oneMonth) {
-		
-		return new ShiftTableDateSetting(oneMonth, Optional.empty(), Optional.empty());
-	}
+	private final HolidayExpectationMaxdays holidayMaxDays;
 	
 	@Override
 	public ShiftPeriodUnit getShiftPeriodUnit() {
@@ -66,12 +37,8 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	@Override
 	public boolean isOverDeadline(GeneralDate expectingDate) {
 		
-		if ( !this.expectDeadLine.isPresent() ) {
-			return false;
-		}
-
 		GeneralDate startDate = this.closureDate.periodOf(expectingDate).start();
-		GeneralDate deadline = this.expectDeadLine.get().justBefore(startDate);
+		GeneralDate deadline = this.expectDeadLine.justBefore(startDate);
 		
 		return GeneralDate.today().after(deadline);
 	}
@@ -79,22 +46,18 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	@Override
 	public boolean isOverHolidayMaxdays(List<WorkExpectationOfOneDay> workExpectList) {
 		
-		if ( !this.holidayMaxDays.isPresent() ) {
-			return false;
-		}
-		
 		List<WorkExpectationOfOneDay> holidayExpectations = workExpectList.stream()
 																.filter( e -> e.isHolidayExpectation() )
 																.collect(Collectors.toList());
 		
-		return holidayExpectations.size() > this.holidayMaxDays.get().v();
+		return holidayExpectations.size() > this.holidayMaxDays.v();
 	}
 	
 	@Override
 	public ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
-		GeneralDate mostRecentDeadline = this.expectDeadLine.get().after(baseDate);
+		GeneralDate mostRecentDeadline = this.expectDeadLine.after(baseDate);
 		
 		// get period
 		GeneralDate nextDeadlineDate = mostRecentDeadline.addMonths(1);

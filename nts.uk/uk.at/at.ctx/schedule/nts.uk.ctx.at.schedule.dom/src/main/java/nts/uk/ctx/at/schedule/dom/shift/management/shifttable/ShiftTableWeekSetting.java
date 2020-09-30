@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -28,34 +27,7 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	/**
 	 * 勤務希望の締切曜日
 	 */
-	private final Optional<DeadlineDayOfWeek> expectDeadLine;
-	
-	/**
-	 * "勤務希望運用する" で作る
-	 * @param firstDayofWeek
-	 * @param deadlineDayofWeek
-	 * @return
-	 */
-	public static ShiftTableWeekSetting createUseAvailability(
-			DayOfWeek firstDayofWeek, 
-			DeadlineDayOfWeek deadlineDayofWeek
-			) {
-		
-		return new ShiftTableWeekSetting(
-				firstDayofWeek, 
-				Optional.of(deadlineDayofWeek)
-				);
-	}
-	
-	/**
-	 * "勤務希望運用しない" で作る
-	 * @param firstDayofWeek
-	 * @return
-	 */
-	public static ShiftTableWeekSetting createNotuseAvailability(DayOfWeek firstDayofWeek) {
-		
-		return new ShiftTableWeekSetting(firstDayofWeek, Optional.empty());
-	}
+	private final DeadlineDayOfWeek expectDeadLine;
 	
 	@Override
 	public ShiftPeriodUnit getShiftPeriodUnit() {
@@ -65,12 +37,8 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	@Override
 	public boolean isOverDeadline(GeneralDate expectingDate) {
 
-		if ( !this.expectDeadLine.isPresent() ) {
-			return false;
-		}
-		
 		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
-		GeneralDate deadline = this.expectDeadLine.get().getLastDeadlineWithWeekAtr(startDate);
+		GeneralDate deadline = this.expectDeadLine.getLastDeadlineWithWeekAtr(startDate);
 		
 		return GeneralDate.today().after(deadline);
 	}
@@ -85,11 +53,11 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	public ShiftTableRuleInfo getcorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
-		GeneralDate mostRecentDeadline = this.expectDeadLine.get().getMostRecentDeadlineIncludeTargetDate(baseDate);
+		GeneralDate mostRecentDeadline = this.expectDeadLine.getMostRecentDeadlineIncludeTargetDate(baseDate);
 		
 		// get period
 		GeneralDate nextDeadline = mostRecentDeadline.addDays(7);
-		if (this.expectDeadLine.get().getWeekAtr() == DeadlineWeekAtr.TWO_WEEK_AGO) {
+		if (this.expectDeadLine.getWeekAtr() == DeadlineWeekAtr.TWO_WEEK_AGO) {
 			nextDeadline = nextDeadline.addDays(7);
 		}
 		GeneralDate startDate = nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));

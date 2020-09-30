@@ -25,7 +25,7 @@ public class ShiftTableRule implements DomainValue {
 	private final NotUseAtr useWorkExpectationAtr;
 	
 	/** シフト表の設定 */
-	private final ShiftTableSetting shiftTableSetting;
+	private final Optional<ShiftTableSetting> shiftTableSetting;
 	
 	/** 勤務希望の指定できる方法リスト */
 	private final List<AssignmentMethod> expectationAssignMethodList;
@@ -45,7 +45,7 @@ public class ShiftTableRule implements DomainValue {
 	public static ShiftTableRule create(
 			NotUseAtr usePublicAtr,
 			NotUseAtr useWorkExpectationAtr,
-			ShiftTableSetting shiftTableSetting,
+			Optional<ShiftTableSetting> shiftTableSetting,
 			List<AssignmentMethod> expectationAssignMethodList,
 			Optional<FromNoticeDays> fromNoticeDays) {
 		
@@ -59,7 +59,12 @@ public class ShiftTableRule implements DomainValue {
 				throw new BusinessException("Msg_1938");
 			}
 			
-			int maxFromNoticeDays = shiftTableSetting.getShiftPeriodUnit() == ShiftPeriodUnit.MONTHLY ? 15 : 6;
+			if (!shiftTableSetting.isPresent()) {
+				// TODO
+				throw new BusinessException("");
+			}
+			
+			int maxFromNoticeDays = shiftTableSetting.get().getShiftPeriodUnit() == ShiftPeriodUnit.MONTHLY ? 15 : 6;
 			if ( fromNoticeDays.get().v() > maxFromNoticeDays) {
 				throw new BusinessException("Msg_1939", maxFromNoticeDays + "");
 			}
@@ -85,7 +90,7 @@ public class ShiftTableRule implements DomainValue {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.getcorrespondingDeadlineAndPeriod(GeneralDate.today());
+		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.get().getcorrespondingDeadlineAndPeriod(GeneralDate.today());
 		GeneralDate startNotifyDate = ruleInfo.getDeadline().addDays( - this.fromNoticeDays.get().v());
 		if (GeneralDate.today().before(startNotifyDate)) {
 			return NotificationInfo.createWithoutNotify();
