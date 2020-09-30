@@ -763,7 +763,7 @@ export enum ApplicationStatus {
 const API = {
     checkBeforRegister: 'at/request/application/gobackdirectly/checkBeforeRegisterNew',
     registerAppGoBackDirect: 'at/request/application/gobackdirectly/registerNewKAF009',
-    updateAppWorkChange: 'at/request/application/gobackdirectly/getAppDataByDate',
+    updateAppWorkChange: 'at/request/application/gobackdirectly/mobile/getAppDataByDate',
     startS09: 'at/request/application/gobackdirectly/mobile/start',
     updateApp: 'at/request/application/gobackdirectly/updateNewKAF009'
 
