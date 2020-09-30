@@ -41,9 +41,9 @@ public class ApprovalStatusDetails extends ValueObject {
     /**
      * [C-1] 未承認
      */
-    public ApprovalStatusDetails create(ApprovalStatus status, String approveSID, AgreementApprovalComments approvalComment, GeneralDate date) {
+    public static ApprovalStatusDetails create(ApprovalStatus status, Optional<String> approveSID, Optional<AgreementApprovalComments> approvalComment, Optional<GeneralDate> date) {
 
-        return new ApprovalStatusDetails(status, Optional.of(approveSID), Optional.of(approvalComment), Optional.of(date));
+        return new ApprovalStatusDetails(status, approveSID, approvalComment, date);
     }
 
 }
