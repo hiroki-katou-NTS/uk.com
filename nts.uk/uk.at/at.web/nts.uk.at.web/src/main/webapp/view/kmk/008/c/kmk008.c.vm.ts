@@ -2,109 +2,128 @@ module nts.uk.at.view.kmk008.c {
 	import getText = nts.uk.resource.getText;
 	import alertError = nts.uk.ui.dialog.alertError;
 
-	export module viewmodel {
-		export class ScreenModel extends ko.ViewModel{
-			timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
-			isUpdate: boolean;
-			laborSystemAtr: number = 0;
-			deleteEnable = true;
-			textOvertimeName: KnockoutObservable<string>;
-			nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-			nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-			nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-			nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-			nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-			nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-			nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-			nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-			nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-			nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-			nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-			nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-			nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-			nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-			nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-			nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-			nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-			nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-			nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-			nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-			nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-			nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-			nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+	@bean()
+	export class ScreenModel extends ko.ViewModel {
+		timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
+		isUpdate: boolean;
+		laborSystemAtr: number = 0;
+		deleteEnable = true;
+		textOvertimeName: KnockoutObservable<string>;
+		nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
+		nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
+		nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
+		nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
+		nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
+		nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
+		nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
+		nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
+		nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
+		nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
+		nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
+		nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
+		nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
+		nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
+		nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
+		nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
+		nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
+		nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
+		nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
+		nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
+		nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
+		nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
+		nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
 
-			empListCmp: EmpListCmp;
+		selectedLimit: KnockoutObservable<number> = ko.observable(0);
+		someText: string;
 
-			constructor(laborSystemAtr: number) {
-				super();
-				let self = this;
-				self.laborSystemAtr = laborSystemAtr;
-				self.isUpdate = true;
-				self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-				self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
-				self.empListCmp = new EmpListCmp();
+		theTime: KnockoutObservable<number> = ko.observable(0);
+
+		empListCmp: EmpListCmp;
+
+		constructor() {
+			super();
+			let self = this;
+
+			self.someText = self.$i18n('KMK008_165').replace('\r\n', '<br/>');
+			// self.laborSystemAtr = laborSystemAtr;
+			self.isUpdate = true;
+			self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
+			self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
+			self.empListCmp = new EmpListCmp();
+		}
+
+		created() {
+			// extend window with view model
+			const vm = this;
+			_.extend(window, {vm});
+
+			// extend window with view constant
+			const kmk008c = nts.uk.at.view.kmk008.c;
+			_.extend(window, {kmk008c});
+		}
+
+		mounted() {
+			const vm = this;
+
+			vm.startPage();
+		}
+
+
+		startPage(): JQueryPromise<any> {
+			let self = this;
+			let dfd = $.Deferred();
+
+			nts.uk.ui.errors.clearAll();
+			if (self.laborSystemAtr == 0) {
+				self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
+			} else {
+				self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
 			}
 
-			startPage(): JQueryPromise<any> {
-				let self = this;
-				let dfd = $.Deferred();
-
-				nts.uk.ui.errors.clearAll();
-				if (self.laborSystemAtr == 0) {
-					self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
+			new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
+				self.timeOfCompany(new TimeOfCompanyModel(data));
+				if (data.updateMode) {
+					self.isUpdate = true;
 				} else {
-					self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
+					self.isUpdate = false;
 				}
+				$("#errorCheckInput").focus();
+				dfd.resolve();
+			}).fail(error => {
 
-				new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
-					self.timeOfCompany(new TimeOfCompanyModel(data));
-					if (data.updateMode) {
-						self.isUpdate = true;
-					} else {
-						self.isUpdate = false;
-					}
-					$("#errorCheckInput").focus();
-					dfd.resolve();
-				}).fail(error => {
+			});
 
-				});
+			$('#empt-list-setting').ntsListComponent(self.empListCmp.listComponentOption);
+			// $("#C4_3").ntsFixedTable({ height: 34, width: 450 });
+			// $("#C4_6").ntsFixedTable({ height: 196, width: 700 });
+			// $("#C4_31").ntsFixedTable({ height: 44, width: 700 });
 
-				$('#empt-list-setting').ntsListComponent(self.empListCmp.listComponentOption);
+			$("#C4_3").ntsFixedTable({width: 452 });
+			$("#C4_6").ntsFixedTable({width: 700 });
+			$("#C4_31").ntsFixedTable({width: 700 });
+			self.theTime.valueHasMutated();
 
-				return dfd.promise();
-			}
+			return dfd.promise();
+		}
 
-			saveEmpSetting() {
-				alert(0);
-			}
+		saveEmpSetting() {
+			alert(0);
+		}
 
-			copyEmpSetting() {
-				alert(1);
-			}
+		copyEmpSetting() {
+			alert(1);
+		}
 
-			deleteEmpSetting() {
-				alert(2);
-			}
+		deleteEmpSetting() {
+			alert(2);
+		}
 
-			addUpdateData() {
-				let self = this;
-				let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
-				nts.uk.ui.block.invisible();
-				if (self.isUpdate) {
-					new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
-						if (listError.length > 0) {
-							self.showDialogError(listError);
-							nts.uk.ui.block.clear();
-							return;
-						}
-						nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
-							self.startPage();
-						});
-					});
-					nts.uk.ui.block.clear();
-					return;
-				}
-				new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
+		addUpdateData() {
+			let self = this;
+			let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
+			nts.uk.ui.block.invisible();
+			if (self.isUpdate) {
+				new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
 					if (listError.length > 0) {
 						self.showDialogError(listError);
 						nts.uk.ui.block.clear();
@@ -113,28 +132,41 @@ module nts.uk.at.view.kmk008.c {
 					nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
 						self.startPage();
 					});
-					nts.uk.ui.block.clear();
 				});
 				nts.uk.ui.block.clear();
+				return;
 			}
-
-			showDialogError(listError: any) {
-				let errorCode = _.split(listError[0], ',');
-				if (errorCode[0] === 'Msg_59') {
-					let periodName = getText(errorCode[1]);
-					let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-					alertError({messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])]});
-				} else {
-					alertError({
-						messageId: errorCode[0],
-						messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])]
-					});
+			new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
+				if (listError.length > 0) {
+					self.showDialogError(listError);
+					nts.uk.ui.block.clear();
+					return;
 				}
-			}
-
+				nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
+					self.startPage();
+				});
+				nts.uk.ui.block.clear();
+			});
+			nts.uk.ui.block.clear();
 		}
 
-		export class TimeOfCompanyModel {
+		showDialogError(listError: any) {
+			let errorCode = _.split(listError[0], ',');
+			if (errorCode[0] === 'Msg_59') {
+				let periodName = getText(errorCode[1]);
+				let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
+				alertError({messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])]});
+			} else {
+				alertError({
+					messageId: errorCode[0],
+					messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])]
+				});
+			}
+		}
+
+	}
+
+	export class TimeOfCompanyModel {
 			alarmWeek: KnockoutObservable<string> = ko.observable(null);
 			errorWeek: KnockoutObservable<string> = ko.observable(null);
 			limitWeek: KnockoutObservable<string> = ko.observable(null);
@@ -188,7 +220,7 @@ module nts.uk.at.view.kmk008.c {
 			}
 		}
 
-		export class UpdateInsertTimeOfCompanyModel {
+	export class UpdateInsertTimeOfCompanyModel {
 			laborSystemAtr: number = 0;
 			alarmWeek: number = 0;
 			errorWeek: number = 0;
@@ -245,84 +277,97 @@ module nts.uk.at.view.kmk008.c {
 		}
 
 
-		class EmpListCmp {
-			listComponentOption: any;
-			selectedCode: KnockoutObservable<string>;
-			multiSelectedCode: KnockoutObservableArray<string>;
-			isShowAlreadySet: KnockoutObservable<boolean>;
-			alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-			isDialog: KnockoutObservable<boolean>;
-			isShowNoSelectRow: KnockoutObservable<boolean>;
-			isMultiSelect: KnockoutObservable<boolean>;
-			employmentList: KnockoutObservableArray<UnitModel>;
-			isDisplayClosureSelection: KnockoutObservable<boolean>;
-			isDisplayFullClosureOption: KnockoutObservable<boolean>;
-			closureSelectionType: KnockoutObservable<number>;
-			selectClosureTypeList: KnockoutObservableArray<any>;
+	class EmpListCmp {
+		listComponentOption: any;
+		selectedCode: KnockoutObservable<string>;
+		multiSelectedCode: KnockoutObservableArray<string>;
+		isShowAlreadySet: KnockoutObservable<boolean>;
+		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+		isDialog: KnockoutObservable<boolean>;
+		isShowNoSelectRow: KnockoutObservable<boolean>;
+		isMultiSelect: KnockoutObservable<boolean>;
+		employmentList: KnockoutObservableArray<UnitModel>;
+		isDisplayClosureSelection: KnockoutObservable<boolean>;
+		isDisplayFullClosureOption: KnockoutObservable<boolean>;
+		closureSelectionType: KnockoutObservable<number>;
+		selectClosureTypeList: KnockoutObservableArray<any>;
 
-			constructor(){
-				const self = this;
-				self.selectedCode = ko.observable('1');
-				self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-				self.isShowAlreadySet = ko.observable(false);
-				self.alreadySettingList = ko.observableArray([
-					{code: '1', isAlreadySetting: true},
-					{code: '2', isAlreadySetting: true}
-				]);
-				self.isDialog = ko.observable(false);
-				self.isShowNoSelectRow = ko.observable(false);
-				self.isMultiSelect = ko.observable(false);
-				self.isDisplayClosureSelection = ko.observable(false);
-				self.isDisplayFullClosureOption = ko.observable(false);
-				self.closureSelectionType = ko.observable(1);
-				self.selectClosureTypeList = ko.observableArray([
-					{code: 1, name: 'Select Full Closure option'},
-					{code: 2, name: 'Select by selected closure code'},
-					{code: 3, name: 'Nothing (Select first option)'},
-				]);
+		constructor(){
+			const self = this;
+			self.selectedCode = ko.observable('1');
+			self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+			self.isShowAlreadySet = ko.observable(false);
+			self.alreadySettingList = ko.observableArray([
+				{code: '1', isAlreadySetting: true},
+				{code: '2', isAlreadySetting: true}
+			]);
+			self.isDialog = ko.observable(false);
+			self.isShowNoSelectRow = ko.observable(false);
+			self.isMultiSelect = ko.observable(false);
+			self.isDisplayClosureSelection = ko.observable(false);
+			self.isDisplayFullClosureOption = ko.observable(false);
+			self.closureSelectionType = ko.observable(1);
+			self.selectClosureTypeList = ko.observableArray([
+				{code: 1, name: 'Select Full Closure option'},
+				{code: 2, name: 'Select by selected closure code'},
+				{code: 3, name: 'Nothing (Select first option)'},
+			]);
 
-				self.listComponentOption = {
-					isShowAlreadySet: self.isShowAlreadySet(),
-					isMultiSelect: self.isMultiSelect(),
-					listType: ListType.EMPLOYMENT,
-					selectType: SelectType.SELECT_BY_SELECTED_CODE,
-					selectedCode: self.selectedCode,
-					isDialog: self.isDialog(),
-					isShowNoSelectRow: self.isShowNoSelectRow(),
-					alreadySettingList: self.alreadySettingList,
-					maxRows: 12
-				};
+			self.listComponentOption = {
+				isShowAlreadySet: self.isShowAlreadySet(),
+				isMultiSelect: self.isMultiSelect(),
+				listType: ListType.EMPLOYMENT,
+				selectType: SelectType.SELECT_BY_SELECTED_CODE,
+				selectedCode: self.selectedCode,
+				isDialog: self.isDialog(),
+				isShowNoSelectRow: self.isShowNoSelectRow(),
+				alreadySettingList: self.alreadySettingList,
+				maxRows: 12
+			};
 
-				self.employmentList = ko.observableArray<UnitModel>([]);
-			}
+			self.employmentList = ko.observableArray<UnitModel>([]);
 		}
+	}
 
-
-
-		export class ListType {
+	export class ListType {
 			static EMPLOYMENT = 1;
 			static Classification = 2;
 			static JOB_TITLE = 3;
 			static EMPLOYEE = 4;
 		}
 
-		export interface UnitModel {
-			code: string;
-			name?: string;
-			workplaceName?: string;
-			isAlreadySetting?: boolean;
-		}
+	export interface UnitModel {
+		code: string;
+		name?: string;
+		workplaceName?: string;
+		isAlreadySetting?: boolean;
+	}
 
-		export class SelectType {
-			static SELECT_BY_SELECTED_CODE = 1;
-			static SELECT_ALL = 2;
-			static SELECT_FIRST_ITEM = 3;
-			static NO_SELECT = 4;
-		}
+	export class SelectType {
+		static SELECT_BY_SELECTED_CODE = 1;
+		static SELECT_ALL = 2;
+		static SELECT_FIRST_ITEM = 3;
+		static NO_SELECT = 4;
+	}
 
-		export interface UnitAlreadySettingModel {
-			code: string;
-			isAlreadySetting: boolean;
-		}
+	export interface UnitAlreadySettingModel {
+		code: string;
+		isAlreadySetting: boolean;
+	}
+
+	export enum MonthlyLimit {
+		LIMIT_0_TIME = <number> 0,
+		LIMIT_1_TIME = <number> 1,
+		LIMIT_2_TIME = <number> 2,
+		LIMIT_3_TIME = <number> 3,
+		LIMIT_4_TIME = <number> 4,
+		LIMIT_5_TIME = <number> 5,
+		LIMIT_6_TIME = <number> 6,
+		LIMIT_7_TIME = <number> 7,
+		LIMIT_8_TIME = <number> 8,
+		LIMIT_9_TIME = <number> 9,
+		LIMIT_10_TIME = <number> 10,
+		LIMIT_11_TIME = <number> 11,
+		LIMIT_12_TIME = <number> 12
 	}
 }

@@ -1,10 +1,7 @@
 @CHARSET "UTF-8";
 
 .contents-area {
-	margin-top: 20px;
-	margin-left: 50px;
 	min-width: 560px;
-	height: 700px;
 }
 
 .form-default {
@@ -28,7 +25,7 @@
 
 #right-content {
 	padding-left: 30px;
-	padding-top: 15px;
+	padding-top: 25px;
 	width: 600px;
 	vertical-align: top;
 }
@@ -37,4 +34,26 @@
 	margin-left: -134px;
 	margin-top: 43px;
 	width: 143%;
+}
+
+.wrap-white-space-pre-line {
+	white-space: pre-line !important;
+}
+
+/*div.for-spacing {*/
+	/*margin-top: 10px;*/
+	/*border: 1px solid #CCC;*/
+/*}*/
+tr.tr-common-height {
+	height: 44px;
+}
+
+#right-content div.nts-fixed-table.cf {
+	margin-top: 10px;
+}
+table
+{
+	border-collapse: collapse !important;
+	border-spacing: 0px;
+	border: 1px solid #DDD;
 }

@@ -9,10 +9,9 @@
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:stylefile path="kmk008.c.style.css" />
+			<com:stylefile path="kmk008.c.main.css" />
 			<com:scriptfile path="kmk008.c.service.js" />
 			<com:scriptfile path="kmk008.c.vm.js" />
-			<com:scriptfile path="kmk008.c.start.js" />
 		</ui:define>
 
 		<ui:define name="sidebar">
@@ -126,25 +125,177 @@
 							</td>
 
 							<td id="right-content">
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Employment')])}</div>
-                                <span>01 上</span>
-                                <table data-itemno="C4_3" class="form-default">
-                                    <tr>
-                                        <td><div data-itemno="C4_4" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_162')}</div></td>
-                                        <td>
-                                            <div id="C4_5" data-bind="ntsComboBox: {
-                                                options: [{code: 1, name:'Mot'},{code: 2, name:'Hai'}],
-                                                optionsValue: 'code',
-                                                value: 1 ,
-                                                optionsText: 'name',
-                                                editable: false,
-                                                enable: true,
-                                                columns: [
-                                                    { prop: 'name', length: 5 },
-                                                ],
-                                                dropDownAttachedToBody:true}" tabindex="15"></div>
-                                        </td>
-                                    </tr>
+                                <div data-itemno="C3_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Employment')])}</div>
+                                <span data-itemno="C3_3">01 上</span>
+                                <table id="C4_3">
+                                    <colgroup>
+                                        <col width="250"/>
+                                        <col width="200"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-itemno="C4_4" data-bind="text: $i18n('KMK008_162')"></td>
+                                            <td>
+                                                <div data-itemno="C4_5" tabindex="15" data-bind="ntsComboBox: {
+                                                    name: $i18n('KMK008_34'),
+                                                    options: [
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_0_TIME ,name : $i18n('KMK008_190')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_1_TIME ,name : $i18n('KMK008_191')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_2_TIME ,name : $i18n('KMK008_192')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_3_TIME ,name : $i18n('KMK008_193')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_4_TIME ,name : $i18n('KMK008_194')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_5_TIME ,name : $i18n('KMK008_195')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_6_TIME ,name : $i18n('KMK008_196')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_7_TIME ,name : $i18n('KMK008_197')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_8_TIME ,name : $i18n('KMK008_198')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_9_TIME ,name : $i18n('KMK008_199')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_10_TIME, name : $i18n('KMK008_200')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_11_TIME, name : $i18n('KMK008_201')},
+                                                        {code: kmk008c.MonthlyLimit.LIMIT_12_TIME, name : $i18n('KMK008_202')}
+                                                    ],
+                                                    optionsValue: 'code',
+                                                    visibleItemsCount: 13,
+                                                    value: vm.selectedLimit,
+                                                    optionsText: 'name',
+                                                    editable: false,
+                                                    enable: true,
+                                                    option: {width: '64px'},
+                                                    columns: [{ prop: 'name', length: 4 }]}">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table id="C4_6">
+                                    <colgroup>
+                                        <col width="250"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="tr-common-height">
+                                            <th class="ui-widget-header" data-bind="text: $i18n('KMK008_89')"></th>
+                                            <th class="ui-widget-header" data-bind="text: $i18n('KMK008_90')"></th>
+                                            <th class="ui-widget-header" data-bind="text: $i18n('KMK008_91')"></th>
+                                            <th class="ui-widget-header" data-bind="text: $i18n('KMK008_164')"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="tr-common-height">
+                                            <td></td>
+                                            <td>
+                                                <input data-itemno="C4_14" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input data-itemno="C4_15" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" data-itemno="C4_16" data-bind="text: $i18n('KMK008_165')"></td>
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td></td>
+                                            <td>
+                                                <input data-itemno="C4_19" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input data-itemno="C4_20" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" data-itemno="C4_21" data-bind="text: $i18n('KMK008_166')"></td>
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td></td>
+                                            <td>
+                                                <input data-itemno="C4_23" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input data-itemno="C4_24" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" data-itemno="C4_25" data-bind="text: $i18n('KMK008_165')"></td>
+
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td></td>
+                                            <td>
+                                                <input data-itemno="C4_28" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input data-itemno="C4_29" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" data-itemno="C4_30" data-bind="text: $i18n('KMK008_167')"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table id="C4_31">
+                                    <colgroup>
+                                        <col width="250"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                        <tr class="tr-common-height">
+                                            <td></td>
+                                            <td>
+                                                <input data-itemno="C4_34" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input data-itemno="C4_35" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" data-itemno="C4_36" data-bind="text: $i18n('KMK008_165')"></td>
+                                        </tr>
+                                    </tbody>
                                 </table>
 								<!--<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">-->
                                 <!--<table class="form-default" style="margin-left: 87px;">-->
