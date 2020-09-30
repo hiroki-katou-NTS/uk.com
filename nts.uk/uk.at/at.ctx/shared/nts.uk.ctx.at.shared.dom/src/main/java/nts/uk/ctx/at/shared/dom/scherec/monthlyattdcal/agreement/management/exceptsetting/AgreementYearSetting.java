@@ -32,7 +32,7 @@ public class AgreementYearSetting extends AggregateRoot{
 	
 	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, int errorOneYear, int alarmOneYear){
 		return new AgreementYearSetting(employeeId, yearvalue, 
-										new OneYearErrorAlarmTime(
+										OneYearErrorAlarmTime.of(
 												new AgreementOneYearTime(errorOneYear), 
 												new AgreementOneYearTime(alarmOneYear)));
 	}

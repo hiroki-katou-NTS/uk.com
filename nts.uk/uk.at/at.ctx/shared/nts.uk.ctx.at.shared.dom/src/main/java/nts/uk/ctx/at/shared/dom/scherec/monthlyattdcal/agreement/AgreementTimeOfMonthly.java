@@ -5,8 +5,6 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 
 /**
@@ -31,11 +29,7 @@ public class AgreementTimeOfMonthly implements Serializable {
 	public AgreementTimeOfMonthly(){
 		
 		this.agreementTime = new AttendanceTimeMonth(0);
-		this.threshold = new OneMonthTime(
-				new OneMonthErrorAlarmTime(
-						new AgreementOneMonthTime(0), 
-						new AgreementOneMonthTime(0)), 
-				new AgreementOneMonthTime(0));
+		this.threshold = new OneMonthTime();
 	}
 	
 	/**	
