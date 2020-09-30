@@ -103,7 +103,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: v,
                     value2: self.selectedCodeSubHoliday(),
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
+                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -114,7 +115,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: v,
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
+                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -125,7 +127,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: self.selectedCodeSubHoliday(),
-                    value3: v
+                    value3: v,
+                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -148,7 +151,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             let value2 = !remainObject.checkBox2 || !remainObject.value2 ? 0 : remainObject.value2;
             //分割消化.代休日数
             let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
-            return (value1 - value2 - value3).toString();
+
+            let value4 = !remainObject.checkBox2 || !remainObject.value4 ? 0 : remainObject.value4;
+          return (value1 + parseFloat(value4) - (value2 + value3)).toString();
+       
         }
         initScreen(): void {
             block.invisible();

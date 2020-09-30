@@ -72,7 +72,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             self.remainDays(null);
         }
         
-        public calRemainDays(){
+        public oldRemainDays() {
             let self = this;
             if ((!self.pickUp() && !self.pause()) ||  (!self.occurredDays() && !self.subDays())) {
                 self.remainDays(null);
@@ -85,6 +85,16 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             if (self.remainDays() !== 0){
                 self.remainDays(self.remainDays().toFixed(1));
             }
+        }
+
+        public calRemainDays() {
+          const vm = this;
+          const value1 = !vm.pickUp() || !vm.occurredDays()? 0 : vm.occurredDays();
+          const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
+          const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
+          const value4 = !vm.pause || !vm.baseDate() ? '0' : vm.baseDate();
+          const remainDays = value1 + parseFloat(value4) - (value2 + value3)
+          vm.remainDays(remainDays);
         }
 
         public setSplit(){
@@ -236,14 +246,17 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             }
         }
 
-        public openKDL035(){
+        public openKDL035() {
             const vm = this;
             // TODO open kdl 035
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
                 const linkingDates: Array<any> = getShared('linkingDates');
                 if (linkingDates.length > 0) {
-                    vm.linkingDates(linkingDates);
+                   let linkingDatesFake =['2010-06-06',
+                    '2018-02-05',
+                    '2018-05-01','2018-05-10']
+                    vm.linkingDates(linkingDatesFake);
                     vm.checkLinkingDates(true);
                 }
             });

@@ -166,8 +166,8 @@ public class AddSubHdManagementService {
 					}
 					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
 					LeaveManagementData updateData = new LeaveManagementData(leaveManagementData.getID(),
-							leaveManagementData.getCID(), leaveManagementData.getSID(),
-							leaveManagementData.getComDayOffDate(), leaveManagementData.getExpiredDate(),
+							leaveManagementData.getCID(), leaveManagementData.getSID(), false,
+							leaveManagementData.getComDayOffDate().getDayoffDate().get() , leaveManagementData.getExpiredDate(),
 							leaveManagementData.getOccurredDays(), leaveManagementData.getOccurredTimes(), unUsedDay,
 							unUsedHour, 1, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
 							leaveManagementData.getDisapearDate());
