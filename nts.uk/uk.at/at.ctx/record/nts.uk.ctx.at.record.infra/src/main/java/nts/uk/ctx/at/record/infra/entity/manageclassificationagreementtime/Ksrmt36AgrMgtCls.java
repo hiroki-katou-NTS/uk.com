@@ -155,45 +155,45 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
                 //contractCD
                 contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-                domain.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
 
                 // basicMArlTime->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-                domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
                 // BASIC_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定
                 domain.getSetting().getOneMonth().getBasic().getUpperLimit().v(),
 
                 // SP_M_AL_TIME-> 分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
                 // SP_M_ER_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
 
                 // SP_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限
                 domain.getSetting().getOneMonth().getSpecConditionLimit().getUpperLimit().v(),
 
                 // BASIC_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-                domain.getSetting().getOneYear().getBasic().getError().v(),
+                domain.getSetting().getOneYear().getBasic().getAlarm().v(),
 
                 // BASIC_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-                domain.getSetting().getOneYear().getBasic().getAlarm().v(),
+                domain.getSetting().getOneYear().getBasic().getError().v(),
 
                 // BASIC_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定
                 domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
 
                 // SP_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
                 // SP_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
 
                 // SP_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限
                 domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
 
                 // MULTI_M_AVG_AL_TIME ->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
-                domain.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v(),
 
                 // MULTI_M_AVG_ER_TIME->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
-                domain.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v(),
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
 
                 // UPPER_LIMIT_CNT->分類３６協定時間.３６協定基本設定
                 domain.getSetting().getOverMaxTimes().value
