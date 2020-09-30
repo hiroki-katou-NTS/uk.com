@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -129,19 +131,21 @@ public class PayoutManagementDataService {
 			if (pause) {
 				substitutionOfHDManaDataRepository.create(subMana);
 			}
-			
-			// DungDV
+
 			if (checkedSplit) {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
-//			if (pause && pickUp) {
-//				PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), subMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
-//				payoutSubofHDManaRepository.add(paySub);
-//				if (checkedSplit) {
-//					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), splitMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
-//					payoutSubofHDManaRepository.add(paySplit);
-//				}
-//			}
+			if (pause && pickUp) {
+				//	作成したList<振休管理データ＞
+				List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = Arrays.asList(subMana);
+				if (checkedSplit) {
+					substitutionOfHDManagementDatas.add(splitMana);
+				}
+				
+				//	アルゴリズム「振出振休紐付け管理」を実行する
+				// (Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」"xử lý flag cập nhật data quản ly ngày nghỉ bù lại")
+				this.changeTheTieUpManagement(subMana.getSID(), substitutionOfHDManagementDatas, linkingDates);
+			}
 		}
 		
 		return errors;
@@ -321,35 +325,61 @@ public class PayoutManagementDataService {
 
 	}
 
-	//	UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).アルゴリズム（残数管理データ登録共通） Thuật toán (common đăng ký data quản lý số còn lại).振出振休紐付け管理を変更 (thay đổi quản lý liên kết đi làm/nghỉ thay thế).振出振休紐付け管理を変更
-	public void changeTheTieUpManagement(String employeeId, List<SubstitutionOfHDManagementData> subList, List<String> linkingDateList) { // DungDV
+	/**
+	 * UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).アルゴリズム（残数管理データ登録共通）
+	 * Thuật toán (common đăng ký data quản lý số còn lại).振出振休紐付け管理を変更 (thay đổi quản lý liên kết đi làm/nghỉ thay thế).振出振休紐付け管理を変更
+	 *
+	 * @param employeeId the employee id
+	 * @param subList the sub list
+	 * @param linkingDateList the linking date list
+	 */
+	public void changeTheTieUpManagement(String employeeId
+			, List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas
+			, List<String> linkingDateList) {
+
 		// Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
 		if (!linkingDateList.isEmpty()) { // ないの場合
 			return;
 		}
-		
+
 		// ドメインモデル「振出管理データ」を取得 Nhận domain model 「振出管理データ」 
-		List<PayoutManagementData> lstRecconfirm  = confirmRecMngRepo.getAllByUnknownDate(employeeId, linkingDateList);
-		
+		List<PayoutManagementData> lstRecconfirm  = this.confirmRecMngRepo.getAllByUnknownDate(employeeId, linkingDateList);
+
+		// 未使用日数　＝　０ Số ngày chưa sử dụng =0
+		double unUseDay = 0;
+
 		// Input．List＜振休管理データ＞をループする
-		for (SubstitutionOfHDManagementData sub : subList) {
+		for (SubstitutionOfHDManagementData substitutionOfHDManagementData : substitutionOfHDManagementDatas) {
 			// 取得したList＜振出管理データ＞をループする
-			lstRecconfirm.forEach(x -> {
+			for (PayoutManagementData x : lstRecconfirm) {
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
-				double unUseDay = x.getUnUsedDays().v() - sub.getRequiredDays().v();
-				if (unUseDay > 0) {
-					x.setRemainNumber(unUseDay);
-				} else {
+				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
+					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
+				} else if (unUseDay > 0) {
 					unUseDay = 0;
-					x.setRemainNumber(unUseDay);
 				}
+
+				// ・未使用日数　＝　計算した振休管理データ
+				x.setRemainNumber(unUseDay);
+				// ・振休消化区分　＝　消化済み
 				x.setStateAtr(DigestionAtr.USED.value);
+
 				// ループ中ドメインモデル「振出管理データ」を更新する Update domain model 「振出管理データ」 trong vòng lặp
-				confirmRecMngRepo.update(x);
+				this.confirmRecMngRepo.update(x);
 				
 				// ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
+				PayoutSubofHDManagement payoutSubofHDManagement = new PayoutSubofHDManagement(employeeId //	社員ID　＝　Input．社員ID
+						, x.getPayoutDate().getDayoffDate().orElse(null)								 //	 紐付け情報．発生日　＝　ループ中の振出管理データ．振出日
+						, substitutionOfHDManagementData.getHolidayDate().getDayoffDate().orElse(null)	 //	紐付け情報．使用日　＝　ループ中の振休管理データ．振休日
+						, substitutionOfHDManagementData.getRemainDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
+						, TargetSelectionAtr.MANUAL.value);												 //	紐付け情報．対象選択区分　＝　手動
 				
-			});
+				// 	ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
+				boolean insertState = this.addPayoutSub(payoutSubofHDManagement);
+				if (insertState) {
+					unUseDay = 0;
+				}
+			}
 		}
 		
 	}
