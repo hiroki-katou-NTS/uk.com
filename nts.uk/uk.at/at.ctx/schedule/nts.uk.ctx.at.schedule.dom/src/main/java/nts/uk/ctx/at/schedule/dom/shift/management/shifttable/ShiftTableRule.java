@@ -51,17 +51,16 @@ public class ShiftTableRule implements DomainValue {
 		
 		if ( useWorkExpectationAtr == NotUseAtr.USE) {
 			
+			if (!shiftTableSetting.isPresent()) {
+				throw new RuntimeException("shiftTableSetting is invalid");
+			}
+			
 			if (expectationAssignMethodList.isEmpty()) {
 				throw new BusinessException("Msg_1937");
 			}
 				
 			if (!fromNoticeDays.isPresent()) {
 				throw new BusinessException("Msg_1938");
-			}
-			
-			if (!shiftTableSetting.isPresent()) {
-				// TODO
-				throw new BusinessException("");
 			}
 			
 			int maxFromNoticeDays = shiftTableSetting.get().getShiftPeriodUnit() == ShiftPeriodUnit.MONTHLY ? 15 : 6;
