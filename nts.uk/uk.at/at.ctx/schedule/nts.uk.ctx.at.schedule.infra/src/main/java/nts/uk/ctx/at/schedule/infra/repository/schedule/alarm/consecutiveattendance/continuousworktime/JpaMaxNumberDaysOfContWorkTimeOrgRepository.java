@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganization;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxNumberDaysOfContWorkTimeOrgRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganizationRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrgDtl;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author hiroko_miura
  *
  */
-public class JpaMaxNumberDaysOfContWorkTimeOrgRepository extends JpaRepository implements MaxNumberDaysOfContWorkTimeOrgRepository {
+public class JpaMaxNumberDaysOfContWorkTimeOrgRepository extends JpaRepository implements MaxDaysOfContinuousWorkTimeOrganizationRepository {
 	
 	private static String SELECT_HEADER_WHERE_ORG = "SELECT * FROM KSCMT_ALCHK_CONSECUTIVE_WKTM_ORG"
 			+ " WHERE CID = @companyId"

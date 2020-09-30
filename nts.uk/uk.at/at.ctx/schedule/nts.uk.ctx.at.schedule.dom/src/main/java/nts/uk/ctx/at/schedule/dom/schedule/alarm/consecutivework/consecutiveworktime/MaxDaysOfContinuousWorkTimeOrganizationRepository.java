@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author hiroko_miura
  *
  */
-public interface MaxNumberDaysOfContWorkTimeOrgRepository {
+public interface MaxDaysOfContinuousWorkTimeOrganizationRepository {
 	/**
 	 * insert(会社ID, 組織の就業時間帯の連続勤務できる上限日数)
 	 * @param companyId

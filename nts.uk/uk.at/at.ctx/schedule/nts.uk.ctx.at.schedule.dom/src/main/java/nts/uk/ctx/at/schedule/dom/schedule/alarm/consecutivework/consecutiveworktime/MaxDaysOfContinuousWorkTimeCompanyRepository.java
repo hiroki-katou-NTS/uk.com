@@ -8,7 +8,7 @@ import java.util.Optional;
  * @author hiroko_miura
  *
  */
-public interface MaxNumberDaysOfContWorkTimeComRepository {
+public interface MaxDaysOfContinuousWorkTimeCompanyRepository {
 
 	/**
 	 * insert(会社ID, 会社の就業時間帯の連続勤務できる上限日数)
