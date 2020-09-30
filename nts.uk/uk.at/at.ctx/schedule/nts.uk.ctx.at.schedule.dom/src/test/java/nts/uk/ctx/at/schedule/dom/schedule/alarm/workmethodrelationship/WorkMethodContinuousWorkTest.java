@@ -12,6 +12,15 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod.Require;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 @RunWith(JMockit.class)
 public class WorkMethodContinuousWorkTest {
@@ -47,7 +56,7 @@ public class WorkMethodContinuousWorkTest {
 			}
 		};
 		
-		assertThat(workMethodConti.determineIfApplicable(require, workInfo)).isFalse();
+		assertThat(workMethodConti.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -62,7 +71,11 @@ public class WorkMethodContinuousWorkTest {
 	public void checkDetermineIfApplicable_NOT_ONE_DAY() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
-		val workType = WorkMethodHelper.createWorkTypeNotOneDay();
+		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
+				new WorkTypeName("name"), new WorkTypeAbbreviationName("abbName"), new WorkTypeMemo("memo"),
+				new DailyWork(WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.ContinuousWork,
+			    WorkTypeClassification.Attendance, WorkTypeClassification.Attendance));
+		
 		new Expectations(workType) {
 			{
 				require.getWorkType((String)any);
@@ -71,7 +84,7 @@ public class WorkMethodContinuousWorkTest {
 			}
 		};
 		
-		assertThat(workMethodConti.determineIfApplicable(require, workInfo)).isFalse();
+		assertThat(workMethodConti.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -86,7 +99,11 @@ public class WorkMethodContinuousWorkTest {
 	public void checkDetermineIfApplicable_NOT_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
-		val workType = WorkMethodHelper.createWorkTypeNotContinuous();
+		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
+				new WorkTypeName("name"), new WorkTypeAbbreviationName("abbName"), new WorkTypeMemo("memo"),
+				new DailyWork(WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.ContinuousWork,
+				WorkTypeClassification.Attendance, WorkTypeClassification.Attendance));
+		
 		new Expectations(workType) {
 			{
 				require.getWorkType((String)any);
@@ -95,7 +112,7 @@ public class WorkMethodContinuousWorkTest {
 			}
 		};
 		
-	   assertThat(workMethodConti.determineIfApplicable(require, workInfo)).isFalse();
+	   assertThat(workMethodConti.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -110,7 +127,11 @@ public class WorkMethodContinuousWorkTest {
 	public void checkDetermineIfApplicable_NOT_ONE_DAY_NOT_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
-		val workType = WorkMethodHelper.createWorkTypeNotOneDayAndNotContinuous();
+		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
+				new WorkTypeName("name"), new WorkTypeAbbreviationName("abbName"), new WorkTypeMemo("memo"),
+				new DailyWork(WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.ContinuousWork,
+				WorkTypeClassification.Attendance, WorkTypeClassification.Attendance));
+		
 		new Expectations(workType) {
 			{
 				require.getWorkType((String)any);
@@ -119,7 +140,7 @@ public class WorkMethodContinuousWorkTest {
 			}
 		};
 		
-		assertThat(workMethodConti.determineIfApplicable(require, workInfo)).isFalse();
+		assertThat(workMethodConti.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -134,7 +155,11 @@ public class WorkMethodContinuousWorkTest {
 	public void checkDetermineIfApplicable_IS_ONE_DAY_IS_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
-		val workType = WorkMethodHelper.createWorkTypeOneDayAndContinuous();
+		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
+				new WorkTypeName("name"), new WorkTypeAbbreviationName("abbName"), new WorkTypeMemo("memo"),
+				new DailyWork(WorkTypeUnit.OneDay, WorkTypeClassification.ContinuousWork,
+				WorkTypeClassification.ContinuousWork, WorkTypeClassification.ContinuousWork));
+		
 		new Expectations(workType) {
 			{
 				require.getWorkType((String)any);
@@ -143,7 +168,7 @@ public class WorkMethodContinuousWorkTest {
 			}
 		};
 		
-		assertThat(workMethodConti.determineIfApplicable(require, workInfo)).isTrue();
+		assertThat(workMethodConti.includes(require, workInfo)).isTrue();
 		
 	}
 }

@@ -11,7 +11,11 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod.Require;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-
+/**
+ * UnitTest: 勤務方法(出勤)
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class WorkMethodAttendanceTest {
 	@Injectable
@@ -24,7 +28,7 @@ public class WorkMethodAttendanceTest {
 	}
 	
 	/**
-	 * 勤務方法(休日)を作成する：成功(success)
+	 * 勤務方法(出勤)を作成する：成功(success)
 	 * 
 	 */
 	@Test
@@ -34,7 +38,7 @@ public class WorkMethodAttendanceTest {
 	}
 
 	/**
-	 * 勤務方法 = 勤務方法(休日)
+	 * 勤務方法 = 勤務方法(出勤)
 	 * 勤務方法の種類を取得する
 	 * check WorkMethodClassification	
 	 * excepted： ATTENDANCE
@@ -58,7 +62,7 @@ public class WorkMethodAttendanceTest {
 		//就業時間帯コード == 001
 		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("001"));
 		
-		assertThat(workMethodAt.determineIfApplicable(require, workInfo)).isFalse();
+		assertThat(workMethodAt.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -74,7 +78,7 @@ public class WorkMethodAttendanceTest {
 		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("002"));
 		
-		assertThat(workMethodAt.determineIfApplicable(require, workInfo)).isTrue();
+		assertThat(workMethodAt.includes(require, workInfo)).isTrue();
 		
 	}
 }

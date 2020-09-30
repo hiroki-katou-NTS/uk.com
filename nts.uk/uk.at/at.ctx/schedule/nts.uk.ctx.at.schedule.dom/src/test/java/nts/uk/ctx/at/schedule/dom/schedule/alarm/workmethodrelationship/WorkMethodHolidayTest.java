@@ -47,7 +47,7 @@ public class WorkMethodHolidayTest {
 			}
 		};
 		
-		assertThat(workMethodHd.determineIfApplicable(require, workInfo)).isFalse();
+		assertThat(workMethodHd.includes(require, workInfo)).isFalse();
 		
 	}
 	
@@ -69,7 +69,7 @@ public class WorkMethodHolidayTest {
 			}
 		};
 		
-		assertThat(workMethodHd.determineIfApplicable(require, workInfo)).isTrue();
+		assertThat(workMethodHd.includes(require, workInfo)).isTrue();
 		
 	}
 }

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,11 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-
+/**
+ * UnitTest: 勤務方法の関係性
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class WorkMethodRelationshipTest {
 	
@@ -104,8 +107,7 @@ public class WorkMethodRelationshipTest {
 				.isEqualTo(WorkMethodClassfication.ATTENDANCE);
 		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification())
 				.isEqualTo(WorkMethodClassfication.ATTENDANCE);
-		assertThat(convertWorkTimeCodes(workMethodRela.getCurrentWorkMethodList()))
-				.containsExactlyInAnyOrderElementsOf(convertWorkTimeCodes(currentWorkMethodList));
+		assertThat(workMethodRela.getCurrentWorkMethodList()).containsExactlyInAnyOrderElementsOf(currentWorkMethodList);
 	}
 	
 	
@@ -128,18 +130,6 @@ public class WorkMethodRelationshipTest {
 				.isEqualTo(WorkMethodClassfication.HOLIDAY);
 		assertThat(workMethodRela.getCurrentWorkMethodList().get(0).getWorkMethodClassification())
 				.isEqualTo(WorkMethodClassfication.HOLIDAY);
-	}
-	
-	/**
-	 * convert (List<WorkMethodAttendance>) -> List<String> (WorkTimeCodes)
-	 * @param currentWorkMethodList
-	 * @return
-	 */
-	private List<String> convertWorkTimeCodes(List<WorkMethod> currentWorkMethodList){
-		return currentWorkMethodList.stream().map(c -> {
-			val workMethodAtt = (WorkMethodAttendance) c;
-			return workMethodAtt.getWorkTimeCode().v();
-		}).collect(Collectors.toList());
 	}
 
 }
