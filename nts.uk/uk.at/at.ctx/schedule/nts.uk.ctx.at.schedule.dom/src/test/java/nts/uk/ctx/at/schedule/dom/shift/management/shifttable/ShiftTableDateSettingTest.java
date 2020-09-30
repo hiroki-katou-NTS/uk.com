@@ -97,14 +97,14 @@ public class ShiftTableDateSettingTest {
 	
 	
 	/**
-	 * targetDate == closureDate
+	 * targetDate < deadLine
 	 */
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case1() {
 		
 		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 9, 15));
+		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
