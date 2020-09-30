@@ -11,9 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecutiveDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContinuousAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContinuousAttendanceOrg;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework.MaxDaysOfConsecutiveAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework.MaxDaysOfConsecutiveAttendanceOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -54,7 +54,7 @@ public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements
 	 * @param companyId
 	 * @return
 	 */
-	public static KscmtAlchkConsecutiveWorkOrg of (MaxNumberDaysOfContinuousAttendanceOrg domain, String companyId) {
+	public static KscmtAlchkConsecutiveWorkOrg of (MaxDaysOfConsecutiveAttendanceOrganization domain, String companyId) {
 		val entity = new KscmtAlchkConsecutiveWorkOrg();
 		entity.pk.companyId = companyId;
 		entity.pk.targetUnit = domain.getTargeOrg().getUnit().value;
@@ -67,11 +67,11 @@ public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements
 	 * convert to domain
 	 * @return
 	 */
-	public MaxNumberDaysOfContinuousAttendanceOrg toDomain () {
+	public MaxDaysOfConsecutiveAttendanceOrganization toDomain () {
 		val targetOrg = TargetOrgIdenInfor.createFromTargetUnit(TargetOrganizationUnit.valueOf(this.pk.targetUnit), this.pk.targetId);
 		
-		return new MaxNumberDaysOfContinuousAttendanceOrg(
+		return new MaxDaysOfConsecutiveAttendanceOrganization(
 				  targetOrg
-				, new MaxNumberDaysOfContinuousAttendance(new NumberOfConsecutiveDays(this.maxConsDays)));
+				, new MaxDaysOfConsecutiveAttendance(new ConsecutiveNumberOfDays(this.maxConsDays)));
 	}
 }

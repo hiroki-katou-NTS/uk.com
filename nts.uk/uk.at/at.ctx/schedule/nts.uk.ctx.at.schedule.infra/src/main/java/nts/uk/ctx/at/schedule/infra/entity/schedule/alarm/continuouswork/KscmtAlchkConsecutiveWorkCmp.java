@@ -11,9 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecutiveDays;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContinuousAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.continuousattendance.MaxNumberDaysOfContinuousAttendanceCom;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework.MaxDaysOfConsecutiveAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework.MaxDaysOfConsecutiveAttendanceCompany;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -53,7 +53,7 @@ public class KscmtAlchkConsecutiveWorkCmp extends ContractUkJpaEntity implements
 	 * @param domain
 	 * @return
 	 */
-	public static KscmtAlchkConsecutiveWorkCmp of (String companyId, MaxNumberDaysOfContinuousAttendanceCom domain) {
+	public static KscmtAlchkConsecutiveWorkCmp of (String companyId, MaxDaysOfConsecutiveAttendanceCompany domain) {
 		val entity = new KscmtAlchkConsecutiveWorkCmp();
 		entity.companyId = companyId;
 		entity.maxConsDays = domain.getNumberOfDays().getNumberOfDays().v();
@@ -64,8 +64,8 @@ public class KscmtAlchkConsecutiveWorkCmp extends ContractUkJpaEntity implements
 	 * convert to domain
 	 * @return
 	 */
-	public MaxNumberDaysOfContinuousAttendanceCom toDomain() {
-		return new MaxNumberDaysOfContinuousAttendanceCom(
-				new MaxNumberDaysOfContinuousAttendance(new NumberOfConsecutiveDays(this.maxConsDays)));
+	public MaxDaysOfConsecutiveAttendanceCompany toDomain() {
+		return new MaxDaysOfConsecutiveAttendanceCompany(
+				new MaxDaysOfConsecutiveAttendance(new ConsecutiveNumberOfDays(this.maxConsDays)));
 	}
 }

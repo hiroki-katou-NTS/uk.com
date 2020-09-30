@@ -10,9 +10,9 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeOrganization;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.limitworktime.WorkTimeMaximumCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.WorkTimeMaximumCode;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrgDtl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.limitworktime.KscmtAlchkMaxdaysWktmOrgPk;
