@@ -90,8 +90,8 @@ public class RefCalendarClassificationTest {
 			}
 		};
 
-		WorkdayDivision excepted = refCalClass.getWorkdayDivision(require, calClass.getDate()).get();
-		assertThat(excepted).isEqualTo(calClass.getWorkDayDivision());
+		WorkdayDivision actual = refCalClass.getWorkdayDivision(require, calClass.getDate()).get();
+		assertThat(actual).isEqualTo(calClass.getWorkDayDivision());
 	}
 
 }
