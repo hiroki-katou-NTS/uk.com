@@ -96,7 +96,9 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		
 		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
 				command.getMailPrincipal(),
-				command.getMailAdministrator()
+				command.getMailAdministrator(),
+				null, //TODO-MINHNB
+				null//TODO-MINHNB
 				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
@@ -110,7 +112,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		
 		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
 				EnumAdaptor.valueOf(command.getCreationTarget(), TargetClassification.class),
-				new TargetSetting(command.isRecreateWorkType(), command.isManualCorrection(), command.isCreateEmployee(), command.isRecreateTransfer()));
+				new TargetSetting(command.isRecreateWorkType(), command.isCreateEmployee(), command.isRecreateTransfer()));
 		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period, command.isPerScheduleCls(), target);
 		DailyPerformanceCreation dailyPerfCreation =
 								new DailyPerformanceCreation(command.isDailyPerfCls(),
@@ -128,6 +130,12 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
 								))
 				.appRouteUpdateMonthly(EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class))
+//				.externalOutput(externalOutput) //TODO-MINHNB
+//				.externalAcceptance(externalAcceptance) //TODO-MINHNB
+//				.saveData(saveData) //TODO-MINHNB
+//				.deleteData(deleteData) //TODO-MINHNB
+//				.aggregationOfArbitraryPeriod(aggregationOfArbitraryPeriod) //TODO-MINHNB
+//				.indexReconstruction(indexReconstruction)
 				.build();
 		ProcessExecution procExec = ProcessExecution.builder()
 				.companyId(companyId)

@@ -9,19 +9,20 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KfndtProcExecIndex.
  * Entity インデックス再構成結果履歴
  */
+@Data
 @Entity
 @Table(name="KFNDT_PROC_EXEC_INDEX")
-@NoArgsConstructor
-@AllArgsConstructor
-public class KfndtProcExecIndex extends UkJpaEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class KfndtProcExecIndex extends UkJpaEntity implements ProcExecIndexResult.MementoGetter, ProcExecIndexResult.MementoSetter, Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -53,13 +54,13 @@ public class KfndtProcExecIndex extends UkJpaEntity implements Serializable {
 	 * 	処理前の断片化率									
 	 */
 	@Column(name = "FRS_BEF")
-	public BigDecimal frsBef;
+	public BigDecimal fragmentationRate;
 	
 	/** The frs aft. 
 	 * 	処理後の断片化率									
 	*/
 	@Column(name = "FRS_AFT")
-	public BigDecimal frsAft;
+	public BigDecimal fragmentationRateAfterProcessing;
 
 	/**
 	 * Gets the key.
@@ -69,6 +70,38 @@ public class KfndtProcExecIndex extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+	@Override
+	public void setIndexName(String indexNo) {
+		if (this.pk == null) {
+			this.pk = new KfndtProcExecIndexPk();
+		}
+		this.pk.setIndexName(indexNo);
+	}
+
+	@Override
+	public void setTablePhysicalName(String tablePhysicalName) {
+		if (this.pk == null) {
+			this.pk = new KfndtProcExecIndexPk();
+		}
+		this.pk.setTableName(tablePhysicalName);
+	}
+
+	@Override
+	public String getIndexName() {
+		if (this.pk != null) {
+			return this.pk.indexName;
+		}
+		return null;
+	}
+
+	@Override
+	public String getTablePhysicalName() {
+		if (this.pk != null) {
+			return this.pk.tableName;
+		}
+		return null;
 	}
 
 }

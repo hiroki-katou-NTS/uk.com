@@ -1352,5 +1352,8 @@ public class ProgramIdConsts {
 	
 	/** KSM007A */
 	public static final String KSM007A = "KSM007A";
+
+	/** KBT002J. */
+	public static final String KBT002J = "KBT002J";
 	
 }

@@ -18,9 +18,13 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @AllArgsConstructor
 public class AggregationOfArbitraryPeriod extends DomainObject {
 
-	/* 使用区分 */
+	/** 
+	 * 使用区分
+	 **/
 	private NotUseAtr classificationOfUse;
 	
-	/* コード */
+	/** 
+	 * コード 
+	 **/
 	private Optional<AggrFrameCode> code;
 }

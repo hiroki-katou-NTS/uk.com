@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +18,18 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @AllArgsConstructor
 public class IndexReconstruction extends DomainObject {
 	
-	/* 統計情報を更新する */
+	/**
+	 * 統計情報を更新する 
+	 **/
 	private NotUseAtr updateStats;
 	
-	/* 使用区分 */
+	/** 
+	 * 使用区分 
+	 **/
 	private NotUseAtr classificationOfUse;
 	
-	/* カテゴリリスト */
-	private IndexReconstructionCategoryNO categoryNo;
+	/** 
+	 * カテゴリリスト 
+	 **/
+	private List<IndexReconstructionCategoryNO> categoryNo;
 }

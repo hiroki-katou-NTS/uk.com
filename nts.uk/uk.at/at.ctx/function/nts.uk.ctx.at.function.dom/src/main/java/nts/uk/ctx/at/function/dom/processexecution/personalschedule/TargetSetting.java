@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.processexecution.personalschedule;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -10,13 +9,12 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 @AllArgsConstructor
-@Builder
 public class TargetSetting extends DomainObject {
 	/* 勤務種別変更者を再作成 */
 	private boolean recreateWorkType;
 	
-	/* 手修正を保護する */
-	private boolean manualCorrection;
+//	/* 手修正を保護する */
+//	private boolean manualCorrection;
 	
 	/* 新入社員を作成する */
 	private boolean createEmployee;

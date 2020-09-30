@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -16,8 +17,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.AggrFrameCode;
+import nts.uk.ctx.at.function.dom.processexecution.AggregationOfArbitraryPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
+import nts.uk.ctx.at.function.dom.processexecution.AuxiliaryPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.DeleteData;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
@@ -26,6 +31,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.SaveData;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
@@ -38,6 +44,7 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -91,7 +98,9 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				this.execSetting.alarmAtr ==1?true:false,
 				this.execSetting.alarmCode == null?null:(new AlarmPatternCode(this.execSetting.alarmCode)),
 				this.execSetting.mailPrincipal == null?null:(this.execSetting.mailPrincipal ==1 ?true:false),
-				this.execSetting.mailAdministrator == null?null:(this.execSetting.mailAdministrator ==1 ?true:false)
+				this.execSetting.mailAdministrator == null?null:(this.execSetting.mailAdministrator ==1 ?true:false),
+				this.execSetting.displayTpAdmin == null ? null : (this.execSetting.displayTpAdmin == 1),
+				this.execSetting.displayTpPrincipal == null ? null : (this.execSetting.displayTpPrincipal == 1)		
 				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
@@ -102,18 +111,12 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				this.execSetting.endMonthDay == null?null:new MonthDay(this.execSetting.endMonthDay/100,this.execSetting.endMonthDay%100)
 				);
 
-//		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
-//				EnumAdaptor.valueOf(this.execSetting.creationTarget, TargetClassification.class),
-//				new TargetSetting(this.execSetting.recreateWorkType == 1 ? true : false,
-//						this.execSetting.manualCorrection == 1 ? true : false,
-//						this.execSetting.createEmployee == 1 ? true : false,
-//						this.execSetting.recreateTransfer == 1 ? true : false)); 
 		PersonalScheduleCreationTarget target = PersonalScheduleCreationTarget.builder()
-				.targetSetting(TargetSetting.builder()
-						.recreateWorkType(this.execSetting.recreateWorkType == 1 ? true : false)
-						.createEmployee(this.execSetting.createEmployee == 1 ? true : false)
-						.recreateTransfer(this.execSetting.recreateTransfer == 1 ? true : false)
-						.build())
+				.targetSetting(new TargetSetting(
+						this.execSetting.recreateWorkType == 1 ? true : false,
+//						this.execSetting.manualCorrection == 1 ? true : false,
+						this.execSetting.createEmployee == 1 ? true : false,
+						this.execSetting.recreateTransfer == 1 ? true : false))
 				.build();
 		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period,
 				this.execSetting.perScheduleCls == 1 ? true : false, target);
@@ -137,12 +140,34 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class),
 						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
 				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class),
+				new DeleteData(
+						EnumAdaptor.valueOf(this.execSetting.dataDeletionArt, NotUseAtr.class), 
+						Optional.of(new AuxiliaryPatternCode(this.execSetting.dataDeletionCode))
+					),
+				new SaveData(
+						EnumAdaptor.valueOf(this.execSetting.dataStorageArt, NotUseAtr.class), 
+						Optional.of(new AuxiliaryPatternCode(this.execSetting.dataStorageCode))
+					),
 				null, //TODO
-				null,
-				null,
-				null,
-				null,
-				null
+//				new ExternalAcceptance(
+//						EnumAdaptor.valueOf(this.execSetting.extAcceptanceArt, NotUseAtr.class), 
+//						Optional<List<ExternalAcceptanceConditionCode>> listConditions
+//					),
+//				new ExternalOutput(
+//						EnumAdaptor.valueOf(this.execSetting.extOutputArt, NotUseAtr.class), 
+//						Optional<List<ExternalAcceptanceConditionCode>> listConditions
+//					),
+				null, //TODO
+				new AggregationOfArbitraryPeriod(
+						EnumAdaptor.valueOf(this.execSetting.aggAnyPeriodArt, NotUseAtr.class), 
+						Optional.of(new AggrFrameCode(this.execSetting.aggAnyPeriodCode))
+					),
+//				new IndexReconstruction(
+//						EnumAdaptor.valueOf(this.execSetting.updStatisticsArt, NotUseAtr.class),
+//						EnumAdaptor.valueOf(this.execSetting.indexReorgArt, NotUseAtr.class),
+//						Optional<List<IndexReconstructionCategoryNO>> categoryNo
+//					)
+				null //TODO
 				);
 
 		return new ProcessExecution(
@@ -166,6 +191,8 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecScope().getExecScopeCls().value, domain.getExecScope().getRefDate(), wkpList);
 		KfnmtProcessExecutionSetting execSetting = new KfnmtProcessExecutionSetting(
 				new KfnmtProcessExecutionSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
 				domain.getExecSetting().getPerSchedule().isPerSchedule() ? 1 : 0,
 				domain.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value,
 				/*
@@ -176,41 +203,63 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				 * domain.getExecSetting().getPerSchedule().getPeriod().
 				 * getCreationPeriod() == null ? null :
 				 */domain.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v(),
-//				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType() ? 1 : 0,
-//				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection() ? 1 : 0,
+				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()
+					? null
+					: domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
+				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()
+					? null
+					: (domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getMonth() * 100
+							+ domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getDay()),
+				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()
+					? null
+					: (domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
+							+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay()),
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().isDailyPerfCls() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
 				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
 				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
-//				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,
-//						domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
 				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
-				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
+				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent()
+					? domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value
+					: null,
 				domain.getExecSetting().getAppRouteUpdateMonthly().value,
-				domain.getExecSetting().getAlarmExtraction().isAlarmAtr()?1:0,
+				domain.getExecSetting().getAlarmExtraction().isAlarmAtr() ? 1 : 0,
 				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()
-						? domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
-						: null,
-				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()
-						? null
-						: (domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get() ? 1 : 0),
-				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()
-						? null
-						: (domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get() ? 1 : 0),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()
-						? null
-						: domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()
-						? null
-						: (domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getMonth() * 100
-						+ domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getDay()),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()
-						? null
-						: (domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
-						+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay()),
+					? domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
+					: null,
+				domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()
+					? (domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get() ? 1 : 0)
+					: null,
+				domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()
+					? (domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get() ? 1 : 0)
+					: null,
+				domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().isPresent()
+					? domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().get() ? 1 : 0
+					: null,
+				domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().isPresent()
+					? domain.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().get() ? 1 : 0
+					: null,
+				domain.getExecSetting().getExternalOutput().getExternalOutputClassification().value,
+				domain.getExecSetting().getExternalAcceptance().getExternalAcceptanceClassification().value,
+				domain.getExecSetting().getSaveData().getSaveDataClassification().value,
+				domain.getExecSetting().getSaveData().getPatternCode().isPresent()
+					? domain.getExecSetting().getSaveData().getPatternCode().get().v()
+					: null,
+				domain.getExecSetting().getDeleteData().getDataDeletionClassification().value,
+				domain.getExecSetting().getDeleteData().getPatternCode().isPresent()
+					? domain.getExecSetting().getDeleteData().getPatternCode().get().v()
+					: null,
+				domain.getExecSetting().getAggregationOfArbitraryPeriod().getClassificationOfUse().value,
+				domain.getExecSetting().getAggregationOfArbitraryPeriod().getCode().isPresent()
+					? domain.getExecSetting().getAggregationOfArbitraryPeriod().getCode().get().v()
+					: null,
+				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType() ? 1 : 0,
+				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
+				1,//TODO QA111576
+//				this.recreLeaveSya = recreLeaveSya;
+				domain.getExecSetting().getIndexReconstruction().getClassificationOfUse().value,
+				domain.getExecSetting().getIndexReconstruction().getUpdateStats().value,
 				domain.getCloudCreationFlag() ? 1 : 0);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
 	}

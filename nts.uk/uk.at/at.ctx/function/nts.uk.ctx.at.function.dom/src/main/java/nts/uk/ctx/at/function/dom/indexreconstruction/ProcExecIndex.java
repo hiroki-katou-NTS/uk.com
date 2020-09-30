@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.dom.indexreconstruction;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
@@ -11,16 +13,20 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
  *  UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
-public class IndexReconstructionResultHistory extends AggregateRoot {
+@Builder
+@AllArgsConstructor
+public class ProcExecIndex extends AggregateRoot {
 
 	/** 実行ID*/
 	private ExecutionCode executionId;
 	
 	/** 結果詳細*/
-	private List<IndexReconstructionResult> indexReconstructionResult;
+	private List<ProcExecIndexResult> indexReconstructionResult;
 	
-	public static IndexReconstructionResultHistory createFromMemento(MementoGetter memento) {
-		IndexReconstructionResultHistory domain = new IndexReconstructionResultHistory();
+	private ProcExecIndex() {}
+	
+	public static ProcExecIndex createFromMemento(MementoGetter memento) {
+		ProcExecIndex domain = new ProcExecIndex();
 		domain.getMemento(memento);
 		return domain;
 	}
@@ -31,17 +37,17 @@ public class IndexReconstructionResultHistory extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setExecutionId(this.executionId);
+		memento.setExecutionId(this.executionId.v());
 		memento.setIndexReconstructionResult(this.indexReconstructionResult);
 	}
 
 	public static interface MementoSetter {
-		void setExecutionId(ExecutionCode indexNo);
-		void setIndexReconstructionResult(List<IndexReconstructionResult> fragmentationRate);
+		void setExecutionId(String indexNo);
+		void setIndexReconstructionResult(List<ProcExecIndexResult> fragmentationRate);
 	}
 
 	public static interface MementoGetter {
 		String getExecutionId();
-		List<IndexReconstructionResult> getIndexReconstructionResult();
+		List<ProcExecIndexResult> getIndexReconstructionResult();
 	}
 }

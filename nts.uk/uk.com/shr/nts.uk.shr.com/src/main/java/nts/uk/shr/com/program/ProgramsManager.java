@@ -581,7 +581,11 @@ public class ProgramsManager {
      */
     public static final Program KBT002I = new Program(WebAppId.AT, ProgramIdConsts.KBT002I, "KBT002_190",
             "/view/kbt/002/i/index.xhtml");
-
+    /**
+     * KBT002J
+     */
+    public static final Program KBT002J = new Program(WebAppId.AT, ProgramIdConsts.KBT002J, "KBT002_273",
+    		"/view/kbt/002/j/index.xhtml");
     /**
      * KDW001A
      */

@@ -70,6 +70,10 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	@Column(name = "ERROR_BUSINESS")
 	public Integer errorBusiness;
 	
+	/**
+	 * The error system detail. 
+	 * システムエラー内容
+	 **/
 	@Column(name = "ERROR_SYSTEM_CONT")
 	public String errorSystemDetail;
 	

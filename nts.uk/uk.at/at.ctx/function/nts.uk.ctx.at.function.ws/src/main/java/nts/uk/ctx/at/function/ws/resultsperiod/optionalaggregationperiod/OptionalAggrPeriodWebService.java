@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.ws.resultsperiod.optionalaggregationperiod;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -7,6 +9,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.OptionalAggregationPeriodCommand;
+import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggregationPeriodCommandHandler;
+import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggregationPeriodCommandHandler;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodDto;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 
@@ -21,27 +26,44 @@ public class OptionalAggrPeriodWebService extends WebService {
 	@Inject
 	private OptionalAggrPeriodImportFinder optionalAggrPeriodFinder;
 	
+	@Inject
+	private SaveOptionalAggregationPeriodCommandHandler saveHandler;
+	
+	@Inject
+	private RemoveOptionalAggregationPeriodCommandHandler removeHandler;
+	
 	/**
 	 * Gets the aggr period dto.
-	 *	ドメインモデル「任意集計期間」を取得する
+	 *	
 	 * @param companyId the company id
 	 * @return the aggr period dto
 	 */
 	@POST
-	@Path("getAggrPeriod/{companyId}")
-	public AggrPeriodDto getAggrPeriodDto(@PathParam("companyId") String companyId) {
-		return this.optionalAggrPeriodFinder.findByCid(companyId);
+	@Path("getAggrPeriod")
+	public AggrPeriodDto getAggrPeriodDto() {
+		return this.optionalAggrPeriodFinder.findByCid();
 	}
-
+	
 	/**
-	 * Creates the aggr period dto.
-	 *	任意集計期間の登録処理
-	 * @param dto the dto
+	 * Gets the all dtos.
+	 *	ドメインモデル「任意集計期間」を取得する
+	 * @return the all dtos
 	 */
 	@POST
-	@Path("createAggrPeriod")
-	public void createAggrPeriodDto(AggrPeriodDto dto) {
-		this.optionalAggrPeriodFinder.addOptionalAggrPeriod(dto);
+	@Path("findAll")
+	public List<AggrPeriodDto> getAllDtos() {
+		return this.optionalAggrPeriodFinder.findAll();
+	}
+	
+	/**
+	 * Save.
+	 *	任意集計期間の登録処理
+	 * @param command the command
+	 */
+	@POST
+	@Path("save")
+	public void save(OptionalAggregationPeriodCommand command) {
+		this.saveHandler.handle(command);
 	}
 
 	/**
@@ -51,31 +73,9 @@ public class OptionalAggrPeriodWebService extends WebService {
 	 * @param aggrFrameCode the aggr frame code
 	 */
 	@POST
-	@Path("removeAggrPeriod/{companyId}/{aggrFrameCode}")
-	public void removeAggrPeriodDto(@PathParam("companyId") String companyId, @PathParam("aggrFrameCode") String aggrFrameCode) {
-		this.optionalAggrPeriodFinder.deleteOptionalAggrPeriod(companyId, aggrFrameCode);
+	@Path("removeAggrPeriod/{aggrFrameCode}")
+	public void removeAggrPeriodDto(@PathParam("aggrFrameCode") String aggrFrameCode) {
+		this.removeHandler.delete(aggrFrameCode);
 	}
 	
-	/**
-	 * Update aggr period dto.
-	 *	任意集計期間を選択する
-	 * @param aggrPeriodDto the aggr period dto
-	 */
-	@POST
-	@Path("updateAggrPeriod")
-	public void updateAggrPeriodDto(AggrPeriodDto aggrPeriodDto) {
-		this.optionalAggrPeriodFinder.updateOptionalAggrPeriod(aggrPeriodDto);
-	}
-
-	/**
-	 * Check exist aggr period.
-	 *	「任意集計期間」の重複をチェックする
-	 * @param companyId the company id
-	 * @param aggrFrameCode the aggr frame code
-	 */
-	@POST
-	@Path("checkExistAggrPeriod/{companyId}/{aggrFrameCode}")
-	public void checkExistAggrPeriod(@PathParam("companyId") String companyId, @PathParam("aggrFrameCode") String aggrFrameCode) {
-		this.optionalAggrPeriodFinder.checkExist(companyId, aggrFrameCode);
-	}
 }

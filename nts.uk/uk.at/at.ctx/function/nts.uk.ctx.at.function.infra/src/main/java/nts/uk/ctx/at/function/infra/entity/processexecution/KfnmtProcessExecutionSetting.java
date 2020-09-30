@@ -169,35 +169,58 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "DISPLAY_TP_ADMIN")
 	public Integer displayTpAdmin;
 
-	/** The ext output art. */
+	/** 
+	 * The ext output art. 
+	 * 外部出力区分
+	 **/
 	@Column(name = "EXT_OUTPUT_ART")
 	public int extOutputArt;
 
-	/** The ext acceptance art. */
+	/** 
+	 * The ext acceptance art. 
+	 * 外部受入区分
+	 **/
 	@Column(name = "EXT_ACCEPTANCE_ART")
 	public int extAcceptanceArt;
 
-	/** The data storage art. */
+	/** 
+	 * The data storage art. 
+	 * データの保存区分 
+	 **/
 	@Column(name = "DATA_STORAGE_ART")
 	public int dataStorageArt;
 
-	/** The data storage code. */
+	/** 
+	 * The data storage code. 
+	 * パターンコード
+	 **/
 	@Column(name = "DATA_STORAGE_CODE")
 	public String dataStorageCode;
 
-	/** The data deletion art. */
+	/** 
+	 * The data deletion art. 
+	 * データの削除
+	 **/
 	@Column(name = "DATA_DELETION_ART")
 	public int dataDeletionArt;
 
-	/** The data deletion code. */
+	/** 
+	 * The data deletion code. 
+	 * パターンコード
+	 **/
 	@Column(name = "DATA_DELETION_CODE")
 	public String dataDeletionCode;
 
-	/** The agg any period art. */
+	/** 
+	 * The agg any period art. 
+	 * 使用区分
+	 **/
 	@Column(name = "AGG_ANY_PERIOD_ART")
 	public int aggAnyPeriodArt;
 
-	/** The agg any period code. */
+	/** 
+	 * The agg any period code. 
+	 **/
 	@Column(name = "AGG_ANY_PERIOD_CODE")
 	public String aggAnyPeriodCode;
 
@@ -213,15 +236,23 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "RECRE_CHANGE_WKP")
 	public int recreateTransfer;
 
-	/** The recre leave sya. */
+	/** The recre leave sya. 
+	 * 休職者・休業者を再作成				
+	 **/
 	@Column(name = "RECRE_LEAVE_SYA")
 	public int recreLeaveSya;
 
-	/** The index reorg art. */
+	/** 
+	 * The index reorg art. 
+	 * 使用区分
+	 **/
 	@Column(name = "INDEX_REORG_ART")
 	public int indexReorgArt;
 
-	/** The upd statistics art. */
+	/** 
+	 * The upd statistics art. 
+	 * 統計情報を更新する
+	 **/
 	@Column(name = "UPD_STATISTICS_ART")
 	public int updStatisticsArt;
 
@@ -245,21 +276,27 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		return this.kfnmtProcExecSetPK;
 	}
 
-	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, int perScheduleCls,
-			int targetMonth, Integer targetDate, Integer creationPeriod, int recreateWorkType, int createEmployee,
-			int recreateTransfer, int dailyPerfCls, int dailyPerfItem, int midJoinEmployee, int reflectResultCls,
-			int monthlyAggCls, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
-			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear,
-			Integer startMonthDay, Integer endMonthDay, int cloudCreFlag) {
+	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, Long exclusVer,
+			String contractCode, int perScheduleCls, int targetMonth, Integer targetDate, Integer creationPeriod,
+			Integer designatedYear, Integer startMonthDay, Integer endMonthDay, int createEmployee, int dailyPerfCls,
+			int dailyPerfItem, int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int appRouteUpdateAtr,
+			Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr, String alarmCode, Integer mailPrincipal,
+			Integer mailAdministrator, Integer displayTpPrincipal, Integer displayTpAdmin, int extOutputArt,
+			int extAcceptanceArt, int dataStorageArt, String dataStorageCode, int dataDeletionArt,
+			String dataDeletionCode, int aggAnyPeriodArt, String aggAnyPeriodCode, int recreateWorkType,
+			int recreateTransfer, int recreLeaveSya, int indexReorgArt, int updStatisticsArt, int cloudCreFlag) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
+		this.exclusVer = exclusVer;
+		this.contractCode = contractCode;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
 		this.targetDate = targetDate;
 		this.creationPeriod = creationPeriod;
-		this.recreateWorkType = recreateWorkType;
+		this.designatedYear = designatedYear;
+		this.startMonthDay = startMonthDay;
+		this.endMonthDay = endMonthDay;
 		this.createEmployee = createEmployee;
-		this.recreateTransfer = recreateTransfer;
 		this.dailyPerfCls = dailyPerfCls;
 		this.dailyPerfItem = dailyPerfItem;
 		this.midJoinEmployee = midJoinEmployee;
@@ -272,10 +309,23 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.alarmCode = alarmCode;
 		this.mailPrincipal = mailPrincipal;
 		this.mailAdministrator = mailAdministrator;
-		this.designatedYear = designatedYear;
-		this.startMonthDay = startMonthDay;
-		this.endMonthDay = endMonthDay;
+		this.displayTpPrincipal = displayTpPrincipal;
+		this.displayTpAdmin = displayTpAdmin;
+		this.extOutputArt = extOutputArt;
+		this.extAcceptanceArt = extAcceptanceArt;
+		this.dataStorageArt = dataStorageArt;
+		this.dataStorageCode = dataStorageCode;
+		this.dataDeletionArt = dataDeletionArt;
+		this.dataDeletionCode = dataDeletionCode;
+		this.aggAnyPeriodArt = aggAnyPeriodArt;
+		this.aggAnyPeriodCode = aggAnyPeriodCode;
+		this.recreateWorkType = recreateWorkType;
+		this.recreateTransfer = recreateTransfer;
+		this.recreLeaveSya = recreLeaveSya;
+		this.indexReorgArt = indexReorgArt;
+		this.updStatisticsArt = updStatisticsArt;
 		this.cloudCreFlag = cloudCreFlag;
 	}
+	
 
 }

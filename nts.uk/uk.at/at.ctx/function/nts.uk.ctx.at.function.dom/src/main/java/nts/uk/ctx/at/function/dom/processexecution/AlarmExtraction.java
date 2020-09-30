@@ -21,18 +21,26 @@ public class AlarmExtraction extends DomainObject {
 	private Optional<Boolean> mailPrincipal;
 	/**メールを送信する(管理者)*/
 	private Optional<Boolean> mailAdministrator;
-	/**トップページに表示(本人)*/
+	
+	/**
+	 * トップページに表示(本人)
+	 **/
 	private Optional<Boolean> displayOnTopPageAdministrator;
-	/**トップページに表示(管理者)*/
+	
+	/**
+	 * トップページに表示(管理者)
+	 **/
 	private Optional<Boolean> displayOnTopPagePrincipal;
 
 	public AlarmExtraction(boolean alarmAtr, AlarmPatternCode alarmCode,Boolean mailPrincipal,
-			Boolean mailAdministrator) {
+			Boolean mailAdministrator, Boolean displayOnTopPageAdministrator, Boolean displayOnTopPagePrincipal) {
 		super();
 		this.alarmAtr = alarmAtr;
 		this.alarmCode = Optional.ofNullable(alarmCode);
 		this.mailPrincipal = Optional.ofNullable(mailPrincipal);
 		this.mailAdministrator = Optional.ofNullable(mailAdministrator);
+		this.displayOnTopPageAdministrator = Optional.ofNullable(displayOnTopPageAdministrator);
+		this.displayOnTopPagePrincipal = Optional.ofNullable(displayOnTopPagePrincipal);
 	}
 	
 	

@@ -526,6 +526,13 @@ module nts.uk.at.view.kbt002.b {
                 })
                 return res;
             }
+            
+            openScreenJ(){
+                block.grayout();
+                modal("/view/kbt/002/j/index.xhtml").onClosed(function(){
+                    block.clear();
+                });    
+            }
         }
 
         export interface IExecutionItem {

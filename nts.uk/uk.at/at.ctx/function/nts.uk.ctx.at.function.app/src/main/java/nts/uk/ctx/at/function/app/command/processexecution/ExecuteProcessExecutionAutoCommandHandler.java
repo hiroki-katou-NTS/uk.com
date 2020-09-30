@@ -50,8 +50,6 @@ import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.Ag
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetImport;
-import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReconstructionResultHistory;
-import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReconstructionTable;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
@@ -540,10 +538,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		 */
 		if (execSetting != null) {
 			String scheduleId = execSetting.getScheduleId();
-//			if (execSetting.isRepeat()) {
-//				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-//				execSetting.setNextExecDateTime(nextFireTime);
-//			}
 			this.execSettingRepo.update(execSetting);
 		}
 
@@ -843,17 +837,17 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			}
 			return;
 		} else {
-			// Step 3: if True: ドメインモデル「インデックス再構成テーブル」を取得する - Get the domain model "index reconstruction table"
-			IndexReconstructionTable indexReconstructionTable = new IndexReconstructionTable();
-			//TODO
-			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
-			if (indexReconstructionTable != null) {
-				// Step 4: 「インデックス再構成結果履歴」を作成する - Create "Index Reconstruction Result History"
-				IndexReconstructionResultHistory indexReconstructionResultHistory = new IndexReconstructionResultHistory(new ExecutionCode(execId), Collections.emptyList());
-				//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
-				// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
-				//TODO
-			}
+//			// Step 3: if True: ドメインモデル「インデックス再構成テーブル」を取得する - Get the domain model "index reconstruction table"
+//			IndexReconstructionTable indexReconstructionTable = new IndexReconstructionTable();
+//			//TODO
+//			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
+//			if (indexReconstructionTable != null) {
+//				// Step 4: 「インデックス再構成結果履歴」を作成する - Create "Index Reconstruction Result History"
+//				IndexReconstructionResultHistory indexReconstructionResultHistory = new IndexReconstructionResultHistory(new ExecutionCode(execId), Collections.emptyList());
+//				//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
+//				// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
+//				//TODO
+//			}
 		}
 		
 		

@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.gateway.pubimp.stopbycompany;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.gateway.pub.stopbycompany.UsageStopOutputExport;
 /**
  * The Class StopByCompanyPubImpl.
  */
+@Stateless
 public class StopByCompanyPubImpl implements StopByCompanyPub {
 
 	/** The repo. */

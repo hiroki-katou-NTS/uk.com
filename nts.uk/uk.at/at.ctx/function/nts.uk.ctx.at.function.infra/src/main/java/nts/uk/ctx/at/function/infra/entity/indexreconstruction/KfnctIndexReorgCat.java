@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.indexreconstruction;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -8,26 +9,27 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KfnctIndexReorgCat.
  * Entity インデックス再構成カテゴリ
  */
+@Data
 @Entity
 @Table(name="KFNCT_INDEX_REORG_CAT")
-@NoArgsConstructor
-@AllArgsConstructor
-public class KfnctIndexReorgCat extends UkJpaEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class KfnctIndexReorgCat extends UkJpaEntity implements IndexReorgCat.MementoGetter, IndexReorgCat.MementoSetter, Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The pk. */
 	@EmbeddedId
-	public KfnctIndexReogrCatPk pk;
+	public KfnctIndexReorgCatPk pk;
 	
 	/** The exclus ver. */
 	@Version
@@ -56,6 +58,22 @@ public class KfnctIndexReorgCat extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+	@Override
+	public void setCategoryNo(BigDecimal indexNo) {
+		if (this.pk == null) {
+			this.pk = new KfnctIndexReorgCatPk();
+		}
+		this.pk.setCategoryNo(indexNo);
+	}
+
+	@Override
+	public BigDecimal getCategoryNo() {
+		if (this.pk != null) {
+			return this.pk.categoryNo;
+		}
+		return null;
 	}
 
 }

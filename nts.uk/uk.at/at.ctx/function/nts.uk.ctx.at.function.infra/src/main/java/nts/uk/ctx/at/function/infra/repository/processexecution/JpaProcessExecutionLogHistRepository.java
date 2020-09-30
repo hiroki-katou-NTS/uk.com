@@ -1,5 +1,12 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -8,12 +15,6 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
-
-import javax.ejb.Stateless;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogHistRepository extends JpaRepository
@@ -136,16 +137,18 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 						+ " ,LAST_END_EXEC_DATETIME = ?"
 						+ " ,ERROR_SYSTEM = ?"
 						+ " ,ERROR_BUSINESS = ?"
+						+ " , ERROR_SYSTEM_CONT = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
 					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
 					ps.setString(2, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
 					ps.setString(3, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
 					ps.setString(4, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
-					ps.setString(5, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
-					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
-					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(5, kfnmtExecutionTaskLog.errorSystemDetail == null?null:(kfnmtExecutionTaskLog.errorSystemDetail));
+					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
+					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
+					ps.setString(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
+					ps.setInt(9, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}

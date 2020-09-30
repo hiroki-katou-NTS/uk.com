@@ -35,7 +35,9 @@ public class ExecutionTaskLog {
 	/* 全体の業務エラー状態*/
 	private Boolean errorBusiness;
 
-	/* システムエラー内容*/
+	/**
+	 * システムエラー内容
+	 **/
 	private String systemErrorDetails;
 
 	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status) {

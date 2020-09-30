@@ -1,46 +1,53 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO;
 
 /**
  *	 インデックス再構成カテゴリ
  * 	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
-public class IndexReconstructionCategory extends AggregateRoot {
+public class IndexReorgCat extends AggregateRoot {
 
-	/**  カテゴリNO */
-	private IndexName indexNo;
+	/**  
+	 * カテゴリNO 
+	 **/
+	private IndexReconstructionCategoryNO categoryNo;
 	
-	/** カテゴリ名 */
+	/** 
+	 * カテゴリ名 
+	 **/
 	private CategoryName categoryName;
 	
-	private IndexReconstructionCategory() {}
+	private IndexReorgCat() {}
 	
-	public static IndexReconstructionCategory createFromMemento(MementoGetter memento) {
-		IndexReconstructionCategory domain = new IndexReconstructionCategory();
+	public static IndexReorgCat createFromMemento(MementoGetter memento) {
+		IndexReorgCat domain = new IndexReorgCat();
 		domain.getMemento(memento);
 		return domain;
 	}
 	
 	public void getMemento(MementoGetter memento) {
-		this.indexNo = new IndexName(memento.getIndexNo());
+		this.categoryNo = new IndexReconstructionCategoryNO(memento.getCategoryNo().toString());
 		this.categoryName = new CategoryName(memento.getCategoryName());
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setIndexNo(this.indexNo);
-		memento.setCategoryName(this.categoryName);
+		memento.setCategoryNo(new BigDecimal(this.categoryNo.v()));
+		memento.setCategoryName(this.categoryName.v());
 	}
 	
 	public static interface MementoSetter {
-		void setIndexNo(IndexName indexNo);
-		void setCategoryName(CategoryName categoryName);
+		void setCategoryNo(BigDecimal indexNo);
+		void setCategoryName(String categoryName);
 	}
 	
 	public static interface MementoGetter {
-		String getIndexNo();
+		BigDecimal getCategoryNo();
 		String getCategoryName();
 	}
 }

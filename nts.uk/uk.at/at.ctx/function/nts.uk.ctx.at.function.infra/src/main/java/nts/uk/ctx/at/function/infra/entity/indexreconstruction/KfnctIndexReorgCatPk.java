@@ -7,15 +7,21 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
  * The Class KfndtProcExecIndexPk.
  */
 @Embeddable
-@AllArgsConstructor
+@EqualsAndHashCode
 @NoArgsConstructor
-public class KfnctIndexReogrCatPk implements Serializable {
+@AllArgsConstructor
+@Data
+@Builder
+public class KfnctIndexReorgCatPk implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

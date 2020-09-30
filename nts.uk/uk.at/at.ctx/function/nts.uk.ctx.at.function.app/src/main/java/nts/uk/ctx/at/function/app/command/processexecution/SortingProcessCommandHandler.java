@@ -15,6 +15,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.adapter.stopbycompany.StopByCompanyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stopbycompany.UsageStopOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
@@ -46,8 +48,8 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 	@Inject
 	private CompanyAdapter companyAdapter;
 	
-//	@Inject
-//	private StopByCompanyAdapter stopBycompanyAdapter;
+	@Inject
+	private StopByCompanyAdapter stopBycompanyAdapter;
 	
 //	@Inject
 //	private UkJobScheduler ukJobScheduler;
@@ -84,39 +86,39 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		String execItemId = IdentifierUtil.randomUniqueId();
 		// Step 4: 利用停止をチェックする-TODO
 		String contractCode = AppContexts.user().contractCode();
-//		UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyId);
-//		if (isSuspension.isUsageStop()) {
-//			// case 利用停止する
-//			// Step 前回の更新処理が実行中の登録処理
-//			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
-//			return;
-//		} else {
-//			// case 利用停止しない
-//			// Step ドメインモデル「更新処理自動実行管理」取得する
-//			Optional<ProcessExecutionLogManage> logManageOpt = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd);
-//			if(!logManageOpt.isPresent()){
-//				return;
-//			}
-//			ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
-//			// Step ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
-//			// 「実行中」
-//			if (processExecutionLogManage.getCurrentStatus().value == 0) {
-//				// ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
-//				boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
-//				if (checkLastTime) {
-//					// Step 実行中の場合の登録処理
-//					this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
-//				} else {
-//					// Step 実行処理
-//					this.executeHandler(companyId, execItemCd, execItemId, nextDate);
-//				}
-//			} 
-//			// 「待機中」
-//			else if (processExecutionLogManage.getCurrentStatus().value == 1) {
-//				// Step 実行処理
-//				this.executeHandler(companyId, execItemCd, execItemId, nextDate);
-//			}
-//		}
+		UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyId);
+		if (isSuspension.isUsageStop()) {
+			// case 利用停止する
+			// Step 前回の更新処理が実行中の登録処理
+			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+			return;
+		} else {
+			// case 利用停止しない
+			// Step ドメインモデル「更新処理自動実行管理」取得する
+			Optional<ProcessExecutionLogManage> logManageOpt = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd);
+			if(!logManageOpt.isPresent()){
+				return;
+			}
+			ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
+			// Step ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
+			// 「実行中」
+			if (processExecutionLogManage.getCurrentStatus().value == 0) {
+				// ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
+				boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
+				if (checkLastTime) {
+					// Step 実行中の場合の登録処理
+					this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+				} else {
+					// Step 実行処理
+					this.executeHandler(companyId, execItemCd, execItemId, nextDate);
+				}
+			} 
+			// 「待機中」
+			else if (processExecutionLogManage.getCurrentStatus().value == 1) {
+				// Step 実行処理
+				this.executeHandler(companyId, execItemCd, execItemId, nextDate);
+			}
+		}
 		
 	}
 	

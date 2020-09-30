@@ -17,9 +17,13 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @AllArgsConstructor
 public class ExternalOutput extends DomainObject {
 	
-	/* 外部出力区分 */
+	/** 
+	 * 外部出力区分 
+	 **/
 	private NotUseAtr externalOutputClassification;
 	
-	/* 条件一覧 */
+	/** 
+	 * 条件一覧 
+	 **/
 	private Optional<List<ExternalOutputConditionCode>> listConditions;
 }

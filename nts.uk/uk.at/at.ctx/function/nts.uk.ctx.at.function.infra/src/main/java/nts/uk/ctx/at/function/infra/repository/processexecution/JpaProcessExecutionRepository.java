@@ -14,8 +14,8 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutio
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionSetting;
 
 @Stateless
-public class JpaProcessExecutionRepository extends JpaRepository
-		implements ProcessExecutionRepository {
+public class JpaProcessExecutionRepository extends JpaRepository implements ProcessExecutionRepository {
+	
 	/**
 	 * Query strings
 	 */

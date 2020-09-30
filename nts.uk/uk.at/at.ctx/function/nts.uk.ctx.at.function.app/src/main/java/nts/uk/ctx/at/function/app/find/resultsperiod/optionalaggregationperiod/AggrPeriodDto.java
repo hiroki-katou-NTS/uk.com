@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 
 /**
  * The Class AggrPeriodDto.
@@ -22,8 +21,8 @@ public class AggrPeriodDto {
 	private String optionalAggrName;
 
 	/**  対象期間. */
-	private GeneralDate startDate;
+	private String startDate;
 
 	/**  対象期間. */
-	private GeneralDate endDate;
+	private String endDate;
 }

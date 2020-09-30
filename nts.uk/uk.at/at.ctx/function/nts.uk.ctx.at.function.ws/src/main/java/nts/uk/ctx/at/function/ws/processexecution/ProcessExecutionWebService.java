@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ws.processexecution;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -99,7 +100,8 @@ public class ProcessExecutionWebService extends WebService {
 	@POST
 	@Path("getProcExecList")
 	public List<ProcessExecutionDto> getProcExecList() {
-		return this.procExecFinder.findAll();
+//		return this.procExecFinder.findAll();
+		return Collections.emptyList();
 	}
 	
 	@POST

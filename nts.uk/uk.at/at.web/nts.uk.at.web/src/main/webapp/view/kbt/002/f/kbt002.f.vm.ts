@@ -139,13 +139,6 @@ module nts.uk.at.view.kbt002.f {
                 return dfd.promise();
             }
             
-            openScreenJ(){
-                block.grayout();
-                setShared('inputDialogJ', {aggrFrameCode: "aggrFrameCode"});
-                modal("/view/kbt/002/j/index.xhtml").onClosed(function(){
-                    block.clear();
-                });    
-            }
             openDialogG(execItemCd){
                 let self = this;
                 block.grayout();
