@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻カード.指定社員リストの打刻カード番号を生成する
