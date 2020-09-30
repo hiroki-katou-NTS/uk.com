@@ -102,6 +102,7 @@ public class OutputPeriodSetting extends AggregateRoot {
 		targetDomain.closureDayAtr = sourceDomain.closureDayAtr;
 		targetDomain.baseDateClassification = sourceDomain.baseDateClassification;
 		targetDomain.baseDateSpecify = sourceDomain.baseDateSpecify;
+		targetDomain.startDateClassification = sourceDomain.startDateClassification;
 		targetDomain.startDateSpecify = sourceDomain.startDateSpecify;
 		targetDomain.startDateAdjustment = sourceDomain.startDateAdjustment.isPresent() 
 				? Optional.of(new DateAdjustment(sourceDomain.startDateAdjustment.get().v())) 
