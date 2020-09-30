@@ -207,37 +207,34 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
         val companyId = entity.getKsrmt36AgrMgtCmpPk().getCompanyID();
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtCmpPk().getLaborSystemAtr(),LaborSystemtAtr.class);
 
-        val erAlTime = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getBasicMAllTime()),new AgreementOneMonthTime((int)entity.getBasicMArlTime()));
-        val upperLimit = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
+        val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
+        val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
 
-        val basic = new OneMonthTime(erAlTime,upperLimit);
+        val basic =  OneMonthTime.of(erAlTime, upperLimit);
 
-        val erAlTimeSp = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getSpMAlTime()),new AgreementOneMonthTime((int)entity.getSpMErTime()));
-        val upperLimitSp = new AgreementOneMonthTime((int)entity.getSpMLimitTime());
-        val specConditionLimit = new OneMonthTime(erAlTimeSp,upperLimitSp);
+        val erAlTimeSp =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getSpMErTime()), new AgreementOneMonthTime((int) entity.getSpMAlTime()));
+        val upperLimitSp = new AgreementOneMonthTime((int) entity.getSpMLimitTime());
+        val specConditionLimit =  OneMonthTime.of(erAlTimeSp, upperLimitSp);
 
-        val oneMonth = new AgreementOneMonth(basic,specConditionLimit);
-
-
+        val oneMonth = new AgreementOneMonth(basic, specConditionLimit);
 
 
-        val basicY = new OneYearErrorAlarmTime(new AgreementOneYearTime((int)entity.getBasisYAlTime()),new AgreementOneYearTime((int)entity.getBasisYErTime()));
-        val erAlTimeSpY = new OneYearErrorAlarmTime(new AgreementOneYearTime((int)entity.getSpYAlTime()),new AgreementOneYearTime((int)entity.getSpYErlTime()));
+        val basicY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getBasisYErTime()), new AgreementOneYearTime((int) entity.getBasisYAlTime()));
+        val erAlTimeSpY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getSpYErlTime()), new AgreementOneYearTime((int) entity.getSpYAlTime()));
 
-        val upperLimitSpY = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
+        val upperLimitSpY = new AgreementOneYearTime((int) entity.getBasisYLimitTime());
 
-        val specConditionLimitY = new OneYearTime(erAlTimeSpY,upperLimitSpY);
-        val oneYear = new AgreementOneYear(basicY,specConditionLimitY);
+        val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
+        val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
 
 
+        val multiMonthAvg =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getMultiMAvgErTime())
+                , new AgreementOneMonthTime((int) entity.getMultiMAvgAlTime()));
 
-        val   multiMonthAvg = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getMultiMAvgAlTime())
-                ,new AgreementOneMonthTime((int)entity.getMultiMAvgErTime()));
+        val multiMonth = new AgreementMultiMonthAvg(multiMonthAvg);
+        val overMaxTimes = EnumAdaptor.valueOf(entity.getUpperLimitCnt(), AgreementOverMaxTimes.class);
 
-        val  multiMonth = new AgreementMultiMonthAvg(multiMonthAvg);
-        val   overMaxTimes= EnumAdaptor.valueOf(entity.getUpperLimitCnt(),AgreementOverMaxTimes.class);
-
-        val basicAgreementSetting = new BasicAgreementSetting(oneMonth,oneYear,multiMonth,overMaxTimes);
+        val basicAgreementSetting = new BasicAgreementSetting(oneMonth, oneYear, multiMonth, overMaxTimes);
         return new AgreementTimeOfCompany(companyId,laborSystemAtr,basicAgreementSetting);
     }
 }
