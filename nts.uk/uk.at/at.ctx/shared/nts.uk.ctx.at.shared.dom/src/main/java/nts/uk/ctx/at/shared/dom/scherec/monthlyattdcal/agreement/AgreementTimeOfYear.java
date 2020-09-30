@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
 
 /** 年別実績の36協定時間 */
@@ -24,10 +23,7 @@ public class AgreementTimeOfYear implements Serializable {
 	public AgreementTimeOfYear(){
 		
 		this.targetTime = new AgreementOneYearTime(0);
-		this.threshold = new OneYearTime(new OneYearErrorAlarmTime(
-												new AgreementOneYearTime(0), 
-												new AgreementOneYearTime(0)), 
-										new AgreementOneYearTime(0));
+		this.threshold = new OneYearTime();
 	}
 	
 	/**	

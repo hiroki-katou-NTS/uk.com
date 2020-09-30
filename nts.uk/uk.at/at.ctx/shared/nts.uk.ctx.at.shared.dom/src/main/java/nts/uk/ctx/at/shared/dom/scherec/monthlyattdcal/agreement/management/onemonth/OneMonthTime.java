@@ -28,7 +28,7 @@ public class OneMonthTime {
 		this.upperLimit = upperLimit;
 	}
 	
-	public static OneMonthTime from(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
+	public static OneMonthTime of(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
 
 		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
 		if (upperLimit.lessThan(erAlTime.getError())) {
