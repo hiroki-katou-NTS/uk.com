@@ -5,26 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-/**
- * 
- * @author chungnt
- *
- */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PeriodsCloseDto {
-	
-	public int yearMonth;
-	
+public class PeriodsClose {
+
 	// 締め名称
 	private String closureName;
-	
-	// 期間
-	
-	private GeneralDate startDate;
-	
-	private GeneralDate endDate;
 
+	// 期間
+
+	private GeneralDate startDate;
+
+	private GeneralDate endDate;
 }

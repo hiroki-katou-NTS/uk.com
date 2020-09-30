@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.query.ksu.ksu002.a;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,7 +21,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsCloseDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsClose;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,40 +53,44 @@ public class ListOfPeriodsClose {
 	
 	
 	@SuppressWarnings("unused")
-	public List<PeriodsCloseDto> get(ListOfPeriodsCloseInput input) {
-		
-		int yearMonth;
-		Integer i = new Integer(input.getYearMonth());
-		
-		if (i != null) {
-			yearMonth = input.yearMonth;
-		} else {
-			yearMonth = this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
-		}
+	public SystemDateDto get(ListOfPeriodsCloseInput input) {
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
 		CacheCarrier cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 		
-		List<PeriodsCloseDto> dtos = new ArrayList<>();
+		SystemDateDto dtos = new SystemDateDto();
 		
-		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(yearMonth));
+		if (input.getYearMonth() == 0) {
+			dtos.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
+		}else {
+			dtos.setYearMonth(input.getYearMonth());
+		}
+		
+		List<PeriodsClose> closes = new ArrayList<>();
+		
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(dtos.getYearMonth()));
+		
+		List<Closure> closures = this.closureRepository.findByListId(companyId,
+				periods.stream().map(m -> m.getClosureId().value).collect(Collectors.toList()));
 		
 		for (ClosurePeriod closurePeriod : periods) {
-			PeriodsCloseDto closeDto = new PeriodsCloseDto();
+			PeriodsClose periodsClose = new PeriodsClose();
 			
 			DatePeriod period = closurePeriod.getAggrPeriods().get(0).getPeriod();
 			
-			closeDto.setStartDate(period.start());
-			closeDto.setEndDate(period.end());
+			periodsClose.setStartDate(period.start());
+			periodsClose.setEndDate(period.end());
 			
-			Optional<Closure> closure = this.closureRepository.findById(companyId, closurePeriod.getClosureId().value);
+			Optional<Closure> closure = closures.stream().filter(f -> f.getClosureId().value ==  closurePeriod.getClosureId().value).findFirst();
 			
-			closeDto.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
+			periodsClose.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
 			
-			dtos.add(closeDto);
+			closes.add(periodsClose);
 		}
+		
+		dtos.setPeriodsClose(closes);
 		
 		return dtos;
 	}

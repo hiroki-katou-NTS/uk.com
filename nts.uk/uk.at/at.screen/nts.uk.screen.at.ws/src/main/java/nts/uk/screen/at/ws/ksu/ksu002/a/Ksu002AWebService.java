@@ -11,7 +11,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsCloseDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.TheInitialDisplayDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
@@ -42,7 +42,7 @@ public class Ksu002AWebService extends WebService {
 	
 	@POST
 	@Path("getListOfPeriodsClose")
-	public List<PeriodsCloseDto> getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
+	public List<SystemDateDto> getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
 		return this.listOfPeriodsClose.get(param);
 	}
 	
