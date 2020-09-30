@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.query.pginfomation;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,7 +77,9 @@ public class PGInfomationQueryFinder {
 		return standardMenus.stream()
 				.map((item) -> {
 					Optional<LogSetting> oLogSetting = logSettings.stream()
-							.filter(logSetting -> logSetting.getProgramId().equals(item.getProgramId()))
+							.filter(logSetting -> logSetting.getProgramId().equals(item.getProgramId())
+									&& logSetting.getProgramCd().equals(item.getCode().v())
+									&& logSetting.getMenuClassification().equals(item.getClassification()))
 							.findFirst();
 					
 					// Step ・機能名　＝　標準メニュー．表示名称
@@ -137,6 +140,8 @@ public class PGInfomationQueryFinder {
 							.programCd(programCd) // programCd
 							.build();
 				})
+				.sorted(Comparator.comparing(PGInfomationDto::getMenuClassification))
+				.sorted(Comparator.comparing(PGInfomationDto::getProgramCd))
 				.collect(Collectors.toList());
 	}
 }
