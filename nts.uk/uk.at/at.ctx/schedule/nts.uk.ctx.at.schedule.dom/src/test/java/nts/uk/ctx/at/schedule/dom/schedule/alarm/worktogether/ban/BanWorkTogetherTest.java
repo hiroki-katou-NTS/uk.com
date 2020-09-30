@@ -101,7 +101,7 @@ public class BanWorkTogetherTest {
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		NtsAssert.businessException("Msg_1787", ()-> {
 			BanWorkTogether.createByNightShift(
-					TargetOrgIdenInfor.creatIdentifiWorkplace("517ef7f8-77d0-4eb0-b539-05e03a23f9e5"),
+					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					empBanWorkTogetherLst,
@@ -120,8 +120,8 @@ public class BanWorkTogetherTest {
 		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(10);
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		NtsAssert.businessException("Msg_1787", ()-> {
-			BanWorkTogether.createByNightShift(
-					TargetOrgIdenInfor.creatIdentifiWorkplace("517ef7f8-77d0-4eb0-b539-05e03a23f9e5"),
+			BanWorkTogether.createBySpecifyingAllDay(
+					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					empBanWorkTogetherLst,
@@ -195,6 +195,7 @@ public class BanWorkTogetherTest {
 		assertThat(banWorkTogether.getTargetOrg()).isEqualTo(targetOrg);
 		assertThat(banWorkTogether.getCode().v()).isEqualTo("001");
 		assertThat(banWorkTogether.getName().v()).isEqualTo("night_shift");
+		assertThat(banWorkTogether.getApplicableTimeZoneCls()).isEqualTo(ApplicableTimeZoneCls.NIGHTSHIFT);
 		assertThat(banWorkTogether.getEmpBanWorkTogetherLst()).containsExactlyInAnyOrderElementsOf(empBanWorkTogetherLst);
 	}
 	
@@ -220,6 +221,7 @@ public class BanWorkTogetherTest {
 		assertThat(banWorkTogether.getTargetOrg()).isEqualTo(targetOrg);
 		assertThat(banWorkTogether.getCode().v()).isEqualTo("001");
 		assertThat(banWorkTogether.getName().v()).isEqualTo("all_day");
+		assertThat(banWorkTogether.getApplicableTimeZoneCls()).isEqualTo(ApplicableTimeZoneCls.ALLDAY);
 		assertThat(banWorkTogether.getEmpBanWorkTogetherLst()).containsExactlyInAnyOrderElementsOf(empBanWorkTogetherLst);
 		
 	}
