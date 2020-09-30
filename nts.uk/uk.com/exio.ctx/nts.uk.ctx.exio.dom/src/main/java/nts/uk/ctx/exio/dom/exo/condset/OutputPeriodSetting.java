@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.exo.condset;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -10,6 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部出力.出力条件設定.出力条件設定.出力期間設定
  */
+@Getter
 public class OutputPeriodSetting extends AggregateRoot {
 
 	/**
@@ -88,6 +90,28 @@ public class OutputPeriodSetting extends AggregateRoot {
 		OutputPeriodSetting domain = new OutputPeriodSetting();
 		domain.getMemento(memento);
 		return domain;
+	}
+	
+	public static OutputPeriodSetting cloneFromDomain(String newCid, String newConSetCd, OutputPeriodSetting sourceDomain) {
+		OutputPeriodSetting targetDomain = new OutputPeriodSetting();
+		// Set new cId + conditionSetCode
+		targetDomain.cid = newCid;
+		targetDomain.conditionSetCode = new ExternalOutputConditionCode(newConSetCd);
+		// Clone data
+		targetDomain.periodSetting = sourceDomain.periodSetting;
+		targetDomain.closureDayAtr = sourceDomain.closureDayAtr;
+		targetDomain.baseDateClassification = sourceDomain.baseDateClassification;
+		targetDomain.baseDateSpecify = sourceDomain.baseDateSpecify;
+		targetDomain.startDateSpecify = sourceDomain.startDateSpecify;
+		targetDomain.startDateAdjustment = sourceDomain.startDateAdjustment.isPresent() 
+				? Optional.of(new DateAdjustment(sourceDomain.startDateAdjustment.get().v())) 
+				: Optional.empty();
+		targetDomain.endDateClassification = sourceDomain.endDateClassification;
+		targetDomain.endDateSpecify = sourceDomain.endDateSpecify;
+		targetDomain.endDateAdjustment = sourceDomain.endDateAdjustment.isPresent() 
+				? Optional.of(new DateAdjustment(sourceDomain.endDateAdjustment.get().v())) 
+				: Optional.empty();
+		return targetDomain;
 	}
 
 	/**

@@ -30,7 +30,7 @@ public class SaveOutputPeriodSetCommandHandler extends CommandHandler<SaveOutput
 		if (command.getIsNew()) {
 			this.repo.add(domain);
 		} else {
-			this.repo.update(domain);
+			this.repo.update(cId, command.getConditionSetCode(), domain);
 		}
 	}
 
