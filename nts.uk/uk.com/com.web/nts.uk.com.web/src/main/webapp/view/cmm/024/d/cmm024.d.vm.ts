@@ -6,15 +6,6 @@ module nts.uk.com.view.cmm024.d {
 	import ScheduleHistoryDto = nts.uk.com.view.cmm024.a.service.ScheduleHistoryDto;
 	import ScheduleHistoryModel = nts.uk.com.view.cmm024.a.service.ScheduleHistoryModel;
 
-	interface ScreenData {
-		companyId?: string,
-		startDate?: string,
-		endDate?: string,
-		workPlaceId?: string,
-		startDateBeforeChange?: string,
-		screen?: string
-	}
-
 	@bean()
 	class ViewModel extends ko.ViewModel {
 
@@ -27,8 +18,6 @@ module nts.uk.com.view.cmm024.d {
 		newScheduleHistory: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		enableDatePicker: KnockoutObservable<boolean> = ko.observable(false);
 		scheduleHistoryModel: KnockoutObservable<ScheduleHistoryModel> = ko.observable(null);
-
-		params: KnockoutObservable<ScreenData> = ko.observable({});
 
 		constructor(params: any) {
 			// start point of object
@@ -61,9 +50,9 @@ module nts.uk.com.view.cmm024.d {
 				vm.scheduleHistoryModel(data);
 
 				scheduleHistoryUpdate = vm.scheduleHistoryModel().scheduleHistoryUpdate;
-				vm.newStartDate(scheduleHistoryUpdate.startDate);
+				vm.newStartDate(moment(scheduleHistoryUpdate.startDate).toDate());
 
-				let allowStartDate: Date = moment(vm.scheduleHistoryModel().allowStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD');
+				let allowStartDate: Date = moment(vm.scheduleHistoryModel().allowStartDate).toDate();
 				vm.allowStartDate(allowStartDate);
 			});
 		}
@@ -150,7 +139,7 @@ module nts.uk.com.view.cmm024.d {
 		/**
 		 * Delete a schedule history of company / workplace
 		*/
-		deleteScheduleHistory(params: ScreenData) {
+		deleteScheduleHistory(params: any) {
 			let vm = this;
 
 			switch (params.screen) {
@@ -181,11 +170,9 @@ module nts.uk.com.view.cmm024.d {
 		/**
 		 * update a schedule history of company / workplace
 		*/
-		updateScheduleHistory(params: ScreenData) {
+		updateScheduleHistory(params: any) {
 			let vm = this,
 				status: boolean = false;
-
-			console.log(params);
 
 			switch (params.screen) {
 				case 'A':
@@ -204,7 +191,7 @@ module nts.uk.com.view.cmm024.d {
 					vm.$blockui('show');
 					service.updateAScheduleHistoryByWorkplace(params)
 						.done((response) => {
-							vm.$dialog.info(({ messageId: 'Msg_15' });
+							vm.$dialog.info({ messageId: 'Msg_15' });
 							status = true;
 							vm.$blockui('hide');
 						})

@@ -22,18 +22,19 @@ module nts.uk.com.view.cmm024.a {
 		companyScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		companyScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		companyScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
-		enableRegisterA: KnockoutObservable<boolean> = ko.observable(false);
+		enableRegisterA: KnockoutObservable<boolean> = ko.observable(true);
 		company: KnockoutObservable<any> = ko.observable({ name: null, id: null });
 		screenAModeAddNew: KnockoutObservable<boolean> = ko.observable(true);
 		screenAModeEdit: KnockoutObservable<boolean> = ko.observable(true);
-		screenAMode: KnockoutObservable<number> = ko.observable(ScreenModel.NORMAL);
+		screenAMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryA: KnockoutObservable<boolean> = ko.observable(true);
+		allowSettingA: KnockoutObservable<boolean> = ko.observable(true);
 		//Screen B
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
 		screenBModeAddNew: KnockoutObservable<boolean> = ko.observable(true);
 		screenBModeEdit: KnockoutObservable<boolean> = ko.observable(true);
-		screenBMode: KnockoutObservable<number> = ko.observable(ScreenModel.NORMAL);
+		screenBMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryB: KnockoutObservable<boolean> = ko.observable(true);
 
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
@@ -46,7 +47,7 @@ module nts.uk.com.view.cmm024.a {
 
 		// KCP010
 		kcp010Model: kcp010.viewmodel.ScreenModel;
-		listComponentOption: ComponentOption;
+		listComponentOption: service.ComponentOption;
 		selectedWkpId: KnockoutObservable<string>;
 		selectedCode: any;
 
@@ -71,18 +72,14 @@ module nts.uk.com.view.cmm024.a {
 				targetBtnText: vm.$i18n("KCP010_3"),
 				tabIndex: 4
 			};
+
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
-			vm.kcp010Model.workplaceId.subscribe(function (wkpId) {
+			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
 				if (wkpId) {
 					vm.selectedWkpId(wkpId);
+					vm.workplaceScheduleHistoryListing();
 				}
 			});
-
-			//Screen A
-			let company = JSON.parse(nts.uk.sessionStorage.nativeStorage.getItem('nts.uk.session.COMPANY'));
-			vm.company({ name: company[0].companyName, id: company[0].companyId });
-			vm.modelA().workPlaceCompanyId = vm.company().id;
-
 		}
 
 		// start point of object
@@ -91,20 +88,18 @@ module nts.uk.com.view.cmm024.a {
 
 			_.extend(window, { vm });
 
-			//Screen A
-			vm.screenAMode(ScreenModel.NORMAL);
+			//Screen A			
+			vm.screenAMode(ScreenModel.EDIT);
 			vm.companyScheduleHistoryListing();
 
-			//Screen B
-			vm.screenBMode(ScreenModel.NORMAL);
-			vm.workplaceScheduleHistoryListing();
+			let company = JSON.parse(nts.uk.sessionStorage.nativeStorage.getItem('nts.uk.session.COMPANY'));
+			vm.company({ name: company[0].companyName, id: company[0].companyId });
+			vm.modelA().workPlaceCompanyId = vm.company().id;
 		}
 
 		// raise event when view initial success full
 		mounted() {
-			let vm = this,
-				objFind: ScheduleHistoryDto = null,
-				scheduleHistory: Array<any> = [];
+			let vm = this;
 
 			vm.companyScheduleHistorySelected.subscribe(function (value: string) {
 				vm.dispplayInfoOnScreenA(value);
@@ -131,17 +126,16 @@ module nts.uk.com.view.cmm024.a {
 		 * ********************************************************************/
 		dispplayInfoOnScreenA(value: string) {
 			let vm = this,
-				isAllowUpdate = false,
+				isAllowSetting: boolean = false,
 				objFind: ScheduleHistoryDto = null,
 				scheduleHistory: Array<any> = [];
 
-			vm.screenAMode(ScreenModel.NORMAL);
-
 			if (vm.companyScheduleHistoryList().length > 0) {
 				//allow/not allow add new or updated with the first item
-				isAllowUpdate = vm.companyScheduleHistoryList()[0].code === value;
-				vm.screenAModeAddNew(isAllowUpdate);
-				vm.screenAModeEdit(isAllowUpdate);
+				isAllowSetting = vm.companyScheduleHistoryList()[0].code === value;
+				vm.screenAModeAddNew(isAllowSetting);
+				vm.screenAModeEdit(isAllowSetting);
+				vm.allowSettingA(isAllowSetting);
 
 				//highlight history that has selected
 				scheduleHistory = vm.companyScheduleHistoryList();
@@ -160,6 +154,7 @@ module nts.uk.com.view.cmm024.a {
 			} else {
 				vm.screenAModeAddNew(true);
 				vm.screenAModeEdit(false);
+				vm.allowSettingA(true);
 			}
 		}
 
@@ -167,7 +162,19 @@ module nts.uk.com.view.cmm024.a {
 		 * Register data on Screen A
 		 * */
 		RegisterA() {
-			let vm = this;
+			let vm = this,
+				currentScheduleItem = vm.modelA();;
+
+			let tempList = currentScheduleItem.approverPanel().filter(function (item) {
+				return (item.employeeCode !== '-1' && item.employeeCode !== null);
+			});
+
+			if (tempList.length <= 0) {
+				vm.$dialog.error({ messageId: 'Msg_1790' });
+				$('.employee-lists-a').focus();
+				return;
+			}
+
 			switch (vm.screenAMode()) {
 				case ScreenModel.EDIT:
 					vm.updateScheduleHistoryByCompany();
@@ -175,8 +182,6 @@ module nts.uk.com.view.cmm024.a {
 
 				case ScreenModel.ADDNEW:
 					vm.registerScheduleHistoryByCompany();
-					break;
-				case ScreenModel.NORMAL:
 					break;
 			}
 
@@ -191,45 +196,39 @@ module nts.uk.com.view.cmm024.a {
 		*/
 		registerScheduleHistoryByCompany() {
 			let vm = this,
-				currentScheduleItem = vm.companyScheduleHistoryObjSelected();
+				currentScheduleItem = vm.modelA();
 
 			vm.$blockui('show');
 
-
 			let params = {
 				companyId: vm.company().id, //ログイン会社ID
-				starDate: moment.utc(currentScheduleItem.startDate, 'YYYY-MM-DD'), //期間				 
-				startDate: moment.utc(currentScheduleItem.startDate, 'YYYY-MM-DD'), //期間
-				endDate: moment.utc(currentScheduleItem.endDate, 'YYYY-MM-DD'), //期間
+				starDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間				 
+				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
+				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
 				approveList: [], //36承認者一覧リンクラベル
 				confirmedList: []// 従業員代表指定リンクラベル
 			};
 
-			if (currentScheduleItem.personalInfoApprove.length <= 0) {
-				vm.$dialog.error({ messageId: 'Msg_18' });
-				$('.employees-list-approved').focus();
-				vm.$blockui('hide');
-			} else {
-
-				currentScheduleItem.personalInfoApprove.map((item) => {
+			currentScheduleItem.approverPanel().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
 					params.approveList.push(item.employeeId);
-				})
+			})
 
-				currentScheduleItem.personalInfoConfirm.map((item) => {
+			currentScheduleItem.employeesRepresentative().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
 					params.confirmedList.push(item.employeeId);
-				})
+			})
 
-				service.registerScheduleHistoryByCompany(params)
-					.done((response) => {
-						vm.$dialog.info({ messageId: 'Msg_15' });
-						vm.enableRegisterA(false);
-						vm.$blockui('hide');
-					}).fail((error) => {
-						console.log(error);
-					}).always(() => {
-						vm.$blockui('hide');
-					});
-			}
+			service.registerScheduleHistoryByCompany(params)
+				.done((response) => {
+					vm.$dialog.info({ messageId: 'Msg_15' });
+					vm.enableRegisterA(true);
+					vm.$blockui('hide');
+				}).fail((error) => {
+					console.log(error);
+				}).always(() => {
+					vm.$blockui('hide');
+				});
 		}
 
 		/**
@@ -237,24 +236,40 @@ module nts.uk.com.view.cmm024.a {
 		*/
 		updateScheduleHistoryByCompany() {
 			let vm = this,
-				currentScheduleItem = vm.companyScheduleHistoryObjSelected();
+				currentScheduleItem = vm.modelA();
 
 			vm.$blockui('show');
 
+
 			let params = {
 				companyId: vm.company().id, //ログイン会社ID			
-				starDate: moment.utc(currentScheduleItem.startDate, 'YYYY-MM-DD'), //期間				 
-				startDate: moment.utc(currentScheduleItem.startDate, 'YYYY-MM-DD'), //期間
-				endDate: moment.utc(currentScheduleItem.endDate, 'YYYY-MM-DD'), //期間
-				approveList: currentScheduleItem.personalInfoApprove, //36承認者一覧リンクラベル
-				confirmedList: currentScheduleItem.personalInfoConfirm, // 従業員代表指定リンクラベル
-				startDateBeforeChange: moment.utc(currentScheduleItem.startDate, 'YYYY-MM-DD')//期間
+				starDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間				 
+				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
+				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
+				approveList: [], //36承認者一覧リンクラベル
+				confirmedList: [], // 従業員代表指定リンクラベル
+				startDateBeforeChange: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD')//期間
 			};
+
+			currentScheduleItem.approverPanel().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.approveList.push(item.employeeId);
+			})
+
+			currentScheduleItem.employeesRepresentative().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.confirmedList.push(item.employeeId);
+			})
 
 			service.updateScheduleHistoryByCompany(params)
 				.done((response) => {
-					vm.$dialog.info({ messageId: 'Msg_18' });
-					vm.screenAMode(ScreenModel.NORMAL);
+					vm.$dialog.info({ messageId: 'Msg_15' });
+
+					let currentScheduleHistoryList = vm.companyScheduleHistoryList();
+					vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
+
+					vm.screenAMode(ScreenModel.EDIT);
+
 					vm.$blockui('hide');
 				}).fail((error) => {
 					console.log(error);
@@ -266,7 +281,7 @@ module nts.uk.com.view.cmm024.a {
 		/**
 		 * Display page C
 		 * */
-		screenADialogC(model: string = 'A') {
+		screenAShowDialogC() {
 
 			let vm = this,
 				currentScheduleHistoryList: Array<ScheduleHistoryDto>,
@@ -281,33 +296,10 @@ module nts.uk.com.view.cmm024.a {
 					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
 
 						currentScheduleHistoryList = vm.companyScheduleHistoryList();
-						if (currentScheduleHistoryList.length > 0) {
+						currentScheduleHistoryList = vm.updateScheduleHistoryListing(currentScheduleHistoryList, data);
 
-							//update endDate before insert to first
-							let beforeNewStartDate = moment(
-								data.scheduleHistoryItem.startDate,
-								"YYYY/MM/DD")
-								.subtract(1, "days").format("YYYY/MM/DD");
-
-							//update newEndDate for old first element of the listing
-							let oldStartDate = currentScheduleHistoryList[0].startDate;
-							currentScheduleHistoryList[0] = new ScheduleHistoryDto(
-								oldStartDate, beforeNewStartDate,
-								currentScheduleHistoryList[0].personalInfoApprove,
-								currentScheduleHistoryList[0].personalInfoConfirm,
-							);
-
-							//update new element to first element of the new listing
-							currentScheduleHistoryList.unshift(data.scheduleHistoryItem);
-							vm.companyScheduleHistoryList(currentScheduleHistoryList);
-
-						} else {
-							let tempDate = moment(data.scheduleHistoryItem.startDate, "YYYY/MM/DD").format("YYYY/MM/DD");
-							currentScheduleHistoryList.push(new ScheduleHistoryDto(tempDate, newEndDate));
-							vm.companyScheduleHistoryList(currentScheduleHistoryList);
-						}
-
-						currentScheduleHistoryList = vm.companyScheduleHistoryList();
+						//re-update the list
+						vm.companyScheduleHistoryList(currentScheduleHistoryList);
 						vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
 
 						vm.enableRegisterA(true);
@@ -315,6 +307,7 @@ module nts.uk.com.view.cmm024.a {
 						vm.screenAModeEdit(false);
 						vm.enableScheduleHistoryA(false);
 						vm.screenAMode(ScreenModel.ADDNEW);
+
 						//update schedule history
 						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
 							vm.modelA(new Model(
@@ -325,15 +318,15 @@ module nts.uk.com.view.cmm024.a {
 								vm.addEmptySetting()
 							));
 						} else { //clone
-							vm.modelA().startDate(newStartDate);
-							vm.modelA().endDate(moment(newEndDate, "YYYY/MM/DD").toDate());
+							vm.modelA().startDate(data.scheduleHistoryItem.startDate);
+							vm.modelA().endDate(data.scheduleHistoryItem.endDate);
 						}
-
 					} else {
-						vm.enableRegisterA(vm.screenAMode() !== ScreenModel.NORMAL);
+						vm.enableRegisterA(true);
 						vm.screenAModeAddNew(true);
 						vm.screenAModeEdit(true);
 						vm.enableScheduleHistoryA(true);
+						vm.screenAMode(ScreenModel.EDIT);
 					}
 				});
 			});
@@ -375,33 +368,20 @@ module nts.uk.com.view.cmm024.a {
 							if (data.RegistrationHistoryType === HistoryUpdate.HISTORY_EDIT) {
 								if (!nts.uk.util.isNullOrUndefined(data.newScheduleHistory)
 									&& (scheduleHistory.length > 0)) {
-
-									scheduleHistory[0] = new ScheduleHistoryDto(
-										data.newScheduleHistory.startDate,
-										scheduleHistory[0].endDate,
-										scheduleHistory[0].personalInfoApprove,
-										scheduleHistory[0].personalInfoConfirm,
-									);
-
-									scheduleHistory[1] = new ScheduleHistoryDto(
-										scheduleHistory[1].startDate,
-										data.newScheduleHistory.newEndDate,
-										scheduleHistory[1].personalInfoApprove,
-										scheduleHistory[1].personalInfoConfirm
-									);
+									vm.updateHistoricalPeriod(scheduleHistory, data);
 								}
-								vm.screenAMode(ScreenModel.EDIT);
-							} else {
-								vm.screenAMode(ScreenModel.DELETE);
 							}
 
 							if (screen === 'A') {
+								vm.screenAMode(ScreenModel.EDIT);
 								vm.companyScheduleHistoryListing();
 								vm.screenAModeAddNew(false);
 								vm.screenAModeEdit(false);
 							} else {
-								//vm.companyScheduleHistoryList(scheduleHistory);
-								//vm.companyScheduleHistorySelected(scheduleHistory[0].code);
+								vm.workplaceScheduleHistoryList();
+								vm.screenBModeAddNew(false);
+								vm.screenBModeEdit(false);
+								vm.screenBMode(ScreenModel.EDIT);
 							}
 						} else {
 							if (screen === 'A') {
@@ -427,35 +407,38 @@ module nts.uk.com.view.cmm024.a {
 
 			employeesList = (panel === 1) ? model.approverPanel() : model.employeesRepresentative();
 
-			vm.$window.storage("workPlaceCodeList", {
-				workplaceID: null,
-				codeList: employeesList
-			});
+			if (vm.allowSettingA()) {
 
-			vm.$window.modal("/view/cmm/024/f/index.xhtml",
-				{ title: 'Test Title' }).then(function () {
-					//36承認者パネル
-					vm.$window.storage("newWorkPlaceCodeList").then((data) => {
-						let dataList: any = [];
-						if (!nts.uk.util.isNullOrEmpty(data)) {
-							if (data.codeList) {
-								dataList = data.codeList;
-								dataList = (dataList.length <= 0) ? vm.addEmptySetting() : dataList;
-								dataList = dataList.slice(0, 5); //max 5
-							}
-
-							if (panel === 1)
-								model.approverPanel(dataList);
-							else
-								model.employeesRepresentative(dataList);
-
-							if ((screen === 'A'))
-								vm.modelA(model);
-							else
-								vm.modelB(model);
-						}
-					});
+				vm.$window.storage("workPlaceCodeList", {
+					workplaceID: null,
+					codeList: employeesList
 				});
+
+				vm.$window.modal("/view/cmm/024/f/index.xhtml",
+					{ title: 'Test Title' }).then(function () {
+						//36承認者パネル
+						vm.$window.storage("newWorkPlaceCodeList").then((data) => {
+							let dataList: any = [];
+							if (!nts.uk.util.isNullOrEmpty(data)) {
+								if (data.codeList) {
+									dataList = data.codeList;
+									dataList = (dataList.length <= 0) ? vm.addEmptySetting() : dataList;
+									dataList = dataList.slice(0, 5); //max 5
+								}
+
+								if (panel === 1)
+									model.approverPanel(dataList);
+								else
+									model.employeesRepresentative(dataList);
+
+								if ((screen === 'A'))
+									vm.modelA(model);
+								else
+									vm.modelB(model);
+							}
+						});
+					});
+			}
 		}
 
 		/*
@@ -506,6 +489,7 @@ module nts.uk.com.view.cmm024.a {
 							vm.companyScheduleHistorySelected(null);
 							vm.companyScheduleHistoryObjSelected(null);
 							vm.dispplayInfoOnScreenA(null);
+							vm.enableRegisterA(false);
 						}
 
 					}
@@ -563,6 +547,73 @@ module nts.uk.com.view.cmm024.a {
 			}
 		}
 
+		/**
+		 * Update the schedule history listing
+		 * @params currentList : Array
+		 * @params data	:
+		*/
+		updateScheduleHistoryListing(currentList: any, data: any) {
+
+			let vm = this,
+				newScheduleHistoryList: Array<ScheduleHistoryDto> = [],
+				oldStartDate: string = null,
+				newEndDate: string = service.END_DATE;
+
+			newScheduleHistoryList = currentList;
+
+			if (newScheduleHistoryList.length > 0) {
+				//update endDate before insert to first
+				let beforeNewStartDate = moment(
+					data.scheduleHistoryItem.startDate,
+					"YYYY/MM/DD")
+					.subtract(1, "days").format("YYYY/MM/DD");
+
+				//update newEndDate for old first element of the listing
+				oldStartDate = newScheduleHistoryList[0].startDate;
+				newScheduleHistoryList[0] = new ScheduleHistoryDto(
+					oldStartDate, beforeNewStartDate,
+					newScheduleHistoryList[0].personalInfoApprove,
+					newScheduleHistoryList[0].personalInfoConfirm,
+				);
+
+				//update new element to first element of the new listing
+				newScheduleHistoryList.unshift(data.scheduleHistoryItem);
+
+			} else {
+				let tempDate = moment(data.scheduleHistoryItem.startDate, "YYYY/MM/DD").format("YYYY/MM/DD");
+				newScheduleHistoryList.push(new ScheduleHistoryDto(tempDate, newEndDate));
+			}
+
+			return newScheduleHistoryList;
+		}
+
+		/**
+		 * re-update the historical period
+		*/
+		updateHistoricalPeriod(scheduleHistory: any, data: any) {
+
+			let vm = this,
+				newScheduleHistory = scheduleHistory;
+
+			newScheduleHistory[0] = new ScheduleHistoryDto(
+				data.newScheduleHistory.startDate,
+				newScheduleHistory[0].endDate,
+				newScheduleHistory[0].personalInfoApprove,
+				newScheduleHistory[0].personalInfoConfirm,
+			);
+
+			if (newScheduleHistory.length > 1) {
+				newScheduleHistory[1] = new ScheduleHistoryDto(
+					newScheduleHistory[1].startDate,
+					data.newScheduleHistory.newEndDate,
+					newScheduleHistory[1].personalInfoApprove,
+					newScheduleHistory[1].personalInfoConfirm
+				);
+			}
+
+			return newScheduleHistory;
+		}
+
 		/***********************************************************************
 		 * Screen B
 		 * ********************************************************************/
@@ -571,10 +622,10 @@ module nts.uk.com.view.cmm024.a {
 				objFind: ScheduleHistoryDto = null,
 				scheduleHistory: Array<any> = [];
 
-			let isAllowUpdate = vm.workplaceScheduleHistoryList()[0].code === value;
+			let isAllowSetting = vm.workplaceScheduleHistoryList()[0].code === value;
 
-			vm.screenBModeAddNew(isAllowUpdate);
-			vm.screenBModeEdit(isAllowUpdate);
+			vm.screenBModeAddNew(isAllowSetting);
+			vm.screenBModeEdit(isAllowSetting);
 
 			scheduleHistory = vm.workplaceScheduleHistoryList();
 			objFind = _.find(scheduleHistory, (x) => x.code === value);
@@ -597,102 +648,100 @@ module nts.uk.com.view.cmm024.a {
 		 * Register data on Screen B
 		 * */
 		RegisterB() {
+			let vm = this,
+				currentScheduleItem = vm.modelB();
 
+			let tempList = currentScheduleItem.approverPanel().filter(function (item) {
+				return (item.employeeCode !== '-1' && item.employeeCode !== null);
+			});
+
+			if (tempList.length <= 0) {
+				vm.$dialog.error({ messageId: 'Msg_1790' });
+				$('.employee-lists-b').focus();
+				return;
+			}
+
+			switch (vm.screenBMode()) {
+				case ScreenModel.EDIT:
+					vm.updateScheduleHistoryByWorkplace();
+					break;
+
+				case ScreenModel.ADDNEW:
+					vm.registerScheduleHistoryByWorkplace();
+					break;
+			}
+
+			//reset
+			vm.screenBModeAddNew(true);
+			vm.screenBModeEdit(true);
+			vm.enableScheduleHistoryB(true);
 		}
 
 		/**
 		 * Display page C
 		 * */
-		screenBDialogC() {
+		screenBShowDialogC() {
 
 			let vm = this,
-				newScheduleHistoryList: Array<ScheduleHistoryDto>,
+				currentScheduleHistoryList: Array<ScheduleHistoryDto>,
 				newStartDate: Date = moment(new Date()).toDate(),
-				newEndDate: Date = moment('9999/12/31', "YYYY/MM/DD").format("YYYY/MM/DD");
+				newEndDate: string = service.END_DATE;
 
 			vm.$window.storage("scheduleHistorySelected", vm.workplaceScheduleHistoryObjSelected());
-			vm.$window.modal("/view/cmm/024/c/index.xhtml",
-				{ title: 'Test Title' }).then(function () {
-					//開始年月日テキストボックス
-					vm.$window.storage("newScheduleHistory").then((data: ScheduleHistory) => {
+			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: 'Test Title' }).then(function () {
+				//開始年月日テキストボックス
+				vm.$window.storage("newScheduleHistory").then((data: any) => {
 
-						if (!nts.uk.util.isNullOrUndefined(data.newScheduleHistory)) {
+					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
 
-							newScheduleHistoryList = vm.workplaceScheduleHistoryList();
-							if (newScheduleHistoryList.length > 0) {
-								//update endDate before insert to first
-								let beforeNewStartDate = moment(
-									data.newScheduleHistory.startDate,
-									"YYYY/MM/DD")
-									.subtract(1, "days").format("YYYY/MM/DD");
+						currentScheduleHistoryList = vm.workplaceScheduleHistoryList();
+						currentScheduleHistoryList = vm.updateScheduleHistoryListing(currentScheduleHistoryList, data);
 
-								let oldStartDate = newScheduleHistoryList[0].startDate;
-								//update newEndDate for old first element of the listing
-								newScheduleHistoryList[0] = new ScheduleHistoryDto(oldStartDate, beforeNewStartDate);
-								//update new element to first element of the new listing
-								newScheduleHistoryList.unshift(data.newScheduleHistory);
-								vm.workplaceScheduleHistoryList(newScheduleHistoryList);
-							} else {
-								newStartDate = data.newScheduleHistory.startDate;
-								newScheduleHistoryList.push(new ScheduleHistoryDto(newStartDate, newEndDate));
-								vm.workplaceScheduleHistoryList(newScheduleHistoryList);
-							}
+						//re-update the list
+						vm.workplaceScheduleHistoryList(currentScheduleHistoryList);
+						vm.workplaceScheduleHistorySelected(currentScheduleHistoryList[0].code);
 
-							//update schedule history
-							if (data.RegistrationHistoryType == HistoryRes.HISTORY_NEW) {
-								vm.modelB(new Model(
-									vm.$user.companyCode,
-									data.newScheduleHistory.startDate,
-									data.newScheduleHistory.endDate,
-									vm.addEmptySetting(),
-									vm.addEmptySetting()
-								));
-							} else { //clone
-								vm.modelB().startDate(newStartDate);
-								vm.modelB().endDate(newEndDate);
-							}
+						vm.enableRegisterB(true);
+						vm.screenBModeAddNew(false);
+						vm.screenBModeEdit(false);
+						vm.enableScheduleHistoryB(false);
+						vm.screenBMode(ScreenModel.ADDNEW);
 
-							newScheduleHistoryList = vm.workplaceScheduleHistoryList();
-							vm.workplaceScheduleHistorySelected(newScheduleHistoryList[0].code);
-
-							vm.enableRegisterB(true);
-							vm.screenBModeAddNew(false);
-							vm.screenBModeEdit(false);
-							vm.enableScheduleHistoryB(false);
-							vm.screenBMode(ScreenModel.ADDNEW);
-
-						} else {
-							vm.enableRegisterB(false);
-							vm.screenBModeAddNew(true);
-							vm.screenBModeEdit(true);
-							vm.enableScheduleHistoryB(true);
+						//update schedule history
+						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
+							vm.modelB(new Model(
+								vm.$user.companyCode,
+								data.scheduleHistoryItem.startDate,
+								data.scheduleHistoryItem.endDate,
+								vm.addEmptySetting(),
+								vm.addEmptySetting()
+							));
+						} else { //clone
+							vm.modelB().startDate(data.scheduleHistoryItem.startDate);
+							vm.modelB().endDate(data.scheduleHistoryItem.endDate);
 						}
-					});
+
+					} else {
+						vm.enableRegisterB(true);
+						vm.screenBModeAddNew(true);
+						vm.screenBModeEdit(true);
+						vm.enableScheduleHistoryB(true);
+						vm.screenBMode(ScreenModel.EDIT);
+					}
 				});
+			});
 		}
 
 		/**
-		 * Display page D
-		 * */
-		screenBDialogD() {
-			let vm = this;
-
-			if (!vm.screenBModeEdit()) {
-				vm.$dialog.error(vm.$i18n.message('Msg_154'));
-				return;
-			}
-
-		}
-
-		screenBDialogFB310(data) {
-			let vm = this,
-				employeesList: Array<EmployeeDto> = [];
-		}
-
+		 * 
+		*/
 		workplaceScheduleHistoryListing() {
 			let vm = this,
 				selectedHistory: any = null,
 				tempScheduleList: Array<ScheduleHistoryDto> = [];
+
+			vm.screenBModeEdit(false);
+			vm.screenBMode(ScreenModel.EDIT);
 
 			vm.$blockui('show');
 
@@ -759,18 +808,88 @@ module nts.uk.com.view.cmm024.a {
 		}
 
 		/**
-		 * 従業員代表指定リンクラベル
+		 * 
 		 */
-		workplaceEmployeesRepresentativeList() {
+		updateScheduleHistoryByWorkplace() {
 			let vm = this,
-				employeesList: Array<EmployeeDto> = [];
+				currentScheduleItem = vm.modelB();
 
-			if (employeesList.length <= 0) {
-				employeesList = vm.addEmptySetting();
-			}
-			vm.modelB().employeesRepresentative(employeesList);
+			vm.$blockui('show');
+
+			let params = {
+				workplaceId: vm.selectedWkpId(), //ログイン会社ID			
+				starDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間				 
+				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
+				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
+				approveList: [], //36承認者一覧リンクラベル
+				confirmedList: [], // 従業員代表指定リンクラベル
+				startDateBeforeChange: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD')//期間
+			};
+
+			currentScheduleItem.approverPanel().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.approveList.push(item.employeeId);
+			})
+
+			currentScheduleItem.employeesRepresentative().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.confirmedList.push(item.employeeId);
+			})
+
+			service.updateScheduleHistoryByWorlplace(params)
+				.done((response) => {
+					vm.$dialog.info({ messageId: 'Msg_15' });
+
+					let currentScheduleHistoryList = vm.workplaceScheduleHistoryList();
+					vm.workplaceScheduleHistorySelected(currentScheduleHistoryList[0].code);
+
+					vm.screenBMode(ScreenModel.EDIT);
+
+					vm.$blockui('hide');
+				}).fail((error) => {
+					console.log(error);
+				}).always(() => {
+					vm.$blockui('hide');
+				});
 		}
 
+
+		registerScheduleHistoryByWorkplace() {
+			let vm = this,
+				currentScheduleItem = vm.modelB();
+
+			vm.$blockui('show');
+
+			let params = {
+				workplaceId: vm.selectedWkpId(), //ログイン会社ID
+				starDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間				 
+				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
+				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
+				approveList: [], //36承認者一覧リンクラベル
+				confirmedList: []// 従業員代表指定リンクラベル
+			};
+
+			currentScheduleItem.approverPanel().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.approveList.push(item.employeeId);
+			})
+
+			currentScheduleItem.employeesRepresentative().map((item) => {
+				if (item.employeeCode != '-1' && item.employeeCode != null)
+					params.confirmedList.push(item.employeeId);
+			})
+
+			service.registerScheduleHistoryByWorlplace(params)
+				.done((response) => {
+					vm.$dialog.info({ messageId: 'Msg_15' });
+					vm.enableRegisterB(true);
+					vm.$blockui('hide');
+				}).fail((error) => {
+					console.log(error);
+				}).always(() => {
+					vm.$blockui('hide');
+				});
+		}
 		/**
 		 * */
 		addEmptySetting() {
@@ -780,15 +899,6 @@ module nts.uk.com.view.cmm024.a {
 			employeesList.push(newEmployee);
 
 			return employeesList;
-		}
-
-		updateModel(keyID: string, startDate: string, endDate: string,
-			approverPanel: Array<EmployeeDto>, employeesRep: Array<EmployeeDto>) {
-			let vm = this;
-			vm.modelA().startDate(startDate);
-			vm.modelA().endDate(endDate);
-			vm.modelA().approverPanel(approverPanel);
-			vm.modelA().employeesRepresentative(employeesRep);
 		}
 	}
 }

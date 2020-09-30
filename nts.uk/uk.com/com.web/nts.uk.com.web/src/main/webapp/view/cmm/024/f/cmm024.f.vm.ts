@@ -31,8 +31,9 @@ module nts.uk.com.view.cmm024.f {
 			let vm = this;
 
 			vm.columns = ko.observableArray([
-				{ headerText: vm.$i18n('CMM024_50'), key: 'employeeCode', width: 120 },
-				{ headerText: vm.$i18n('CMM024_51'), key: 'employeeName', width: 140 }
+				{ headerText: vm.$i18n('CMM024_50'), key: 'employeeCode', width: 120, formatter: _.escape },
+				{ headerText: vm.$i18n('CMM024_51'), key: 'employeeName', width: 140, formatter: _.escape },
+				{ headerText: '', key: 'employeeId', hidden: true, formatter: _.escape },
 			]);
 
 			vm.baseDate = ko.observable(new Date());
@@ -71,7 +72,8 @@ module nts.uk.com.view.cmm024.f {
 				let codeList: Array<any> = [];
 				//remove if employeeCode is null / empty
 				data.codeList && data.codeList.map((item) => {
-					if (!nts.uk.util.isNullOrEmpty(item.employeeCode)) {
+					if (!nts.uk.util.isNullOrEmpty(item.employeeCode)
+						&& item.employeeCode != '-1') {
 						codeList.push(item);
 					}
 				});
@@ -92,7 +94,7 @@ module nts.uk.com.view.cmm024.f {
 
 			let vm = this,
 				employees: Array<EmployeeDto> = [],
-				params = { workPlaceId: wpId, baseDate: vm.baseDate };
+				params = { workplaceId: wpId, baseDate: vm.baseDate };
 
 			vm.$blockui('show');
 			if (!nts.uk.util.isNullOrEmpty(wpId)) {
@@ -100,7 +102,10 @@ module nts.uk.com.view.cmm024.f {
 					.done((response) => {
 						if (!nts.uk.util.isNullOrEmpty(response)) {
 							response.forEach((element) => {
-								employees.push(new EmployeeDto(element.empCd, element.empName)); //'基本給　給本給本'
+								employees.push(new EmployeeDto(
+									element.empCd, element.empName,
+									element.empId, element.empId
+								)); //'基本給　給本給本'
 							});
 						}
 
@@ -116,7 +121,10 @@ module nts.uk.com.view.cmm024.f {
 					.done((response) => {
 						if (!nts.uk.util.isNullOrEmpty(response)) {
 							response.forEach((element) => {
-								employees.push(new EmployeeDto(element.empCd, element.empName)); //'基本給　給本給本'
+								employees.push(new EmployeeDto(
+									element.empCd, element.empName,
+									element.empId, element.empId
+								)); //'基本
 							});
 						}
 
