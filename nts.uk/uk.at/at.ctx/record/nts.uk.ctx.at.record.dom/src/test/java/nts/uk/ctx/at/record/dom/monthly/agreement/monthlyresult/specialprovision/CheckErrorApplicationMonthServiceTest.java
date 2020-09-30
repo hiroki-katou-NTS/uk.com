@@ -161,14 +161,14 @@ public class CheckErrorApplicationMonthServiceTest {
             require.timeYear("SID", GeneralDate.today(), new Year(monthlyAppContent.getYm().year()));
             result = Optional.of(agreementTimeYear);
 
-            AgreementExcessInfo agreementExcessInfo = AgreementExcessInfo.of(0,0, Arrays.asList(new YearMonth(202009)));
+            AgreementExcessInfo agreementExcessInfo = AgreementExcessInfo.of(0,0, Arrays.asList(new YearMonth(201909)));
             require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
             result = agreementExcessInfo;
         }};
 
         List<ExcessErrorContent> data = CheckErrorApplicationMonthService.check(require, monthlyAppContent);
 
-        Assert.assertEquals(data.size(), 3);
+        Assert.assertEquals(data.size(), 4);
     }
 
 }

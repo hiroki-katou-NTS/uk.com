@@ -42,7 +42,7 @@ public class CheckErrorApplicationMonthService {
         val employeeId = AppContexts.user().employeeId();
 
         // 1:年度指定して36協定基本設定を取得する(会社ID, 社員ID, 年月日, 年度) :３６協定基本設定
-        BasicAgreementSetting agreementSet = AgreementDomainService.getBasicSet(require, companyId, employeeId,baseDate,new nts.arc.time.calendar.Year(baseDate.year()));
+        BasicAgreementSetting agreementSet = AgreementDomainService.getBasicSet(require, companyId, monthlyAppContent.getApplicant(),baseDate);
 
         val errorResult = agreementSet.getOneMonth().checkErrorTimeExceeded(monthlyAppContent.getErrTime());
 
@@ -80,7 +80,8 @@ public class CheckErrorApplicationMonthService {
         // 5:<call>
         AgreementExcessInfo agreementOver = require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
 
-        if (agreementOver != null && agreementSet.getOverMaxTimes().value <= agreementOver.getExcessTimes() &&
+        if (agreementOver != null &&
+                agreementSet.getOverMaxTimes().value <= agreementOver.getExcessTimes() &&
                 !agreementOver.getYearMonths().contains(monthlyAppContent.getYm())) {
 
             ExcessErrorContent error = ExcessErrorContent.create(EnumAdaptor.valueOf(ErrorClassification.EXCEEDING_MAXIMUM_NUMBER.value, ErrorClassification.class),

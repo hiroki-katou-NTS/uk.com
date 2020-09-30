@@ -20,8 +20,8 @@ public class OneMonthErrorAlarmTime {
 	}
 	
 	private OneMonthErrorAlarmTime(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
-		this.alarm = error;
-		this.error = alarm;
+		this.alarm = alarm;
+		this.error = error;
 	}
 	
 	public static OneMonthErrorAlarmTime of(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
