@@ -158,45 +158,45 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
                 //contractCD
                 contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-                domain.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
 
                 // basicMArlTime->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-                domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
                 // BASIC_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定
                 domain.getSetting().getOneMonth().getBasic().getUpperLimit().v(),
 
                 // SP_M_AL_TIME-> 分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
                 // SP_M_ER_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
 
                 // SP_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限
                 domain.getSetting().getOneMonth().getSpecConditionLimit().getUpperLimit().v(),
 
                 // BASIC_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-                domain.getSetting().getOneYear().getBasic().getError().v(),
+                domain.getSetting().getOneYear().getBasic().getAlarm().v(),
 
                 // BASIC_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-                domain.getSetting().getOneYear().getBasic().getAlarm().v(),
+                domain.getSetting().getOneYear().getBasic().getError().v(),
 
                 // BASIC_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定
                 domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
 
                 // SP_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
                 // SP_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
 
                 // SP_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限
                 domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
 
                 // MULTI_M_AVG_AL_TIME ->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
-                domain.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v(),
 
                 // MULTI_M_AVG_ER_TIME->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
-                domain.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v(),
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
 
                 // UPPER_LIMIT_CNT->分類３６協定時間.３６協定基本設定
                 domain.getSetting().getOverMaxTimes().value
@@ -207,37 +207,34 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
         val companyId = entity.getKsrmt36AgrMgtCmpPk().getCompanyID();
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtCmpPk().getLaborSystemAtr(),LaborSystemtAtr.class);
 
-        val erAlTime = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getBasicMAllTime()),new AgreementOneMonthTime((int)entity.getBasicMArlTime()));
-        val upperLimit = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
+        val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
+        val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
 
-        val basic = new OneMonthTime(erAlTime,upperLimit);
+        val basic =  OneMonthTime.of(erAlTime, upperLimit);
 
-        val erAlTimeSp = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getSpMAlTime()),new AgreementOneMonthTime((int)entity.getSpMErTime()));
-        val upperLimitSp = new AgreementOneMonthTime((int)entity.getSpMLimitTime());
-        val specConditionLimit = new OneMonthTime(erAlTimeSp,upperLimitSp);
+        val erAlTimeSp =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getSpMErTime()), new AgreementOneMonthTime((int) entity.getSpMAlTime()));
+        val upperLimitSp = new AgreementOneMonthTime((int) entity.getSpMLimitTime());
+        val specConditionLimit =  OneMonthTime.of(erAlTimeSp, upperLimitSp);
 
-        val oneMonth = new AgreementOneMonth(basic,specConditionLimit);
-
-
+        val oneMonth = new AgreementOneMonth(basic, specConditionLimit);
 
 
-        val basicY = new OneYearErrorAlarmTime(new AgreementOneYearTime((int)entity.getBasisYAlTime()),new AgreementOneYearTime((int)entity.getBasisYErTime()));
-        val erAlTimeSpY = new OneYearErrorAlarmTime(new AgreementOneYearTime((int)entity.getSpYAlTime()),new AgreementOneYearTime((int)entity.getSpYErlTime()));
+        val basicY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getBasisYErTime()), new AgreementOneYearTime((int) entity.getBasisYAlTime()));
+        val erAlTimeSpY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getSpYErlTime()), new AgreementOneYearTime((int) entity.getSpYAlTime()));
 
-        val upperLimitSpY = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
+        val upperLimitSpY = new AgreementOneYearTime((int) entity.getBasisYLimitTime());
 
-        val specConditionLimitY = new OneYearTime(erAlTimeSpY,upperLimitSpY);
-        val oneYear = new AgreementOneYear(basicY,specConditionLimitY);
+        val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
+        val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
 
 
+        val multiMonthAvg =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getMultiMAvgErTime())
+                , new AgreementOneMonthTime((int) entity.getMultiMAvgAlTime()));
 
-        val   multiMonthAvg = new OneMonthErrorAlarmTime(new AgreementOneMonthTime((int)entity.getMultiMAvgAlTime())
-                ,new AgreementOneMonthTime((int)entity.getMultiMAvgErTime()));
+        val multiMonth = new AgreementMultiMonthAvg(multiMonthAvg);
+        val overMaxTimes = EnumAdaptor.valueOf(entity.getUpperLimitCnt(), AgreementOverMaxTimes.class);
 
-        val  multiMonth = new AgreementMultiMonthAvg(multiMonthAvg);
-        val   overMaxTimes= EnumAdaptor.valueOf(entity.getUpperLimitCnt(),AgreementOverMaxTimes.class);
-
-        val basicAgreementSetting = new BasicAgreementSetting(oneMonth,oneYear,multiMonth,overMaxTimes);
+        val basicAgreementSetting = new BasicAgreementSetting(oneMonth, oneYear, multiMonth, overMaxTimes);
         return new AgreementTimeOfCompany(companyId,laborSystemAtr,basicAgreementSetting);
     }
 }
