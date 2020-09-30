@@ -30,9 +30,7 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void insert(Approver36AgrByCompany domain){
-		val entity = new Krcmt36AgrApvCmp(){{
-			fromDomain(domain);
-		}};
+		val entity = Krcmt36AgrApvCmp.fromDomain(domain);
 
 		this.commandProxy().insert(entity);
 	}
@@ -41,9 +39,7 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 	@Override
 	public void update(Approver36AgrByCompany domain){
 
-		val domainData = new Krcmt36AgrApvCmp(){{
-			fromDomain(domain);
-		}};
+		val domainData =  Krcmt36AgrApvCmp.fromDomain(domain);
 
 		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {
@@ -71,9 +67,7 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void delete(Approver36AgrByCompany domain){
-		val domainData = new Krcmt36AgrApvCmp(){{
-			fromDomain(domain);
-		}};
+		val domainData =  Krcmt36AgrApvCmp.fromDomain(domain);
 
 		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {

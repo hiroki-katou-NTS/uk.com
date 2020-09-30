@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -112,9 +113,29 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		);
 	}
 
-	public void fromDomain(Approver36AgrByWorkplace domain) {
-		this.pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(), domain.getPeriod().start());
-		this.fromDomainNoPK(domain);
+	public static Krcmt36AgrApvWkp fromDomain(Approver36AgrByWorkplace domain) {
+		val entity = new Krcmt36AgrApvWkp();
+		List<String> approverIds = domain.getApproverIds();
+
+		entity.approverSid1 = approverIds.get(0);
+		if (approverIds.size() > 1) entity.approverSid2 = approverIds.get(1);
+		if (approverIds.size() > 2) entity.approverSid3 = approverIds.get(2);
+		if (approverIds.size() > 3) entity.approverSid4 = approverIds.get(3);
+		if (approverIds.size() > 4) entity.approverSid5 = approverIds.get(4);
+
+		List<String> confirmerIds = domain.getConfirmerIds();
+		if (confirmerIds.size() > 0) entity.confirmerSid1 = confirmerIds.get(0);
+		if (confirmerIds.size() > 1) entity.confirmerSid2 = confirmerIds.get(1);
+		if (confirmerIds.size() > 2) entity.confirmerSid3 = confirmerIds.get(2);
+		if (confirmerIds.size() > 3) entity.confirmerSid4 = confirmerIds.get(3);
+		if (confirmerIds.size() > 4) entity.confirmerSid5 = confirmerIds.get(4);
+		entity.endDate = domain.getPeriod().end();
+		entity.pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),domain.getPeriod().start());
+		val cd = AppContexts.user().contractCode();
+		val cid = AppContexts.user().companyId();
+		entity.cid = cid;
+		entity.ccd = cd;
+		return entity;
 	}
 
 	public void fromDomainNoPK(Approver36AgrByWorkplace domain) {

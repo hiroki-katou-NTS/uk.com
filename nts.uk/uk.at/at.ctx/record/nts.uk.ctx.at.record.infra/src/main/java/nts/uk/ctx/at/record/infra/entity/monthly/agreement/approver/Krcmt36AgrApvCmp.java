@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -92,6 +93,7 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.approverSid5, true)) approverIds.add(this.approverSid5);
 
 		List<String> confirmerIds = new ArrayList<>();
+
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid1, true)) confirmerIds.add(this.confirmerSid1);
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid2, true)) confirmerIds.add(this.confirmerSid2);
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid3, true)) confirmerIds.add(this.confirmerSid3);
@@ -106,9 +108,27 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 		);
 	}
 
-	public void fromDomain(Approver36AgrByCompany domain) {
-		this.pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(), domain.getPeriod().start());
-		fromDomainNoPK(domain);
+	public static Krcmt36AgrApvCmp fromDomain(Approver36AgrByCompany domain) {
+		val entity = new Krcmt36AgrApvCmp();
+		List<String> approverIds = domain.getApproverList();
+
+		entity.approverSid1 = approverIds.get(0);
+		if (approverIds.size() > 1) entity.approverSid2 = approverIds.get(1);
+		if (approverIds.size() > 2) entity.approverSid3 = approverIds.get(2);
+		if (approverIds.size() > 3) entity.approverSid4 = approverIds.get(3);
+		if (approverIds.size() > 4) entity.approverSid5 = approverIds.get(4);
+
+		List<String> confirmerIds = domain.getConfirmerList();
+		if (confirmerIds.size() > 0) entity.confirmerSid1 = confirmerIds.get(0);
+		if (confirmerIds.size() > 1) entity.confirmerSid2 = confirmerIds.get(1);
+		if (confirmerIds.size() > 2) entity.confirmerSid3 = confirmerIds.get(2);
+		if (confirmerIds.size() > 3) entity.confirmerSid4 = confirmerIds.get(3);
+		if (confirmerIds.size() > 4) entity.confirmerSid5 = confirmerIds.get(4);
+		entity.endDate = domain.getPeriod().end();
+		entity.pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(),domain.getPeriod().start());
+		val cd = AppContexts.user().contractCode();
+		entity.ccd = cd;
+		return entity;
 	}
 
 	private void fromDomainNoPK(Approver36AgrByCompany domain) {
