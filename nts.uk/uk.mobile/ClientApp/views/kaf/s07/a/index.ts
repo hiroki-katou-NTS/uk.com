@@ -18,11 +18,11 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     resource: require('./resources.json'),
     validations: {
         valueWorkHours1: {
-            timeRange: true,
+            timeRange: false,
             required: true
         },
         valueWorkHours2: {
-            timeRange: true,
+            timeRange: false,
             required: false
         }
     },
@@ -437,12 +437,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
             //     required: false
             // });
             self.$updateValidator('valueWorkHours1', {
-                timeRange: true,
+                timeRange: false,
                 required: true
             });
         } else {
             self.$updateValidator('valueWorkHours1', {
-                timeRange: true,
+                timeRange: false,
                 required: false
             });
         }
@@ -470,7 +470,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours1', {
-                timeRange: true,
+                timeRange: false,
                 required: false
             });
         }
@@ -493,13 +493,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         } else {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: true,
+                timeRange: false,
                 required: false
             });
         }
         if (!this.isCondition3) {
             this.$updateValidator('valueWorkHours2', {
-                timeRange: true,
+                timeRange: false,
                 required: false
             });
             this.$updateValidator('valueWorkHours1', {
@@ -673,6 +673,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 
             })
             .catch((res: any) => {
+                self.$mask('hide');
                 self.handleErrorMessage(res).then((msgId: any) => {
                     if (res.messageId == 'Msg_426') {
                         self.$goto('ccg008a');
@@ -727,23 +728,61 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public register() {
         const vm = this;
         let validAll: boolean = true;
-        if (this.valueWorkHours1 != null) {
-            if (vm.valueWorkHours1.start && vm.valueWorkHours1.end) {
-                if (vm.valueWorkHours1.start > vm.valueWorkHours1.end) {
-                    vm.$modal.error({ messageId: 'Msg_579'});
+        // if (this.valueWorkHours1 != null) {
+        //     if (vm.valueWorkHours1.start && vm.valueWorkHours1.end) {
+        //         if (vm.valueWorkHours1.start > vm.valueWorkHours1.end) {
+        //             vm.$modal.error({ messageId: 'Msg_579'});
 
-                    return;
+        //             return;
+        //         }
+        //     }
+        // }
+
+        if (this.valueWorkHours1 != null) {
+            // if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
+            //     if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
+            //         vm.$modal.error({ messageId: 'Msg_580'});
+
+            //         return;
+            //     }
+            // }
+            if (vm.valueWorkHours1.start != undefined && vm.valueWorkHours1.end == undefined) {
+                if (vm.isCondition1 && vm.isCondition3) {
+                    vm.$updateValidator('valueWorkHours1', {
+                        timeRange: true,
+                        required: true
+                    });
+
+                } else {
+                    vm.$updateValidator('valueWorkHours1', {
+                        timeRange: true,
+                        required: false
+                    });
+                }
+            }
+            if (vm.valueWorkHours1.end != undefined && vm.valueWorkHours1.start == undefined) {
+                if (vm.isCondition1 && vm.isCondition3) {
+                    vm.$updateValidator('valueWorkHours1', {
+                        timeRange: true,
+                        required: true
+                    });
+
+                } else {
+                    vm.$updateValidator('valueWorkHours1', {
+                        timeRange: true,
+                        required: false
+                    });
                 }
             }
         }
         if (this.valueWorkHours2 != null) {
-            if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
-                if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
-                    vm.$modal.error({ messageId: 'Msg_580'});
+            // if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
+            //     if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
+            //         vm.$modal.error({ messageId: 'Msg_580'});
 
-                    return;
-                }
-            }
+            //         return;
+            //     }
+            // }
             if (vm.valueWorkHours2.start != undefined && vm.valueWorkHours2.end == undefined) {
                 vm.$updateValidator('valueWorkHours2', {
                     timeRange: true,
@@ -783,9 +822,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
         if (!this.$valid || !validAll) {
             window.scrollTo(500, 0);
             vm.$updateValidator('valueWorkHours2', {
-                timeRange: true,
+                timeRange: false,
                 required: false
             });
+            if (vm.isCondition1 && vm.isCondition3) {
+                vm.$updateValidator('valueWorkHours1', {
+                    timeRange: false,
+                    required: true
+                });
+                
+            } else {
+                vm.$updateValidator('valueWorkHours1', {
+                    timeRange: false,
+                    required: false
+                });
+            }
 
             return;
         }

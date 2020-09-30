@@ -48,14 +48,12 @@ export class CmmS45ComponentsApp2Component extends Vue {
     }
     public fetchData(getParams: any) {
         const self = this;
-        self.$mask('show');
         self.$http.post('at', API.start, {
             companyId: self.user.companyId,
             appId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
             appDispInfoStartupDto: self.params.appDispInfoStartupOutput
         })
             .then((res: any) => {
-                self.$mask('hide');
                 self.dataFetch = res.data;
                 self.bindStart();
                 self.params.appDetail = self.dataFetch;
