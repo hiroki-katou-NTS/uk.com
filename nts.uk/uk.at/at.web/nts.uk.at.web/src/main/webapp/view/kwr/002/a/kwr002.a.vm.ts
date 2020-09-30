@@ -587,7 +587,7 @@ module nts.uk.com.view.kwr002.a {
                         if (!result.freeSettingLst || result.freeSettingLst.length === 0) {
                             vm.freeSettingLst(null);
                             vm.selectedCodeA8_8(null);
-                            vm.enableSave(false);
+                            // vm.enableSave(false);
                         } else {
                             let sortArray = _.orderBy(result.freeSettingLst, [e => Number(e.code)], ['asc']);
                             _.map(sortArray, (item) => {
