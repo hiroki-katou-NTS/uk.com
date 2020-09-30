@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.infra.entity.displaysetting;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,27 +10,27 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.InitDispMonth;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySetting;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
+import nts.uk.ctx.at.schedule.dom.displaysetting.InitDispMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
- * 勤務予定の表示設定 - KSCMT_DISP_SETTING
- * UKDesign.データベース.ER図.就業.勤務予定.表示設定
+ * スケジュール修正職場別の表示設定 - KSCMT_DISPSET_BYWKP
+ * UKDesign.データベース.ER図.就業.contexts.勤務予定.表示設定.KSCMT_DISPSET_BYWKP
  * @author HieuLt
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_DISP_SETTING")
-public class KscmtDispSetting extends ContractUkJpaEntity{
+@Table(name = "KSCMT_DISPSET_BYWKP")
+public class KscmtDispSetBywkp extends ContractUkJpaEntity{
 
 
 	@EmbeddedId
-	public KscmtDispSettingPK pk;
+	public KscmtDispSetBywkpPK pk;
 	
 	/** "初期表示の月 " **/								
 	@Column(name = "INIT_DISP_MONTH")
@@ -49,7 +49,7 @@ public class KscmtDispSetting extends ContractUkJpaEntity{
 		return this.pk;
 	}
 
-	public static KscmtDispSetting toEntity( WorkScheDisplaySetting workScheDisplaySetting) {
+	public static KscmtDispSetBywkp toEntity( DisplaySettingByWorkplace workScheDisplaySetting) {
 		String CID = AppContexts.user().companyId();
 		/*return new KscmtDispSetting(
 				new KscmtDispSettingPK(CID),
@@ -57,8 +57,8 @@ public class KscmtDispSetting extends ContractUkJpaEntity{
 				workScheDisplaySetting.getEndDay().;*/
 		return null;
 	}
-	public WorkScheDisplaySetting toDomain (){
-		return new  WorkScheDisplaySetting(pk.cid,
+	public DisplaySettingByWorkplace toDomain (){
+		return new  DisplaySettingByWorkplace(pk.cid,
 				EnumAdaptor.valueOf(this.initDispMonth, InitDispMonth.class),
 				new OneMonth(new DateInMonth(endDay, isLastDay)));
 	}

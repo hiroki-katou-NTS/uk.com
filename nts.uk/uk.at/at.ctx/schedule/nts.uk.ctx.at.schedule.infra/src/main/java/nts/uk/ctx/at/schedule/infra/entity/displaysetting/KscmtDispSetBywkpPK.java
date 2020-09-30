@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.infra.entity.displaysetting;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KscmtDispSettingPK implements Serializable {
+public class KscmtDispSetBywkpPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

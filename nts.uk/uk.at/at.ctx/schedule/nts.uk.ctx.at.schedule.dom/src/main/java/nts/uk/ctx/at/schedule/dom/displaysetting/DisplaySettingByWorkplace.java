@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.dom.displaysetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -10,12 +10,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 勤務予定の表示設定
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.表示設定.スケジュール修正職場別の表示設定
  * @author HieuLT
  *
  */
 
-public class WorkScheDisplaySetting implements DomainAggregate {
+public class DisplaySettingByWorkplace implements DomainAggregate {
 	@Getter
 	/** 会社ID **/ 
 	private final String companyID;
@@ -40,8 +40,14 @@ public class WorkScheDisplaySetting implements DomainAggregate {
 		// return @初期表示期間の終了日.年月日に対応する期間($基準日)
 		return this.endDay.periodOf(baseDate);
 	}
-	//	[C-0] 勤務予定の表示設定 (会社ID, 初期表示の月, 一ヶ月間)		
-	public WorkScheDisplaySetting(String companyID, InitDispMonth initDispMonth, OneMonth endDay) {
+	
+	/**
+	 * 勤務予定の表示設定 (会社ID, 初期表示の月, 一ヶ月間)
+	 * @param companyID 会社ID
+	 * @param initDispMonth 初期表示の月
+	 * @param endDay 一ヶ月間
+	 */
+	public DisplaySettingByWorkplace(String companyID, InitDispMonth initDispMonth, OneMonth endDay) {
 		super();
 		this.companyID = companyID;
 		this.initDispMonth = initDispMonth;

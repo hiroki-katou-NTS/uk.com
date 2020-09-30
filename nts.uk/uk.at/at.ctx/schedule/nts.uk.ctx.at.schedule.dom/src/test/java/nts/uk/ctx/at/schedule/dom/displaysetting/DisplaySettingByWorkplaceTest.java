@@ -1,21 +1,21 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.dom.displaysetting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import mockit.Mock;
-import mockit.MockUp;
 
 @RunWith(JMockit.class)
-public class WorkScheDisplaySettingTest {
+public class DisplaySettingByWorkplaceTest {
 	
 	// NOTE : today() = 2020/8/22
 	private void today_mock() {
@@ -34,7 +34,7 @@ public class WorkScheDisplaySettingTest {
 		//today() = 2020/8/22
 		this.today_mock();
 
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.NEXT_MONTH, 
 				new OneMonth(DateInMonth.of(21)));
@@ -51,7 +51,7 @@ public class WorkScheDisplaySettingTest {
 	    
 		this.today_mock();
 		
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.NEXT_MONTH, 
 				new OneMonth(DateInMonth.of(22)));
@@ -67,7 +67,7 @@ public class WorkScheDisplaySettingTest {
 	public void calcuInitDisplayPeriod_plusMonth() {
 		this.today_mock();
 		
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.NEXT_MONTH, 
 				new OneMonth(DateInMonth.lastDay()));
@@ -83,7 +83,7 @@ public class WorkScheDisplaySettingTest {
 	public void calcuInitDisplayPeriod_currentMonth_beforeClosingDate() {
 		this.today_mock();
 		
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.CURRENT_MONTH, 
 				new OneMonth(DateInMonth.of(21)));
@@ -99,7 +99,7 @@ public class WorkScheDisplaySettingTest {
 	public void calcuInitDisplayPeriod_currentMonth_onClosingDate() {
 		this.today_mock();
 		
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.CURRENT_MONTH, 
 				new OneMonth(DateInMonth.of(22)));
@@ -115,7 +115,7 @@ public class WorkScheDisplaySettingTest {
 	public void calcuInitDisplayPeriod_currentMonth() {
 		this.today_mock();
 		
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+		DisplaySettingByWorkplace displaySetting = new DisplaySettingByWorkplace(
 				"companyID",
 				InitDispMonth.CURRENT_MONTH, 
 				new OneMonth(DateInMonth.lastDay()));
@@ -128,7 +128,7 @@ public class WorkScheDisplaySettingTest {
 	
 	@Test
 	public void getter(){
-		NtsAssert.invokeGetters(WorkScheDisplaySettingHelper.getWorkSche());
+		NtsAssert.invokeGetters(DisplaySettingByWorkplaceHelper.getWorkSche());
 	}
 	
 }

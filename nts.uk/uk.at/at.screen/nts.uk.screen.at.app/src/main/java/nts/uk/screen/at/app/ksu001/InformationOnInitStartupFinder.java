@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySetting;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkScheDisplaySettingRepo;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
@@ -26,12 +26,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class InformationOnInitStartupFinder {
 
 	@Inject
-	private WorkScheDisplaySettingRepo workScheDisplaySettingRepo;
+	private DisplaySettingByWorkplaceRepository workScheDisplaySettingRepo;
 
 	public DataScreenQueryGetInforDto getDataInit() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
-		Optional<WorkScheDisplaySetting> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
+		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
 		if (!workScheDisplaySettingOpt.isPresent()) {
 			return new DataScreenQueryGetInforDto(null, null, null, null);
 		}

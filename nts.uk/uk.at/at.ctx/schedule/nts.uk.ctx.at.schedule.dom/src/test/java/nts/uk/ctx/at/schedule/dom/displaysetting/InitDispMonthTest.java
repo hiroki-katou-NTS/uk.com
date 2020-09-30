@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.dom.displaysetting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 

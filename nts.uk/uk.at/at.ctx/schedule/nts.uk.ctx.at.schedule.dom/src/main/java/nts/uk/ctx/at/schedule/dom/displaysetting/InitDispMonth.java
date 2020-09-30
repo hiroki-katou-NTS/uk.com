@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
+package nts.uk.ctx.at.schedule.dom.displaysetting;
 
 /** 
  * 初期表示の月
