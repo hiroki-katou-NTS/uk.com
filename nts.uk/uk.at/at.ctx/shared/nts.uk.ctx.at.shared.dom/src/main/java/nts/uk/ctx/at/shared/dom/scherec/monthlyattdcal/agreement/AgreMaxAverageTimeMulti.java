@@ -9,7 +9,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 
 /**
@@ -28,8 +27,7 @@ public class AgreMaxAverageTimeMulti {
 	 * コンストラクタ
 	 */
 	public AgreMaxAverageTimeMulti() {
-		this.maxTime = new OneMonthErrorAlarmTime(new AgreementOneMonthTime(0),
-													new AgreementOneMonthTime(0));
+		this.maxTime = new OneMonthErrorAlarmTime();
 		this.averageTimes = new ArrayList<>();
 	}
 	
