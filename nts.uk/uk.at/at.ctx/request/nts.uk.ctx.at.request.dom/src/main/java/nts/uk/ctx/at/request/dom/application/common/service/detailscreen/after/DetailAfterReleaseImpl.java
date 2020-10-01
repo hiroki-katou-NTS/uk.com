@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -31,23 +28,21 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 	@Override
 	public ProcessResult detailAfterRelease(String companyID, String appID, Application application) {
 		String loginID = AppContexts.user().employeeId();
-		boolean isProcessDone = false;
-		boolean isAutoSendMail = false;
-		List<String> autoSuccessMail = new ArrayList<>();
-		List<String> autoFailMail = new ArrayList<>();
-		List<String> autoFailServer = new ArrayList<>();
+		ProcessResult processResult = new ProcessResult();
 		// 4.解除する
 		Boolean releaseFlg = approvalRootStateAdapter.doRelease(companyID, appID, loginID);
 		if(!releaseFlg) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, "");
+			processResult.setAppID(appID);
+			return processResult;
 		}
-		isProcessDone = true;
+		processResult.setProcessDone(true);
 		// 「反映情報」．実績反映状態を「未反映」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「未反映」)
 		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
 		}
 		// アルゴリズム「反映状態の更新」を実行する ( Thực hiện thuật toán 「Update trạng thái phản ánh」
 		applicationRepository.update(application);
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, "");
+		processResult.setAppID(appID);
+		return processResult;
 	}
 }

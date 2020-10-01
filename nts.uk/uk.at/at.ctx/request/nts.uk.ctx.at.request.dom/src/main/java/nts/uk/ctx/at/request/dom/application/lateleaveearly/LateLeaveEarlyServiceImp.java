@@ -591,8 +591,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	@Override
 	public ProcessResult register(int appType, ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
 		String employeeId = AppContexts.user().employeeId();
-		ProcessResult processResult = new ProcessResult(true, false, new ArrayList<>(), new ArrayList<>(),
-				new ArrayList<>(), application.getAppID(), "");
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
+		processResult.setAppID(application.getAppID());
 
 		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
 		this.registerDomain(application, infoOutput);

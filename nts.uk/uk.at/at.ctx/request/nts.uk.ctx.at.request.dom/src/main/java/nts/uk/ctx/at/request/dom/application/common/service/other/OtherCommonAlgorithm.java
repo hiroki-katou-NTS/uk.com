@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -79,7 +80,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, List<ListOfAppTypes> listOfAppTypes);
 	
 	/**
 	 * refactor 4
@@ -88,7 +89,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, List<ListOfAppTypes> listOfAppTypes);
 	
 	/**
 	 * refactor 4
@@ -114,7 +115,7 @@ public interface OtherCommonAlgorithm {
 	 * @param text 本文
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, List<ListOfAppTypes> listOfAppTypes);
 	
 	/**
 	 * refactor 4
