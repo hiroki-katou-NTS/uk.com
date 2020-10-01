@@ -5,11 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-//import nts.uk.ctx.at.record.dom.calculationsetting.EntryAndExitManage;
-import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 
 // TODO: Auto-generated Javadoc
 /**

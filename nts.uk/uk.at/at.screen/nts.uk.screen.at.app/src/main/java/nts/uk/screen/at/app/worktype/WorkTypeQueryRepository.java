@@ -93,4 +93,6 @@ public interface WorkTypeQueryRepository {
 	 * @return
 	 */
 	List<WorkTypeDto> findAllWorkTypeDisp(String companyId, int abolishAtr);
+
+	List<WorkTypeDto> findBusinessTripKaf022(String companyId, List<Integer> listOneDayAtr);
 }

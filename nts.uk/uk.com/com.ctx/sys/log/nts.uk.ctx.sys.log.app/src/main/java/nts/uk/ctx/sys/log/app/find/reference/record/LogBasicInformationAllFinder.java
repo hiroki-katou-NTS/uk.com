@@ -794,11 +794,11 @@ public class LogBasicInformationAllFinder {
 						
 						logSetItemDetails.stream().forEach(datatemDetail -> {
 							
-							if (datatemDetail.getIsUseCondFlg() == 1) {
+				
 								
 								listLogSetItemDetailDto.add(datatemDetail);
 								
-							}
+							
 							
 						});
 
@@ -1220,7 +1220,6 @@ public class LogBasicInformationAllFinder {
 
 				List<CategoryCorrectionLog> rsListCategoryCorrectionLog = personInfoCorrectionLog
 						.getCategoryCorrections();
-				if (!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)) {
 					rsListCategoryCorrectionLog.stream().forEach(categoryCorrectionLog -> {
 						List<ItemInfo> rsItemInfo = categoryCorrectionLog.getItemInfos();
 						if (!CollectionUtil.isEmpty(rsItemInfo)) {
@@ -1231,8 +1230,6 @@ public class LogBasicInformationAllFinder {
 							});
 						}
 					});
-
-				}
 			});
 		}
 	}

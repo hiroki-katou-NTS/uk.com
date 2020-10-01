@@ -58,10 +58,10 @@ module nts.uk.at.view.kbt002.g {
         // スケジュール作成のエラー内容を表示する
         switch (taskId) {
           case 0: // 外部受入
+            break;
+          case 1: // スケジュールの作成
             self.sharedObj = {
-              empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
-              executionContentName: "日別作成",
-              executionContent: 0,  // 日別作成
+              executionId: logHistory.execId,
               listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況
               executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
               objectPeriod: { startDate: null, endDate: null }, //・対象期間

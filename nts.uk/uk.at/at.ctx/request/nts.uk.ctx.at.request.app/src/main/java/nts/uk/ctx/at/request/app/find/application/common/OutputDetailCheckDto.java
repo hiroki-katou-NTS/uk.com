@@ -17,8 +17,6 @@ public class OutputDetailCheckDto {
 		private int approvalATR;
 		//代行期限切れフラグ
 		private boolean alternateExpiration;
-		//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
-		private boolean loginInputOrApproval;
 		
 		private Integer initMode;
 	
@@ -29,7 +27,6 @@ public class OutputDetailCheckDto {
 					domain.isAuthorizableFlags(),
 					domain.getApprovalATR().value,
 					domain.isAlternateExpiration(),
-					domain.isLoginInputOrApproval(),
 					null);
 		}
 }

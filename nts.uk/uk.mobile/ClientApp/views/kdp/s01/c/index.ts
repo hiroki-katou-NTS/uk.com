@@ -1,7 +1,7 @@
 import { component, Prop } from '@app/core/component';
 import { _, Vue, moment } from '@app/provider';
 import { model } from 'views/kdp/S01/shared/index.d';
-import { TimeWithDay } from '@app/utils/time';
+import { TimeWithDay ,TimePoint } from '@app/utils/time';
 
 const basePath = 'at/record/stamp/smart-phone/';
 
@@ -34,11 +34,6 @@ export class KdpS01CComponent extends Vue {
         attendanceItem: {
             attendance: '',
             timeItems: [
-                { itemId: 1, title: '就業時間', value: '' },
-                { itemId: 2, title: '残業', value: '' },
-                { itemId: 3, title: '休憩時間', value: '' },
-                { itemId: 4, title: '日別項目', value: '' },
-                { itemId: 5, title: '日別項目', value: '' }
             ]
         }
     };
@@ -91,26 +86,18 @@ export class KdpS01CComponent extends Vue {
                 vm.screenData.employeeName = data.empInfo ? data.empInfo.pname : '';
             });
 
-
-            let items = [];
-            _.forEach(vm.params.attendanceItemIds, (id) => {
-                let item = _.find(data.lstItemDisplayed, ['attendanceItemId', id]);
-                if (item) {
-                    items.push(item);
-                }
-            });
-
-            let timeData = [];
-
-            _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
+            let timeData = _.map(_.filter(data.lstItemDisplayed,(item) => [28, 29, 31, 34].indexOf(item.attendanceItemId) == -1 ) , (item) => {
                 let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
-                timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
-            });
+                
+                return { itemId: item.attendanceItemId, title: item.attendanceName, value } ;                
+            } );
 
             vm.screenData.attendanceItem.timeItems = timeData;
 
         }).catch((res: any) => {
-            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+                vm.$close();
+            });
         });
 
     }
@@ -124,7 +111,11 @@ export class KdpS01CComponent extends Vue {
             return State.SETTING_NULL;
         }
 
-        if (permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
+        let itemHasData = _.filter(vm.screenData.attendanceItem.timeItems, (item) => {
+            return !_.isEmpty(item.value);
+        });
+
+        if (permissionCheck === ReleasedAtr.IMPLEMENT && itemHasData.length > 0) {
             return State.IMPLEMENT;
         } else {
             return State.CAN_NOT_IMPLEMENT;
@@ -152,12 +143,12 @@ export class KdpS01CComponent extends Vue {
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.Time) {
 
-            result = TimeWithDay.toString(Number(item.value));
+            result = TimePoint.toString(Number(item.value));
         }
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.AmountOfMoney) {
 
-            result = item.value.toFixed(1).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+            result = parseInt(item.value).toFixed(2).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
         }
 
         return result;

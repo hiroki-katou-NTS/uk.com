@@ -14,17 +14,18 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -49,7 +50,7 @@ public class CreateTempAnnLeaMngProc {
 	private MonthlyCalculatingDailys monthlyCalculatingDailys;
 	
 	/** 日別実績の勤務情報リスト */
-	private Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailys;
+	private Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailys;
 	/** 勤務予定基本情報リスト **/
 	private Map<GeneralDate, BasicScheduleSidDto> basicSchedules;
 	/** 暫定年休管理データリスト */
@@ -185,9 +186,9 @@ public class CreateTempAnnLeaMngProc {
 		}
 		else {
 			val acquiredWorkInfos = require.dailyWorkInfos(this.employeeId, this.period);
-			for (val acquiredWorkInfo : acquiredWorkInfos){
-				val ymd = acquiredWorkInfo.getYmd();
-				this.workInfoOfDailys.putIfAbsent(ymd, acquiredWorkInfo);
+			for (val acquiredWorkInfo : acquiredWorkInfos.entrySet()){
+				val ymd = acquiredWorkInfo.getKey();
+				this.workInfoOfDailys.putIfAbsent(ymd, acquiredWorkInfo.getValue());
 			}
 		}
 		
@@ -226,7 +227,7 @@ public class CreateTempAnnLeaMngProc {
 			if (this.workInfoOfDailys.containsKey(procDate)){
 				
 				// 日別実績から暫定年休管理データを作成する
-				this.createTempManagementDataFromDailyRecord(require, this.workInfoOfDailys.get(procDate));
+				this.createTempManagementDataFromDailyRecord(require, procDate, this.workInfoOfDailys.get(procDate));
 				continue;
 			}
 			
@@ -244,7 +245,8 @@ public class CreateTempAnnLeaMngProc {
 	 * 日別実績から暫定年休管理データを作成する
 	 * @param workInfo 日別実績の勤務情報
 	 */
-	private void createTempManagementDataFromDailyRecord(RequireM4 require, WorkInfoOfDailyPerformance workInfo){
+	private void createTempManagementDataFromDailyRecord(RequireM4 require, GeneralDate ymd,
+			WorkInfoOfDailyAttendance workInfo){
 	
 		// 勤務種類から年休の日数を取得
 		val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode();
@@ -253,7 +255,6 @@ public class CreateTempAnnLeaMngProc {
 		if (workType == null) return;
 		val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, this.vacationAddSet, Optional.empty());
 		
-		val ymd = workInfo.getYmd();
 		String annualId = IdentifierUtil.randomUniqueId();
 		InterimRemain tempAnnualLeaveMng2 = new InterimRemain(this.employeeId, ymd, annualId);
 		TmpAnnualHolidayMng annualHolidayMng = new TmpAnnualHolidayMng(annualId);
@@ -346,21 +347,21 @@ public class CreateTempAnnLeaMngProc {
 		void removeInterimRemain(String sId, DatePeriod period);
 	}
 	
-	private static interface RequireM4 {
+	public static interface RequireM4 {
 		
 		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
 		
-		List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod);
+		Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod);
 		
 		Optional<BasicScheduleSidDto> basicScheduleSid(String employeeId, GeneralDate baseDate);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, GeneralDate criteriaDate);
 	}

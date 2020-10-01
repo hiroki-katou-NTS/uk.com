@@ -8,11 +8,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDaysPK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**

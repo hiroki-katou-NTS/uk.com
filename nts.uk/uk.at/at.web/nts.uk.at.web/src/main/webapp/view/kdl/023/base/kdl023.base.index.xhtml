@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1200, height: 750 };</script>
+				<script>var dialogSize = { width: 1024, height: 768 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
@@ -21,12 +21,30 @@
 				<ui:insert name="extended-header" />
 			</ui:define>
 			<ui:define name="content">
-				<div id="contents-area" data-bind="visible: true" style="display: none">
-					<div class="pull-left reflect-setting bg-green caret-right caret-background">
+				<div id="contents-area" class="kdl023-content-area" data-bind="visible: true" style="display: none">
+					<div id="reflect-setting" class="pull-left bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
+                        <div class="control-group cf">
+                            <com:ko-if bind="$parent.isExecMode">
+                                <!--A1_36-->
+                                <div class="pull-left width-40 exec-mode" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
+                                <!--A1_37-->
+                                <div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
+                                    name: 'kdl023-daterangepicker',
+                                    required: true,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: $parent.dateValue,
+                                    maxRange: 'oneYear',
+                                    type: 'yearmonth'}"/>
+                            </com:ko-if>
+                        </div>
 						<div class="control-group cf">
-							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
-							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left" style="margin-left: 36px"
+
+							<!--A1_2-->
+							<div class="pull-left width-40" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_3')}</div>
+							<!--A1_3-->
+							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left"
 								data-bind="ntsComboBox: {
 										name: '#[KDL023_4]',
 										options: $parent.dailyPatternList,
@@ -40,99 +58,167 @@
 										]}">
 							</div>
 						</div>
+						<div class="control-group">
+							<!--A1_6-->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
+						</div>
+						<!--A1_7-->
+						<div id="reflection-method-radio-group" tabindex="2" class="margin-left-30">
+							<!--A1_8-->
 							<div class="control-group">
-								<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+								</label>
 							</div>
+							<!--A1_9-->
 							<div class="control-group">
-								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+								</label>
+							</div>
+							<!--A1_10-->
+							<div class="control-group">
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 2, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_27')}</span>
+								</label>
 							</div>
 							<div class="margin-left-100">
-								<div class="control-group" data-bind="with: statutorySetting">
-									<div tabindex="2" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
-									<div tabindex="3" id="cbb-work-type-statutory" class="pull-right"
+								<div class="kdl023-flex-display margin-bottom-15px">
+									<!--A1_11-->
+									<span class="label">#{i18n.getText('KDL023_28')}</span>
+									<!--A1_12-->
+									<div tabindex="3" id="cbb-reflection-order-1" class="cbb-reflection" style="margin-left: 13px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_31]',
+											options: $parent.reflectionOrderList1,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder1,
+											enable: $parent.workCycleEnable1}">
+									</div>
+								</div>
+								<div class="kdl023-flex-display margin-bottom-15px">
+								<!--A1_14-->
+									<span class="label">#{i18n.getText('KDL023_29')}</span>
+									<!--A1_15-->
+									<div tabindex="4" id="cbb-reflection-order-2" class="cbb-reflection" style="margin-left: 13px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_32]',
+											options: $parent.reflectionOrderList2,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder2,
+											enable: $parent.workCycleEnable2}">
+									</div>
+								</div>
+								<div class="kdl023-flex-display">
+									<!--A1_17-->
+									<span class="label">#{i18n.getText('KDL023_30')}</span>
+									<!--A1_18-->
+									<div tabindex="5" id="cbb-reflection-order-3" class="cbb-reflection" style="margin-left: 13px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_33]',
+											options: $parent.reflectionOrderList3,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder3,
+											enable: $parent.workCycleEnable3}">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--A1_20-->
+						<div class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_34')}</div>
+							<div class="control-group">
+								<!--A1_21-->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+							</div>
+							<div class="margin-left-30">
+								<div class="control-group kdl023-flex-display" data-bind="with: statutorySetting">
+									<!--A1_22-->
+									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_6')}</div>
+
+									<div tabindex="6" id="cbb-work-type-statutory" class="margin-left-300"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_17]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listSatHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
 								</div>
-								<div class="control-group" data-bind="with: nonStatutorySetting">
-									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
-									<div tabindex="5" id="cbb-work-type-non-statutory" class="pull-right"
+								<div class="control-group kdl023-flex-display" data-bind="with: nonStatutorySetting">
+									<!--A1_26-->
+									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_7')}</div>
+
+									<div tabindex="7" id="cbb-work-type-non-statutory" class="margin-left-300"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_18]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listNonSatHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
 								</div>
-								<div class="control-group" data-bind="with: holidaySetting">
-									<div tabindex="6" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
-									<div tabindex="7" id="cbb-work-type-holiday" class="pull-right"
+								<div class="control-group kdl023-flex-display" data-bind="with: holidaySetting">
+									<!--A1_30-->
+									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_8')}</div>
+
+									<div tabindex="8" id="cbb-work-type-holiday" class="margin-left-300"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_19]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listPubHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
 								</div>
-								<p class="control-group priority">#{i18n.getText('KDL023_9')}</p>
+
+								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
-							<div class="control-group">
-								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
-							</div>
-							<div id="reflection-method-radio-group" tabindex="8" class="margin-left-100">
-								<div class="control-group">
-									<label class="ntsRadioBox"><input type="radio"
-										name="textRadio"
-										data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
-										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
-									</label>
-								</div>
-								<div class="control-group">
-									<label class="ntsRadioBox"><input type="radio"
-										name="textRadio"
-										data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
-										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
-									</label>
-								</div>
-							</div>
+						<!--A1_34-->
+						<div id="kdl023-holiday-warning-label" class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
 						</com:ko>
-						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
+                        <!--A1_35-->
+						<button tabindex="9" class="btn-apply-setting caret-right calc-margin auto-height" data-bind="click: onBtnApplySettingClicked">
+							<span class="reflection-btn-text" data-bind="text: $i18n('KDL023_13')"></span>
 						</button>
 					</div>
 					<!-- Calendar function -->
 					<div id="calendar-reflect-pattern">
 						<ui:insert name="period-calendar-header" />
-						<div class="pull-right" style="margin-bottom: 20px">
-							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button>
-							<button tabindex="11" data-bind="click: forward">#{i18n.getText('KDL023_15')}</button>
+						<div class="pull-right kdl023">
+							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button><!--A2_1-->
+							<button tabindex="11" data-bind="click: forward">#{i18n.getText('KDL023_15')}</button><!--A2_2-->
 						</div>
 
+                        <!--A3_1-->
 						<div tabindex="12" id="component-calendar-kcp006" class="nts-calendar-container">
 							<!-- Calendar header -->
 							<ui:insert name="calendar-header" />
 							<!-- Calendar header -->
-							<div id="calendar" data-bind="ntsCalendar: {
+							<div tabindex="12.3" id="calendar" data-bind="ntsCalendar: {
 								optionDates: optionDates, 
 								yearMonth: yearMonthPicked, 
 								firstDay: firstDay, 

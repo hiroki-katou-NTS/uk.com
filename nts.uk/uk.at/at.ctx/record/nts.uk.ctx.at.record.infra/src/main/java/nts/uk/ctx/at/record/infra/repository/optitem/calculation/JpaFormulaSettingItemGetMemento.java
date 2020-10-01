@@ -6,13 +6,13 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemGetMemento;
-import nts.uk.ctx.at.record.dom.optitem.calculation.InputValue;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSetting;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItemGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.InputValue;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingItemOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingMethod;
 
 /**
  * The Class JpaFormulaSettingItemGetMemento.

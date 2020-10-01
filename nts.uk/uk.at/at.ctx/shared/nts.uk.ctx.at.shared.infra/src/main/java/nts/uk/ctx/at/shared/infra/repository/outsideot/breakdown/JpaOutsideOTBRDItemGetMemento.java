@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -36,7 +36,7 @@ public class AppWorkChangeRecordWorkInfoFinder {
 		String workTypeName = "";
 		String workTimeName = "";
 		//(就業.contexts)「勤務実績」 imported (Request list No 05)s
-		RecordWorkInfoImport recordInfo = recordWorkInfoAdapter.getRecordWorkInfo(employeeId, GeneralDate.fromString(appDate, DATE_FORMAT));
+		RecordWorkInfoImport_Old recordInfo = recordWorkInfoAdapter.getRecordWorkInfo(employeeId, GeneralDate.fromString(appDate, DATE_FORMAT));
 		// Get work type name & work time name
 		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyId, recordInfo.getWorkTimeCode());
 		if (workTime.isPresent()) {

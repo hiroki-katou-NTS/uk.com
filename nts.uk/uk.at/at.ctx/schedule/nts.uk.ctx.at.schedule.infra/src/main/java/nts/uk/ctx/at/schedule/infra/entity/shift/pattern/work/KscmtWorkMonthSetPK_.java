@@ -22,6 +22,6 @@ public class KscmtWorkMonthSetPK_ {
 	public static volatile SingularAttribute<KscmtWorkMonthSetPK, String> mPatternCd;
 	
 	/** The ymd K. */
-	public static volatile SingularAttribute<KscmtWorkMonthSetPK, GeneralDate> ymdK;
+	public static volatile SingularAttribute<KscmtWorkMonthSetPK, GeneralDate> ymdM;
 	
 }

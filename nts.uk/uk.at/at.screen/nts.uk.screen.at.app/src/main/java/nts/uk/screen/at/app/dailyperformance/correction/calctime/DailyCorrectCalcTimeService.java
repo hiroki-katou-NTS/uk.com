@@ -21,11 +21,11 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -96,9 +96,9 @@ public class DailyCorrectCalcTimeService {
 				&& !dtoEdit.getTimeLeaving().get().getWorkAndLeave().isEmpty()) {
 			dtoEdit.getTimeLeaving().get().getWorkAndLeave().stream().filter(x -> x.getNo() == 1).forEach(x -> {
 				if (changeSpr31 != null && changeSpr31.booleanValue() && x.getWorking() != null)
-					x.getWorking().getTime().setStampSourceInfo(StampSourceInfo.SPR.value);
+					x.getWorking().getTime().setStampSourceInfo(TimeChangeMeans.SPR_COOPERATION.value);
 				if (changeSpr34 != null && changeSpr34.booleanValue() && x.getLeave() != null)
-					x.getLeave().getTime().setStampSourceInfo(StampSourceInfo.SPR.value);
+					x.getLeave().getTime().setStampSourceInfo(TimeChangeMeans.SPR_COOPERATION.value);
 			});
 		}
 

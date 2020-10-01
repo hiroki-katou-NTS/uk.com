@@ -1,14 +1,29 @@
+
+#contents-area.fix-2180 {
+	/*height: 100vh !important;*/
+}
+
 .navigation-label {
 	margin-left: 20px;
 	vertical-align: 12px;
 }
-
+contents-area
 .create-creation {
 	background-image: url(./IMG_KSC001_1.png);
 	background-size: 100%;
 	height: 109px;
 	width: 327px;
-	background-repeat: no-repeat;
+	background-repeat: no-repeat;対象期間・実施内容を選ぶ
+        作成方法を選ぶ
+        対象期間
+        2020/08/04　～　2020/09/03
+        作成方法を選択してください。
+        作成方法
+        作成方法（参照先）
+        月間パターン
+        コピー開始年月日
+        2020/08/04
+        作成時の同時確定
 	margin-left: 20px;
 }
 
@@ -22,42 +37,36 @@
 }
 
 .contentB {
-	margin-left: 85px;
+	margin-left: 50px;
 	margin-top: 20px;
 }
 
 .contentC {
-	margin-left: 45px;
-	margin-left: 45px;
+	margin-left: 50px;
 }
 
 .contentD {
 	margin-top: 10px;
-	margin-left: 45px;
-	margin-left: 45px;
+	margin-left: 90px;
 }
 
 .contentE {
 	margin-top: 10px;
-	margin-left: 45px;
-	margin-left: 45px;
+	margin-left: 50px;
 }
 
 .periodCovered {
-	border: 1px solid #ccc !important;
-	border-radius: 5px;
-	padding: 5px;
-	display: inline-flex;
-	width: 600px;
+	display: flex;
+	align-items: center;
+	border-bottom: solid 1px #B1B1B1;
+	padding-bottom: 5px;
+	margin-bottom: 15px;
 }
-
+.periodCovered .info-period-date {
+	padding-left: 15px;
+}
 .selectionEmployee {
 	margin-top: 10px;
-	border: 1px solid #ccc !important;
-	border-radius: 5px;
-	padding: 5px;
-	width: 600px;
-	border: 1px solid #ccc !important;
 }
 
 .buttonNext {
@@ -66,10 +75,6 @@
 }
 
 .selectionCase {
-	margin-top: 10px;
-	margin-left: 60px;
-	padding: 10px;
-	background-color: #eaeaea;
 }
 
 .periodChangeValue {
@@ -90,28 +95,27 @@
 }
 
 .labelRangeDate {
-	margin-left: 15px;
+
 }
 
 button.nts-switch-button {
 	min-width: 80px;
 }
 
-.radioboxCase {
-	margin-top: 10px;
-	margin-left: 20px;
-}
-
+.radioboxCase,
 .radioboxCaseAll {
 	margin-top: 10px;
-	margin-left: 30px;
 }
 
 .lableCaseAll {
 	display: inline-flex;
 	width: 100%;
+	align-items: center;
+	margin: 5px 0;
 }
-
+.lableCaseAll.label-list {
+	align-items: flex-start;
+}
 .contentELable {
 	margin-left: 20px;
 }
@@ -132,9 +136,11 @@ button.nts-switch-button {
 
 .checkboxSetting {
 	margin-top: 10px;
-	margin-left: 65px;
+	margin-left: 30px;
 }
-
+.checkboxSetting  .checkBoxGroup {
+	padding-left: 3px;
+}
 .checkboxSetting-1 {
 	margin-top: 10px;
 	margin-left: 40px;
@@ -160,7 +166,7 @@ button.nts-switch-button {
 }
 
 .nts-wizard{
-	overflow: hidden;
+	overflow: auto;
 }
 
 .nts-wizard.vertical>.steps {
@@ -170,34 +176,39 @@ button.nts-switch-button {
 .nts-wizard.vertical>.content {
 	margin: 0 0 0 0;
 	background: none;
+	width: 100%;
+	max-width: 800px;
 }
 
-.nts-wizard>.content>.body {
+.nts-wizard.ksc001 > .content > .body {
 	padding: 0;
+    min-height: 100vh;
 }
 
 .buttonBeginNext {
 	margin-left: 20px;
-	float: left;
+	/* float: left; */
 }
 
 .buttonBeginPrevious {
-	margin-top: 12px;
-	float: left;
+	/*margin-top: 12px;
+	float: left; */
 }
 
 .labelSelection {
-	width: 150px;
+	width: 100px;
 }
 
 .labelContents {
 	background-color: #eaeaea;
-	width: 350px;
-	white-space: pre-line;
-	padding: 5px;
-	max-height: 195px;
+	width: 100%;
+	padding: 10px;
 	overflow-y: scroll;
 	position: relative;
+}
+.labelContents label {
+	margin: 0 0 5px;
+	display: block;
 }
 
 .labelCenter {
@@ -224,10 +235,10 @@ button.nts-switch-button {
 #employeeSearch #nts-component-list {
 	padding: 10px 10px 10px 20px !important;
 }
-
-.labelContents label {
-	display: block;
-	margin: -15px 0px;
+#employeeSearch > div {
+	padding: 0px !important;
+	width: 100% !important;
+	max-width: 100% !important;
 }
 
 .contentE {
@@ -247,3 +258,96 @@ button.nts-switch-button {
 	position: relative !important;
 }
 
+.buttonPrevNext {
+	text-align: right;
+	margin-top: 32px;
+}
+
+.buttonPrevNext .buttonBeginNext,
+.buttonPrevNext .buttonBeginPrevious {
+	display: inline-block;
+}
+.selectionCase {
+	padding-left: 15px;
+	padding-top: 10px;
+}
+
+.radioButtonGroup {
+	padding-left: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+
+.radioButtonGroup .b43RadioGroup label {
+	display: block;
+	margin-bottom: 15px;
+}
+
+.radioButtonGroup .b43RadioGroup {
+	display: block;
+}
+.checkboxSetting {
+	overflow: hidden;
+}
+.checkboxSetting .chkListTitle {
+	border-bottom: solid 1px #B1B1B1;
+	width: 100%;
+	margin-bottom: 10px;
+}
+.checkboxSetting .checkboxOne {
+	display: block;
+	margin-bottom: 5px;
+	width: auto;
+	cursor: pointer;
+}
+.switchButtonGroup {
+	position: relative;
+}
+.switchButtonGroup .SwitchButton {
+	position: absolute;
+	top: -45px;
+	left: 100px;
+}
+
+.comboBoxLists .comboBoxItem {
+	display: flex;
+	align-items: center;
+	margin: 5px 0;
+	padding-left: 28px;
+}
+.comboBoxLists .comboBoxItem .item {
+	width: 150px;
+}
+
+.lableCaseAll .total-employee {
+    margin-top: 2px;
+}
+.radioButtonGroup.comboBoxLists .ntsCheckBox {
+    padding-left: 0;
+}
+#contents-area.fix-2180 .nts-wizard {
+    overflow: hidden;
+}
+#contents-area.fix-2180 .nts-wizard.vertical>.content {
+    overflow: hidden;
+    width: calc(100% - 300px);
+    max-width: 100%;
+    min-height: 0;
+}
+#contents-area.fix-2180 .nts-wizard.ksc001 > .content > .body {
+    width: 100%;
+    overflow-y: auto;
+    padding-bottom: 25px;
+    min-height: 0;
+}
+#contents-area.fix-2180 .nts-wizard.ksc001 > .content > #wizard-p-2 {
+    overflow: hidden;
+}
+#contents-area.fix-2180 .nts-wizard.vertical .panel-content {
+    max-width: 75%;
+}
+
+#contents-area.fix-2180 .contentC .buttonPrevNext {
+    margin-top: 10px;
+}

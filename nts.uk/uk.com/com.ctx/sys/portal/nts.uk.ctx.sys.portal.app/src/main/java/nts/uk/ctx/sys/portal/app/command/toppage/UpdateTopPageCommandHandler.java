@@ -48,22 +48,10 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 			topPageRepository.update(topPage);
 			
 			// add by thanhPV
-			StandardMenu standardMenu = StandardMenu.createFromJavaType(
-					companyId, 
-					topPage.getTopPageCode().v(), 
-					topPage.getTopPageName().v(), 
-					topPage.getTopPageName().v(), 
-					0, 
-					MenuAtr.Menu.value, 
-					"/nts.uk.com.web/view/ccg/008/a/index.xhtml", 
-					System.COMMON.value, 
-					MenuClassification.TopPage.value, 
-					1, 
-					0, 
-					1, 
-					"CCG008", 
-					"A", 
-					"toppagecode=" + topPage.getTopPageCode());
+			StandardMenu standardMenu = StandardMenu.createFromJavaType(companyId, topPage.getTopPageCode().v(),
+					topPage.getTopPageName().v(), topPage.getTopPageName().v(), 0, MenuAtr.Menu.value,
+					"/nts.uk.com.web/view/ccg/008/a/index.xhtml", System.COMMON.value, MenuClassification.TopPage.value,
+					1, 0, "CCG008", "A", "toppagecode=" + topPage.getTopPageCode(), 1, 1, 1);
 			standardMenuRepository.updateStandardMenu(standardMenu);
 		}
 	}

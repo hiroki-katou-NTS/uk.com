@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
