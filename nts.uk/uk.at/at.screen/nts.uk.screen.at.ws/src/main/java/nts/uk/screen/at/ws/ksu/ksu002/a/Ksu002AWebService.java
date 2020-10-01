@@ -42,7 +42,7 @@ public class Ksu002AWebService extends WebService {
 	
 	@POST
 	@Path("getListOfPeriodsClose")
-	public List<SystemDateDto> getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
+	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
 		return this.listOfPeriodsClose.get(param);
 	}
 	

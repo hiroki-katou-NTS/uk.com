@@ -51,8 +51,6 @@ public class ListOfPeriodsClose {
 	@Inject
 	private TheInitialDisplayDate theInitialDisplayDate;
 	
-	
-	@SuppressWarnings("unused")
 	public SystemDateDto get(ListOfPeriodsCloseInput input) {
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
@@ -64,7 +62,7 @@ public class ListOfPeriodsClose {
 		
 		if (input.getYearMonth() == 0) {
 			dtos.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
-		}else {
+		} else {
 			dtos.setYearMonth(input.getYearMonth());
 		}
 		
