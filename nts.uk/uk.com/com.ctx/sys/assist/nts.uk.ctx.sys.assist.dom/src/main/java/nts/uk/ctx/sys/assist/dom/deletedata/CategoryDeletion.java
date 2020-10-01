@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,8 +26,13 @@ public class CategoryDeletion {
 	/** The period deletion. */
 	private GeneralDate periodDeletion;
 	
+	/**
+	 * システム種類
+	 */
+	public int systemType;
+	
 	public static CategoryDeletion createFromJavatype(String delId, 
-			String categoryId, GeneralDate periodDeletion) {
-		return new CategoryDeletion(delId, categoryId, periodDeletion);
+			String categoryId, GeneralDate periodDeletion, int systemType) {
+		return new CategoryDeletion(delId, categoryId, periodDeletion, systemType);
 	}
 }

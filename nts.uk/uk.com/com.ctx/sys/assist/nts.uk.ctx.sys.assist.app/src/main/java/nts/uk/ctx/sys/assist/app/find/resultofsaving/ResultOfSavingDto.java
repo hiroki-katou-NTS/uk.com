@@ -1,8 +1,12 @@
 package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
+import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 
 /**
@@ -76,6 +80,9 @@ public class ResultOfSavingDto {
 	 * 実行者
 	 */
 	private String practitioner;
+	
+	 //field 実行結果
+    private List<ResultLogSaving> listResultLogSavings;
 
 	/**
 	 * 対象人数
@@ -96,14 +103,33 @@ public class ResultOfSavingDto {
 	 * ファイルID
 	 */
 	private String fileId;
+	
+	//field ログイン情報
+    private LoginInfo loginInfo;
 
 	public static ResultOfSavingDto fromDomain(ResultOfSaving domain) {
-		return new ResultOfSavingDto(domain.getStoreProcessingId(), domain.getCid(), domain.getSystemType().value,
-				domain.getFileSize().orElse(null), domain.getSaveSetCode().map(i -> i.v()).orElse(null), domain.getSaveFileName().map(i -> i.v()).orElse(null),
-				domain.getSaveName().v(), domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null),
-				domain.getSaveStartDatetime().orElse(null), domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
-				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null), domain.getSaveStatus().map(i -> i.value).orElse(null),
-				domain.getSaveForInvest().value, domain.getFileId().orElse(null));
+		return new ResultOfSavingDto
+			(
+				domain.getStoreProcessingId(), 
+				domain.getCid(), 
+				domain.getSystemType().value,
+				domain.getFileSize().orElse(null), 
+				domain.getSaveSetCode().map(i -> i.v()).orElse(null), 
+				domain.getSaveFileName().map(i -> i.v()).orElse(null),
+				domain.getSaveName().v(),
+				domain.getSaveForm().value,
+				domain.getSaveEndDatetime().orElse(null),
+				domain.getSaveStartDatetime().orElse(null),
+				domain.getDeletedFiles().value, 
+				domain.getCompressedPassword().map(i -> i.v()).orElse(null),
+				domain.getPractitioner(),
+				domain.getListResultLogSavings(),
+				domain.getTargetNumberPeople().orElse(null),
+				domain.getSaveStatus().map(i -> i.value).orElse(null),
+				domain.getSaveForInvest().value,
+				domain.getFileId().orElse(null),
+				domain.getLoginInfo()
+			);
 	}
 
 }
