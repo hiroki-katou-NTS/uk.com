@@ -30,24 +30,23 @@ public class GenerateStampCardForEmployees {
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons, String companyId, String sid ) {
 		
-//		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
-//			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
-//					m.getEmployeeCd(), companyId);
-//			
-//			return s;
-//		}).collect(Collectors.toList());
-//		
-//		if (stampCards.isEmpty()) {
-//			throw new BusinessException("Msg_1756");
-//		}
+
+		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
+			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
+					m.getEmployeeCd(), companyId);
+			
+			return s;
+		}).collect(Collectors.toList());
 		
-		List<Optional<String>> stampCards = new ArrayList<Optional<String>>();
-		stampCards.add(Optional.of("000000000002        "));
+		if (stampCards.isEmpty()) {
+			throw new BusinessException("Msg_1756");
+		}
 		
 		List<ImprintedCardGenerationResult> results = stampCards.stream().map(m -> {
 			StampCard card = new StampCard(companyCd,m.get(), sid);
-//			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
-			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, Optional.of(new StampCard(contractCd, "0123456", sid)));
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
+			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
+
 			
 			return result;
 		}).collect(Collectors.toList());
