@@ -25,6 +25,9 @@ module nts.uk.at.kaf021.a {
         appTypeSelected: KnockoutObservable<common.AppTypeEnum> = ko.observable(null);
 
         datas: Array<common.EmployeeAgreementTime> = [];
+
+        canNextScreen: KnockoutObservable<boolean> = ko.observable(false);
+        empItems: Array<string> = [];
         constructor(isBackFromScreenB: boolean) {
             super();
             const vm = this;
@@ -37,11 +40,11 @@ module nts.uk.at.kaf021.a {
                     vm.appTypeSelected(cache.appType);
                 } else {
                     vm.getMockData();
-                    vm.appTypeSelected(common.AppTypeEnum.CURRENT_MONTH);
+                    vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
                 }
             } else {
                 vm.getMockData();
-                vm.appTypeSelected(common.AppTypeEnum.CURRENT_MONTH);
+                vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
             }
 
             vm.ccg001ComponentOption = <GroupOption>{
@@ -102,6 +105,7 @@ module nts.uk.at.kaf021.a {
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
             vm.initData().done(() => {
                 vm.loadMGrid();
+                $('#A1_5').focus();
                 vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
                     vm.fetchData().done(() => {
                         $("#grid").mGrid("destroy");
@@ -138,7 +142,7 @@ module nts.uk.at.kaf021.a {
                 vm.appTypeSelected.valueHasMutated();
                
                 dfd.resolve();
-            }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
+            }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
 
             return dfd.promise();
         }
@@ -158,19 +162,19 @@ module nts.uk.at.kaf021.a {
                     vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
                         vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
-                    }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
                         vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
-                    }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
                         vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
-                    }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
+                    }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 default:
                     dfd.resolve();
@@ -206,7 +210,7 @@ module nts.uk.at.kaf021.a {
                         name: 'CheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
                         onChange: function (rowId, columnKey, value, rowData) {
-                            //vm.checkDelete(rowId, value);
+                            vm.checkNextScreen(rowId, value);
                         }
                     }
                 ],
@@ -248,6 +252,8 @@ module nts.uk.at.kaf021.a {
                     }
                 ]
             }).create();
+            vm.canNextScreen(false);
+            vm.empItems = [];
         }
 
         getColumns(): Array<any> {
@@ -337,7 +343,8 @@ module nts.uk.at.kaf021.a {
         }
 
         getMonthHeader(month: number) {
-            return month + '月';
+            const vm = this;
+            return vm.$i18n("KAF021_65", [month.toString()]);// month + '月';
         }
 
         getMonthKey(month: number) {
@@ -358,6 +365,20 @@ module nts.uk.at.kaf021.a {
                 default: return [];
             }
         }
+        
+        checkNextScreen(rowId: any, check: any) {
+            const vm = this;
+            if (check) {
+                vm.empItems.push(rowId);
+            } else {
+                const index = vm.empItems.indexOf(rowId);
+                if (index > -1) {
+                    vm.empItems.splice(index, 1);
+                }
+            }
+
+            vm.canNextScreen(vm.empItems.length > 0);
+        }
 
         nextScreen() {
             const vm = this;
@@ -365,7 +386,11 @@ module nts.uk.at.kaf021.a {
             let dataSelected = _.filter(dataAll, (item: common.EmployeeAgreementTime) => { return item.checked });
             let cache = new CacheData(vm.appTypeSelected(), dataAll);
             localStorage.setItem('kaf021a_cache', JSON.stringify(cache));
-            vm.$jump('at', '/view/kaf/021/b/index.xhtml', { datas: dataSelected, appType: vm.appTypeSelected() });
+            vm.$jump('at', '/view/kaf/021/b/index.xhtml', { 
+                datas: dataSelected, 
+                appType: vm.appTypeSelected() ,
+                processingMonth: vm.processingMonth
+            });
         }
 
         getMockData() {
@@ -384,12 +409,17 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 100 * i,
                             maxTime: 100 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL,
+                            error: 100 * i,
+                            alarm: 50 * i
+
                         },
                         maxTime: {
                             time: 200 * i,
                             maxTime: 200 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL,
+                            error: 200 * i,
+                            alarm: 150 * i
                         },
                     },
                     month2: {
@@ -397,12 +427,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 200 * i,
                             maxTime: 200 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 300 * i,
                             maxTime: 300 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month3: {
@@ -410,12 +444,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 3 * i,
                             maxTime: 3 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 4 * i,
                             maxTime: 4 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month4: {
@@ -423,12 +461,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 4 * i,
                             maxTime: 4 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 5 * i,
                             maxTime: 5 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month5: {
@@ -436,12 +478,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 5 * i,
                             maxTime: 5 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 6 * i,
                             maxTime: 6 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month6: {
@@ -449,12 +495,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 6 * i,
                             maxTime: 6 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 7 * i,
                             maxTime: 7 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month7: {
@@ -462,12 +512,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 7 * i,
                             maxTime: 7 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 8 * i,
                             maxTime: 8 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month8: {
@@ -475,12 +529,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 8 * i,
                             maxTime: 8 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 9 * i,
                             maxTime: 9 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month9: {
@@ -488,12 +546,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 9 * i,
                             maxTime: 9 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 10 * i,
                             maxTime: 10 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month10: {
@@ -501,12 +563,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 10 * i,
                             maxTime: 10 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 11 * i,
                             maxTime: 11 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month11: {
@@ -514,12 +580,16 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 12 * i,
                             maxTime: 12 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 12 * i,
                             maxTime: 12 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     month12: {
@@ -527,18 +597,24 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 1300 * i,
                             maxTime: 1300 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                         maxTime: {
                             time: 1400 * i,
                             maxTime: 1400 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                            error: 100 * i,
+                            alarm: 50 * i
                         },
                     },
                     year: {
                         limitTime: 1000 * i,
                         time: 10000 * i,
-                        status: common.AgreTimeYearStatusOfMonthly.EXCESS_LIMIT
+                        status: common.AgreTimeYearStatusOfMonthly.EXCESS_LIMIT,
+                        error: 1000 * i,
+                        alarm: 500 * i
                     },
                     monthAverage2: {
                         totalTime: 120 * i,

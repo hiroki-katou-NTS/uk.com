@@ -1,9 +1,7 @@
 package nts.uk.screen.at.app.kaf021.find;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTime;
 
 @Getter
 public class AgreementMaxAverageTimeDto {

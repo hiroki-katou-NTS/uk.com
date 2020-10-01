@@ -1,17 +1,19 @@
 package nts.uk.screen.at.app.kaf021.find;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 
 @Getter
 public class AgreementTimeYearDto {
 
     public AgreementTimeYearDto(AgreementTimeYear domain) {
-        this.limitTime = domain.getLimitTime().v();
-        this.time = domain.getRecordTime().v();
+        AgreementTimeOfYear time = domain.getLimitTime();
+        this.limitTime = time.getThreshold().getUpperLimit().v();
+        this.time = time.getTargetTime().v();
         this.status = domain.getStatus().value;
+        this.error = time.getThreshold().getErAlTime().getError().v();
+        this.alarm = time.getThreshold().getErAlTime().getAlarm().v();
     }
 
     /**
@@ -26,4 +28,12 @@ public class AgreementTimeYearDto {
      * 状態
      */
     private Integer status;
+    /**
+     * エラー時間
+     */
+    private Integer error;
+    /**
+     * アラーム時間
+     */
+    private Integer alarm;
 }

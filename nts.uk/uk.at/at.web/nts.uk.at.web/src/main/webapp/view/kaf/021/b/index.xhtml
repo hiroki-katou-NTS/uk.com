@@ -11,12 +11,17 @@
         <com:stylefile path="kaf021.b.main.css"/>
         <com:scriptfile path="../common/kaf021.common.js"/>
         <com:scriptfile path="kaf021.b.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime
+            nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement
+        </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
         <div id="content-area">
             <div class="kaf021b-content">
                 <!--B1_1-->
-                <a class="goback" tabindex="4" data-bind="ntsLinkButton: { action: preScreen }">#{i18n.getText('KAF021_20')}</a>
+                <a class="goback" tabindex="2" data-bind="ntsLinkButton: { action: preScreen }">#{i18n.getText('KAF021_20')}</a>
                 <!--B1_2-->
                 <div id="B1_2" class="panel panel-frame">
                     <!--B1_3-->
@@ -31,7 +36,7 @@
                     </div>
                     <div class="cell valign-center">
                         <!--B2_1-->
-                        <button tabindex="3" class="proceed" data-bind="click: register">#{i18n.getText('KAF021_24')}</button>
+                        <button tabindex="1" class="proceed" data-bind="click: register">#{i18n.getText('KAF021_24')}</button>
                     </div>
                 </div>
                 <!--B4_14-->
