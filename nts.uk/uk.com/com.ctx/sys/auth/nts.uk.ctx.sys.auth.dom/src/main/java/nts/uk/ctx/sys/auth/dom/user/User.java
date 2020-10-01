@@ -8,6 +8,8 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 
 @Getter
@@ -56,6 +58,32 @@ public class User extends AggregateRoot {
 	// パスワード状態
 	/** PasswordStatus **/
 	private PassStatus passStatus;
+	
+	/**
+	 * ビルトインユーザを作る
+	 * @param contractCode
+	 * @param loginID
+	 * @param passwordPlainText
+	 * @return
+	 */
+	public static User createBuiltInUser(String contractCode, String loginID, String passwordPlainText) {
+		
+		String userId = IdentifierUtil.randomUniqueId();
+		
+		return new User(
+				userId,
+				true, // defaultUser
+				new HashPassword(PasswordHash.generate(passwordPlainText, userId)),
+				new LoginID(loginID),
+				new ContractCode(contractCode),
+				GeneralDate.max(), // expirationDate
+				DisabledSegment.True, // specialUser
+				DisabledSegment.False, // multiCompanyConcurrent
+				Optional.empty(), // mailAddress
+				Optional.of(new UserName("system")), // userName
+				Optional.empty(), // associatedPersonID
+				PassStatus.Official);
+	}
 
 	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
