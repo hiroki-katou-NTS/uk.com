@@ -39,24 +39,24 @@ public class RegisterTimeWorkPlaceCommandHandler extends CommandHandlerWithResul
     protected List<String> handle(CommandHandlerContext<RegisterTimeWorkPlaceCommand> context) {
         RegisterTimeWorkPlaceCommand command = context.getCommand();
 
-        val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth1())
-                , new AgreementOneMonthTime(command.getAlarmTimeMonth1()));
-        AgreementOneMonthTime upperLimitTime = new AgreementOneMonthTime(command.getUpperLimitTimeMonth1());
+        val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorOneMonth())
+                , new AgreementOneMonthTime(command.getAlarmOneMonth()));
+        AgreementOneMonthTime upperLimitTime = new AgreementOneMonthTime(command.getLimitOneMonth());
 
         val basicSettingMonth = OneMonthTime.of(errorTimeInMonth, upperLimitTime);
 
-        val errorTimeInMonthUpper = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth2())
-                , new AgreementOneMonthTime(command.getAlarmTimeMonth2()));
-        val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getUpperLimitTimeMonth2());
+        val errorTimeInMonthUpper = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTwoMonths())
+                , new AgreementOneMonthTime(command.getAlarmTwoMonths()));
+        val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getLimitTwoMonths());
         val upperLimitDueToSpecialProvisionsMonth = OneMonthTime.of(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
 
-        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear1())
-                , new AgreementOneYearTime(command.getAlarmTimeYear1()));
-        val upperLimitYear = new AgreementOneYearTime(command.getUpperLimitTimeYear1());
+        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorOneYear())
+                , new AgreementOneYearTime(command.getAlarmOneYear()));
+        val upperLimitYear = new AgreementOneYearTime(command.getLimitOneYear());
         val basicSettingYear = OneYearTime.of(errorTimeInYear, upperLimitYear);
 
-        val errorTimeInYearUpper = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear2())
-                , new AgreementOneYearTime(command.getAlarmTimeYear2()));
+        val errorTimeInYearUpper = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTwoYear())
+                , new AgreementOneYearTime(command.getAlarmTwoYear()));
 
         BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
                 new AgreementOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),

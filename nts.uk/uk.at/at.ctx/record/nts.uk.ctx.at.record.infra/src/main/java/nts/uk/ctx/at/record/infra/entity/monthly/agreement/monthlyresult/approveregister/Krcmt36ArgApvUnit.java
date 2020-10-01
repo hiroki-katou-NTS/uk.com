@@ -32,7 +32,7 @@ public class Krcmt36ArgApvUnit  extends UkJpaEntity implements Serializable {
     public String contractCd;
 
     @Column(name = "WKP_USE_ATR")
-    public int useWorkplace;
+    public Boolean useWorkplace;
 
     @Override
     protected Object getKey() {
@@ -40,10 +40,12 @@ public class Krcmt36ArgApvUnit  extends UkJpaEntity implements Serializable {
     }
 
     public static Krcmt36ArgApvUnit fromDomain(UnitOfApprover domain){
-        return new Krcmt36ArgApvUnit(domain.getCompanyID(), AppContexts.user().contractCode(),domain.getUseWorkplace().value);
+        return new Krcmt36ArgApvUnit(domain.getCompanyID(),
+                AppContexts.user().contractCode(),
+                domain.getUseWorkplace() != DoWork.NOTUSE);
     }
 
     public static UnitOfApprover toDomain(Krcmt36ArgApvUnit entity){
-        return new UnitOfApprover(entity.companyID, EnumAdaptor.valueOf(entity.useWorkplace, DoWork.class));
+        return new UnitOfApprover(entity.companyID, EnumAdaptor.valueOf(!entity.useWorkplace ? 0 : 1, DoWork.class));
     }
 }

@@ -7,6 +7,8 @@ import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTim
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.employment.*;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace.*;
@@ -55,6 +57,9 @@ public class AgreementTimeSettingService extends WebService {
 
     @Inject
     private UpdateAgreeUnitSetCommandHandler updateUnit;
+
+    @Inject
+    private UpdateUnitSetOfApproveCommandHandler unitSetOfApproveCommandHandler;
 
     @POST
     @Path("company/add")
@@ -126,6 +131,12 @@ public class AgreementTimeSettingService extends WebService {
     @Path("unit/update")
     public void updateUnit(UpdateAgreeUnitSetCommand command) {
         this.updateUnit.handle(command);
+    }
+
+    @POST
+    @Path("unitOfApprove/update")
+    public void updateUnit(UpdateUnitSetOfApproveCommand command) {
+        this.unitSetOfApproveCommandHandler.handle(command);
     }
 
 }

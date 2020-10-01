@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * Screen H : 初期表示を行う
+ * Screen kmk008 H : 初期表示を行う
  */
 @Stateless
 public class PerformInitDisplayProcessor {

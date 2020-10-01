@@ -21,42 +21,42 @@ public class RegisterTimeWorkPlaceCommand {
 	/** 1ヶ月 (Month) */
 
 	//エラー時間
-	private int errorTimeMonth1;
+	private int errorOneMonth;
 
 	//アラーム時間
-	private int alarmTimeMonth1;
+	private int alarmOneMonth;
 
 	// 上限時間
-	private int upperLimitTimeMonth1;
+	private int limitOneMonth;
 
 	//エラー時間
-	private int errorTimeMonth2;
+	private int errorTwoMonths;
 
 	//アラーム時間
-	private int alarmTimeMonth2;
+	private int alarmTwoMonths;
 
 	// 上限時間
-	private int upperLimitTimeMonth2;
+	private int limitTwoMonths;
 
 	/** 1年間 (Year) */
 
 	//エラー時間
-	private int errorTimeYear1;
+	private int errorOneYear;
 
 	//アラーム時間
-	private int alarmTimeYear1;
+	private int alarmOneYear;
 
 	// 上限時間
-	private int upperLimitTimeYear1;
+	private int limitOneYear;
 
 	//エラー時間
-	private int errorTimeYear2;
+	private int errorTwoYear;
 
 	//アラーム時間
-	private int alarmTimeYear2;
+	private int alarmTwoYear;
 
 	// 上限時間
-	private int upperLimitTimeYear2;
+	private int limitTwoYear;
 
 	/** 超過上限回数  */
 	//超過上限回数

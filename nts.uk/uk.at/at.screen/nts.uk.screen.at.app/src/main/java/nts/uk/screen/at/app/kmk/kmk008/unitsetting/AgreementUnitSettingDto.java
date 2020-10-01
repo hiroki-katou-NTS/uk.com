@@ -24,6 +24,9 @@ public class AgreementUnitSettingDto {
 
     public static AgreementUnitSettingDto setData(Optional<AgreementUnitSetting> data){
 
+        if (!data.isPresent()){
+            return new AgreementUnitSettingDto();
+        }
         return data.map(setting -> new AgreementUnitSettingDto(
                 setting.getClassificationUseAtr(),
                 setting.getEmploymentUseAtr(),
