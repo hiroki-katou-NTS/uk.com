@@ -43,17 +43,14 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	@Override
 	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		String loginID = AppContexts.user().employeeId();
-		boolean isProcessDone = false;
-		boolean isAutoSendMail = false;
-		List<String> autoSuccessMail = new ArrayList<>();
-		List<String> autoFailMail = new ArrayList<>();
-		List<String> autoFailServer = new ArrayList<>();
+		ProcessResult processResult = new ProcessResult();
+		processResult.setAppID(appID);
 		// 3.否認する(DenyService)
 		Boolean releaseFlg = approvalRootStateAdapter.doDeny(appID, loginID, memo);
 		if(!releaseFlg) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
+			return processResult;
 		}
-		isProcessDone = true;
+		processResult.setProcessDone(true);
 		// 「反映情報」．実績反映状態を「否認」にする(chuyển trạng thái 「反映情報」．実績反映状態 thành 「否認」)
 		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.DENIAL);
@@ -75,15 +72,15 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
 		if(!condition) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
+			return processResult;
 		}
-		isAutoSendMail = true;
+		processResult.setAutoSendMail(true);
 		// 申請者本人にメール送信する(gửi mail cho người viết đơn)
 		MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application); 
-		autoSuccessMail = mailResult.getSuccessList();
-		autoFailMail = mailResult.getFailList();
-		autoFailServer = mailResult.getFailServerList();
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,"");
+		processResult.setAutoSuccessMail(mailResult.getSuccessList());
+		processResult.setAutoFailMail(mailResult.getFailList());
+		processResult.setAutoFailServer(mailResult.getFailServerList());
+		return processResult;
 	}
 
 }

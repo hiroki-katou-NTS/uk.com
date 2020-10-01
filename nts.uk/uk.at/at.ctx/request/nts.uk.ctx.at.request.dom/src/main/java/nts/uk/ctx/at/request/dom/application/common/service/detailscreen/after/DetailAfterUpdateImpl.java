@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,15 +41,13 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 
 	public ProcessResult processAfterDetailScreenRegistration(String companyID, String appID) {
 		List<String> destinationList = new ArrayList<>();
-		boolean isProcessDone = true;
-		boolean isAutoSendMail = false;
-		List<String> autoSuccessMail = new ArrayList<>();
-		List<String> autoFailMail = new ArrayList<>();
-		List<String> autoFailServer = new ArrayList<>();
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
 		// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する(Thực hiện thuật toán [sử dụng ApplicationID để get ApplicationList])
 		Optional<Application> opApplication = applicationRepository.findByID(appID);
 		if(!opApplication.isPresent()) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID,""); 
+			processResult.setAppID(appID);
+			return processResult;
 		}
 		Application application = opApplication.get();
 		// アルゴリズム「承認を行った承認者を取得する」を実行する(Thực hiện 「lấy người approval đã thực hiện approval」)
@@ -65,7 +64,8 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		applicationRepository.update(application);
 		// 承認を行った承認者一覧に項目があるかチェックする (Kiểm tra xem có item trên "list người phê duyệt đã thực hiện phê duyệt" hay chưa)
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
-			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
+			processResult.setAppID(application.getAppID());
+			return processResult;
 		}
 		
 		// 承認を行った承認者一覧に項目がある ( There is an item in the approver list that made approval )
@@ -74,7 +74,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 //		if (appTypeDiscreteSettingOp.get().getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
 //			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
 //		}
-		isAutoSendMail = true;
+		processResult.setAutoSendMail(true);
 		// 「申請種類別設定」．新規登録時に自動でメールを送信するがtrue ( "Setting by application type". Automatically send mail when new registration is true )
 		// 承認を行った承認者一覧を先頭から最後までループする ( Loop from the top to the end of the approver list that gave approval )
 		for (ApproverWithFlagImport_New approverWithFlagImport : approverApprovedImport.getListApproverWithFlagOutput()) {
@@ -98,11 +98,12 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// 送信先リストに項目がいるかチェックする ( Check if there is an item in the destination list )
 		if(!CollectionUtil.isEmpty(destinationList)){
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
-			autoSuccessMail = mailResult.getSuccessList();
-			autoFailMail = mailResult.getFailList();
-			autoFailServer = mailResult.getFailServerList();
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, Collections.emptyList());
+			processResult.setAutoSuccessMail(mailResult.getSuccessList());
+			processResult.setAutoFailMail(mailResult.getFailList());
+			processResult.setAutoFailServer(mailResult.getFailServerList());
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
+		processResult.setAppID(application.getAppID());
+		return processResult;
 	}
 }

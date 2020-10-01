@@ -43,11 +43,8 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 	
 	@Override
 	public ProcessResult doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
-		boolean isProcessDone = true;
-		boolean isAutoSendMail = false;
-		List<String> autoSuccessMail = new ArrayList<>();
-		List<String> autoFailMail = new ArrayList<>();
-		List<String> autoFailServer = new ArrayList<>();
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
 		String loginEmployeeID = AppContexts.user().employeeId();
 		// 2.承認する(ApproveService)
 		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID, memo);
@@ -78,7 +75,9 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 			applicationRepository.update(application);
 			// INPUT．申請表示情報．申請表示情報(基準日関係なし)．メールサーバ設定済区分をチェックする
 			if(!appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet()) {
-				return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, reflectAppId);
+				processResult.setAppID(appID);
+				processResult.setReflectAppId(reflectAppId);
+				return processResult;
 			}
 		}
 //		isAutoSendMail = true;
@@ -102,7 +101,9 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 //		autoSuccessMail.addAll(processResult2.getAutoSuccessMail());
 //		autoFailMail.addAll(processResult2.getAutoFailMail());
 //		autoFailServer.addAll(processResult2.getAutoFailServer());
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, reflectAppId);
+		processResult.setAppID(appID);
+		processResult.setReflectAppId(reflectAppId);
+		return processResult;
 	}
 
 }
