@@ -51,7 +51,7 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, Collections.emptyList());
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, "");
 			processResult.setAutoSuccessMail(mailResult.getSuccessList());
 			processResult.setAutoFailMail(mailResult.getFailList());
 			processResult.setAutoFailServer(mailResult.getFailServerList());

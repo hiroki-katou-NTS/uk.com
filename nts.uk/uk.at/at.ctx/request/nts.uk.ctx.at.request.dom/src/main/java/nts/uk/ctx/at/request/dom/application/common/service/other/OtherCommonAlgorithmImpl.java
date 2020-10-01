@@ -307,34 +307,34 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, List<ListOfAppTypes> listOfAppTypes) {
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName) {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), listOfAppTypes);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, List<ListOfAppTypes> listOfAppTypes) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, listOfAppTypes);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application application) {
+	public MailResult sendMailApplicantApprove(Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText);
+		MailResult mailResult = sendMailApplicant(application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(Application application) {
+	public MailResult sendMailApplicantDeny(Application application, String appName) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText);
+		MailResult mailResult = sendMailApplicant(application, inputText, appName);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, List<ListOfAppTypes> listOfAppTypes) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>(); 
@@ -385,24 +385,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						"", 
 						employeeID);
 			};
-			// メニューの表示名を取得する
-			String appName = Strings.EMPTY;
-			appName = listOfAppTypes.stream().filter(x -> {
-				boolean condition = x.getAppType().value==application.getAppType().value;
-				if(application.getAppType()==ApplicationType.STAMP_APPLICATION) {
-					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ADDITIONAL) {
-						condition = condition && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL;
-					}
-					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
-						condition = condition && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
-					}
-				}
-				return condition;
-			}).findAny().map(x -> x.getAppName()).orElse("");
 			// メール送信時申請内容の作成
 			String appContent = applicationContentService.getApplicationContent(application);
-			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			// 申請を差し戻すメール本文の編集
+			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
 					newText,
@@ -426,7 +412,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application application, String text) {
+	public MailResult sendMailApplicant(Application application, String text, String appName) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
@@ -473,27 +459,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 					"", 
 					employeeID);
 		};
-		Optional<AppDispName> opAppDispName = appDispNameRepository.getDisplay(application.getAppType().value);
-		if(!opAppDispName.isPresent() || opAppDispName.get().getDispName()==null){
-			throw new RuntimeException("no setting AppDispName 申請表示名");
-		}
-		AppDispName appDispName = opAppDispName.get();
-		// 申請を差し戻すメール本文の編集
+		// メール送信時申請内容の作成
 		String appContent = applicationContentService.getApplicationContent(application);
+		// 申請を差し戻すメール本文の編集
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
 				newText,
 				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
-				appDispName.getDispName().toString(),
+				appName,
 				applicantName, 
 				application.getAppDate().getApplicationDate().toLocalDate().toString(),
 				appContent, 
 				loginName, 
 				loginMail);
-		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appDispName.getDispName().toString();
+		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
 		String mailBody = mailContentToSend;
 		try {
+			// メールを送信する
 			mailsender.sendFromAdmin(applicantMail, new MailContents(mailTitle, mailBody));
 			successList.add(employeeName);
 		} catch (Exception e) {

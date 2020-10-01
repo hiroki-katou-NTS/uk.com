@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -64,10 +66,22 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 			processResult.setAutoSendMail(true);
 			// メニューの表示名を取得する
 			List<ListOfAppTypes> listOfAppTypes =  cmd.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+			String appName = listOfAppTypes.stream().filter(x -> {
+				boolean conditionFilter = x.getAppType().value==application.getAppType().value;
+				if(application.getAppType()==ApplicationType.STAMP_APPLICATION) {
+					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ADDITIONAL) {
+						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL;
+					}
+					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
+						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
+					}
+				}
+				return condition;
+			}).findAny().map(x -> x.getAppName()).orElse("");
 			// 送信先リストに項目がいるかチェックする(kiểm tra danh sách người xác nhận có mục nào hay không)
 			if(!CollectionUtil.isEmpty(destinationLst)){
 				// 送信先リストにメールを送信する(gửi mail cho danh sách người xác nhận)
-				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(destinationLst, application, listOfAppTypes);
+				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(destinationLst, application, appName);
 				processResult.setAutoSuccessMail(mailResult.getSuccessList());
 				processResult.setAutoFailMail(mailResult.getFailList());
 				processResult.setAutoFailServer(mailResult.getFailServerList());

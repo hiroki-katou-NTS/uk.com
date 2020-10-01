@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplyActionContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApprovalListService;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.WorkMotionData;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -69,6 +71,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		AppListApproveCommand command = context.getCommand();
 		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
+		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		// ドメインモデル「承認一覧表示設定」を取得する (Lấy domain Approval List display Setting)
 		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
 		// 承認一覧表示設定より作業動作データをセット (set dữ liệu chạy công việc từ 承認一覧表示設定)
@@ -104,7 +107,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 				return;
 			}
 			// アルゴリズム「申請一覧の承認登録」を実行する
-			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd);
+			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
 			if(pair.getLeft()) {
 				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			} else {
@@ -120,7 +123,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	 * @param listOfApplicationCmd
 	 * @return
 	 */
-	public Pair<Boolean, String> approveSingleApp(String companyID, ListOfApplicationCmd listOfApplicationCmd) {
+	public Pair<Boolean, String> approveSingleApp(String companyID, ListOfApplicationCmd listOfApplicationCmd, List<ListOfAppTypes> listOfAppTypes) {
 		try {
 			Application application = listOfApplicationCmd.toDomain().getApplication();
 			// ドメインモデル「申請設定」を取得し申請表示情報として作成する
@@ -133,7 +136,8 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 					Optional.empty(),
 					Optional.empty());
 			// アルゴリズム「承認する」を実行する
-			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, "");
+			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, 
+					"", listOfAppTypes);
 			if(approveProcessResult.isProcessDone()) {
 				return Pair.of(true, "");
 			} else {
@@ -144,11 +148,11 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		}
 	}
 	
-	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds) {
+	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds, List<ListOfAppTypes> listOfAppTypes) {
 		String companyID = AppContexts.user().companyId();
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
-			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd);
+			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
 			if(pair.getLeft()) {
 				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			} else {
