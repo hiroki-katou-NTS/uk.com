@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,19 +16,15 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.ShiftExpectation;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
 @Table(name = "KSCDT_AVAILABILITY_SHIFT")
 @AllArgsConstructor
-public class KscdtAvailabilityShift extends ContractUkJpaEntity{
+public class KscdtAvailabilityShift extends ContractCompanyUkJpaEntity {
 	
 	public static final Function<NtsResultRecord, KscdtAvailabilityShift> mapper = s ->  
 			new JpaEntityMapper<>(KscdtAvailabilityShift.class).toEntity(s);
-	
-	@Column(name = "CID")
-	public String companyId;
 	
 	@Getter
 	@EmbeddedId
@@ -50,7 +45,6 @@ public class KscdtAvailabilityShift extends ContractUkJpaEntity{
 		ShiftExpectation shiftExpectation =  (ShiftExpectation) expectation.getWorkExpectation();
 		return shiftExpectation.getWorkableShiftCodeList().stream()
 				.map(s -> new KscdtAvailabilityShift(
-							AppContexts.user().companyId(),
 							new KscdtAvailabilityShiftPk(
 									expectation.getEmployeeId(), 
 									expectation.getExpectingDate(), s.v()) 

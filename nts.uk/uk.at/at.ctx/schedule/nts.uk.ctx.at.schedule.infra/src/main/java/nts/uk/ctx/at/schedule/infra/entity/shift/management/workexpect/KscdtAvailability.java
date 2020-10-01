@@ -20,12 +20,12 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationMem
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
 @Table(name = "KSCDT_AVAILABILITY")
 @AllArgsConstructor
-public class KscdtAvailability extends ContractUkJpaEntity{
+public class KscdtAvailability extends ContractCompanyUkJpaEntity{
 	
 	public static final Function<NtsResultRecord, KscdtAvailability> mapper = s ->  
 			new JpaEntityMapper<>(KscdtAvailability.class).toEntity(s);
