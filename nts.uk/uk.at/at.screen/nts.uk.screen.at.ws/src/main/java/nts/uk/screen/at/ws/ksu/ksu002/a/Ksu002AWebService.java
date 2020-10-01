@@ -1,19 +1,17 @@
 package nts.uk.screen.at.ws.ksu.ksu002.a;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.DisplayInWorkInformation002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.DisplayInWorkInfoDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.TheInitialDisplayDateDto;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 
@@ -31,7 +29,7 @@ public class Ksu002AWebService extends WebService {
 
 	// 予定・実績を勤務情報で取得する
 	@Inject
-	private GetScheduleActualOfWorkInfo002 getScheduleActualOfWorkInfo;
+	private DisplayInWorkInformation002 displayInWorkInformation002;
 	
 
 	@POST
@@ -51,8 +49,8 @@ public class Ksu002AWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getScheduleActualOfWorkInfo")
-	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {		
-		return this.getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(param);
+	@Path("displayInWorkInformation")
+	public DisplayInWorkInfoDto getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {		
+		return this.displayInWorkInformation002.getDataWorkInfo(param);
 	}
 }
