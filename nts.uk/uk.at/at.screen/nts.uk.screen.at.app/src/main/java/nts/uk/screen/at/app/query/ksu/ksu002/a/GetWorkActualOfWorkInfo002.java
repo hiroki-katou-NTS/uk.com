@@ -200,8 +200,8 @@ public class GetWorkActualOfWorkInfo002 {
 							.endTime(endtTime)
 							.endTimeEditState(null)
 							.workHolidayCls(null)
-							.isEdit(false) //
-							.isActive(false) //
+//							.isEdit(false) //
+//							.isActive(false) //
 							.build();
 
 					listWorkScheduleWorkInfor.add(dto);

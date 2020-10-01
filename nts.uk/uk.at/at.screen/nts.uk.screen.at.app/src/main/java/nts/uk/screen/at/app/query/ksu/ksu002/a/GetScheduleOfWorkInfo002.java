@@ -148,23 +148,23 @@ public class GetScheduleOfWorkInfo002 {
 						.supportCategory(SupportCategory.NOT_CHEERING.value).workTypeCode(null).workTypeName(null)
 						.workTypeEditStatus(null).workTimeCode(null).workTimeName(null).workTimeEditStatus(null)
 						.startTime(null).startTimeEditState(null).endTime(null).endTimeEditState(null)
-						.workHolidayCls(null).isEdit(true) //
-						.isActive(true) //
+//						.workHolidayCls(null).isEdit(true) //
+//						.isActive(true) //
 						.build();
 
-				// ※Abc1
-				boolean isEdit = true;
-				if (dto.needToWork == false) {
-					isEdit = false;
-				}
-
-				// ※Abc2
-				boolean isActive = true;
-				if (dto.needToWork == false) {
-					isActive = false;
-				}
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
+//				// ※Abc1
+//				boolean isEdit = true;
+//				if (dto.needToWork == false) {
+//					isEdit = false;
+//				}
+//
+//				// ※Abc2
+//				boolean isActive = true;
+//				if (dto.needToWork == false) {
+//					isActive = false;
+//				}
+//				dto.setEdit(isEdit);
+//				dto.setActive(isActive);
 				listWorkScheduleWorkInfor.add(dto);
 			} else {
 				// step 5.2.1
@@ -278,24 +278,24 @@ public class GetScheduleOfWorkInfo002 {
 										? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(),
 												endTimeEditStatus.get().getEditStateSetting().value)
 										: null)
-						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null).isEdit(true) //
-						.isActive(true) //
+//						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null).isEdit(true) //
+//						.isActive(true) //
 						.build();
 
-				// ※Abc1
-				boolean isEdit = true;
-				if (dto.confirmed == true || dto.needToWork == false) {
-					isEdit = false;
-				}
-
-				// ※Abc2
-				boolean isActive = true;
-				if (dto.needToWork == false) {
-					isActive = false;
-				}
-
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
+//				// ※Abc1
+//				boolean isEdit = true;
+//				if (dto.confirmed == true || dto.needToWork == false) {
+//					isEdit = false;
+//				}
+//
+//				// ※Abc2
+//				boolean isActive = true;
+//				if (dto.needToWork == false) {
+//					isActive = false;
+//				}
+//
+//				dto.setEdit(isEdit);
+//				dto.setActive(isActive);
 
 				listWorkScheduleWorkInfor.add(dto);
 			}
