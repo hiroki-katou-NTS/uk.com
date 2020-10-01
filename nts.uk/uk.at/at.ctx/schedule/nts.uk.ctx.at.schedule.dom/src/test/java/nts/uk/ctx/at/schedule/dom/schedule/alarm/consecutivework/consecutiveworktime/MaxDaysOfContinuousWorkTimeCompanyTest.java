@@ -12,14 +12,18 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-
+/**
+ * UnitTest: 会社の就業時間帯の連続勤務できる上限日数
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
-public class MaxDaysOfContinuousWorkTimeComTest {
+public class MaxDaysOfContinuousWorkTimeCompanyTest {
 	@Test
 	public void getters() {
-		val maxNoDaysOfContinuousAttOrg = MaxNumberDaysOfContinuousWorkTimeHelper.DUMMY;
+		val maxDaysConsWorkTimeCom = MaxNumberDaysOfContinuousWorkTimeHelper.DUMMY;
 
-		NtsAssert.invokeGetters(maxNoDaysOfContinuousAttOrg);
+		NtsAssert.invokeGetters(maxDaysConsWorkTimeCom);
 
 	}
 

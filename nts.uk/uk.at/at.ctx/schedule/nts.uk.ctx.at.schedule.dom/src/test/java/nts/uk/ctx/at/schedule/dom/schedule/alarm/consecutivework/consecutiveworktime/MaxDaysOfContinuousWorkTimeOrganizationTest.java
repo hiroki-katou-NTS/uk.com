@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @RunWith(JMockit.class)
-public class MaxDaysOfContinuousWorkTimeOrgTest {
+public class MaxDaysOfContinuousWorkTimeOrganizationTest {
 	@Test
 	public void getters() {
 		val maxDaysContiAttOrg = MaxNumberDaysOfContinuousWorkTimeHelper.DUMMY_ORG;
