@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util;
 
 public interface ItemConst extends Cloneable {
 	
