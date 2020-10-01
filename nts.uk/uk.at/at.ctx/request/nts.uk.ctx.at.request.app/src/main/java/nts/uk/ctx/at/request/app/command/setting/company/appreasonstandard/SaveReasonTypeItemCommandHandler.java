@@ -19,7 +19,7 @@ public class SaveReasonTypeItemCommandHandler extends CommandHandler<List<Reason
         String companyId = AppContexts.user().companyId();
         List<ReasonTypeItemCommand> command = commandHandlerContext.getCommand();
         command.forEach(c -> {
-            appReasonStandardRepo.saveReasonTypeItem(companyId, c.getAppType(), c.toDomain());
+            appReasonStandardRepo.saveReasonTypeItem(companyId, c.getAppType(), c.getHolidayAppType(), c.toDomain());
         });
     }
 }

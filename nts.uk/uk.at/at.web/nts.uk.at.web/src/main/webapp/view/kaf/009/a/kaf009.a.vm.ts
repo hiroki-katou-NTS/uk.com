@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.$blockui("show");
             vm.loadData([], [], vm.appType())
             .then((loadDataFlag: any) => {
-                vm.appDispInfoStartupOutput.subscribe(value => {
+                vm.application().appDate.subscribe(value => {
                     console.log(value);
                     if (value) {
                         vm.changeDate();
@@ -145,8 +145,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
             if (vm.model) {
-                if (vm.model.checkbox3() == true && !vm.model.workTimeCode()) {
-                    $('#workSelect').focus();
+                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication !== 0) {
+                   // $('#workSelect').focus();
+					let el = document.getElementById('workSelect');
+	                if (el) {
+	                    el.focus();                                                    
+	                }
                     return;
                 } 
             }
@@ -157,13 +161,18 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             );
             // is change can be null
 //            if (!_.isNull(model.checkbox3)) {
-                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                if (!_.isEmpty(vm.model.workTypeCode())) {
-                    let dw = new DataWork( model.workTypeCode );
-                    if ( model.workTimeCode ) {
-                        dw.workTime = model.workTimeCode
+                if (!_.isNull(model.checkbox3)) {
+                    goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;                    
+                }
+                if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                    if (!_.isEmpty(vm.model.workTypeCode())) {
+                        let dw = new DataWork( model.workTypeCode );
+                        if ( model.workTimeCode ) {
+                            dw.workTime = model.workTimeCode
+                        }
+                        goBackApp.dataWork = dw;
+                        
                     }
-                    goBackApp.dataWork = dw;
                     
                 }
 //            }
@@ -225,28 +234,57 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
         changeDate() {
             const vm = this;
+			vm.$blockui( "show" );
             if(!_.isNull(ko.toJS(vm.dataFetch))) {
                 vm.dataFetch().isChangeDate = true;
             }
+			let companyId = vm.$user.companyId;
+			let appDates = [];
+			appDates.push(ko.toJS(vm.application().appDate));
+			let employeeIds = ko.toJS(vm.application().employeeIDLst);
             let dataClone = _.clone(vm.dataFetch());
-            let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
+			let inforGoBackCommonDirectDto = ko.toJS(vm.dataFetch); 
+			inforGoBackCommonDirectDto.appDispInfoStartup = ko.toJS(vm.appDispInfoStartupOutput);
+			let commandChangeDate = {companyId, appDates, employeeIds, inforGoBackCommonDirectDto};
+          	/*  let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
             let listActual = appDisp.appDispInfoWithDateOutput.opActualContentDisplayLst;
             if (listActual[0]) {
                 if(!_.isEmpty(listActual)) {
                     if (listActual[0].opAchievementDetail) {
                         let workType = listActual[0].opAchievementDetail.workTypeCD;
                         let workTime = listActual[0].opAchievementDetail.workTimeCD;
-                        if (!_.isNull(model.checkbox3)) {
-                            dataClone.workTime(workTime);
-                            dataClone.workType(workType);                            
+                        if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                            if (!_.isNull(dataClone)) {
+                                dataClone.workTime(workTime);
+                                dataClone.workType(workType);                                                            
+                            }
                         }
                     }
                 }
-            }
+            }*/
+			
             
             if (!_.isNull(dataClone)) {
-                vm.dataFetch(dataClone);
-                vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;
+				vm.$ajax(API.changeDate, commandChangeDate)
+				.done(res => {
+					if (res) {
+						dataClone.lstWorkType(res.lstWorkType);
+						dataClone.workType(res.workType);
+						dataClone.workTime(res.workTime);
+	                	dataClone.appDispInfoStartup = vm.appDispInfoStartupOutput;
+						vm.dataFetch(dataClone);						
+					}
+				}).fail(res => {
+					let param;
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                    }
+                    vm.$dialog.error(param);
+				}).always(res => {
+					vm.$blockui( "hide" );
+				});
                 
                 return;
             }

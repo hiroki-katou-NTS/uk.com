@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
@@ -68,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -86,6 +88,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.BonusPa
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -1276,6 +1279,22 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	@Column(name = "SP_RAISESALARY_OUT_TIME10")
 	public int spRaiseSalaryOutTime10;
 	
+	/** インターバル出勤時刻 */
+	@Column(name = "INTERVAL_ATTENDANCE_CLOCK")
+	public int intervalAttendance;
+	
+	/** インターバル時間 */
+	@Column(name = "INTERVAL_TIME")
+	public int intervalTime;
+	
+	/** 振休使用時間 */
+	@Column(name = "HOL_TRANSFER_USE_TIME")
+	public int transferHolidayTime;
+	
+	/** 計算差異時間 */
+	@Column(name = "CALC_DIFF_TIME")
+	public int calcDiffTime;
+	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
 	@Override
@@ -1330,7 +1349,18 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			/* 勤務回数 */
 			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
 			/*休暇加算時間*/
-			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();		
+			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();
+			
+			if (totalWork.getIntervalTime() != null) {
+				this.intervalAttendance = totalWork.getIntervalTime().getIntervalAttendance() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalAttendance().valueAsMinutes();
+				this.intervalTime = totalWork.getIntervalTime().getIntervalTime() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalTime().valueAsMinutes();
+			} else {
+				this.intervalAttendance = 0;
+				this.intervalTime = 0;
+			}
+			this.calcDiffTime = totalWork.getCalcDiffTime().valueAsMinutes();
 		}
 		if(constraintTime != null){
 			/* 総拘束時間 */
@@ -2372,7 +2402,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				  new SubstituteHolidayOfDaily(new AttendanceTime(compensatoryLeaveTime),new AttendanceTime(compensatoryLeaveTdvTime)),
 				  new OverSalaryOfDaily(new AttendanceTime(excessSalaryiesTime),new AttendanceTime(excessSalaryiesTdvTime)),
 				  new SpecialHolidayOfDaily(new AttendanceTime(specialHolidayTime),new AttendanceTime(specialHolidayTdvTime)),
-				  new AnnualOfDaily(new AttendanceTime(annualleaveTime), new AttendanceTime(annualleaveTdvTime))
+				  new AnnualOfDaily(new AttendanceTime(annualleaveTime), new AttendanceTime(annualleaveTdvTime)),
+				  new TransferHolidayOfDaily(new AttendanceTime(transferHolidayTime))
 				 );
 		/*日別実績の予定時間*/
 		val shedule =  new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(this.workScheduleTime), new AttendanceTime(0), new AttendanceTime(0)),
@@ -2638,9 +2669,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
 				test.get(0),
-				vacation
-				);
-
+				vacation,
+				IntervalTimeOfDaily.of(
+						new AttendanceClock(this.intervalAttendance), 
+						new AttendanceTime(this.intervalTime)));
+		totalTime.setVacationAddTime(new AttendanceTime(this.vactnAddTime));
+		totalTime.setCalcDiffTime(new AttendanceTime(this.calcDiffTime));
+		
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
 				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayPremiumTime.toDomain());
@@ -2772,7 +2807,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				  new SubstituteHolidayOfDaily(new AttendanceTime(entity.compensatoryLeaveTime),new AttendanceTime(entity.compensatoryLeaveTdvTime)),
 				  new OverSalaryOfDaily(new AttendanceTime(entity.excessSalaryiesTime),new AttendanceTime(entity.excessSalaryiesTdvTime)),
 				  new SpecialHolidayOfDaily(new AttendanceTime(entity.specialHolidayTime),new AttendanceTime(entity.specialHolidayTdvTime)),
-				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime))
+				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime)),
+				  new TransferHolidayOfDaily(new AttendanceTime(entity.transferHolidayTime))
 				 );
 		
 		/*日別実績の残業時間帯*/
@@ -3039,10 +3075,12 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 														  new WorkTimes(entity.workTimes),
 														  new TemporaryTimeOfDaily(),
 														  test.get(0),
-														  vacation
-														  );
+														  vacation,
+														  IntervalTimeOfDaily.of(
+																  new AttendanceClock(entity.intervalAttendance), 
+																  new AttendanceTime(entity.intervalTime)));
 		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
-		
+		totalTime.setCalcDiffTime(new AttendanceTime(entity.calcDiffTime));
 		
 		//実働時間/実績時間  - 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.of(totalTime,

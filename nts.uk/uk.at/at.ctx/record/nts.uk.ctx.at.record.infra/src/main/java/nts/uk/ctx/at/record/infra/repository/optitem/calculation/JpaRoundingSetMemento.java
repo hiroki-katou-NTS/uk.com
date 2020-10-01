@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundin
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.RoundingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingSetMemento;
 
 /**
  * The Class JpaRoundingSetMemento.

@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthlyresults.roleofovertimework;
 
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleofovertimework.KrcstRoleOTWork;
 
 // TODO: Auto-generated Javadoc

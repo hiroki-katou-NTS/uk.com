@@ -429,10 +429,18 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// INPUT．対象日リストをループする
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
+			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
 			Optional<ActualContentDisplay> opActualContentDisplay = actualContentDisplayLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
-			if(!opActualContentDisplay.isPresent()) {
+			if(opActualContentDisplay.isPresent()) {
+				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
+			}
+			if(!opAchievementDetail.isPresent()) {
 				// エラーメッセージ(Msg_1715)を表示
 				throw new BusinessException("Msg_1715", employeeInfo.getBussinessName(), loopDate.toString());
+			}
+			// INPUT．申請する勤務種類リストをチェックする
+			if(CollectionUtil.isEmpty(workTypeLst)) {
+				return;
 			}
 			// 勤務種類を取得する
 			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
@@ -443,6 +451,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if(!opWorkTypeFirst.isPresent() || !opWorkTypeActual.isPresent()) {
 				continue;
 			}
+			// 日ごとに申請の矛盾チェック
+			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+			// 日ごとに休日区分の矛盾チェック
+			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
@@ -483,19 +495,20 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// INPUT．「実績詳細」をチェックする
 			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
 					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
+				// 取得した勤務種類と就業時間帯を初期選択値とする
+				String resultWorkType = achievementDetail.getWorkTypeCD();
+				String resultWorkTime = achievementDetail.getWorkTimeCD();
 				// 12.マスタ勤務種類、就業時間帯データをチェック
 				CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
 						companyID, 
 						achievementDetail.getWorkTypeCD(), 
 						achievementDetail.getWorkTimeCD());
 				// 勤務種類エラーFlgをチェック
-				String resultWorkType = Strings.EMPTY;
 				if(checkWorkingInfoResult.isWkTypeError()) {
 					// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 					resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 				}
 				// 就業時間帯エラーFlgをチェック
-				String resultWorkTime = Strings.EMPTY;
 				if(checkWorkingInfoResult.isWkTimeError()) {
 					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
 					resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
@@ -536,18 +549,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				processWorkType, 
 				processWorkTime);
 		// 勤務種類エラーFlgをチェック
-		String resultWorkType = null;
 		if(checkWorkingInfoResult.isWkTypeError()) {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-			resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
+			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 		}
 		// 就業時間帯エラーFlgをチェック
-		String resultWorkTime = null;
 		if(checkWorkingInfoResult.isWkTimeError()) {
 			// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-			resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
+			processWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 		}
-		return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
+		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime);
 	}
 
 	@Override
@@ -690,6 +701,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 法定区分をチェックする
 		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
 		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
+			return;
+		}
 		if(appWorkTypeSet.getHolidayAtr() == actualWorkTypeSet.getHolidayAtr()) {
 			return;
 		}

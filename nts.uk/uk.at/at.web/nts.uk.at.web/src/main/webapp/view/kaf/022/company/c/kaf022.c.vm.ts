@@ -26,19 +26,30 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             { code: 1, name: text('KAF022_175') }
         ]);
 
+        // 就業時間帯を反映する
         reflectWorkHour: KnockoutObservable<number>;
+        // 出退勤を反映する
         reflectAttendance: KnockoutObservable<number>;
+        // 1日休暇の場合は出退勤を削除
         oneDayLeaveDeleteAttendance: KnockoutObservable<number>;
 
+        // 時間年休
         annualVacationTime: KnockoutObservable<number>;
+        // 60H超休
         superHoliday60H: KnockoutObservable<number>;
+        // 時間代休
         substituteLeaveTime: KnockoutObservable<number>;
+        // 介護
         nursing: KnockoutObservable<number>;
+        // 子看護
         childNursing: KnockoutObservable<number>;
+        // 時間特別休暇
         specialVacationTime: KnockoutObservable<number>;
 
+        // 半日年休の使用上限チェック
         halfDayAnnualLeaveUsageLimitCheck: KnockoutObservable<number>;
 
+        // 休暇申請種類表示名
         holidayAppTypeDispNames: KnockoutObservableArray<HolidayAppTypeDispName>;
 
         constructor() {

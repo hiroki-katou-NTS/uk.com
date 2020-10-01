@@ -21,7 +21,7 @@ public class ShiftPalletsOrgDto {
 	private String note;
 	private List<ShiftPalletDto> patternItem;
 	
-	public ShiftPalletsOrgDto(ShiftPalletsOrg org, String workplaceId) {
+	public ShiftPalletsOrgDto(ShiftPalletsOrg org, String workplaceId ) {
 		super();
 		this.workplaceId = workplaceId;
 		this.groupNo = org.getPage();
@@ -33,5 +33,6 @@ public class ShiftPalletsOrgDto {
 					.stream()
 					.map(c -> new ShiftPalletDto(c))
 					.collect(Collectors.toList());
+	
 	}
 }

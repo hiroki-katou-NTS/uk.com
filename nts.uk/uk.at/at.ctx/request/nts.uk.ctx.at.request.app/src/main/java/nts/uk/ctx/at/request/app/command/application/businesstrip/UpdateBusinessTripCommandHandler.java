@@ -5,13 +5,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.CheckErrorDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
@@ -28,6 +26,8 @@ import nts.uk.shr.com.context.AppContexts;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<UpdateBusinessTripCommand, ProcessResult> {
 
     @Inject
@@ -120,20 +121,32 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         }
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
-            // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),
-                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v()
-                    , i.getDate());
 
-            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
-            // 申請の矛盾チェック
-            this.commonAlgorithm.appConflictCheck(
-                    cid,
-                    employeeInfoImports.get(0),
-                    Arrays.asList(i.getDate()),
-                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-            );
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            Integer workTimeStart = null;
+            Integer workTimeEnd = null;
+
+            if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            }
+
+            // アルゴリズム「出張申請就業時間帯チェック」を実行する
+            businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
         });
+
+        List<GeneralDate> dates = businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList());
+        List<String> workTypeCodes = businessTrip.getInfos().stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
+        // 申請の矛盾チェック
+        this.commonAlgorithm.appConflictCheck(
+                cid,
+                employeeInfoImports.get(0),
+                dates,
+                workTypeCodes,
+                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+        );
     }
 }
