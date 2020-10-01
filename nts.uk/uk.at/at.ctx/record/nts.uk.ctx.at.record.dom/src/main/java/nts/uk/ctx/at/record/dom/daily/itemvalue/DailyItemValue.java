@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 @Data
 public class DailyItemValue {

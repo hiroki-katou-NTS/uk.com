@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /** 日別実績の特定日区分 Finder */

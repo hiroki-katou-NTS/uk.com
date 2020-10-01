@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /** 日別実績の所属情報 Finder */

@@ -19,9 +19,9 @@ import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommandHan
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.RecordHandler;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 @Stateless
 public class MonthlyRecordWorkCommandHandler extends RecordHandler {
