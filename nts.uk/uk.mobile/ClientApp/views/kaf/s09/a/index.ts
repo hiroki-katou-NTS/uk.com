@@ -332,7 +332,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
         if (params.predetemineTimeSetting) {
             let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
             let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            self.model.workTime.time = self.$dt.timedr(startTime) + '~' + self.$dt.timedr(endTime);
+            self.model.workTime.time = self.$dt.timedr(startTime) + self.$i18n('KAFS09_12') + self.$dt.timedr(endTime);
         }
     }
 
@@ -637,7 +637,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             this.$modal(
                 'worktime',
                 {
-                    isAddNone: 1,
+                    isAddNone: 0,
                     seledtedWkTimeCDs: _.map(self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                     selectedWorkTimeCD: this.model.workTime.code,
                     isSelectWorkTime: 1
