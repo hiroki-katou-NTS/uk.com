@@ -53,6 +53,7 @@ public class AlarmCheckConditionScheduleOrderTest {
 	/**
 	 * 作る：成功
 	 */
+	@Test
 	public void create_alarmCheckConditionScheduleOrder_success() {
 
 		val codes = Arrays.asList(
