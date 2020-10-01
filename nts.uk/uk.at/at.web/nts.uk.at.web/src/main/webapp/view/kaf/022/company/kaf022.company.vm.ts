@@ -193,6 +193,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             });
             $('.tab-content-1').scrollTop(postion);
         }
+
     }
 
     interface NtsTabPanelModel {

@@ -1,9 +1,6 @@
 module nts.uk.at.view.kaf022.x {
     export module viewmodel {
         export class ScreenModel {
-            constructor() {
-                var self = this;
-            }
 
             public goToCompanySettings(): void {
                 nts.uk.request.jump("/view/kaf/022/company/index.xhtml");
@@ -16,6 +13,29 @@ module nts.uk.at.view.kaf022.x {
             public goToWorkplaceSettings(): void {
                 nts.uk.request.jump("/view/kaf/022/workplace/index.xhtml");
             }
+
+            exportExcel() {
+                const self = this;
+                let __viewContext: any = window["__viewContext"] || {};
+                nts.uk.ui.block.grayout();
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = "KAF022" + nts.uk.resource.getText("KAF022_768");
+
+                nts.uk.request.exportFile('/masterlist/report/print', {
+                    domainId: "PreparationBeforeApply",
+                    domainType: domainType,
+                    languageId: __viewContext.user.selectedLanguage.basicLanguageId,
+                    reportType: 0,
+                    data: null
+                }).done(() => {
+                    console.log("Export done!");
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
         }
     }
 }
