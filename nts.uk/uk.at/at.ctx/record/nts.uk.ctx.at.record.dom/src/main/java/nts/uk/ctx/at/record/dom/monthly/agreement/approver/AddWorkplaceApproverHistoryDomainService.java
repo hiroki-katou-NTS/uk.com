@@ -23,16 +23,18 @@ public class AddWorkplaceApproverHistoryDomainService {
                 histTobeAdd.getApproverIds(),
                 histTobeAdd.getConfirmerIds()
         );
+        val optLastHist = requeire.getLatestHistory(histTobeAdd.getWorkplaceId(),GeneralDate.max());
+        if(optLastHist.isPresent()){
+            val itemlastHist = optLastHist.get();
+            val newPeriod = new DatePeriod(itemlastHist.getPeriod().start(),
+                    itemToBeAdd.getPeriod().start().addDays(-1));
+            itemlastHist.setPeriod(newPeriod);
+
+        }
         return AtomTask.of(()->{
             requeire.addHistory(itemToBeAdd);
-            val optLastHist = requeire.getLatestHistory(histTobeAdd.getWorkplaceId(),GeneralDate.max());
-            if(optLastHist.isPresent()){
-                val itemlastHist = optLastHist.get();
-                val newPeriod = new DatePeriod(itemlastHist.getPeriod().start(),
-                        itemToBeAdd.getPeriod().start().addDays(-1));
-                itemlastHist.setPeriod(newPeriod);
-                requeire.changeLatestHistory(itemlastHist);
-            }
+            optLastHist.ifPresent(approver36AgrByWorkplace -> requeire.changeLatestHistory
+                    (approver36AgrByWorkplace, approver36AgrByWorkplace.getPeriod().start()));
         });
 
     }
@@ -46,7 +48,7 @@ public class AddWorkplaceApproverHistoryDomainService {
      void addHistory(Approver36AgrByWorkplace domain);
 
      //[R-3] 最新の履歴を変更す: 	職場別の承認者（36協定）Repository.Update(職場別の承認者（36協定）)
-     void changeLatestHistory(Approver36AgrByWorkplace domain);
+     void changeLatestHistory(Approver36AgrByWorkplace domain,GeneralDate date);
 
     }
 }

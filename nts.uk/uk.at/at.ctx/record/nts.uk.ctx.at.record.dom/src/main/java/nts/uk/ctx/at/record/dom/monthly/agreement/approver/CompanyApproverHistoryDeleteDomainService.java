@@ -28,7 +28,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 			if (optPrevHist.isPresent()) {
 				val prevHist = optPrevHist.get();
 				prevHist.setPeriod(new DatePeriod(prevHist.getPeriod().start(), GeneralDate.max()));
-				require.changeHistory(prevHist);
+				require.changeHistory(prevHist,prevHist.getPeriod().start());
 			}
 		});
 	}
@@ -42,7 +42,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 		/**
 		 * [R-2] 履歴を変更する Change history
 		 */
-		void changeHistory(Approver36AgrByCompany hist);
+		void changeHistory(Approver36AgrByCompany hist,GeneralDate date);
 
 		/**
 		 * [R-3] 履歴を削除する Delete history
