@@ -31,21 +31,17 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void insert(Approver36AgrByWorkplace domain){
-		val entity = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
+		val entity =  Krcmt36AgrApvWkp.fromDomain(domain);
 
 		this.commandProxy().insert(entity);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public void update(Approver36AgrByWorkplace domain){
+	public void update(Approver36AgrByWorkplace domain,GeneralDate startDateBeforeChange){
 
-		val domainData = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
-
+		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
+		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
 		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvWkp target = findResult.get();
@@ -72,9 +68,7 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void delete(Approver36AgrByWorkplace domain){
-		val domainData = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
+		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
 
 		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {

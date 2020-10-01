@@ -72,7 +72,7 @@ public class AnnualAppUpdate {
 		val annualAlarm = oneYear.calculateAlarmTime(agrOneYearTime);
 
 		// $エラーアラーム
-		val errAlarm = new OneYearErrorAlarmTime(agrOneYearTime, annualAlarm);
+		val errAlarm = OneYearErrorAlarmTime.of(agrOneYearTime, annualAlarm);
 
 		// $36協定申請
 		val app = optApp.get();

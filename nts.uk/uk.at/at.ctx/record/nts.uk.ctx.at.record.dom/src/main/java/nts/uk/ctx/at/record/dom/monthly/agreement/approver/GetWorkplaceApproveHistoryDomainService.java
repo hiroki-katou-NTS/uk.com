@@ -53,8 +53,7 @@ public class GetWorkplaceApproveHistoryDomainService {
                 approveList.addAll(optApprove36AerByWorkplace.get().getApproverList());
                 confirmedList.addAll(optApprove36AerByWorkplace.get().getConfirmerList()); }
         });
-        val result = Optional.of(new ApproverItem(approveList,confirmedList));
-        return result;
+        return Optional.of(new ApproverItem(approveList,confirmedList));
     }
 
     public static interface Require {
@@ -62,7 +61,7 @@ public class GetWorkplaceApproveHistoryDomainService {
         //  社員所属職場履歴を取得   SyWorkplaceAdapter
         Optional<SWkpHistRcImported> getYourWorkplace(String employeeId, GeneralDate baseDate);
 
-        // 	[R-2] 承認者の履歴項目を取得する 	承認者の履歴項目（36協定）Repository.get(職場ID)
+        // 	[R-2] 承認者の履歴項目を取得する 	承認者の履歴項目（36協定）Repository.get(職場ID,,基準日)
         Optional<ApproverItem> getApproveHistoryItem(String workplaceId, GeneralDate baseDate);
 
         //	[R-3] 上位職場を取得する 	アルゴリズム.[No.569]職場の上位職場を取得する(会社ID,職場ID,基準日)会社ID Infused from the APP layer

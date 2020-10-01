@@ -46,7 +46,7 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
         NtsAssert.atomTask(
                 () -> DeleteWorkplaceApproverHistoryDomainService.changeHistory(require, deleteItem),
                 any -> require.deleteHistory(any.get()),
-                any -> require.changeLatestHistory(any.get())
+                any -> require.changeLatestHistory(any.get(),preVHistoryItem.getPeriod().start())
         );
     }
     @Test
