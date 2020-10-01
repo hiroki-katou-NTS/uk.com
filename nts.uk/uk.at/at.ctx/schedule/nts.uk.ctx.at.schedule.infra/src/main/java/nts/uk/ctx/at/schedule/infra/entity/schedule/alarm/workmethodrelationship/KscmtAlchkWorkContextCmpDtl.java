@@ -43,7 +43,7 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
 		List<WorkMethod> currentWorkMethodList = relationship.getCurrentWorkMethodList();
-		if (currentWorkMethodList.get(0).getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE) {
+		if (currentWorkMethodList.get(0).getWorkMethodClassification() != WorkMethodClassfication.ATTENDANCE) {
 			return new ArrayList<>();
 		} 
 		
