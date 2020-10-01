@@ -30,7 +30,7 @@ public class KscmtAlchkWorkContextCmpPk {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		
-		if (prevWorkMethod.getWorkMethodClassification().isAttendance()) {
+		if (prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE) {
 			String prevWorkTimeCode =  ((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v();
 			return new KscmtAlchkWorkContextCmpPk(
 					companyId, 

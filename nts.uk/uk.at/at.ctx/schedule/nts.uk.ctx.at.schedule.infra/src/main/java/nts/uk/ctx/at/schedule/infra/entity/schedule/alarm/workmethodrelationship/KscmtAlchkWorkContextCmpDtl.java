@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -42,7 +43,7 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
 		List<WorkMethod> currentWorkMethodList = relationship.getCurrentWorkMethodList();
-		if (!currentWorkMethodList.get(0).getWorkMethodClassification().isAttendance()) {
+		if (currentWorkMethodList.get(0).getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE) {
 			return new ArrayList<>();
 		} 
 		

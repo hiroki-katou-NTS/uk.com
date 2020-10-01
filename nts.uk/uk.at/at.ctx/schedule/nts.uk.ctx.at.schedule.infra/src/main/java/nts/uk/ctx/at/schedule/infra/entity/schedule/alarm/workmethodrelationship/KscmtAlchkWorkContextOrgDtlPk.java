@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -46,7 +47,7 @@ public class KscmtAlchkWorkContextOrgDtlPk {
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
 		WorkMethod prevWorkMethod = relationship.getPrevWorkMethod();
-		String prevWorkTimeCode = !prevWorkMethod.getWorkMethodClassification().isAttendance() ?
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() != WorkMethodClassfication.ATTENDANCE ?
 				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE : 
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v();
 		
