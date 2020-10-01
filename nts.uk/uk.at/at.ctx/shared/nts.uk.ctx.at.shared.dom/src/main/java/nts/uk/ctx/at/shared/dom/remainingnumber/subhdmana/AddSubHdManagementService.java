@@ -115,7 +115,6 @@ public class AddSubHdManagementService {
 //			}
 			
 		}
-		//	UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).アルゴリズム（残数管理データ登録共通） Thuật toán (common đăng ký data quản lý số còn lại).代休残数管理データ更新フラグ処理 (Xử lý update flag dữ liệu quản lý số nghỉ bù còn lại.代休残数管理データ更新フラグ処理
 		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
 		if (!subHdManagementData.getLstLinkingDate().isEmpty()) {
 			List<LeaveManagementData> lstLeaveManagement = new ArrayList<>();

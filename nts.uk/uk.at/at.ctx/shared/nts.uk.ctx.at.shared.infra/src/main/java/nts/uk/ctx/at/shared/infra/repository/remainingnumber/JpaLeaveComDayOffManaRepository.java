@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,9 +38,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
 			+ " WHERE c.krcmtLeaveDayOffManaPK.sid =:sid and cc.krcmtLeaveDayOffManaPK.occDate = :occDate";
 	
-	private static final String QUERY_BY_LIST_OCC_DIGEST_DATE = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid",
-			" AND (lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate OR lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate)");
+	private static final String QUERY_BY_SID = String.join(" ", QUERY, " WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid");
 	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
@@ -190,12 +189,32 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	 */
 	@Override
 	public List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate) {
-		return this.queryProxy().query(QUERY_BY_LIST_OCC_DIGEST_DATE, KrcmtLeaveDayOffMana.class)
-				.setParameter("sid", sid)
-				.setParameter("lstOccDate", lstOccDate)
-				.setParameter("lstDigestDate", lstDigestDate)
-				.getList()
-				.stream()
+		String query = "";
+		List<KrcmtLeaveDayOffMana> lstEntity = new ArrayList<KrcmtLeaveDayOffMana>();
+		if (!lstOccDate.isEmpty() && !lstDigestDate.isEmpty()) {
+			query = String.join(" ", QUERY_BY_SID,
+					"AND (lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate",
+					"OR lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate)");
+			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
+					.setParameter("sid", sid)
+					.setParameter("lstOccDate", lstOccDate)
+					.setParameter("lstDigestDate", lstDigestDate)
+					.getList();
+		} else if (lstOccDate.isEmpty()) {
+			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate");
+			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
+					.setParameter("sid", sid)
+					.setParameter("lstDigestDate", lstDigestDate)
+					.getList();
+		}
+		else if (lstDigestDate.isEmpty()) {
+			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate");
+			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
+					.setParameter("sid", sid)
+					.setParameter("lstOccDate", lstOccDate)
+					.getList();
+		}
+		return lstEntity.stream()
 				.map(item-> toDomain(item))
 				.collect(Collectors.toList());
 	}

@@ -5,11 +5,15 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
+/**
+ * 	表示残数データ情報パラメータ
+ * @author Hieutt
+ *
+ */
 @Data
 @Builder
-
-//	表示残数データ情報パラメータ
 public class DisplayRemainingNumberDataInformation {
 
 	//	使用期限
@@ -29,4 +33,10 @@ public class DisplayRemainingNumberDataInformation {
 	
 	//	締め開始日
 	private GeneralDate startDate;
+	
+	private ClosureEmployment closureEmploy;
+	
+	private SWkpHistImport wkHistory;
+	
+	private SEmpHistoryImport sempHistoryImport;
 }

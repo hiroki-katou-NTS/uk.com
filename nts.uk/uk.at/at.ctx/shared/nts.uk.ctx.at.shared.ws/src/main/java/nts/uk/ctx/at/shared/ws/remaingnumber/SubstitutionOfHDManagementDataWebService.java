@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdateSubstituti
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataFinder;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.SubstitutionManagementDataFinder;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.DisplayRemainingNumberDataInformation;

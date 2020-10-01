@@ -10,6 +10,7 @@
         selectedPeriodItem: KnockoutObservable<number>;
         dateValue: KnockoutObservable<any>;
         dispTotalRemainHours: KnockoutObservable<string> = ko.observable(null);
+        totalRemainingNumber: string = '';
         dispExpiredDate: KnockoutObservable<string> = ko.observable(null);
         closureEmploy: any;
         selectedEmployee: EmployeeInfo;
@@ -151,7 +152,6 @@
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
                 if (resParam) {
-                    
                     let isDataChanged = resParam.isChanged;
                     if (isDataChanged) {
                         self.selectedPeriodItem(1);
@@ -206,6 +206,7 @@
                         self.isHaveError(true);
                         dialog.alertError({messageId: 'Msg_1306'});
                     }
+                    self.totalRemainingNumber = result.totalRemainingNumber;
                 }).fail(function(result) {
                     dialog.alertError(result.errorMessage);
                 });
@@ -225,7 +226,7 @@
 
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
-            let totalRemain = 0, dayOffDate, occurredDays, remain, expired, requireDays, listData = [];
+            let totalRemain = 0, dayOffDate, remain, expired, listData = [];
             _.forEach(self.listExtractData, data => {
                 dayOffDate = data.dayOffDate;
                 remain = data.remain;
@@ -235,14 +236,6 @@
                     expired = expired * -1;
                 }
                 totalRemain += remain + expired;
-                if (remain != 0) {
-                    remain = remain.toFixed(1) + getText('KDM001_27');
-                }
-                if (expired != 0) { 
-                    expired = expired.toFixed(1) + getText('KDM001_27');
-                }
-
-                totalRemain = data.totalRemainingNumber;
 
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
@@ -262,17 +255,17 @@
                 }
 
                 listData.push(new SubstitutedData(
-                    data.occurrenceId,
+                    data.occurrenceId !== '' ? data.occurrenceId : data.digestionId,
                     data.occurrenceId,
                     data.digestionId,
-                    data.occurrenceId !== '' || data.occurrenceId !== 0 && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    (data.occurrenceId !== '' || data.occurrenceId !== 0) && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     new Date(data.deadLine).getMonth() === new Date(data.accrualDate).getMonth()
                     && new Date(data.deadLine).getFullYear() === new Date(data.accrualDate).getFullYear()
                     ? getText('KDM001_161', [data.deadLine])
                     : getText('KDM001_162', [data.deadLine]), //B4_4_2
-                    data.digestionId !== '' || data.digestionId !== 0 && data.digestionDay === null ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    (data.digestionId !== '' || data.digestionId !== 0) && data.digestionDay === null ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
@@ -288,7 +281,7 @@
             self.subData = listData;
             console.log("Data 1: ",self.subData);
             
-            self.dispTotalRemainHours(totalRemain + getText('KDM001_27'));
+            self.dispTotalRemainHours(self.totalRemainingNumber + getText('KDM001_27'));
         }
 
         initSubstituteDataList() {
@@ -363,21 +356,23 @@
                 searchCondition = { searchMode: self.selectedPeriodItem() };
                 service.getExtraHolidayData(searchCondition).done(result => {
                     console.log("Data: ",result);
-                    if (result) {
+                    if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
-                        self.closureEmploy = result.extraHolidayManagementDataDto.closureEmploy;
+                        self.closureEmploy = result.closureEmploy;
                         self.listEmployee = [];
                         self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
                         self.listEmployee.push(self.selectedEmployee);
-                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                            loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
+                        if (_.find(self.employeeInputList(), item => item.id === loginerInfo.sid))
+                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                                loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
+                        self.totalRemainingNumber = result.totalRemainingNumber;
                         self.convertToDisplayList();
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        if (result.extraHolidayManagementDataDto.empSettingExpiredDate.length>0){
-                            self.dispExpiredDate(result.extraHolidayManagementDataDto.empSettingExpiredDate);
-                        } else self.dispExpiredDate(result.extraHolidayManagementDataDto.companySettingExpiredDate);
+                        if (result.expirationDate){
+                            self.dispExpiredDate(result.expirationDate);
+                        }
                         self.initKCP009();
                         self.disableLinkedData();
                     }else{

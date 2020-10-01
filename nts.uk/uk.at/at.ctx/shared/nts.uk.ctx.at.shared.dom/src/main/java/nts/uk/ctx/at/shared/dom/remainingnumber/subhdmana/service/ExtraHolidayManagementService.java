@@ -155,6 +155,7 @@ public class ExtraHolidayManagementService {
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
+		SEmpHistoryImport empHistoryImport = null;
 		
 		// 代休管理データを管理するかチェック Check xem có quản lý dữ liệu quản lý nghỉ bù không
 		EmploymentManageDistinctDto manageDistinct = this.checkManageSubstituteHolidayManagementData(employeeId);
@@ -202,6 +203,11 @@ public class ExtraHolidayManagementService {
 					.collect(Collectors.toList());
 		}
 		
+		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId,
+				GeneralDate.today());
+		if (sEmpHistoryImport.isPresent())
+			empHistoryImport = sEmpHistoryImport.get();
+		
 		listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListOccDigestDate(employeeId, lstOccDate, lstDigestDate));
 		
 		// 代休残数データ情報を作成する Tạo thông tin dữ liệu số ngày nghỉ bù còn lại
@@ -223,6 +229,9 @@ public class ExtraHolidayManagementService {
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
 		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
 		
+		GeneralDate baseDate = GeneralDate.today();
+		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
+		
 		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
 		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
 		
@@ -232,14 +241,13 @@ public class ExtraHolidayManagementService {
 					.occurrenceHour(item.getOccurrenceHour().orElse(0))
 					.occurrenceDay(item.getOccurrenceDay().orElse(0d))
 					.accrualDate(item.getAccrualDate().map(t -> t.toString()).orElse(""))
-					.digestionId(item.getDigestionId().isPresent() ? item.getDigestionId().get() : "")
-					.digestionTimes(item.getDigestionTimes().isPresent() ? item.getDigestionTimes().get() : 0)
-					.digestionDays(item.getDigestionDays().isPresent() ? item.getDigestionDays().get() : 0)
-					.digestionDay(item.getDigestionDay().isPresent() ? item.getDigestionDay().get().toString() : "")
-					.legalDistinction(item.getLegalDistinction().isPresent() ? item.getLegalDistinction().get() : 0)
-					.remainingHours(item.getRemainingHours().isPresent() ? item.getRemainingHours().get() : 0)
+					.digestionId(item.getDigestionId().orElse(""))
+					.digestionTimes(item.getDigestionTimes().orElse(0))
+					.digestionDays(item.getDigestionDays().orElse(0d))
+					.digestionDay(item.getDigestionDay().map(t -> t.toString()).orElse(""))
+					.remainingHours(item.getRemainingHours().orElse(0))
 					.dayLetf(item.getDayLetf())
-					.deadLine(item.getDeadLine().isPresent() ? item.getDeadLine().get().toString() : "")
+					.deadLine(item.getDeadLine().map(t -> t.toString()).orElse(""))
 					.usedTime(item.getUsedTime())
 					.usedDay(item.getUsedDay())
 					.build())
@@ -252,6 +260,9 @@ public class ExtraHolidayManagementService {
 				.remainingData(lstDataRemainDto)
 				.startDate(closing.get().getClosureStartDate())
 				.endDate(closing.get().getClosureEndDate())
+				.closureEmploy(closureEmployment.orElse(null))
+				.wkHistory(sWkpHistImport.orElse(null))
+				.sempHistoryImport(empHistoryImport)
 				.build();
 		
 		// 作成した「表示残数データ情報」を返す Trả về "Thông tin dữ liệu còn lại hiển thị" đã tạo
@@ -307,6 +318,7 @@ public class ExtraHolidayManagementService {
 		return emplData;
 	}
 	
+	
 	/**
 	 * UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).Ｂ：代休管理(Quản lý ngày nghỉ bù)
 	 * .アルゴリズム.Ｂ：代休管理データ抽出処理(Quản lý trích xuất dữ liệu quản lý nghỉ bù).代休残数データ情報を作成する.代休残数データ情報を作成する
@@ -338,6 +350,8 @@ public class ExtraHolidayManagementService {
 						.digestionDay(Optional.empty())
 						.digestionDays(Optional.empty())
 						.digestionTimes(Optional.empty())
+						.occurrenceId(Optional.of(leaveData.getID()))
+						.digestionId(Optional.empty())
 						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
 						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
@@ -374,6 +388,8 @@ public class ExtraHolidayManagementService {
 						.digestionDay(item.getDayOffDate().getDayoffDate())
 						.digestionDays(Optional.of(item.getRequireDays().v()))
 						.digestionTimes(Optional.of(item.getRemainTimes().v()))
+						.occurrenceId(Optional.of(leaveData.getID()))
+						.digestionId(Optional.of(item.getComDayOffID()))
 						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
 						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
@@ -409,6 +425,8 @@ public class ExtraHolidayManagementService {
 						.digestionDay(cdomdData.getDayOffDate().getDayoffDate())
 						.digestionDays(Optional.of(cdomdData.getRequireDays().v()))
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
+						.occurrenceId(Optional.empty())
+						.digestionId(Optional.of(cdomdData.getComDayOffID()))
 						.dayLetf(0.0)
 						.remainingHours(Optional.of(0))
 						.usedDay(0.0)
@@ -434,6 +452,8 @@ public class ExtraHolidayManagementService {
 						.digestionDay(cdomdData.getDayOffDate().getDayoffDate())
 						.digestionDays(Optional.of(cdomdData.getRequireDays().v()))
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
+						.occurrenceId(Optional.of(item.getID()))
+						.digestionId(Optional.of(cdomdData.getComDayOffID()))
 						.dayLetf(0.0)
 						.remainingHours(Optional.of(0))
 						.usedDay(0.0)
