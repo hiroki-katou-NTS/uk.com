@@ -73,13 +73,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     var test = _.map(data, "groupName")
 
 
+                    
                 });
             } else if (self.selectedTab() === 'workplace') {
                 self.isVisibleWkpName(true);
-                $.when(self.getDataWkpPattern()).done(() => {
-                    self.Jb2_1Name(nts.uk.resource.getText("Com_Workplace"));
+                $.when(self.getDataWkpPattern()).done((data) => {
                     self.clickLinkButton(null, self.selectedLinkButton);
-                    self.workplaceName();
+                   
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             } else if (self.selectedTab() === 'workplaceGroup') {
@@ -347,7 +347,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                         self.isAllowCheckChanged = false;
                         self.handleAfterChangeData();
                         self.isDeleteEnable(true);
-                        $('input#textName').focus();
+                        setTimeout(() => {
+                            $("#buttonsave").focus();
+                        }, 100);
+                        
                         dfd.resolve();
                     });
                 }).fail(function(error) {
@@ -455,7 +458,8 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         getDataWkpPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataWkpPattern(self.workplaceId).done((data) => {
-                self.listPattern(data);
+                self.listPattern(data.listShiftPalletsOrgDto);
+                self.Jb2_1Name(data.displayName);
                 self.handleAfterGetData(self.listPattern());
                 dfd.resolve();
             }).fail(function() {
