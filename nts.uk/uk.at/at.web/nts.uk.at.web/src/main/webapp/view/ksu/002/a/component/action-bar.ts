@@ -15,13 +15,13 @@ module nts.uk.ui.at.ksu002.a {
 		</div>
 		<div class="cf">
 			<button class="small btn-undo" data-bind="
-					icon: 999,
+					icon: 44,
 					enable: $component.data.clickable.undo,
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['undo']); }
 				"></button>
 			<button class="small btn-redo" data-bind="
-					icon: 999,
+					icon: 154,
 					enable: $component.data.clickable.redo,
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['redo']); }

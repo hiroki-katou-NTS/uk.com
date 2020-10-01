@@ -21,7 +21,7 @@ module nts.uk.ui.at.ksu002.a {
         <div data-bind="ntsComboBox: {
             width: '200px',
             name: $component.$i18n('KSU002_22'),
-            value: ko.observable(1),
+            value: $component.selectedRangeIndex,
             options: $component.dateRanges,
             optionsValue: 'id',
             optionsText: 'title',
@@ -110,7 +110,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	const API = {
-		BASE_DATE: '/screen/ksu/ksu002/getInitialDate'
+		BASE_DATE: '/screen/ksu/ksu002/getListOfPeriodsClose'
 	};
 
 	@component({
@@ -119,6 +119,8 @@ module nts.uk.ui.at.ksu002.a {
 	})
 	export class TitleDateComponent extends ko.ViewModel {
 		public yearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
+
+		public selectedRangeIndex: KnockoutObservable<number> = ko.observable(1);
 
 		public dateRanges: KnockoutObservableArray<DateOption> = ko.observableArray([]);
 
@@ -158,35 +160,56 @@ module nts.uk.ui.at.ksu002.a {
 
 		created() {
 			const vm = this;
-			const { params } = vm;
+			const proccesPeriod = (response: Period) => {
+				const MD_FORMAT = 'MM/DD';
+				const YMD_FORMAT = 'YYYY/MM/DD';
+
+				if (response) {
+					const { yearMonth, periodsClose } = response;
+
+					vm.yearMonth(`${yearMonth}`);
+
+					if (periodsClose && periodsClose.length) {
+						vm.dateRanges(periodsClose
+							.map((m, id) => {
+								const mb = moment(m.startDate, YMD_FORMAT);
+								const me = moment(m.endDate, YMD_FORMAT);
+
+								return {
+									id: id + 1,
+									title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
+									begin: mb.toDate(),
+									finish: me.toDate()
+								};
+							}));
+					}
+				}
+			};
+
+			vm.$ajax('at', API.BASE_DATE).then(proccesPeriod);
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
-					const baseD = moment(ym, 'YYYYMM');
-					const begin = baseD.clone().startOf('month').toDate();
-					const finish = baseD.clone().endOf('month').toDate();
+					const cmd = { yearMonth: Number(ym) };
 
-					params.dateRange({ begin, finish });
+					vm.dateRanges([]);
 
-					// call to server get date range
-
-					vm.dateRanges([{
-						id: 1,
-						title: `${vm.$i18n('KSU002_7')}${moment(begin).format('MM/DD')}~${moment(finish).format('MM/DD')}`,
-						begin,
-						finish
-					}]);
+					vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 				});
-		}
 
-		mounted() {
-			const vm = this;
+			vm.selectedRangeIndex
+				.subscribe(c => {
+					if (!!c && c > -1) {
+						const dateRanges = ko.unwrap(vm.dateRanges);
 
-			vm.yearMonth.valueHasMutated();
+						const exist = _.find(dateRanges, (f) => f.id === c);
 
-			vm.$ajax('at', API.BASE_DATE)
-				.then(() => {
+						if (exist) {
+							const { finish, begin } = exist;
 
+							vm.params.dateRange({ finish, begin });
+						}
+					}
 				});
 		}
 	}
@@ -199,6 +222,17 @@ module nts.uk.ui.at.ksu002.a {
 	interface DateOption extends c.DateRange {
 		id: number;
 		title: string;
+	}
+
+	interface Closure {
+		closureName: string;
+		endDate: string;
+		startDate: string;
+	}
+
+	interface Period {
+		periodsClose: Closure[];
+		yearMonth: number;
 	}
 
 	enum ACHIEVEMENT {

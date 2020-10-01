@@ -277,7 +277,7 @@ module nts.uk.ui.at.ksu002.a {
 
                 vm.readonly = ko.computed({
                     read() {
-                        return ko.unwrap(vm.click) < 2;
+                        return false && ko.unwrap(vm.click) < 2;
                     },
                     owner: vm
                 });

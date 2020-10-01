@@ -5,7 +5,8 @@ module nts.uk.ui.at.ksu002.a {
 	import c = nts.uk.ui.calendar;
 
 	const API = {
-		UNAME: '/sys/portal/webmenu/username'
+		UNAME: '/sys/portal/webmenu/username',
+		GSCHE: '/screen/ksu/ksu002/getScheduleActualOfWorkInfo'
 	};
 
 	const memento: m.Options = {
@@ -49,33 +50,41 @@ module nts.uk.ui.at.ksu002.a {
 
 			// call to api and get data
 			vm.baseDate
-				.subscribe(() => {
-					vm.$blockui('show');
-					setTimeout(() => {
-						const clones: c.DayData[] = ko.toJS(vm.schedules);
+				.subscribe((d: c.DateRange) => {
+					vm.$blockui('show')
+						.then(() => vm.$ajax('at', API.GSCHE, {
+							listSid: [vm.$user.employeeId],
+							startDate: moment(d.begin).toISOString(),
+							endDate: moment(d.finish).toISOString()
+						}))
+						.then((response: WorkSchedule<string>[]) => (response || [])
+							.map((m) => ({
+								...m,
+								date: moment(m.date, 'YYYY/MM/DD')
+							})))
+						.then((response: WorkSchedule[]) => {
+							if (response && response.length) {
+								const clones: c.DayData[] = ko.toJS(vm.schedules);
 
-						_.each(clones, (d) => {
-							d.data = {
-								wtype: 'wtype',
-								wtime: 'wtime',
-								value: {
-									begin: 128,
-									finish: 640
-								}
-							};
+								_.each(response, (d) => {
+									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
 
-							d.className = [
-								d.date.getDate() === 16 ? c.COLOR_CLASS.SPECIAL : undefined,
-								d.date.getDate() === 18 ? c.COLOR_CLASS.HOLIDAY : undefined,
-								d.date.getDate() === 19 ? c.COLOR_CLASS.HOLIDAY : undefined,
-								d.date.getDate() === 19 ? c.COLOR_CLASS.SPECIAL : undefined,
-							].filter(f => !!f);
-						});
+									if (exits) {
+										exits.data = {
+											wtype: d.workTypeName,
+											wtime: d.workTimeName,
+											value: {
+												begin: d.startTime,
+												finish: d.endTime
+											}
+										};
+									}
+								});
 
-						vm.schedules.reset(clones);
-
-						vm.$blockui('hide');
-					}, 500);
+								vm.schedules.reset(clones);
+							}
+						})
+						.always(() => vm.$blockui('hide'));
 				});
 		}
 
@@ -130,5 +139,30 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.schedules.memento(wrap);
 		}
+	}
+
+	interface WorkSchedule<D = moment.Moment> {
+		achievements: boolean;
+		active: boolean;
+		confirmed: boolean;
+		date: D;
+		edit: boolean;
+		employeeId: string;
+		endTime: null | number;
+		endTimeEditState: null | number;
+		haveData: boolean;
+		isActive: boolean;
+		isEdit: boolean;
+		needToWork: boolean;
+		startTime: null | number;
+		startTimeEditState: null | number;
+		supportCategory: number;
+		workHolidayCls: null | string;
+		workTimeCode: string;
+		workTimeEditStatus: null | string;
+		workTimeName: string;
+		workTypeCode: string;
+		workTypeEditStatus: null | string;
+		workTypeName: string;
 	}
 }
