@@ -34,7 +34,9 @@ public class AlarmCheckConditionSchedule implements DomainAggregate{
 	 */
 	public void updateMessage(SubCode subCode, AlarmCheckMessage message) {
 		/** 実は　filter(subCode) データはいつもある*/
-		val subCond = subConditions.stream().filter(c -> c.getSubCode().v().equals(subCode.v())).findFirst().get();
+		val subCond = this.subConditions.stream()
+						.filter(c -> c.getSubCode().equals(subCode))
+						.findFirst().get();
 		val newMsgContent = new AlarmCheckMsgContent(subCond.getMessage().getDefaultMsg(), message);
 		val newSubCond = new SubCondition(subCond.getSubCode(), newMsgContent, subCond.getExplanation());
 		subConditions.remove(subCond);
