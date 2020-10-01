@@ -2,15 +2,19 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.conversionsql.OnSentence;
+import nts.uk.cnv.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
+import nts.uk.cnv.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
@@ -23,10 +27,9 @@ import nts.uk.cnv.dom.service.ConversionInfo;
 @Getter
 public class CodeToIdPattern extends ConversionPattern {
 
-	//TODO: 変換タイプを完成させる
 	//TODO: 履歴あるテーブルどうしよう...
 	public enum CodeToIdType{
-		TO_CID("SCVMT_CONVERT_TO_CID", "CODE", "ID"),
+		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "CODE", "ID"),
 		TO_SID("BSYMT_EMP_DTA_MNG_INFO", "SCD", "SID"),
 		TO_JOB_ID("BSYMT_JOB_INFO", "JOB_CD", "JOB_ID");
 
@@ -58,11 +61,17 @@ public class CodeToIdPattern extends ConversionPattern {
 
 	private CodeToIdType codeToIdType;
 
-	public CodeToIdPattern(ConversionInfo info, Join join, String sourceColumnName, String codeToIdType) {
+	private Optional<String> sourceCcdColumnName;
+
+	public CodeToIdPattern(ConversionInfo info, Join join, String sourceColumnName, String codeToIdType, String sourceCcdColumnName) {
 		super(info);
 		this.sourceJoin = join;
 		this.sourceColumnName = sourceColumnName;
 		this.codeToIdType = CodeToIdType.valueOf(codeToIdType);
+
+		 this.sourceCcdColumnName = (sourceCcdColumnName == null || sourceCcdColumnName.isEmpty())
+			? Optional.empty()
+			: Optional.of(sourceCcdColumnName);
 	}
 
 	@Override
@@ -73,12 +82,18 @@ public class CodeToIdPattern extends ConversionPattern {
 		conversionSql.getFrom().addJoin(idConvertJoin);
 
 		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(sourceJoin.tableName.getAlias(), this.codeToIdType.getIdColumnName()));
+				SelectSentence.createNotFormat(idConvertJoin.getTableName().getAlias(), this.codeToIdType.getIdColumnName()));
 
-		//TODO: CODEだけじゃ特定できない（CIDとか履歴とか）からWhere条件が必要だが未実装
-		//conversionSql.getWhere().add(new WhereSentence(
-		//
-		//	));
+		if (this.sourceCcdColumnName.isPresent()) {
+			conversionSql.getWhere().add( new WhereSentence(
+					new ColumnName(idConvertJoin.getTableName().getAlias(), this.sourceCcdColumnName.get()),
+					RelationalOperator.Equal,
+					Optional.of(new ColumnExpression(
+							Optional.of(this.sourceJoin.getTableName().getAlias()),
+							this.sourceCcdColumnName.get()
+						))
+				));
+		}
 
 		return conversionSql;
 	}
@@ -92,8 +107,8 @@ public class CodeToIdPattern extends ConversionPattern {
 
 		return new Join(
 				new TableName(
-					info.getSourceDatabaseName(),
-					info.getSourceSchema(),
+					info.getTargetDatabaseName(),
+					info.getTargetSchema(),
 					this.codeToIdType.getTableName(),
 					this.mappingAlias()
 				),

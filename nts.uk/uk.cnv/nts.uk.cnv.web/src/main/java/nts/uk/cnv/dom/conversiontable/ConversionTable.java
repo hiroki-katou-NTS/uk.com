@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.FromSentence;
 import nts.uk.cnv.dom.conversionsql.InsertSentence;
@@ -15,6 +16,7 @@ import nts.uk.cnv.dom.conversionsql.WhereSentence;
  * コンバート表
  * @author ai_muto
  */
+@Getter
 @AllArgsConstructor
 public class ConversionTable {
 	private TableName targetTableName;

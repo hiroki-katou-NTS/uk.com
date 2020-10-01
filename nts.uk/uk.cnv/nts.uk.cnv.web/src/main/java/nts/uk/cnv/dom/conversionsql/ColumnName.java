@@ -22,6 +22,8 @@ public class ColumnName {
 	private String name;
 
 	public String sql() {
-		return String.join(".", Arrays.asList(alias, name));
+		return (alias.isEmpty())
+				? name
+				: String.join(".", Arrays.asList(alias, name));
 	}
 }

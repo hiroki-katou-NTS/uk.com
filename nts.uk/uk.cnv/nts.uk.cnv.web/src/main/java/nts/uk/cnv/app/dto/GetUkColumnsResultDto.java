@@ -5,8 +5,9 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class GetColumnsDto {
+public class GetUkColumnsResultDto {
 	int id;
 	String columnName;
 	String dataType;
+	boolean existsConvertTable;
 }

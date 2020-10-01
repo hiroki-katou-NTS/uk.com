@@ -1,18 +1,17 @@
-package nts.uk.cnv.app.command;
+package nts.uk.cnv.app.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
-import nts.uk.cnv.dom.pattern.ConversionPatternValue;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Value
+@NoArgsConstructor
 @AllArgsConstructor
-public class RegistConversionTableCommand implements ConversionPatternValue {
-	String category;
-	String table;
-	int recordNo;
-	String targetColumn;
+@Getter
+@Setter
+public class FindConversionTableResult {
+
 	String conversionType;
-	String sourceTable;
 
 	/** NONE **/
 	String sourceColumn_none;
@@ -24,7 +23,6 @@ public class RegistConversionTableCommand implements ConversionPatternValue {
 	/** CODE_TO_ID **/
 	String codeToIdType;
 	String sourceColumn_codeToId;
-	String sourceColumn_codeToId_ccd;
 
 	/** FIXID_VALUE **/
 	String fixedValue;

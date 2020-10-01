@@ -39,7 +39,8 @@ public class CodeToIdPatternTest {
 				info,
 				join,
 				"JOB_ID",
-				"TO_JOB_ID");
+				"TO_JOB_ID",
+				null);
 
 		ConversionSQL result = target.apply(cs);
 		String sql = result.build();

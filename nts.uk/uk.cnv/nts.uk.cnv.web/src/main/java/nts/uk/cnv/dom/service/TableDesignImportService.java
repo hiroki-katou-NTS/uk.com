@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.schema.Table;
@@ -27,9 +29,9 @@ import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 
+@Stateless
 public class TableDesignImportService {
 	/**
-	 *
 	 * @param require
 	 * @param createTable create table文を指定する. 列のデータ型はDB設計規約の「Name for layout」を参照すること
 	 * @param createIndex テーブルに所属するcreate index文を指定する.
@@ -58,7 +60,7 @@ public class TableDesignImportService {
 		if(createTable.toUpperCase().contains("PRIMARY KEY NONCLUSTERED")) {
 			isClusteredPK = false;
 		}
-		String formatedCreateTable = createTable.toUpperCase().replace("NONCLUSTERED", "").replace("CLUSTERED", "");
+		String formatedCreateTable = createTable.replace("NONCLUSTERED", "").replace("CLUSTERED", "");
 		Statement createTableSt = pm.parse(new StringReader(formatedCreateTable));
 
 		List<CreateIndex> indexes = new ArrayList<>();
@@ -70,7 +72,7 @@ public class TableDesignImportService {
 				if(ci.toUpperCase().contains("CREATE CLUSTERED INDEX")) {
 					isClusteredIndex = true;
 				}
-				String formatedIndex = ci.toUpperCase().replace("NONCLUSTERED", "").replace("CLUSTERED", "");
+				String formatedIndex = ci.replace("NONCLUSTERED", "").replace("CLUSTERED", "");
 
 				CreateIndex idx =(CreateIndex) pm.parse(new StringReader(formatedIndex));
 				indexClusteredMap.put(idx.getIndex().getName(), isClusteredIndex);
@@ -113,6 +115,11 @@ public class TableDesignImportService {
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
 			ColumnDefinition col = colmnDef.next();
+
+			if(isFixedColumn(col.getColumnName())) {
+				continue;
+			}
+
 			List<String> specs = col.getColumnSpecs();
 			List<Integer> args;
 			if (col.getColDataType().getArgumentsStringList() != null && col.getColDataType().getArgumentsStringList().size() > 0) {
@@ -125,11 +132,15 @@ public class TableDesignImportService {
 			}
 
 			Integer[] argsArray = new Integer[args.size()];
-			DataType type = typeDefine.parse(col.getColDataType().getDataType(), args.toArray(argsArray));
+			DataType type = typeDefine.parse(col.getColDataType().getDataType().toUpperCase(), args.toArray(argsArray));
 
-			boolean nullable = !specs.stream().anyMatch(arg -> arg.equals("NOT"));
-			String defaultValue =
-					specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
+			boolean nullable = (specs == null)
+					? false
+					: !specs.stream().anyMatch(arg -> arg.equals("NOT"));
+
+			String defaultValue = (specs == null)
+				? ""
+				: specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
 					? specs.get(specs.indexOf("DEFAULT") + 1).toString()
 					: "";
 			int maxLength = 0;
@@ -143,7 +154,9 @@ public class TableDesignImportService {
 			case VARCHAR:
 			case NCHAR:
 			case NVARCHAR:
-				maxLength = Integer.parseInt(args.get(0).toString());
+				maxLength = (args.size() > 0)
+					? Integer.parseInt(args.get(0).toString())
+					: 0;
 				break;
 			case BOOL:
 			case DATE:
@@ -169,8 +182,24 @@ public class TableDesignImportService {
 		}
 
 		Table table = statement.getTable();
-		TableDesign result = new TableDesign(table.getName(), table.getName(), "",now, now, columns, indexes);
+		TableDesign result = new TableDesign(table.getName(), table.getName(), "", now, now, columns, indexes);
 		return result;
+	}
+
+	private static boolean isFixedColumn(String columnName) {
+		if (columnName == null) return false;
+
+		String column = columnName.toUpperCase();
+		return ( column.equals("INS_DATE")
+				|| column.equals("INS_CCD")
+				|| column.equals("INS_SCD")
+				|| column.equals("INS_PG")
+				|| column.equals("UPD_DATE")
+				|| column.equals("UPD_CCD")
+				|| column.equals("UPD_SCD")
+				|| column.equals("UPD_PG")
+				|| column.equals("EXCLUS_VER")
+				);
 	}
 
 	@SuppressWarnings("unchecked")

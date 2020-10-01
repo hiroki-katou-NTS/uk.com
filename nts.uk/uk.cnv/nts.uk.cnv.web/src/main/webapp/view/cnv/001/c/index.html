@@ -13,7 +13,7 @@
 </head>
 
 <body>
-<div id="message" title="">
+<div id="messageDialog" title="">
 	<label id="lblMessage"></label>
 </div>
 <div id="msgTestDialog" title="">
@@ -200,6 +200,21 @@
 												<td>
 													<span class="nts-editor-wrapped ntsControl">
 														<select id="selSourceColumn_codeToId" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>会社コード列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_codeToId_ccd" class="selSourceColumn selNullable" style="width:350px;">
 															<option>-- 未選択 --</option>
 														</select>
 													</span>

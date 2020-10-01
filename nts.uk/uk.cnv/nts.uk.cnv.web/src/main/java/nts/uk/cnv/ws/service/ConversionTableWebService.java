@@ -20,6 +20,8 @@ import nts.uk.cnv.app.command.RegistConversionTableCommandHandler;
 import nts.uk.cnv.app.command.SwapConversionRecordCommand;
 import nts.uk.cnv.app.command.SwapConversionRecordCommandHandler;
 import nts.uk.cnv.app.dto.AddSourceResult;
+import nts.uk.cnv.app.dto.FindConversionTableDto;
+import nts.uk.cnv.app.dto.FindConversionTableResult;
 import nts.uk.cnv.app.dto.GetCategoryTablesDto;
 import nts.uk.cnv.app.service.ConversionTableService;
 
@@ -52,9 +54,21 @@ public class ConversionTableWebService extends WebService {
 	ConversionTableService service;
 
 	@POST
+	@Path("find")
+	public FindConversionTableResult find(FindConversionTableDto dto) {
+		return service.find(dto);
+	}
+
+	@POST
 	@Path("regist")
 	public void regist(RegistConversionTableCommand command) {
 		handler.handle(command);
+	}
+
+	@POST
+	@Path("test")
+	public String test(FindConversionTableDto dto) {
+		return service.test(dto);
 	}
 
 	@POST

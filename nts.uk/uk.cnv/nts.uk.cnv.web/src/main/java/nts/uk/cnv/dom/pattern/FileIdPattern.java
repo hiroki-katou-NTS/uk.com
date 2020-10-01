@@ -29,9 +29,6 @@ public class FileIdPattern extends ConversionPattern  {
 
 	private String sourceColumnName;
 
-	/** 変換種別 変換テーブルの抽出キー **/
-	private String mappingType;
-
 	public FileIdPattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
 		super(info);
 		this.sourceJoin = sourceJoin;
@@ -71,6 +68,6 @@ public class FileIdPattern extends ConversionPattern  {
 	}
 
 	private String mappingAlias() {
-		return MAPPING_TABLE_NAME + "_" + this.mappingType;
+		return MAPPING_TABLE_NAME + "_" + this.sourceColumnName;
 	}
 }

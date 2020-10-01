@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <title>Table Mapping Designer</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
 <link rel="stylesheet" type="text/css" href="cnv001.b.css">
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
-<script src="http://code.jquery.com/jquery-3.3.1.min.js" defer></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="cnv001.b.js"></script>
 </head>
 
 <body>
-
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
 <div id="master-wrapper" data-bind="with: content">
 	<div id="header">
 		<div id="menu-header">
@@ -34,7 +35,7 @@
 		<div id="contents-area" class="fixed-flex-layout" style="height: calc(100vh - 161px);">
 			<div class="fixed-flex-layout-left bg-green caret-right caret-background cf">
 				<fieldset>
-				<legend>カテゴリ一覧</legend>
+				<legend id="categoryListTitle">カテゴリ一覧</legend>
 					<table>
 						<tr>
 							<td>
@@ -69,7 +70,7 @@
 						<tr>
 							<td>
 								<fieldset>
-									<legend>選択中一覧</legend>
+									<legend id="tableListTitle">選択中一覧</legend>
 									<table>
 										<tr>
 											<td>
@@ -77,8 +78,8 @@
 												</select>
 											</td>
 											<td style="vertical-align:top; whidth:45px;">
-												<button id="toUp" class="small" style="margin-bottom: 10px;">▲</button>
-												<button id="toDown" class="small">▼</button>
+												<button id="table_toUp" class="small" style="margin-bottom: 10px;">▲</button>
+												<button id="table_toDown" class="small">▼</button>
 											</td>
 										</tr>
 									</table>

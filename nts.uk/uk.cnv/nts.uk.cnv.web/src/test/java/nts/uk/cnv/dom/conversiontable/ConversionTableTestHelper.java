@@ -36,7 +36,8 @@ public class ConversionTableTestHelper {
 									JoinAtr.InnerJoin,
 									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD")))),
 							"CID",
-							"TO_CID"
+							"TO_CID",
+							null
 						)
 					),
 					new OneColumnConversion(

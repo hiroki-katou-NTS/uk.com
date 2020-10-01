@@ -52,5 +52,5 @@ public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableD
 				tableDesignRepository.insert(tableDesign);
 			}
 		}
-	};
+	}
 }

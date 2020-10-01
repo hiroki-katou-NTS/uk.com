@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.cnv.dom.databasetype.DatabaseType;
 /**
  * コンバート情報
@@ -9,6 +10,7 @@ import nts.uk.cnv.dom.databasetype.DatabaseType;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class ConversionInfo {
 	/** DB種類 **/
@@ -21,7 +23,19 @@ public class ConversionInfo {
 	private String targetDatabaseName;
 	/** 変換先スキーマ名 **/
 	private String targetSchema;
-	
+
 	/** 契約コード (オンプレの場合、オール0) **/
 	private String ContractCode;
+
+
+	public static ConversionInfo createDummry() {
+		return new ConversionInfo(
+				DatabaseType.sqlserver,
+				"SOURCE_DB",
+				"dbo",
+				"TARGET_DB",
+				"dbo",
+				"000000000000"
+			);
+	}
 }

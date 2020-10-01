@@ -39,6 +39,9 @@ public class ScvmtConversionTypeCodeToId extends JpaEntity implements Serializab
 	@Column(name = "CODE_TO_ID_TYPE")
 	private String codeToIdType;
 
+	@Column(name = "CCD_COLUMN_NAME")
+	private String companyCodeColumnName;
+
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
         @PrimaryKeyJoinColumn(name="TARGET_TBL_NAME", referencedColumnName="TARGET_TBL_NAME"),
@@ -57,7 +60,8 @@ public class ScvmtConversionTypeCodeToId extends JpaEntity implements Serializab
 				info,
 				sourcejoin,
 				this.sourceColumnName,
-				this.codeToIdType);
+				this.codeToIdType,
+				this.companyCodeColumnName);
 	}
 
 	public static ScvmtConversionTypeCodeToId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
@@ -67,7 +71,12 @@ public class ScvmtConversionTypeCodeToId extends JpaEntity implements Serializab
 
 		CodeToIdPattern domain = (CodeToIdPattern) conversionPattern;
 
-		return new ScvmtConversionTypeCodeToId(pk, domain.getSourceColumnName(), domain.getCodeToIdType().name(), null);
+		return new ScvmtConversionTypeCodeToId(
+				pk,
+				domain.getSourceColumnName(),
+				domain.getCodeToIdType().name(),
+				(domain.getSourceCcdColumnName().isPresent()) ? domain.getSourceCcdColumnName().get() : null,
+				null);
 	}
 
 }

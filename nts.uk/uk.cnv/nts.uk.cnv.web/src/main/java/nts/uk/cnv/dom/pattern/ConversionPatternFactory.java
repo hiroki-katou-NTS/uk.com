@@ -33,7 +33,8 @@ public class ConversionPatternFactory {
 			case CodeToId:
 				return new CodeToIdPattern(info, join,
 						param.getSourceColumn_codeToId(),
-						param.getCodeToIdType());
+						param.getCodeToIdType(),
+						param.getSourceColumn_codeToId_ccd());
 			case CodeToCode:
 				return new CodeToCodePattern(info, join,
 						param.getSourceColumn_codeToCode(),

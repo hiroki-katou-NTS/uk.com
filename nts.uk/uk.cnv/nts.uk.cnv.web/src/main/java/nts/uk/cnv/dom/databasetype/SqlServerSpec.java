@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.databasetype;
 
+import java.util.List;
+
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -69,6 +71,18 @@ public class SqlServerSpec implements DataBaseSpec{
 		return String.format("RIGHT(%s,%d)", expression, length);
 	}
 
+	public String subString(String expression, int start, int length) {
+		return String.format("SUBSTRING(%s, %d, %d)", expression, start, length);
+	}
+
+	public String join(List<String> expression) {
+		return String.join(" + ", expression);
+	}
+
+	public String mod(String expression1, String expression2 ) {
+		return "(" + expression1 + " % " + expression2 + ")";
+	}
+
 	@Override
 	public DataType parse(String type, Integer... length) {
 		if(type == null)
@@ -80,7 +94,7 @@ public class SqlServerSpec implements DataBaseSpec{
 		else if ((type.equals("DECIMAL") || type.equals("NUMERIC")) && length[0] == 1 && (length.length <= 1 || length[1] == 0)) {
 			return DataType.BOOL;
 		}
-		else if(type.equals("INT") && length.length == 1) {
+		else if(type.equals("INT")) {
 			return DataType.INT;
 		}
 		else if((type.equals("DECIMAL") || type.equals("NUMERIC")) && length.length == 1) {
@@ -108,7 +122,7 @@ public class SqlServerSpec implements DataBaseSpec{
 			return DataType.DATETIME;
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("[" + type + "] is undefined.");
 	}
 
 }

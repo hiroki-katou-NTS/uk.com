@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
@@ -41,6 +42,18 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 	}
 
 	@Override
+	public Optional<OneColumnConversion> findColumnConversion(ConversionInfo info, String category, String table, int recordNo, String targetColumn, Join sourceJoin) {
+
+		ScvmtConversionTablePk pk = new ScvmtConversionTablePk(category, table, recordNo, targetColumn);
+
+		Optional<ScvmtConversionTable> entity = this.queryProxy().find(pk, ScvmtConversionTable.class);
+
+		if (!entity.isPresent()) return Optional.empty();
+
+		return Optional.of(entity.get().toDomain(info, sourceJoin));
+	}
+
+	@Override
 	public boolean isExists(String category, String table, int recordNo, String targetColumn) {
 
 		ScvmtConversionTablePk pk = new ScvmtConversionTablePk(category, table, recordNo, targetColumn);
@@ -63,6 +76,24 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 
 		this.commandProxy().remove(ScvmtConversionTable.class, pk);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<OneColumnConversion> find(String category, String tableName, int recordNo) {
+		String query =
+				  "SELECT c FROM ScvmtConversionTable c"
+				+ " WHERE c.pk.categoryName = :category"
+				+ " AND c.pk.targetTableName = :table"
+				+ " AND c.pk.recordNo = :recordNo";
+		List<ScvmtConversionTable> entities = this.queryProxy().query(query, ScvmtConversionTable.class)
+			.setParameter("category", category)
+			.setParameter("table", tableName)
+			.setParameter("recordNo", recordNo)
+			.getList();
+
+		return entities.stream()
+				.map(entity -> entity.toDomain(null, null))
+				.collect(Collectors.toList());
 	}
 
 }

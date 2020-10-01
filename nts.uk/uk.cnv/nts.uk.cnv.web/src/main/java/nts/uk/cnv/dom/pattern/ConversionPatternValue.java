@@ -16,6 +16,7 @@ public interface ConversionPatternValue {
 	/** CODE_TO_ID **/
 	String getCodeToIdType();
 	String getSourceColumn_codeToId();
+	String getSourceColumn_codeToId_ccd();
 
 	/** FIXID_VALUE **/
 	String getFixedValue();
