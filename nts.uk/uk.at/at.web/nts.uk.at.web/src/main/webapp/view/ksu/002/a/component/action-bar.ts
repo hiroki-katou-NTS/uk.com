@@ -48,18 +48,7 @@ module nts.uk.ui.at.ksu002.a {
 		</div>
 		<div>
 			<label data-bind="i18n: 'KSU002_13'"></label>
-	        <div data-bind="ntsComboBox: {
-	            width: '500px',
-	            name: $component.$i18n('KSU002_12'),
-	            value: ko.observable(''),
-	            options: ko.observableArray([]),
-	            optionsValue: 'id',
-	            optionsText: 'title',
-	            editable: false,
-	            selectFirstIfNull: true,
-	            columns: [
-	                { prop: 'title', length: 10 },
-	            ]}"></div>
+	        <div><working-hours params="input: ko.observable(), callback: function() {}"></working-hours></div>
 		</div>
 	</div>
 	<style type="text/css" rel="stylesheet">

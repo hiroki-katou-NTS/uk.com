@@ -14,6 +14,8 @@
 			<com:scriptfile path="component/scheduler.js" />
 			<com:scriptfile path="component/title-date.js" />
 			<com:scriptfile path="component/action-bar.js" />
+			<com:stylefile path="../../../kcp/013/component/kcp013.a.style.css" />
+			<com:scriptfile path="../../../kcp/013/component/kcp013.cpn.vm.js" />
 			
 			<com:scriptfile path="ksu.002a.vm.js" />
 		</ui:define>
@@ -39,7 +41,7 @@
 					<div class="cf" data-bind="if: !!ko.unwrap($vm.showC)">
 						<div tabindex="2" data-bind="
 								scheduler: $vm.schedules,
-								width: 130,
+								width: 100,
 								baseDate: $vm.baseDate,
 								click-cell: $vm.clickDayCell,
 								change-cell: $vm.changeDayCell
