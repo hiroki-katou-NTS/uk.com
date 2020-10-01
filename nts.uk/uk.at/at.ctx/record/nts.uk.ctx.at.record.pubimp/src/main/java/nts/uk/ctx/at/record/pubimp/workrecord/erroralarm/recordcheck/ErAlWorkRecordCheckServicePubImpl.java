@@ -29,36 +29,47 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 
 	@Inject
 	private ErAlWorkRecordCheckService checkService;
-	
+
 	@Inject
 	private WorkTypeOfDailyPerforRepository businessTypeFinder;
-	
+
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationFinder;
-	
 
 	@Override
 	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
 			List<String> EACheckIDs) {
 		List<ErrorRecord> result = this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs);
-		
-		return result.stream().collect(Collectors.groupingBy(c -> c.getErAlId(), 
-				Collectors.collectingAndThen(Collectors.toList(), 
+
+		return result.stream()
+				.collect(Collectors.groupingBy(c -> c.getErAlId(), Collectors.collectingAndThen(Collectors.toList(),
 						list -> list.stream().collect(Collectors.toMap(c -> c.getEmployeeId(), c -> true)))));
 	}
 
 	@Override
-	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate, Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs)
-				.stream().map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(),c.getCheckedValue())).collect(Collectors.toList());
+	public List<ErrorRecordExport> checkV2(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds, Map<String, Integer> mapCheckItem) {
+		return this.checkService.checkWithRecordV2(workingDate, employeeIds, EACheckIDs, mapCheckItem).stream()
+				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
+				.collect(Collectors.toList());
 	}
-	
+
 	@Override
-	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate, Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs)
-				.stream().map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId())).collect(Collectors.toList());
+	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds) {
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
+				.collect(Collectors.toList());
 	}
-	
+
+	@Override
+	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate,
+			Collection<String> employeeIds) {
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId()))
+				.collect(Collectors.toList());
+	}
+
 	@Override
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, String EACheckID) {
@@ -78,38 +89,33 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, ErAlSubjectFilterConditionDto condition) {
-		AlCheckTargetCondition filterCondition = new AlCheckTargetCondition(condition.getFilterByBusinessType(), 
-				condition.getFilterByJobTitle(), condition.getFilterByEmployment(), condition.getFilterByClassification(), 
-				condition.getLstBusinessTypeCode(), condition.getLstJobTitleId(), condition.getLstEmploymentCode(), condition.getLstClassificationCode());
+		AlCheckTargetCondition filterCondition = new AlCheckTargetCondition(condition.getFilterByBusinessType(),
+				condition.getFilterByJobTitle(), condition.getFilterByEmployment(),
+				condition.getFilterByClassification(), condition.getLstBusinessTypeCode(), condition.getLstJobTitleId(),
+				condition.getLstEmploymentCode(), condition.getLstClassificationCode());
 		return this.checkService.filterEmployees(workingDate, employeeIds, filterCondition).stream().map(r -> mapTo(r))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod, Collection<String> employeeIds,
-			List<ErAlSubjectFilterConditionDto> conditions) {
+	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod,
+			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> conditions) {
 		List<String> empIds = new ArrayList<>(employeeIds);
-		//勤務種別
-		Map<String, Map<GeneralDate, WorkTypeOfDailyPerformance>> businessTypes = businessTypeFinder.finds(empIds, targetPeriod)
-				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
-						Collectors.collectingAndThen(Collectors.toList(), 
-								list -> list.stream().collect(Collectors.toMap(b -> b.getDate(), b -> b)))));
-		//所属情報
+		// 勤務種別
+		Map<String, Map<GeneralDate, WorkTypeOfDailyPerformance>> businessTypes = businessTypeFinder
+				.finds(empIds, targetPeriod).stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+						list -> list.stream().collect(Collectors.toMap(b -> b.getDate(), b -> b)))));
+		// 所属情報
 		List<AffiliationInforOfDailyPerfor> affiliations = affiliationFinder.finds(empIds, targetPeriod);
 		return conditions.stream().collect(Collectors.toMap(c -> c.getErrorAlarmId(), c -> {
 			return affiliations.stream().map(a -> {
 				WorkTypeOfDailyPerformance bs = businessTypes.get(a.getEmployeeId()).get(a.getYmd());
-				if(canCheck(bs, a, c)){
-					return RegulationEmployeeInfoR
-							.builder()
-							.employeeId(a.getEmployeeId())
-							.targetDate(a.getYmd())
-							.errorAlarmID(c.getErrorAlarmId())
-							.businessTypeCode(bs.getWorkTypeCode().v())
-							.employmentCode(a.getEmploymentCode().v())
-							.jobTitleId(a.getJobTitleID())
-							.classificationCode(a.getClsCode().v())
-							.build();
+				if (canCheck(bs, a, c)) {
+					return RegulationEmployeeInfoR.builder().employeeId(a.getEmployeeId()).targetDate(a.getYmd())
+							.errorAlarmID(c.getErrorAlarmId()).businessTypeCode(bs.getWorkTypeCode().v())
+							.employmentCode(a.getEmploymentCode().v()).jobTitleId(a.getJobTitleID())
+							.classificationCode(a.getClsCode().v()).build();
 				}
 				return null;
 			}).filter(a -> a != null).collect(Collectors.toList());
@@ -117,8 +123,8 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	}
 
 	@Override
-	public Map<ErAlSubjectFilterConditionDto, List<RegulationInfoEmployeeQueryResult>> filterEmployees(Collection<String> employeeIds,
-			List<ErAlSubjectFilterConditionDto> condition, GeneralDate workingDate) {
+	public Map<ErAlSubjectFilterConditionDto, List<RegulationInfoEmployeeQueryResult>> filterEmployees(
+			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> condition, GeneralDate workingDate) {
 		return condition.stream().collect(Collectors.toMap(c -> c, c -> filterEmployees(workingDate, employeeIds, c)));
 	}
 
@@ -127,25 +133,26 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 				.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName()).workplaceCode(r.getWorkplaceCode())
 				.workplaceId(r.getWorkplaceId()).workplaceName(r.getWorkplaceName()).build();
 	}
-	
-	private boolean canCheck(WorkTypeOfDailyPerformance budinessType, AffiliationInforOfDailyPerfor affiliation, ErAlSubjectFilterConditionDto checkCondition){
-		if(isTrue(checkCondition.getFilterByBusinessType())){
-			if(!checkCondition.getLstBusinessTypeCode().contains(budinessType.getWorkTypeCode().v())){
+
+	private boolean canCheck(WorkTypeOfDailyPerformance budinessType, AffiliationInforOfDailyPerfor affiliation,
+			ErAlSubjectFilterConditionDto checkCondition) {
+		if (isTrue(checkCondition.getFilterByBusinessType())) {
+			if (!checkCondition.getLstBusinessTypeCode().contains(budinessType.getWorkTypeCode().v())) {
 				return false;
 			}
 		}
-		if(isTrue(checkCondition.getFilterByEmployment())){
-			if(!checkCondition.getLstEmploymentCode().contains(affiliation.getEmploymentCode().v())){
+		if (isTrue(checkCondition.getFilterByEmployment())) {
+			if (!checkCondition.getLstEmploymentCode().contains(affiliation.getEmploymentCode().v())) {
 				return false;
 			}
 		}
-		if(isTrue(checkCondition.getFilterByClassification())){
-			if(!checkCondition.getLstClassificationCode().contains(affiliation.getClsCode().v())){
+		if (isTrue(checkCondition.getFilterByClassification())) {
+			if (!checkCondition.getLstClassificationCode().contains(affiliation.getClsCode().v())) {
 				return false;
 			}
 		}
-		if(isTrue(checkCondition.getFilterByJobTitle())){
-			if(!checkCondition.getLstJobTitleId().contains(affiliation.getJobTitleID())){
+		if (isTrue(checkCondition.getFilterByJobTitle())) {
+			if (!checkCondition.getLstJobTitleId().contains(affiliation.getJobTitleID())) {
 				return false;
 			}
 		}

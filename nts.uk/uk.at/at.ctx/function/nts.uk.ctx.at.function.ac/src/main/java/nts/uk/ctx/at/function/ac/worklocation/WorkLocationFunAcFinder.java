@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.log4j.chainsaw.Main;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
@@ -30,6 +32,17 @@ public class WorkLocationFunAcFinder implements RecordWorkInfoFunAdapter {
 		if(data.isPresent())
 			return Optional.of(convertToExport(data.get()));
 		return Optional.empty();
+	}
+	
+	@Override
+	public List<RecordWorkInfoFunAdapterDto> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod) {
+		List<InfoCheckNotRegisterPubExport> result = recordWorkInfoPub.findByEmpAndPeriod(employeeId, datePeriod);
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return result.stream()
+					.map(item -> convertToExport(item))
+					.collect(Collectors.toList());
 	}
 	
 	private RecordWorkInfoFunAdapterDto convertToExport(InfoCheckNotRegisterPubExport export) {
@@ -68,7 +81,5 @@ public class WorkLocationFunAcFinder implements RecordWorkInfoFunAdapter {
 				domain.getEmployeeId(),
 				domain.getYmd());
 	}
-
-
 
 }

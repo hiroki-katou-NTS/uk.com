@@ -136,7 +136,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
-        }
+        }   
         
          public countTime(self): void {
             // F2_1_2 set time over 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.workinformation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -208,6 +209,17 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 				domain.getEmployeeId(),
 				domain.getYmd()
 				);
+	}
+
+	@Override
+	public List<InfoCheckNotRegisterPubExport> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod) {
+		List<WorkInfoOfDailyPerformance> result = workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return result.stream()
+					.map(item -> convertToExport(item))
+					.collect(Collectors.toList());
 	}
 	
 }

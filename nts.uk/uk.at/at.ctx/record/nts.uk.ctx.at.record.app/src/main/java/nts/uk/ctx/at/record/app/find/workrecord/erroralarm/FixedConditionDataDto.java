@@ -17,18 +17,22 @@ public class FixedConditionDataDto {
 	private String fixConWorkRecordName;
 	/** メッセージ */
 	private String message;
-	public FixedConditionDataDto(int fixConWorkRecordNo, String fixConWorkRecordName, String message) {
+	/** 区分*/
+	private String division;
+	public FixedConditionDataDto(int fixConWorkRecordNo, String fixConWorkRecordName, String message, String division) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
+		this.division = division;
 	}
 	
 	public FixedConditionData toDto() {
 		return new  FixedConditionData(
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixConWorkRecordName(this.fixConWorkRecordName),
-				new FixedConditionWorkRecordName(this.message)
+				new FixedConditionWorkRecordName(this.message),
+				this.division
 				);
 	}
 	
@@ -36,7 +40,8 @@ public class FixedConditionDataDto {
 		return new FixedConditionDataDto(
 				domain.getFixConWorkRecordNo().value,
 				domain.getFixConWorkRecordName().v(),
-				domain.getMessage().v()
+				domain.getMessage().v(),
+				domain.getDivision()
 				);
 	}
 }

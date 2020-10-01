@@ -30,23 +30,28 @@ public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable
 	@Column(name = "INITIAL_MESSAGE")
 	public String message;
 	
+	@Column(name = "DIVISION")
+	public String division;
+	
 	@Override
 	protected Object getKey() {
 		return fixConWorkRecordNo;
 	}
 
-	public KrcmtFixedConditionData(int fixConWorkRecordNo, String fixConWorkRecordName, String message) {
+	public KrcmtFixedConditionData(int fixConWorkRecordNo, String fixConWorkRecordName, String message, String division) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
+		this.division = division;
 	}
 	
 	public static KrcmtFixedConditionData toEntity(FixedConditionData domain) {
 		return new KrcmtFixedConditionData(
 				domain.getFixConWorkRecordNo().value,
 				domain.getFixConWorkRecordName().v(),
-				domain.getMessage().v()
+				domain.getMessage().v(),
+				domain.getDivision()
 				);
 		
 	}
@@ -55,7 +60,8 @@ public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable
 		return new FixedConditionData(
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixConWorkRecordName(this.fixConWorkRecordName),
-				new FixedConditionWorkRecordName(this.message)
+				new FixedConditionWorkRecordName(this.message),
+				this.division
 				);
 		
 	}

@@ -227,6 +227,8 @@ public interface WorkTypeRepository {
 	
 	List<String> findWorkTypeCodeOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
 	
+	List<WorkType> findHolidayWorkType(String companyId, int abolishAtr, int worktypeAtr, int workTypeClf, int holiday);
+	
 	/**
 	 * Gets the acquired attendance work types.
 	 *

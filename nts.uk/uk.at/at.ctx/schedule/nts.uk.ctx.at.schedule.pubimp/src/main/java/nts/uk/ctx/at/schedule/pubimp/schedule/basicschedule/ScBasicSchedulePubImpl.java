@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.pubimp.schedule.basicschedule;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -58,6 +59,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 						x.getScheduledEndClock()))
 				.collect(Collectors.toList());
 	}
+	
 
 	/**
 	 * Convert export.
@@ -97,5 +99,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
 		return this.repository.findMaxDateByListSid(sIds);
 	}
+
+	
 
 }

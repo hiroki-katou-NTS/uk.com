@@ -44,12 +44,14 @@
 					<button tabindex="2"
 						data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty"
 						class="proceed">#{i18n.getText('KAL003_6')}</button>
+					<button tabindex="3" data-bind="click: duplicateAlarmCheckCondition, enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button>
 					<!-- <button tabindex="3" data-bind="enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button> -->
 					<button tabindex="4"
 						data-bind="click: deleteAlarmCheckCondition, enable: screenMode() == 1"
 						class="danger">#{i18n.getText('KAL003_8')}</button>
-						
+					<!-- <button tabindex="1">#{i18n.getText('KAL003_7')}</button>	 -->
 					<button id="print-button_1" tabindex="5" data-bind="click: exportExcel">#{i18n.getText('KAL003_313')}</button>
+					
 				</div>
 			</div>
 			<div class="contents-area">
@@ -104,7 +106,7 @@
 								<label
 									data-bind="text: displayCategory"></label>
 							</div>
-							<!-- <div class="valign-center control-group"
+							<div class="valign-center control-group"
 								data-bind="visible: category() == 5">
 								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div tabindex="9"
@@ -114,7 +116,7 @@
 									optionsText: 'name',
 									value: $parent.selectedDataCondition,
 									enable: true}"></div>
-							</div> -->
+							</div>
 							<div class="valign-center control-group"
 								data-bind="visible: false">
 								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
