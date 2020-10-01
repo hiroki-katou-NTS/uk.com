@@ -228,13 +228,15 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                     return vm.$ajax(API.checkBeforeRegister, command); 
                 }).then( res => {
                     if (res == undefined) return;
+					if(!_.isEmpty(res.holidayDateLst)) {
+						holidayDateLst = res.holidayDateLst;
+					}
                     if (_.isEmpty( res.confirmMsgLst )) {
                         return vm.registerData(command);
                     }else {
-						holidayDateLst = res.holidayDateLst;
                         let listTemp = _.clone(res.confirmMsgLst);
                         vm.handleConfirmMessage(listTemp, command);
-                    }
+					}
                 }).done(result => {
                     if (result != undefined) {
 						if(_.isEmpty(holidayDateLst)) {
@@ -243,7 +245,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 							});                
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
-							let x = nts.uk.resource.getMessage('Msg_1663', holidayDateLst);
+							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
+							dispMsg += x;
 							vm.$dialog.info(dispMsg).then(() => {
 								location.reload();
 							})
