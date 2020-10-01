@@ -6,7 +6,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 	import ModelDto = nts.uk.at.view.kaf007_ref.shr.viewmodel.ModelDto;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
-	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
 
 	@bean()
@@ -20,21 +19,24 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		appWorkChange: AppWorkChange;
 		setupType: number;
 		workTypeLst: any[];
-		comment: KnockoutObservable<string> = ko.observable("");
+		comment1: KnockoutObservable<string> = ko.observable("");
+		comment2: KnockoutObservable<string> = ko.observable("");
+		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
+		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: any) {
 			const vm = this;
 			vm.isSendMail = ko.observable(false);
 			vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
 			vm.setupType = null;
-			vm.appWorkChange = new AppWorkChange("", "", "", "", 0, 0, 0, 0);
+			vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
 
             vm.$blockui("show");
             vm.loadData([], [], vm.appType())
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
-                    let empLst = [],
-                        dateLst = [],
+                    let empLst: any = [],
+                        dateLst: any = [],
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                         command = { empLst, dateLst, appDispInfoStartupOutput };
                     return vm.$ajax(API.startNew, command);
@@ -77,35 +79,37 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		changeAppDate() {
             const vm = this;
 
-            vm.$errors("clear");
+			vm.$errors("clear");
+			let startDate = vm.application().opAppStartDate(),
+				endDate = vm.application().opAppEndDate();
+			let appDates = []
+			appDates.push(startDate, endDate);
+			let command = {
+				empLst: ko.toJS(vm.application().employeeIDLst),
+				dateLst: appDates,
+				appWorkChangeDispInfo: ko.toJS(vm.model)
+			};
 
-            // vm.$validate([
-            //     '#kaf000-a-component4 .nts-input'
-            // ]).then((valid: boolean) => {
-            //     if (valid) {
-            //         return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
-            //     }
-            // }).done((res: any) => {
-            //     if (res.result) {
-            //         let output = res.businessTripInfoOutputDto;
-
-            //         vm.dataFetch().businessTripOutput = output;
-            //         vm.dataFetch.valueHasMutated();
-            //     }
-            // }).fail(err => {
-            //     vm.dataFetch().businessTripOutput.businessTripActualContent = [];
-            //     vm.dataFetch.valueHasMutated();
-            //     vm.handleError(err);
-            // }).always(() => vm.$blockui("hide"));
+            vm.$validate([
+                '#kaf000-a-component4 .nts-input'
+            ]).then((valid: boolean) => {
+                if (valid) {
+                    return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
+                }
+            }).done((res: any) => {
+                vm.fetchData(res);
+            }).fail(err => {
+				console.log(err)
+            }).always(() => vm.$blockui("hide"));
         }
 		
 		fetchData(params: any) {
 			const vm = this;
 			vm.model({
-				workTypeCode: ko.observable(params.workTypeCD),
-				workTimeCode: ko.observable(params.workTimeCD),
+				workTypeCD: ko.observable(params.workTypeCD),
+				workTimeCD: ko.observable(params.workTimeCD),
 				appDispInfoStartupOutput: ko.observable(params.appDispInfoStartupOutput),
-				reflectWorkChange: ko.observable(params.reflectWorkChangeAppDto),
+				reflectWorkChangeAppDto: ko.observable(params.reflectWorkChangeAppDto),
 				workTypeLst: params.workTypeLst,
 				setupType: ko.observable(params.setupType),
 				predetemineTimeSetting: ko.observable(params.predetemineTimeSetting),
@@ -130,10 +134,14 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				vm.appWorkChange.startTime2(time2.length > 0 ? time2[0].start : null);
 				vm.appWorkChange.endTime2(time2.length > 0 ? time2[0].end : null);
 			}
-			vm.comment(vm.model().appWorkChangeSet.comment1.comment);
+			vm.comment1(vm.model().appWorkChangeSet.comment1.comment);
 			$("#comment1")
-				.css("color", vm.model().appWorkChangeSet.comment1.colorCode)
-				.css("fontWeight", vm.model().appWorkChangeSet.comment1.bold == true ? "bold" : "");
+			.css("color", vm.model().appWorkChangeSet.comment1.colorCode)
+			.css("fontWeight", vm.model().appWorkChangeSet.comment1.bold == true ? "bold" : "");
+			vm.comment2(vm.model().appWorkChangeSet.comment2.comment);
+			$(".comment2")
+			.css("color", vm.model().appWorkChangeSet.comment2.colorCode)
+			.css("fontWeight", vm.model().appWorkChangeSet.comment2.bold == true ? "bold" : "");
 		}
 
 		getWorkDispName(workTypeLst: any, workTypeCode: string, workTimeCode: string, workTimeLst: any) {
@@ -148,34 +156,126 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		}
 
 		register() {
+			const vm = this;
 
+			let timeZone1 = {
+				workNo: 1,
+				timeZone: {
+					startTime: vm.appWorkChange.startTime1(),
+					endTime: vm.appWorkChange.endTime1()
+				}
+			}
+			let timeZone2 = {
+				workNo: 2,
+				timeZone: {
+					startTime: vm.appWorkChange.startTime2(),
+					endTime: vm.appWorkChange.endTime2()
+				}
+			}
+
+			let appWorkChangeDto = {
+				straightGo: vm.isStraightGo() ? 1 : 0,
+				straightBack: vm.isStraightBack() ? 1 : 0,
+				opWorkTypeCD: vm.model().workTypeCD(),
+				opWorkTimeCD: vm.model().workTimeCD(),
+				timeZoneWithWorkNoLst: [timeZone1, timeZone2]
+			}
+
+			let applicationDto = {
+				appDate: vm.application().appDate(),
+				appID: vm.application().appID(),
+				appType: vm.application().appType,
+				employeeIDLst: vm.application().employeeIDLst(),
+				opAppEndDate: vm.application().opAppEndDate(),
+				opAppReason: vm.application().opAppReason(),
+				opAppStandardReasonCD: vm.application().opAppStandardReasonCD(),
+				opAppStartDate: vm.application().opAppStartDate(),
+				opReversionReason: vm.application().opReversionReason(),
+				opStampRequestMode: vm.application().opStampRequestMode(),
+				prePostAtr: vm.application().prePostAtr(),
+				inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
+				enteredPerson: vm.$user.employeeId
+			}
+			
+			let command = {
+				mode: true,
+				companyId: vm.$user.companyId,
+				applicationDto: ko.toJS(applicationDto),
+				appWorkChangeDto: ko.toJS(appWorkChangeDto),
+				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
+				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+			}
+
+			vm.$blockui( "show" );
+			vm.$validate('#kaf000-a-component4 .nts-input', '.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+                .then( isValid => {
+                    if ( isValid ) {
+                        return true;
+                    }
+				} )
+				.then( result => {
+                    if (!result) return;
+                    return vm.$ajax(API.checkBeforeRegister, command); 
+                }).then( res => {
+                    if (res == undefined) return;
+                    if (_.isEmpty( res.confirmMsgLst )) {
+                        return vm.registerData(command);
+                    }else {
+                        let listTemp = _.clone(res.confirmMsgLst);
+                        vm.handleConfirmMessage(listTemp, command);
+                    }
+                }).done(result => {
+                    if (result != undefined) {
+                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                            location.reload();
+                        });                
+                    }
+                })
+                .fail( err => {
+                    let param;
+                    if (err.message && err.messageId) {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    } else {
+
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                        }
+                    }
+                    vm.$dialog.error(param);
+                })
+                .always(() => vm.$blockui("hide"));
 		}
-		// register() {
-        //     const vm = this;
-        //     let workChange = ko.toJS(vm.appWorkChange),
-        //         application = ko.toJS(vm.application),
-        //         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-        //         command = { workChange, application, appDispInfoStartupOutput };
-		// 	vm.$validate([
-		// 		'.ntsControl',
-		// 		'.nts-input'
-		// 	]).then((valid: boolean) => {
-		// 		if(valid) {
-		// 			return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
-		// 		}
-		// 	}).done((data: any) => {
-		// 		if(data) {
-		// 			vm.$dialog.info({ messageId: "Msg_15" });	
-		// 		}
-		// 	})
-        // 	.always(() => vm.$blockui("hide"));
-		// }
+		
+		handleConfirmMessage(listMes: any, res: any): any {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                            return vm.registerData(res);
+                        } else {
+                            return vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
+            }
+		}
+		
+		registerData(params: any): any {
+			let vm = this;
+
+            return vm.$ajax(API.register, params);
+		}
 
 		conditionA14() {
 			const vm = this;
 
 			return ko.computed(() => {
-				if(vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChange().whetherReflectAttendance === 1) {
+				if(vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
 					return true;
 				};
 				return false;
@@ -185,6 +285,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 	const API = {
 		startNew: "at/request/application/workchange/startNew",
-		register: "at/request/application/workchange/addworkchange_PC"
+		register: "at/request/application/workchange/addworkchange",
+		changeAppDate: "at/request/application/workchange/changeAppDate",
+		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC"
 	}
 }
