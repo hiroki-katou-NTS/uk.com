@@ -33,22 +33,28 @@ public class DeleteLeaveManagementDataCommandHandler extends CommandHandler<Leav
 		Optional<LeaveManagementData> leaveMana = leaveManaDataRepository.getByLeaveId(command.getLeaveId());
 		
 		// ドメインモデル「休出管理データ」を削除
-		leaveManaDataRepository.deleteByLeaveId(command.getLeaveId());
+		if (leaveMana.isPresent()) {
+			leaveManaDataRepository.deleteByLeaveId(command.getLeaveId());
+		}
 		
 		// ドメインモデル「代休管理データ」を取得
 		Optional<CompensatoryDayOffManaData> comDayOff = comDayOffManaDataRepository.getBycomdayOffId(command.getComDayOffID());
 		
 		// ドメインモデル「代休管理データ」を削除
-		comDayOffManaDataRepository.deleteByComDayOffId(command.getComDayOffID());
+		if (comDayOff.isPresent()) {
+			comDayOffManaDataRepository.deleteByComDayOffId(command.getComDayOffID());
+		}
 		
 		// ドメインモデル「休出代休紐付け管理」を削除
-		leaveComDayOffManaRepository.delete(leaveMana.get().getID(),
-				leaveMana.get().getComDayOffDate().getDayoffDate().get(),
-				comDayOff.get().getDayOffDate().getDayoffDate().get());
-		
-		leaveComDayOffManaRepository.delete(comDayOff.get().getComDayOffID(),
-				leaveMana.get().getComDayOffDate().getDayoffDate().get(),
-				comDayOff.get().getDayOffDate().getDayoffDate().get());
+		if (leaveMana.isPresent() && comDayOff.isPresent()) {
+			leaveComDayOffManaRepository.delete(leaveMana.get().getID(),
+					leaveMana.get().getComDayOffDate().getDayoffDate().get(),
+					comDayOff.get().getDayOffDate().getDayoffDate().get());
+			
+			leaveComDayOffManaRepository.delete(comDayOff.get().getComDayOffID(),
+					leaveMana.get().getComDayOffDate().getDayoffDate().get(),
+					comDayOff.get().getDayOffDate().getDayoffDate().get());
+		}
 		
 	}
 }

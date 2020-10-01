@@ -362,7 +362,7 @@
                         self.listEmployee = [];
                         self.selectedEmployee = new EmployeeInfo(loginerInfo.sid, loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceId, wkHistory.workplaceCode, wkHistory.workplaceName);
                         self.listEmployee.push(self.selectedEmployee);
-                        if (_.find(self.employeeInputList(), item => item.id === loginerInfo.sid))
+                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid))
                             self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;

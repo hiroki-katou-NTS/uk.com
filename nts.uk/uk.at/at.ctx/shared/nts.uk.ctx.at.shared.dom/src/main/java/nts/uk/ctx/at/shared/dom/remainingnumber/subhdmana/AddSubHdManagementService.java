@@ -116,7 +116,7 @@ public class AddSubHdManagementService {
 			
 		}
 		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
-		if (!subHdManagementData.getLstLinkingDate().isEmpty()) {
+		if (subHdManagementData.getLstLinkingDate() != null && !subHdManagementData.getLstLinkingDate().isEmpty()) {
 			List<LeaveManagementData> lstLeaveManagement = new ArrayList<>();
 			//	ドメインモデル「休出管理データ」を取得 Nhận domain model 「休出管理データ」
 			for (String item : subHdManagementData.getLstLinkingDate()) {
