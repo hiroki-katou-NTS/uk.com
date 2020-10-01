@@ -30,17 +30,17 @@ import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampCombinationAtrShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 public class ConvertApplicationToShare {
 
@@ -112,11 +112,12 @@ public class ConvertApplicationToShare {
 			BusinessTrip bussinessTrip = (BusinessTrip) application;
 
 			return new BusinessTripShare(
-					bussinessTrip.getInfos().stream().map(
-							x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(), x.getWorkingHours()))
+					bussinessTrip.getInfos().stream()
+							.map(x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(),
+									x.getWorkingHours()))
 							.collect(Collectors.toList()),
-					bussinessTrip.getDepartureTime().orElse(null), bussinessTrip.getReturnTime().orElse(null),
-					appShare);
+					bussinessTrip.getDepartureTime().map(x -> x.v()).orElse(null),
+					bussinessTrip.getReturnTime().map(x -> x.v()).orElse(null), appShare);
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;
@@ -131,8 +132,10 @@ public class ConvertApplicationToShare {
 			// AppStampShare
 			AppStamp appStamp = (AppStamp) application;
 			return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
-				return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
-						x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr());
+				return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()),
+						x.getTimeOfDay(),
+						x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), 
+						x.getAppStampGoOutAtr());
 			}).collect(Collectors.toList()), // 時刻
 
 					appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
@@ -172,7 +175,7 @@ public class ConvertApplicationToShare {
 			AppRecordImage appImg = (AppRecordImage) application;
 
 			return new AppRecordImageShare(
-					AppStampCombinationAtrShare.valueOf(appImg.getAppStampCombinationAtr().value),
+					EngraveShareAtr.valueOf(appImg.getAppStampCombinationAtr().value),
 					appImg.getAttendanceTime(), appImg.getAppStampGoOutAtr(), appShare);
 		}
 	}

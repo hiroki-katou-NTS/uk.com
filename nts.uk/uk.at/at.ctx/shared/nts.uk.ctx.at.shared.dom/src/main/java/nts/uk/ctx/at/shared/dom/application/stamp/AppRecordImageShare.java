@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * @author thanh_nx
@@ -16,16 +16,17 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReaso
 @Getter
 public class AppRecordImageShare extends ApplicationShare {
 
-	// 打刻区分
-	private AppStampCombinationAtrShare appStampCombinationAtr;
+	//	打刻区分
+	private EngraveShareAtr appStampCombinationAtr;
+	
+	//	申請時刻
+	private AttendanceClock attendanceTime;
+	
+	//	外出理由
+	private Optional<GoingOutReason> appStampGoOutAtr;
 
-	// 申請時刻
-	private AttendanceTime attendanceTime;
-	// 外出理由
-	private Optional<GoOutReasonAtr> appStampGoOutAtr;
-
-	public AppRecordImageShare(AppStampCombinationAtrShare appStampCombinationAtr, AttendanceTime attendanceTime,
-			Optional<GoOutReasonAtr> appStampGoOutAtr, ApplicationShare application) {
+	public AppRecordImageShare(EngraveShareAtr appStampCombinationAtr, AttendanceClock attendanceTime,
+			Optional<GoingOutReason> appStampGoOutAtr, ApplicationShare application) {
 		super(application);
 		this.appStampCombinationAtr = appStampCombinationAtr;
 		this.attendanceTime = attendanceTime;

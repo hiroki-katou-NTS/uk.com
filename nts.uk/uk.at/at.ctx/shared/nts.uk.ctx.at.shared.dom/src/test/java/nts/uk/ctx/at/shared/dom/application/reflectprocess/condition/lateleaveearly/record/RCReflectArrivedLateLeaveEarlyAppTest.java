@@ -23,11 +23,11 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveea
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
 
 @RunWith(JMockit.class)
 public class RCReflectArrivedLateLeaveEarlyAppTest {
@@ -139,8 +139,6 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 
 	private void exemptionTime(IntervalExemptionTime time) {
 		assertThat(time.getExemptionTime().v()).isEqualTo(0);
-		assertThat(time.getIntervalAttendanceClock().v()).isEqualTo(0);
-		assertThat(time.getIntervalTime().v()).isEqualTo(0);
 	}
 
 	private ArrivedLateLeaveEarlyShare appWorkChange(int workNo, LateOrEarlyAtrShare atr) {

@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampCombinationAtrShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -73,8 +73,8 @@ public class TimeStampApplicationNRMode {
 				appNr.getAttendanceTime());
 
 		// [input.レコーダイメージ申請.打刻区分]をチェック
-		if (appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.GO_OUT
-				|| appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.RETURN) {
+		if (appNr.getAppStampCombinationAtr() == EngraveShareAtr.GO_OUT
+				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.RETURN) {
 			/// 外出・戻りの打刻を反映する
 			ReflectTimeStampResult stampResult = ReflectGoOutReturn.process(require, dailyRecordApp, timeReflectWork,
 					appNr.getAttendanceTime(), appNr.getAppStampCombinationAtr(), stamp);
@@ -87,11 +87,11 @@ public class TimeStampApplicationNRMode {
 			}
 			lstItemId.add(OUT_CATE.get(stampResult.getWorkNoReflect().v()));
 			UpdateEditSttCreateBeforeAppReflect.update(dailyRecordApp, lstItemId);
-		} else if (appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.ATTENDANCE
-				|| appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.EARLY
-				|| appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.HOLIDAY
-				|| appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.OFFICE_WORK
-				|| appNr.getAppStampCombinationAtr() == AppStampCombinationAtrShare.OVERTIME) {
+		} else if (appNr.getAppStampCombinationAtr() == EngraveShareAtr.ATTENDANCE
+				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.EARLY
+				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.HOLIDAY
+				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.OFFICE_WORK
+				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.OVERTIME) {
 			/// 出退勤の打刻を反映する
 			ReflectTimeStampResult stampResult = ReflectTimeStamp.reflect(require, dailyRecordApp, timeReflectWork,
 					appNr.getAttendanceTime(), attr, appNr.getAppStampCombinationAtr(), stamp);

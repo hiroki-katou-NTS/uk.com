@@ -7,15 +7,15 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectTimeStamp.ReflectTimeStampResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampCombinationAtrShare;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.OutputTimeReflectForWorkinfo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * @author thanh_nx
@@ -25,8 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 public class ReflectGoOutReturn {
 
 	public static ReflectTimeStampResult process(Require require, DailyRecordOfApplication dailyRecordApp,
-			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceTime attendanceTime,
-			AppStampCombinationAtrShare appStampComAtr, Optional<Stamp> stamp) {
+			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceClock attendanceTime,
+			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 
 		// 日別勤怠(計算用work）に日別勤怠(work）をコピーする

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.applicationcancel;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -11,7 +11,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class ConvertToReflectTime {
 
-	public static TimeWithDayAttr convert(GeneralDate baseDate, GeneralDate appDate, AttendanceTime appTime) {
+	public static TimeWithDayAttr convert(GeneralDate baseDate, GeneralDate appDate, AttendanceClock appTime) {
 
 		// 基準日、対象日、対象時刻から日区分付き時刻に変換する
 		TimeWithDayAttr attr = TimeWithDayAttr.convertToTimeWithDayAttr(baseDate, appDate, appTime.v());

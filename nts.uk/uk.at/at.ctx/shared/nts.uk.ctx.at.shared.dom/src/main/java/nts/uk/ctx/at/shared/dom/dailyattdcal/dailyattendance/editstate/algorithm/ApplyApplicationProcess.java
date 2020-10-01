@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.algorith
 import java.util.ArrayList;
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 /**
  * @author thanh_nx

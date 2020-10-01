@@ -8,12 +8,12 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampCombinationAtrShare;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.OutputTimeReflectForWorkinfo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -32,8 +32,8 @@ public class ReflectTimeStamp {
 	 * @param 打刻区分
 	 */
 	public static ReflectTimeStampResult reflect(Require require, DailyRecordOfApplication dailyRecordApp,
-			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceTime attendanceTime, TimeWithDayAttr attr,
-			AppStampCombinationAtrShare appStampComAtr, Optional<Stamp> stamp) {
+			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceClock attendanceTime, TimeWithDayAttr attr,
+			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp) {
 
 		if (!stamp.isPresent())
 			return new ReflectTimeStampResult();
@@ -75,9 +75,9 @@ public class ReflectTimeStamp {
 				IntegrationOfDaily integrationOfDaily);
 	}
 
-	public static boolean groupAtt(AppStampCombinationAtrShare atr) {
-		if (atr == AppStampCombinationAtrShare.ATTENDANCE || atr == AppStampCombinationAtrShare.EARLY
-				|| atr == AppStampCombinationAtrShare.HOLIDAY) {
+	public static boolean groupAtt(EngraveShareAtr atr) {
+		if (atr == EngraveShareAtr.ATTENDANCE || atr == EngraveShareAtr.EARLY
+				|| atr == EngraveShareAtr.HOLIDAY) {
 			return true;
 		}
 		return false;

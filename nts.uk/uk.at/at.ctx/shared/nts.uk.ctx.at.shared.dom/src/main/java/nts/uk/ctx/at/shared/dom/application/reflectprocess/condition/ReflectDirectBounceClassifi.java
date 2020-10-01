@@ -6,7 +6,7 @@ import java.util.List;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

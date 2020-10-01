@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
 @RunWith(JMockit.class)
 public class CancelAppStampTest {

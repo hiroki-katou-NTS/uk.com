@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -25,6 +25,6 @@ public class TimeStampAppShare {
 	// 勤務場所
 	private Optional<WorkLocationCD> workLocationCd;
 	// 外出理由
-	private Optional<GoOutReasonAtr> appStampGoOutAtr;
+	private Optional<GoingOutReason> appStampGoOutAtr;
 
 }
