@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.MonthlyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.MonthlyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 public class AttendanceItemIdContainer implements ItemConst {
 
@@ -68,8 +68,9 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(624, join(DAILY_AFFILIATION_INFO_NAME, CLASSIFICATION));
 		temp.put(625, join(DAILY_AFFILIATION_INFO_NAME, JOB_TITLE));
 		temp.put(626, join(DAILY_AFFILIATION_INFO_NAME, EMPLOYEMENT));
-		
-		temp.put(858, join(DAILY_BUSINESS_TYPE_NAME, BUSINESS_TYPE));
+		temp.put(1294, join(DAILY_AFFILIATION_INFO_NAME, RAISING_SALARY));
+		temp.put(858, join(DAILY_AFFILIATION_INFO_NAME, BUSINESS_TYPE));
+//		temp.put(858, join(DAILY_BUSINESS_TYPE_NAME, BUSINESS_TYPE));
 
 		temp.put(28, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TYPE));
 		temp.put(29, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TIME));
