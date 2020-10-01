@@ -9,12 +9,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.TypeAgreementApplication;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -41,10 +37,10 @@ public class AppApproval {
 	 * @return AtomTask
 	 */
 	public static AtomTask change(Require require,
-						   String applicantId,
-						   String approverId,
-						   ApprovalStatus approvalStatus,
-						   Optional<AgreementApprovalComments> approvalComment) {
+								  String applicantId,
+								  String approverId,
+								  ApprovalStatus approvalStatus,
+								  Optional<AgreementApprovalComments> approvalComment) {
 
 		// $申請
 		val optApp = require.getApp(applicantId); // [R-1] 申請を取得する
@@ -56,56 +52,33 @@ public class AppApproval {
 		app.approveApplication(approverId, approvalStatus, approvalComment);
 
 		return AtomTask.of(() -> {
-			require.updateApp(app);
+			require.updateApp(app); // R4
 
 			if (approvalStatus == ApprovalStatus.APPROVED) {
 				val appTime = app.getApplicationTime();
-				String applicantID = app.getApplicantsSID();
+				String empId = app.getApplicantsSID();
 				if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_MONTH) {
 					val oneMonthTime = appTime.getOneMonthTime();
 					val yearMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getYearMonth() : null;
 					val errorTimeInMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getErrorTimeInMonth() : null;
-					val existingAgr36MonthSetting = require.getYearMonthSetting(applicantID, yearMonth);
+					val existingAgr36MonthSetting = require.getYearMonthSetting(empId, yearMonth); // R2
 					if (existingAgr36MonthSetting.isPresent()) {
-						require.updateYearMonthSetting(existingAgr36MonthSetting.get());
+						require.updateYearMonthSetting(existingAgr36MonthSetting.get()); // R6
 					} else {
-						ErrorOneMonth errorOneMonth = null;
-						AlarmOneMonth alarmOneMonth = null;
-						if (errorTimeInMonth != null){
-							errorOneMonth = new ErrorOneMonth(errorTimeInMonth.getErrorTime().v());
-							alarmOneMonth = new AlarmOneMonth(errorTimeInMonth.getAlarmTime().v());
-						}
-						val newAgr36MonthSetting = new AgreementMonthSetting(
-								applicantID,
-								yearMonth,
-								errorOneMonth,
-								alarmOneMonth
-						);
-						require.addYearMonthSetting(newAgr36MonthSetting);
+						val newAgr36MonthSetting = new AgreementMonthSetting(empId, yearMonth, errorTimeInMonth);
+						require.addYearMonthSetting(newAgr36MonthSetting); // R5
 					}
 
 				} else if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_YEAR) {
 					val oneYearTime = appTime.getOneYearTime();
-					val year = oneYearTime.get().getYear();
-					val errorTimeInYear = oneYearTime.isPresent()? oneYearTime.get().getErrorTimeInYear() : null;
-					val existingAgr36YearSetting = require.getYearSetting(applicantID, year);
+					val year = oneYearTime.isPresent()? oneYearTime.get().getYear(): new Year(1);
+					val errorTimeInYear = oneYearTime.isPresent() ? oneYearTime.get().getErrorTimeInYear() : null;
+					val existingAgr36YearSetting = require.getYearSetting(empId, year); // R3
 					if (existingAgr36YearSetting.isPresent()) {
 						require.updateYearSetting(existingAgr36YearSetting.get());
 					} else {
-						ErrorOneYear errorOneYear = null;
-						AlarmOneYear alarmOneYear = null;
-						if (errorTimeInYear != null) {
-							errorOneYear = new ErrorOneYear(errorTimeInYear.getErrorTime().v());
-							alarmOneYear = new AlarmOneYear(errorTimeInYear.getAlarmTime().v());
-
-						}
-						val agr36YearSetting = new AgreementYearSetting(
-								applicantID,
-								year.v(),
-								errorOneYear,
-								alarmOneYear);
-
-						require.addYearSetting(agr36YearSetting);
+						val agr36YearSetting = new AgreementYearSetting(empId, year.v(), errorTimeInYear);
+						require.addYearSetting(agr36YearSetting); // R7
 					}
 				}
 			}

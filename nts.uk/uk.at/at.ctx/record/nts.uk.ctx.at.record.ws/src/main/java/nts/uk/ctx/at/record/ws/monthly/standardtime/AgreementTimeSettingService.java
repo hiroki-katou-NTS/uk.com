@@ -5,6 +5,10 @@ import nts.uk.ctx.at.record.app.command.monthly.standardtime.classification.*;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTimeCompanyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTimeCompanyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.employment.*;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace.*;
 
 import javax.inject.Inject;
@@ -45,6 +49,12 @@ public class AgreementTimeSettingService extends WebService {
 
     @Inject
     private DeleteTimeClassificationCommandHandler deleteClassification;
+
+    @Inject
+    private UpdateAgreeOperationSetCommandHandler updateOperationSet;
+
+    @Inject
+    private UpdateAgreeUnitSetCommandHandler updateUnit;
 
     @POST
     @Path("company/add")
@@ -89,21 +99,33 @@ public class AgreementTimeSettingService extends WebService {
     }
 
     @POST
-    @Path("Classification/add")
+    @Path("classification/add")
     public void addClassification(RegisterTimeClassificationCommand command) {
         this.addClassification.handle(command);
     }
 
     @POST
-    @Path("Classification/copy")
+    @Path("classification/copy")
     public void copyClassification(CopyTimeClassificationCommand command) {
         this.copyClassification.handle(command);
     }
 
     @POST
-    @Path("Classification/delete")
+    @Path("classification/delete")
     public void deleteClassification(DeleteTimeClassificationCommand command) {
         this.deleteClassification.handle(command);
+    }
+
+    @POST
+    @Path("operationSet/update")
+    public void updateOperationSet(UpdateAgreeOperationSetCommand command) {
+        this.updateOperationSet.handle(command);
+    }
+
+    @POST
+    @Path("unit/update")
+    public void updateUnit(UpdateAgreeUnitSetCommand command) {
+        this.updateUnit.handle(command);
     }
 
 }

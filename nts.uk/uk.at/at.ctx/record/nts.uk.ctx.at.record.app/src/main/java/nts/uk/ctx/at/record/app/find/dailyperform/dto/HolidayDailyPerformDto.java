@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.OverSalaryOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 
 /** 日別実績の休暇 */
@@ -51,6 +52,11 @@ public class HolidayDailyPerformDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = ABSENCE)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer absence;
+
+	/** 振休 */
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = TRANSFER_HOLIDAY)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private Integer transferHoliday;
 	
 	@Override
 	public HolidayDailyPerformDto clone() {
@@ -60,7 +66,7 @@ public class HolidayDailyPerformDto implements ItemConst {
 											compensatoryLeave == null ? null : compensatoryLeave.clone(), 
 											retentionYearly, 
 											timeDigestionVacation == null ? null : timeDigestionVacation.clone(), 
-											absence);
+											absence, transferHoliday);
 	}
 	
 	public static HolidayDailyPerformDto from(HolidayOfDaily domain) {
@@ -71,7 +77,8 @@ public class HolidayDailyPerformDto implements ItemConst {
 					HolidayUseTimeDto.from(domain.getSubstitute()), 
 					domain.getYearlyReserved() == null ? null : fromTime(domain.getYearlyReserved().getUseTime()), 
 					TimeDigestionVacationDailyPerformDto.from(domain.getTimeDigest()), 
-					domain.getAbsence() == null ? null : fromTime(domain.getAbsence().getUseTime()));
+					domain.getAbsence() == null ? null : fromTime(domain.getAbsence().getUseTime()),
+					domain.getTransferHoliday() == null ? null : fromTime(domain.getTransferHoliday().getUseTime()));
 	}
 
 	public HolidayOfDaily toDomain() {
@@ -82,7 +89,8 @@ public class HolidayDailyPerformDto implements ItemConst {
 						: compensatoryLeave.toSubstituteHoliday(),
 				excessSalaries == null ? new OverSalaryOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : excessSalaries.toOverSalary(), 
 				specialHoliday == null ? new SpecialHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : specialHoliday.toSpecialHoliday(),
-				annualLeave == null ? new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : annualLeave.toAnnualOfDaily());
+				annualLeave == null ? new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : annualLeave.toAnnualOfDaily(),
+				new TransferHolidayOfDaily(new AttendanceTime(transferHoliday == null ? 0 : transferHoliday)));
 	}
 	
 	public static HolidayOfDaily defaulDomain() {
@@ -92,7 +100,8 @@ public class HolidayDailyPerformDto implements ItemConst {
 									new SubstituteHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) ,
 									new OverSalaryOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO), 
 									new SpecialHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO),
-									new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO));
+									new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO),
+									new TransferHolidayOfDaily(AttendanceTime.ZERO));
 	}
 	
 	private static Integer fromTime(AttendanceTime time) {

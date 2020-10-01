@@ -16,19 +16,10 @@ public class Kmk008AWebservice {
     @Inject
     private AgreeOpeSetScreenProcessor agreeOpeSetScreenProcessor;
 
-    @Inject
-    private PerformInitDisplayProcessor performInitDisplayProcessor;
-
     @POST
     @Path("get")
     public AgreementOperationSettingDto getAgreeOpeSetting() {
         return this.agreeOpeSetScreenProcessor.findDataAgreeOpeSet();
-    }
-
-    @POST
-    @Path("getInitDisplay")
-    public AgreementOperationSettingDto getInitDisplay() {
-        return this.performInitDisplayProcessor.find();
     }
 
 }

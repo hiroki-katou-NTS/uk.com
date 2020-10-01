@@ -19,8 +19,8 @@ public class Kmk008FWebservice {
 
     @POST
     @Path("getMonthSetting")
-    public AgreementMonthSettingDto getAgreeMonthSetting(Request requestMonth) {
-        return this.agreeMonthSetScreenProcessor.find(requestMonth);
+    public AgreementMonthSettingDto getAgreeMonthSetting(Request request) {
+        return this.agreeMonthSetScreenProcessor.find(request);
     }
 
     @POST

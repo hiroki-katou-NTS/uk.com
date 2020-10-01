@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
@@ -33,7 +33,7 @@ public class AnnualAppCreate {
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult create(
+	public static AppCreationResult create(
 			Require require,
 			String cid,
 			String empId,
@@ -57,9 +57,9 @@ public class AnnualAppCreate {
 				cid,
 				annualAppContent.getApplicant(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
-		val oneYear = setting.getBasicAgreementSetting().getOneYear();
+		val oneYear = setting.getOneYear();
 
 		// $エラー結果
 		val errResult = oneYear.checkErrorTimeExceeded(annualAppContent.getErrTime());
@@ -75,10 +75,10 @@ public class AnnualAppCreate {
 		}
 
 		// 申請内容.アラーム時間
-		annualAppContent.setAlarmTime(oneYear.getBasicSetting().calculateAlarmTime(annualAppContent.getErrTime()));
+		annualAppContent.setAlarmTime(oneYear.getBasic().calcAlarmTime(annualAppContent.getErrTime()));
 
 		// $申請
-		val app = this.createAnnualApp(
+		val app = createAnnualApp(
 				empId,
 				annualAppContent,
 				optApproverItem.get().getApproverList(),
@@ -109,7 +109,7 @@ public class AnnualAppCreate {
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 36協定特別条項の適用申請
 	 */
-	private SpecialProvisionsOfAgreement createAnnualApp(
+	private static SpecialProvisionsOfAgreement createAnnualApp(
 			String applicantId,
 			AnnualAppContent annualAppContent,
 			List<String> approverList,
@@ -117,7 +117,7 @@ public class AnnualAppCreate {
 			ScreenDisplayInfo screenDisplayInfo) {
 
 		// $エラーアラーム
-		val errorArlarmTime = new ErrorTimeInYear(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
+		val errorArlarmTime = new OneYearErrorAlarmTime(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
 
 		// $１年間時間
 		val oneYearTime = new OneYearTime(errorArlarmTime, annualAppContent.getYear());

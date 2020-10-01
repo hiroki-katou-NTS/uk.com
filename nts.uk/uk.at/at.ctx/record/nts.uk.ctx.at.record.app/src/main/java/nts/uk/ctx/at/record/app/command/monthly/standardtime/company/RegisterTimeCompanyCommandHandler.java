@@ -6,15 +6,19 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfCompanyDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
-import nts.uk.ctx.at.shared.dom.standardtime.*;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -35,31 +39,30 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<
     protected List<String> handle(CommandHandlerContext<RegisterTimeCompanyCommand> context) {
         RegisterTimeCompanyCommand command = context.getCommand();
 
-        val errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime(command.getErrorTimeMonth1())
+        val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth1())
                 , new AgreementOneMonthTime(command.getAlarmTimeMonth1()));
         AgreementOneMonthTime upperLimitTime = new AgreementOneMonthTime(command.getUpperLimitTimeMonth1());
 
-        val basicSettingMonth = new OneMonthTime(errorTimeInMonth, upperLimitTime);
+        val basicSettingMonth = OneMonthTime.of(errorTimeInMonth, upperLimitTime);
 
-        val errorTimeInMonthUpper = new ErrorTimeInMonth(new AgreementOneMonthTime(command.getErrorTimeMonth2())
+        val errorTimeInMonthUpper = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth2())
                 , new AgreementOneMonthTime(command.getAlarmTimeMonth2()));
         val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getUpperLimitTimeMonth2());
-        val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
+        val upperLimitDueToSpecialProvisionsMonth = OneMonthTime.of(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
 
-        val errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime(command.getErrorTimeYear1())
+        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear1())
                 , new AgreementOneYearTime(command.getAlarmTimeYear1()));
         val upperLimitYear = new AgreementOneYearTime(command.getUpperLimitTimeYear1());
-        val basicSettingYear = new OneYearTime(errorTimeInYear, upperLimitYear);
+        val basicSettingYear = OneYearTime.of(errorTimeInYear, upperLimitYear);
 
-        val errorTimeInYearUpper = new ErrorTimeInYear(new AgreementOneYearTime(command.getErrorTimeYear2())
+        val errorTimeInYearUpper = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear2())
                 , new AgreementOneYearTime(command.getAlarmTimeYear2()));
-        val upperLimitTimeYearUpper = new AgreementOneYearTime(command.getUpperLimitTimeYear2());
-        val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper, upperLimitTimeYearUpper);
 
         BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
-                new AgreementsOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),
-                new AgreementsOneYear(basicSettingYear, upperLimitDueToSpecialProvisionsYear),
-                new AgreementsMultipleMonthsAverage(errorTimeInMonth), EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), TimeOverLimitType.class));
+                new AgreementOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),
+                new AgreementOneYear(errorTimeInYearUpper,basicSettingYear),
+                new AgreementMultiMonthAvg(errorTimeInMonth),
+                EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
         Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.find(AppContexts.user().companyId(),
                 EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));

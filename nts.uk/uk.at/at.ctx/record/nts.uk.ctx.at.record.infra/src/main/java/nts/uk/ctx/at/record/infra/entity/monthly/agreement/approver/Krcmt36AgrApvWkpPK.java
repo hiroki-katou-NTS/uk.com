@@ -30,11 +30,6 @@ public class Krcmt36AgrApvWkpPK implements Serializable {
 
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CID")
-	public String cid;
-
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "WKP_ID")
 	public String workplaceID;
 
@@ -46,8 +41,7 @@ public class Krcmt36AgrApvWkpPK implements Serializable {
 
 	@StaticMetamodel(Krcmt36AgrApvWkpPK.class)
 	public static class Meta_ {
-		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> cid;
-		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> wkpId;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> workplaceID;
 		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, GeneralDate> startDate;
 	}
 }

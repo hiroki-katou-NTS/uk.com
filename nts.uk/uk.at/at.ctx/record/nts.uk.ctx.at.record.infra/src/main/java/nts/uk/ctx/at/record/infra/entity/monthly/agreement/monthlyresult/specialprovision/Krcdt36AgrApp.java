@@ -5,13 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.arc.time.YearMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -161,11 +155,11 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getApplicantsSID(),
                 domain.getApplicationTime().getTypeAgreement().value,
                 domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getYearMonth().v() : null,
-                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getErrorTime().v() : null,
-                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getAlarmTime().v() : null,
+                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getError().v() : null,
+                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getAlarm().v() : null,
                 domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getYear().v() : null,
-                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getErrorTime().v() : null,
-                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getAlarmTime().v() : null,
+                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getError().v() : null,
+                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getAlarm().v() : null,
                 domain.getReasonsForAgreement().v(),
                 domain.getApprovalStatusDetails().getApprovalStatus().value,
                 domain.getApprovalStatusDetails().getApproveSID().isPresent() ? domain.getApprovalStatusDetails().getApproveSID().get() : null,
@@ -237,24 +231,25 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
             ConfirmationStatusDetails item5 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus5, ConfirmationStatus.class),entity.confirmerSID5,entity.confirmDate5 == null ? Optional.empty() : Optional.of(entity.confirmDate5));
             confirmationStatusDetails.add(item5);
         }
-        OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(entity.monthErrorTime), new AgreementOneMonthTime(entity.monthAlarmTime)), new YearMonth(entity.yearMonth));
-        OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(entity.yearErrorTime), new AgreementOneYearTime(entity.yearAlarmTime)), new Year(entity.year));
-        ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(entity.typeAgreement, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
-        return new SpecialProvisionsOfAgreement(
-                entity.appID,
-                entity.enteredPersonSID,
-                entity.inputDate,
-                entity.applicantsSID,
-                applicationTime,
-                new ReasonsForAgreement(entity.reasonsForAgreement),
-                listApproveSID,
-                new ApprovalStatusDetails(EnumAdaptor.valueOf(entity.approvalStatus, ApprovalStatus.class),
-                        entity.approvalComment == null ? Optional.empty() : Optional.of(new AgreementApprovalComments(entity.approvalComment)),
-                        entity.approvalDate == null ? Optional.empty() : Optional.of(entity.approvalDate),
-                        entity.approveSID == null ? Optional.empty() :  Optional.of(entity.approveSID)),
-                confirmationStatusDetails,
-                new ScreenDisplayInfo()
-        );
+//        OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(entity.monthErrorTime), new AgreementOneMonthTime(entity.monthAlarmTime)), new YearMonth(entity.yearMonth));
+//        OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(entity.yearErrorTime), new AgreementOneYearTime(entity.yearAlarmTime)), new Year(entity.year));
+//        ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(entity.typeAgreement, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+//        return new SpecialProvisionsOfAgreement(
+//                entity.appID,
+//                entity.enteredPersonSID,
+//                entity.inputDate,
+//                entity.applicantsSID,
+//                applicationTime,
+//                new ReasonsForAgreement(entity.reasonsForAgreement),
+//                listApproveSID,
+//                new ApprovalStatusDetails(EnumAdaptor.valueOf(entity.approvalStatus, ApprovalStatus.class),
+//                        entity.approvalComment == null ? Optional.empty() : Optional.of(new AgreementApprovalComments(entity.approvalComment)),
+//                        entity.approvalDate == null ? Optional.empty() : Optional.of(entity.approvalDate),
+//                        entity.approveSID == null ? Optional.empty() :  Optional.of(entity.approveSID)),
+//                confirmationStatusDetails,
+//                new ScreenDisplayInfo()
+//        );
+        return null;
 
     }
 

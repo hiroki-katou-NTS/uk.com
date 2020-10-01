@@ -28,7 +28,6 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test01(){
 		assertThat(new Approver36AgrByWorkplace(
-				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
 				Helper.createApproverList(1),
@@ -39,7 +38,6 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test02(){
 		NtsAssert.businessException("Msg_1790", () -> new Approver36AgrByWorkplace(
-				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
 				Helper.createApproverList(0),
@@ -50,7 +48,6 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test03(){
 		NtsAssert.businessException("Msg_1791", () -> new Approver36AgrByWorkplace(
-				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
 				Helper.createApproverList(6),
@@ -61,7 +58,6 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test04(){
 		NtsAssert.businessException("Msg_1792", () -> new Approver36AgrByWorkplace(
-				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
 				Helper.createApproverList(1),
@@ -72,7 +68,6 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test05(){
 		assertThat(new Approver36AgrByWorkplace(
-				null,
 				null,
 				null,
 				Helper.createApproverList(1),

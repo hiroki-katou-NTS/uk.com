@@ -121,12 +121,19 @@ module nts.uk.at.view.kaf022.b.viewmodel {
     }
 
     class OvertimeLeaveAppCommonSetting {
+        // 事前超過表示設定
         preExcessDisplaySetting: KnockoutObservable<number>;
+        // 時間外超過区分
         extratimeExcessAtr: KnockoutObservable<number>;
+        // 時間外表示区分
         extratimeDisplayAtr: KnockoutObservable<number>;
+        // 実績超過区分
         performanceExcessAtr: KnockoutObservable<number>;
+        // 登録時の指示時間超過チェック
         checkOvertimeInstructionRegister: KnockoutObservable<number>;
+        // 登録時の乖離時間チェック
         checkDeviationRegister: KnockoutObservable<number>;
+        // 実績超過打刻優先設定
         overrideSet: KnockoutObservable<number>;
 
         constructor(otLeaveAppCommonSet?: any) {
@@ -141,11 +148,17 @@ module nts.uk.at.view.kaf022.b.viewmodel {
     }
 
     class AppDetailSetting {
+        // 指示が必須
         requiredInstruction: KnockoutObservable<number>;
+        // 事前必須設定
         preRequireSet: KnockoutObservable<number>;
+        // 時間入力利用区分
         timeInputUse: KnockoutObservable<number>;
+        // 時刻計算利用区分
         timeCalUse: KnockoutObservable<number>;
+        // 出退勤時刻初期表示区分
         atworkTimeBeginDisp: KnockoutObservable<number>;
+        // 退勤時刻がない時システム時刻を表示するか
         dispSystemTimeWhenNoWorkTime: KnockoutObservable<number>;
 
         constructor(appDetailSetting?: any) {
@@ -159,14 +172,23 @@ module nts.uk.at.view.kaf022.b.viewmodel {
     }
 
     class OvertimeAppReflect {
+        // 実績の勤務情報へ反映する
         reflectActualWorkAtr: KnockoutObservable<number>;
+        // 勤務情報、出退勤を反映する
         reflectWorkInfoAtr: KnockoutObservable<number>;
+        // 残業時間を実績項目へ反映する
         reflectActualOvertimeHourAtr: KnockoutObservable<number>;
+        // 休憩を反映する
         reflectBeforeBreak: KnockoutObservable<number>;
+        // 出退勤を反映する
         workReflect: KnockoutObservable<number>;
+        // 加給時間を反映する
         reflectPaytime: KnockoutObservable<number>;
         reflectOptional: KnockoutObservable<number>;
+        // reflectOptional: KnockoutObservable<number>;
+        // 乖離理由を反映する
         reflectDivergence: KnockoutObservable<number>;
+        // 休憩を反映する
         reflectBreakOuting: KnockoutObservable<number>;
 
         constructor(overtimeAppReflect?: any) {
@@ -176,7 +198,7 @@ module nts.uk.at.view.kaf022.b.viewmodel {
             this.reflectBeforeBreak = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBeforeBreak : 1);
             this.workReflect = ko.observable(overtimeAppReflect ? overtimeAppReflect.workReflect : 1);
             this.reflectPaytime = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectPaytime : 1);
-            this.reflectOptional = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectOptional : 1);
+            // this.reflectOptional = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectOptional : 1);
             this.reflectDivergence = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectDivergence : 1);
             this.reflectBreakOuting = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBreakOuting : 1);
         }

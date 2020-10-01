@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.employment;
 
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 
 /**
  * 選択した雇用の目安時間設定を別の雇用へ複写する

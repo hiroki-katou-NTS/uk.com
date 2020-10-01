@@ -9,24 +9,24 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 /**
- * ３６協定運用設定を更新する
+ * 運用設定を更新登録する
  */
 @Getter
 public class UpdateAgreeOperationSetCommand {
-
-	// 会社ID 1
-	private  String companyId;
 
 	// ３６協定起算月
 	private int startingMonth;
 
 	// 締め日
-	private GeneralDate closureDate;
+	private int closureDay;
+
+	// 締め日
+	private Boolean lastDayOfMonth;
 
 	//特別条項申請を使用する
 	private Boolean specicalConditionApplicationUse;
 
 	// 年間の特別条項申請を使用する
-	private boolean yearSpecicalConditionApplicationUse;
+	private Boolean yearSpecicalConditionApplicationUse;
 
 }
