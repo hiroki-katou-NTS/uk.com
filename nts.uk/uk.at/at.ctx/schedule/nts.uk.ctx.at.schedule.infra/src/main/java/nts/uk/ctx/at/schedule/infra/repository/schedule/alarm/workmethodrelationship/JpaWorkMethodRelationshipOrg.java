@@ -14,6 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
@@ -100,7 +101,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	@Override
 	public void deleteWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod) {
 		
-		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() ==  WorkMethodClassfication.ATTENDANCE ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
 					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
@@ -141,7 +142,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	@Override
 	public Optional<WorkMethodRelationshipOrganization> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg,
 			WorkMethod prevWorkMethod) {
-		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() ==  WorkMethodClassfication.ATTENDANCE ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
 					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
@@ -176,7 +177,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 			List<WorkMethod> prevWorkMethodList) {
 		
 		List<String> prevWorkTimeCodeList = prevWorkMethodList.stream().map( p -> 
-			p.getWorkMethodClassification().isAttendance() ? 
+		  p.getWorkMethodClassification() ==  WorkMethodClassfication.ATTENDANCE? 
 					((WorkMethodAttendance) p).getWorkTimeCode().v() : 
 					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE
 		).collect(Collectors.toList());
@@ -203,7 +204,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	@Override
 	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod) {
 		
-		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() ==  WorkMethodClassfication.ATTENDANCE?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
 					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 				
