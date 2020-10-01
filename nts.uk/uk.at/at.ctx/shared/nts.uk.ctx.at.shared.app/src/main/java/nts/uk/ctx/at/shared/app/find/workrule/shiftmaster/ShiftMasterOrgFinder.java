@@ -95,6 +95,8 @@ public class ShiftMasterOrgFinder {
 		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
 		
 		shiftMasters.forEach(shiftMaster -> {
+			shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replace('~', '～'));
+			shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replace('~', '～'));
 			if(!StringUtils.isEmpty(shiftMaster.getWorkTimeCd())) {
 				Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
 				
