@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSettingRepository;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtOutputPeriodSet;
+import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtOutputPeriodSetPk;
 
 @Stateless
 public class JpaOutputPeriodSettingRepository extends JpaRepository implements OutputPeriodSettingRepository {
@@ -35,10 +36,14 @@ public class JpaOutputPeriodSettingRepository extends JpaRepository implements O
 	}
 
 	@Override
-	public void update(OutputPeriodSetting domain) {
+	public void update(String cid, String conditionSetCd, OutputPeriodSetting domain) {
 		// Convert data to entity
 		OiomtOutputPeriodSet entity = JpaOutputPeriodSettingRepository.toEntity(domain);
-		OiomtOutputPeriodSet oldEntity = this.queryProxy().find(entity.getPk(), OiomtOutputPeriodSet.class).get();
+		OiomtOutputPeriodSetPk pk = OiomtOutputPeriodSetPk.builder()
+				.cId(cid)
+				.conditionSetCd(conditionSetCd)
+				.build();
+		OiomtOutputPeriodSet oldEntity = this.queryProxy().find(pk, OiomtOutputPeriodSet.class).get();
 		oldEntity.setPeriodSetting(entity.getPeriodSetting());
 		oldEntity.setClosureDayAtr(entity.getClosureDayAtr());
 		oldEntity.setBaseDateClassification(entity.getBaseDateClassification());
