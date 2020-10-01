@@ -1,0 +1,8 @@
+#sidebar-area ~ div {
+    float: left;
+    width: calc(100vw - 140px);
+}
+
+.custom-class {
+    padding: 5px;
+}
