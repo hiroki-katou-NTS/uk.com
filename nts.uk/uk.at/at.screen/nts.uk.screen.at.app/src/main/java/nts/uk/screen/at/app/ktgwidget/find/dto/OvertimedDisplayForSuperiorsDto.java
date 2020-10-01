@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 
@@ -23,7 +24,7 @@ public class OvertimedDisplayForSuperiorsDto {
 	private List<PersonEmpBasicInfoImport> personalInformationOfSubordinateEmployees;
 	
 	//	配下社員の時間外時間
-	private List<AgreementTimeList36> overtimeOfSubordinateEmployees;
+	private List<AgreementTimeOfManagePeriodDto> overtimeOfSubordinateEmployees;
 	
 	//	翌月の締め情報
 	private CurrentClosingPeriodExport closingInformationForNextMonth;

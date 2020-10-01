@@ -15,25 +15,28 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -42,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
@@ -68,9 +70,6 @@ public class KTG027QueryProcessor {
 
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	@Inject
-	private SearchEmployeeService searchEmployeeService;
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
@@ -87,8 +86,6 @@ public class KTG027QueryProcessor {
 	@Inject
 	private GetSpecifyPeriod getSpecifyPeriod;
 	
-	@Inject
-	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
@@ -184,46 +181,6 @@ public class KTG027QueryProcessor {
 			}
 		}
 		
-		/** TODO: 36協定時間対応により、コメントアウトされた */
-		// (Lấy worktime ngoài period) lấy RequestList 333
-//		List<AgreementTimeDetail> listAgreementTimeDetail = GetAgreementTime.get(
-//				requireService.createRequire(), new CacheCarrier(),
-//				companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
-//		
-//		if (listAgreementTimeDetail.isEmpty()) {
-//			throw new BusinessException("Msg_1138");
-//		}
-//		
-//		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail){
-//			if (agreementTimeDetail.getErrorMessage().isPresent()){
-//				throw new BusinessException("Msg_1138");
-//			}
-//		}
-		
-		// (Set thông tin công việc ngoài giờ đã lấy)
-//		List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		// Lay Request61
-//		List<PersonEmpBasicInfoImport> listEmpBasicInfoImport = empEmployeeAdapter.getPerEmpBasicInfo(lstEmpID);
-//		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail) {
-//			Optional<PersonEmpBasicInfoImport> personInfor = listEmpBasicInfoImport.stream().filter(c -> c.getEmployeeId().equals(agreementTimeDetail.getEmployeeId())).findFirst();
-//			if (!personInfor.isPresent()) {
-//				break;
-//			}
-//			AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(personInfor.get().getEmployeeCode(), personInfor.get().getBusinessName(), null,
-//					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getConfirmed().isPresent()? 0 : agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
-//							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
-//							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
-//							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v() :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
-//							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
-//							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getStatus().value),
-//					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getAfterAppReflect().isPresent()? 0 : agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),
-//							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitErrorTime().v(),
-//							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getLimitAlarmTime().v(),
-//							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitErrorTime().get().v()),
-//							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : (!agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getAfterAppReflect().get().getExceptionLimitAlarmTime().get().v()),
-//							!agreementTimeDetail.getAfterAppReflect().isPresent() ? 0 : agreementTimeDetail.getAfterAppReflect().get().getStatus().value));
-//			data.add(agreementTimeList36);
-//		}
 		
 		data.sort((a, b) ->
 			 {
@@ -237,26 +194,7 @@ public class KTG027QueryProcessor {
 
 		return new OvertimeHours(null, data);
 	}
-	
-	/** TODO: 36協定時間対応により、コメントアウトされた */
-//	public boolean displayItem(List<AgreementTimeDetail> listAgreementTimeDetail, GeneralDate targetMonth) {
-//		// �６協定申請を使用するかどぁ�チェヂ�(Check có sủ dụng đơn xin hiệp ddinh36 ko)
-//		// 一旦常に「使用する�mặc định la 「sử dungj - 使用する�)
-//		// �６協定申請を使用する権限があるかどぁ�チェヂ�(check xem có quyển sử dụng đơn hiệp định 36
-//		// ko) 一旦常に「使用する�mặc định la 「sử dungj - 使用する�)
-//		// 対象月が過去月かどぁ�チェヂ�(Check targetMonth có phải l� tháng quá khứ ko)
-//		for (AgreementTimeDetail agreeTime : listAgreementTimeDetail) {
-//			if (!GeneralDate.today().after(targetMonth) == true) {
-//				if (agreeTime.getAfterAppReflect().get().getStatus().value == 1 || agreeTime.getAfterAppReflect().get().getStatus().value == 2) {
-//					return true;
-//				}
-//				return true;
-//			} else
-//				return false;
-//		}
-//		return false;
-//
-//	}
+
 
 	public List<ClosureResultModel> getListClosure() {
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
@@ -434,7 +372,6 @@ public class KTG027QueryProcessor {
 		String cID = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
 		Optional<DatePeriod> referencePeriod;
-		List<AgreementTimeList36> lstAgreementTimeList36 = new ArrayList<AgreementTimeList36>();
 		if (referencePeriodParam.isPresent()) {
 			// 基準期間＝INPUT．基準期間
 			referencePeriod = referencePeriodParam;
@@ -458,36 +395,14 @@ public class KTG027QueryProcessor {
 		// 社員ID(List)から個人社員基本情報を取得
 		List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
 		// 指定する年月と指定する社員の時間外時間の取得
-		List<AgreementTimeDetail> listAgreementTimeDetail = this.getOvertimeByEmployee(lstEmployeeId, targetDate,
-				referencePeriod.get().end());
-
-		for (AgreementTimeDetail item : listAgreementTimeDetail) {
-			Optional<PersonEmpBasicInfoImport> personInfor = listPersonEmp.stream()
-					.filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
-			if (!personInfor.isPresent()) {
-				break;
-			}
-			AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(item.getEmployeeId(), personInfor.get().getBusinessName(), null,
-					new AgreementTimeOfMonthlyDto(!item.getConfirmed().isPresent()? 0 : item.getConfirmed().get().getAgreementTime().v(),
-							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getLimitErrorTime().v(),
-							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getLimitAlarmTime().v(),
-							!item.getConfirmed().isPresent() ? 0 : (!item.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? item.getConfirmed().get().getLimitErrorTime().v() :item.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
-							!item.getConfirmed().isPresent() ? 0 : (!item.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :item.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
-							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getStatus().value),
-					new AgreementTimeOfMonthlyDto(!item.getAfterAppReflect().isPresent()? 0 : item.getAfterAppReflect().get().getAgreementTime().v(),
-							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getLimitErrorTime().v(),
-							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getLimitAlarmTime().v(),
-							!item.getAfterAppReflect().isPresent() ? 0 : (!item.getAfterAppReflect().get().getExceptionLimitErrorTime().isPresent() ? 0 :item.getAfterAppReflect().get().getExceptionLimitErrorTime().get().v()),
-							!item.getAfterAppReflect().isPresent() ? 0 : (!item.getAfterAppReflect().get().getExceptionLimitAlarmTime().isPresent() ? 0 :item.getAfterAppReflect().get().getExceptionLimitAlarmTime().get().v()),
-							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getStatus().value));
-			lstAgreementTimeList36.add(agreementTimeList36);
-		}
+		List<AgreementTimeOfManagePeriodDto> listAgreementTimeDetail = this.getOvertimeByEmployee(lstEmployeeId, targetDate,
+				referencePeriod);
 		// OUTPUT：
 		// List＜個人社員基本情報＞
 		// List＜管理期間の36協定時間＞
 		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
 				.personalInformationOfSubordinateEmployees(listPersonEmp)
-				.OvertimeOfSubordinateEmployees(lstAgreementTimeList36).build();
+				.OvertimeOfSubordinateEmployees(listAgreementTimeDetail).build();
 		return result;
 	}
 	 
@@ -498,46 +413,31 @@ public class KTG027QueryProcessor {
 	 * @param endDate
 	 * @return
 	 */ 
-	public List<AgreementTimeDetail> getOvertimeByEmployee(List<String> lstEmployeeId, YearMonth targetDate,
-			GeneralDate endDate) {
+	public List<AgreementTimeOfManagePeriodDto> getOvertimeByEmployee(List<String> lstEmployeeId, YearMonth targetDate,
+			Optional<DatePeriod> datePeriod) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
-		List<AgreementTimeDetail> listAgreementTimeDetail = new ArrayList<AgreementTimeDetail>();
+		List<AgreementTimeOfManagePeriod> listAgreementTimeDetail = new ArrayList<AgreementTimeOfManagePeriod>();
 		for (String empCode : lstEmployeeId) {
 			// 社員に対応する処理締めを取得する
 			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, empCode, baseDate);
 			// [取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
 			if (closure != null) {
 				if (closure.getClosureMonth().getProcessingYm().lessThanOrEqualTo(targetDate)) {
-					// sau khi có update cần phải sửa
 					// 【NO.333】36協定時間の取得:
-					List<AgreementTimeDetail> lstAgreementTimeDetail = GetAgreementTime.get(
-							requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate,
-							closure.getClosureId());
-					if (lstAgreementTimeDetail.isEmpty()) {
-						throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
-					}
-					for (AgreementTimeDetail item : lstAgreementTimeDetail) {
-						listAgreementTimeDetail.add(item);
-					}
+					AgreementTimeOfManagePeriod AgreementTimeDetail = GetAgreementTime.get(require, empCode, targetDate, new ArrayList<>(), targetDate.lastGeneralDate(), ScheRecAtr.SCHEDULE);
+					listAgreementTimeDetail.add(AgreementTimeDetail);
 				} else {
-					// 【NO.333】36協定時間の取得:
-					List<AgreementTimeDetail> lstAgreementTimeDetail = GetAgreementTime.get(
-							requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate,
-							closure.getClosureId());
-					if (lstAgreementTimeDetail.isEmpty()) {
-						throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
-					}
-					for (AgreementTimeDetail item : lstAgreementTimeDetail) {
-						listAgreementTimeDetail.add(item);
-					}
+					listAgreementTimeDetail = GetAgreementTimeOfMngPeriod.get(require, lstEmployeeId, 
+							new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
 				}
 			}
 		}
-
+		List<AgreementTimeOfManagePeriodDto> Result = listAgreementTimeDetail.stream().map(item -> AgreementTimeOfManagePeriodDto.from(item)).collect(Collectors.toList());
+		
 		// sủa lại sau khi có update 30/09
-		return listAgreementTimeDetail;
+		return Result;
 	}
 }

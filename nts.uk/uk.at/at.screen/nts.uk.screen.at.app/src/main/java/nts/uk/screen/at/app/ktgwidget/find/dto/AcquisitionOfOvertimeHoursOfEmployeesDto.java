@@ -3,6 +3,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 
 
@@ -14,5 +15,5 @@ public class AcquisitionOfOvertimeHoursOfEmployeesDto {
 	private List<PersonEmpBasicInfoImport> personalInformationOfSubordinateEmployees;
 	
 	//	配下社員の時間外時間
-	private List<AgreementTimeList36> OvertimeOfSubordinateEmployees;
+	private List<AgreementTimeOfManagePeriodDto> OvertimeOfSubordinateEmployees;
 }

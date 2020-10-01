@@ -50,17 +50,17 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     }
 
     // format number to HM
-    public genTime(data) {
+    public genTime(data: any) {
       return formatById("Clock_Short_HM", data);
     }
 
     // show chart
-    public genWidthByTime(data) {
+    public genWidthByTime(data: any) {
       return (data / 60) * 2 + "px";
     }
 
     // event when select item
-    public selectItem(item) {
+    public selectItem(item: any) {
       const vm = this;
       vm.selectedEmp = item;
     }
@@ -83,7 +83,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     }
 
     // event open screen KTG026
-    public openKTG026(item) {
+    public openKTG026(item: any) {
       let companyID: any = ko.observable(__viewContext.user.companyId);
       const vm = this;
       let paramKTG026 = {
@@ -100,7 +100,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     }
 
     // event open screen KDW003
-    public openKDW003(item) {
+    public openKDW003(item: any) {
       const vm = this;
       let paramKDW003 = {
         lstEmployeeShare: item.employeeCD,
