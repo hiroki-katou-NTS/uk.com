@@ -16,6 +16,18 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class WorkplaceCounter implements DomainAggregate{
 	
+	/**
+	 * カテゴリ一覧
+	 */
 	private Map<WorkplaceCounterCategory, NotUseAtr> categories;
+	
+	/**
+	 * 利用されているか
+	 * @param category　チェックしたいカテゴリ
+	 * @return
+	 */
+	public boolean isUsed(WorkplaceCounterCategory category) {
+		return this.categories.get(category) == NotUseAtr.USE;
+	}
 
 }

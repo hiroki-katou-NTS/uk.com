@@ -17,6 +17,19 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class OnePersonCounter implements DomainAggregate{
 
+	/**
+	 * カテゴリ一覧
+	 */
 	private Map<OnePersonCounterCategory, NotUseAtr> categories;
+	
+	/**
+	 * 利用されているか
+	 * @param category　チェックしたい個人計カテゴリ
+	 * @return
+	 */
+	public boolean isUsed(OnePersonCounterCategory category) {
+		return this.categories.get(category) == NotUseAtr.USE;
+	}
+	
 	
 }
