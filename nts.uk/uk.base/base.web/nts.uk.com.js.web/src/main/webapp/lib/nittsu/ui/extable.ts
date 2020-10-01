@@ -1530,7 +1530,7 @@ module nts.uk.ui.exTable {
                     }
                     
                     _.forEach(value, function(val: any, i: number) {
-                        if (innerIdx !== -1 && !_.isNil(innerIdx) && i !== innerIdx) return;
+//                        if (innerIdx !== -1 && !_.isNil(innerIdx) && i !== innerIdx) return;
                         let $c = $childCells[i];
                         if ($c.classList.contains(style.HIDDEN_CLS)) {
                             $.data($c, "hide", val);
@@ -1578,7 +1578,7 @@ module nts.uk.ui.exTable {
                         }
                         let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                         let mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
-                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
+//                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                             if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) { 
                                 touched = mTouch;
                                 touched.idx = i;
@@ -1586,9 +1586,9 @@ module nts.uk.ui.exTable {
                             } else if (touched && touched.dirty && mTouch && mTouch.dirty) {
                                 touched.idx = -1;
                             } else touched = mTouch;
-                        } else if (i === innerIdx) {
-                            touched = mTouch;
-                        }
+//                        } else if (i === innerIdx) {
+//                            touched = mTouch;
+//                        }
                         
                         if (mTouch && !mTouch.dirty) {
                             events.popChange(x, rowIdx, cellObj);
@@ -3012,27 +3012,27 @@ module nts.uk.ui.exTable {
                         events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
                     }
                 }
-            } else if (cData && cData.constructor === Object) {
-                if (innerIdx !== -1 && !_.isNil(innerIdx)) {
-                    let fieldArr = viewFn(viewMode);
-                    let tField = fieldArr[innerIdx];
-                    gen.dataSource[rowIdx][columnKey][tField] = value[tField];
-                    if (tField.slice(-4) === "Name") {
-                        let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
-                        if (_.has(value, codeFieldName)) {
-                            gen.dataSource[rowIdx][columnKey][codeFieldName] = value[codeFieldName];
-                        }
-                    }
-                    
-                    if (!helper.isEqual(origDs[rowIdx][columnKey], value, [ tField ])) {
-                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
-                    }
-                } else {
-                    gen.dataSource[rowIdx][columnKey] = value;
-                    if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
-                    }
-                }
+//            } else if (cData && cData.constructor === Object) {
+//                if (innerIdx !== -1 && !_.isNil(innerIdx)) {
+//                    let fieldArr = viewFn(viewMode);
+//                    let tField = fieldArr[innerIdx];
+//                    gen.dataSource[rowIdx][columnKey][tField] = value[tField];
+//                    if (tField.slice(-4) === "Name") {
+//                        let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+//                        if (_.has(value, codeFieldName)) {
+//                            gen.dataSource[rowIdx][columnKey][codeFieldName] = value[codeFieldName];
+//                        }
+//                    }
+//                    
+//                    if (!helper.isEqual(origDs[rowIdx][columnKey], value, [ tField ])) {
+//                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+//                    }
+//                } else {
+//                    gen.dataSource[rowIdx][columnKey] = value;
+//                    if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
+//                        events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+//                    }
+//                }
             } else {
                 gen.dataSource[rowIdx][columnKey] = value;
                 if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
@@ -3071,8 +3071,9 @@ module nts.uk.ui.exTable {
                 || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
             let cData = gen.dataSource[rowIdx][columnKey];
             let opt = gen.options, fieldArr = opt.view(opt.viewMode);
-            if (!exTable.pasteOverWrite 
-                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData))) return;
+            if ((!exTable.pasteOverWrite 
+                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
+                || _.every(fieldArr, f => _.isNil(value[f]) || value[f] === "")) return;
             let changedData, clonedVal = _.cloneDeep(value);
             if (cData.constructor === Array) {
                 if (value.constructor === Array) {
@@ -3084,50 +3085,50 @@ module nts.uk.ui.exTable {
                     changedData = cData[innerIdx];
                     gen.dataSource[rowIdx][columnKey][innerIdx] = value;
                 }
-            } else if (_.isObject(cData)) {
-                if (!_.isObject(value)) return;
-                if (!_.isNil(innerIdx) && innerIdx !== -1) {
-                    let tField = fieldArr[innerIdx];
-                    changedData = _.cloneDeep(cData);
-                    if (!helper.isEmpty(clonedVal[tField])) {
-                        gen.dataSource[rowIdx][columnKey][tField] = clonedVal[tField];
-                        if (tField.slice(-4) === "Name") {
-                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
-                            if (_.has(clonedVal, codeFieldName)) {
-                                gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
-                            }
-                        }
-                    } else { 
-                        clonedVal[tField] = gen.dataSource[rowIdx][columnKey][tField];
-                        if (tField.slice(-4) === "Name") {
-                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
-                            if (_.has(clonedVal, codeFieldName)) {
-                                clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
-                            }
-                        }
-                    }
-                } else {
-                    changedData = _.cloneDeep(cData);
-                    _.forEach(fieldArr, f => {
-                        if (!helper.isEmpty(clonedVal[f]) {
-                            gen.dataSource[rowIdx][columnKey][f] = clonedVal[f];
-                            if (f.slice(-4) === "Name") {
-                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
-                                if (_.has(clonedVal, codeFieldName)) {
-                                    gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
-                                }
-                            }
-                        } else {
-                            clonedVal[f] = gen.dataSource[rowIdx][columnKey][f];
-                            if (f.slice(-4) === "Name") {
-                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
-                                if (_.has(clonedVal, codeFieldName)) {
-                                    clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
-                                }
-                            }
-                        }
-                    });
-                }
+//            } else if (_.isObject(cData)) {
+//                if (!_.isObject(value)) return;
+//                if (!_.isNil(innerIdx) && innerIdx !== -1) {
+//                    let tField = fieldArr[innerIdx];
+//                    changedData = _.cloneDeep(cData);
+//                    if (!helper.isEmpty(clonedVal[tField])) {
+//                        gen.dataSource[rowIdx][columnKey][tField] = clonedVal[tField];
+//                        if (tField.slice(-4) === "Name") {
+//                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+//                            if (_.has(clonedVal, codeFieldName)) {
+//                                gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
+//                            }
+//                        }
+//                    } else { 
+//                        clonedVal[tField] = gen.dataSource[rowIdx][columnKey][tField];
+//                        if (tField.slice(-4) === "Name") {
+//                            let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+//                            if (_.has(clonedVal, codeFieldName)) {
+//                                clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    changedData = _.cloneDeep(cData);
+//                    _.forEach(fieldArr, f => {
+//                        if (!helper.isEmpty(clonedVal[f])) {
+//                            gen.dataSource[rowIdx][columnKey][f] = clonedVal[f];
+//                            if (f.slice(-4) === "Name") {
+//                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
+//                                if (_.has(clonedVal, codeFieldName)) {
+//                                    gen.dataSource[rowIdx][columnKey][codeFieldName] = clonedVal[codeFieldName];
+//                                }
+//                            }
+//                        } else {
+//                            clonedVal[f] = gen.dataSource[rowIdx][columnKey][f];
+//                            if (f.slice(-4) === "Name") {
+//                                let codeFieldName = f.substr(0, f.length - 4) + "Code";
+//                                if (_.has(clonedVal, codeFieldName)) {
+//                                    clonedVal[codeFieldName] = gen.dataSource[rowIdx][columnKey][codeFieldName];
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
             } else {
                 changedData = _.cloneDeep(cData);
                 gen.dataSource[rowIdx][columnKey] = value;
@@ -3138,7 +3139,7 @@ module nts.uk.ui.exTable {
             }
             let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, sm);
             if (touched && touched.dirty) {
-                let cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
+                let cellObj = new selection.Cell(rowIdx, columnKey, changedData);
                 cellObj.setTarget(touched.updateTarget);
                 pushHistory($grid, [ cellObj ], txId);
                 events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
@@ -3164,14 +3165,15 @@ module nts.uk.ui.exTable {
                 if ((!exTable.pasteOverWrite 
                     && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
                     || helper.isDetCell($grid, rowIdx, key)
-                    || helper.isXCell($grid, pkVal, key, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                    || helper.isXCell($grid, pkVal, key, style.HIDDEN_CLS, style.SEAL_CLS)
+                    || _.every(fieldArr, f => _.isNil(srcVal[f]) || srcVal[f] === "")) {
                     src[key] = objVal;
                     delete origData[key];
                     return objVal;
                 }
                 
                 if (!util.isNullOrUndefined(src[key])) {
-                    if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
+                    /*if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
                         let srcValCloned = _.cloneDeep(srcVal), cellPartialUpdate = false;
                         _.forEach(fieldArr, (f, i) => {
                             if ((!exTable.pasteOverWrite && !helper.isEmpty(objVal[f]))
@@ -3197,7 +3199,7 @@ module nts.uk.ui.exTable {
                         });
                         
                         if (cellPartialUpdate) return srcValCloned;
-                    } else if (!helper.isEqual(src[key], obj[key])) {
+                    } else*/ if (!helper.isEqual(src[key], obj[key])) {
                         changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                     } else {
                         delete origData[key];
@@ -3917,29 +3919,30 @@ module nts.uk.ui.exTable {
                 }
                 
                 _.forEach(tx.items, function(item: any) {
-                    let currentItem = { rowIndex: item.rowIndex, columnKey: item.columnKey, innerIdx: item.innerIdx },
+                    let currentItem = { rowIndex: item.rowIndex, columnKey: item.columnKey, innerIdx: -1 },
                         data = ds[item.rowIndex];
                     if (!data) return;
-                    let undoItem;
-                    if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
-                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey && ci.innerIdx === item.innerIdx);
-                    } else {
-                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey);
-                    }
+//                    let undoItem;
+//                    if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
+//                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey && ci.innerIdx === item.innerIdx);
+//                    } else {
+//                        undoItem = _.find(currentItems, ci => ci.rowIndex === item.rowIndex && ci.columnKey === item.columnKey);
+//                    }
+//                    
+//                    if (undoItem) {
+//                        if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
+//                            let tField = fieldArr[item.innerIdx];
+//                            currentItem.value[tField] = undoItem.value[tField]; 
+//                        } else {
+//                            currentItem.value = undoItem.value;
+//                        }
+//                    } else {
+//                        currentItem.value = _.cloneDeep(data[item.columnKey]);
+//                    }
                     
-                    if (undoItem) {
-                        if (item.innerIdx !== -1 && !_.isNil(item.innerIdx)) {
-                            let tField = fieldArr[item.innerIdx];
-                            currentItem.value[tField] = undoItem.value[tField]; 
-                        } else {
-                            currentItem.value = undoItem.value;
-                        }
-                    } else {
-                        currentItem.value = _.cloneDeep(data[item.columnKey]);
-                    }
-                    
+                    currentItem.value = data[item.columnKey];
                     currentItems.push(currentItem);
-                    update.gridCell(self.$grid, item.rowIndex, item.columnKey, item.innerIdx, item.value, true);
+                    update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
                     internal.removeChange(self.$grid, item);
                 });
                 
@@ -3961,7 +3964,7 @@ module nts.uk.ui.exTable {
                 if (!redoStack || redoStack.length === 0) return;
                 let tx = redoStack.pop();
                 _.forEach(tx.items, function(item: any) {
-                    update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, item.innerIdx, item.value, tx.txId);
+                    update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
                 });
             }
             
@@ -8801,8 +8804,12 @@ module nts.uk.ui.exTable {
          */
         export function areSameCells(one: any, other: any) {
             if (parseInt(one.rowIndex) !== parseInt(other.rowIndex)
-                || one.columnKey !== other.columnKey
-                || one.innerIdx !== other.innerIdx) return false;
+                || one.columnKey !== other.columnKey) return false;
+            
+            if (one.innerIdx !== -1 && !_.isNil(one.innerIdx) 
+                && other.innerIdx !== -1 && !_.isNil(other.innerIdx)
+                && one.innerIdx !== other.innerIdx) return false;
+            
             return true;
         }
         

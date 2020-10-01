@@ -21,7 +21,7 @@ __viewContext.ready(function () {
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.symbol = symbol ? symbol : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯");
+            this.symbol = symbol ? symbol : (symbol === null ? null : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯"));
             this.startTime = startTime !== undefined ? startTime : "8:30";
             this.endTime = endTime !== undefined ? endTime : "17:30";
         }
@@ -87,7 +87,7 @@ __viewContext.ready(function () {
                 if (i <= 0) {
                     let d = 31 + i;
                     this["__" + d] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ");
-                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ" + this.empId);
+                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ" + this.empId, "6:00", "16:00", null);
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
@@ -221,7 +221,7 @@ __viewContext.ready(function () {
         }, {
             key: "_6", width: "150px", handlerType: "input", dataType: "label/label/time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"/*, ajaxValidate: { request: () => { let dfd = $.Deferred(); dfd.resolve("Good"); return dfd.promise();}, onValid: (a, b) => {alert(b);}, onFailed: () => {} }*/
         }, {
             key: "_8", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
@@ -540,7 +540,7 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "copyPaste",
+            updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
@@ -802,6 +802,7 @@ __viewContext.ready(function () {
             $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
                 if (innerIdx === 0) return { class: "red-text", background: "#cba" };
                 else if (innerIdx === 1) return { textColor: "#11BBAA", background: "#abc" };
+                else if (innerIdx === -1 || _.isNil(innerIdx)) return { textColor: "#11AABB", background: "red" };
             });
         });    
     
