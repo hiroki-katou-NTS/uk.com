@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.paymana;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.FurikyuMngDataExtractionService;
+//import javax.inject.Inject;
+//
+//import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.FurikyuMngDataExtractionService;
 
 @Stateless
 public class FurikyuMngDataExtractionFinder {
 
-	@Inject
-	private FurikyuMngDataExtractionService furikyuMngDataExtractionService;
+//	@Inject
+//	private FurikyuMngDataExtractionService furikyuMngDataExtractionService;
 	
 
 //	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(String empId, boolean isPeriod) {

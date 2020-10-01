@@ -352,9 +352,9 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.empty())
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.empty())
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
+						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
 						.build();
 				
@@ -390,9 +390,9 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(item.getRemainTimes().v()))
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.of(item.getComDayOffID()))
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0.0)
+						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
 						.build();
 				
@@ -427,9 +427,9 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.empty())
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(0.0)
+						.dayLetf(0d)
 						.remainingHours(Optional.of(0))
-						.usedDay(0.0)
+						.usedDay(0d)
 						.usedTime(0)
 						.build();
 				
@@ -454,9 +454,9 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.of(item.getID()))
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(0.0)
+						.dayLetf(0d)
 						.remainingHours(Optional.of(0))
-						.usedDay(0.0)
+						.usedDay(0d)
 						.usedTime(0)
 						.build();
 				

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,8 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -42,15 +39,6 @@ public class FurikyuMngDataExtractionService {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	
 	@Inject
-	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
-	
-	@Inject
-	private SysWorkplaceAdapter syWorkplaceAdapter;
-	
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
-	
-	@Inject
 	private EmpSubstVacationRepository empSubstVacationRepository;
 	
 	@Inject
@@ -64,71 +52,6 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private ClosureRepository closureRepo;
-	
-	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, boolean isPeriod) {
-		List<PayoutManagementData> payoutManagementData;
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
-		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = new ArrayList<PayoutSubofHDManagement>();
-		Double numberOfDayLeft;
-		int expirationDate;
-		Integer closureId;
-		String cid = AppContexts.user().companyId();
-		String empCD = null;
-		boolean haveEmploymentCode = false;
-		
-		// select 全ての状況empId
-		if(isPeriod) {
-			payoutManagementData = payoutManagementDataRepository.getAllBySid(sid);
-			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllBySid(sid);
-		// select 現在の残数状況
-		} else {
-			payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(sid);
-			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(sid);
-		}
-		
-		if (!payoutManagementData.isEmpty()){
-			List<String> listPayoutID = payoutManagementData.stream().map(x ->{
-				return x.getPayoutId();
-			}).collect(Collectors.toList());
-			
-//			payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
-		}
-		
-		if (!substitutionOfHDManagementData.isEmpty()){
-			List<String> listSubID = substitutionOfHDManagementData.stream().map(x ->{
-				return x.getSubOfHDID();
-			}).collect(Collectors.toList());
-			
-//			payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
-		}
-		
-		if (sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).isPresent()) {
-			empCD = sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).get().getEmploymentCode();
-		}
-		
-		if(empCD != null) {
-			haveEmploymentCode = true;
-		}
-		
-		numberOfDayLeft = getNumberOfDayLeft(sid);
-		expirationDate = getExpirationDate(sid, empCD);
-		closureId = getClosureId(sid, empCD);
-		
-		SWkpHistImport sWkpHistImport = null;
-		if(syWorkplaceAdapter.findBySid(sid, GeneralDate.today()).isPresent()) {
-			sWkpHistImport = syWorkplaceAdapter.findBySid(sid, GeneralDate.today()).get();
-		}
-		List<String> employeeIds = new ArrayList<>();
-		employeeIds.add(sid);
-		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
-		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
-		if (!employeeBasicInfo.isEmpty()){
-			personEmpBasicInfoImport = employeeBasicInfo.get(0);
-		}
-		
-		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
-	}
 	
 	public DisplayRemainingNumberDataInformation getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
 		String cid = AppContexts.user().companyId();
@@ -181,11 +104,11 @@ public class FurikyuMngDataExtractionService {
 				RemainInfoDto itemData = RemainInfoDto.builder()
 						.occurrenceId(item.getOccurrenceId().isPresent() ? item.getOccurrenceId().get() : null)
 						.occurrenceHour(item.getOccurrenceHour().isPresent() ? item.getOccurrenceHour().get() : 0)
-						.occurrenceDay(item.getOccurrenceDay().isPresent() ? item.getOccurrenceDay().get() : 0)
+						.occurrenceDay(item.getOccurrenceDay().isPresent() ? item.getOccurrenceDay().get() : 0d)
 						.accrualDate(item.getAccrualDate().isPresent() ? item.getAccrualDate().get().toString() :null)
 						.digestionId(item.getDigestionId().isPresent() ? item.getDigestionId().get() : "")
 						.digestionTimes(item.getDigestionTimes().isPresent() ? item.getDigestionTimes().get() : 0)
-						.digestionDays(item.getDigestionDays().isPresent() ? item.getDigestionDays().get() : 0)
+						.digestionDays(item.getDigestionDays().isPresent() ? item.getDigestionDays().get() : 0d)
 						.digestionDay(item.getDigestionDay().isPresent() ? item.getDigestionDay().get().toString() : "")
 						.legalDistinction(item.getLegalDistinction().isPresent() ? item.getLegalDistinction().get() : 0)
 						.remainingHours(item.getRemainingHours().isPresent() ? item.getRemainingHours().get() : 0)
