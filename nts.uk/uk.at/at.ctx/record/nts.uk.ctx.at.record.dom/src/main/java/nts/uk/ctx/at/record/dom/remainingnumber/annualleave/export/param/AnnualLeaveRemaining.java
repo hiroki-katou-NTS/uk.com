@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import java.util.List;
 import java.util.Optional;

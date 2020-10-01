@@ -42,7 +42,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 public class TestAnnualLeave {
 
 	// Requireクラス　（バイナリファイルからデータを読み込むテストクラス）
-	GetAnnLeaRemNumWithinPeriodProc.RequireM3 ｒequireM3;
+	nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.RequireM3 ｒequireM3;
 	
 	/** 上書き用の暫定年休管理データ */
 	private Map<String, List<TmpAnnualLeaveMngWork>> testDataForOverWriteListMap;

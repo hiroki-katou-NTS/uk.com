@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 
 /**
  * 年休積立年休の集計結果

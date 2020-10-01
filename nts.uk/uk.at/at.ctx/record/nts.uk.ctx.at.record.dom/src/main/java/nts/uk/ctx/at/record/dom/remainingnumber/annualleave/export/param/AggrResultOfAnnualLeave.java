@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 
 /**

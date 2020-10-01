@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,11 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;

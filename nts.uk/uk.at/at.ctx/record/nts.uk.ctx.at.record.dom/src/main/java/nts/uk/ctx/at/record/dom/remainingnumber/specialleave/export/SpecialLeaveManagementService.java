@@ -30,12 +30,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAtt
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.DividedDayEachProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM2;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM2;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveAggregatePeriodWork;
