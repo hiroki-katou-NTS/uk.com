@@ -25,7 +25,8 @@ public class MaxDayOfWorkTimeOrganizationTest {
 	
 	@Test
 	public void create_maxDayOfWorkTimeOrg_success() {
-		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
+		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");		
+		val workTimeCodes = Arrays.asList(new WorkTimeCode("001"),
 				new WorkTimeCode("002"),
 				new WorkTimeCode("003")
 				);
