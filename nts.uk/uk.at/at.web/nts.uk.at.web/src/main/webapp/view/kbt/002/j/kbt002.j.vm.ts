@@ -1,8 +1,15 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 module nts.uk.at.view.kbt002.j {
+
   import setShared = nts.uk.ui.windows.setShared;
   import getShared = nts.uk.ui.windows.getShared;
+
+  const API = {
+    findAll: "at/function/resultsperiod/findAll",
+    createAggrPeriod: "at/function/resultsperiod/save",
+    removeAggrPeriod: "at/function/resultsperiod/removeAggrPeriod"
+  };
 
   @bean()
   export class KBT002JViewModel extends ko.ViewModel {
@@ -67,7 +74,7 @@ module nts.uk.at.view.kbt002.j {
     public findAll() {
       const vm = this;
       vm.$blockui('grayout');
-      service.findAll()
+      vm.$ajax(API.findAll)
         .then((res: AggrPeriodDto[]) => vm.aggrPeriodList(res))
         .always(() => vm.$blockui('clear'));
     }
@@ -92,7 +99,7 @@ module nts.uk.at.view.kbt002.j {
           }
           if (vm.isNewMode()) {
             //ドメインモデル「任意集計期間」を登録する
-            return service.createAggrPeriod(command);
+            return vm.$ajax(API.createAggrPeriod, command);
           }
         })
         // 情報メッセージ（ID：Msg_15）を表示する
@@ -113,7 +120,7 @@ module nts.uk.at.view.kbt002.j {
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
             vm.$blockui('grayout');
-            service.removeAggrPeriod(vm.aggrFrameCode())
+            vm.$ajax(`${API.removeAggrPeriod}/${vm.aggrFrameCode()}`)
               .then(() => {
                 vm.$blockui('clear');
                 vm.$dialog.info({ messageId: "Msg_16" }).then(() => vm.findAll());
