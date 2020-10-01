@@ -117,7 +117,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
-                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === stickOrigData.shiftCode; });
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === data.shiftCode; });
                         if (workInfo.length > 0) {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
@@ -189,7 +189,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
-                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === stickOrigData.shiftCode; });
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === data.shiftCode; });
                         if (workInfo.length > 0) {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
