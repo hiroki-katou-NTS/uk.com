@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -11,6 +12,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
  */
 @Value
 @AllArgsConstructor
+/**
+ * 表示する実績内容
+ */
+@Data
 public class AchievementDto {
 
 	private String date;

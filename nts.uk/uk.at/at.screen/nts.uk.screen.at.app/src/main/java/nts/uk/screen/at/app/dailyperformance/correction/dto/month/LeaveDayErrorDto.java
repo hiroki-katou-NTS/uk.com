@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 
 @Data
 @NoArgsConstructor

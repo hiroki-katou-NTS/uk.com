@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerf
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 
 public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 
@@ -32,9 +33,23 @@ public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 	@Override
 	public void updateData(Object data) {
 		if(data != null){
-			EditStateOfDailyPerformance d = (EditStateOfDailyPerformance) data;
-			this.data.removeIf(es -> es.getAttendanceItemId() == d.getAttendanceItemId());
-			this.data.add(d);
+			try {
+				EditStateOfDailyPerformance d = (EditStateOfDailyPerformance) data;
+				this.data.removeIf(es -> es.getEditState().getAttendanceItemId() == d.getEditState().getAttendanceItemId());
+				this.data.add(d);
+			} catch (Exception e) {
+				EditStateOfDailyAttd d = (EditStateOfDailyAttd) data;
+				this.data.removeIf(es -> es.getEditState().getAttendanceItemId() == d.getAttendanceItemId());
+				this.data.add(new EditStateOfDailyPerformance(getEmployeeId(), getWorkDate(), d));
+			}
+		}
+	}
+	
+	public void updateDataNew(Object data) {
+		if(data != null){
+			EditStateOfDailyAttd d = (EditStateOfDailyAttd) data;
+			this.data.removeIf(es -> es.getEditState().getAttendanceItemId() == d.getAttendanceItemId());
+			this.data.add(new EditStateOfDailyPerformance(getEmployeeId(), getWorkDate(), d));
 		}
 	}
 	

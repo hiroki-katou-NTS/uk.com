@@ -15,11 +15,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	
 	@Inject
 	private AppHolidayWorkRepository appHdWorkRepository;
@@ -46,17 +46,17 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 		String companyId = AppContexts.user().companyId();
 		Map<String, AppHolidayWork> mapHd = new HashMap<>();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
-		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
-				ApplicationType.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.HOLIDAY_WORK_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
 		List<String> lstId = new ArrayList<>();
 		Map<GeneralDate, String> mapApp = new HashMap<>();
 		// 条件を元に、ドメインモデル「休日出勤申請」を取得する
 		//※同じ申請日の休日出勤申請が２件あった場合、入力日が後のもの（latest）だけ集計する
-		for (Application_New app : appHd) {
-			if(mapApp.containsKey(app.getAppDate())){
+		for (Application app : appHd) {
+			if(mapApp.containsKey(app.getAppDate().getApplicationDate())){
 				continue;
 			}
-			mapApp.put(app.getAppDate(), app.getAppID());
+			mapApp.put(app.getAppDate().getApplicationDate(),app.getAppID());
 			lstId.add(app.getAppID());
 		}
 		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstId);

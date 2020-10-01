@@ -7,9 +7,9 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.workplace;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

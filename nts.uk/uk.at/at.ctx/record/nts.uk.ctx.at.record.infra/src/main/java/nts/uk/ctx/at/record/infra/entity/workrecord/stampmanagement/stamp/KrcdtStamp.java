@@ -14,10 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -29,7 +27,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
@@ -202,8 +202,8 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 		this.lateNightOverTime = stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 				? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 				: null; // lateNightOverTime
-		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN) :null;
-		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN):null;
+		this.locationLon = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null):null;
+		this.locationLat = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null):null;
 		this.outsideAreaArt = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr()
 				: null;
 		return this;

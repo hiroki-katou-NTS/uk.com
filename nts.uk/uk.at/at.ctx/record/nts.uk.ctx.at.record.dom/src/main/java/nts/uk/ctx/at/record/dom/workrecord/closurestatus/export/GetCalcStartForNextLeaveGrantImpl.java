@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 
 /**
  * 次回年休付与を計算する開始日を取得する

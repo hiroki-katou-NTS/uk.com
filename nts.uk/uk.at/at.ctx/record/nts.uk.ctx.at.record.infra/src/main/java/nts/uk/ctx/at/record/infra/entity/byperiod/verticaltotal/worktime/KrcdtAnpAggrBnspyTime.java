@@ -12,10 +12,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -46,6 +46,18 @@ public class KrcdtAnpAggrBnspyTime extends UkJpaEntity implements Serializable {
 	/** 休出特定加給時間 */
 	@Column(name = "HDWK_SPEC_BNSPAY_TIME")
 	public int holidayWorkSpecificBonusPayTime;
+	/** 所定内加給時間 */
+	@Column(name = "BNSPAY_WITHIN_TIME")
+	public int withinTime;
+	/** 所定内特定加給時間 */
+	@Column(name = "BNSPAY_WITHIN_SPEC_TIME")
+	public int withinSpecTime;
+	/** 所定外加給時間 */
+	@Column(name = "BNSPAY_EXCESS_TIME")
+	public int excessTime;
+	/** 休出特定加給時間 */
+	@Column(name = "BNSPAY_EXCESS_SPEC_TIME")
+	public int excessSpecTime;
 
 	/** マッチング：任意期間別実績の勤怠時間 */
 	@ManyToOne
@@ -74,7 +86,11 @@ public class KrcdtAnpAggrBnspyTime extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.bonusPayTime),
 				new AttendanceTimeMonth(this.specificBonusPayTime),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime),
-				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime));
+				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime),
+				new AttendanceTimeMonth(this.withinTime),
+				new AttendanceTimeMonth(this.withinSpecTime),
+				new AttendanceTimeMonth(this.excessTime),
+				new AttendanceTimeMonth(this.excessSpecTime));
 	}
 	
 	/**
@@ -101,5 +117,9 @@ public class KrcdtAnpAggrBnspyTime extends UkJpaEntity implements Serializable {
 		this.specificBonusPayTime = domain.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime = domain.getHolidayWorkBonusPayTime().v();
 		this.holidayWorkSpecificBonusPayTime = domain.getHolidayWorkSpecificBonusPayTime().v();
+		this.withinTime = domain.getWithin().v();
+		this.withinSpecTime = domain.getWithinSpecific().v();
+		this.excessTime = domain.getExcess().v();
+		this.excessSpecTime = domain.getExcessSpecific().v();
 	}
 }

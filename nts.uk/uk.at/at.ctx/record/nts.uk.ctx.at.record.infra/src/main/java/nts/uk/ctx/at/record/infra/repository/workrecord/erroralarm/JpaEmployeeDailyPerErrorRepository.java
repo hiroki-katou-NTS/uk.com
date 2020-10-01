@@ -28,9 +28,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpDivErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpErAlCommon;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItem;
@@ -39,6 +37,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErOtkAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 

@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.app.command.optitem.calculation;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingGetMemento;
 
 /**
  * The Class RoundingDto.

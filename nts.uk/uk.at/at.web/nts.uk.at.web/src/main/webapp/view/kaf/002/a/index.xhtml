@@ -4,29 +4,142 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="../../000/a/kaf000.a.service.js" />
-				<com:scriptfile path="kaf002.a.start.js" />
-				<com:scriptfile path="kaf002.a.vm.js" />
-				<com:stylefile path="kaf002.a.main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-					<button data-bind="click: performanceReference">実績参照</button>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+   				</com:ValidatorScript>
+   				<com:ValidatorScript>
+					nts.uk.shr.com.time.TimeWithDayAttr
+				</com:ValidatorScript>
+			<com:stylefile
+				path="/view/kaf/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+			<com:stylefile path="/view/kaf/002/m/kaf002.m.main.css" />
+
+			<com:scriptfile path="/view/kaf/002/m/kaf002.m.vm.js" />
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile 
+				path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+
+			<com:stylefile path="/view/kaf/002/a/kaf002.a.main.css" />
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf/002/a/kaf002.a.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
+				<div
+					data-bind="component: { name: 'kaf000-a-component7', 
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"
+					style="display: inline-block;"></div>
+
+			</div>
+			<div id="contents-area">
+
+				<div
+					data-bind="component: { name: 'kaf000-a-component1', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="table">
+					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+                                          } }"></div>
+                 	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+									} }"></div>
 				</div>
-				<div id="contents-area">
-					<div class="label">#{i18n.getText('KAF002_1')}</div>
-					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(0); }">#{i18n.getText('KAF002_2')}</button></div>
-					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(1); }">#{i18n.getText('KAF002_3')}</button></div>
-					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(2); }">#{i18n.getText('KAF002_4')}</button></div>
-					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(3); }">#{i18n.getText('KAF002_5')}</button></div>
-					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(4); }">#{i18n.getText('KAF002_6')}</button></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces; width: auto !important"></div>
+				<div>
+					<!-- A7_2 -->
+					<div style="float: left; padding-top: 10px" data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
+					<div data-bind="if: isM">
+						<div
+							data-bind="component: {name: 'kaf002-m', params: {mode: mode, reasonList: reasonList, tabs: tabs, selectedCode: selectedCode, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr, selectedTab: selectedTab}},"
+							style="margin-left: 121px; width: auto !important"></div>
+					
+					</div>
 				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+
+
+
+
+				<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="width: auto !important; white-space: break-spaces;"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

@@ -18,10 +18,12 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -65,10 +67,25 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<AttendanceLeavingGateOfDaily> al = attendanceGate.find(empId, ymd);
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
 			wi.changeCalcState(CalculationState.Calculated);
-			IntegrationOfDaily daily = new IntegrationOfDaily(wi, null, null, Optional.empty(), pc, new ArrayList<>(),
-								Optional.empty(), new ArrayList<>(), attendanceTime, Optional.empty(), tl,
-								Optional.empty(), Optional.empty(), al, anyItem, new ArrayList<>(), Optional.empty(), new ArrayList<>());
-			
+			IntegrationOfDaily daily = new IntegrationOfDaily(
+					empId,
+					ymd,
+					wi.getWorkInformation(), //workInformation
+					null, //calAttr
+					null, //affiliationInfor
+					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
+					new ArrayList<>(),//employeeError
+					Optional.empty(),//outingTime
+					new ArrayList<>(),//breakTime
+					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
+					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
+					Optional.empty(), //shortTime
+					Optional.empty(), //specDateAttr
+					al.isPresent()?Optional.of(al.get().getTimeZone()):Optional.empty(),//attendanceLeavingGate
+					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
+					new ArrayList<>(),//editState
+					Optional.empty(), //tempTime
+					new ArrayList<>());//remarks
 			addAndUpdate(daily);
 		});
 	}
@@ -90,14 +107,19 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 		daily.stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
-				attendanceTimeRepository.update(at);
+				attendanceTimeRepository
+						.update(new AttendanceTimeOfDailyPerformance(d.getEmployeeId(), d.getYmd(), at));
 			});
 			//任意項目更新
 			d.getAnyItemValue().ifPresent(ai -> {
-				anyItemValueOfDailyRepo.persistAndUpdate(ai);
+				anyItemValueOfDailyRepo.persistAndUpdate(new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 			});
-			
-			dbStoredProcess.runStoredProcedure(comId, d.getAttendanceTimeOfDailyPerformance(), d.getWorkInformation());
+			Optional<AttendanceTimeOfDailyPerformance> attdTimeOfDailyPer = d
+					.getAttendanceTimeOfDailyPerformance().isPresent()
+							? Optional.of(new AttendanceTimeOfDailyPerformance(d.getEmployeeId(), d.getYmd(),
+									d.getAttendanceTimeOfDailyPerformance().get()))
+							: Optional.empty(); 
+			dbStoredProcess.runStoredProcedure(comId, attdTimeOfDailyPer, new WorkInfoOfDailyPerformance(d.getEmployeeId(), d.getYmd(), d.getWorkInformation()) );
 		});
 		return daily;
 	}

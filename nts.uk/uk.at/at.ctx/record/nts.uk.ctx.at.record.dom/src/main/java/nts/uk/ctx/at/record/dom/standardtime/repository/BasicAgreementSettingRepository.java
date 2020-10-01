@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 public interface BasicAgreementSettingRepository {
 	

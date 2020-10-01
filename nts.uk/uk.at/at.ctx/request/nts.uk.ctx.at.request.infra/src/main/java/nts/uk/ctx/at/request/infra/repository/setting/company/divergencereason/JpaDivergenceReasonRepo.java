@@ -3,19 +3,12 @@ package nts.uk.ctx.at.request.infra.repository.setting.company.divergencereason;
 //import java.util.Collections;
 //import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.ReasonTempPrimitive;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.ReasonTypeItem;
 import nts.uk.ctx.at.request.infra.entity.setting.company.divergencereason.KrqstAppDivergenReason;
 
 @Stateless
@@ -34,19 +27,20 @@ public class JpaDivergenceReasonRepo extends JpaRepository implements Divergence
 	@Override
 	public List<DivergenceReason> getDivergenceReason(String companyID, int appType) {
 		
-		List<DivergenceReason> divergenceReasons = this.queryProxy().query(FIND_FOLLOW_COMPANYID_AND_APPTYPE,KrqstAppDivergenReason.class)
-				.setParameter("companyID", companyID)
-				.setParameter("appType", appType)
-				.getList(entity -> convertToDomain(entity));
-		List<DivergenceReason> dataTmp = divergenceReasons.stream().filter(x -> x.getReasonTypeItem().getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
-		ReasonTypeItem reasonTypeItem = new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.NOTDEFAULT);
-		DivergenceReason firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),reasonTypeItem);
-		if(CollectionUtil.isEmpty(dataTmp)) {
-			firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.DEFAULT));
-		}
-		divergenceReasons.sort((a,b) -> Integer.compare(a.getReasonTypeItem().getDispOrder(),b.getReasonTypeItem().getDispOrder()));
-		divergenceReasons.add(0, firstData);
-		return divergenceReasons;
+//		List<DivergenceReason> divergenceReasons = this.queryProxy().query(FIND_FOLLOW_COMPANYID_AND_APPTYPE,KrqstAppDivergenReason.class)
+//				.setParameter("companyID", companyID)
+//				.setParameter("appType", appType)
+//				.getList(entity -> convertToDomain(entity));
+//		List<DivergenceReason> dataTmp = divergenceReasons.stream().filter(x -> x.getReasonTypeItem().getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
+//		ReasonTypeItem reasonTypeItem = new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.NOTDEFAULT);
+//		DivergenceReason firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),reasonTypeItem);
+//		if(CollectionUtil.isEmpty(dataTmp)) {
+//			firstData = new DivergenceReason(companyID, EnumAdaptor.valueOf(appType, ApplicationType.class),new ReasonTypeItem("",0,new ReasonTempPrimitive(PLEASE),DefaultFlg.DEFAULT));
+//		}
+//		divergenceReasons.sort((a,b) -> Integer.compare(a.getReasonTypeItem().getDispOrder(),b.getReasonTypeItem().getDispOrder()));
+//		divergenceReasons.add(0, firstData);
+//		return divergenceReasons;
+		return null;
 	}
 	private DivergenceReason convertToDomain(KrqstAppDivergenReason entity){
 		return DivergenceReason.createSimpleFromJavaType(entity.getKrqstAppDivergenReasonPK().getCid(), 

@@ -11,10 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOther;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
