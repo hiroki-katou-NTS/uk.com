@@ -35,5 +35,4 @@ public class ScreenDisplayInfo extends ValueObject {
         return new ScreenDisplayInfo(overtime, overtimeIncludingHoliday,exceededMonth,upperContents);
     }
 
-
 }
