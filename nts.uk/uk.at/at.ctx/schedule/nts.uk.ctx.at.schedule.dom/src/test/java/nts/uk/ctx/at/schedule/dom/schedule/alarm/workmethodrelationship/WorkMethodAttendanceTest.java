@@ -25,7 +25,7 @@ public class WorkMethodAttendanceTest {
 	
 	@Test
 	public void getters() {
-		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("001"));
+		val workMethodAt = WorkMethodHelper.WORK_INFO_DUMMY;
 		NtsAssert.invokeGetters(workMethodAt);
 	}
 	
@@ -60,7 +60,7 @@ public class WorkMethodAttendanceTest {
 	@Test
 	public void checkInclude_FALSE() {
 		//就業時間帯コード == 002
-		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
+		val workInfo =  new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("002"));
 		//就業時間帯コード == 001
 		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("001"));
 		
@@ -77,7 +77,7 @@ public class WorkMethodAttendanceTest {
 	@Test
 	public void checkInclude_TRUE() {
 		//就業時間帯コード == 002
-		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
+		val workInfo =  new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("002"));
 		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("002"));
 		
 		assertThat(workMethodAt.includes(require, workInfo)).isTrue();
