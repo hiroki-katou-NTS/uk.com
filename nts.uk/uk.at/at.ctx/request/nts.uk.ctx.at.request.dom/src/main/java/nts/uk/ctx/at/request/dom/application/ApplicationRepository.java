@@ -187,4 +187,11 @@ public interface ApplicationRepository {
 			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
+	 * @param sid
+	 * @param appDate
+	 * @return
+	 */
+	public List<Application> getAppReflected(String sid, GeneralDate appDate);
 }

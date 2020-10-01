@@ -24,6 +24,7 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 予定反映状態
 	 */
+	@Setter
 	private ReflectedState scheReflectStatus;
 	
 	/**
