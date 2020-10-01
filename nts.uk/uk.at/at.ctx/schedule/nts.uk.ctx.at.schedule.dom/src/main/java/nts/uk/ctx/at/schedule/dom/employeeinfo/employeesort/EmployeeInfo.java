@@ -11,7 +11,7 @@ import lombok.Setter;
 public class EmployeeInfo {
 	public  String empId;
 	public  String scheduleTeamCd;
-	public  String emplRankCode;
+	public  Integer emplRankPriority;
 	public  Integer optLicenseClassification;
 	public  String jobtitleCode; 
 	public  String classificationCode; 

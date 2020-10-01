@@ -172,7 +172,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
                                 timeName = wkTimeInfo[0].workTimeDisplayName.workTimeName;
                             } else {
-                                timeName = "マスタ未登録";
+                                timeName = !detail.wkTimeCd ? "" : "マスタ未登録";
                             }
                         }
 
