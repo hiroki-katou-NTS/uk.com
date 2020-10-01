@@ -30,7 +30,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // to edit
     @Prop({ default: null })
     public params?: any;
-    public title: string = 'KafS07A';
+    public title: string = 'KafS09A';
 
     public model: Model = new Model();
 
@@ -177,7 +177,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 newModeContent: {
                     // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
                     appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: true,
+                    useMultiDaySwitch: false,
                     initSelectMultiDay: false
                 },
                 detailModeContent: null
