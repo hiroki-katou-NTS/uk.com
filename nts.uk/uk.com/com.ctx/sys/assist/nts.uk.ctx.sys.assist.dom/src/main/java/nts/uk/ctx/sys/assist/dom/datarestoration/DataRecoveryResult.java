@@ -48,8 +48,9 @@ public class DataRecoveryResult extends AggregateRoot {
 	 */
 	private String executionResult;
 
-	
-	//field 実行結果
+	/**
+	 * 実行結果
+	 */
 	private List<DataRecoveryLog> listDataRecoveryLogs;
 	
 	/**
@@ -72,14 +73,26 @@ public class DataRecoveryResult extends AggregateRoot {
 	 */
 	private SaveName saveName;
 
-	 //field ログイン情報
+	/**
+	 * ログイン情報
+	 */
     private LoginInfo loginInfo;	
 
     
-	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String patternCode,
-			String practitioner, String executionResult,List<DataRecoveryLog> listDataRecoveryLogs,
-			GeneralDateTime startDateTime, GeneralDateTime endDateTime, Integer saveForm, 
-			String saveName, String ipAddress, String pcName, String account) {
+	public DataRecoveryResult(
+			String dataRecoveryProcessId, 
+			String cid, 
+			String patternCode,
+			String practitioner, 
+			String executionResult,
+			List<DataRecoveryLog> listDataRecoveryLogs,
+			GeneralDateTime startDateTime, 
+			GeneralDateTime endDateTime, 
+			Integer saveForm, 
+			String saveName, 
+			String ipAddress, 
+			String pcName, 
+			String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.cid                   = cid;
 		this.patternCode           = patternCode;
