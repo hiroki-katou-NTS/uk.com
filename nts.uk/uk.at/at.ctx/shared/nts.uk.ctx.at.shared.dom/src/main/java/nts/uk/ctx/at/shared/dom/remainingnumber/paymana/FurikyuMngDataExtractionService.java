@@ -167,7 +167,7 @@ public class FurikyuMngDataExtractionService {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
 					return x.getPayoutDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listPayoutDate);
+				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId, listPayoutDate);
 			}else {
 				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
 					return x.getHolidayDate().getDayoffDate().get();
