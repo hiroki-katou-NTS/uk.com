@@ -45,14 +45,6 @@ public class JpaScheAuthModifyDeadlineRepository extends JpaRepository implement
 	public void delete (String companyId, String roleId) {
 		val pk = new KscmtAuthModifyDadlinePk(companyId, roleId);		
 		this.commandProxy().remove(KscmtAuthModifyDadline.class, pk);
-		
-		
-		
-		
-		Optional<ScheAuthModifyDeadline> entity = this.get(companyId, roleId);
-		if (entity.isPresent()) {
-			this.commandProxy().remove(entity.get());
-		}
 	}
 	
 	@Override

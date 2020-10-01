@@ -13,13 +13,13 @@ public interface DisplaySettingByDateForCmpRepository {
 	
 	/**
 	 * insert(会社別スケジュール修正日付別の表示設定)
-	 * @param dispSetcom
+	 * @param dispSetCom
 	 */
-	void insert (String companyId, DisplaySettingByDateForCompany dispSetcom);
+	void insert (String companyId, DisplaySettingByDateForCompany dispSetCom);
 	
 	/**
 	 * update(会社別スケジュール修正日付別の表示設定)
-	 * @param dispSetcom
+	 * @param dispSetCom
 	 */
-	void update (String companyId, DisplaySettingByDateForCompany dispSetcom);
+	void update (String companyId, DisplaySettingByDateForCompany dispSetCom);
 }

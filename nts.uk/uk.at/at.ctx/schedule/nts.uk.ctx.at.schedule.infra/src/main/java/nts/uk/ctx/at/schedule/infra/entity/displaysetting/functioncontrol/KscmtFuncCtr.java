@@ -12,17 +12,19 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ * KSCMT_FUNC_CTR
  * @author hiroko_miura
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_FUNC_CTR")
 public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
@@ -75,11 +77,11 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 	public static KscmtFuncCtr of (String companyId, ScheFunctionControl domain) {
 		
 		return new KscmtFuncCtr (
-				companyId,
-				BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FIXED)),
-				BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLEX)),
-				BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLOW)),
-				BooleanUtils.toInteger(domain.isDisplayActual()));
+					companyId
+				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FIXED))
+				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLEX))
+				,	BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLOW))
+				,	BooleanUtils.toInteger(domain.isDisplayActual()));
 	}
 	
 	public ScheFunctionControl toDomain () {

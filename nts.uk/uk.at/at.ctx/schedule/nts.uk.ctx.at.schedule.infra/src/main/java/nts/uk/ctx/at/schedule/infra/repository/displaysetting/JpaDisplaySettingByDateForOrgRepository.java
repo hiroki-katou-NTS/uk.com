@@ -34,24 +34,24 @@ public class JpaDisplaySettingByDateForOrgRepository extends JpaRepository imple
 	}
 	
 	@Override
-	public void insert (String companyId, DisplaySettingByDateForOrganization dispSetorg) {
-		this.commandProxy().insert(KscmtDispsetBydateOrg.of(companyId, dispSetorg));
+	public void insert (String companyId, DisplaySettingByDateForOrganization dispSetOrg) {
+		this.commandProxy().insert(KscmtDispsetBydateOrg.of(companyId, dispSetOrg));
 	}
 	
 	@Override
-	public void update (String companyId, DisplaySettingByDateForOrganization dispSetorg) {
+	public void update (String companyId, DisplaySettingByDateForOrganization dispSetOrg) {
 		KscmtDispsetBydateOrgPk pk = new KscmtDispsetBydateOrgPk();
 		pk.companyId = companyId;
-		pk.targetUnit = dispSetorg.getTargetOrg().getUnit().value;
-		pk.targetId = dispSetorg.getTargetOrg().getTargetId();
+		pk.targetUnit = dispSetOrg.getTargetOrg().getUnit().value;
+		pk.targetId = dispSetOrg.getTargetOrg().getTargetId();
 		
 		KscmtDispsetBydateOrg upData = this.queryProxy()
 				.find(pk, KscmtDispsetBydateOrg.class)
 				.get();
 		
-		upData.rangeAtr = dispSetorg.getDispSetting().getDispRange().value;
-		upData.startClock = dispSetorg.getDispSetting().getDispStart().v();
-		upData.initStartClock = dispSetorg.getDispSetting().getInitDispStart().v();
+		upData.rangeAtr = dispSetOrg.getDispSetting().getDispRange().value;
+		upData.startClock = dispSetOrg.getDispSetting().getDispStart().v();
+		upData.initStartClock = dispSetOrg.getDispSetting().getInitDispStart().v();
 		
 		this.commandProxy().update(upData);
 	}

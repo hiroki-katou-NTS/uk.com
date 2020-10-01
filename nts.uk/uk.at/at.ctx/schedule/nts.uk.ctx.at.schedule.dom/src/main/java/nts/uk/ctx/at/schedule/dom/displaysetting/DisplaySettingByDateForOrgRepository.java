@@ -15,13 +15,13 @@ public interface DisplaySettingByDateForOrgRepository {
 	
 	/**
 	 * insert(組織別スケジュール修正日付別の表示設定)
-	 * @param dispSetorg
+	 * @param dispSetOrg
 	 */
-	void insert (String companyId, DisplaySettingByDateForOrganization dispSetorg);
+	void insert (String companyId, DisplaySettingByDateForOrganization dispSetOrg);
 	
 	/**
 	 * update(組織別スケジュール修正日付別の表示設定)
-	 * @param dispSetorg
+	 * @param dispSetOrg
 	 */
-	void update (String companyId, DisplaySettingByDateForOrganization dispSetorg);
+	void update (String companyId, DisplaySettingByDateForOrganization dispSetOrg);
 }

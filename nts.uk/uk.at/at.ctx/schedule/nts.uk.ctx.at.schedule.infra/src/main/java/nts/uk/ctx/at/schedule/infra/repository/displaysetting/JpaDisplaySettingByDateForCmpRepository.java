@@ -32,20 +32,20 @@ public class JpaDisplaySettingByDateForCmpRepository extends JpaRepository imple
 	}
 	
 	@Override
-	public void insert (String companyId, DisplaySettingByDateForCompany dispSetcmp) {
-		this.commandProxy().insert(KscmtDispsetBydateCmp.of(companyId, dispSetcmp));
+	public void insert (String companyId, DisplaySettingByDateForCompany dispSetCmp) {
+		this.commandProxy().insert(KscmtDispsetBydateCmp.of(companyId, dispSetCmp));
 	}
 	
 	@Override
-	public void update (String companyId, DisplaySettingByDateForCompany dispSetcmp) {
+	public void update (String companyId, DisplaySettingByDateForCompany dispSetCmp) {
 		
 		KscmtDispsetBydateCmp upData = this.queryProxy()
 				.find(companyId, KscmtDispsetBydateCmp.class)
 				.get();
 		
-		upData.rangeAtr = dispSetcmp.getDispSetting().getDispRange().value;
-		upData.startClock = dispSetcmp.getDispSetting().getDispStart().v();
-		upData.initStartClock = dispSetcmp.getDispSetting().getInitDispStart().v();
+		upData.rangeAtr = dispSetCmp.getDispSetting().getDispRange().value;
+		upData.startClock = dispSetCmp.getDispSetting().getDispStart().v();
+		upData.initStartClock = dispSetCmp.getDispSetting().getInitDispStart().v();
 		
 		this.commandProxy().update(upData);
 	}

@@ -17,10 +17,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadlin
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
-public class ScheModifyStartdateServiceTest {
+public class ScheModifyStartDateServiceTest {
 
 	@Injectable
-	private ScheModifyStartdateService.Require require;
+	private ScheModifyStartDateService.Require require;
 	
 	/**
 	 * case : スケジュール修正の修正期限が取得できない(データがない)
@@ -33,7 +33,7 @@ public class ScheModifyStartdateServiceTest {
 			require.getScheAuthModifyDeadline("dummyId");
 		}};
 		
-		val actual = ScheModifyStartdateService.getModifyStartdate(require, "dummyId");
+		val actual = ScheModifyStartDateService.getModifyStartDate(require, "dummyId");
 		
 		assertThat(actual).isEqualTo(GeneralDate.min());
 	}
@@ -53,7 +53,7 @@ public class ScheModifyStartdateServiceTest {
 					new CorrectDeadline(0)));
 		}};
 		
-		val actual = ScheModifyStartdateService.getModifyStartdate(require, "dummyId");
+		val actual = ScheModifyStartDateService.getModifyStartDate(require, "dummyId");
 
 		assertThat(actual).isEqualTo(GeneralDate.min());
 	}
@@ -75,7 +75,7 @@ public class ScheModifyStartdateServiceTest {
 					new CorrectDeadline(3)));
 		}};
 		
-		val actual = ScheModifyStartdateService.getModifyStartdate(require, "dummyId");
+		val actual = ScheModifyStartDateService.getModifyStartDate(require, "dummyId");
 
 		assertThat(actual).isEqualTo(GeneralDate.ymd(2020, 9, 21));
 	}

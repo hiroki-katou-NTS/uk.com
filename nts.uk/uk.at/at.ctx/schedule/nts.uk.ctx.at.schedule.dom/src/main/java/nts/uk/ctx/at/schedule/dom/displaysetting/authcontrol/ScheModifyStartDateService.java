@@ -12,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author hiroko_miura
  *
  */
-public class ScheModifyStartdateService {
+public class ScheModifyStartDateService {
 
 	/**
 	 * 取得する
@@ -20,7 +20,7 @@ public class ScheModifyStartdateService {
 	 * @param roleID
 	 * @return
 	 */
-	public static GeneralDate getModifyStartdate(Require require, String roleID) {
+	public static GeneralDate getModifyStartDate(Require require, String roleID) {
 		Optional<ScheAuthModifyDeadline> modifyDeadline =require.getScheAuthModifyDeadline(roleID);
 		
 		if (!modifyDeadline.isPresent()) {
