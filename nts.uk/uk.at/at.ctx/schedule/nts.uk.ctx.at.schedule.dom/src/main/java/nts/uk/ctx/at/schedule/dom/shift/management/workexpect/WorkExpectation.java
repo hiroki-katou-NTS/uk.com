@@ -45,7 +45,7 @@ public interface WorkExpectation {
 	public WorkExpectDisplayInfo getDisplayInformation(Require require);
 	
 	
-	public static interface Require extends WorkInformation.Require, ShiftExpectation.Require {
+	public static interface Require extends HolidayExpectation.Require, ShiftExpectation.Require {
 		
 	}
 

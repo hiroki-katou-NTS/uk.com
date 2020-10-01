@@ -23,7 +23,7 @@ public class HolidayExpectation implements WorkExpectation, DomainValue {
 	}
 
 	@Override
-	public boolean isMatchingExpectation(Require require, WorkInformation workInformation,
+	public boolean isMatchingExpectation(WorkExpectation.Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 
 		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require);
@@ -36,9 +36,13 @@ public class HolidayExpectation implements WorkExpectation, DomainValue {
 	}
 
 	@Override
-	public WorkExpectDisplayInfo getDisplayInformation(Require require) {
+	public WorkExpectDisplayInfo getDisplayInformation(WorkExpectation.Require require) {
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
 		return new WorkExpectDisplayInfo(asignmentMethod, Collections.emptyList(), Collections.emptyList());
+	}
+	
+	public static interface Require extends WorkInformation.Require {
+		
 	}
 
 }
