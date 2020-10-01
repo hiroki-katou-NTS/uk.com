@@ -271,7 +271,7 @@ public class ReflectApplicationHelper {
 
 	public static List<TimeStampAppShare> createlstTimeStamp(TimeStampAppEnumShare timeStampApp,
 			StartEndClassificationShare startOrEnd, int time, int no) {
-		return createlstTimeStamp(timeStampApp, startOrEnd, time, no, "001");
+		return createlstTimeStamp(timeStampApp, startOrEnd, time, no, "0001");
 	}
 
 	public static List<TimeStampAppShare> createlstTimeStamp(StartEndClassificationShare startOrEnd, int time, int no,
