@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.GetScheduleActualOfWorkInfo;
 
 /**
