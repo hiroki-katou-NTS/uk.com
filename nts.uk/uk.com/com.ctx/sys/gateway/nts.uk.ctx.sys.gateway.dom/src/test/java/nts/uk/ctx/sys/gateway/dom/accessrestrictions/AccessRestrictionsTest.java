@@ -47,7 +47,7 @@ public class AccessRestrictionsTest {
 		e.updateIPAddress(ip1,ip3);
 	}
 	@Test
-	public void updateIPAddress1835() {
+	public void updateIPAddressEx1835() {
 		AccessRestrictions e = new AccessRestrictions(1, "000000000000", new ArrayList<AllowedIPAddress>());
 		e.addIPAddress(ip1);
 		e.addIPAddress(ip2);
