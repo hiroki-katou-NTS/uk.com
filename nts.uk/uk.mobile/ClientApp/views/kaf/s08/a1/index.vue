@@ -2,6 +2,7 @@
   <div class="kafs08a1">
       <div>
         <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
+        <template v-else />
       </div>
       <!-- A2_1 -->
       <div v-if="hidden" class="card bg-danger top-alert uk-text-danger topError">
@@ -10,8 +11,13 @@
           {{ 'KAFS08_13' | i18n }}
         </button>
       </div>
-      <div>
+      <div v-if="mode">
         <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+        <!-- <template v-else /> -->
+      </div>
+      <div v-else>
+        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+        <!-- <template v-else /> -->
       </div>
       <!-- A5 -->
       <div class="field-set">
