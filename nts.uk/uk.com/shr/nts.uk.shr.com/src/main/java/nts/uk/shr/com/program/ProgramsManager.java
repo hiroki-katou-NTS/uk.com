@@ -796,6 +796,11 @@ public class ProgramsManager {
     public static final Program KSU001Q = new Program(WebAppId.AT, ProgramIdConsts.KSU001Q, "KSU001_3701",
             "/view/ksu/001/q/index.xhtml");
     /**
+     * KSU001A
+     */
+    public static final Program KSU002A = new Program(WebAppId.AT, ProgramIdConsts.KSU002A, "",
+            "/view/ksu/002/a/index.xhtml");
+    /**
      * KML002A
      */
     public static final Program KML002A = new Program(WebAppId.AT, ProgramIdConsts.KML002A, "",
