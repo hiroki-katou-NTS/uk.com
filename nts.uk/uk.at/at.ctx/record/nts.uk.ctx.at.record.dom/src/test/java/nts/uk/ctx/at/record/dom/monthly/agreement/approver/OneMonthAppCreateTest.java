@@ -7,18 +7,19 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,8 +36,8 @@ public class OneMonthAppCreateTest {
 	/**
 	 * 承認者を取得する#取得する returns empty result
 	 * <p>
-	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType APPROVER_NOT_SET
-	 * should be returned
+	 * Expected: AppCreationResult with error type APPROVER_NOT_SET should be returned
+	 * R2 should not be called.
 	 */
 	@Test
 	public void test01() {
@@ -44,18 +45,30 @@ public class OneMonthAppCreateTest {
 		String aplId = "dummyApplicantId";
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
-				new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
+				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
-		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		List<ExcessErrorContent> emptyErrorInfo = new ArrayList<>();
+		new MockUp<CheckErrorApplicationMonthService>() {
+			@Mock
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
+
+				return emptyErrorInfo;
+			}
+		};
+
+		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.APPROVER_NOT_SET);
+		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.APPROVER_NOT_SET);
 	}
 
 	/**
 	 * 承認者を取得する#取得する returns empty result
-	 * checkErrorTimeExceeded returns true
+	 1ヶ月申請の超過エラーをチェックする returns empty
 	 * <p>
-	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType MONTHLY_LIMIT_EXCEEDED
+	 * Expected:
+	 * result with error info should be returned.
 	 * should be returned
 	 */
 	@Test
@@ -64,7 +77,7 @@ public class OneMonthAppCreateTest {
 		String aplId = "dummyApplicantId";
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
-				new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
+				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 		new MockUp<GettingApproverDomainService>() {
@@ -88,22 +101,25 @@ public class OneMonthAppCreateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(true, new AgreementOneMonthTime(0));
-		new MockUp<AgreementOneMonth>() {
+		List<ExcessErrorContent> emptyErrorInfo = new ArrayList<>();
+		new MockUp<CheckErrorApplicationMonthService>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-				return errCheckResult;
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
+
+				return emptyErrorInfo;
 			}
 		};
 
-		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.MONTHLY_LIMIT_EXCEEDED);
+		assertThat(actual.getErrorInfo()).isEmpty();
 	}
 
 	/**
 	 * 承認者を取得する#取得する returns empty result
-	 * checkErrorTimeExceeded returns false
+	 * 1ヶ月申請の超過エラーをチェックする returns error
 	 *
 	 * <p>
 	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType NO_ERROR
@@ -115,7 +131,7 @@ public class OneMonthAppCreateTest {
 		String aplId = "dummyApplicantId";
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
-				new AgreementOneMonthTime(2), new AgreementOneMonthTime(1), reason);
+				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 		new MockUp<GettingApproverDomainService>() {
@@ -139,17 +155,28 @@ public class OneMonthAppCreateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
-		new MockUp<AgreementOneMonth>() {
+		List<ExcessErrorContent> errorInfo = new ArrayList<>();
+		ExcessErrorContent error = ExcessErrorContent.create(
+				ErrorClassification.ONE_MONTH_MAX_TIME,
+				Optional.of(new AgreementOneMonthTime(1)),
+				Optional.of(new AgreementOneYearTime(1)),
+				Optional.of(AgreementOverMaxTimes.TWELVE_TIMES)
+		);
+		errorInfo.add(error);
+
+		new MockUp<CheckErrorApplicationMonthService>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-				return errCheckResult;
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
+
+				return errorInfo;
 			}
 		};
 
-		val actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
+		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.ONE_MONTH_MAX_TIME);
 	}
 
 }

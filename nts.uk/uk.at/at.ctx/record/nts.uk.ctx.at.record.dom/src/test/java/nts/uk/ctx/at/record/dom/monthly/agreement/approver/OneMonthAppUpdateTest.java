@@ -14,8 +14,10 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -55,9 +57,11 @@ public class OneMonthAppUpdateTest {
 
 	/**
 	 * R1 returns normal result
-	 * checkErrorTimeExceeded returns true
+	 * 1ヶ月申請の超過エラーをチェックする returns empty
 	 * <p>
-	 * Expected: result with type ResultType MONTHLY_LIMIT_EXCEEDED should be returned.
+	 * Expected:
+	 * result with no error info should be returned.
+	 * R2 should be called.
 	 */
 	@Test
 	public void test02() {
@@ -87,27 +91,34 @@ public class OneMonthAppUpdateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(true, new AgreementOneMonthTime(0));
-
-		new MockUp<AgreementOneMonth>() {
+		List<ExcessErrorContent> emptyErrorInfo = new ArrayList<>();
+		new MockUp<CheckErrorApplicationMonthService>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
 
-				return errCheckResult;
+				return emptyErrorInfo;
 			}
 		};
 
 		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.MONTHLY_LIMIT_EXCEEDED);
+
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		NtsAssert.atomTask(
+				()-> actual.getAtomTask().get(),
+				any -> require.updateApp(any.get())
+		);
+		assertThat(actual.getErrorInfo()).isEmpty();
 	}
 
 	/**
 	 * R1 returns normal result
-	 * checkErrorTimeExceeded returns false
+	 * 1ヶ月申請の超過エラーをチェックする returns error
 	 * <p>
 	 * Expected:
-	 * result with type ResultType NO_ERROR should be returned.
-	 * R2 should be called
+	 * result with error info should be returned.
+	 * R2 should not be called
 	 */
 	@Test
 	public void test03() {
@@ -137,22 +148,30 @@ public class OneMonthAppUpdateTest {
 			}
 		};
 
-		val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
+		List<ExcessErrorContent> errorInfo = new ArrayList<>();
+		ExcessErrorContent error = ExcessErrorContent.create(
+				ErrorClassification.ONE_MONTH_MAX_TIME,
+				Optional.of(new AgreementOneMonthTime(1)),
+				Optional.of(new AgreementOneYearTime(1)),
+				Optional.of(AgreementOverMaxTimes.TWELVE_TIMES)
+		);
+		errorInfo.add(error);
 
-		new MockUp<AgreementOneMonth>() {
+		new MockUp<CheckErrorApplicationMonthService>() {
 			@Mock
-			public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
 
-				return errCheckResult;
+				return errorInfo;
 			}
 		};
 
 		val actual = OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
-		NtsAssert.atomTask(
-				()-> actual.getAtomTask().get(),
-				any -> require.updateApp(any.get())
-		);
+
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getAtomTask()).isNotPresent();
+		assertThat(actual.getErrorInfo()).isEqualTo(errorInfo);
 	}
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {
