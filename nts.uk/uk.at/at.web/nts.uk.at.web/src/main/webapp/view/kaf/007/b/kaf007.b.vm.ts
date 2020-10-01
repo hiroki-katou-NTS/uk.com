@@ -167,13 +167,22 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 					startTime: vm.appWorkChange.startTime1(),
 					endTime: vm.appWorkChange.endTime1()
 				}
-			}
-			let timeZone2 = {
-				workNo: 2,
-				timeZone: {
-					startTime: vm.appWorkChange.startTime2(),
-					endTime: vm.appWorkChange.endTime2()
+            }
+            
+            let timeZone2 = null;
+			if(vm.appWorkChange.startTime2() !== null || vm.appWorkChange.endTime2() !== null) {
+				timeZone2 = {
+					workNo: 2,
+					timeZone: {
+						startTime: vm.appWorkChange.startTime2(),
+						endTime: vm.appWorkChange.endTime2()
+					}
 				}
+			}
+
+			let timeZoneWithWorkNoLst = [timeZone1];
+			if(timeZone2 !== null) {
+				timeZoneWithWorkNoLst.push(timeZone2);
 			}
 
 			let appWorkChangeDto = {
@@ -181,7 +190,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 				straightBack: vm.isStraightBack() ? 1 : 0,
 				opWorkTypeCD: vm.model().workTypeCD(),
 				opWorkTimeCD: vm.model().workTimeCD(),
-				timeZoneWithWorkNoLst: [timeZone1, timeZone2]
+				timeZoneWithWorkNoLst: timeZoneWithWorkNoLst
 			}
 			
 			let command = {

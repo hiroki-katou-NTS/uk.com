@@ -158,6 +158,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		register() {
 			const vm = this;
 
+			let holidayDateLst: any[] = [];
 			let timeZone1 = {
 				workNo: 1,
 				timeZone: {
@@ -165,12 +166,21 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 					endTime: vm.appWorkChange.endTime1()
 				}
 			}
-			let timeZone2 = {
-				workNo: 2,
-				timeZone: {
-					startTime: vm.appWorkChange.startTime2(),
-					endTime: vm.appWorkChange.endTime2()
+
+			let timeZone2 = null;
+			if(vm.appWorkChange.startTime2() !== null || vm.appWorkChange.endTime2() !== null) {
+				timeZone2 = {
+					workNo: 2,
+					timeZone: {
+						startTime: vm.appWorkChange.startTime2(),
+						endTime: vm.appWorkChange.endTime2()
+					}
 				}
+			}
+
+			let timeZoneWithWorkNoLst = [timeZone1];
+			if(timeZone2 !== null) {
+				timeZoneWithWorkNoLst.push(timeZone2);
 			}
 
 			let appWorkChangeDto = {
@@ -178,7 +188,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				straightBack: vm.isStraightBack() ? 1 : 0,
 				opWorkTypeCD: vm.model().workTypeCD(),
 				opWorkTimeCD: vm.model().workTimeCD(),
-				timeZoneWithWorkNoLst: [timeZone1, timeZone2]
+				timeZoneWithWorkNoLst: timeZoneWithWorkNoLst
 			}
 
 			let applicationDto = {
@@ -221,14 +231,23 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
                     if (_.isEmpty( res.confirmMsgLst )) {
                         return vm.registerData(command);
                     }else {
+						holidayDateLst = res.holidayDateLst;
                         let listTemp = _.clone(res.confirmMsgLst);
                         vm.handleConfirmMessage(listTemp, command);
                     }
                 }).done(result => {
                     if (result != undefined) {
-                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            location.reload();
-                        });                
+						if(_.isEmpty(holidayDateLst)) {
+							vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+								location.reload();
+							});                
+						} else {
+							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
+							let x = nts.uk.resource.getMessage('Msg_1663', holidayDateLst);
+							vm.$dialog.info(dispMsg).then(() => {
+								location.reload();
+							})
+						}
                     }
                 })
                 .fail( err => {
