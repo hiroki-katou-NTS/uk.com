@@ -37,6 +37,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
+        dataDate: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
@@ -57,6 +58,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I6_3").ntsError('clear');
                     $("#I8_1").ntsError('clear');
                 } else {
+                  self.baseDate = self.dateHoliday;
                     _.defer(() => { $("#I6_3").ntsError('clear'); });
                 }
             });
@@ -104,7 +106,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value1: v,
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday(),
-                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -116,7 +117,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value1: self.selectedCodeHoliday(),
                     value2: v,
                     value3: self.selectedCodeOptionSubHoliday(),
-                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -128,7 +128,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value1: self.selectedCodeHoliday(),
                     value2: self.selectedCodeSubHoliday(),
                     value3: v,
-                    value4: self.baseDate()
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -142,6 +141,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             
         }
         getRemainDay(remainObject: any): string {
+         const vm  = this;
             if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
                 return "";
             }
@@ -152,8 +152,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             //分割消化.代休日数
             let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
 
-            let value4 = !remainObject.checkBox2 || !remainObject.value4 ? 0 : remainObject.value4;
-          return (value1 + parseFloat(value4) - (value2 + value3)).toString();
+            let value4 = !remainObject.checkBox2 || vm.dataDate ? 0 : vm.dataDate;
+          return (value1 + value4 - (value2 + value3)).toString();
        
         }
         initScreen(): void {
@@ -281,9 +281,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         public openKDL036() {
           // TODO open kdl036
           const vm = this;
-          modal("/view/kdl/035/a/index.xhtml").onClosed(() => {});
-          let listParam = getShared("KDL036_SHAREPARAM");
-          vm.listLinkingDate(listParam);
+          modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
+            let listParam = getShared("KDL036_SHAREPARAM");
+            vm.listLinkingDate(listParam);
+          });
         }
     }
 }

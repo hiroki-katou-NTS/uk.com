@@ -221,6 +221,7 @@ public class FurikyuMngDataExtractionService {
 	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
 		// Step 管理区分 ＝ 管理しない
 		EmploymentManageDistinctDto emplManage = new EmploymentManageDistinctDto();
+		GeneralDate now = GeneralDate.today();
 		emplManage.setIsManage(ManageDistinct.NO);
 		// Step 社員IDから全ての雇用履歴を取得
 		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
@@ -236,12 +237,13 @@ public class FurikyuMngDataExtractionService {
 				// Step 取得した「振休管理設定」．管理区分をチェック
 				if (comSubstVaca.isManaged()) {
 					// Step 管理区分 ＝ 管理する
-					emplManage.setIsManage(ManageDistinct.YES);					
-				}
-				// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
-				GeneralDate now = GeneralDate.today();
-				if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
-					emplManage.setEmploymentCode(empHist.getEmploymentCode());
+					emplManage.setIsManage(ManageDistinct.YES);
+
+					// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
+					if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
+						emplManage.setEmploymentCode(empHist.getEmploymentCode());
+						return emplManage;
+					}
 				}
 			}
 		}
