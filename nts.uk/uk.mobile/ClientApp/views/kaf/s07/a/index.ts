@@ -425,15 +425,17 @@ export class KafS07AComponent extends KafS00ShrComponent {
             let appWorkChange = params.appWorkChange;
             if (appWorkChange) {
                 time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
-                time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2  && item.useAtr);
+                time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
             }
             // open dialog is not changed time selector
             if (self.isOpenKDL002) {
-                self.isOpenKDL002 = false;
-                time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
-                time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2 && item.useAtr);
+                if (params.appWorkChangeDispInfo.predetemineTimeSetting) {
+                    time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
+                    time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2 && item.useAtr);
+                }
             }
             self.bindWorkHours(time1, time2);
+            self.isOpenKDL002 = false;
 
             return;
 
@@ -461,6 +463,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
     public bindWorkHours(time1: any, time2: any) {
         if (this.isCondition1) {
+            this.valueWorkHours1 = null;
             if (!this.valueWorkHours1 && time1) {
                 this.valueWorkHours1 = {
                     start: 0,
@@ -470,8 +473,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
             if (time1) {
 
                 if (!this.mode) {
-                    this.valueWorkHours1.start = time1.timeZone.startTime;
-                    this.valueWorkHours1.end = time1.timeZone.endTime;
+                    if (!this.isOpenKDL002) {
+                        this.valueWorkHours1.start = time1.timeZone.startTime;
+                        this.valueWorkHours1.end = time1.timeZone.endTime;
+                    } else {
+                        this.valueWorkHours1.start = time1.start;
+                        this.valueWorkHours1.end = time1.end;
+                    }
                 } else {
                     this.valueWorkHours1.start = time1.start;
                     this.valueWorkHours1.end = time1.end;
@@ -494,8 +502,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
             }
             if (time2) {
                 if (!this.mode) {
-                    this.valueWorkHours2.start = time2.timeZone.startTime;
-                    this.valueWorkHours2.end = time2.timeZone.endTime;
+                    if (!this.isOpenKDL002) {
+                        this.valueWorkHours2.start = time2.timeZone.startTime;
+                        this.valueWorkHours2.end = time2.timeZone.endTime;
+                    } else {
+                        this.valueWorkHours2.start = time2.start;
+                        this.valueWorkHours2.end = time2.end;
+                    }
                 } else {
                     this.valueWorkHours2.start = time2.start;
                     this.valueWorkHours2.end = time2.end;
