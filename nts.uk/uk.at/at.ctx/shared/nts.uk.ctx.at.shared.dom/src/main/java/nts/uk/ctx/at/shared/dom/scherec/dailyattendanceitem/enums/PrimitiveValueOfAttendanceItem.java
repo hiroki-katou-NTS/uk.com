@@ -60,7 +60,14 @@ public enum PrimitiveValueOfAttendanceItem {
 	MONTHLY_ANY_TIME(57, "月次任意時間"),
 	DAILY_ANY_NUM(58, "日次任意回数"),
 	MONTHLY_ANY_NUM(59, "月次任意回数"),
-	DIVERGENCE_REASON_CD(60, "乖離理由コード");
+	DIVERGENCE_REASON_CD(60, "乖離理由コード"),
+	APPLICATION_REASON(61, "申請理由"),
+	APPLICATION_FIXED_REASON(62, "申請定型理由コード"),
+	WORD_CD(63, "作業コード"),
+	COMPANY_ID(64, "会社ID"),
+	MOUNTHLY_AMOUNT(65, "勤怠月間金額"),
+	RESERVATION_NUM(66, "注文数"),
+	RESERVATION_AMOUNT(67, "注文金額");
 
 	public final int value;
 	public final String name;

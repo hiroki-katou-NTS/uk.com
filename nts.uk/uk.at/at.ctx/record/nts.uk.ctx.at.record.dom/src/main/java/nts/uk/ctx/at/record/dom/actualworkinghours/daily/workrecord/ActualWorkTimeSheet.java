@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
 /** 作業実績の時間帯 */
 @Getter

@@ -9,11 +9,11 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.calculation.InputValue;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.InputValue;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingItemOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingMethod;
 
 /**
  * The Class FormulaSettingItemDto.

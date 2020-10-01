@@ -12,12 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemNo;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -45,7 +45,7 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	
 	
 	public static List<KrcdtDayAnyItemValue> create(AnyItemValueOfDaily domain) {
-		return domain.getItems().stream().map(d -> {
+		return domain.getAnyItem().getItems().stream().map(d -> {
 			KrcdtDayAnyItemValue entity = new KrcdtDayAnyItemValue();
 			entity.krcdtDayAnyItemValuePK = new KrcdtDayAnyItemValuePK(domain.getEmployeeId(),
 					domain.getYmd(), d.getItemNo().v());

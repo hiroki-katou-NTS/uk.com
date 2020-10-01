@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmploymentCondition;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmploymentCondition;
 
 /**
  * The Class JpaEmpConditionSetMemento.

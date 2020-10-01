@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 /*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
@@ -26,7 +27,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			WorkChangeCommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
 			reflectRecord.absenceReflectRecor(absenceInfor, isPre);
 			break;
-		case BREAK_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			HolidayWorkReflectPara holidayworkData = appRecordInfor.getHolidayworkInfor();
 			reflectRecord.holidayWorkReflectRecord(holidayworkData, isPre);
 			break;

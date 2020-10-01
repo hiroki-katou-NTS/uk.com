@@ -70,7 +70,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                         self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
                     }
-                    self.ctgItemDataList(res.ctgItemDataList);
+                    const ctgItemDataList = _.map(res.ctgItemDataList, (item: any) => {
+                        // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                        const itemName: string = item.keywordAtr === 1
+                            ? self.reverseWord(item.itemName)
+                            : item.itemName;
+                        item.itemName = itemName;
+                        return item;
+                    });
+                    self.ctgItemDataList(ctgItemDataList);
                     self.loadDetaiItemGrid();
                     self.setCssClass();
                     block.clear();
@@ -243,7 +251,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             $("#fixed-table tr").removeClass("my-active-row");
             $("#fixed-table tr[data-id='" + seriNum + "']").addClass("my-active-row");
         }
-        
+
         setCssClass(){
             let self = this;
             _.each(self.cndDetai().listOutCndDetailItem(), (item: OutCndDetailItemDto) => {
@@ -258,6 +266,42 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let lastItem2: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 2];
                 lastItem2.clazz("last-item");
             }
+        }
+
+        // Reverse word
+        private reverseWord(word: string): string {
+            const mapReveseWord = {
+                employment: '雇用呼称',
+                department: '部門呼称',
+                class: '分類呼称',
+                jobTitle: '職位呼称',
+                person: '社員呼称',
+                office: '事業所呼称',
+                work: '作業呼称',
+                workPlace: '職場呼称',
+                project: 'プロジェクト',
+                adHocWork: '臨時勤務',
+                substituteHoliday: '振休',
+                substituteWork: '振出',
+                compensationHoliday: '代休',
+                exsessHoliday: '60H超過休暇',
+                bindingTime: '拘束時間',
+                payAbsenseDays: '給与欠勤日数',
+                payAttendanceDays: '給与出勤日数',
+                import: '取込',
+                toppage: 'トップページ',
+                code: 'コード',
+                name: '名称',
+            };
+            const keyword: string = word.substring(
+                word.lastIndexOf("{#") + 2,
+                word.lastIndexOf("#}")
+            );
+            const reveseWord: string = mapReveseWord[keyword];
+            if (!reveseWord) {
+                return word;
+            }
+            return word.replace(`{#${keyword}#}`, reveseWord);
         }
     }
 
@@ -287,10 +331,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         itemName: string;
         dataType: shareModel.ITEM_TYPE;
         searchValueCd: string;
+        displayClassfication: number;
 
         constructor(categoryId: number, itemNo: number,
             tableName: string, displayTableName: string, itemName: string,
-            dataType: number, searchValueCd: string) {
+            dataType: number, searchValueCd: string, displayClassfication: number) {
             this.categoryId = categoryId;
             this.itemNo = itemNo;
             this.tableName = tableName;
@@ -298,6 +343,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             this.itemName = itemName;
             this.dataType = dataType;
             this.searchValueCd = searchValueCd;
+            this.displayClassfication = displayClassfication;
         }
     }
 
@@ -402,7 +448,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.switchView.subscribe(condSymbol => {
                 self.clearData();
             })
-            
+
             self.clazz = ko.observable("");
         }
 

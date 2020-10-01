@@ -17,9 +17,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -40,6 +37,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -117,8 +117,8 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から代休・休出の日数を取得
-			if (targetWorkInfo.getRecordInfo() == null) continue;
-			val workTypeCode = targetWorkInfo.getRecordInfo().getWorkTypeCode();
+			if (targetWorkInfo.getWorkInformation().getRecordInfo() == null) continue;
+			val workTypeCode = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			if (workTypeCode == null) continue;
 			if (!workTypeMap.containsKey(workTypeCode)) return;
 			val workType = workTypeMap.get(workTypeCode);
@@ -154,7 +154,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				
 				// 振替時間の合計を確認
 				int totalTransferMinutes = 0;
-				val totalWorkingTime = targetAttdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+				val totalWorkingTime = targetAttdTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 				val holidayWorkOpt = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
 				if (holidayWorkOpt.isPresent()){
 					for (val holidayWorkFrame : holidayWorkOpt.get().getHolidayWorkFrameTime()){
@@ -171,9 +171,9 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 				// 就業時間帯コードを確認
 				String workTimeCd = null;
 				if (isTarget){
-					if (targetWorkInfo.getRecordInfo() != null){
-						if (targetWorkInfo.getRecordInfo().getWorkTimeCode() != null){
-							workTimeCd = targetWorkInfo.getRecordInfo().getWorkTimeCode().v();
+					if (targetWorkInfo.getWorkInformation().getRecordInfo() != null){
+						if (targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null){
+							workTimeCd = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 						}
 					}
 				}

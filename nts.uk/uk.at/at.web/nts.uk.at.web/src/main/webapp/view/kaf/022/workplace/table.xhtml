@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <table data-bind="attr: {id: tableId}">
+        <colgroup data-bind="foreach: colAtrs">
+            <col data-bind="attr: {width: width + 'px'}"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="ui-widget-header">#{i18n.getText('KAF022_277')}</th>
+                <th class="ui-widget-header">#{i18n.getText('KAF022_19')}</th>
+                <th class="ui-widget-header">
+                    <div data-bind="ntsFormLabel: {
+										constraint: 'AppUseSetRemark',
+										inline: true
+									}">#{i18n.getText('KAF022_285')}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: settings">
+            <tr class="inline-radio">
+                <td class="color-header" data-bind="text: label"></td>
+                <td>
+                    <div data-bind="ntsRadioBoxGroup: {
+								options: $vm.radioOptions,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: useAtr,
+								enable: true}">
+                    </div>
+                </td>
+                <td>
+                    <textarea class = "memo"
+                              data-bind="ntsMultilineEditor: {
+                                        value: memo,
+                                        constraint: 'AppUseSetRemark',
+                                        name:'#[KAF022_315]'
+                                    },
+                                    style: {
+                                        height: '100px',
+                                        width: ($parent.colAtrs[2].width - 26) + 'px'
+                                    }" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ui:composition>

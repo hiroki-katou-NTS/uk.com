@@ -42,5 +42,5 @@ public abstract class KshmtTimeZone extends UkJpaEntity implements Serializable 
 	/** The end time. */
 	@Column(name = "END_TIME")
 	private int endTime;
-
+	
 }

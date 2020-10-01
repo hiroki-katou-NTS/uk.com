@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 
 /**

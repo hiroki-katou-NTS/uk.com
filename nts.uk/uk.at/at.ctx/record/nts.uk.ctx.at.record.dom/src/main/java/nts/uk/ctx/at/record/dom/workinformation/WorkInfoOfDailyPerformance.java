@@ -8,11 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 
 /**
  * 
@@ -25,66 +28,59 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 @NoArgsConstructor
 public class WorkInfoOfDailyPerformance extends AggregateRoot {
 
+	//社員ID
 	private String employeeId;
-
-	private WorkInformation recordInfo;
-
-	private WorkInformation scheduleInfo;
-
-	private CalculationState calculationState;
-
-	// 直行区分
-	private NotUseAttribute goStraightAtr;
-
-	// 直帰区分
-	private NotUseAttribute backStraightAtr;
-
+	//年月日
 	private GeneralDate ymd;
-	
-	private DayOfWeek dayOfWeek;
+	//勤務情報
+	private WorkInfoOfDailyAttendance workInformation;
 
-	private List<ScheduleTimeSheet> scheduleTimeSheets;
-
-	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
-			WorkInformation scheduleWorkInformation, CalculationState calculationState, NotUseAttribute goStraightAtr,
-			NotUseAttribute backStraightAtr, GeneralDate ymd, List<ScheduleTimeSheet> scheduleTimeSheets) {
+    public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
+            WorkInformation scheduleWorkInformation, CalculationState calculationState, NotUseAttribute goStraightAtr,
+            NotUseAttribute backStraightAtr, GeneralDate ymd, List<ScheduleTimeSheet> scheduleTimeSheets) {
+        this.employeeId = employeeId;
+        this.ymd = ymd;
+        this.workInformation = new WorkInfoOfDailyAttendance(
+        		recordWorkInformation,
+        		scheduleWorkInformation,
+        		calculationState,
+        		goStraightAtr,
+        		backStraightAtr,
+                DayOfWeek.MONDAY, //一時対応
+                scheduleTimeSheets
+                );
+    } 
+	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
 		this.employeeId = employeeId;
-		this.recordInfo = recordWorkInformation;
-		this.scheduleInfo = scheduleWorkInformation;
-		this.calculationState = calculationState;
-		this.goStraightAtr = goStraightAtr;
-		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
-		this.scheduleTimeSheets = scheduleTimeSheets;
-		//一時対応
-		this.dayOfWeek = DayOfWeek.MONDAY;
+		setWorkInformation(workInfo);
 	} 
 	
 	/**
 	 * 勤務予定を実績に移す
 	 */
 	public void shiftFromScheduleToRecord() {
-		recordInfo = scheduleInfo;
+		this.workInformation.setRecordInfo(workInformation.getScheduleInfo());
 	}
 	
 	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
 	public void workTimeChanged() {
 		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
-				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode()).build().toBePublished();
+				.newWorkTimeCode(workInformation.getRecordInfo() == null ? null : workInformation.getRecordInfo().getWorkTimeCode()).build().toBePublished();
 	}
 	
 	/** <<Event>> 実績の勤務種類が変更されたを発行する */
 	public void workTypeChanged() {
 		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
-				.newWorkTypeCode(recordInfo == null ? null : recordInfo.getWorkTypeCode()).build().toBePublished();
+				.newWorkTypeCode(workInformation.getRecordInfo() == null ? null : workInformation.getRecordInfo().getWorkTypeCode()).build().toBePublished();
 	}
 
 	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
 	/** <<Event>> 実績の勤務種類が変更されたを発行する */
 	public void workInfoChanged() {
 		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
-				.newWorkTypeCode(recordInfo == null ? null : recordInfo.getWorkTypeCode())
-				.newWorkTimeCode(recordInfo == null ? null : recordInfo.getWorkTimeCode())
+				.newWorkTypeCode(workInformation.getRecordInfo() == null ? null : workInformation.getRecordInfo().getWorkTypeCode())
+				.newWorkTimeCode(workInformation.getRecordInfo() == null ? null : workInformation.getRecordInfo().getWorkTimeCode())
 				.build().toBePublished();
 	}
 
@@ -95,11 +91,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public boolean isMatchWorkInfomation() {			
-		if(this.scheduleInfo.getWorkTypeCode()==this.recordInfo.getWorkTypeCode()&&
-				this.scheduleInfo.getWorkTimeCode()==this.recordInfo.getWorkTimeCode()) {
-			return true;
-		}
-		return false;
+		return workInformation.isMatchWorkInfomation();
 	}
 
 	/**
@@ -108,7 +100,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * @return　予定時間帯
 	 */
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
-		return this.scheduleTimeSheets.stream()
+		return workInformation.getScheduleTimeSheets().stream()
 				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();	
 	}
 
@@ -118,14 +110,16 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 			List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
 		this.employeeId = employeeId;
-		this.recordInfo = recordWorkInformation;
-		this.scheduleInfo = scheduleWorkInformation;
-		this.calculationState = calculationState;
-		this.goStraightAtr = goStraightAtr;
-		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
-		this.dayOfWeek = dayOfWeek;
-		this.scheduleTimeSheets = scheduleTimeSheets;
+		this.workInformation = new WorkInfoOfDailyAttendance(
+				recordWorkInformation,
+				scheduleWorkInformation,
+				calculationState,
+				goStraightAtr,
+				backStraightAtr,
+				dayOfWeek,
+				scheduleTimeSheets
+				);
 	}
 	
 	/**
@@ -133,11 +127,23 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * @param state 計算ステータス
 	 */
 	public void changeCalcState(CalculationState state) {
-		this.calculationState = state;
+		workInformation.setCalculationState(state);
 	}
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
+	}
+	@Override
+	public void setVersion(long version) {
+		super.setVersion(version);
+		if (this.workInformation != null) {
+			this.workInformation.setVer(version);
+		}
+	}
+	
+	public void setWorkInformation(WorkInfoOfDailyAttendance info) {
+		this.workInformation = info;
+		setVersion(info.getVer());
 	}
 	
 	

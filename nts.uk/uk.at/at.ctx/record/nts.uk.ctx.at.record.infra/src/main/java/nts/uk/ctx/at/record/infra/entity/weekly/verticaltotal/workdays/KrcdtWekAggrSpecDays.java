@@ -12,11 +12,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
-import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

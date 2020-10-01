@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public interface Checking36AgreementCondition {

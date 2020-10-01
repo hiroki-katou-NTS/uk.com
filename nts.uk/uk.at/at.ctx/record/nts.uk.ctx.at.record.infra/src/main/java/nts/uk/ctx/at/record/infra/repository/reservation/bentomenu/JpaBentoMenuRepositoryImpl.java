@@ -166,7 +166,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					Integer reservationStartTime2 = first.getReservationStartTime2();
 					Integer reservationEndTime2 = first.getReservationEndTime2();
 					Optional<ReservationClosingTime> closingTime2 = Optional.empty();
-					if(reservationStartTime2!=null) {
+					if(reservationEndTime2 != null) {
 						closingTime2 = Optional.of(new ReservationClosingTime(
 								new BentoReservationTimeName(reservationFrameName2), 
 								new BentoReservationTime(reservationEndTime2), 
@@ -232,6 +232,22 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					.filter(x -> x.getFrameNo()==frameNo).findAny().orElse(null);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	@SneakyThrows
+	public List<Bento> getBento(String companyID, GeneralDate date) {
+		String query = FIND_BENTO_MENU_DATE;
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceAll("date", date.toString());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (bentoMenuLst.isEmpty()) {
+				return new ArrayList<>();
+			}
+			return bentoMenuLst.get(0).getMenu();
 		}
 	}
 

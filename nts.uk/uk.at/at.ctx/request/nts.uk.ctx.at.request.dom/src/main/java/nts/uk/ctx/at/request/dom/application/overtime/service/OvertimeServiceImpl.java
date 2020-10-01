@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,30 +8,23 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -51,7 +42,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
-	ApplicationApprovalService_New appRepository;
+	ApplicationApprovalService appRepository;
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
@@ -91,44 +82,44 @@ public class OvertimeServiceImpl implements OvertimeService {
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService#getWorkType(java.lang.String, java.lang.String, java.util.Optional, java.util.Optional)
 	 */
-	@Override
-	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings) {
-		List<WorkTypeOvertime> result = new ArrayList<>();
-		// 時刻計算利用チェック
-		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
-		
-		if (sEmpHistImport != null 
-				&& appEmploymentSettings.isPresent()) {
-			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
-				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
-					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
-					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
-							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
-					.collect(Collectors.toList());;
-			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
-				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-				List<String> workTypeCodes = new ArrayList<>();
-				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
-				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-				if(CollectionUtil.isEmpty(result)) {
-					throw new BusinessException("Msg_1567");
-				}
-				return result;
-			}
-		}
-		List<Integer> allDayAtrs = allDayAtrs();
-		List<Integer> halfAtrs = halfAtrs();
-		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-				.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-		if(CollectionUtil.isEmpty(result)) {
-			throw new BusinessException("Msg_1567");
-		}
-		return result;
-	}
+//	@Override
+//	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
+//			ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings) {
+//		List<WorkTypeOvertime> result = new ArrayList<>();
+//		// 時刻計算利用チェック
+//		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
+//		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
+//		
+//		if (sEmpHistImport != null 
+//				&& appEmploymentSettings.isPresent()) {
+//			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
+//			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
+//				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
+//					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
+//					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
+//							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
+//					.collect(Collectors.toList());;
+//			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+//				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
+//				List<String> workTypeCodes = new ArrayList<>();
+//				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
+//				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
+//						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
+//				if(CollectionUtil.isEmpty(result)) {
+//					throw new BusinessException("Msg_1567");
+//				}
+//				return result;
+//			}
+//		}
+//		List<Integer> allDayAtrs = allDayAtrs();
+//		List<Integer> halfAtrs = halfAtrs();
+//		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
+//				.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
+//		if(CollectionUtil.isEmpty(result)) {
+//			throw new BusinessException("Msg_1567");
+//		}
+//		return result;
+//	}
 	/**
 	 * // １日の勤務＝以下に該当するもの
 	 * 　出勤、休出、振出、連続勤務
@@ -172,34 +163,35 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return halfAtrs;
 	}
 
-	@Override
-	public List<SiftType> getSiftType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
-		List<SiftType> result = new ArrayList<>();
-		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
-				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-		
-		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-			List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
-			for(WorkTimeSetting workTime : workTimes){
-				SiftType siftType = new SiftType();
-				siftType.setSiftCode(workTime.getWorktimeCode().toString());
-				siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
-				result.add(siftType);
-			}
-			return result;
-		}
-		return Collections.emptyList();
-	}
+//	@Override
+//	public List<SiftType> getSiftType(String companyID, String employeeID,
+//			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
+//		List<SiftType> result = new ArrayList<>();
+//		// 1.職場別就業時間帯を取得
+//		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
+//				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
+//		
+//		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
+//			List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
+//			for(WorkTimeSetting workTime : workTimes){
+//				SiftType siftType = new SiftType();
+//				siftType.setSiftCode(workTime.getWorktimeCode().toString());
+//				siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
+//				result.add(siftType);
+//			}
+//			return result;
+//		}
+//		return Collections.emptyList();
+//	}
 
 	/**
 	 * 登録処理を実行
 	 */
 	@Override
-	public void CreateOvertime(AppOverTime domain, Application_New newApp){
+	public void CreateOvertime(AppOverTime domain, Application newApp){
 		//Register application
-		appRepository.insert(newApp);
+		// error EA refactor 4
+		/*appRepository.insert(newApp);*/
 		//Register overtime
 		overTimeRepository.Add(domain);
 	}
@@ -294,10 +286,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private WorkTypeAndSiftType getDataDateExists(String companyID, String employeeID, GeneralDate baseDate) {
 		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
 		//実績の取得
-		AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
+		/*AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
 			workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
 			workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
-			return workTypeAndSiftType;
+			return workTypeAndSiftType;*/
+		return null;
 	}
 
 	@Override
@@ -305,11 +298,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
 			return null;
 		}
-		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
-				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+//				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
 	}
 }

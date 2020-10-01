@@ -1,99 +1,127 @@
-#qViewModel #tab-panel {
-	margin-top: -5px;
-	width: 1090px;
+#setting-workplace {
+	float: right;
+	margin-right: 20px
 }
 
-#qViewModel #tab-panel * {
-	float: left
+#set-work-type, #set-work-time {
+	margin-bottom: 10px;
+	margin-left: 10px
 }
 
-#qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
-	height: 20px;
-	width: 50px;
+#time-edit1, #time-edit2 {
+	text-align: center !important;
+	width: 43px !important;
 }
 
-#qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li a {
-	margin-left: 4px;
-	margin-top: 2px
+#time-edit1 {
+	margin-left: 16px
 }
 
-#qViewModel .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
-	padding: 0px;
-	font-size: 11px;
+.reserved, #table-worktime {
+	margin-left: 10px;
 }
 
-#qViewModel #company, #qViewModel #workplace {
-	width: 1005px;
-	height: 60px;
-	background-color: #DAE3F3
+#switch-o1 {
+	margin-left: 27px
 }
 
-.caret-background.caret-bottom:after {
-	left: 5% !important;
-	margin-top: 0px !important;
-	border-width: 8px 24px !important;
-	color: #E0F59E !important;
+#combo-box1 {
+	vertical-align: middle;
+	margin-left: 30px
 }
 
-#test1, #test2 {
-	background-color: #FBE5D6;
-	margin-left: -7px;
-	width: 1015px;
-	height: 53px;
+#paste {
+	background: url(../image/image102.png) no-repeat center;
+	min-width: 30px !important;
+	margin-left: 250px !important;
 }
 
-#test1 button, #test2 button {
-	width: 95px !important;
-	height: 20px;
+#copy {
+	background: url(../image/image104.png) no-repeat center;
+	min-width: 30px !important;
+	margin-left: 5px !important;
 }
 
-#test1 table td, #test2 table td {
-	padding: 3px 3px !important;
+#undo {
+	background: url(../image/image030.png) no-repeat center;
+	min-width: 30px !important;
+	margin-left: 5px !important;
 }
 
-#qViewModel .hyperlink {
-	color: #0066CC;
-	margin-left: 15px;
-	margin-top: 1px
+.size-image-button {
+	background-size: 25px 25px !important;
+	height: 30px;
 }
 
-#part-1-1, #part-1-2 {
-	margin-left: -8px;
-	margin-top: -11px
+#functions-area button:FIRST-CHILD {
+	vertical-align: top
 }
 
-#part-1-1 div:FIRST-CHILD, #part-1-2 div:FIRST-CHILD {
-	height: 18px;
-	width: 650px;
+table {
+	border: 1px solid black;
+	width: 100%;
+	border-style: double;
+	border-color: darkgrey;
+	border-left: none;
+	width: 263px;
+	border-bottom: none;
 }
 
-#part-1-1 div:NTH-CHILD(2), #part-1-2 div:NTH-CHILD(2) {
-	margin-left: 150px
-}
-
-#part-1-1 button, #part-1-2 button {
-	margin-left: 20px;
+th, td {
+	width: 122px;
+	border: 1px solid black;
+	border-color: darkgrey;
+	padding-right: 0px;
 	height: 24px;
 }
 
-#popup-area {
-	border: solid 6px #fff !important;
-	border-radius: 3.5px !important;
-	box-shadow: 1px 1px 5px 2px #888 !important;
-	padding: 12px;
-	background-color: #F8EFD4 !important;
-	visibility: hidden;
-	z-index: 1000
+thead {
+	background-color: #E9E9E9;
 }
 
-#popup-area * {
-	font-size: 14px !important;
+thead>tr {
+	position: relative;
+	display: block;
 }
 
-#popup-area>div {
-	margin-top: 10px
+thead>tr>th {
+	box-sizing: border-box;
+	background-color: lightgreen;
+	border-top: none;
 }
 
-.color-gray {
-	color: gray !important
+input {
+	box-sizing: border-box;
+	border: 1px solid black;
+	border-color: darkgrey;
+}
+
+tbody {
+	display: block;
+	max-height: 251px;
+	overflow: scroll;
+	overflow-x: hidden;
+	height: auto;
+}
+tbody>tr>td{
+	box-sizing: border-box;
+	width: 122px;
+}
+hr {
+	border-color: E0FFFF;
+	width: 390px;
+	margin: 9px 9px 9px 25px;
+}
+
+span {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	overflow-y: hidden; /* Hide scrollbars */
+}
+
+.ntsControl.symbol:after {
+    top: 2px !important;
 }
