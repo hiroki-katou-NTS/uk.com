@@ -115,6 +115,13 @@ public class GetDataToOutputService extends ExportService<Object> {
     @Inject
     private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
 
+
+//    @Inject
+//    private ExacErrorLogAdapter exacErrorLogAdapter;
+
+//    @Inject
+//    private ExternalOutLogAdapter externalOutLogAdapter;
+
     @Override
     protected void handle(ExportServiceContext<Object> context) {
         GetDataToOutputCommand command = (GetDataToOutputCommand) context.getQuery();
@@ -215,11 +222,11 @@ public class GetDataToOutputService extends ExportService<Object> {
                                 break;
                             // Step ドメインモデル「外部受入エラーログ」を取得する
                             case EXTERNAL_ACCEPTANCE:
-                                /* TODO */
+//                                execLogDetail.setExacErrorLogImports(this.exacErrorLogAdapter.getExacErrorLogByProcessId(execIdByLogHistory));
                                 break;
                             // Step ドメインモデル「外部出力結果ログ」を取得する
                             case EXTERNAL_OUTPUT:
-                                /* TODO */
+//                                execLogDetail.setExternalOutLogImports(this.externalOutLogAdapter.getExternalOutLogById(companyId,execIdByLogHistory,0));
                                 break;
                         }
                         lstLogDetail.add(execLogDetail);
@@ -490,23 +497,30 @@ public class GetDataToOutputService extends ExportService<Object> {
 
     private ResultState generalFileCSV4(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
 
-        // TODO
         try {
-//            List<String> headerCSV4 = this.getTextHeaderCsv4();
-//            CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV4 + CSV_EXTENSION, headerCSV4, "UTF-8");
-//            for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
-//                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-//                ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
-//                Map<String, Object> rowCSV4 = new HashMap<>();
-//                rowCSV4.putAll(this.saveHeaderCSV(rowCSV4,proHis.getExecId(),exeCode.getExecItemCd(),proHis.getExecItemCd(),exeCode.getExecItemName()));
-//                rowCSV4.put(headerCSV4.get(3),null );
-//                rowCSV4.put(headerCSV4.get(4),null );
-//                rowCSV4.put(headerCSV4.get(4),null );
-//                rowCSV4.put(headerCSV4.get(4),null );
-//                rowCSV4.put(headerCSV4.get(4),null );
-//                csv.writeALine(rowCSV4);
-//            }
-//            csv.destroy();
+            List<String> headerCSV4 = this.getTextHeaderCsv4();
+            CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV4 + CSV_EXTENSION, headerCSV4, "UTF-8");
+            for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
+                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+                ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
+//                List<ExacErrorLogImport> lstExacErrorLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExacErrorLogImports();
+//                // sort list exacErrorLogImport of record number oder by asc
+//                lstExacErrorLog.sort(Comparator.comparingInt(ExacErrorLogImport::getRecordNumber));
+//
+//                if(!lstExacErrorLog.isEmpty()){
+//                    lstExacErrorLog.forEach(exacErrLog -> {
+//                        Map<String, Object> rowCSV4 = new HashMap<>();
+//                        rowCSV4.putAll(this.saveHeaderCSV(rowCSV4,proHis.getExecId(),exeCode.getExecItemCd(),proHis.getExecItemCd(),exeCode.getExecItemName()));
+//                        rowCSV4.put(headerCSV4.get(3),exacErrLog.getRecordNumber());
+//                        rowCSV4.put(headerCSV4.get(4),exacErrLog.getCsvErrorItemName());
+//                        rowCSV4.put(headerCSV4.get(5),exacErrLog.getItemName());
+//                        rowCSV4.put(headerCSV4.get(6),exacErrLog.getCsvAcceptedValue());
+//                        rowCSV4.put(headerCSV4.get(7),exacErrLog.getErrorContents());
+//                        csv.writeALine(rowCSV4);
+//                    });
+//                }
+            }
+            csv.destroy();
             return ResultState.NORMAL_END;
         } catch (Exception e) {
             e.printStackTrace();
@@ -515,26 +529,34 @@ public class GetDataToOutputService extends ExportService<Object> {
     }
 
     private ResultState generalFileCSV5(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
-        // TODO
+
         try {
-//            List<String> headerCSV5 = this.getTextHeaderCsv5();
-//            CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV5 + CSV_EXTENSION, headerCSV5, "UTF-8");
-//            for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
-//                Map<String, Object> rowCSV5 = new HashMap<>();
-//                ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
-//                EmployeeInfoImport empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
-//                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
-//                rowCSV5.putAll(this.saveHeaderCSV(rowCSV5,proHis.getExecId(),exeCode.getExecItemCd(),proHis.getExecItemCd(),exeCode.getExecItemName()));
-//                rowCSV5.put(headerCSV5.get(3), null);
-//                rowCSV5.put(headerCSV5.get(4), empImport.getScd());
-//                rowCSV5.put(headerCSV5.get(5), empImport.getBussinessName());
-//                rowCSV5.put(headerCSV5.get(6), null);
-//                rowCSV5.put(headerCSV5.get(7), null);
-//                rowCSV5.put(headerCSV5.get(8), null);
-//                rowCSV5.put(headerCSV5.get(9), null);
-//                csv.writeALine(rowCSV5);
-//            }
-//            csv.destroy();
+            List<String> headerCSV5 = this.getTextHeaderCsv5();
+            CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV5 + CSV_EXTENSION, headerCSV5, "UTF-8");
+            for (int i = 0; i < updateProAutoRuns.getLstExecLogDetail().size(); i++) {
+
+                ProcessExecutionLogHistory proHis = updateProAutoRuns.getLstExecLogDetail().get(i).getProcessExecLogHistory();
+                EmployeeInfoImport empImport = updateProAutoRuns.getLstEmployeeSearch().get(i);
+                ProcessExecution exeCode = updateProAutoRuns.getLstProcessExecution().get(i);
+//                List<ExternalOutLogImport> lstExternalOutLog = updateProAutoRuns.getLstExecLogDetail().get(i).getExternalOutLogImports();
+//                // sort list ExternalOutLogImport of process count and ascending order by asc
+//                lstExternalOutLog.sort(Comparator.comparing(ExternalOutLogImport::getProcessCount).thenComparing(ExternalOutLogImport::getErrorDate));
+//                if(!lstExternalOutLog.isEmpty()){
+//                    lstExternalOutLog.forEach(externalOutLogImport  -> {
+//                        Map<String, Object> rowCSV5 = new HashMap<>();
+//                        rowCSV5.putAll(this.saveHeaderCSV(rowCSV5,proHis.getExecId(),exeCode.getExecItemCd(),proHis.getExecItemCd(),exeCode.getExecItemName()));
+//                        rowCSV5.put(headerCSV5.get(3), externalOutLogImport.getProcessCount());
+//                        rowCSV5.put(headerCSV5.get(4), empImport.getScd());
+//                        rowCSV5.put(headerCSV5.get(5), empImport.getBussinessName());
+//                        rowCSV5.put(headerCSV5.get(6), externalOutLogImport.getErrorDate().toString());
+//                        rowCSV5.put(headerCSV5.get(7), externalOutLogImport.getErrorItem());
+//                        rowCSV5.put(headerCSV5.get(8), externalOutLogImport.getErrorTargetValue());
+//                        rowCSV5.put(headerCSV5.get(9), externalOutLogImport.getErrorContent());
+//                        csv.writeALine(rowCSV5);
+//                    });
+//                }
+            }
+            csv.destroy();
             return ResultState.NORMAL_END;
         } catch (Exception e) {
             e.printStackTrace();
@@ -605,6 +627,8 @@ public class GetDataToOutputService extends ExportService<Object> {
     private List<String> getTextHeaderCsv3(boolean isExportEmpName) {
         List<String> lstHeader = new ArrayList<>();
         for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
+
+            // check valid export employee name true or false
             if (isExportEmpName) {
                 if (!nameId.equals("KBT002_292")) {
                     lstHeader.add(TextResource.localize(nameId));

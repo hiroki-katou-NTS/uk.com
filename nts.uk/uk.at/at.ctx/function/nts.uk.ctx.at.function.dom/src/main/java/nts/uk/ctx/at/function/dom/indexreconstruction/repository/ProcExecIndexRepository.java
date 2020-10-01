@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
-import java.util.Optional;
-
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
+
+import java.util.Optional;
 
 /**
  * The Interface ProcExecIndexRepository.
@@ -31,4 +31,7 @@ public interface ProcExecIndexRepository {
 	 * @param domain
 	 */
 	void delete(String execId, String tableName, String indexName);
+
+
+	Optional<ProcExecIndex> findByExecId(String execId);
 }

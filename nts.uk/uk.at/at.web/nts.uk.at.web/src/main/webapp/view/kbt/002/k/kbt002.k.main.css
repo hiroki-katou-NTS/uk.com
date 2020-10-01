@@ -2,3 +2,14 @@
     border-bottom: 1px solid black;
     width: 100%;
 }
+.reponsive{
+    padding: 20px 0px 10px 5px;
+}
+
+.radio-group-emp-name > .ntsRadioBox {
+    min-width: 120px;
+}
+
+.radio-group-emp-name > .ntsRadioBox:focus {
+    border: none;
+}

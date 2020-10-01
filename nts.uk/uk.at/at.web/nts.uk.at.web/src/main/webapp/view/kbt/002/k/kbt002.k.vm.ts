@@ -6,24 +6,23 @@ module nts.uk.at.view.kbt002.k {
     export class KBT002KViewModel extends ko.ViewModel {
         
         empNames: KnockoutObservableArray<any> = ko.observableArray([
-            {code : true, name: getTextResoure('KBT002_275')},
-            {code : false,name: getTextResoure('KBT002_276')}
+            {code : 1, name: getTextResoure('KBT002_275')},
+            {code : 2,name: getTextResoure('KBT002_276')}
         ]);
-        selectEmpName :KnockoutObservable<number> = ko.observable(1);
-        startDate: KnockoutObservable<number> = ko.observable(null);
-        endDate: KnockoutObservable<number> = ko.observable(null);
+        selectEmpName :KnockoutObservable<number> = ko.observable(2);
+        startDate: KnockoutObservable<number> = ko.observable(moment.now());
+        endDate: KnockoutObservable<number> = ko.observable(moment.now());
 
         mounted(){
-            const vm = this
-            // const params = nts.uk.ui.windows.getShared("KBT002_K_PARAMS");
+            
         }
         
         getDataExportCsv(){
             const vm = this
             const command: GetDataExportCSV = new GetDataExportCSV({    
                 isExportEmployeeName : vm.selectEmpName() === 1 ? true : false,
-                startDate: vm.startDate() ? moment.utc(vm.startDate(),'YYYY/MM/DD').toString() : null,
-                endDate: vm.endDate() ? moment.utc(vm.endDate(),'YYYY/MM/DD').toString() : null
+                startDate: moment.utc(vm.startDate(),'YYYY/MM/DD').toISOString(),
+                endDate: moment.utc(vm.endDate(),'YYYY/MM/DD').toISOString()
             });
             service.exportCSV(command).done((res) =>{
 
@@ -32,14 +31,14 @@ module nts.uk.at.view.kbt002.k {
 
         closeDialog(){
             const vm = this;
-            vm.$window.close;
+            vm.$window.close();
         }
     }
 
     export class GetDataExportCSV{
         isExportEmployeeName : boolean;
-        startDate : String;
-        endDate : String;
+        startDate : any;
+        endDate : any;
         constructor (init?: Partial<GetDataExportCSV>) {
             $.extend(this, init)
         }

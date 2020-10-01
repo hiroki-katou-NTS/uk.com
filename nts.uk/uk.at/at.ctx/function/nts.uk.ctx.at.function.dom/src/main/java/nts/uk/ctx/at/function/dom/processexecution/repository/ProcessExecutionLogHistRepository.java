@@ -15,5 +15,5 @@ public interface ProcessExecutionLogHistRepository {
 	public List<ProcessExecutionLogHistory> getByDate(String companyId,String execItemCd, GeneralDateTime prevExecDateTime);
 	public List<ProcessExecutionLogHistory> getByDateRange(String companyId, String execItemCd,
 			GeneralDateTime startDate,GeneralDateTime endDate);
-	List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate);
+	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDate, GeneralDateTime endDate);
 }

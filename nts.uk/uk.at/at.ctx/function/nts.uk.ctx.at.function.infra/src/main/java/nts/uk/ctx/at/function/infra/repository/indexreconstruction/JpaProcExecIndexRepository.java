@@ -1,11 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
@@ -13,15 +7,23 @@ import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRe
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfndtProcExecIndex;
 
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Stateless
 public class JpaProcExecIndexRepository extends JpaRepository implements ProcExecIndexRepository {
 
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM KfndtProcExecIndex f";
-	
+
 	// Select one
 	private static final String QUERY_SELECT_BY_ID = QUERY_SELECT_ALL
 			+ " WHERE f.pk.execId = :execId AND f.pk.tableName = :tableName AND f.pk.indexName = :indexName";
+
+	// Select one by execId
+	private static final String QUERY_SELECT_BY_EXEC_ID = QUERY_SELECT_ALL + " WHERE f.pk.execId = :execId";
 		
 	@Override
 	public Optional<ProcExecIndex> findOne(String execId, String tableName, String indexName) {
@@ -73,4 +75,19 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 		return listEntity;
 	}
 
+	@Override
+	public Optional<ProcExecIndex> findByExecId(String execId) {
+		List<KfndtProcExecIndex> listEntity = this.queryProxy().query(QUERY_SELECT_BY_EXEC_ID, KfndtProcExecIndex.class)
+				.setParameter("execId", execId)
+				.getList();
+		List<ProcExecIndexResult> listResult = listEntity.stream()
+				.map(ProcExecIndexResult::createFromMemento)
+				.collect(Collectors.toList());
+		return listEntity.isEmpty()
+				? Optional.empty()
+				: Optional.of(ProcExecIndex.builder()
+				.executionId(new ExecutionCode(execId))
+				.indexReconstructionResult(listResult)
+				.build());
+	}
 }

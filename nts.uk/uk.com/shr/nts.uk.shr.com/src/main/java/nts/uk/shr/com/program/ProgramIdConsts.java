@@ -136,6 +136,8 @@ public class ProgramIdConsts {
 	public static final String KBT002G = "KBT002G";
 	public static final String KBT002H = "KBT002H";
 	public static final String KBT002I = "KBT002I";
+	public static final String KBT002K = "KBT002K";
+	public static final String KBT002L = "KBT002L";
 
 	public static final String KDW001A = "KDW001A";
 	public static final String KDW001B = "KDW001B";

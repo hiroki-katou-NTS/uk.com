@@ -1,4 +1,4 @@
-/******************************************************************
+﻿/******************************************************************
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
@@ -584,10 +584,16 @@ public class ProgramsManager {
     public static final Program KBT002I = new Program(WebAppId.AT, ProgramIdConsts.KBT002I, "KBT002_190",
             "/view/kbt/002/i/index.xhtml");
     /**
-     * KBT002J
+     * KBT002K
      */
-    public static final Program KBT002J = new Program(WebAppId.AT, ProgramIdConsts.KBT002J, "KBT002_273",
-    		"/view/kbt/002/j/index.xhtml");
+    public static final Program KBT002K = new Program(WebAppId.AT, ProgramIdConsts.KBT002K, "KBT002_270",
+            "/view/kbt/002/k/index.xhtml");
+    /**
+     * KBT002L
+     */
+    public static final Program KBT002L = new Program(WebAppId.AT, ProgramIdConsts.KBT002L, "KBT002_324",
+            "/view/kbt/002/l/index.xhtml");
+
     /**
      * KDW001A
      */
