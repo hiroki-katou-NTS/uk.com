@@ -98,4 +98,22 @@ public interface OutsideOTSettingRepository {
 	 */
 	public void saveAllOvertime(List<Overtime> overtimes, String companyId);
 
+	/**
+	 * Gets the over time by company id and use classification.
+	 *
+	 * @param companyId the company id
+	 * @param useClassification the use classification
+	 * @return the over time by company id and use classification
+	 */
+	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification);
+
+	/**
+	 * Gets the by company id and use classification.
+	 *
+	 * @param companyId the company id
+	 * @param useClassification the use classification
+	 * @return the by company id and use classification
+	 */
+	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification);
+
 }
