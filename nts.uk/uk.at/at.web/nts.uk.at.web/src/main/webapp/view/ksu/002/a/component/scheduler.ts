@@ -34,7 +34,16 @@ module nts.uk.ui.at.ksu002.a {
             element.classList.add('scheduler');
             element.removeAttribute('tabindex');
 
-            ko.applyBindingsToNode(element, { component }, bindingContext.extend({ $change: changeCell }));
+            const binding = bindingContext
+                .extend({
+                    $change: changeCell,
+                    $currenttab: ko.observable(null),
+                    $tabindex: tabIndex
+                });
+
+            _.extend(window, { binding });
+
+            ko.applyBindingsToNode(element, { component }, binding);
 
             return { controlsDescendantBindings: true };
         }
@@ -120,7 +129,6 @@ module nts.uk.ui.at.ksu002.a {
 
     export module controls {
         const COMPONENT_NAME = 'scheduler-data-info';
-        const COMPONENT_WT_NAME = 'scheduler-work-time';
 
         @handler({
             bindingName: COMPONENT_NAME,
@@ -131,11 +139,8 @@ module nts.uk.ui.at.ksu002.a {
             init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = COMPONENT_NAME;
                 const dayData = valueAccessor();
-                const tabIndex = element.getAttribute('tabindex') || '1';
-                const params = { dayData, tabIndex, context: bindingContext };
+                const params = { dayData, context: bindingContext };
                 const component = { name, params };
-
-                element.removeAttribute('tabindex');
 
                 ko.applyBindingsToNode(element, { component }, bindingContext);
 
@@ -151,8 +156,46 @@ module nts.uk.ui.at.ksu002.a {
                 <div class="leave" data-bind="text: text.wtime"></div>
             </div>
             <div class="work-time cf">
-                <div class="join" data-bind="${COMPONENT_WT_NAME}: $component.model.begin"></div>
-                <div class="leave" data-bind="${COMPONENT_WT_NAME}: $component.model.finish"></div>
+                <div class="join">
+                    <input class="begin" data-bind="
+                        event: {
+                            blur: function() { $component.hideInput.apply($component, ['begin']) },
+                            click: function() { $component.showInput.apply($component, ['begin']) },
+                            focus: function(evt) { $component.registerTab.apply($component, ['begin'], evt) },
+                            keyup: function(evt) { $component.registerTab.apply($component, ['finish', evt]) },
+                        },
+                        attr: {
+                            tabindex: $component.data.context.$tabindex
+                        },
+                        ntsTimeEditor: {
+                            name: 'Duration',
+                            constraint: 'SampleTimeDuration',
+                            mode: 'time',
+                            inputFormat: 'time',
+                            value: $component.model.begin,
+                            readonly: ko.unwrap($component.readonly).begin
+                        }" />
+                </div>
+                <div class="leave">
+                    <input class="finish" data-bind="
+                        event: {
+                            blur: function() { $component.hideInput.apply($component, ['finish']) },
+                            click: function() { $component.showInput.apply($component, ['finish']) },
+                            focus: function(evt) { $component.registerTab.apply($component, ['finish'], evt) },
+                            keyup: function(evt) { $component.registerTab.apply($component, ['finish', evt]) },
+                        },
+                        attr: {
+                            tabindex: $component.data.context.$tabindex
+                        },
+                        ntsTimeEditor: {
+                            name: 'Duration',
+                            constraint: 'SampleTimeDuration',
+                            mode: 'time',
+                            inputFormat: 'time',
+                            value: $component.model.finish,
+                            readonly: ko.unwrap($component.readonly).finish
+                        }" />
+                </div>
             </div>
             `
         })
@@ -162,6 +205,13 @@ module nts.uk.ui.at.ksu002.a {
                 finish: ko.observable(null)
             };
 
+            click: WorkTimeRange<number> = {
+                begin: ko.observable(0),
+                finish: ko.observable(0)
+            };
+
+            readonly!: KnockoutComputed<{ begin: boolean; finish: boolean; }>;
+
             text: {
                 wtype: string;
                 wtime: string;
@@ -170,7 +220,7 @@ module nts.uk.ui.at.ksu002.a {
                     wtype: ''
                 };
 
-            constructor(private data: { dayData: c.DayData<ScheduleData>; tabIndex: string; context: { $vm: any, $change: Function } }) {
+            constructor(private data: { dayData: c.DayData<ScheduleData>; context: BindingContext }) {
                 super();
             }
 
@@ -219,65 +269,16 @@ module nts.uk.ui.at.ksu002.a {
                             context.$change.apply(context.$vm, [clone]);
                         }
                     });
-            }
-        }
-
-        @handler({
-            bindingName: COMPONENT_WT_NAME,
-            validatable: true,
-            virtual: false
-        })
-        export class WorkTimeComponentBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => KnockoutObservable<string>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                const name = COMPONENT_WT_NAME;
-                const value = valueAccessor();
-                const params = { value };
-                const component = { name, params };
-
-                ko.applyBindingsToNode(element, { component }, bindingContext);
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-
-        @component({
-            name: COMPONENT_WT_NAME,
-            template: `
-            <input data-bind="
-                event: {
-                    blur: hideInput,
-                    click: showInput
-                },
-                ntsTimeEditor: {
-                    name: 'Duration',
-                    constraint: 'SampleTimeDuration',
-                    value: model,
-                    inputFormat: 'time',
-                    mode: 'time',
-                    readonly: readonly
-                }" />
-            `
-        })
-        export class WorkTimeComponent extends ko.ViewModel {
-            click: KnockoutObservable<number> = ko.observable(0);
-
-            model!: KnockoutObservable<number | null>;
-
-            readonly!: KnockoutComputed<boolean>;
-
-            constructor(private data: { value: KnockoutObservable<number | null> }) {
-                super();
-            }
-
-            created() {
-                const vm = this;
-                const { data } = vm;
-
-                vm.model = data.value;
 
                 vm.readonly = ko.computed({
-                    read() {
-                        return false && ko.unwrap(vm.click) < 2;
+                    read: () => {
+                        const begin = ko.unwrap(vm.click.begin);
+                        const finish = ko.unwrap(vm.click.finish);
+
+                        return {
+                            begin: false && begin < 2,
+                            finish: false && finish < 2
+                        }
                     },
                     owner: vm
                 });
@@ -285,28 +286,70 @@ module nts.uk.ui.at.ksu002.a {
 
             mounted() {
                 const vm = this;
+                const { data } = vm;
+                const { dayData, context } = data;
+                const $current = ko.unwrap(context.$currenttab);
 
-                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                if ($current) {
+                    if (moment($current.date).isSame(dayData.date)) {
+                        context.$currenttab(null);
+                        
+                        $(vm.$el).find(`.${$current.input}`).focus();
+                    }
+                }
             }
 
-            hideInput() {
+            hideInput(input: 'begin' | 'finish') {
                 const vm = this;
-                const { click } = vm;
 
-                click(0);
+                if (input === 'begin') {
+                    vm.click.begin(0);
+                } else if (input === 'finish') {
+                    vm.click.finish(0);
+                }
             }
 
-            showInput() {
+            showInput(input: 'begin' | 'finish') {
                 const vm = this;
-                const { click } = vm;
 
-                click(click() + 1);
+                console.log(input);
+
+                if (input === 'begin') {
+                    const i = vm.click.begin();
+
+                    vm.click.begin(i + 1);
+                } else if (input === 'finish') {
+                    const i = vm.click.finish();
+
+                    vm.click.finish(i + 1);
+                }
+            }
+
+            registerTab(input: 'begin' | 'finish', evt: KeyboardEvent) {
+                const vm = this;
+                const { data } = vm;
+
+                vm.data.context
+                    .$currenttab({
+                        date: data.dayData.date,
+                        input
+                    });
             }
         }
 
-        interface WorkTimeRange {
-            begin: KnockoutObservable<number | null>;
-            finish: KnockoutObservable<number | null>;
+        interface WorkTimeRange<T = number | null> {
+            begin: KnockoutObservable<T>;
+            finish: KnockoutObservable<T>;
+        }
+
+        interface BindingContext extends KnockoutBindingContext {
+            $vm: any,
+            $change: Function,
+            $tabindex: string | number;
+            $currenttab: KnockoutObservable<null | {
+                date: Date;
+                input: 'begin' | 'finish';
+            }>;
         }
     }
 }
