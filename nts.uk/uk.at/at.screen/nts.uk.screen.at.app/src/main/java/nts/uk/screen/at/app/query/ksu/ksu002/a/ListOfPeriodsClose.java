@@ -60,7 +60,7 @@ public class ListOfPeriodsClose {
 		
 		SystemDateDto dtos = new SystemDateDto();
 		
-		if (input.getYearMonth() == 0) {
+		if (input.getYearMonth() <= 0) {
 			dtos.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
 		} else {
 			dtos.setYearMonth(input.getYearMonth());

@@ -179,6 +179,9 @@ module nts.uk.ui.at.ksu002.a {
                 const { data, model } = vm;
                 const { context, dayData } = data;
 
+                let b: number | null = null;
+                let f: number | null = null;
+
                 if (dayData.data) {
                     const { data } = dayData;
 
@@ -192,9 +195,6 @@ module nts.uk.ui.at.ksu002.a {
                         model.finish(value.finish);
                     }
                 }
-
-                let b: number | null = null;
-                let f: number | null = null;
 
                 model.begin
                     .subscribe(c => {

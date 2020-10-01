@@ -43,12 +43,16 @@ public class Ksu002AWebService extends WebService {
 	@POST
 	@Path("getListOfPeriodsClose")
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
+		if (param == null) {
+			param = new ListOfPeriodsCloseInput(theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
+		}
+		
 		return this.listOfPeriodsClose.get(param);
 	}
 	
 	@POST
 	@Path("getScheduleActualOfWorkInfo")
-	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {
+	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {		
 		return this.getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(param);
 	}
 }

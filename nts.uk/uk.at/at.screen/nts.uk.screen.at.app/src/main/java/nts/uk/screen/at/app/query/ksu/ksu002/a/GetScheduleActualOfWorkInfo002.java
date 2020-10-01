@@ -30,28 +30,33 @@ public class GetScheduleActualOfWorkInfo002 {
 		// lay data Schedule
 		List<WorkScheduleWorkInforDto> listDataSchedule = getScheduleOfWorkInfo002.getDataScheduleOfWorkInfo(param);
 
-		if (param.getActualData) {
+		if (param.getActualData()) {
 			// lay data Daily
 			List<WorkScheduleWorkInforDto> listDataDaily = getWorkActualOfWorkInfo002.getDataActualOfWorkInfo(param);
 			// merge
 			List<WorkScheduleWorkInforDto> listToRemove = new ArrayList<WorkScheduleWorkInforDto>();
 			List<WorkScheduleWorkInforDto> listToAdd = new ArrayList<WorkScheduleWorkInforDto>();
+			
 			for (WorkScheduleWorkInforDto dataSchedule : listDataSchedule) {
 				String sid = dataSchedule.employeeId;
 				GeneralDate date = dataSchedule.date;
+				
 				Optional<WorkScheduleWorkInforDto> dataDaily = listDataDaily.stream().filter(data -> {
 					if (data.employeeId.equals(sid) && data.date.equals(date))
 						return true;
 					return false;
 				}).findFirst();
+				
 				if (dataDaily.isPresent()) {
 					listToRemove.add(dataSchedule);
 					listToAdd.add(dataDaily.get());
 				}
 			}
+			
 			listDataSchedule.removeAll(listToRemove);
 			listDataSchedule.addAll(listToAdd);
 		}
+		
 		return listDataSchedule;
 	}
 
