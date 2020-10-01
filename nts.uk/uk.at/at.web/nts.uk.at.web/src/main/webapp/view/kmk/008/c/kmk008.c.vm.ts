@@ -42,14 +42,13 @@ module nts.uk.at.view.kmk008.c {
 
 		constructor() {
 			super();
-			let self = this;
+			let vm = this;
 
-			self.someText = self.$i18n('KMK008_165').replace('\r\n', '<br/>');
 			// self.laborSystemAtr = laborSystemAtr;
-			self.isUpdate = true;
-			self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-			self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
-			self.empListCmp = new EmpListCmp();
+			vm.isUpdate = true;
+			vm.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
+			vm.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
+			vm.empListCmp = new EmpListCmp();
 		}
 
 		created() {
@@ -68,24 +67,23 @@ module nts.uk.at.view.kmk008.c {
 			vm.startPage();
 		}
 
-
 		startPage(): JQueryPromise<any> {
-			let self = this;
+			let vm = this;
 			let dfd = $.Deferred();
 
 			nts.uk.ui.errors.clearAll();
-			if (self.laborSystemAtr == 0) {
-				self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
+			if (vm.laborSystemAtr == 0) {
+				vm.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
 			} else {
-				self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
+				vm.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
 			}
 
-			new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
-				self.timeOfCompany(new TimeOfCompanyModel(data));
+			new service.Service().getAgreementTimeOfCompany(vm.laborSystemAtr).done(data => {
+				vm.timeOfCompany(new TimeOfCompanyModel(data));
 				if (data.updateMode) {
-					self.isUpdate = true;
+					vm.isUpdate = true;
 				} else {
-					self.isUpdate = false;
+					vm.isUpdate = false;
 				}
 				$("#errorCheckInput").focus();
 				dfd.resolve();
@@ -93,15 +91,10 @@ module nts.uk.at.view.kmk008.c {
 
 			});
 
-			$('#empt-list-setting').ntsListComponent(self.empListCmp.listComponentOption);
-			// $("#C4_3").ntsFixedTable({ height: 34, width: 450 });
-			// $("#C4_6").ntsFixedTable({ height: 196, width: 700 });
-			// $("#C4_31").ntsFixedTable({ height: 44, width: 700 });
-
+			$('#empt-list-setting').ntsListComponent(vm.empListCmp.listComponentOption);
 			$("#C4_3").ntsFixedTable({width: 452 });
 			$("#C4_6").ntsFixedTable({width: 700 });
 			$("#C4_31").ntsFixedTable({width: 700 });
-			self.theTime.valueHasMutated();
 
 			return dfd.promise();
 		}

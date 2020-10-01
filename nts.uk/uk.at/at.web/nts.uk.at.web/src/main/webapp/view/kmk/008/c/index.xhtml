@@ -116,7 +116,7 @@
 					<button data-itemno="C2_4" class="danger register-button" tabindex="7" data-bind="click: deleteEmpSetting, enable: true">#{i18n.getText('KMK008_16')}</button>
 				</div>
 				<div class="contents-area">
-					<table>
+					<table id="contents-left-right">
 						<tr>
 							<td>
 								<div tabindex ="8" id="left-content">
@@ -169,14 +169,15 @@
                                 </table>
                                 <table id="C4_6">
                                     <colgroup>
-                                        <col width="250"/>
+                                        <col width="50"/>
+                                        <col width="200"/>
                                         <col width="100"/>
                                         <col width="100"/>
                                         <col width="250"/>
                                     </colgroup>
                                     <thead>
-                                        <tr class="tr-common-height">
-                                            <th class="ui-widget-header" data-bind="text: $i18n('KMK008_89')"></th>
+                                        <tr id="C4_6_header" class="tr-common-height">
+                                            <th colspan="2" class="ui-widget-header" data-bind="text: $i18n('KMK008_89')"></th>
                                             <th class="ui-widget-header" data-bind="text: $i18n('KMK008_90')"></th>
                                             <th class="ui-widget-header" data-bind="text: $i18n('KMK008_91')"></th>
                                             <th class="ui-widget-header" data-bind="text: $i18n('KMK008_164')"></th>
@@ -184,6 +185,7 @@
                                     </thead>
                                     <tbody>
                                         <tr class="tr-common-height">
+                                            <td rowspan="2"></td>
                                             <td></td>
                                             <td>
                                                 <input data-itemno="C4_14" data-bind="ntsTimeEditor: {
@@ -224,6 +226,7 @@
                                             <td class="wrap-white-space-pre-line" data-itemno="C4_21" data-bind="text: $i18n('KMK008_166')"></td>
                                         </tr>
                                         <tr class="tr-common-height">
+                                            <td rowspan="2"></td>
                                             <td></td>
                                             <td>
                                                 <input data-itemno="C4_23" data-bind="ntsTimeEditor: {
@@ -242,7 +245,6 @@
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td class="wrap-white-space-pre-line" data-itemno="C4_25" data-bind="text: $i18n('KMK008_165')"></td>
-
                                         </tr>
                                         <tr class="tr-common-height">
                                             <td></td>
@@ -268,33 +270,34 @@
                                 </table>
                                 <table id="C4_31">
                                     <colgroup>
-                                        <col width="250"/>
+                                        <col width="50"/>
+                                        <col width="200"/>
                                         <col width="100"/>
                                         <col width="100"/>
                                         <col width="250"/>
                                     </colgroup>
                                     <thead></thead>
                                     <tbody>
-                                        <tr class="tr-common-height">
-                                            <td></td>
-                                            <td>
-                                                <input data-itemno="C4_34" data-bind="ntsTimeEditor: {
+                                    <tr class="tr-common-height">
+                                        <td colspan="2"></td>
+                                        <td>
+                                            <input data-itemno="C4_34" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
                                                 inputFormat: 'time'}" />
-                                            </td>
-                                            <td>
-                                                <input data-itemno="C4_35" data-bind="ntsTimeEditor: {
+                                        </td>
+                                        <td>
+                                            <input data-itemno="C4_35" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
                                                 inputFormat: 'time'}" />
-                                            </td>
-                                            <td class="wrap-white-space-pre-line" data-itemno="C4_36" data-bind="text: $i18n('KMK008_165')"></td>
-                                        </tr>
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" data-itemno="C4_36" data-bind="text: $i18n('KMK008_165')"></td>
+                                    </tr>
                                     </tbody>
                                 </table>
 								<!--<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">-->

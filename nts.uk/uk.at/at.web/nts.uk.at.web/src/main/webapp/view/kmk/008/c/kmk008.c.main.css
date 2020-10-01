@@ -40,10 +40,6 @@
 	white-space: pre-line !important;
 }
 
-/*div.for-spacing {*/
-	/*margin-top: 10px;*/
-	/*border: 1px solid #CCC;*/
-/*}*/
 tr.tr-common-height {
 	height: 44px;
 }
@@ -51,9 +47,13 @@ tr.tr-common-height {
 #right-content div.nts-fixed-table.cf {
 	margin-top: 10px;
 }
-table
-{
-	border-collapse: collapse !important;
-	border-spacing: 0px;
-	border: 1px solid #DDD;
+
+/* Fix top border disappeared */
+.nts-fixed-table .nts-fixed-body-wrapper {
+	margin: unset;
+	border-left: unset;
+}
+
+#C4_6_header th {
+	text-align: center;
 }
