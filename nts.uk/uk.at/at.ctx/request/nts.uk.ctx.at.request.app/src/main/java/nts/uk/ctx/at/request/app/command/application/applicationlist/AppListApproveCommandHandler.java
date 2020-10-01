@@ -21,6 +21,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplyActionContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApprovalListService;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
@@ -43,8 +44,6 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppListApproveCommand, AppListApproveResult>{
 	
-	private static final int PC = 0;
-	private static final int MOBILE = 1;
 	
 	@Inject
 	private ApproveAppHandler approveAppHandler;
@@ -93,7 +92,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 			// INPUT「一括承認」＝True
 			// xử lý trên UI
 			// デバイス＝スマホ
-			if(command.getDevice()==PC) {
+			if(command.getDevice()==ApprovalDevice.PC.value) {
 				// アルゴリズム「申請一覧承認登録チェックver4」を実行する　-　15
 				boolean error = approvalListService.checkErrorComfirm(
 						approvalListDisplaySetting, 
