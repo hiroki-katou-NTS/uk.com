@@ -36,7 +36,7 @@ public class CompanyApproverHistoryAddDomainService {
 				val newEndDate = histToAddClone.getPeriod().start().addDays(-1);
 				val periodWithNewEndDate = new DatePeriod(latestHist.getPeriod().start(), newEndDate);
 				latestHist.setPeriod(periodWithNewEndDate);
-				require.changeLatestHistory(latestHist);
+				require.changeLatestHistory(latestHist,latestHist.getPeriod().start());
 			}
 		});
 	}
@@ -56,6 +56,6 @@ public class CompanyApproverHistoryAddDomainService {
 		/**
 		 * [R-3] 最新の履歴を変更する Change the latest history
 		 */
-		void changeLatestHistory(Approver36AgrByCompany hist);
+		void changeLatestHistory(Approver36AgrByCompany hist,GeneralDate date);
 	}
 }

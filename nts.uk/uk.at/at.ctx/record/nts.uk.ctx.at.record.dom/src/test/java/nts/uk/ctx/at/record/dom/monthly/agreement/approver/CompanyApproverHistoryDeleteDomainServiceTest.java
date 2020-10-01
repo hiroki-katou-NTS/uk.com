@@ -33,7 +33,7 @@ public class CompanyApproverHistoryDeleteDomainServiceTest {
 		NtsAssert.atomTask(
 				() -> service.deleteApproverHistory(require, domain),
 				any -> require.deleteHistory(any.get()),
-				any -> require.changeHistory(any.get())
+				any -> require.changeHistory(any.get(),domain.getPeriod().start())
 		);
 	}
 

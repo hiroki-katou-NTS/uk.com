@@ -31,7 +31,7 @@ public class AddWorkplaceApproverHistoryDomainService {
                 val newPeriod = new DatePeriod(itemlastHist.getPeriod().start(),
                         itemToBeAdd.getPeriod().start().addDays(-1));
                 itemlastHist.setPeriod(newPeriod);
-                requeire.changeLatestHistory(itemlastHist);
+                requeire.changeLatestHistory(itemlastHist,newPeriod.start());
             }
         });
 
@@ -46,7 +46,7 @@ public class AddWorkplaceApproverHistoryDomainService {
      void addHistory(Approver36AgrByWorkplace domain);
 
      //[R-3] 最新の履歴を変更す: 	職場別の承認者（36協定）Repository.Update(職場別の承認者（36協定）)
-     void changeLatestHistory(Approver36AgrByWorkplace domain);
+     void changeLatestHistory(Approver36AgrByWorkplace domain,GeneralDate date);
 
     }
 }

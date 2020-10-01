@@ -29,7 +29,7 @@
     <div class="pt-2">
       <div>{{ 'KAFS08_72' | i18n }}</div>
       <div class="pl-3 pt-1">
-        <button type="button" class="btn btn-selection" v-on:click="openKDLS02()">
+        <button v-if="params.rowDate.opAchievementDetail" type="button" class="btn btn-selection" v-on:click="openKDLS02()">
           <span class="badge badge-secondary">{{params.rowDate.opAchievementDetail.workTypeCD}}</span>
           <span>{{params.rowDate.opAchievementDetail.opWorkTypeName}}</span>
         </button>
@@ -39,10 +39,10 @@
     <div class="pt-2 py-3">
       <div>{{ 'KAFS08_73' | i18n }}</div>
       <div class="pl-3 pt-1">
-        <button type="button" class="btn btn-selection" v-on:click="openKDLS01()">
+        <button v-if="params.rowDate.opAchievementDetail" type="button" class="btn btn-selection" v-on:click="openKDLS01()">
           <span class="badge badge-secondary">{{params.rowDate.opAchievementDetail.workTimeCD}}</span>
           <span>{{params.rowDate.opAchievementDetail.opWorkTimeName}}</span>
-          <span class="d-block mt-1 pl-3">{{params.rowDate.opAchievementDetail.opWorkTime}}</span>
+          <span class="d-block mt-1 pl-3">{{params.rowDate.opAchievementDetail.opWorkTime1}}</span>
         </button>
       </div>
     </div>
@@ -55,14 +55,14 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="params.derpartureTime"
+      v-model="params.startWorkTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-4', input: 'col-6' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="params.returnTime"
+      v-model="params.endWorkTime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-4', input: 'col-6' }"
