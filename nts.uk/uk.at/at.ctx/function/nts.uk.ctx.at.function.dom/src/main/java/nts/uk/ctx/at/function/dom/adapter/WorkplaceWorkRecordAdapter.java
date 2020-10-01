@@ -11,4 +11,6 @@ public interface WorkplaceWorkRecordAdapter {
 	List<String> findListWorkplaceIdByBaseDate(GeneralDate baseDate);
 	
 	List<AffWorkplaceHistoryImport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	List<WorkplaceHistoryItemImport> findWorkplaceHistoryItem(List<String> empIds, GeneralDate baseDate);
 }

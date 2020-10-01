@@ -18,12 +18,18 @@ import javax.inject.Inject;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryItemImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkplaceHistoryItemImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stampcard.StampCardImport;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkLocationAdapter;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkLocationImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
@@ -54,6 +60,12 @@ public class MasterCheckAggregationProcessService {
 	
 	@Inject
 	private StampCardAdapter stampCardAdapter;
+	
+	@Inject
+	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
+	
+	@Inject
+	private WorkLocationAdapter workLocationAdapter;
 	
 	@Inject
 	private MasterCheckFixedExtractConditionRepository fixedExtractConditionRepo;
@@ -347,8 +359,35 @@ public class MasterCheckAggregationProcessService {
 	private void workLocationConfirm(List<String> empIds, DatePeriod period, MasterCheckFixedExtractCondition fixedExtractCond,
 			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
 		// TODO:
-		// 勤務職場を取得する
-		// Do this after outsource company adds WorkLocationCode field to AffWorkplaceHistoryItem
+		String companyId = AppContexts.user().companyId();
+		List<WorkLocationImport> workLocations = workLocationAdapter.findAll(companyId);
+		Map<String, String> employeeWpMap = new HashMap<>();
+		period.datesBetween().forEach(d -> {
+			List<WorkplaceHistoryItemImport> wpHistItems = workplaceWorkRecordAdapter.findWorkplaceHistoryItem(empIds, d);
+			wpHistItems.stream().filter(h -> {
+				return workLocations.stream().noneMatch(w -> {
+					if (h.getWorkLocationCode().isPresent()) {
+						return w.getWorkLocationCD().equals(h.getWorkLocationCode().get());
+					}
+					
+					return true;
+				});
+			}).forEach(h -> {
+				String wpId = employeeWpMap.computeIfAbsent(h.getEmployeeId(), k -> {
+					return employees.stream().filter(e -> h.getEmployeeId().equals(e.getId())).findFirst()
+								.map(e -> e.getWorkplaceId()).orElse(null);
+				});
+				
+				String ymd = TextResource.localize("KAL010_907", d.toString(ErAlConstant.DATE_FORMAT));
+				String category = TextResource.localize("KAL010_550");
+				String alarmItem = TextResource.localize("KAL010_557");
+				String checkedTargetValue = TextResource.localize("KAL010_578", h.getWorkLocationCode().orElse(""));
+				String alarmContent = TextResource.localize("KAL010_568", h.getWorkLocationCode().orElse(""));
+				ValueExtractAlarm alarm = new ValueExtractAlarm(wpId, h.getEmployeeId(), ymd, category, alarmItem,
+						checkedTargetValue, fixedExtractCond.getMessage().v(), alarmContent);
+				extractAlarms.add(alarm);
+			});
+		});
 	}
 	
 	private void holidayWorkTypeConfirm(List<String> empIds, DatePeriod period, MasterCheckFixedExtractCondition fixedExtractCond,
