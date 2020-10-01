@@ -91,17 +91,23 @@ public class DataStoragePatternSetting extends AggregateRoot {
 	}
 
 	public void getMemento(MementoGetter memento) {
-		this.annualReferYear = Optional
-				.ofNullable(EnumAdaptor.valueOf(memento.getAnnualReferYear(), TargetYear.class));
+		this.annualReferYear = memento.getAnnualReferYear() != null 
+							   ? Optional.of(EnumAdaptor.valueOf(memento.getAnnualReferYear(), TargetYear.class))
+							   : Optional.empty();
 		this.contractCode = new ContractCode(memento.getContractCode());
-		this.dailyReferMonth = Optional
-				.ofNullable(EnumAdaptor.valueOf(memento.getDailyReferMonth(), TargetMonth.class));
-		this.dailyReferYear = Optional.ofNullable(EnumAdaptor.valueOf(memento.getDailyReferYear(), TargetYear.class));
+		this.dailyReferMonth = memento.getDailyReferMonth() != null 
+				   ? Optional.of(EnumAdaptor.valueOf(memento.getDailyReferMonth(), TargetMonth.class))
+				   : Optional.empty();
+		this.dailyReferYear = memento.getDailyReferYear() != null 
+				   ? Optional.of(EnumAdaptor.valueOf(memento.getDailyReferYear(), TargetYear.class))
+				   : Optional.empty();
 		this.idenSurveyArch = EnumAdaptor.valueOf(memento.getIdenSurveyArch(), SurveySettingCategory.class);
-		this.monthlyReferMonth = Optional
-				.ofNullable(EnumAdaptor.valueOf(memento.getMonthlyReferMonth(), TargetMonth.class));
-		this.monthlyReferYear = Optional
-				.ofNullable(EnumAdaptor.valueOf(memento.getMonthlyReferYear(), TargetYear.class));
+		this.monthlyReferMonth = memento.getMonthlyReferMonth() != null 
+				   ? Optional.of(EnumAdaptor.valueOf(memento.getMonthlyReferMonth(), TargetMonth.class))
+				   : Optional.empty();
+		this.monthlyReferYear = memento.getMonthlyReferYear() != null 
+				   ? Optional.of(EnumAdaptor.valueOf(memento.getMonthlyReferYear(), TargetYear.class))
+				   : Optional.empty();
 		this.patternClassification = EnumAdaptor.valueOf(memento.getPatternClassification(),
 				PatternClassification.class);
 		this.patternCode = new PatternCode(memento.getPatternCode());
@@ -114,13 +120,13 @@ public class DataStoragePatternSetting extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setAnnualReferYear(annualReferYear.map(TargetYear::getValue).orElse(null));
+		memento.setAnnualReferYear(annualReferYear.map(v -> v.value).orElse(null));
 		memento.setContractCode(contractCode.v());
-		memento.setDailyReferMonth(dailyReferMonth.map(TargetMonth::getValue).orElse(null));
-		memento.setDailyReferYear(dailyReferYear.map(TargetYear::getValue).orElse(null));
+		memento.setDailyReferMonth(dailyReferMonth.map(v -> v.value).orElse(null));
+		memento.setDailyReferYear(dailyReferYear.map(v -> v.value).orElse(null));
 		memento.setIdenSurveyArch(idenSurveyArch.value);
-		memento.setMonthlyReferMonth(monthlyReferMonth.map(TargetMonth::getValue).orElse(null));
-		memento.setMonthlyReferYear(monthlyReferYear.map(TargetYear::getValue).orElse(null));
+		memento.setMonthlyReferMonth(monthlyReferMonth.map(v -> v.value).orElse(null));
+		memento.setMonthlyReferYear(monthlyReferYear.map(v -> v.value).orElse(null));
 		memento.setPatternClassification(patternClassification.value);
 		memento.setPatternCode(patternCode.v());
 		memento.setPatternCompressionPwd(patternCompressionPwd.map(FileCompressionPassword::v).orElse(null));

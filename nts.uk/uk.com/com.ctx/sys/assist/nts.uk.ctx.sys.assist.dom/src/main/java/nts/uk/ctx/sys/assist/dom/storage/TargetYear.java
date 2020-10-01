@@ -1,11 +1,8 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import lombok.Getter;
-
 /**
  * 対象年
  */
-@Getter
 public enum TargetYear {
 	/**
 	 * 当年
@@ -20,8 +17,8 @@ public enum TargetYear {
 	 */
 	TWO_YEARS_AGO(3, "Enum_TargetYear_TWO_YEARS_AGO");
 	
-	private final int value;
-	private final String nameId;
+	public final int value;
+	public final String nameId;
 	
 	private TargetYear(int value, String nameId) {
 		this.value = value;

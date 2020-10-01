@@ -26,16 +26,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Data
 @Entity
-@Table
+@Table(name = "SSPMT_DATASTO_SELECT_CATE")
 @EqualsAndHashCode(callSuper = true)
 public class SspmtDataStorageSelectionCategory extends UkJpaEntity implements Serializable,
 		DataStorageSelectionCategory.MementoGetter, DataStorageSelectionCategory.MementoSetter {
 	private static final long serialVersionUID = 1L;
-
-//	// column 排他バージョン
-//	@Version
-//	@Column(name = "EXCLUS_VER")
-//	private long version;
 
 	@EmbeddedId
 	public SspmtDataStorageSelectionCategoryPk pk;

@@ -7,7 +7,7 @@ public enum SelectCategoryScreenMode {
 	NEW(0),
 	UPDATE(1);
 	
-	private final int value;
+	public final int value;
 
 	private SelectCategoryScreenMode(int value) {
 		this.value = value;

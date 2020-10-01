@@ -22,7 +22,7 @@ public class SelectionCategoryNameDto {
 	/**
 	 * 保存期間
 	 */
-	private int retentionPeriod;
+	private String retentionPeriod;
 	
 	/**
 	 * カテゴリID

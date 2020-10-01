@@ -126,16 +126,22 @@ public class SspmtDataStoragePatternSetting extends UkJpaEntity
 
 	@Override
 	public void setPatternCode(String patternCode) {
+		if (pk == null)
+			pk = new SspmtDataStoragePatternSettingPk();
 		this.pk.patternCode = patternCode;
 	}
 
 	@Override
 	public void setPatternClassification(int patternClassification) {
+		if (pk == null)
+			pk = new SspmtDataStoragePatternSettingPk();
 		this.pk.patternClassification = patternClassification;
 	}
 
 	@Override
 	public void setContractCode(String contractCode) {
+		if (pk == null)
+			pk = new SspmtDataStoragePatternSettingPk();
 		this.pk.contractCode = contractCode;
 	}
 

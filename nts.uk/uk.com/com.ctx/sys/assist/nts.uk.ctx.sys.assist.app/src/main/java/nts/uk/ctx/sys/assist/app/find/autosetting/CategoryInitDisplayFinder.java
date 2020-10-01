@@ -59,7 +59,11 @@ public class CategoryInitDisplayFinder {
 		if (!master.isEmpty()) {
 			dto.setCategories(master);
 			if (!patterns.isEmpty()) {
-				dto.setPatterns(patterns);
+				dto.setPatterns(patterns.stream().map(p -> {
+					DataStoragePatternSettingDto d = new DataStoragePatternSettingDto();
+					p.setMemento(d);
+					return d;
+				}).collect(Collectors.toList()));
 			}
 			return dto;
 		} else {

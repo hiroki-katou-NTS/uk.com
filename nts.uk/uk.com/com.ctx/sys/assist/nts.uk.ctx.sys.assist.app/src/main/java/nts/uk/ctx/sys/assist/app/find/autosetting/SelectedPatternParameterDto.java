@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.sys.assist.app.command.autosetting.SelectionCategoryNameDto;
-import nts.uk.ctx.sys.assist.app.find.category.CategoryDto;
 
 @Data
 public class SelectedPatternParameterDto {

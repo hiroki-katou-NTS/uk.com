@@ -78,11 +78,20 @@
         <!-- C5_1 新規ボタン -->
         <button class="large functional-button" data-bind="click: refreshNew" tabindex="1">#{i18n.getText('CMF003_201')}</button>
         <!-- C5_2 登録ボタン -->
-        <button class="large functional-button proceed" tabindex="2">#{i18n.getText('CMF003_202')}</button>
-        <!-- C5_3 複製ボタン -->
-        <button class="large functional-button" tabindex="3">#{i18n.getText('CMF003_203')}</button>
-        <!-- C5_4 削除ボタン -->
-        <button class="large functional-button danger" tabindex="4">#{i18n.getText('CMF003_204')}</button>
+        <button class="large functional-button proceed" data-bind="click: register" tabindex="2">#{i18n.getText('CMF003_202')}</button>
+
+        <com:ko tag="ifnot" bind="isNewMode">
+           <!-- C5_3 複製ボタン -->
+          <button class="large functional-button" data-bind="click: duplicate" tabindex="3">#{i18n.getText('CMF003_203')}</button>
+          <!-- C5_4 削除ボタン -->
+          <button class="large functional-button danger" data-bind="click: deletePattern" tabindex="4">#{i18n.getText('CMF003_204')}</button>
+        </com:ko>
+        <com:ko tag="if" bind="isNewMode">
+           <!-- C5_3 複製ボタン -->
+          <button data-bind="visible: false" tabindex="3">#{i18n.getText('CMF003_203')}</button>
+          <!-- C5_4 削除ボタン -->
+          <button data-bind="visible: false" tabindex="4">#{i18n.getText('CMF003_204')}</button>
+        </com:ko>
       </div>
       <div id="contents-area">
         <div class="content">
@@ -92,20 +101,23 @@
               <div class="valign-center halign-center">
                 <!-- C6_1 検索 -->
                 <div id="C6_1" data-bind="ntsSearchBox: {
-                  targetKey: 'code',
+                  searchMode: 'highlight',
+                  targetKey: 'displayCode',
                   comId: 'C6',
                   items: patternList,
-                  selected: selectedPattern,
+                  selected: selectedPatternCode,
+                  selectedKey: 'displayCode',
                   mode: 'igGrid',
-                  fields: ['code', 'patternName']
+                  fields: ['displayCode', 'patternName']
                 }" tabindex="5" />
                 <!-- C6 パターン一覧 -->
                 <table id="C6" data-bind="ntsGridList: {
                   options: patternList,
-                  optionsValue: 'code',
+                  optionsValue: 'displayCode',
                   columns: patternColumns,
                   multiple: false,
-                  value: selectedPattern,
+                  value: selectedPatternCode,
+                  primaryKey: 'displayCode',
                   rows: 20
                 }" tabindex="6" />
               </div>
@@ -124,7 +136,7 @@
                   value: codeValue,         
                   constraint: 'PatternCode',         
                   required: true,         
-                  enable: true}" />
+                  enable: isNewMode}" />
               </div>
               <!-- C7_3 パターン名称 -->
               <div id="C7_3" class="div-column-3"
@@ -167,7 +179,7 @@
                 showSearchBox: { showLeft : true},
                 showSort: { showLeft: true, showRight: false },
 								height: 330,
-								dataSource: categoriesDefault,
+								dataSource: categoriesFiltered,
 								primaryKey: 'categoryId',
                 leftColumns: leftColumns,
                 rightColumns: rightColumns,

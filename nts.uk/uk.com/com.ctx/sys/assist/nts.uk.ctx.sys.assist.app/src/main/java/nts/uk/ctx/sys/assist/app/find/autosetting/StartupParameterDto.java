@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
-import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
 
 /**
  * 起動パラメータ DTO
@@ -20,7 +19,7 @@ public class StartupParameterDto {
 	/**
 	 * List<パターン設定>
 	 */
-	private List<DataStoragePatternSetting> patterns;
+	private List<DataStoragePatternSettingDto> patterns;
 	
 	/**
 	 * ログイン者が担当者か判断する

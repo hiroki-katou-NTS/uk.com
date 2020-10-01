@@ -24,6 +24,10 @@ public class JpaDataStoragePatternSettingRepository extends JpaRepository
 
 	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
 			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd";
+	
+	private static final String DELETE_BY_PK = "DELETE FROM SspmtDataStoragePatternSetting t "
+			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd "
+			+ "AND t.pk.contractCode = :contractCd";
 
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
@@ -57,13 +61,17 @@ public class JpaDataStoragePatternSettingRepository extends JpaRepository
 				.query(SELECT_BY_PATTERN_ATR_AND_PATTERN_CD, SspmtDataStoragePatternSetting.class)
 				.setParameter("patternAtr", domain.getPatternClassification().value)
 				.setParameter("patternCd", domain.getPatternCode().v()).getSingle().get();
-		entity.setCategories(domain.getCategories());
+		domain.setMemento(entity);
 		this.commandProxy().update(entity);
 	}
 
 	@Override
-	public void delete(DataStoragePatternSetting domain) {
-		this.commandProxy().remove(toEntity(domain));
+	public void delete(String contractCd, String patternCd, int patternAtr) {
+		this.getEntityManager().createQuery(DELETE_BY_PK, SspmtDataStoragePatternSetting.class)
+							   .setParameter("contractCd", contractCd)
+							   .setParameter("patternCd", patternCd)
+							   .setParameter("patternAtr", patternAtr)
+							   .executeUpdate();
 	}
 
 	private SspmtDataStoragePatternSetting toEntity(DataStoragePatternSetting domain) {

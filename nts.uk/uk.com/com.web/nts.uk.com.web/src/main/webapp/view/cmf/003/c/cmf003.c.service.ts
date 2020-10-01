@@ -7,7 +7,7 @@ module nts.uk.com.view.cmf003.c {
       initDisplay: "ctx/sys/assist/autosetting/pattern/initialDisplay",
       selectPattern: "ctx/sys/assist/autosetting/pattern/select",
       addPattern: "ctx/sys/assist/autosetting/pattern/add",
-      deletePattern: "ctx/sys/assist/autosetting/pattern/delete"
+      deletePattern: "ctx/sys/assist/autosetting/pattern/delete",
     }
 
     export function initDisplay(): JQueryPromise<any> {

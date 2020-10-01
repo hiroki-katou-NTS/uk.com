@@ -1,10 +1,8 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.Export.[No.50]ログイン者が担当者か判断する.パラメータ.ログイン者が担当者か判断する
  */

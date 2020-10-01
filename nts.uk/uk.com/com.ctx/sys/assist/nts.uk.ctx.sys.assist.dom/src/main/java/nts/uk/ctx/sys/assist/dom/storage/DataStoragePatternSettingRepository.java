@@ -11,5 +11,5 @@ public interface DataStoragePatternSettingRepository {
 	
 	void add(DataStoragePatternSetting domain);
 	void update(DataStoragePatternSetting domain);
-	void delete(DataStoragePatternSetting domain);
+	void delete(String contractCd, String patternCd, int patternAtr);
 }

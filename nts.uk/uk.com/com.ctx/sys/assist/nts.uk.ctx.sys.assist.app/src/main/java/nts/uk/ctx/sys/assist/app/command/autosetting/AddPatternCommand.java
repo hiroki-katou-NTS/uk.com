@@ -40,7 +40,7 @@ public class AddPatternCommand implements DataStoragePatternSetting.MementoGette
 	/**
 	 * 保存するカテゴリ
 	 */
-	private List<CategoryDto> categories;
+	private List<CategoryDto> categoriesMaster;
 	
 	/**
 	 * 調査用保存可否
@@ -89,7 +89,7 @@ public class AddPatternCommand implements DataStoragePatternSetting.MementoGette
 	
 	@Override
 	public List<DataStorageSelectionCategory> getCategories() {
-		return categories.stream()
+		return categoriesMaster.stream()
 				.map(DataStorageSelectionCategory::createFromMemento)
 				.collect(Collectors.toList());
 	};
@@ -97,5 +97,26 @@ public class AddPatternCommand implements DataStoragePatternSetting.MementoGette
 	@Override
 	public int getIdenSurveyArch() {
 		return idenSurveyArch ? SurveySettingCategory.SAVE_FOR_RESEARCH.value : SurveySettingCategory.DONT_SAVE_FOR_RESEARCH.value;
+	}
+	
+	@Override
+	public Integer getDailyReferMonth() {
+		return dailyReferMonth != 0 ? dailyReferMonth : null;
+	}
+	@Override
+	public Integer getDailyReferYear() {
+		return dailyReferYear != 0 ? dailyReferYear : null;
+	}
+	@Override
+	public Integer getMonthlyReferMonth() {
+		return monthlyReferMonth != 0 ? monthlyReferMonth : null;
+	}
+	@Override
+	public Integer getMonthlyReferYear() {
+		return monthlyReferYear != 0 ? monthlyReferYear : null;
+	}
+	@Override
+	public Integer getAnnualReferYear() {
+		return annualReferYear != 0 ? annualReferYear : null;
 	}
 }

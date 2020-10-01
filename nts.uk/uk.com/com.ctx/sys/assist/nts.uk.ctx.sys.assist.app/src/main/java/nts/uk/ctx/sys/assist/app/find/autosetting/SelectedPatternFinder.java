@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public class SelectedPatternFinder {
 					obj.setRetentionPeriod(categories.stream()
 							.filter(u -> u.getCategoryId().v().equals(sc.getCategoryId().v()))
 							.findFirst()
-							.map(c -> c.getTimeStore().value)
+							.map(c -> c.getTimeStore().nameId)
 							.get());
 					obj.setSystemType(sc.getSystemType().value);
 					op.ifPresent(pattern -> {
@@ -78,16 +79,18 @@ public class SelectedPatternFinder {
 						obj.setPattern(patternDto);
 					});
 					return obj;
-				}).collect(Collectors.toList()));
+				})
+				.sorted(Comparator.comparing(SelectionCategoryNameDto::getCategoryId))
+				.collect(Collectors.toList()));
 		
 		//List<選択可能カテゴリ＞を作成
 		List<String> ids = selectCategories.stream()
 				   .map(sc -> sc.getCategoryId().v())
 				   .collect(Collectors.toList());
-		dto.setSelectableCategories(categories.stream()
-											  .filter(c -> !ids.contains(c.getCategoryId().v()))
-											  .map(nts.uk.ctx.sys.assist.app.find.category.CategoryDto::fromDomain)
-											  .collect(Collectors.toList()));
+		dto.setSelectableCategories(command.getCategories().stream()
+									.filter(c -> !ids.contains(c.getCategoryId()))
+									.sorted(Comparator.comparing(CategoryDto::getCategoryId))
+									.collect(Collectors.toList()));
 		//オブジェクト「選択パターンパラメータ」を返す。
 		return dto;
 	}

@@ -168,43 +168,16 @@ module nts.uk.com.view.cmf003.c {
   @bean()
   export class ViewModel extends ko.ViewModel {
     screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.NEW);
+    isNewMode: KnockoutObservable<boolean> = ko.computed(() => {
+      const vm = this;
+      return vm.screenMode() === ScreenMode.NEW;
+    });
 
-      //Pattern list
-      patternList: KnockoutObservableArray<Pattern> = ko.observableArray([
-        { code: '00001', patternName: 'name1' },
-        { code: '00002', patternName: 'name2' },
-        { code: '00003', patternName: 'name3' },
-        { code: '00004', patternName: 'name4' },
-        { code: '00005', patternName: 'name5' },
-        { code: '00006', patternName: 'name6' },
-        { code: '00011', patternName: 'name1' },
-        { code: '00012', patternName: 'name2' },
-        { code: '00013', patternName: 'name3' },
-        { code: '00014', patternName: 'name4' },
-        { code: '00015', patternName: 'name5' },
-        { code: '00016', patternName: 'name6' },
-        { code: '00021', patternName: 'name1' },
-        { code: '00022', patternName: 'name2' },
-        { code: '00023', patternName: 'name3' },
-        { code: '00024', patternName: 'name4' },
-        { code: '00025', patternName: 'name5' },
-        { code: '00026', patternName: 'name6' },
-        { code: '00031', patternName: 'name1' },
-        { code: '00032', patternName: 'name2' },
-        { code: '00033', patternName: 'name3' },
-        { code: '00034', patternName: 'name4' },
-        { code: '00035', patternName: 'name5' },
-        { code: '00036', patternName: 'name6' },
-        { code: '00041', patternName: 'name1' },
-        { code: '00042', patternName: 'name2' },
-        { code: '00043', patternName: 'name3' },
-        { code: '00044', patternName: 'name4' },
-        { code: '00045', patternName: 'name5' },
-        { code: '00046', patternName: 'name6' },
-      ]);
-    selectedPattern: KnockoutObservable<Pattern> = ko.observable(null);
+    //Pattern list
+    patternList: KnockoutObservableArray<Pattern> = ko.observableArray([]);
+    selectedPatternCode: KnockoutObservable<string> = ko.observable('');
     patternColumns: KnockoutObservableArray<any> = ko.observableArray([
-      { headerText: getText('CMF003_23'), key: 'code', width: 75 },
+      { headerText: getText('CMF003_23'), key: 'displayCode', width: 75 },
       { headerText: getText('CMF003_632'), key: 'patternName', width: 250 }
     ]);
 
@@ -218,7 +191,7 @@ module nts.uk.com.view.cmf003.c {
 
     //Category list
     categoriesDefault: KnockoutObservableArray<Category> = ko.observableArray([]);
-    categoriesSelected: KnockoutObservableArray<Category> = ko.observableArray([]);
+    categoriesFiltered: KnockoutObservableArray<Category> = ko.observableArray([]);
     leftColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: getText('CMF003_65'), key: 'categoryId', width: 70 },
       { headerText: getText('CMF003_66'), key: 'categoryName', width: 250 }
@@ -228,39 +201,35 @@ module nts.uk.com.view.cmf003.c {
       { headerText: getText('CMF003_66'), key: 'categoryName', width: 180 },
       { headerText: getText('CMF003_636'), key: 'retentionPeriod', width: 100 }
     ]);
-    currentCateSelected: KnockoutObservableArray<ItemSystemType> = ko.observableArray([]);
+    currentCateSelected: KnockoutObservableArray<Category> = ko.observableArray([]);
     systemTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel(0, ' '),
-      new ItemModel(1, getText('CMF003_400')),
-      new ItemModel(2, getText('CMF003_401')),
-      new ItemModel(3, getText('CMF003_402')),
-      new ItemModel(4, getText('CMF003_403')),
     ]);
-    selectedSystemType: KnockoutObservable<number> = ko.observable();
+    selectedSystemType: KnockoutObservable<number> = ko.observable(0);
 
     //Auto execution
     saveFormatChecked: KnockoutObservable<boolean> = ko.observable(false);
     usePasswordChecked: KnockoutObservable<boolean> = ko.observable(false);
     targetYearDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
-      new ItemModel(1, '参照年'),
-      new ItemModel(2, getText('CMF003_405')),
-      new ItemModel(3, getText('CMF003_406')),
-      new ItemModel(4, getText('CMF003_407'))
+      new ItemModel(0, '参照年'),
+      new ItemModel(1, getText('CMF003_405')),
+      new ItemModel(2, getText('CMF003_406')),
+      new ItemModel(3, getText('CMF003_407'))
     ]);
     targetMonthDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
-      new ItemModel(1, '参照月'),
-      new ItemModel(2, getText('CMF003_408')),
-      new ItemModel(3, getText('CMF003_409')),
-      new ItemModel(4, getText('CMF003_410')),
-      new ItemModel(5, getText('CMF003_411')),
-      new ItemModel(6, getText('CMF003_412')),
-      new ItemModel(7, getText('CMF003_413')),
-      new ItemModel(8, getText('CMF003_414')),
-      new ItemModel(9, getText('CMF003_415')),
-      new ItemModel(10, getText('CMF003_416')),
-      new ItemModel(11, getText('CMF003_417')),
-      new ItemModel(12, getText('CMF003_418')),
-      new ItemModel(13, getText('CMF003_419'))
+      new ItemModel(0, '参照月'),
+      new ItemModel(1, getText('CMF003_408')),
+      new ItemModel(2, getText('CMF003_409')),
+      new ItemModel(3, getText('CMF003_410')),
+      new ItemModel(4, getText('CMF003_411')),
+      new ItemModel(5, getText('CMF003_412')),
+      new ItemModel(6, getText('CMF003_413')),
+      new ItemModel(7, getText('CMF003_414')),
+      new ItemModel(8, getText('CMF003_415')),
+      new ItemModel(9, getText('CMF003_416')),
+      new ItemModel(10, getText('CMF003_417')),
+      new ItemModel(11, getText('CMF003_418')),
+      new ItemModel(12, getText('CMF003_419'))
     ]);
     selectedDailyTargetYear: KnockoutObservable<string> = ko.observable('');
     selectedDailyTargetMonth: KnockoutObservable<string> = ko.observable('');
@@ -282,21 +251,56 @@ module nts.uk.com.view.cmf003.c {
         }
       });
 
+      vm.selectedSystemType.subscribe(value => {
+        if (Number(value) !== 0) {
+          vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value)));
+        } else {
+          vm.categoriesFiltered(vm.categoriesDefault());
+        };
+        vm.categoriesFiltered.valueHasMutated();
+      });
+
+      vm.usePasswordChecked.subscribe(value => {
+        if (!value) {
+          vm.password('');
+          vm.confirmPassword('');
+        }
+      });
+
+      vm.selectedPatternCode.subscribe(value => {
+        const pattern = vm.getPatternById(value);
+        if (pattern) {
+          vm.selectPattern(pattern.code, pattern.patternClassification);
+        }
+      });
+
+      vm.screenMode.subscribe(value => {
+        if (Number(value) === ScreenMode.NEW) {
+          vm.selectedPatternCode('');
+        }
+      });
+
       vm.initDisplay();
     }
 
     private initDisplay() {
       const vm = this;
       vm.$blockui("grayout");
-      service.initDisplay().done((res) => {
-        console.log(res);
-        _.map(res.categories, (x: any) => {
-          let c = new Category();
-          c.categoryId = x.categoryId;
-          c.categoryName = x.categoryName;
-          c.retentionPeriod = getText(x.retentionPeriod);
+      service.initDisplay().then((res) => {
+        vm.checkInCharge(res.pic);
+        _.map(res.patterns, (x: any) => {
+          let p = new Pattern();
+          p.code = x.patternCode;
+          p.patternName = x.patternName;
+          p.patternClassification = x.patternClassification;
+          p.displayCode = x.patternClassification + x.patternCode;
+          vm.patternList.push(p);
+        });
+        _.map(res.categories, (x :any) => {
+          let c = vm.convertToCategory(x);
           vm.categoriesDefault.push(c);
-        })
+          vm.categoriesFiltered.push(c);
+        });
       }).always(() => {
         vm.$blockui("clear");
       });
@@ -305,71 +309,267 @@ module nts.uk.com.view.cmf003.c {
     public refreshNew() {
       const vm = this;
       vm.screenMode(ScreenMode.NEW);
-      vm.selectedAnnualTargetYear(vm.getDefaultItem(vm.targetYearDD()).name);
-      vm.selectedDailyTargetYear(vm.getDefaultItem(vm.targetYearDD()).name);
-      vm.selectedMonthlyTargetYear(vm.getDefaultItem(vm.targetYearDD()).name);
-      vm.selectedDailyTargetMonth(vm.getDefaultItem(vm.targetMonthDD()).name);
-      vm.selectedMonthlyTargetMonth(vm.getDefaultItem(vm.targetMonthDD()).name);
+      vm.selectedAnnualTargetYear(vm.getDefaultItem(vm.targetYearDD()).code);
+      vm.selectedDailyTargetYear(vm.getDefaultItem(vm.targetYearDD()).code);
+      vm.selectedMonthlyTargetYear(vm.getDefaultItem(vm.targetYearDD()).code);
+      vm.selectedDailyTargetMonth(vm.getDefaultItem(vm.targetMonthDD()).code);
+      vm.selectedMonthlyTargetMonth(vm.getDefaultItem(vm.targetMonthDD()).code);
       vm.codeValue('');
       vm.nameValue('');
       vm.selectedSystemType(0);
       vm.saveFormatChecked(false);
+      vm.usePasswordChecked(false);
+      vm.password('');
+      vm.confirmPassword('');
+      vm.explanation('');
+      vm.categoriesFiltered(vm.categoriesDefault());
+      vm.currentCateSelected([]);
+      vm.$errors("clear");
+    }
+
+    public register() {
+      const vm = this;
+      if (vm.validateBeforeRegister()) {
+        vm.$blockui("grayout");
+
+        let param: any = {};
+        param.screenMode = Number(vm.screenMode());
+        param.patternCode = vm.codeValue();
+        param.patternName = vm.nameValue();
+        param.categoriesMaster = vm.currentCateSelected();
+        param.idenSurveyArch = vm.saveFormatChecked();
+        param.dailyReferYear = Number(vm.selectedDailyTargetYear());
+        param.dailyReferMonth = Number(vm.selectedDailyTargetMonth());
+        param.monthlyReferMonth = Number(vm.selectedMonthlyTargetMonth());
+        param.monthlyReferYear = Number(vm.selectedMonthlyTargetYear());
+        param.annualReferYear = Number(vm.selectedAnnualTargetYear());
+        param.patternCompressionPwd = vm.password();
+        param.withoutPassword = Boolean(vm.usePasswordChecked()) ? 1 : 0;
+        param.patternSuppleExplanation = vm.explanation();
+
+        service.addPattern(param).then(() => {
+          vm.$dialog.info({ messageId: "Msg_15" });
+          if (vm.screenMode() === ScreenMode.NEW) {
+            let pattern: Pattern = new Pattern();
+            pattern.code = param.patternCode;
+            pattern.patternClassification = 0;
+            pattern.patternName = param.patternName;
+            pattern.displayCode = pattern.patternClassification + pattern.code;
+            vm.patternList.push(pattern);
+            vm.selectPattern(pattern.code, pattern.patternClassification);
+
+            if (vm.selectedPatternCode() === '') {
+              vm.selectedPatternCode(pattern.displayCode);
+            }
+          } else {
+            _.find(vm.patternList(), { 'code': param.patternCode }).patternName = param.patternName;
+            vm.patternList.valueHasMutated();
+          }
+        }).fail((err) => {
+          vm.$errors("#C7_2 input", err);
+        })
+          .always(() => {
+            vm.$blockui("clear");
+          })
+      }
+    }
+
+    public duplicate() {
+      const vm = this;
+      vm.screenMode(ScreenMode.NEW);
+      vm.codeValue('');
+      vm.nameValue('');
+    }
+
+    public deletePattern() {
+      const vm = this;
+      /**
+       * 確認メッセージ（Msg_18）を表示する
+       */
+      vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+        /**
+         * 「いいえ」（ID：Msg_36）をクリック
+         */
+        if (result === 'no') {
+          /**
+           * 終了状態：削除処理をキャンセル
+           */
+          return;
+        }
+        /**
+         * 「はい」（ID：Msg_35）をクリック
+         */
+        if (result === 'yes') {
+          /**
+           * 終了状態：削除処理を実行
+           */
+          let param: any = {};
+          vm.$blockui("grayout");
+          const pattern = vm.getPatternById(vm.selectedPatternCode());
+          param.patternCode = pattern.code;
+          param.patternClassification = pattern.patternClassification;
+
+          service.deletePattern(param).then(() => {
+            const index: number = vm.patternList().indexOf(pattern);
+            if (index > -1) {
+              vm.patternList().splice(index, 1);
+              vm.patternList.valueHasMutated();
+              vm.selectedPatternCode('');
+              if (vm.patternList().length === 0) {
+                vm.refreshNew();
+              } else if (vm.patternList().length === index) {
+                vm.selectPatternByIndex(index - 1);
+              } else {
+                vm.selectPatternByIndex(index);
+              }
+            }
+            vm.$dialog.info({ messageId: "Msg_16" });
+          }).always(() => {
+            vm.$blockui("clear");
+          });
+        }
+      });
+    }
+
+    public selectPattern(patternCode: string, patternClassification: number) {
+      const vm = this;
+      vm.$blockui("grayout");
+      let param: any = {};
+      param.patternCode = patternCode;
+      param.patternClassification = patternClassification;
+      param.categories = vm.categoriesDefault();
+      service.selectPattern(param).then((res) => {
+        console.log(res);
+        const pattern: any = res.selectedCategories[0].pattern;
+        vm.screenMode(ScreenMode.UPDATE);
+        vm.codeValue(pattern.patternCode);
+        vm.nameValue(pattern.patternName);
+        vm.categoriesFiltered([]);
+        _.forEach(res.selectableCategories, c => {
+          let category = vm.convertToCategory(c);
+          vm.categoriesFiltered().push(category);
+        });
+        vm.currentCateSelected([]);
+        _.forEach(res.selectedCategories, c => {
+          let category: Category = new Category();
+          category.categoryId = c.categoryId;
+          category.categoryName = c.categoryName;
+          category.retentionPeriod = getText(c.retentionPeriod);
+          category.systemType = c.systemType;
+          vm.currentCateSelected.push(category);
+        });
+        vm.saveFormatChecked(pattern.idenSurveyArch === 1);
+        vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
+        vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
+        vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferYear));
+        vm.selectedMonthlyTargetYear(vm.getReferValue(pattern.monthlyReferMonth));
+        vm.selectedAnnualTargetYear(vm.getReferValue(pattern.annualReferYear));
+        vm.usePasswordChecked(pattern.withoutPassword === 1);
+        vm.password(pattern.patternCompressionPwd);
+        vm.confirmPassword(pattern.patternCompressionPwd);
+        vm.explanation(pattern.patternSuppleExplanation);
+
+        //revalidate
+        vm.$errors("clear");
+      }).always(() => {
+        vm.$blockui("clear");
+      });
+    }
+
+    private selectPatternByIndex(index: number) {
+      const vm = this;
+      const pattern: Pattern = vm.patternList()[index];
+      if (pattern) {
+        if (vm.selectedPatternCode() === '') {
+          vm.selectedPatternCode(pattern.displayCode);
+        }
+        vm.selectPattern(pattern.code, pattern.patternClassification);
+      }
     }
 
     private getDefaultItem(arr: ItemModel[]): ItemModel {
-      return _.filter(arr, item => item.code === '0').pop();
+      return arr[0];
+    }
+
+    private getReferValue(value: any): string {
+      if (value) {
+        return String(value);
+      }
+      return '0';
+    }
+
+    private getPatternById(id: string): Pattern {
+      const vm = this;
+      return _.filter(vm.patternList(), p => p.code === id.substring(1)).pop();
+    }
+
+    private convertToCategory(c: any): Category {
+      let category = new Category();
+      category.categoryId = c.categoryId;
+      category.categoryName = c.categoryName;
+      category.retentionPeriod = getText(c.retentionPeriod);
+      category.systemType = c.systemType;
+      category.contractCode = c.contractCode;
+      category.patternCode = c.patternCode;
+      category.patternClassification = c.patternClassification;
+      return category;
+    }
+
+    private checkInCharge(pic: LoginPersionInCharge) {
+      const vm = this;
+      if (pic.personnel)
+        vm.systemTypes.push(new ItemModel(1, getText('CMF003_400')));
+      if (pic.attendance)
+        vm.systemTypes.push(new ItemModel(1, getText('CMF003_401')));
+      if (pic.payroll)
+        vm.systemTypes.push(new ItemModel(1, getText('CMF003_402')));
+      if (pic.officeHelper)
+        vm.systemTypes.push(new ItemModel(1, getText('CMF003_403')));
+    }
+
+    private validateBeforeRegister(): boolean {
+      const vm = this;
+      $("#C7_2 input").trigger("validate");
+      $("#C7_4 input").trigger("validate");
+
+      if (vm.usePasswordChecked()) {
+        $("#C9_3 input").trigger("validate");
+        $("#C9_6 input").trigger("validate");
+        if (!nts.uk.ui.errors.hasError()) {
+          if (vm.password() !== vm.confirmPassword()) {
+            vm.$dialog.error({ messageId: 'Msg_566' });
+            return false;
+          }
+        }
+      }
+
+      if (Number(vm.currentCateSelected().length) === 0) {
+        vm.$dialog.error({ messageId: 'Msg_577' });
+        return false;
+      }
+
+      if (nts.uk.ui.errors.hasError()) {
+        return false;
+      }
+      return true;
     }
   }
 
   export class Pattern {
     code: string;
     patternName: string;
-  }
-
-  export class ItemCategory {
-    schelperSystem: number;
-    categoryId: string;
-    categoryName: string;
-    possibilitySystem: number;
-    storedProcedureSpecified: number;
-    timeStore: number;
-    otherCompanyCls: number;
-    attendanceSystem: number;
-    recoveryStorageRange: number;
-    paymentAvailability: number;
-    storageRangeSaved: number;
-    constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
-      storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
-      recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
-      this.schelperSystem = schelperSystem;
-      this.categoryId = categoryId;
-      this.categoryName = categoryName;
-      this.possibilitySystem = possibilitySystem;
-      this.storedProcedureSpecified = storedProcedureSpecified;
-      this.timeStore = timeStore;
-      this.otherCompanyCls = otherCompanyCls;
-      this.attendanceSystem = attendanceSystem;
-      this.recoveryStorageRange = recoveryStorageRange;
-      this.paymentAvailability = paymentAvailability;
-      this.storageRangeSaved = storageRangeSaved;
-    }
+    patternClassification: number;
+    displayCode?: string;
   }
 
   export class Category {
     categoryId: string;
     categoryName: string;
-    retentionPeriod?: string;
-  }
-
-  export class ItemSystemType {
-    code: string;
-    name: string;
-    period: string;
-    constructor(code: string, name: string, period: string) {
-      this.code = code;
-      this.name = name;
-      this.period = period;
-    }
+    retentionPeriod: string;
+    systemType: number;
+    patternCode?: string;
+    patternClassification?: number;
+    contractCode?: string;
   }
 
   export class ItemModel {
@@ -381,7 +581,15 @@ module nts.uk.com.view.cmf003.c {
       this.name = name;
     }
   }
-  
+
+  export interface LoginPersionInCharge {
+    attendance: boolean;
+    employeeInfo: boolean;
+    officeHelper: boolean;
+    payroll: boolean;
+    personnel: boolean;
+  }
+
   export class ScreenMode {
     static NEW = 0;
     static UPDATE = 1;

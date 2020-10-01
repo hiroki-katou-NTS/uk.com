@@ -6,5 +6,5 @@ public interface DataStorageSelectionCategoryRepository {
 	List<DataStorageSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd, 
 																				  int patternAtr,
 																				  List<Integer> systemTypes);
-	void add(DataStorageSelectionCategory domain);	
+	void delete(String contractCd, String patternCd, int patternAtr);
 }
