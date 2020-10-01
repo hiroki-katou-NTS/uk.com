@@ -13,6 +13,6 @@ public class YearAndEmpOtHoursDto {
 	List<YearMonthOvertime> overtimeHours;
 	
 	/** 36協定超過情報 */
-	AgreementExcessInfo agreeInfo;
+	int agreeInfo;
 	
 }
