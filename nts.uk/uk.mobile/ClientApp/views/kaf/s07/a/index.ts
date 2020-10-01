@@ -414,13 +414,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         let time2;
         if (params.appWorkChangeDispInfo.predetemineTimeSetting) {
             time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
-            time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2);
+            time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2 && item.useAtr);
         } 
         if (!self.mode) {
             let appWorkChange = params.appWorkChange;
             if (appWorkChange) {
                 time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
-                time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
+                time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2  && item.useAtr);
             }
             self.bindWorkHours(time1, time2);
 
@@ -977,10 +977,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
                             this.model.workType.code = f.selectedWorkType.workTypeCode;
                             this.model.workType.name = f.selectedWorkType.name;
+                            if (!self.isCondition3) {
+                                this.model.workTime.code = '';
+                                this.model.workTime.name = '';
+                                this.model.workTime.time = '';
+                            }
                             if (f.selectedWorkTime) {
-                                this.model.workTime.code = f.selectedWorkTime.code;
-                                this.model.workTime.name = f.selectedWorkTime.name;
-                                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                                if (self.isCondition3) {
+                                    this.model.workTime.code = f.selectedWorkTime.code;
+                                    this.model.workTime.name = f.selectedWorkTime.name;
+                                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                                } else {
+                                    this.model.workTime.code = '';
+                                    this.model.workTime.name = '';
+                                    this.model.workTime.time = '';
+                                }
                             }
                         })
                         .catch((res: any) => {
@@ -1053,7 +1064,8 @@ export class Work {
 
 }
 export class WorkTime extends Work {
-    public time: String = '項目移送';
+    // time is not showed , it displays empty #111775
+    public time: String = '';
     constructor() {
         super();
     }
