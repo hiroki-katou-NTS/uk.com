@@ -37,11 +37,11 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public void update(Approver36AgrByCompany domain){
+	public void update(Approver36AgrByCompany domain,GeneralDate startDateBeforeChange){
 
 		val domainData =  Krcmt36AgrApvCmp.fromDomain(domain);
-
-		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
+		val pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(),startDateBeforeChange);
+		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvCmp target = findResult.get();
 			target.endDate = domainData.endDate;

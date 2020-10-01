@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @Stateless
 public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends CommandHandler<CompanyApproverHistoryUpdateEmployeeIdCommand> {
     @Inject
-    private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
+    private Approver36AgrByCompanyRepo repo;
     @Override
     protected void handle(CommandHandlerContext<CompanyApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
@@ -33,27 +34,18 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        val domain = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApprovedList(),
+        val domainUpdate = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApprovedList(),
                 command.getConfirmedList());
-        RequireImp requireImp = new RequireImp(cid,approver36AgrByCompanyRepo);
-        AtomTask persist = CompanyApproverHistoryChangeDomainService.changeApproverHistory(requireImp,
-                command.getStartDateBeforeChange(),domain);
-        transaction.execute(()->persist.run());
+        val domainPrevOpt = repo.getByCompanyIdAndEndDate(cid,command.getStartDateBeforeChange().addDays(-1));
+        if(domainPrevOpt.isPresent()){
+            val domainPrev = domainPrevOpt.get();
+            DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
+            val domain = new Approver36AgrByCompany(domainPrev.getCompanyId(),period,domainPrev.getApproverList(),domainPrev.getConfirmerList() );
+            repo.update(domain,domain.getPeriod().start());
+        }
+        repo.update(domainUpdate,command.getStartDateBeforeChange());
+
     }
 
-    @AllArgsConstructor
-    private class RequireImp implements CompanyApproverHistoryChangeDomainService.Require{
-        private String cid;
-        private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
 
-        @Override
-        public Optional<Approver36AgrByCompany> getPrevHistory(GeneralDate endDate) {
-            return approver36AgrByCompanyRepo.getByCompanyIdAndEndDate(cid,endDate);
-        }
-
-        @Override
-        public void changeHistory(Approver36AgrByCompany hist) {
-            approver36AgrByCompanyRepo.update(hist);
-        }
-    }
 }

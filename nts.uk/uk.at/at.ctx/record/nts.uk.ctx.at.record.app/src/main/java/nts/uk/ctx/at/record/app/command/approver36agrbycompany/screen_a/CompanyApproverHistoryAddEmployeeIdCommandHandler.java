@@ -6,6 +6,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
@@ -32,31 +33,15 @@ public class CompanyApproverHistoryAddEmployeeIdCommandHandler extends CommandHa
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        RequireImpl require = new RequireImpl(repo,cid);
-        val domain = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApproveList(), command.getConfirmedList());
-        AtomTask persist = CompanyApproverHistoryAddDomainService.addApproverHistory(require, domain);
-        transaction.execute(persist::run);
-    }
-
-    @AllArgsConstructor
-    private class RequireImpl implements CompanyApproverHistoryAddDomainService.Require {
-        private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
-        private String cid;
-
-        @Override
-        public Optional<Approver36AgrByCompany> getLatestHistory(GeneralDate baseDate) {
-            return approver36AgrByCompanyRepo.getByCompanyIdAndEndDate(cid,baseDate);
+        val domainPrev = repo.getByCompanyIdAndEndDate(cid,command.getPeriod().start().addDays(-1));
+        val domainRegister = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApproveList(), command.getConfirmedList());
+        if(domainPrev.isPresent()){
+            DatePeriod period = new DatePeriod(domainPrev.get().getPeriod().start(),command.getPeriod().start().addDays(-1));
+            val domainUpdate = new Approver36AgrByCompany(cid,period,domainPrev.get().getApproverList(),domainPrev.get().getConfirmerList());
+            repo.update(domainUpdate,period.start());
         }
+        repo.insert(domainRegister);
 
-        @Override
-        public void addHistory(Approver36AgrByCompany hist) {
-            approver36AgrByCompanyRepo.insert(hist);
-        }
-
-        @Override
-        public void changeLatestHistory(Approver36AgrByCompany hist) {
-            approver36AgrByCompanyRepo.update(hist);
-        }
     }
 
 }

@@ -17,12 +17,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ConfirmationStatusDetails extends ValueObject {
 
-    /** 確認状態 */
-    private ConfirmationStatus confirmationStatus;
-
     /** 確認者 */
     private final String confirmerSID;
 
+    /** 確認状態 */
+    private ConfirmationStatus confirmationStatus;
+
     /** 確認日 */
     private Optional<GeneralDate> confirmDate;
+
+    /**
+     * [C-1] 未確認
+     */
+    public static ConfirmationStatusDetails create(String confirmerSID) {
+
+        return new ConfirmationStatusDetails(confirmerSID, ConfirmationStatus.UNCONFIRMED,Optional.empty());
+    }
 }
