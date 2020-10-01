@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AddWorkplaceApproverHistoryDomainService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
@@ -34,30 +35,21 @@ public class WorkPlaceApproverHistoryAddEmployeeIdCommandHandler extends Command
                 command.getPeriod(),
                 command.getApproveList(),
                 command.getConfirmedList());
-        RequireImpl require = new RequireImpl(repo);
-        AtomTask persist = AddWorkplaceApproverHistoryDomainService.addNewWorkplaceApproverHistory(require,domain);
-        transaction.execute(()->persist.run());
+        val domainPrevOpt =repo.getByWorkplaceIdAndEndDate(domain.getWorkplaceId(),domain.getPeriod().end());
+        if(domainPrevOpt.isPresent()){
+            val domainPrev = domainPrevOpt.get();
+            DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
+            val domainPrevUpdate =new Approver36AgrByWorkplace(
+                    domainPrevOpt.get().getWorkplaceId(),
+                    period,
+                    domainPrev.getApproverIds(),
+                    domainPrev.getConfirmerIds()
+            );
+            repo.update(domainPrevUpdate,period.start());
+        }
+        repo.insert(domain);
 
     }
 
-    @AllArgsConstructor
-    public class RequireImpl implements AddWorkplaceApproverHistoryDomainService.Requeire {
 
-        private Approver36AgrByWorkplaceRepo workplaceRepo;
-        @Override
-        public Optional<Approver36AgrByWorkplace> getLatestHistory(String workplaceId, GeneralDate endDate) {
-
-            return workplaceRepo.getByWorkplaceIdAndEndDate(workplaceId,endDate);
-        }
-
-        @Override
-        public void addHistory(Approver36AgrByWorkplace domain) {
-            workplaceRepo.insert(domain);
-        }
-
-        @Override
-        public void changeLatestHistory(Approver36AgrByWorkplace domain) {
-            workplaceRepo.update(domain);
-        }
-    }
 }

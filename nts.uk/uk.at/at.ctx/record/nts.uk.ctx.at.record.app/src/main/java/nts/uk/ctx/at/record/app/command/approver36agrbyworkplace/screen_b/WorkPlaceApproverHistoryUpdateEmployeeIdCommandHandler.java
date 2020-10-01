@@ -1,20 +1,15 @@
 package nts.uk.ctx.at.record.app.command.approver36agrbyworkplace.screen_b;
 
 
-import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ChangeWorkplaceApproverHistoryDomainService;
-import nts.uk.shr.com.context.AppContexts;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Optional;
+
 
 /**
  * Screen B: 36申請の承認者/確認者を更新登録する Renew and register
@@ -27,23 +22,16 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
     @Override
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val domain = new Approver36AgrByWorkplace(command.getWorkPlaceId(),command.getPeriod(),command.getApprovedList(),command.getConfirmedList());
-        RequireImpl require = new RequireImpl(repo);
-        AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(require,command.getStartDateBeforeChange(),domain);
-        transaction.execute(persist::run);
-    }
-    @AllArgsConstructor
-    public class  RequireImpl implements ChangeWorkplaceApproverHistoryDomainService.Require{
-        private Approver36AgrByWorkplaceRepo repo;
-        @Override
-        public Optional<Approver36AgrByWorkplace> getPrevHistory(String workplaceId, GeneralDate lastDate) {
-            return repo.getByWorkplaceIdAndEndDate(workplaceId,lastDate);
+        val domain = new Approver36AgrByWorkplace(command.getWorkPlaceId(),command.getPeriod(),command.getApprovedList()
+                ,command.getConfirmedList());
+        val domainPrevOpt = repo.getByWorkplaceIdAndEndDate(command.getWorkPlaceId(),command.getStartDateBeforeChange().addDays(-1));
+        if(domainPrevOpt.isPresent()){
+            val domainPrev = domainPrevOpt.get();
+            DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
+            val domainPrevUpdate = new Approver36AgrByWorkplace(domainPrev.getWorkplaceId(),period,domainPrev.getApproverIds(),domainPrev.getConfirmerIds());
+            repo.update(domainPrevUpdate,period.start());
         }
+        repo.update(domain,command.getStartDateBeforeChange());
 
-        @Override
-        public void changeHistory(Approver36AgrByWorkplace domain) {
-            repo.insert(domain);
-
-        }
     }
 }

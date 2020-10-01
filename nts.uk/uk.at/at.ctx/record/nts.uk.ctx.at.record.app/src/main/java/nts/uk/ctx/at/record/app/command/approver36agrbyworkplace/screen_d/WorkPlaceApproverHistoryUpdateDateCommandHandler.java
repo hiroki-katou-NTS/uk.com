@@ -10,7 +10,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ChangeWorkplaceApproverHistoryDomainService;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ public class WorkPlaceApproverHistoryUpdateDateCommandHandler extends CommandHan
     @Override
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryUpdateDateCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
         RequireImpl require = new RequireImpl(repo);
         val domainOpt = repo.getByWorkplaceIdAndDate(command.getWorkPlaceId(),command.getStartDateBeforeChange());
         if(domainOpt.isPresent()){
@@ -49,8 +47,8 @@ public class WorkPlaceApproverHistoryUpdateDateCommandHandler extends CommandHan
         }
 
         @Override
-        public void changeHistory(Approver36AgrByWorkplace domain) {
-            byWorkplaceRepo.update(domain);
+        public void changeHistory(Approver36AgrByWorkplace domain,GeneralDate date) {
+            byWorkplaceRepo.update(domain,date);
         }
     }
 }

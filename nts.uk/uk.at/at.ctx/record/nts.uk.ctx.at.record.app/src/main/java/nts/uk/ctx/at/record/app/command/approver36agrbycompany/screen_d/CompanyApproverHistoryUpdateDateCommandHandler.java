@@ -54,8 +54,8 @@ public class CompanyApproverHistoryUpdateDateCommandHandler extends CommandHandl
         }
 
         @Override
-        public void changeHistory(Approver36AgrByCompany hist) {
-            byCompanyRepo.update(hist);
+        public void changeHistory(Approver36AgrByCompany hist,GeneralDate date) {
+            byCompanyRepo.update(hist,date);
         }
     }
 }

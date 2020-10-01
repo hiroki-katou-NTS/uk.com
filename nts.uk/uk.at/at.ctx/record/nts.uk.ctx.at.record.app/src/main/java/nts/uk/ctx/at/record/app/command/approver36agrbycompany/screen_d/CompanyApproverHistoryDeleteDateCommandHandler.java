@@ -35,7 +35,7 @@ public class CompanyApproverHistoryDeleteDateCommandHandler extends CommandHandl
         RequireImpl require = new RequireImpl(repo,cid);
         val optDomain = repo.getByCompanyIdAndEndDate(cid,command.getPeriod().end());
         if(optDomain.isPresent()){
-            AtomTask persist = new CompanyApproverHistoryDeleteDomainService().deleteApproverHistory(require,optDomain.get());
+            AtomTask persist = CompanyApproverHistoryDeleteDomainService.deleteApproverHistory(require,optDomain.get());
             transaction.execute(persist::run);
         }
 
@@ -51,8 +51,8 @@ public class CompanyApproverHistoryDeleteDateCommandHandler extends CommandHandl
         }
 
         @Override
-        public void changeHistory(Approver36AgrByCompany hist) {
-            byCompanyRepo.update(hist);
+        public void changeHistory(Approver36AgrByCompany hist,GeneralDate date) {
+            byCompanyRepo.update(hist,date);
         }
 
         @Override
