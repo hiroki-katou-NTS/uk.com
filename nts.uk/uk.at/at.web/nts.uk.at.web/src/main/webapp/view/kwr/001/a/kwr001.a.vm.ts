@@ -825,10 +825,12 @@ module nts.uk.at.view.kwr001.a {
                                                                             self.checkedA10_14(), self.checkedA10_15(), 
                                                                             self.checkedA10_16(), self.checkedA10_17(), 
                                                                             self.checkedA10_18());
-                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(), self.checkedA10_3(), 
-                                                                                            self.checkedA10_4(), false, 
-                                                                                            //self.checkedA10_5(), 
-                                                                                            self.checkedA10_6(), self.checkedA10_7(), 
+                    let workScheduleSettingTotalOutput = new WorkScheduleSettingTotalOutput(self.checkedA10_2(),
+                                                                                            self.checkedA10_3(), 
+                                                                                            self.checkedA10_4(),
+                                                                                            self.checkedA10_5(), 
+                                                                                            self.checkedA10_6(),
+                                                                                            self.checkedA10_7(), 
                                                                                             totalWorkplaceHierachy);
                     
                     let codeChoose = self.getCodeFromListCode(self.selectedCodeA7_3(), self.itemListCodeTemplate());
