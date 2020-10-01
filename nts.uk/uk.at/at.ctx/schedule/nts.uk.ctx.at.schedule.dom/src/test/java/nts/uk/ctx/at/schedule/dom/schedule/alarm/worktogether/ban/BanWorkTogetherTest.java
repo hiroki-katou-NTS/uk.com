@@ -12,7 +12,11 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-
+/**
+ * UnitTest: 同時出勤禁止
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class BanWorkTogetherTest {
 	

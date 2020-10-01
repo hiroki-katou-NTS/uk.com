@@ -17,7 +17,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkplace;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-
+/**
+ * UnitTest: 同日休日禁止
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class BanHolidayTogetherTest {
 	

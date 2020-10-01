@@ -21,7 +21,11 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-
+/**
+ * UnitTest: 勤務方法(連続勤務)
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class WorkMethodContinuousWorkTest {
 	@Injectable

@@ -10,8 +10,8 @@ import javax.ejb.TransactionAttributeType;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
+import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMsgContent;
@@ -108,7 +108,7 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 	}
 	
 	private List<KscmtAlchkMessage> toEntityMessage(String cid, AlarmCheckConditionSchedule domain) {
-		List<KscmtAlchkMessage> result = domain.getSubConditionLst().stream().map(c ->{
+		List<KscmtAlchkMessage> result = domain.getSubConditions().stream().map(c ->{
 			val pk = new KscmtAlchkMessagePk(cid, domain.getCode().v(), c.getSubCode().v());
 			return new KscmtAlchkMessage(pk, c.getMessage().getMessage().v());
 		}).collect(Collectors.toList());

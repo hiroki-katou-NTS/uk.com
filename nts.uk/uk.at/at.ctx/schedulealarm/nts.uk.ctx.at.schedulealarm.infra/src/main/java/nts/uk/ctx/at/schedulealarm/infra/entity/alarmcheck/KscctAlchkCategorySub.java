@@ -50,7 +50,7 @@ public class KscctAlchkCategorySub extends ContractUkJpaEntity {
 	
 	public static List<KscctAlchkCategorySub> toEntity(String contractCd, AlarmCheckConditionSchedule alarm,
 			AlarmCheckConditionScheduleOrder alarmOrder) {
-		return alarm.getSubConditionLst().stream().map(c -> {
+		return alarm.getSubConditions().stream().map(c -> {
 			val pk = new KscctAlchkCategorySubPk(contractCd, alarm.getCode().v(), c.getSubCode().v());
 			return new KscctAlchkCategorySub(pk, c.getExplanation(), c.getMessage().getDefaultMsg().v(),
 					Integer.valueOf(c.getSubCode().v()).intValue());

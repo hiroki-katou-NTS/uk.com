@@ -12,14 +12,18 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.together.WorkTogether;
-
+/**
+ * 同時出勤指定
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class WorkTogetherTest {
 	
 	@Test
 	public void getters() {
 		val workTogether = WorkTogether.create(
-				"517ef7f8-77d0-4eb0-b539-05e03a23f9e0",
+				"EMPLOYEE_0",
 				Arrays.asList(
 						"EMPLOYEE_1", 
 						"EMPLOYEE_2",

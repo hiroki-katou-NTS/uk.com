@@ -12,7 +12,11 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-
+/**
+ * UnitTest: 組織の就業時間帯の期間内上限勤務
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class MaxDayOfWorkTimeOrganizationTest {
 	@Test

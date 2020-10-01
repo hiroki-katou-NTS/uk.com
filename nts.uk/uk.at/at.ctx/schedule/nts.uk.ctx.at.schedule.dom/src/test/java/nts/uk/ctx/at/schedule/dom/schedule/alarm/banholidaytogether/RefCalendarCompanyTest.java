@@ -17,7 +17,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDaysCalendarTyp
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendar.Require;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
-
+/**
+ * Unit Test: 営業日カレンダーの参照先(会社)
+ * @author lan_lt
+ *
+ */
 
 @RunWith(JMockit.class)
 public class RefCalendarCompanyTest {

@@ -19,7 +19,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDaysCalendarTyp
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendar.Require;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
-
+/**
+ * Unit Test: 営業日カレンダーの参照先(分類)
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class RefCalendarClassificationTest {
 	@Injectable

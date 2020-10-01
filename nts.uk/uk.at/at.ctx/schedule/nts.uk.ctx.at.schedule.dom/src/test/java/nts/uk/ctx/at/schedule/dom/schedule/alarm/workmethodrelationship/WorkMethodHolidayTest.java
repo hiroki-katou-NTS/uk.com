@@ -11,7 +11,11 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod.Require;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-
+/**
+ * UnitTest: 勤務方法(休日)
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)
 public class WorkMethodHolidayTest {
 	@Injectable
