@@ -42,9 +42,11 @@
                 </div>
                 <div class="panel-right">
                     <div class="panel panel-frame noted">#{i18n.getText('CMM024_8')}</div>
-                    <div class="panel-title" data-bind="with: companyScheduleHistoryObjSelected">
+                    <div class="panel-title">
                         <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM024_9')}</div>
-                        <label data-bind="text: display"></label>
+                        <label data-bind="with: companyScheduleHistoryObjSelected">
+                            <label data-bind="text: display"></label>
+                        </label>
                     </div>
                     <div class="approver-employee-panel">
                         <div class="panel panel-frame panel-box">

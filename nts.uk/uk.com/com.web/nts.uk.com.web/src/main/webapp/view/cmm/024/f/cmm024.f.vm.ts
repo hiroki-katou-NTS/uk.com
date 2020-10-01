@@ -21,7 +21,7 @@ module nts.uk.com.view.cmm024.f {
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 		treeGrid: TreeComponentOption;
 		//getShare & setShare
-		workplaceID: KnockoutObservable<string> = ko.observable(null);
+		workplaceId: KnockoutObservable<string> = ko.observable(null);
 		currentCodeListSwap: KnockoutObservableArray<EmployeeDto> = ko.observableArray([]);
 		oldCodeListSwap: KnockoutObservableArray<EmployeeDto> = ko.observableArray([]);
 
@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm024.f {
 				isShowAlreadySet: false,
 				isMultipleUse: false,
 				isMultiSelect: false,
-				startMode: StartMode.DEPARTMENT,
+				startMode: StartMode.WORKPLACE,
 				selectedId: vm.multiSelectedId,
 				baseDate: vm.baseDate,
 				selectType: SelectType.SELECT_FIRST_ITEM, //3
@@ -52,8 +52,9 @@ module nts.uk.com.view.cmm024.f {
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 10,
 				tabindex: 1,
-				systemType: SystemType.EMPLOYMENT //2
+				systemType: SystemType.EMPLOYMENT, //2
 			};
+			//$('#tree-grid').ntsTreeComponent(vm.treeGrid);
 		}
 
 		created(params: any) {
@@ -63,12 +64,14 @@ module nts.uk.com.view.cmm024.f {
 
 		mounted() {
 			// raise event when view initial success full
-			let vm = this;
+			let vm = this,
+				selectType: number = 0;
 
 			$('#tree-grid').ntsTreeComponent(vm.treeGrid);
 
 			//get share
 			vm.$window.storage('workPlaceCodeList').then((data) => {
+
 				let codeList: Array<any> = [];
 				//remove if employeeCode is null / empty
 				data.codeList && data.codeList.map((item) => {
@@ -80,13 +83,19 @@ module nts.uk.com.view.cmm024.f {
 
 				vm.currentCodeListSwap(codeList);
 				vm.oldCodeListSwap(codeList);
-				vm.multiSelectedId().push(data.workplaceID);
-				vm.workplaceID(data.workplaceID);
+				/*vm.workplaceId(data.workplaceId);
+				vm.multiSelectedId().push(data.workplaceId);
+				 selectType = (!nts.uk.util.isNullOrEmpty(vm.workplaceId()))
+					? SelectType.SELECT_BY_SELECTED_CODE
+					: SelectType.SELECT_FIRST_ITEM;
+				vm.treeGrid.selectType = selectType;*/
+
 			});
 
 			vm.multiSelectedId.subscribe((workplaceId) => {
 				vm.getEmployeesFromCompanyWorkplace(workplaceId);
 			});
+
 		}
 
 
@@ -116,25 +125,6 @@ module nts.uk.com.view.cmm024.f {
 
 					})
 					.always(() => vm.$blockui('hide'));
-			} else {
-				service.getScheduleHistoryListByCompany()
-					.done((response) => {
-						if (!nts.uk.util.isNullOrEmpty(response)) {
-							response.forEach((element) => {
-								employees.push(new EmployeeDto(
-									element.empCd, element.empName,
-									element.empId, element.empId
-								)); //'基本
-							});
-						}
-
-						//clear emplyees list
-						vm.itemsSwap([]);
-						vm.itemsSwap(employees);
-						vm.$blockui('hide');
-
-					})
-					.always(() => vm.$blockui('hide'));
 			}
 		}
 
@@ -147,7 +137,7 @@ module nts.uk.com.view.cmm024.f {
 
 			if (!nts.uk.ui.errors.hasError()) {
 				vm.$window.storage('newWorkPlaceCodeList', {
-					workplaceID: vm.multiSelectedId()[0],
+					workplaceId: vm.multiSelectedId()[0],
 					codeList: vm.currentCodeListSwap()
 				});
 				vm.$window.close();

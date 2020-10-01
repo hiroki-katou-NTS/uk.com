@@ -16,7 +16,7 @@ module nts.uk.com.view.cmm024.d {
 		newEndDate: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
 		//set & get Share
 		newScheduleHistory: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
-		enableDatePicker: KnockoutObservable<boolean> = ko.observable(false);
+		enableDatePicker: KnockoutObservable<boolean> = ko.observable(true);
 		scheduleHistoryModel: KnockoutObservable<ScheduleHistoryModel> = ko.observable(null);
 
 		constructor(params: any) {
@@ -39,6 +39,8 @@ module nts.uk.com.view.cmm024.d {
 
 			//get value from parent form
 			vm.newEndDate(moment(service.END_DATE, 'YYYY/MM/DD').toDate());
+			vm.registrationHistoryType(HistoryUpdate.HISTORY_EDIT);
+			$('.ntsDatepicker').focus();
 
 			vm.registrationHistoryType.subscribe((value) => {
 				vm.enableDatePicker(value !== 0);
@@ -80,13 +82,13 @@ module nts.uk.com.view.cmm024.d {
 					let status = false,
 						params = {
 							companyId: dataModel.workPlaceCompanyId,
+							workPlaceId: dataModel.workPlaceCompanyId,
 							startDate: moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD'),
 							endDate: moment.utc(dataModel.scheduleHistoryUpdate.endDate, 'YYYY-MM-DD'),
 							startDateBeforeChange: null,
 							screen: dataModel.screen
 						};
 
-					console.log(service.HistoryUpdate);
 					if (vm.registrationHistoryType() == service.HistoryUpdate.HISTORY_DELETE) {
 						vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: string) => {
 							if (result === 'yes') {
@@ -150,7 +152,9 @@ module nts.uk.com.view.cmm024.d {
 							vm.$dialog.info({ messageId: 'Msg_16' });
 							vm.$blockui('hide');
 						})
-						.fail(() => vm.$blockui('hide'))
+						.fail((error) => {
+							vm.$dialog.info({ messageId: error.messageId });
+						})
 						.always(() => vm.$blockui('hide'));
 					break;
 
@@ -161,7 +165,9 @@ module nts.uk.com.view.cmm024.d {
 							vm.$dialog.info({ messageId: 'Msg_16' });
 							vm.$blockui('hide');
 						})
-						.fail(() => vm.$blockui('hide'))
+						.fail((error) => {
+							vm.$dialog.info({ messageId: error.messageId });
+						})
 						.always(() => vm.$blockui('hide'));
 					break;
 			}

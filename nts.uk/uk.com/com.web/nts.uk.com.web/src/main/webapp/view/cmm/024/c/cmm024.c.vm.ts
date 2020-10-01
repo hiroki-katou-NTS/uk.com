@@ -40,6 +40,7 @@ module nts.uk.com.view.cmm024.c {
 				vm.initScheduleHistory();
 			});
 
+			$('.ntsDatepicker').focus();
 		}
 		/**
 		 * Process
@@ -79,7 +80,7 @@ module nts.uk.com.view.cmm024.c {
 
 					newScheduleHistoryDto = new ScheduleHistoryDto(
 						startDate,
-						'9999/12/31', //endDate
+						service.END_DATE, //endDate
 						personalInfoApprove,
 						personalInfoConfirm
 					);
