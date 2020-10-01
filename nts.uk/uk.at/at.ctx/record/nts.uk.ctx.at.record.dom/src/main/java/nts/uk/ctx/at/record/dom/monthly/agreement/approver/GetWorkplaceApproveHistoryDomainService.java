@@ -1,17 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
+
 import lombok.val;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
-
-
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +45,7 @@ public class GetWorkplaceApproveHistoryDomainService {
                 approveList.addAll(optApprove36AerByWorkplace.get().getApproverList());
                 confirmedList.addAll(optApprove36AerByWorkplace.get().getConfirmerList()); }
         });
-        val result = Optional.of(new ApproverItem(approveList,confirmedList));
-        return result;
+        return Optional.of(new ApproverItem(approveList,confirmedList));
     }
 
     public static interface Require {
@@ -61,10 +53,10 @@ public class GetWorkplaceApproveHistoryDomainService {
         //  社員所属職場履歴を取得   SyWorkplaceAdapter
         Optional<SWkpHistRcImported> getYourWorkplace(String employeeId, GeneralDate baseDate);
 
-        // 	[R-2] 承認者の履歴項目を取得する 	承認者の履歴項目（36協定）Repository.get(職場ID)
+        // 	[R-2] 承認者の履歴項目を取得する 	承認者の履歴項目（36協定）Repository.get(職場ID,,基準日)
         Optional<ApproverItem> getApproveHistoryItem(String workplaceId, GeneralDate baseDate);
 
         //	[R-3] 上位職場を取得する 	アルゴリズム.[No.569]職場の上位職場を取得する(会社ID,職場ID,基準日)会社ID Infused from the APP layer
-        List<String> getUpperWorkplace(String workplaceID, GeneralDate date);
+        List<String> getUpperWorkplace( String workplaceID, GeneralDate date);
     }
 }

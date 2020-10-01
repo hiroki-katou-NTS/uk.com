@@ -31,7 +31,7 @@ public class Krcmt36AgrApvCmpPK implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CID")
-	public String companyID;
+	public String companyId;
 
 	@Basic(optional = false)
 	@NotNull

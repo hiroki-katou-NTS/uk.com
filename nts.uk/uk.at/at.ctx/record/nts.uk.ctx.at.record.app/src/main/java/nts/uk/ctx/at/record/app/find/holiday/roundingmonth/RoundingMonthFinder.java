@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingMonth;
-import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingMonthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonthRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

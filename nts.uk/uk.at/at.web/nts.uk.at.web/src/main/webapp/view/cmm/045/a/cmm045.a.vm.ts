@@ -1007,8 +1007,9 @@ module cmm045.a.viewmodel {
                             let targetAppId = $(e.target).closest("td").data("app-id");
                             let lstAppId = self.items().map(app => app.appID);
                             // window.localStorage.setItem('UKProgramParam', 'a=0');
-                            character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                            character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
+								nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+							});
                         }
                     } },
                     { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
@@ -1289,8 +1290,9 @@ module cmm045.a.viewmodel {
                             let targetAppId = $(e.target).closest("td").data("app-id");
                             let lstAppId = self.items().map(app => app.appID);
                             // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-                            character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                            character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
+								nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+							});
                         }
                     } },
                     { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
@@ -2024,10 +2026,13 @@ module cmm045.a.viewmodel {
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
-
+			block.invisible();
             const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
-            service.print(command);
-            $('#daterangepicker .ntsEndDatePicker').focus();
+            service.print(command).always(() => { 
+				block.clear(); 
+				$('#daterangepicker .ntsEndDatePicker').focus();
+			});
+            
         }
 
         // getNtsFeatures(): Array<any> {

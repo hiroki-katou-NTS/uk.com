@@ -31,22 +31,18 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void insert(Approver36AgrByWorkplace domain){
-		val entity = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
+		val entity =  Krcmt36AgrApvWkp.fromDomain(domain);
 
 		this.commandProxy().insert(entity);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public void update(Approver36AgrByWorkplace domain){
+	public void update(Approver36AgrByWorkplace domain,GeneralDate startDateBeforeChange){
 
-		val domainData = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
-
-		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.PK, Krcmt36AgrApvWkp.class);
+		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
+		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
+		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvWkp target = findResult.get();
 			target.endDate = domainData.endDate;
@@ -72,11 +68,9 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void delete(Approver36AgrByWorkplace domain){
-		val domainData = new Krcmt36AgrApvWkp(){{
-			fromDomain(domain);
-		}};
+		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
 
-		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.PK, Krcmt36AgrApvWkp.class);
+		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
 			Krcmt36AgrApvWkp target = findResult.get();
 			this.commandProxy().remove(target);
@@ -93,8 +87,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 
@@ -115,8 +109,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), date));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -138,8 +132,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.endDate), endDate));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -162,8 +156,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceID), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), refDate));
 			add(cb.greaterThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.endDate), refDate));
 		}};

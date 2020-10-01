@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
@@ -34,7 +34,7 @@ public class OneMonthAppUpdate {
 	 * @param reason       36協定申請理由
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult update(
+	public static AppCreationResult update(
 			Require require,
 			String cid,
 			String applicantId,
@@ -42,10 +42,11 @@ public class OneMonthAppUpdate {
 			ReasonsForAgreement reason) {
 
 		// $36協定申請
-		val optApp = require.getApp(applicantId);
+		val optApp = require.getApp(applicantId); // R1
 		if (!optApp.isPresent()){
 			throw new BusinessException("Msg_1262");
 		}
+
 		val app = optApp.get();
 
 		// $３６協定設定
@@ -54,9 +55,9 @@ public class OneMonthAppUpdate {
 				cid,
 				app.getApplicantsSID(),
 				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
 
-		val oneMonth = setting.getBasicAgreementSetting().getOneMonth();
+		val oneMonth = setting.getOneMonth();
 
 		// $エラー結果
 		val errResult =  oneMonth.checkErrorTimeExceeded(oneMonthTime);
@@ -75,7 +76,7 @@ public class OneMonthAppUpdate {
 		val oneMonthArlarm = oneMonth.calculateAlarmTime(oneMonthTime);
 
 		// $エラーアラーム
-		val errorArlarmTime = new ErrorTimeInMonth(oneMonthTime, oneMonthArlarm);
+		val errorArlarmTime = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthArlarm);
 
 		// $36協定申請.1ヶ月の申請時間を変更する
 		app.changeApplicationOneMonth(errorArlarmTime,reason);

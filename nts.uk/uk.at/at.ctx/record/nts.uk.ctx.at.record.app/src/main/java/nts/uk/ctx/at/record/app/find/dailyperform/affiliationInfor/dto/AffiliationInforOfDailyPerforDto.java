@@ -47,10 +47,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	@AttendanceItemValue
 	private String classificationCode;
 
-//	@AttendanceItemLayout(layout = "E", jpPropertyName = "加給コード")
-//	@AttendanceItemValue
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = RAISING_SALARY)
+	@AttendanceItemValue
 	private String subscriptionCode;
-	
+
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = BUSINESS_TYPE)
+	@AttendanceItemValue
 	private String businessTypeCode;
 	
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){

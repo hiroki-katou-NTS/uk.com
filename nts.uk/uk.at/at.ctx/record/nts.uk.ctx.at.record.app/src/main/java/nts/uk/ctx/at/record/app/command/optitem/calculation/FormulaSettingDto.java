@@ -7,10 +7,10 @@ package nts.uk.ctx.at.record.app.command.optitem.calculation;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaSettingItem;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
 
 /**
  * The Class FormulaSettingDto.

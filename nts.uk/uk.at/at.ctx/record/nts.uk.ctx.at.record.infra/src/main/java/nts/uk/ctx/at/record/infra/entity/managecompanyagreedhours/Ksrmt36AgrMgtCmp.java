@@ -5,15 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
-import nts.uk.ctx.at.shared.dom.standardtime.*;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -142,96 +148,93 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
         return this.ksrmt36AgrMgtCmpPk;
     }
 
-    public static Ksrmt36AgrMgtCmp toEntity(AgreementTimeOfCompany domain){
+    public static Ksrmt36AgrMgtCmp toEntity(AgreementTimeOfCompany domain) {
         val contractCD = AppContexts.user().contractCode();
-        return new Ksrmt36AgrMgtCmp();
-        // TODO wait change domain from Nittsu
-//        return new Ksrmt36AgrMgtCmp(
-//                new Ksrmt36AgrMgtCmpPk(domain.getCompanyId(),domain.getLaborSystemAtr().value),
-//                1,
-//                contractCD,
-                // BASIC_M_AL_TIME->会社３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneMonth().getBasicSetting().getErrorTimeInMonth().getErrorTime().v(),
-//
-//                // basicMArlTime->会社３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneMonth().getBasicSetting().getErrorTimeInMonth().getAlarmTime().v(),
-//
-//                // BASIC_M_LIMIT_TIME->会社３６協定時間.３６協定基本設定.1ヶ月.基本設定
-//                domain.getBasicAgreementSetting().getOneMonth().getBasicSetting().getUpperLimitTime().v(),
-//
-//                // SP_M_AL_TIME->会社３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneMonth().getUpperLimitDueToSpecialProvisions().getErrorTimeInMonth().getErrorTime().v(),
-//
-//                // SP_M_ER_TIME->会社３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneMonth().getUpperLimitDueToSpecialProvisions().getErrorTimeInMonth().getAlarmTime().v(),
-//
-//                //SP_M_LIMIT_TIME->会社３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限
-//                domain.getBasicAgreementSetting().getOneMonth().getUpperLimitDueToSpecialProvisions().getUpperLimitTime().v(),
-//
-//                //BASIC_Y_AL_TIME->会社３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneYear().getBasicSetting().getErrorTimeInYear().getErrorTime().v(),
-//
-//                // BASIC_Y_ER_TIME->会社３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneYear().getBasicSetting().getErrorTimeInYear().getAlarmTime().v(),
-//
-//                // BASIC_Y_LIMIT_TIME->会社３６協定時間.３６協定基本設定.1年間.基本設定
-//                domain.getBasicAgreementSetting().getOneYear().getBasicSetting().getUpperLimitTime().v(),
-//
-//                // SP_Y_AL_TIME->会社３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneYear().getUpperLimitDueToSpecialProvisions().getErrorTimeInYear().getErrorTime().v(),
-//
-//                // SP_Y_ER_TIME-> 会社３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
-//                domain.getBasicAgreementSetting().getOneYear().getUpperLimitDueToSpecialProvisions().getErrorTimeInYear().getAlarmTime().v(),
-//
-//                // SP_Y_LIMIT_TIME->会社３６協定時間.３６協定基本設定.1年間.特例条項による上限
-//                domain.getBasicAgreementSetting().getOneYear().getUpperLimitDueToSpecialProvisions().getUpperLimitTime().v(),
-//
-//                // MULTI_M_AVG_AL_TIME-> 会社３６協定時間.３６協定基本設定.複数月平均.複数月平均
-//                domain.getBasicAgreementSetting().getMultipleMonthsAverage().getErrorTimeInMonth().getErrorTime().v(),
-//
-//                // MULTI_M_AVG_ER_TIME-> 会社３６協定時間.３６協定基本設定.複数月平均.複数月平均
-//                domain.getBasicAgreementSetting().getMultipleMonthsAverage().getErrorTimeInMonth().getAlarmTime().v(),
-//
-//                // UPPER_LIMIT_CNT->会社３６協定時間.３６協定基本設定
-//                domain.getBasicAgreementSetting().getNumberTimesOverLimitType().value
-//        );
+
+        return new Ksrmt36AgrMgtCmp(
+                new Ksrmt36AgrMgtCmpPk(domain.getCompanyId(), domain.getLaborSystemAtr().value),
+
+                1,
+                //contractCD
+                contractCD,
+                // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
+
+                // basicMArlTime->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
+                domain.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
+                // BASIC_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定
+                domain.getSetting().getOneMonth().getBasic().getUpperLimit().v(),
+
+                // SP_M_AL_TIME-> 分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+
+                // SP_M_ER_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
+
+                // SP_M_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限
+                domain.getSetting().getOneMonth().getSpecConditionLimit().getUpperLimit().v(),
+
+                // BASIC_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
+                domain.getSetting().getOneYear().getBasic().getAlarm().v(),
+
+                // BASIC_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
+                domain.getSetting().getOneYear().getBasic().getError().v(),
+
+                // BASIC_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定
+                domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
+
+                // SP_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+
+                // SP_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
+                domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
+
+                // SP_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限
+                domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
+
+                // MULTI_M_AVG_AL_TIME ->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v(),
+
+                // MULTI_M_AVG_ER_TIME->分類３６協定時間.３６協定基本設定.複数月平均.複数月平均
+                domain.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
+
+                // UPPER_LIMIT_CNT->分類３６協定時間.３６協定基本設定
+                domain.getSetting().getOverMaxTimes().value
+        );
     }
 
-    public static AgreementTimeOfCompany toDomain(Ksrmt36AgrMgtCmp entity){
+    public static AgreementTimeOfCompany toDomain(Ksrmt36AgrMgtCmp entity) {
         val companyId = entity.getKsrmt36AgrMgtCmpPk().getCompanyID();
-
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtCmpPk().getLaborSystemAtr(),LaborSystemtAtr.class);
-        val  errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
-                ,new AgreementOneMonthTime((int)entity.getBasicMAllTime()));
-        val upperLimitTime = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
-        val basicSettingMonth = new OneMonthTime(errorTimeInMonth,upperLimitTime);
 
-        val errorTimeInMonthUpper =  new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getSpMErTime())
-                ,new AgreementOneMonthTime((int)entity.getSpMAlTime()));
-        val upperLimitTimeMonthUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
-        val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper,upperLimitTimeMonthUpper);
+        val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
+        val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
 
-        val  errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getBasicMArlTime())
-                ,new AgreementOneYearTime((int)entity.getBasisYAlTime()));
-        val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
-        val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
+        val basic =  OneMonthTime.of(erAlTime, upperLimit);
 
-        val errorTimeInYearUpper =  new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getSpYErlTime())
-                ,new AgreementOneYearTime((int)entity.getSpYAlTime()));
-        val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
-        val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
+        val erAlTimeSp =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getSpMErTime()), new AgreementOneMonthTime((int) entity.getSpMAlTime()));
+        val upperLimitSp = new AgreementOneMonthTime((int) entity.getSpMLimitTime());
+        val specConditionLimit =  OneMonthTime.of(erAlTimeSp, upperLimitSp);
+
+        val oneMonth = new AgreementOneMonth(basic, specConditionLimit);
 
 
-        val numberTimesOverLimitType = EnumAdaptor.valueOf(entity.getUpperLimitCnt(),TimeOverLimitType.class);
-        val basicAgreementSetting = new BasicAgreementSetting(
-                new AgreementsOneMonth(basicSettingMonth,upperLimitDueToSpecialProvisionsMonth) ,
-                new AgreementsOneYear(basicSettingYear,upperLimitDueToSpecialProvisionsYear),
-                new AgreementsMultipleMonthsAverage(errorTimeInMonth),numberTimesOverLimitType
-        );
-        // TODO wait change domain from Nittsu
-        return null;
-        //return new AgreementTimeOfCompany(companyId,laborSystemAtr,basicAgreementSetting);
+        val basicY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getBasisYErTime()), new AgreementOneYearTime((int) entity.getBasisYAlTime()));
+        val erAlTimeSpY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getSpYErlTime()), new AgreementOneYearTime((int) entity.getSpYAlTime()));
+
+        val upperLimitSpY = new AgreementOneYearTime((int) entity.getBasisYLimitTime());
+
+        val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
+        val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
 
 
+        val multiMonthAvg =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getMultiMAvgErTime())
+                , new AgreementOneMonthTime((int) entity.getMultiMAvgAlTime()));
+
+        val multiMonth = new AgreementMultiMonthAvg(multiMonthAvg);
+        val overMaxTimes = EnumAdaptor.valueOf(entity.getUpperLimitCnt(), AgreementOverMaxTimes.class);
+
+        val basicAgreementSetting = new BasicAgreementSetting(oneMonth, oneYear, multiMonth, overMaxTimes);
+        return new AgreementTimeOfCompany(companyId,laborSystemAtr,basicAgreementSetting);
     }
 }

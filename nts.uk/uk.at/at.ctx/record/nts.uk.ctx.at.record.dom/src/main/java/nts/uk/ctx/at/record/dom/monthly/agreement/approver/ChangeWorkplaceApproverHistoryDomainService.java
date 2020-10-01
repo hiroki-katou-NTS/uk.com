@@ -11,7 +11,6 @@ import java.util.Optional;
 
 /**
  * DomainService :職場の承認者履歴を変更する
- *
  * @author chinh.hm
  */
 @Stateless
@@ -25,19 +24,21 @@ public class ChangeWorkplaceApproverHistoryDomainService {
             GeneralDate startDateBeforeChange,
             Approver36AgrByWorkplace changeHistory
     ) {
+        val referenceDate = startDateBeforeChange.addDays(-1);
+        val optPrevHist = require.getPrevHistory(changeHistory.getWorkplaceId(), referenceDate);
+        if (optPrevHist.isPresent()) {
+            val prevHist = optPrevHist.get();
+            val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(),
+                    changeHistory.getPeriod().start().addDays(-1));
+            prevHist.setPeriod(periodWithNewEndDate);
+
+        }
         return AtomTask.of(() -> {
             // Update history item
-            require.changeHistory(changeHistory);
-            val referenceDate = startDateBeforeChange.addDays(-1);
-            val optPrevHist = require.getPrevHistory(changeHistory.getWorkplaceId(), referenceDate);
-            if (optPrevHist.isPresent()) {
-                val prevHist = optPrevHist.get();
-                val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(),
-                        changeHistory.getPeriod().start().addDays(-1));
-                prevHist.setPeriod(periodWithNewEndDate);
-                // Update pre history
-                require.changeHistory(prevHist);
-            }
+            require.changeHistory(changeHistory,startDateBeforeChange);
+            // Update pre history
+            optPrevHist.ifPresent(approver36AgrByWorkplace -> require.changeHistory(approver36AgrByWorkplace,
+                    approver36AgrByWorkplace.getPeriod().start()));
         });
     }
 
@@ -52,7 +53,7 @@ public class ChangeWorkplaceApproverHistoryDomainService {
          * [R-2] 履歴を変更する
          * 職場別の承認者（36協定）Repository.Update(職場別の承認者（36協定）)
          */
-        void changeHistory(Approver36AgrByWorkplace domain);
+        void changeHistory(Approver36AgrByWorkplace domain,GeneralDate date);
     }
 
 }

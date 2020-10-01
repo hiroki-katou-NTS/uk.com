@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.arc.time.YearMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -161,40 +161,40 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getApplicantsSID(),
                 domain.getApplicationTime().getTypeAgreement().value,
                 domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getYearMonth().v() : null,
-                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getErrorTime().v() : null,
-                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getAlarmTime().v() : null,
+                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getError().v() : null,
+                domain.getApplicationTime().getOneMonthTime().isPresent() ? domain.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth().getAlarm().v() : null,
                 domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getYear().v() : null,
-                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getErrorTime().v() : null,
-                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getAlarmTime().v() : null,
+                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getError().v() : null,
+                domain.getApplicationTime().getOneYearTime().isPresent() ? domain.getApplicationTime().getOneYearTime().get().getErrorTimeInYear().getAlarm().v() : null,
                 domain.getReasonsForAgreement().v(),
                 domain.getApprovalStatusDetails().getApprovalStatus().value,
                 domain.getApprovalStatusDetails().getApproveSID().isPresent() ? domain.getApprovalStatusDetails().getApproveSID().get() : null,
                 domain.getApprovalStatusDetails().getApprovalComment().isPresent() ? domain.getApprovalStatusDetails().getApprovalComment().get().v() : null,
                 domain.getApprovalStatusDetails().getApprovalDate().isPresent() ? domain.getApprovalStatusDetails().getApprovalDate().get() : null,
-                domain.getListApproverSID().size() == 1 ? domain.getListApproverSID().get(0) : null,
-                domain.getListApproverSID().size() == 2 ? domain.getListApproverSID().get(1) : null,
-                domain.getListApproverSID().size() == 3 ? domain.getListApproverSID().get(2) : null,
-                domain.getListApproverSID().size() == 4 ? domain.getListApproverSID().get(3) : null,
-                domain.getListApproverSID().size() == 5 ? domain.getListApproverSID().get(4) : null,
-                domain.getConfirmationStatusDetails().size() == 1 ? domain.getConfirmationStatusDetails().get(0).getConfirmerSID() : null,
-                domain.getConfirmationStatusDetails().size() == 1 ? domain.getConfirmationStatusDetails().get(0).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() == 1 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().get() : null,
+                domain.getListApproverSID().size() > 0 ? domain.getListApproverSID().get(0) : null,
+                domain.getListApproverSID().size() > 1 ? domain.getListApproverSID().get(1) : null,
+                domain.getListApproverSID().size() > 2 ? domain.getListApproverSID().get(2) : null,
+                domain.getListApproverSID().size() > 3 ? domain.getListApproverSID().get(3) : null,
+                domain.getListApproverSID().size() > 5 ? domain.getListApproverSID().get(4) : null,
+                domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmerSID() : null,
+                domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmationStatus().value : null,
+                domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().get() : null,
 
-                domain.getConfirmationStatusDetails().size() == 2 ? domain.getConfirmationStatusDetails().get(1).getConfirmerSID() : null,
-                domain.getConfirmationStatusDetails().size() == 2 ? domain.getConfirmationStatusDetails().get(1).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() == 2 ? domain.getConfirmationStatusDetails().get(1).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmerSID() : null,
+                domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmationStatus().value : null,
+                domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmDate().get() : null,
 
-                domain.getConfirmationStatusDetails().size() == 3 ? domain.getConfirmationStatusDetails().get(2).getConfirmerSID() : null,
-                domain.getConfirmationStatusDetails().size() == 3 ? domain.getConfirmationStatusDetails().get(2).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() == 3 ? domain.getConfirmationStatusDetails().get(2).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmerSID() : null,
+                domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmationStatus().value : null,
+                domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmDate().get() : null,
 
-                domain.getConfirmationStatusDetails().size() == 4 ? domain.getConfirmationStatusDetails().get(3).getConfirmerSID() : null,
-                domain.getConfirmationStatusDetails().size() == 4 ? domain.getConfirmationStatusDetails().get(3).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() == 4 ? domain.getConfirmationStatusDetails().get(3).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmerSID() : null,
+                domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmationStatus().value : null,
+                domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmDate().get() : null,
 
-                domain.getConfirmationStatusDetails().size() == 5 ? domain.getConfirmationStatusDetails().get(4).getConfirmerSID() : null,
-                domain.getConfirmationStatusDetails().size() == 5 ? domain.getConfirmationStatusDetails().get(4).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() == 5 ? domain.getConfirmationStatusDetails().get(4).getConfirmDate().get() : null
+                domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmerSID() : null,
+                domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmationStatus().value : null,
+                domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmDate().get() : null
         );
     }
 
@@ -218,27 +218,28 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
 
         List<ConfirmationStatusDetails> confirmationStatusDetails = new ArrayList<>();
         if (entity.confirmationStatus1 != null){
-            ConfirmationStatusDetails item1 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus1, ConfirmationStatus.class),entity.confirmerSID1,entity.confirmDate1 == null ? Optional.empty() : Optional.of(entity.confirmDate1));
+            ConfirmationStatusDetails item1 = new ConfirmationStatusDetails(entity.confirmerSID1,EnumAdaptor.valueOf(entity.confirmationStatus1, ConfirmationStatus.class) ,entity.confirmDate1 == null ? Optional.empty() : Optional.of(entity.confirmDate1));
             confirmationStatusDetails.add(item1);
         }
         if (entity.confirmationStatus2 != null){
-            ConfirmationStatusDetails item2 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus2, ConfirmationStatus.class),entity.confirmerSID2,entity.confirmDate2 == null ? Optional.empty() : Optional.of(entity.confirmDate2));
+            ConfirmationStatusDetails item2 = new ConfirmationStatusDetails(entity.confirmerSID2,EnumAdaptor.valueOf(entity.confirmationStatus2, ConfirmationStatus.class),entity.confirmDate2 == null ? Optional.empty() : Optional.of(entity.confirmDate2));
             confirmationStatusDetails.add(item2);
         }
         if (entity.confirmationStatus3 != null){
-            ConfirmationStatusDetails item3 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus3, ConfirmationStatus.class),entity.confirmerSID3,entity.confirmDate3 == null ? Optional.empty() : Optional.of(entity.confirmDate3));
+            ConfirmationStatusDetails item3 = new ConfirmationStatusDetails(entity.confirmerSID3,EnumAdaptor.valueOf(entity.confirmationStatus3, ConfirmationStatus.class),entity.confirmDate3 == null ? Optional.empty() : Optional.of(entity.confirmDate3));
             confirmationStatusDetails.add(item3);
         }
         if (entity.confirmationStatus4 != null){
-            ConfirmationStatusDetails item4 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus4, ConfirmationStatus.class),entity.confirmerSID4,entity.confirmDate4 == null ? Optional.empty() : Optional.of(entity.confirmDate4));
+            ConfirmationStatusDetails item4 = new ConfirmationStatusDetails(entity.confirmerSID4,EnumAdaptor.valueOf(entity.confirmationStatus4, ConfirmationStatus.class),entity.confirmDate4 == null ? Optional.empty() : Optional.of(entity.confirmDate4));
             confirmationStatusDetails.add(item4);
         }
         if (entity.confirmationStatus5 != null){
-            ConfirmationStatusDetails item5 = new ConfirmationStatusDetails(EnumAdaptor.valueOf(entity.confirmationStatus5, ConfirmationStatus.class),entity.confirmerSID5,entity.confirmDate5 == null ? Optional.empty() : Optional.of(entity.confirmDate5));
+            ConfirmationStatusDetails item5 = new ConfirmationStatusDetails(entity.confirmerSID5,EnumAdaptor.valueOf(entity.confirmationStatus5, ConfirmationStatus.class),entity.confirmDate5 == null ? Optional.empty() : Optional.of(entity.confirmDate5));
             confirmationStatusDetails.add(item5);
         }
-        OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(entity.monthErrorTime), new AgreementOneMonthTime(entity.monthAlarmTime)), new YearMonth(entity.yearMonth));
-        OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(entity.yearErrorTime), new AgreementOneYearTime(entity.yearAlarmTime)), new Year(entity.year));
+
+        OneMonthTime oneMonthTime = new OneMonthTime(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(entity.monthErrorTime), new AgreementOneMonthTime(entity.monthAlarmTime)), new YearMonth(entity.yearMonth));
+        OneYearTime oneYearTime = new OneYearTime(OneYearErrorAlarmTime.of(new AgreementOneYearTime(entity.yearErrorTime), new AgreementOneYearTime(entity.yearAlarmTime)), new Year(entity.year));
         ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(entity.typeAgreement, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
         return new SpecialProvisionsOfAgreement(
                 entity.appID,
@@ -248,10 +249,10 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 applicationTime,
                 new ReasonsForAgreement(entity.reasonsForAgreement),
                 listApproveSID,
-                new ApprovalStatusDetails(EnumAdaptor.valueOf(entity.approvalStatus, ApprovalStatus.class),
+                ApprovalStatusDetails.create(EnumAdaptor.valueOf(entity.approvalStatus, ApprovalStatus.class),
+                        entity.approveSID == null ? Optional.empty() :  Optional.of(entity.approveSID),
                         entity.approvalComment == null ? Optional.empty() : Optional.of(new AgreementApprovalComments(entity.approvalComment)),
-                        entity.approvalDate == null ? Optional.empty() : Optional.of(entity.approvalDate),
-                        entity.approveSID == null ? Optional.empty() :  Optional.of(entity.approveSID)),
+                        entity.approvalDate == null ? Optional.empty() : Optional.of(entity.approvalDate)),
                 confirmationStatusDetails,
                 new ScreenDisplayInfo()
         );

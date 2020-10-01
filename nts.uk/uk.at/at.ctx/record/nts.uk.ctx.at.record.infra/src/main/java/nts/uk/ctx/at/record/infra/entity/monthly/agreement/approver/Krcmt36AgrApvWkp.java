@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -31,8 +34,18 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "CONTRACT_CD")
+	public String ccd;
+
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "CID")
+	public String cid;
+
 	@EmbeddedId
-	public Krcmt36AgrApvWkpPK PK;
+	public Krcmt36AgrApvWkpPK pk;
 
 	@Basic(optional = false)
 	@NotNull
@@ -74,7 +87,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.PK;
+		return this.pk;
 	}
 
 	public Approver36AgrByWorkplace toDomain() {
@@ -93,22 +106,41 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
 		return new Approver36AgrByWorkplace(
-				this.PK.cid,
-				this.PK.workplaceID,
-				new DatePeriod(this.PK.startDate, this.endDate),
+				this.pk.workplaceID,
+				new DatePeriod(this.pk.startDate, this.endDate),
 				approverIds,
 				confirmerIds
 		);
 	}
 
-	public void fromDomain(Approver36AgrByWorkplace domain) {
-		this.PK = new Krcmt36AgrApvWkpPK(domain.getCid(), domain.getWorkplaceId(), domain.getPeriod().start());
-		this.fromDomainNoPK(domain);
+	public static Krcmt36AgrApvWkp fromDomain(Approver36AgrByWorkplace domain) {
+		val entity = new Krcmt36AgrApvWkp();
+		List<String> approverIds = domain.getApproverIds();
+
+		entity.approverSid1 = approverIds.get(0);
+		if (approverIds.size() > 1) entity.approverSid2 = approverIds.get(1);
+		if (approverIds.size() > 2) entity.approverSid3 = approverIds.get(2);
+		if (approverIds.size() > 3) entity.approverSid4 = approverIds.get(3);
+		if (approverIds.size() > 4) entity.approverSid5 = approverIds.get(4);
+
+		List<String> confirmerIds = domain.getConfirmerIds();
+		if (confirmerIds.size() > 0) entity.confirmerSid1 = confirmerIds.get(0);
+		if (confirmerIds.size() > 1) entity.confirmerSid2 = confirmerIds.get(1);
+		if (confirmerIds.size() > 2) entity.confirmerSid3 = confirmerIds.get(2);
+		if (confirmerIds.size() > 3) entity.confirmerSid4 = confirmerIds.get(3);
+		if (confirmerIds.size() > 4) entity.confirmerSid5 = confirmerIds.get(4);
+		entity.endDate = domain.getPeriod().end();
+		entity.pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),domain.getPeriod().start());
+		val cd = AppContexts.user().contractCode();
+		val cid = AppContexts.user().companyId();
+		entity.cid = cid;
+		entity.ccd = cd;
+		return entity;
 	}
 
 	public void fromDomainNoPK(Approver36AgrByWorkplace domain) {
-
-		this.PK.cid = domain.getCid();
+		this.ccd = AppContexts.user().contractCode();
+		this.cid = AppContexts.user().companyId();
 		this.endDate = domain.getPeriod().end();
 
 		List<String> approverIds = domain.getApproverIds();
@@ -130,5 +162,6 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 	public static class Meta_ {
 		public static volatile SingularAttribute<Krcmt36AgrApvWkp, Krcmt36AgrApvWkpPK> pk;
 		public static volatile SingularAttribute<Krcmt36AgrApvWkp, GeneralDate> endDate;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkp, String> cid;
 	}
 }

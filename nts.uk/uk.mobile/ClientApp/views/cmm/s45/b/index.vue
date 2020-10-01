@@ -22,7 +22,7 @@
             <div class="row pl-3">
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="2">{{'CMMS45_8' | i18n}}</nts-checkbox>
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="3">{{'CMMS45_11' | i18n}}</nts-checkbox>
-              <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox>
+              <!-- <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox> -->
             </div>
             <div class="row pl-3">
               <nts-checkbox v-model="checkeds" v-bind:value="4" >{{'CMMS45_53' | i18n}}</nts-checkbox>
