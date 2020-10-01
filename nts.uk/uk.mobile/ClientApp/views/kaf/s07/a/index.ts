@@ -427,6 +427,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 time1 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
                 time2 = _.find(appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2  && item.useAtr);
             }
+            // open dialog is not changed time selector
+            if (self.isOpenKDL002) {
+                self.isOpenKDL002 = false;
+                time1 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1);
+                time2 = _.find(params.appWorkChangeDispInfo.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 2 && item.useAtr);
+            }
             self.bindWorkHours(time1, time2);
 
             return;
@@ -953,8 +959,10 @@ export class KafS07AComponent extends KafS00ShrComponent {
         self.isCondition4 = self.isDisplay4(appWorkChangeDispInfo);
 
     }
+    public isOpenKDL002 = false;
     public openKDL002(name: string) {
         const self = this;
+        self.isOpenKDL002 = true;
         if (name == 'worktype') {
             this.$modal(
                 'worktype',
