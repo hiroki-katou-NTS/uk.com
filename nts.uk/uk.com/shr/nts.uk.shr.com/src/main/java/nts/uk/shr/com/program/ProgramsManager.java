@@ -1,4 +1,4 @@
-﻿/******************************************************************
+/******************************************************************
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
@@ -492,7 +492,7 @@ public class ProgramsManager {
      */
     public static final Program KDL010A = new Program(WebAppId.AT, ProgramIdConsts.KDL010A, "KDL010_10",
             "/view/kdl/010/a/index.xhtml");
-    
+
     /**
      * KDL017A
      */
@@ -517,7 +517,7 @@ public class ProgramsManager {
      */
     public static final Program KDL014A = new Program(WebAppId.AT, ProgramIdConsts.KDL014A, "KDL014_1",
             "/view/kdl/014/a/index.xhtml");
-    
+
     public static final Program KDL044 = new Program(WebAppId.AT, ProgramIdConsts.KDL044, "KDL044_12",
             "/view/kdl/044/a/index.xhtml");
 
@@ -768,7 +768,7 @@ public class ProgramsManager {
      */
     public static final Program KSU001L = new Program(WebAppId.AT, ProgramIdConsts.KSU001L, "KSU001_1140",
             "/view/ksu/001/l/index.xhtml");
-    
+
     /**
      * KSU001LA
      */
@@ -789,7 +789,7 @@ public class ProgramsManager {
      */
     public static final Program KSU001U = new Program(WebAppId.AT, ProgramIdConsts.KSU001U, "KSU001_4000",
             "/view/ksu/001/u/index.xhtml");
-    
+
     /**
      * KSU001R
      */
@@ -1414,7 +1414,7 @@ public class ProgramsManager {
 
     public static final Program KCP005 = new Program(WebAppId.COM, ProgramIdConsts.KCP005, null,
             "/view/kcp/005/index.xhtml");
-    
+
     public static final Program KCP012 = new Program(WebAppId.COM, ProgramIdConsts.KCP012, null,
             "/view/kcp/012/index.xhtml");
 
@@ -1674,7 +1674,7 @@ public class ProgramsManager {
 
     public static final Program CMM013F = new Program(WebAppId.COM, ProgramIdConsts.CMM013F, "CMM013_58",
             "/view/cmm/013/f/index.xhtml");
-    
+
     public static final Program CMM013H = new Program(WebAppId.COM, ProgramIdConsts.CMM013H, "CMM013_69",
             "/view/cmm/013/h/index.xhtml");
 
@@ -2433,9 +2433,9 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cli/001/a/index.xhtml");
     public static final Program CLI001B = new Program(WebAppId.COM, ProgramIdConsts.CLI001B, "CLI001_2",
             "/view/cli/001/b/index.xhtml");
-    
+
     /**    	* CLI002 	*/
-    public static final Program CLI002A = new Program(WebAppId.COM, 
+    public static final Program CLI002A = new Program(WebAppId.COM,
             ProgramIdConsts.CLI002A,
             "CLI002_1",
             "/view/cli/002/a/index.xhtml");
@@ -2470,7 +2470,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cas/004/a/index.xhtml");
     public static final Program CAS004B = new Program(WebAppId.COM, ProgramIdConsts.CAS004B, "CAS004_2",
             "/view/cas/004/b/index.xhtml");
-    
+
     /**
      * KMP001
      */
@@ -2478,7 +2478,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/kmp/001/a/index.xhtml");
     public static final Program KMP001D = new Program(WebAppId.AT, ProgramIdConsts.KMP001D, "KMP001_7",
             "/view/kmp/001/d/index.xhtml");
-    
+
     /**
      * KDP001
      */
@@ -2495,7 +2495,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/kdp/003/k/index.xhtml");
 	public static final Program KDP003S = new Program(WebAppId.AT, ProgramIdConsts.KDP003S, "KDP002_22",
 			"/view/kdp/003/s/index.xhtml");
-	
+
 	/**
 	 * KDP004
 	 */
@@ -2504,7 +2504,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 
 	public static final Program KDP004G = new Program(WebAppId.AT, ProgramIdConsts.KDP004G, "KDP002_10",
 			"/view/kdp/004/g/index.xhtml");
-	
+
 	/**
 	 * KDP005
 	 */
@@ -2514,47 +2514,47 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/kdp/005/h/index.xhtml");
 	public static final Program KDP005I = new Program(WebAppId.AT, ProgramIdConsts.KDP005I, "KDP002_12",
 			"/view/kdp/005/i/index.xhtml");
-    
-    
+
+
     public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
             "/view/cmf/007/a/index.xhtml");
-    
+
     /**
      * JCM007
      */
     public static final Program JCM007A = new Program(WebAppId.HR, ProgramIdConsts.JCM007A, "JCM007_A",
 			"/view/jcm/007/a/index.xhtml");
-    
+
 	public static final Program JCM007Z = new Program(WebAppId.HR, ProgramIdConsts.JCM007Z, "JCM007_Z",
 			"/view/jcm/007/z/index.xhtml");
 
-	/**		
+	/**
      * KDP010
      */
 	public static final Program KDP010A = new Program(WebAppId.AT, ProgramIdConsts.KDP010A, "KDP010_2",
             "/view/kdp/010/a/index.xhtml");
-	
+
     public static final Program KDP010B = new Program(WebAppId.AT, ProgramIdConsts.KDP010B, "KDP010_3",
             "/view/kdp/010/b/index.xhtml");
-    
+
     public static final Program KDP010C = new Program(WebAppId.AT, ProgramIdConsts.KDP010C, "KDP010_4",
             "/view/kdp/010/c/index.xhtml");
-    
+
     public static final Program KDP010D = new Program(WebAppId.AT, ProgramIdConsts.KDP010D, "KDP010_5",
             "/view/kdp/010/d/index.xhtml");
-    
+
     public static final Program KDP010E = new Program(WebAppId.AT, ProgramIdConsts.KDP010E, "KDP010_6",
             "/view/kdp/010/e/index.xhtml");
-    
+
     public static final Program KDP010F = new Program(WebAppId.AT, ProgramIdConsts.KDP010F, "KDP010_7",
             "/view/kdp/010/f/index.xhtml");
-    
+
     public static final Program KDP010G = new Program(WebAppId.AT, ProgramIdConsts.KDP010G, "KDP010_8",
             "/view/kdp/010/g/index.xhtml");
-    
+
     public static final Program KDP010H = new Program(WebAppId.AT, ProgramIdConsts.KDP010H, "KDP010_9",
             "/view/kdp/010/h/index.xhtml");
-    
+
     public static final Program KDP010I = new Program(WebAppId.AT, ProgramIdConsts.KDP010I, "KDP010_140",
             "/view/kdp/010/i/index.xhtml");
 
@@ -2563,7 +2563,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
      */
     public static final Program KDP011A = new Program(WebAppId.AT, ProgramIdConsts.KDP011A, "KDP011_1",
             "/view/kdp/011/a/index.xhtml");
-    
+
 	/**
 	 * JHC002
 	 */
@@ -2573,7 +2573,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/jhc/002/b/index.xhtml");
 	public static final Program JHC002C = new Program(WebAppId.HR, ProgramIdConsts.JHC002C, "JHC002_C",
 			"/view/jhc/002/c/index.xhtml");
-	
+
 	/**
 	 * JMM017
 	 */
@@ -2583,19 +2583,19 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/jmm/017/b/index.xhtml");
 	public static final Program JMM017C = new Program(WebAppId.HR, ProgramIdConsts.JMM017C, "JMM017_C",
 			"/view/jmm/017/c/index.xhtml");
-	
+
 	/**
 	 * JMM018
 	 */
 	public static final Program JMM018A = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_A",
 			"/view/jmm/018/a/index.xhtml");
-	
+
 	public static final Program JMM018C = new Program(WebAppId.HR, ProgramIdConsts.JMM018A, "JMM018_C",
 			"/view/jmm/018/c/index.xhtml");
-	
+
 	public static final Program JMM018Y = new Program(WebAppId.HR, ProgramIdConsts.JMM018Y, "JMM018_Y",
 			"/view/jmm/018/y/index.xhtml");
-	
+
 	/**
 	 * JHN001
 	 */
@@ -2609,13 +2609,13 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/jhn/001/d/index.xhtml");
 	public static final Program JHN001F = new Program(WebAppId.HR, ProgramIdConsts.JHN001F, "JHN001_F",
 			"/view/jhn/001/f/index.xhtml");
-	
+
 	/**
 	 * JHN003
 	 */
 	public static final Program JHN003A = new Program(WebAppId.HR, ProgramIdConsts.JHN003A, "JHN003_A",
 			"/view/jhn/003/a/index.xhtml");
-	
+
 	/**
 	 * JHN011
 	 */
@@ -2623,7 +2623,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/jhn/011/b/index.xhtml");
 	public static final Program JHN011C = new Program(WebAppId.HR, ProgramIdConsts.JHN011C, "JHN011_C",
 			"/view/jhn/011/c/index.xhtml");
-	
+
 
     /**     * The Constant CCG007A. IN MOBILE     */
     public static final Program CCGS07A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS07A, "CCG007_51",
@@ -2684,7 +2684,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "kaf/s08/c");
     public static final Program KAFS08D = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08D, "KAFS08_9",
             "kaf/s08/d");
-    
+
     public static final Program KDPS01A = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01A, "KDPS01_1",
             "/kdp/s01/a");
     public static final Program KDPS01B = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01B, "KDPS01_5",
@@ -3051,13 +3051,13 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/qui/004/a/index.xhtml");
     public static final Program QUI004C = new Program(WebAppId.PR, ProgramIdConsts.QUI004C, "QUI004_35",
             "/view/qui/004/c/index.xhtml");
-	
+
 	/**
      * KSM010A
      */
 	public static final Program KSM010A = new Program(WebAppId.AT, ProgramIdConsts.KSM010A, "KSM010_1",
 			"/view/ksm/010/a/index.xhtml");
-	
+
 	/**
      * KSM010B
      */
@@ -3068,31 +3068,31 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
      * KSM013A
      */
 	public static final Program KSM013A = new Program(WebAppId.AT, ProgramIdConsts.KSM013A, "KSM013_1",
-			"/view/ksm/013/a/index.xhtml");	
-	
+			"/view/ksm/013/a/index.xhtml");
+
 	/**
      * KSM015A
      */
 	public static final Program KSM015A = new Program(WebAppId.AT, ProgramIdConsts.KSM015A, "KSM015_3",
-			"/view/ksm/015/a/index.xhtml");	
-	
+			"/view/ksm/015/a/index.xhtml");
+
 	/**
      * KSM015B
      */
 	public static final Program KSM015B = new Program(WebAppId.AT, ProgramIdConsts.KSM015B, "KSM015_3",
-			"/view/ksm/015/b/index.xhtml");	
+			"/view/ksm/015/b/index.xhtml");
 	/**
      * KSM015C
      */
 	public static final Program KSM015C = new Program(WebAppId.AT, ProgramIdConsts.KSM015C, "KSM015_6",
-			"/view/ksm/015/c/index.xhtml");	
-	
+			"/view/ksm/015/c/index.xhtml");
+
 	/**
      * KSM015D
      */
 	public static final Program KSM015D = new Program(WebAppId.AT, ProgramIdConsts.KSM015D, "KSM015_6",
-			"/view/ksm/015/d/index.xhtml");	
-	
+			"/view/ksm/015/d/index.xhtml");
+
 	/**
      * KDP002
      */
@@ -3104,23 +3104,23 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
 			"/view/kdp/002/c/index.xhtml");
 	public static final Program KDP002T = new Program(WebAppId.AT, ProgramIdConsts.KDP002T, "KDP002_23",
 			"/view/kdp/002/t/index.xhtml");
-	
 
-		
+
+
 	/**
      * KSM007A
      */
 	public static final Program KSM007A = new Program(WebAppId.AT, ProgramIdConsts.KSM007A, "KSM007_1",
 			"/view/ksm/007/a/index.xhtml");
-	
+
 	/**
 	 * KDL047
 	 */
-	public static final Program KDL047 = new Program(WebAppId.AT, 
+	public static final Program KDL047 = new Program(WebAppId.AT,
             ProgramIdConsts.KDL047,
             "KDL047_1",
             "/view/kdl/047/a/index.xhtml");
-		
+
     /**
      * All programs map.
      */
