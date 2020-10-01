@@ -117,7 +117,12 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
-import nts.uk.ctx.at.schedule.dom.executionlog.*;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethod;
+import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 //import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
@@ -510,10 +515,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (execSetting != null) {
 			// execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			if (execSetting.isRepeat()) {
-				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-				execSetting.setNextExecDateTime(nextFireTime);
-			}
+			// TODO
+//			if (execSetting.isRepeat()) {
+//				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
+//				execSetting.setNextExecDateTime(nextFireTime);
+//			}
 			this.execSettingRepo.update(execSetting);
 		}
 
