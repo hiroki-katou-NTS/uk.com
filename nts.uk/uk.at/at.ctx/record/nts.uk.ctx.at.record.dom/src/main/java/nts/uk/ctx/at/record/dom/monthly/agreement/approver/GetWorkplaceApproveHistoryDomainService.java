@@ -1,18 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
+
 import lombok.val;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
-
-
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;

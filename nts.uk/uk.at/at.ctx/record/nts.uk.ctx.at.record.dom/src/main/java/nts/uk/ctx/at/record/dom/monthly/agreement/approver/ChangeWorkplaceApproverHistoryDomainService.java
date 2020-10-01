@@ -24,19 +24,21 @@ public class ChangeWorkplaceApproverHistoryDomainService {
             GeneralDate startDateBeforeChange,
             Approver36AgrByWorkplace changeHistory
     ) {
+        val referenceDate = startDateBeforeChange.addDays(-1);
+        val optPrevHist = require.getPrevHistory(changeHistory.getWorkplaceId(), referenceDate);
+        if (optPrevHist.isPresent()) {
+            val prevHist = optPrevHist.get();
+            val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(),
+                    changeHistory.getPeriod().start().addDays(-1));
+            prevHist.setPeriod(periodWithNewEndDate);
+
+        }
         return AtomTask.of(() -> {
             // Update history item
             require.changeHistory(changeHistory,startDateBeforeChange);
-            val referenceDate = startDateBeforeChange.addDays(-1);
-            val optPrevHist = require.getPrevHistory(changeHistory.getWorkplaceId(), referenceDate);
-            if (optPrevHist.isPresent()) {
-                val prevHist = optPrevHist.get();
-                val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(),
-                        changeHistory.getPeriod().start().addDays(-1));
-                prevHist.setPeriod(periodWithNewEndDate);
-                // Update pre history
-                require.changeHistory(prevHist,periodWithNewEndDate.start());
-            }
+            // Update pre history
+            optPrevHist.ifPresent(approver36AgrByWorkplace -> require.changeHistory(approver36AgrByWorkplace,
+                    approver36AgrByWorkplace.getPeriod().start()));
         });
     }
 
