@@ -32,6 +32,8 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate <= :endDate and ps.krcmtPayoutSubOfHDManaPK.digestDate >= :startDate");
 	
 	private static final String GET_BY_LISTDATE = " SELECT ps FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate IN :lstDate";
+	
+	private static final String GET_BY_LIST_OCC_DATE = " SELECT ps FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.occDate IN :lstDate";
 
 	private static final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.occDate =:occDate";
 
@@ -137,6 +139,17 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	@Override
 	public List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
 		return this.queryProxy().query(GET_BY_LISTDATE, KrcmtPayoutSubOfHDMana.class)
+				.setParameter("sid", sid)
+				.setParameter("lstDate", lstDate)
+				.getList()
+				.stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+
+	}
+	
+	@Override
+	public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
+		return this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
 				.setParameter("sid", sid)
 				.setParameter("lstDate", lstDate)
 				.getList()

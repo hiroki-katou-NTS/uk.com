@@ -34,6 +34,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
+        dataDate:KnockoutObservable<number> = ko.observable(0);
         linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
         checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -58,6 +59,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             });
             self.pickUp.subscribe((v) => {
                 self.calRemainDays();
+                if(v){
+                  self.baseDate = self.dayOff
+                }
             });
             self.pause.subscribe((v) => {
                 self.setSplit();
@@ -92,8 +96,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
           const value1 = !vm.pickUp() || !vm.occurredDays()? 0 : vm.occurredDays();
           const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
           const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
-          const value4 = !vm.pause || !vm.baseDate() ? '0' : vm.baseDate();
-          const remainDays = value1 + parseFloat(value4) - (value2 + value3)
+          const value4 = !vm.pause || !vm.dataDate() ? 0 : vm.dataDate();
+          const remainDays = value1 + value4 - (value2 + value3)
           vm.remainDays(remainDays);
         }
 

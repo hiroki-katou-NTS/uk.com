@@ -167,7 +167,7 @@ public class FurikyuMngDataExtractionService {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
 					return x.getPayoutDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listPayoutDate);
+				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId, listPayoutDate);
 			}else {
 				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
 					return x.getHolidayDate().getDayoffDate().get();
@@ -220,6 +220,7 @@ public class FurikyuMngDataExtractionService {
 	// Step 振休管理データを管理するかチェック
 	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
 		// Step 管理区分 ＝ 管理しない
+		GeneralDate now = GeneralDate.today();
 		EmploymentManageDistinctDto emplManage = EmploymentManageDistinctDto.builder().build();
 		emplManage.setIsManage(ManageDistinct.NO);
 		// Step 社員IDから全ての雇用履歴を取得
@@ -236,12 +237,13 @@ public class FurikyuMngDataExtractionService {
 				// Step 取得した「振休管理設定」．管理区分をチェック
 				if (comSubstVaca.isManaged()) {
 					// Step 管理区分 ＝ 管理する
-					emplManage.setIsManage(ManageDistinct.YES);					
-				}
-				// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
-				GeneralDate now = GeneralDate.today();
-				if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
-					emplManage.setEmploymentCode(empHist.getEmploymentCode());
+					emplManage.setIsManage(ManageDistinct.YES);
+
+					// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
+					if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
+						emplManage.setEmploymentCode(empHist.getEmploymentCode());
+						return emplManage;
+					}
 				}
 			}
 		}
