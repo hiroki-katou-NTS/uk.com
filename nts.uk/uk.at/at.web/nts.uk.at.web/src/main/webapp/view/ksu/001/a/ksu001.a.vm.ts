@@ -110,6 +110,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         detailContentDeco = [];
         detailColumns = [];
         detailContentDs = [];
+        dataSource = {};
         
         // data grid
         listEmpInfo = [];
@@ -196,6 +197,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getNewData(viewMode).done(() => {
                     if (self.mode() == 'confirm') {
                         $("#extable").exTable("updateMode", "determine");
+                        $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+                        $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
                         if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                             // disable combobox workType, workTime
                             //s__viewContext.viewModel.viewAB.enableListWorkType(false);
@@ -207,6 +210,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             $("#shiftPallet-Control").addClass("disabledShiftControl");
                         }
                     }
+                    
                     self.stopRequest(true);
                 }).fail(function() {
                     nts.uk.ui.block.clear();
@@ -397,7 +401,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         endTimeCal = endTimeCal * -1;
                     }
                     
-                    if (startTimeCal > endTimeCal) {
+                    if (startTimeCal >= endTimeCal) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
                     self.checkExitCellUpdated();
@@ -944,6 +948,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listSid([]);
             self.arrListCellLock = [];
             self.listCellNotEdit = [];
+            self.dataSource = data;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1346,7 +1351,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
             self.listColorOfHeader(detailHeaderDeco);
-            self.dataSource = detailContentDs;
             result = {
                 leftmostDs: leftmostDs,
                 middleDs: middleDs,
@@ -1360,9 +1364,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             };
             self.detailContentDs = detailContentDs;
-            if (viewMode == 'shift') {
-                self.detailColumns = detailColumns;
-            }
+            self.detailColumns = detailColumns;
+            self.detailContentDeco = detailContentDeco;
+            
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
                 self.key = empLogin[0].sid;
@@ -1613,7 +1617,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endTime = endTime * -1;
                 }
 
-                if (startTime > endTime) {
+                if (startTime >= endTime) {
                     let messInfo = nts.uk.resource.getMessage('Msg_54');
                     return { isValid: false, message: messInfo };
                 }
@@ -1900,6 +1904,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
         }
+        
+        // khi thay đổi mode edit va confirm
+        updateExTableWhenChangeMode(viewMode, updateMode): void {
+            let self = this;
+            // save scroll's position
+            self.stopRequest(false);
+             
+            // update Phần Detail
+            let detailContentDeco = self.detailContentDeco;
+            let detailContentDs = self.detailContentDs;
+            let detailColumns = self.detailColumns;
+
+            let detailContentUpdate = {
+                columns: detailColumns,
+                dataSource: detailContentDs,
+                primaryKey: "sid",
+                //        highlight: false,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }, {
+                        name: "TimeRange",
+                        ranges: []
+                    }],
+                view: function(mode) {
+                    switch (mode) {
+                        case "shift":
+                            return ["shiftName"];
+                        case "shortName":
+                            return ["workTypeName", "workTimeName"];
+                        case "time":
+                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
+                    }
+                },
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
+            };
+
+            $("#extable").exTable("mode", viewMode, updateMode, null, [{
+                name: "BodyCellStyle",
+                decorator: detailContentDeco
+            }]);
+
+           $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+        }
 
         // save setting hight cua grid vao localStorage
         saveHeightGridToLocal() {
@@ -2168,7 +2216,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
-
+        //let item = uk.localStorage.getItem(self.KEY);
+        //let userInfor: IUserInfor = JSON.parse(item.get());
         editMode() {
             let self = this;
             if (self.mode() == 'edit')
@@ -2181,35 +2230,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
             
-            let listLink = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLink.length; i++) {
-                $(listLink[i]).css("pointer-events", "");
+            let listLinkLeftmost = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLinkLeftmost.length; i++) {
+                $(listLinkLeftmost[i]).css("pointer-events", "");
+            }
+            
+            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
+            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
+                $(listLinkHeaderDetail[i]).css("pointer-events", "");
             }
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeAct();
-                    self.enableBtnRedo(true);
-                    self.enableBtnUndo(true);
-                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
-                    $("#extable").exTable("updateMode", "copyPaste");
-                    $("#extable").exTable("updateMode", "stick");
-                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
-                        $("#extable").exTable("stickMode", "single");
-                        self.pasteData();
-                    } else if (self.selectedModeDisplayInBody() == 'shift') {
-                        $("#extable").exTable("stickMode", "multi");
-                        self.pasteData();
-                    }
+                    
+                    let item = uk.localStorage.getItem(self.KEY);
+                    let userInfor: IUserInfor = JSON.parse(item.get());
+                    let updateMode = userInfor.updateMode;
+                    self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
+                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), updateMode);
+                    self.setUpdateMode();
+                    nts.uk.ui.block.clear();
+                    
                 }).ifNo(() => {
                     self.editModeAct();
-                    self.pasteData();
+                    self.setUpdateMode();
+                    // check xem co undo redo dc ko
                 });
             } else {
                 self.editModeAct();
-                self.enableBtnRedo(false);
-                self.enableBtnUndo(false);
-                self.pasteData();
+                self.setUpdateMode();
             }
         }
         
@@ -2253,41 +2303,41 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
-            
-             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
-             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
-            let listLink = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLink.length; i++) {
-                $(listLink[i]).css("pointer-events", "none");
+            $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+            $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
+
+            let listLinkLeftmost = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLinkLeftmost.length; i++) {
+                $(listLinkLeftmost[i]).css("pointer-events", "none");
             }
-            
+
+            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
+            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
+                $(listLinkHeaderDetail[i]).css("pointer-events", "none");
+            }
+
             let arrCellUpdated = $("#extable").exTable("updatedCells");
-            let arrTmp = _.clone(arrCellUpdated);
-            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
-            self.confirmModeAct();
-            
-            $("#extable").exTable("updateMode", "determine");
+            //let arrTmp = _.clone(arrCellUpdated);
+            //let arrLockCellAfterSave = $("#extable").exTable("lockCells");
+            //self.confirmModeAct();
+            //$("#extable").exTable("updateMode", "determine");
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeAct();
-                    $("#extable").exTable("updateMode", "determine");
-                    
-                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
-                        $("#extable").exTable("stickMode", "single");
-                        self.pasteData();
-                    } else if (self.selectedModeDisplayInBody() == 'shift') {
-                        $("#extable").exTable("stickMode", "multi");
-                        self.pasteData();
-                    }
+                    self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
+                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
+                    //$("#extable").exTable("updateMode", "determine");
+                    nts.uk.ui.block.clear();
+
                 }).ifNo(() => {
                     self.confirmModeAct();
-                    self.pasteData();
+                    $("#extable").exTable("updateMode", "determine");
                 });
             } else {
                 self.confirmModeAct();
-                self.pasteData();
+                $("#extable").exTable("updateMode", "determine");
             }
         }
         
@@ -2422,7 +2472,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // => stick show mess 1728
                     let isRemove = Object.keys(data).length === 0 && data.constructor === Object;
                     if(isRemove){
-                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_1728' });   
+                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_1727' });   
                     }
                     
                     self.stopRequest(false);
@@ -2471,8 +2521,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
-            $("#extable").exTable("updateMode", "copyPaste");
-            $("#extable").exTable("updateMode", "stick");
             $("#extable").exTable("updateMode", "copyPaste");
             self.undoNumberClick = 0;
             self.redoNumberClick = 0;
@@ -2531,7 +2579,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickRedo");
-            } else if (userInfor.updateMode = 'copyPaste') {
+            } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyRedo");
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support redo o mode nay');
@@ -2542,31 +2590,47 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         checkExitCellUpdated() {
             let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
             setTimeout(() => {
-                let arrCellUpdated = $("#extable").exTable("updatedCells");
-                if (arrCellUpdated.length > 0) {
-                    self.enableBtnUndo(true);
-                } else {
-                    self.enableBtnUndo(false);
-                }
-
-                if (arrCellUpdated.length == 0) {
-                    let x = self.undoNumberClick;
-                    self.redoNumberClick = (-1) * x;
-                    self.undoNumberClick = 0;
-                } else {
+                if (userInfor.updateMode == 'stick') {
                     
+                    // check undo
+                    let $grid1   = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("stick-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
                     
+                    // check redo
+                    let $grid2 = $("#extable").find(`.${"ex-body-detail"}`);
+                    let redoStack = $grid2.data("stick-redo-stack");
+                    if (!redoStack || redoStack.length === 0){
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
+                } else if (userInfor.updateMode == 'copyPaste') {
+                    // check undo
+                    let $grid1 = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("copy-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
                     
+                    // check redo
+                    let $grid2 = $("#extable").find("." + "ex-body-detail");
+                    let redoStack = $grid2.data("redo-stack");
+                    if (!redoStack || redoStack.length === 0) {
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
                 }
-
-                if (self.undoNumberClick == self.redoNumberClick  ) {
-                    self.enableBtnRedo(false);
-                }
-
-                let numberCellsUpdated = self.calculatorCellUpdated(arrCellUpdated);
-                console.log(numberCellsUpdated.length);
-
             }, 1);
         }
         
