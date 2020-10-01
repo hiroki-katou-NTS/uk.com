@@ -3,19 +3,18 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 
 /**
  * Output 実行項目情報
- * @author ThinkPro
+ * @author TungVD
  *
  */
 @Data
 @Builder
-public class ExecutionItemInfomation {
+public class ExecutionItemInfomationDto {
 
 	/**
 	 * 次回実行日時を過ぎているか
@@ -33,9 +32,9 @@ public class ExecutionItemInfomation {
 	GeneralDateTime nextExecDate;
 	
 	/**
-	 * 更新処理自動実行管理
+	 * 更新処理自動実行
 	 */
-	ProcessExecutionLogManage updateProcessAutoExecManage;
+	ProcessExecutionDto updateProcessAutoExec;
 	
 	/**
 	 * 更新処理自動実行ログ
@@ -43,9 +42,9 @@ public class ExecutionItemInfomation {
 	ProcessExecutionLog updateProcessAutoExecLog;
 	
 	/**
-	 * 更新処理自動実行
+	 * 更新処理自動実行管理
 	 */
-	ProcessExecution updateProcessAutoExec;
+	ProcessExecutionLogManage updateProcessAutoExecManage;
 	
 	/**
 	 * 実行タスク設定

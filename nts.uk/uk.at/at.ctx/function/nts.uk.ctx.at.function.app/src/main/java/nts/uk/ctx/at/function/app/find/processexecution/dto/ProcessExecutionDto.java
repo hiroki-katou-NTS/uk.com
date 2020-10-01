@@ -43,9 +43,6 @@ public class ProcessExecutionDto {
 	/* 勤務種別変更者を再作成 */
 	private boolean recreateWorkType;
 	
-//	/* 手修正を保護する */
-//	private boolean manualCorrection;
-	
 	/* 新入社員を作成する */
 	private boolean createEmployee;
 	
@@ -128,7 +125,6 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v(),
 				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType(),
-//				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection(),
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee(),
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer(),
 				domain.getExecSetting().getDailyPerf().isDailyPerfCls(),

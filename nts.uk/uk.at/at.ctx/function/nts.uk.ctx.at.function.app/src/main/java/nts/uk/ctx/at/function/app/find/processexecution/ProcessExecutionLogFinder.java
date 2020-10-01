@@ -13,7 +13,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomation;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
@@ -52,7 +53,7 @@ public class ProcessExecutionLogFinder {
 	 * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.F:実行選択.アルゴリズム.起動時処理.起動時処理
 	 * @return
 	 */
-	public List<ExecutionItemInfomation> findAll() {
+	public List<ExecutionItemInfomationDto> findAll() {
 		String companyId = AppContexts.user().companyId();
 		
 		// ドメインモデル「更新処理自動実行」を取得する
@@ -67,8 +68,9 @@ public class ProcessExecutionLogFinder {
 			throw new BusinessException("Msg_851");
 		}
 		
-		Map<String, ProcessExecution> mapProcessExecution = listProcessExecution.stream()
-				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity()));
+		Map<String, ProcessExecutionDto> mapProcessExecution = listProcessExecution.stream()
+				.map(domain -> ProcessExecutionDto.fromDomain(domain))
+				.collect(Collectors.toMap(ProcessExecutionDto::getExecItemCd, Function.identity()));
 		
 		// ドメインモデル「更新処理自動実行ログ」を取得する
 		Map<String, ProcessExecutionLog> mapProcessExecutionLog = this.procExecLogRepo.getProcessExecutionLogByCompanyIdAndExecItemCd(companyId, listExecItemCd).stream()
@@ -82,10 +84,10 @@ public class ProcessExecutionLogFinder {
 		Map<String, ExecutionTaskSetting> mapExecutionTaskSetting = this.execSettingRepo.getByCidAndExecItemCd(companyId, listExecItemCd).stream()
 				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity()));
 		
-		List<ExecutionItemInfomation> listResult = listExecItemCd.stream()
+		List<ExecutionItemInfomationDto> listResult = listExecItemCd.stream()
 				.map(execItemCd -> {
 					// OUTPUT「実行項目情報」を作成する
-					ExecutionItemInfomation dto = ExecutionItemInfomation.builder()
+					ExecutionItemInfomationDto dto = ExecutionItemInfomationDto.builder()
 							// 実行項目情報．更新処理自動実行 = 取得した「更新処理自動実行」
 							.updateProcessAutoExec(mapProcessExecution.get(execItemCd))
 							// 実行項目情報．更新処理自動実行ログ = 取得した「更新処理自動実行ログ」

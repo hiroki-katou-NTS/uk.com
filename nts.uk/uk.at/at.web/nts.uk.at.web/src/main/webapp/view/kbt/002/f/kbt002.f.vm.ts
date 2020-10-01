@@ -26,8 +26,8 @@ module nts.uk.at.view.kbt002.f {
     private startup() {
       const vm = this;
       vm.$blockui('grayout');
-      service.getProcExecLogList()
-        .then((execLogList) => {
+      service.getExecItemInfoList()
+        .then((execItemInfoList) => {
           vm.$blockui('clear');
           if (execLogList && execLogList.length > 0) {
             self.execLogList(execLogList);
