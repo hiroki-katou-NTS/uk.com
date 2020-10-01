@@ -474,6 +474,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             });
         }
         if (this.isCondition2) {
+            this.valueWorkHours2 = null;
             if (!this.valueWorkHours2 && time2) {
                 this.valueWorkHours2 = {
                     start: 0,
@@ -683,19 +684,19 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
     public registerData(res: any) {
         const self = this;
-        this.$mask('show');
-        this.$http.post('at', API.registerAppWorkChange, {
-            mode: this.mode,
-            companyId: this.user.companyId,
-            applicationDto: this.application,
-            appWorkChangeDto: this.appWorkChangeDto,
+        self.$mask('show');
+        self.$http.post('at', API.registerAppWorkChange, {
+            mode: self.mode,
+            companyId: self.user.companyId,
+            applicationDto: self.application,
+            appWorkChangeDto: self.appWorkChangeDto,
             holidayDates: res.data.holidayDateLst,
-            isMail: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
-            appDispInfoStartupDto: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput
+            isMail: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
+            appDispInfoStartupDto: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput
         }).then((res: any) => {
-            this.$mask('hide');
+            self.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID })
+            self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID })
                 .then((res: any) => {
                     self.data = res;
                     self.mode = false;
@@ -703,21 +704,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     self.$forceUpdate();
                 });
         }).catch((res: any) => {
-            this.$mask('hide');
+            self.$mask('hide');
             self.handleErrorMessage(res);
         });
     }
     public handleConfirmMessage(listMes: any, res: any) {
-
+        const self = this;
         if (!_.isEmpty(listMes)) {
             let item = listMes.shift();
-            this.$modal.confirm({ messageId: item.messageId }).then((value) => {
-                this.$mask('hide');
+            self.$modal.confirm({ messageId: item.messageId }).then((value) => {
+                self.$mask('hide');
                 if (value == 'yes') {
                     if (_.isEmpty(listMes)) {
-                        this.registerData(res);
+                        self.registerData(res);
                     } else {
-                        this.handleConfirmMessage(listMes, res);
+                        self.handleConfirmMessage(listMes, res);
                     }
 
                 }
@@ -725,7 +726,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
     }
     public register() {
-        const vm = this;
+        const self = this;
         let validAll: boolean = true;
         // if (this.valueWorkHours1 != null) {
         //     if (vm.valueWorkHours1.start && vm.valueWorkHours1.end) {
@@ -737,13 +738,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         //     }
         // }
         // change work type or worktime that make time selection be can disable
-        if (!this.isCondition3) {
-            vm.$updateValidator('valueWorkHours1', {
+        if (!self.isCondition3) {
+            self.$updateValidator('valueWorkHours1', {
                 timeRange: false,
                 required: false
             });
         }
-        if (this.valueWorkHours1 != null) {
+        if (self.valueWorkHours1 != null) {
             // if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
             //     if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
             //         vm.$modal.error({ messageId: 'Msg_580'});
@@ -751,93 +752,93 @@ export class KafS07AComponent extends KafS00ShrComponent {
             //         return;
             //     }
             // }
-            if (vm.valueWorkHours1.start != undefined && vm.valueWorkHours1.end == undefined) {
-                if (vm.isCondition1 && vm.isCondition3) {
-                    vm.$updateValidator('valueWorkHours1', {
+            if (self.valueWorkHours1.start != undefined && self.valueWorkHours1.end == undefined) {
+                if (self.isCondition1 && self.isCondition3) {
+                    self.$updateValidator('valueWorkHours1', {
                         timeRange: true,
                         required: true
                     });
 
                 } else {
-                    vm.$updateValidator('valueWorkHours1', {
+                    self.$updateValidator('valueWorkHours1', {
                         timeRange: true,
                         required: false
                     });
                 }
             }
-            if (vm.valueWorkHours1.end != undefined && vm.valueWorkHours1.start == undefined) {
-                if (vm.isCondition1 && vm.isCondition3) {
-                    vm.$updateValidator('valueWorkHours1', {
+            if (self.valueWorkHours1.end != undefined && self.valueWorkHours1.start == undefined) {
+                if (self.isCondition1 && self.isCondition3) {
+                    self.$updateValidator('valueWorkHours1', {
                         timeRange: true,
                         required: true
                     });
 
                 } else {
-                    vm.$updateValidator('valueWorkHours1', {
+                    self.$updateValidator('valueWorkHours1', {
                         timeRange: true,
                         required: false
                     });
                 }
             }
         }
-        if (this.valueWorkHours2 != null) {
-            // if (vm.valueWorkHours2.start && vm.valueWorkHours2.end) {
-            //     if (vm.valueWorkHours2.start > vm.valueWorkHours2.end) {
-            //         vm.$modal.error({ messageId: 'Msg_580'});
+        if (self.valueWorkHours2 != null) {
+            // if (self.valueWorkHours2.start && self.valueWorkHours2.end) {
+            //     if (self.valueWorkHours2.start > self.valueWorkHours2.end) {
+            //         self.$modal.error({ messageId: 'Msg_580'});
 
             //         return;
             //     }
             // }
-            if (vm.valueWorkHours2.start != undefined && vm.valueWorkHours2.end == undefined) {
-                vm.$updateValidator('valueWorkHours2', {
+            if (self.valueWorkHours2.start != undefined && self.valueWorkHours2.end == undefined) {
+                self.$updateValidator('valueWorkHours2', {
                     timeRange: true,
                     required: true
                 });
             }
-            if (vm.valueWorkHours2.end != undefined && vm.valueWorkHours2.start == undefined) {
-                vm.$updateValidator('valueWorkHours2', {
+            if (self.valueWorkHours2.end != undefined && self.valueWorkHours2.start == undefined) {
+                self.$updateValidator('valueWorkHours2', {
                     timeRange: true,
                     required: true
                 });
             }
         }
-        // if (this.valueWorkHours2 != null) {
-        //     if ((this.valueWorkHours2.start != undefined && this.valueWorkHours2.end == undefined) || (this.valueWorkHours2.end != undefined && this.valueWorkHours2.start == undefined)) {
-        //         // this.get
-        //         this.$updateValidator('valueWorkHours2', {
+        // if (self.valueWorkHours2 != null) {
+        //     if ((self.valueWorkHours2.start != undefined && self.valueWorkHours2.end == undefined) || (self.valueWorkHours2.end != undefined && self.valueWorkHours2.start == undefined)) {
+        //         // self.get
+        //         self.$updateValidator('valueWorkHours2', {
         //             timeRange: true,
         //             required: false
         //         });
         //     } else {
-        //         this.$updateValidator('valueWorkHours2', {
+        //         self.$updateValidator('valueWorkHours2', {
         //             timeRange: false,
         //             required: false
         //         });
         //     }
         // }
-        for (let child of vm.$children) {
+        for (let child of self.$children) {
             child.$validate();
             if (!child.$valid) {
                 validAll = false;
             }
         }
-        vm.isValidateAll = validAll;
+        self.isValidateAll = validAll;
         // check validation 
-        this.$validate();
-        if (!this.$valid || !validAll) {
+        self.$validate();
+        if (!self.$valid || !validAll) {
             window.scrollTo(500, 0);
-            vm.$updateValidator('valueWorkHours2', {
+            self.$updateValidator('valueWorkHours2', {
                 timeRange: false,
                 required: false
             });
-            if (vm.isCondition1 && vm.isCondition3) {
-                vm.$updateValidator('valueWorkHours1', {
+            if (self.isCondition1 && self.isCondition3) {
+                self.$updateValidator('valueWorkHours1', {
                     timeRange: false,
                     required: true
                 });
                 
             } else {
-                vm.$updateValidator('valueWorkHours1', {
+                self.$updateValidator('valueWorkHours1', {
                     timeRange: false,
                     required: false
                 });
@@ -845,22 +846,22 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
             return;
         }
-        if (this.$valid && validAll) {
-            this.$mask('show');
+        if (self.$valid && validAll) {
+            self.$mask('show');
         }
-        this.bindAppWorkChangeRegister();
+        self.bindAppWorkChangeRegister();
 
         // check before registering application
-        this.$http.post('at', API.checkBeforRegister, {
-            mode: this.mode,
-            companyId: this.user.companyId,
-            applicationDto: this.application,
-            appWorkChangeDto: this.appWorkChangeDto,
+        self.$http.post('at', API.checkBeforRegister, {
+            mode: self.mode,
+            companyId: self.user.companyId,
+            applicationDto: self.application,
+            appWorkChangeDto: self.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            isError: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-            appDispInfoStartupDto: this.appDispInfoStartupOutput
+            isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+            appDispInfoStartupDto: self.appDispInfoStartupOutput
         }).then((res: any) => {
-            this.$mask('hide');
+            self.$mask('hide');
             // confirmMsgLst
             // holidayDateLst
             let isConfirm = true;
@@ -868,10 +869,10 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 // display list confirm message
                 if (!_.isEmpty(res.data.confirmMsgLst)) {
                     let listTemp = _.clone(res.data.confirmMsgLst);
-                    this.handleConfirmMessage(listTemp, res);
+                    self.handleConfirmMessage(listTemp, res);
 
                 } else {
-                    this.registerData(res);
+                    self.registerData(res);
                 }
 
 
@@ -880,7 +881,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
 
         }).catch((res: any) => {
-            this.handleErrorMessage(res);
+            self.handleErrorMessage(res);
 
         });
 
@@ -939,11 +940,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     // bind visible of view 
     public bindVisibleView(params: any) {
+        const self = this;
         let appWorkChangeDispInfo = params;
-        this.isCondition1 = this.isDisplay1(appWorkChangeDispInfo);
-        this.isCondition2 = this.isDisplay2(appWorkChangeDispInfo);
-        this.isCondition3 = this.isDisplay3(appWorkChangeDispInfo);
-        this.isCondition4 = this.isDisplay4(appWorkChangeDispInfo);
+        self.isCondition1 = self.isDisplay1(appWorkChangeDispInfo);
+        self.isCondition2 = self.isDisplay2(appWorkChangeDispInfo);
+        self.isCondition3 = self.isDisplay3(appWorkChangeDispInfo);
+        self.isCondition4 = self.isDisplay4(appWorkChangeDispInfo);
 
     }
     public openKDL002(name: string) {
@@ -975,22 +977,23 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
                             self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
-                            this.model.workType.code = f.selectedWorkType.workTypeCode;
-                            this.model.workType.name = f.selectedWorkType.name;
+                            self.bindValueWorkHours(self.data);
+                            self.model.workType.code = f.selectedWorkType.workTypeCode;
+                            self.model.workType.name = f.selectedWorkType.name;
                             if (!self.isCondition3) {
-                                this.model.workTime.code = '';
-                                this.model.workTime.name = '';
-                                this.model.workTime.time = '';
+                                self.model.workTime.code = '';
+                                self.model.workTime.name = '';
+                                self.model.workTime.time = '';
                             }
                             if (f.selectedWorkTime) {
                                 if (self.isCondition3) {
-                                    this.model.workTime.code = f.selectedWorkTime.code;
-                                    this.model.workTime.name = f.selectedWorkTime.name;
-                                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                                    self.model.workTime.code = f.selectedWorkTime.code;
+                                    self.model.workTime.name = f.selectedWorkTime.name;
+                                    self.model.workTime.time = f.selectedWorkTime.workTime1;
                                 } else {
-                                    this.model.workTime.code = '';
-                                    this.model.workTime.name = '';
-                                    this.model.workTime.time = '';
+                                    self.model.workTime.code = '';
+                                    self.model.workTime.name = '';
+                                    self.model.workTime.time = '';
                                 }
                             }
                         })
@@ -1032,12 +1035,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
                             self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
+                            self.bindValueWorkHours(self.data);
                             // this.model.workType.code = f.selectedWorkType.workTypeCode;
                             // this.model.workType.name = f.selectedWorkType.name;
                             if (!(f.selectedWorkTime.code == '' && res.data.setupType == 0)) {
-                                this.model.workTime.code = f.selectedWorkTime.code;
-                                this.model.workTime.name = f.selectedWorkTime.name;
-                                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                                self.model.workTime.code = f.selectedWorkTime.code;
+                                self.model.workTime.name = f.selectedWorkTime.name;
+                                self.model.workTime.time = f.selectedWorkTime.workTime1;
                             }
                         })
                         .catch((res: any) => {
