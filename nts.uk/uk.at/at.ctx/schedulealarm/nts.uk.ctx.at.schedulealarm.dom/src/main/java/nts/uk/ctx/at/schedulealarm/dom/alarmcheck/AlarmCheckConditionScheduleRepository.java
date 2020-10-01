@@ -24,7 +24,7 @@ public interface AlarmCheckConditionScheduleRepository {
 	 * @param alarmCode
 	 * @return
 	 */
-	AlarmCheckConditionSchedule get(String contractCd, String cid, AlarmCheckConditionCode alarmCode);
+	AlarmCheckConditionSchedule get(String contractCd, String cid, AlarmCheckConditionScheduleCode alarmCode);
 	
 	/**
 	 * get*

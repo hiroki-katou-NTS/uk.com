@@ -20,7 +20,7 @@ public class RegisterAlarmCheckConditionServiceTest {
 		NtsAssert.atomTask(
 				() -> RegisterAlarmCheckConditionService.register(
 						require,
-						new AlarmCheckConditionCode("01"),
+						new AlarmCheckConditionScheduleCode("01"),
 						Arrays.asList(
 								new MessageInfo(new SubCode("01"), new AlarmCheckMessage("updated1")),
 								new MessageInfo(new SubCode("02"), new AlarmCheckMessage("updated2")),

@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionCode;
+import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage;
@@ -63,7 +63,7 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 	}
 
 	@Override
-	public AlarmCheckConditionSchedule get(String contractCd, String cid, AlarmCheckConditionCode alarmCode) {		
+	public AlarmCheckConditionSchedule get(String contractCd, String cid, AlarmCheckConditionScheduleCode alarmCode) {		
 		KscctAlchkCategory ctgEntity = new NtsStatement(SEL_CTG_BY_CONTRACT_CD_AND_CD, this.jdbcProxy())
 				.paramString("contractCd", contractCd)
 				.paramString("code", alarmCode.v())
@@ -126,7 +126,7 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 					sub.explanation);
 		}).collect(Collectors.toList());
 		
-		return new AlarmCheckConditionSchedule(new AlarmCheckConditionCode(ctgEntity.pk.code), ctgEntity.name, 
+		return new AlarmCheckConditionSchedule(new AlarmCheckConditionScheduleCode(ctgEntity.pk.code), ctgEntity.name, 
 				ctgEntity.medicalOp == 1? true: false, subConditionLst);
 	}
 

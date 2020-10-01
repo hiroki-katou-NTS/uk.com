@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionCode;
+import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.SubCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -39,7 +39,7 @@ public class KscmtAlchkMessage extends ContractUkJpaEntity  {
 	}
 	
 	public static KscmtAlchkMessage toEntity(String cid, 
-			AlarmCheckConditionCode code, SubCode subCode, AlarmCheckMessage message) {
+			AlarmCheckConditionScheduleCode code, SubCode subCode, AlarmCheckMessage message) {
 		val pk = new KscmtAlchkMessagePk(cid, code.v(), subCode.v());
 		return new KscmtAlchkMessage(pk,  message.v());
 	}

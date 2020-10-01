@@ -16,7 +16,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @Getter
 public class AlarmCheckConditionSchedule implements DomainAggregate{
 	/** コード  */
-	private final AlarmCheckConditionCode code;
+	private final AlarmCheckConditionScheduleCode code;
 	
 	/** 条件名 */
 	private final String conditionName;
@@ -25,7 +25,7 @@ public class AlarmCheckConditionSchedule implements DomainAggregate{
 	private final boolean medicalOpt ;
 	
 	/** サブ条件リスト */
-	private List<SubCondition> subConditionLst;
+	private List<SubCondition> subConditions;
 	
 	/**
 	 * メッセージを変更する
@@ -34,12 +34,12 @@ public class AlarmCheckConditionSchedule implements DomainAggregate{
 	 */
 	public void updateMessage(SubCode subCode, AlarmCheckMessage message) {
 		/** 実は　filter(subCode) データはいつもある*/
-		val subCond = subConditionLst.stream().filter(c -> c.getSubCode().v().equals(subCode.v())).findFirst().get();
+		val subCond = subConditions.stream().filter(c -> c.getSubCode().v().equals(subCode.v())).findFirst().get();
 		val newMsgContent = new AlarmCheckMsgContent(subCond.getMessage().getDefaultMsg(), message);
 		val newSubCond = new SubCondition(subCond.getSubCode(), newMsgContent, subCond.getExplanation());
-		subConditionLst.remove(subCond);
-		subConditionLst.add(newSubCond);
-		subConditionLst.sort((a, b) -> {
+		subConditions.remove(subCond);
+		subConditions.add(newSubCond);
+		subConditions.sort((a, b) -> {
 			return a.getSubCode().v().compareTo(b.getSubCode().v());
 		});
 		
