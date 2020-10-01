@@ -23,6 +23,7 @@ import nts.arc.error.BusinessException;
 //import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -43,10 +44,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
@@ -68,6 +65,9 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFin
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -109,7 +109,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -1134,33 +1133,34 @@ public class MonthlyPerformanceCorrectionProcessor {
 								MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get()
 										.getMonthlyCalculation();
 								if (monthlyCalculation != null) {
-									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
-									if (agreementTime != null) {
-										switch (agreementTime.getStatus().value) {
-										// 限度アラーム時間超過
-										case 2:
-											// 特例限度アラーム時間超過
-										case 4:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
-											break;
-										// 限度エラー時間超過
-										case 1:
-											// 特例限度エラー時間超過
-										case 3:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
-											break;
-										// 正常（特例あり）
-										case 5:
-											// 限度アラーム時間超過（特例あり）
-										case 7:
-											// 限度エラー時間超過（特例あり）
-										case 6:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
-											break;
-										default:
-											break;
-										}
-									}
+									/** TODO: 36協定時間対応により、コメントアウトされた */
+//									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
+//									if (agreementTime != null) {
+//										switch (agreementTime.getStatus().value) {
+//										// 限度アラーム時間超過
+//										case 2:
+//											// 特例限度アラーム時間超過
+//										case 4:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
+//											break;
+//										// 限度エラー時間超過
+//										case 1:
+//											// 特例限度エラー時間超過
+//										case 3:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
+//											break;
+//										// 正常（特例あり）
+//										case 5:
+//											// 限度アラーム時間超過（特例あり）
+//										case 7:
+//											// 限度エラー時間超過（特例あり）
+//										case 6:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
+//											break;
+//										default:
+//											break;
+//										}
+//									}
 								}
 							}
 						}

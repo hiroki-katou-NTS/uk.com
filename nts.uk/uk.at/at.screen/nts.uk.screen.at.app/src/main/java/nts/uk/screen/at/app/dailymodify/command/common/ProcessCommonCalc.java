@@ -20,11 +20,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
@@ -147,11 +148,11 @@ public class ProcessCommonCalc {
 		return command;
 	}
 	
-	public static List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
-		List<EditStateOfDailyPerformance> editData = query.getItemValues().stream().map(x -> {
+	public static List<EditStateOfDailyAttd> convertTo(String sid, DailyModifyQuery query) {
+		List<EditStateOfDailyAttd> editData = query.getItemValues().stream().map(x -> {
 			return new EditStateOfDailyPerformance(query.getEmployeeId(), x.getItemId(), query.getBaseDate(),
 					sid.equals(query.getEmployeeId()) ? EditStateSetting.HAND_CORRECTION_MYSELF
-							: EditStateSetting.HAND_CORRECTION_OTHER);
+							: EditStateSetting.HAND_CORRECTION_OTHER).getEditState();
 		}).collect(Collectors.toList());
 		return editData;
 	}

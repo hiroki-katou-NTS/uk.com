@@ -9,13 +9,13 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentListDto;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -59,32 +59,33 @@ public class AgreementTimeOfEmploymentFinder {
 				employmentCategoryCode, EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
 		// get basicSetting detail of Employment selected
 		if(agreementTimeOfEmploymentOpt.isPresent()){
-			AgreementTimeOfEmployment agreementTimeOfEmployment = agreementTimeOfEmploymentOpt.get();
-			agreementTimeOfEmploymentDetailDto.setUpperMonth(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().v());
-			agreementTimeOfEmploymentDetailDto.setUpperMonthAverage(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().v());
-			
-			Optional<BasicAgreementSetting> basicSettingOfEmp = basicAgreementSettingRepository
-					.find(agreementTimeOfEmployment.getBasicSettingId());	
-
-			// set error time + alarm time
-			if(basicSettingOfEmp.isPresent()){
-				agreementTimeOfEmploymentDetailDto.setErrorWeek(basicSettingOfEmp.get().getErrorWeek().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmWeek(basicSettingOfEmp.get().getAlarmWeek().v());
-				agreementTimeOfEmploymentDetailDto.setErrorTwoWeeks(basicSettingOfEmp.get().getErrorTwoWeeks().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmTwoWeeks(basicSettingOfEmp.get().getAlarmTwoWeeks().v());
-				agreementTimeOfEmploymentDetailDto.setErrorFourWeeks(basicSettingOfEmp.get().getErrorFourWeeks().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmFourWeeks(basicSettingOfEmp.get().getAlarmFourWeeks().v());
-				agreementTimeOfEmploymentDetailDto.setErrorOneMonth(basicSettingOfEmp.get().getErrorOneMonth().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmOneMonth(basicSettingOfEmp.get().getAlarmOneMonth().v());
-				agreementTimeOfEmploymentDetailDto.setErrorTwoMonths(basicSettingOfEmp.get().getErrorTwoMonths().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmTwoMonths(basicSettingOfEmp.get().getAlarmTwoMonths().v());
-				agreementTimeOfEmploymentDetailDto.setErrorThreeMonths(basicSettingOfEmp.get().getErrorThreeMonths().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmThreeMonths(basicSettingOfEmp.get().getAlarmThreeMonths().v());
-				agreementTimeOfEmploymentDetailDto.setErrorOneYear(basicSettingOfEmp.get().getErrorOneYear().v());
-				agreementTimeOfEmploymentDetailDto.setAlarmOneYear(basicSettingOfEmp.get().getAlarmOneYear().v());			
-			} else {
-				return null;
-			}
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			AgreementTimeOfEmployment agreementTimeOfEmployment = agreementTimeOfEmploymentOpt.get();
+//			agreementTimeOfEmploymentDetailDto.setUpperMonth(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonth().v());
+//			agreementTimeOfEmploymentDetailDto.setUpperMonthAverage(agreementTimeOfEmployment.getUpperAgreementSetting().getUpperMonthAverage().v());
+//			
+//			Optional<BasicAgreementSetting> basicSettingOfEmp = basicAgreementSettingRepository
+//					.find(agreementTimeOfEmployment.getBasicSettingId());	
+//
+//			// set error time + alarm time
+//			if(basicSettingOfEmp.isPresent()){
+//				agreementTimeOfEmploymentDetailDto.setErrorWeek(basicSettingOfEmp.get().getErrorWeek().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmWeek(basicSettingOfEmp.get().getAlarmWeek().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorTwoWeeks(basicSettingOfEmp.get().getErrorTwoWeeks().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmTwoWeeks(basicSettingOfEmp.get().getAlarmTwoWeeks().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorFourWeeks(basicSettingOfEmp.get().getErrorFourWeeks().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmFourWeeks(basicSettingOfEmp.get().getAlarmFourWeeks().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorOneMonth(basicSettingOfEmp.get().getErrorOneMonth().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmOneMonth(basicSettingOfEmp.get().getAlarmOneMonth().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorTwoMonths(basicSettingOfEmp.get().getErrorTwoMonths().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmTwoMonths(basicSettingOfEmp.get().getAlarmTwoMonths().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorThreeMonths(basicSettingOfEmp.get().getErrorThreeMonths().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmThreeMonths(basicSettingOfEmp.get().getAlarmThreeMonths().v());
+//				agreementTimeOfEmploymentDetailDto.setErrorOneYear(basicSettingOfEmp.get().getErrorOneYear().v());
+//				agreementTimeOfEmploymentDetailDto.setAlarmOneYear(basicSettingOfEmp.get().getAlarmOneYear().v());			
+//			} else {
+//				return null;
+//			}
 		}
 
 		
@@ -94,17 +95,18 @@ public class AgreementTimeOfEmploymentFinder {
 		if (agreementTimeOfCompany.isPresent()) {
 
 			// get Limit Time of company
-			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
-					.find(agreementTimeOfCompany.get().getBasicSettingId());
-			
-			// set limit time
-			agreementTimeOfEmploymentDetailDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
-			agreementTimeOfEmploymentDetailDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
-			agreementTimeOfEmploymentDetailDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
-			agreementTimeOfEmploymentDetailDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
-			agreementTimeOfEmploymentDetailDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
-			agreementTimeOfEmploymentDetailDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
-			agreementTimeOfEmploymentDetailDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
+//					.find(agreementTimeOfCompany.get().getBasicSettingId());
+//			
+//			// set limit time
+//			agreementTimeOfEmploymentDetailDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
+//			agreementTimeOfEmploymentDetailDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
 		}
 
 		return agreementTimeOfEmploymentDetailDto;

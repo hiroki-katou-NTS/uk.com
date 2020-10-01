@@ -14,12 +14,12 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 文字型データ形式設定
+* 外部出力文字型データ形式設定（初期値）
 */
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CHAC_DATA_FM_SET")
+@Table(name = "OIOMT_EX_OUT_FM_CHAC_INIT")
 public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -29,95 +29,93 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public OiomtChacDataFmSetPk chacDataFmSetPk;
-    
+
+	/**
+	 * 有効桁数
+	 */
+	@Basic(optional = false)
+	@Column(name = "EFFECT_DIGIT_LENGTH")
+	public int effectDigitLength;
+
+	/**
+	 * 有効桁数開始桁
+	 */
+	@Basic(optional = true)
+	@Column(name = "START_DIGIT")
+	public Integer startDigit;
+
+	/**
+	 * 有効桁数終了桁
+	 */
+	@Basic(optional = true)
+	@Column(name = "END_DIGIT")
+	public Integer endDigit;
+
+	/**
+	 * コード編集
+	 */
+	@Basic(optional = false)
+	@Column(name = "CD_EDIT")
+	public int cdEditting;
+
+	/**
+	 * コード編集桁
+	 */
+	@Basic(optional = false)
+	@Column(name = "CD_EDIT_DIGIT")
+	public Integer cdEditDigit;
+
+	/**
+	 * コード編集方法
+	 */
+	@Basic(optional = false)
+	@Column(name = "CD_EDIT_METHOD")
+	public int cdEdittingMethod;
+
+	/**
+	 * スペース編集
+	 */
+	@Basic(optional = false)
+	@Column(name = "SPACE_EDIT")
+	public int spaceEditting;
+
+	/**
+	 * コード変換コード
+	 */
+	@Basic(optional = true)
+	@Column(name = "CONVERT_CD")
+	public String cdConvertCd;
     
     /**
     * NULL値置換
     */
     @Basic(optional = false)
-    @Column(name = "NULL_VALUE_REPLACE")
+    @Column(name = "NULL_REPLACE_VAL_ATR")
     public int nullValueReplace;
     
     /**
     * NULL値置換の値
     */
     @Basic(optional = true)
-    @Column(name = "VALUE_OF_NULL_VALUE_REPLACE")
+    @Column(name = "NULL_REPLACE_VAL")
     public String valueOfNullValueReplace;
-    
-    /**
-    * コード編集
-    */
-    @Basic(optional = false)
-    @Column(name = "CD_EDITTING")
-    public int cdEditting;
-    
-    /**
-    * 固定値
-    */
-    @Basic(optional = false)
-    @Column(name = "FIXED_VALUE")
-    public int fixedValue;
-    
-    /**
-    * コード編集方法
-    */
-    @Basic(optional = false)
-    @Column(name = "CD_EDITTING_METHOD")
-    public int cdEdittingMethod;
-    
-    /**
-    * コード編集桁
-    */
-    @Basic(optional = false)
-    @Column(name = "CD_EDIT_DIGIT")
-    public Integer cdEditDigit;
-    
-    /**
-    * コード変換コード
-    */
-    @Basic(optional = true)
-    @Column(name = "CD_CONVERT_CD")
-    public String cdConvertCd;
-    
-    /**
-    * スペース編集
-    */
-    @Basic(optional = false)
-    @Column(name = "SPACE_EDITTING")
-    public int spaceEditting;
-    
-    /**
-    * 有効桁数
-    */
-    @Basic(optional = false)
-    @Column(name = "EFFECT_DIGIT_LENGTH")
-    public int effectDigitLength;
-    
-    /**
-    * 有効桁数開始桁
-    */
-    @Basic(optional = true)
-    @Column(name = "START_DIGIT")
-    public Integer startDigit;
-    
-    /**
-    * 有効桁数終了桁
-    */
-    @Basic(optional = true)
-    @Column(name = "END_DIGIT")
-    public Integer endDigit;
-    
-    /**
-    * 固定値の値
-    */
-    @Basic(optional = true)
-    @Column(name = "VALUE_OF_FIXED_VALUE")
-    public String valueOfFixedValue;
-    
+
+	/**
+	 * 固定値
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
+
+	/**
+	 * 固定値の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
+
     @Override
-    protected Object getKey()
-    {
+    protected Object getKey() {
         return chacDataFmSetPk;
     }
 

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -24,9 +24,9 @@ public class CheckUpdateGoBackCommandHandler extends CommandHandler<InsertApplic
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();		
 		//get new Application Item
-		String appID = command.getAppCommand().getApplicationID();
+		String appID = command.getAppCommand().getAppID();
 		// get new GoBack Direct Item
-		GoBackDirectly newGoBack = new GoBackDirectly(
+		GoBackDirectly_Old newGoBack = new GoBackDirectly_Old(
 				companyId, 
 				appID,
 				command.goBackCommand.workTypeCD, 
@@ -44,7 +44,7 @@ public class CheckUpdateGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
 		//直行直帰登録前チェック 
-		goBackDirectlyUpdateService.checkErrorBeforeUpdate(newGoBack, companyId, appID, command.getAppCommand().getVersion());
+		goBackDirectlyUpdateService.checkErrorBeforeUpdate(newGoBack, companyId, appID, new Long(command.getAppCommand().getVersion()));
 		
 	}
 

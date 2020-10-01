@@ -8,12 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -38,9 +38,9 @@ public class HolidayStampCheck {
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
 			if (timeLeavingOfDailyPerformance != null
-					&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 				boolean errorBoolean = false;
-				for(TimeLeavingWork timeLeaving : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
+				for(TimeLeavingWork timeLeaving : timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks()) {
 					if ((timeLeaving != null
 					&& ((timeLeaving.getAttendanceStamp().isPresent()
 							&& timeLeaving.getAttendanceStamp().get().getStamp().isPresent())

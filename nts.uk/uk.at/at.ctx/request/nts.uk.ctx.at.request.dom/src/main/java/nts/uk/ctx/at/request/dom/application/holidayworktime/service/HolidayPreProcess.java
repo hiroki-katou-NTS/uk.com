@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHoli
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface HolidayPreProcess {
 	/**
@@ -49,5 +47,5 @@ public interface HolidayPreProcess {
 	 * @param breakTimes
 	 * @return
 	 */
-	public AppHolidayWorkPreAndReferDto getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> breakTimes);
+	//public AppHolidayWorkPreAndReferDto getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> breakTimes);
 }

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.app.command.outsideot.breakdown.OutsideOTBRDItemSave
 import nts.uk.ctx.at.shared.app.command.outsideot.breakdown.OutsideOTBRDItemSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.outsideot.breakdown.OutsideOTBRDItemFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTBRDItemDto;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 
 /**
  * The Class OvertimeBRDItemWs.

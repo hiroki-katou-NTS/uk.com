@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.arc.time.calendar.Year;
 
 public interface ExcessTimesYearAdapter {
 	/**

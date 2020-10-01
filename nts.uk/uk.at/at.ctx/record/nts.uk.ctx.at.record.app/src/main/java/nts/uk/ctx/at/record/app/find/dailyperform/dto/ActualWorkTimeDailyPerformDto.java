@@ -7,22 +7,23 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ConstraintTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
-import nts.uk.ctx.at.record.dom.premiumtime.PremiumTime;
-import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 
 /** 日別実績の勤務実績時間 */
 @Data
@@ -98,8 +99,9 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
 		return domain == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
-								c.getPremitumTime() == null ? 0 : c.getPremitumTime().valueAsMinutes(),
-								c.getPremiumTimeNo()));
+								c.getPremitumTime().valueAsMinutes(),
+								c.getPremiumTimeNo(),
+								c.getPremiumAmount().v()));
 	}
 
 	public ActualWorkingTimeOfDaily toDomain() {
@@ -116,7 +118,9 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
 										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
 				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
-										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
+										c -> new PremiumTime(c.getNo(), 
+												toAttendanceTime(c.getPremitumTime()),
+												new AttendanceAmountDaily(c.getPremitumAmount())))));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {
