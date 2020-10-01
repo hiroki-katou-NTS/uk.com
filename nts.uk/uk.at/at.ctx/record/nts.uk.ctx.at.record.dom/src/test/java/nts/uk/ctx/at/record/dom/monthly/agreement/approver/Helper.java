@@ -17,11 +17,19 @@ public class Helper {
 	public static String cid = "cid";
 	public static String workplaceId = "wid";
 	public static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
+	public static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
 
 	public static Approver36AgrByCompany createApprover36AgrByCompany() {
 		return new Approver36AgrByCompany(
 				cid,
 				period,
+				createApproverList(5),
+				createConfirmerList(5)
+		);
+	}public static Approver36AgrByCompany createApprover36AgrByCompanyLast() {
+		return new Approver36AgrByCompany(
+				cid,
+				periodLast,
 				createApproverList(5),
 				createConfirmerList(5)
 		);

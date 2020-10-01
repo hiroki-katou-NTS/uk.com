@@ -13,7 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Optional;
-
+/**
+ * @author chinh.hm
+ */
 @RunWith(JMockit.class)
 public class ChangeWorkplaceApproverHistoryDomainServiceTest {
     @Injectable
@@ -44,18 +46,10 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
 
         AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
         new Verifications() {{
-            requeire.changeHistory((Approver36AgrByWorkplace)any);
+            requeire.changeHistory((Approver36AgrByWorkplace)any,GeneralDate.today());
             times = 0;
         }};
-
         persist.run();
-        AtomTask persistLast = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
-        new Verifications() {{
-            requeire.changeHistory((Approver36AgrByWorkplace)any);
-            times = 2;
-        }};
-
-        persistLast.run();
     }
     @Test
     public void test_02(){
@@ -76,7 +70,7 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
 
         NtsAssert.atomTask(()->
                         ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem),
-                        any->requeire.changeHistory(historyItem)
+                        any->requeire.changeHistory(historyItem,GeneralDate.today())
 
         );
 
