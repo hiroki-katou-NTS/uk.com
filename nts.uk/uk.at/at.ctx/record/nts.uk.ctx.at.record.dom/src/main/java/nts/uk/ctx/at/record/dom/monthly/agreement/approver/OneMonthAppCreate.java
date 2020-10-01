@@ -51,18 +51,11 @@ public class OneMonthAppCreate {
 		}
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				appContent.getApplicant(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
-
+		val setting = AgreementDomainService.getBasicSet(require, cid, appContent.getApplicant(), GeneralDate.today());
 		AgreementOneMonth agrOneMonth = setting.getOneMonth();
 
 		// $エラー結果
 		val errResult = agrOneMonth.checkErrorTimeExceeded(appContent.getErrTime());
-
 		if (errResult.getKey()) {
 			return new AppCreationResult(
 					appContent.getApplicant(),
@@ -83,9 +76,7 @@ public class OneMonthAppCreate {
 				displayInfo);
 
 		// $Atomtask
-		AtomTask at = AtomTask.of(() -> {
-			require.addApp(app);
-		});
+		AtomTask at = AtomTask.of(() -> { require.addApp(app); });
 
 		return new AppCreationResult(
 				appContent.getApplicant(),
@@ -122,8 +113,7 @@ public class OneMonthAppCreate {
 		val appTime = new ApplicationTime(
 				TypeAgreementApplication.ONE_MONTH,
 				Optional.of(oneMonthTime),
-				Optional.empty()
-		);
+				Optional.empty());
 
 		//	return 36協定特別条項の適用申請
 		return SpecialProvisionsOfAgreement.create(
@@ -141,7 +131,7 @@ public class OneMonthAppCreate {
 	 * [R-1] 申請を追加する
 	 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
 	 */
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM4 {
 		void addApp(SpecialProvisionsOfAgreement app);
 	}
 }

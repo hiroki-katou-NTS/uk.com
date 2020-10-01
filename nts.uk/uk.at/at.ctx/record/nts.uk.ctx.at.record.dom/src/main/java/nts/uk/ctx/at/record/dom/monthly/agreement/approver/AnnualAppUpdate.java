@@ -46,18 +46,11 @@ public class AnnualAppUpdate {
 		}
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				applicantId,
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
-
+		val setting = AgreementDomainService.getBasicSet(require, cid, applicantId, GeneralDate.today());
 		val oneYear = setting.getOneYear();
 
 		// $エラー結果
 		val errResult = oneYear.checkErrorTimeExceeded(agrOneYearTime);
-
 		if (errResult.getKey()) {
 			return new AppCreationResult(
 					applicantId,
@@ -78,9 +71,7 @@ public class AnnualAppUpdate {
 		val app = optApp.get();
 		app.changeApplicationYear(errAlarm, reason);
 
-		AtomTask at =  AtomTask.of(() -> {
-			require.updateApp(app);
-		});
+		AtomTask at =  AtomTask.of(() -> { require.updateApp(app); });
 
 		return new AppCreationResult(
 				applicantId,
@@ -91,7 +82,7 @@ public class AnnualAppUpdate {
 		);
 	}
 
-	public interface Require extends AgreementDomainService.RequireM3 {
+	public interface Require extends AgreementDomainService.RequireM4 {
 		/**
 		 * [R-1] 申請を取得する
 		 * 36協定特別条項の適用申請Repository.get(申請ID)

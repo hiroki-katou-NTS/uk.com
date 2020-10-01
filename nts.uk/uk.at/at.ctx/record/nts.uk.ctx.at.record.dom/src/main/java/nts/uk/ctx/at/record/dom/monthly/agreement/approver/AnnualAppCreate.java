@@ -52,12 +52,8 @@ public class AnnualAppCreate {
 		}
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				annualAppContent.getApplicant(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
+		val setting = AgreementDomainService.getBasicSet(require, cid, annualAppContent.getApplicant(),
+				GeneralDate.today());
 
 		val oneYear = setting.getOneYear();
 
@@ -85,9 +81,7 @@ public class AnnualAppCreate {
 				optApproverItem.get().getConfirmerList(),
 				screenDisplayInfo);
 
-		AtomTask at = AtomTask.of(() -> {
-			require.addApp(app);
-		});
+		AtomTask at = AtomTask.of(() -> { require.addApp(app); });
 
 		return new AppCreationResult(
 				annualAppContent.getApplicant(),
@@ -117,16 +111,13 @@ public class AnnualAppCreate {
 			ScreenDisplayInfo screenDisplayInfo) {
 
 		// $エラーアラーム
-		val errorArlarmTime = OneYearErrorAlarmTime.of(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
+		val errorAlarmTime = OneYearErrorAlarmTime.of(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
 
 		// $１年間時間
-		val oneYearTime = new OneYearTime(errorArlarmTime, annualAppContent.getYear());
+		val oneYearTime = new OneYearTime(errorAlarmTime, annualAppContent.getYear());
 
 		// $申請時間
-		val appTime = new ApplicationTime(
-				TypeAgreementApplication.ONE_YEAR,
-				Optional.empty(),
-				Optional.of(oneYearTime)
+		val appTime = new ApplicationTime(TypeAgreementApplication.ONE_YEAR, Optional.empty(), Optional.of(oneYearTime)
 		);
 
 		// return 36協定申請作成結果
@@ -141,7 +132,7 @@ public class AnnualAppCreate {
 		);
 	}
 
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM4 {
 		/**
 		 * [R-1] 申請を追加する
 		 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)

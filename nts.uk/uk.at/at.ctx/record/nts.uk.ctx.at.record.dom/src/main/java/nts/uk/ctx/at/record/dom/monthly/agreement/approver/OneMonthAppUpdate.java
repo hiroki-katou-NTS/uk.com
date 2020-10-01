@@ -9,7 +9,6 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -50,18 +49,11 @@ public class OneMonthAppUpdate {
 		val app = optApp.get();
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				app.getApplicantsSID(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
-
+		val setting = AgreementDomainService.getBasicSet(require, cid, app.getApplicantsSID(), GeneralDate.today());
 		val oneMonth = setting.getOneMonth();
 
 		// $エラー結果
 		val errResult =  oneMonth.checkErrorTimeExceeded(oneMonthTime);
-
 		if (errResult.getKey()) {
 			return new AppCreationResult(
 					app.getApplicantsSID(),
@@ -73,13 +65,13 @@ public class OneMonthAppUpdate {
 		}
 
 		// $1ヶ月のアラーム
-		val oneMonthArlarm = oneMonth.calculateAlarmTime(oneMonthTime);
+		val oneMonthAlarm = oneMonth.calculateAlarmTime(oneMonthTime);
 
 		// $エラーアラーム
-		val errorArlarmTime = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthArlarm);
+		val errorAlarmTime = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthAlarm);
 
 		// $36協定申請.1ヶ月の申請時間を変更する
-		app.changeApplicationOneMonth(errorArlarmTime,reason);
+		app.changeApplicationOneMonth(errorAlarmTime,reason);
 
 		val at = AtomTask.of(() -> {
 			require.updateApp(app);
@@ -94,7 +86,7 @@ public class OneMonthAppUpdate {
 		);
 	}
 
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM4 {
 		/**
 		 * [R-1] 申請を取得する
 		 * 36協定特別条項の適用申請Repository.get(申請ID)
