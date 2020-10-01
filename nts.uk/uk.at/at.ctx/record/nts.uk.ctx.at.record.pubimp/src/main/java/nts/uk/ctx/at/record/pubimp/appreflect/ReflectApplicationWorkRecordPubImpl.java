@@ -296,5 +296,10 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 			return null;
 		}
 
+		@Override
+		public String getCId() {
+			return companyId;
+		}
+
 	}
 }

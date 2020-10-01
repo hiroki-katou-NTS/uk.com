@@ -19,6 +19,7 @@ public class ReflectWorkInformation {
 	public static List<Integer> reflectInfo(Require require, WorkInfoDto workInfo, DailyRecordOfApplication dailyApp,
 			Optional<Boolean> changeWorkType, Optional<Boolean> changeWorkTime) {
 
+		List<Integer> lstItemId = new ArrayList<>();
 		// [input. 勤務種類を反映する]をチェック
 		if (changeWorkType.isPresent() && changeWorkType.get()) {
 			// 勤務情報と始業終業を変更する
@@ -26,10 +27,9 @@ public class ReflectWorkInformation {
 					new WorkInfoDto(workInfo.getWorkTypeCode(), Optional.empty()), true, false);
 
 			// 勤怠項目ID一覧 = [勤務種類コード]、[振休振出として扱う区分]、[振休振出として扱う日数]に該当する勤怠項目ID
-			List<Integer> lstItemId = Arrays.asList(1, 1292, 1293);
+			lstItemId.addAll(Arrays.asList(1, 1292, 1293));
 			// 申請反映状態にする
 			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
-			return lstItemId;
 
 		}
 
@@ -40,12 +40,11 @@ public class ReflectWorkInformation {
 					new WorkInfoDto(Optional.empty(), workInfo.getWorkTimeCode()), false, true);
 
 			// 勤怠項目ID一覧 = [就業時間帯コード]に該当する勤怠項目ID
-			List<Integer> lstItemId = Arrays.asList(2);
+			lstItemId.addAll(Arrays.asList(2));
 			/// 申請反映状態にする
 			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);
-			return lstItemId;
 		}
-		return new ArrayList<>();
+		return lstItemId;
 	}
 
 	public static interface Require extends WorkInfoOfDailyAttendance.Require {

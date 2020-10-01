@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
@@ -31,7 +32,7 @@ public class CancelTimeZoneApplication {
 							x.getBreakTimeSheets().stream()
 									.filter(y -> y.getBreakFrameNo().v() == data.getEngraveFrameNo().intValue())
 									.map(y -> {
-										y.setEndTime(null);
+										y.setStartTime(null);
 										y.setEndTime(null);
 //							※日別勤怠(work）.予定実績区分＝[実績]の場合のみ
 //									　　日別勤怠の休憩時間帯.時間帯.開始.時刻変更理由.時刻変更手段 ← 1:申請
@@ -39,7 +40,7 @@ public class CancelTimeZoneApplication {
 // 							domain ko co truong day can xu ly
 										lstItemId.addAll(createItemId(data));
 										return y;
-									});
+									}).collect(Collectors.toList());
 						});
 			} else {
 				dailyApp.getShortTime().ifPresent(x -> {

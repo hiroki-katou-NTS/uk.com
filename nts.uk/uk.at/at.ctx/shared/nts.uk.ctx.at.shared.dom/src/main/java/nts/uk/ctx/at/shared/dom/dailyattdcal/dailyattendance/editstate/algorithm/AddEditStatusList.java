@@ -16,7 +16,7 @@ public class AddEditStatusList {
 	public static List<EditStateOfDailyAttd> addStatus(List<EditStateOfDailyAttd> lstEdit,
 			List<EditStateOfDailyAttd> lstBefore) {
 
-		List<EditStateOfDailyAttd> result = new ArrayList<>(lstEdit);
+		List<EditStateOfDailyAttd> result = new ArrayList<>(lstBefore);
 		for (EditStateOfDailyAttd edit : lstEdit) {
 
 			Optional<EditStateOfDailyAttd> itemEdit = lstBefore.stream()

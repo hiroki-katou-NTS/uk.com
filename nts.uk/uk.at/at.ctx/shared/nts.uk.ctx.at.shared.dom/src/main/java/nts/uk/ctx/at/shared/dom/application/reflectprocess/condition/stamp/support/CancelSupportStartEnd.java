@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.Time
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -80,7 +79,7 @@ public class CancelSupportStartEnd {
 				.create(old.getWorkContent().getWorkplace().getWorkplaceId(), null);
 		lstItemId.add(CancelAppStamp.createItemId(921, data.getEngraveFrameNo(), 10));
 
-		WorkContent workContent = WorkContent.create(AppContexts.user().companyId(), workplace,
+		WorkContent workContent = WorkContent.create(old.getWorkContent().getCompanyId(), workplace,
 				old.getWorkContent().getWork());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
 

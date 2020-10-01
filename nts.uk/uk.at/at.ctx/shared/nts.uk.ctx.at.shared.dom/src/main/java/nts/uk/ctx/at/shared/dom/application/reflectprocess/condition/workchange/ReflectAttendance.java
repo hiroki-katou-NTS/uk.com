@@ -8,6 +8,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -30,6 +31,7 @@ public class ReflectAttendance {
 			ScheduleRecordClassifi classification, DailyRecordOfApplication dailyApp, Optional<Boolean> reflectAtt,
 			Optional<Boolean> reflectLeav) {
 
+		List<Integer> lstItemId = new ArrayList<Integer>();
 		// [input. 勤務時間帯(List）]をループ
 		for (TimeZoneWithWorkNo timeZone : timeZoneWithWorkNoLst) {
 
@@ -48,6 +50,9 @@ public class ReflectAttendance {
 					scheduleTimeSheet.get().setAttendance(timeZone.getTimeZone().getStartTime());
 					scheduleTimeSheet.get().setLeaveWork(timeZone.getTimeZone().getEndTime());
 				}
+
+				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(3, timeZone.getWorkNo().v(), 2),
+						CancelAppStamp.createItemId(4, timeZone.getWorkNo().v(), 2)));
 			} else {
 				// [日別勤怠(work）の出退勤]をチェック
 				// 日別勤怠の出退勤
@@ -59,20 +64,22 @@ public class ReflectAttendance {
 							&& attendanceLeave.get().getAttendanceStamp().get().getStamp().isPresent()) {
 						attendanceLeave.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
 								.setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
-						if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
-							attendanceLeave.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-									.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-						}
+						// if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
+						attendanceLeave.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
+								.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+						// }
+						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
 					}
 
 					if (reflectLeav.isPresent() && reflectLeav.get()
 							&& attendanceLeave.get().getLeaveStamp().get().getStamp().isPresent()) {
 						attendanceLeave.get().getLeaveStamp().get().getStamp().get().getTimeDay()
 								.setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
-						if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
-							attendanceLeave.get().getLeaveStamp().get().getStamp().get().getTimeDay()
-									.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-						}
+						// if (dailyApp.getClassification() == ScheduleRecordClassifi.RECORD) {
+						attendanceLeave.get().getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
+								.setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+						// }
+						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
 					}
 				} else {
 					TimeLeavingWork work = new TimeLeavingWork(timeZone.getWorkNo(), null, null);
@@ -83,6 +90,7 @@ public class ReflectAttendance {
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
 								0)));
+						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
 					}
 					if (reflectLeav.isPresent() && reflectLeav.get()) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
@@ -91,6 +99,7 @@ public class ReflectAttendance {
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
 								0)));
+						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
 					}
 
 					if (dailyApp.getAttendanceLeave().isPresent()) {
@@ -107,12 +116,6 @@ public class ReflectAttendance {
 		if (classification == ScheduleRecordClassifi.RECORD) {
 			// 出退勤回数の計算
 			dailyApp.getAttendanceLeave().ifPresent(x -> x.setCountWorkTime());
-		}
-		List<Integer> lstItemId = new ArrayList<Integer>();
-		if (classification == ScheduleRecordClassifi.SCHEDULE) {
-			lstItemId.addAll(Arrays.asList(3, 5, 4, 6));
-		} else {
-			lstItemId.addAll(Arrays.asList(31, 41, 34, 44));
 		}
 		// 申請反映状態にする
 		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, lstItemId);

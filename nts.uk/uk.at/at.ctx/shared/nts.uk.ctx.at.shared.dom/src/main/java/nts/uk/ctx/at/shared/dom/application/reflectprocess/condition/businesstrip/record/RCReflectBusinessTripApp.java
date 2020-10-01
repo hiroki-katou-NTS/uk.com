@@ -21,7 +21,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * @author thanh_nx
  *
- *         出張申請の反映（勤務予定）
+ *         出張申請の反映（勤務実績）
  */
 public class RCReflectBusinessTripApp {
 

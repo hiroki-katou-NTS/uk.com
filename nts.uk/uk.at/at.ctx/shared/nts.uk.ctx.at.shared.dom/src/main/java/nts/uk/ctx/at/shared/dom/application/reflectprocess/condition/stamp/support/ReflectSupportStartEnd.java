@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.Work
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -41,7 +40,7 @@ public class ReflectSupportStartEnd {
 					.findFirst();
 
 			if (ouenOpt.isPresent()) {
-				val result = update(ouenOpt.get(), empSetOpt, data);
+				val result = update(require, ouenOpt.get(), data);
 				OuenWorkTimeSheetOfDailyAttendance update = result.getLeft();
 
 				dailyApp.getOuenTimeSheet().remove(ouenOpt.get());
@@ -49,7 +48,7 @@ public class ReflectSupportStartEnd {
 				lstItemId.addAll(result.getRight());
 			} else {
 
-				val result = create(empSetOpt, data);
+				val result = create(require, empSetOpt, data);
 				dailyApp.getOuenTimeSheet().add(result.getLeft());
 				lstItemId.addAll(result.getRight());
 			}
@@ -60,21 +59,21 @@ public class ReflectSupportStartEnd {
 		return lstItemId;
 	}
 
-	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> create(
+	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> create(Require require,
 			Optional<EmployeeWorkDataSetting> empSetOpt, TimeStampAppShare data) {
 
 		List<Integer> lstItemId = new ArrayList<>();
 		TimeSheetOfAttendanceEachOuenSheet sheet = null;
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
-					new WorkNo(data.getDestinationTimeApp().getEngraveFrameNo()),
+					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)),
 					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 							data.getTimeOfDay())),
 					Optional.empty());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		} else {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
-					new WorkNo(data.getDestinationTimeApp().getEngraveFrameNo()), Optional.empty(),
+					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)), Optional.empty(),
 					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 							data.getTimeOfDay())));
 			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
@@ -87,7 +86,7 @@ public class ReflectSupportStartEnd {
 			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		}
 
-		WorkContent workContent = WorkContent.create(AppContexts.user().companyId(), workplace, Optional.empty());
+		WorkContent workContent = WorkContent.create(require.getCId(), workplace, Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
 						data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE), workContent, sheet),
@@ -95,8 +94,8 @@ public class ReflectSupportStartEnd {
 
 	}
 
-	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(
-			OuenWorkTimeSheetOfDailyAttendance old, Optional<EmployeeWorkDataSetting> empSetOpt,
+	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(Require require, 
+			OuenWorkTimeSheetOfDailyAttendance old,
 			TimeStampAppShare data) {
 		List<Integer> lstItemId = new ArrayList<>();
 		TimeSheetOfAttendanceEachOuenSheet sheet = null;
@@ -119,21 +118,23 @@ public class ReflectSupportStartEnd {
 		}
 
 		WorkplaceOfWorkEachOuen workplace = null;
-		if (empSetOpt.isPresent()) {
+		if (data.getWorkLocationCd().isPresent()) {
 			workplace = WorkplaceOfWorkEachOuen.create(old.getWorkContent().getWorkplace().getWorkplaceId(),
-					empSetOpt.get().getWorkLocationCD());
+					data.getWorkLocationCd().get());
 			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		} else {
 			workplace = old.getWorkContent().getWorkplace();
 		}
 
-		WorkContent workContent = WorkContent.create(AppContexts.user().companyId(), workplace,
+		WorkContent workContent = WorkContent.create(require.getCId(), workplace,
 				old.getWorkContent().getWork());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
 
 	}
 
 	public static interface Require {
+		
+		public String getCId();
 		/**
 		 * 
 		 * require{ 社員の作業データ設定を取得する(社員ID） }
