@@ -36,7 +36,7 @@ public class WorkMethodHolidayTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_FALSE() {
+	public void checkInclude_FALSE() {
 		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodHd = new WorkMethodHoliday();
 				
@@ -58,7 +58,7 @@ public class WorkMethodHolidayTest {
 	 * excepted：TRUE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_NOT_ONE_DAY() {
+	public void checkInclude_NOT_ONE_DAY() {
 		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodHd = new WorkMethodHoliday();
 				

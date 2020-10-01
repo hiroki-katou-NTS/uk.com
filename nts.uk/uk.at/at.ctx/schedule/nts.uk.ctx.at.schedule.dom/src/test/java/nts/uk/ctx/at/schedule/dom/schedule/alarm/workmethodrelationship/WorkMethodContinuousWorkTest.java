@@ -46,20 +46,20 @@ public class WorkMethodContinuousWorkTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_EMPTY() {
+	public void checkIncludes_EMPTY() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
 				
 		new Expectations() {
 			{
-				require.getWorkType((String)any);
+				require.getWorkType((WorkTypeCode)any);
 			}
 		};
 		
 		assertThat(workMethodConti.includes(require, workInfo)).isFalse();
 		
 	}
-	
+
 	/**
 	 * 勤務方法 = 勤務方法(連続勤務)
 	 * 該当するか判定する
@@ -68,7 +68,7 @@ public class WorkMethodContinuousWorkTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_NOT_ONE_DAY() {
+	public void checkIncludes_NOT_ONE_DAY() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
 		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
@@ -78,7 +78,7 @@ public class WorkMethodContinuousWorkTest {
 		
 		new Expectations(workType) {
 			{
-				require.getWorkType((String)any);
+				require.getWorkType((WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 			}
@@ -96,7 +96,7 @@ public class WorkMethodContinuousWorkTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_NOT_CONTINUOUS() {
+	public void checkIncludes_NOT_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
 		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
@@ -106,7 +106,7 @@ public class WorkMethodContinuousWorkTest {
 		
 		new Expectations(workType) {
 			{
-				require.getWorkType((String)any);
+				require.getWorkType((WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 			}
@@ -124,7 +124,7 @@ public class WorkMethodContinuousWorkTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_NOT_ONE_DAY_NOT_CONTINUOUS() {
+	public void checkIncludes_NOT_ONE_DAY_NOT_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
 		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
@@ -134,7 +134,7 @@ public class WorkMethodContinuousWorkTest {
 		
 		new Expectations(workType) {
 			{
-				require.getWorkType((String)any);
+				require.getWorkType((WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 			}
@@ -152,7 +152,7 @@ public class WorkMethodContinuousWorkTest {
 	 * excepted：TRUE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_IS_ONE_DAY_IS_CONTINUOUS() {
+	public void checkIncludes_IS_ONE_DAY_IS_CONTINUOUS() {
 		val workInfo =  WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodConti = new WorkMethodContinuousWork();
 		val workType = new WorkType(new WorkTypeCode("002"), new WorkTypeSymbolicName("symbName"),
@@ -162,7 +162,7 @@ public class WorkMethodContinuousWorkTest {
 		
 		new Expectations(workType) {
 			{
-				require.getWorkType((String)any);
+				require.getWorkType((WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 			}

@@ -10,7 +10,9 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod.Require;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 /**
  * UnitTest: 勤務方法(出勤)
  * @author lan_lt
@@ -56,7 +58,7 @@ public class WorkMethodAttendanceTest {
 	 * excepted：FALSE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_FALSE() {
+	public void checkInclude_FALSE() {
 		//就業時間帯コード == 002
 		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
 		//就業時間帯コード == 001
@@ -73,7 +75,7 @@ public class WorkMethodAttendanceTest {
 	 * excepted：TRUE
 	 */
 	@Test
-	public void checkDetermineIfApplicable_TRUE() {
+	public void checkInclude_TRUE() {
 		//就業時間帯コード == 002
 		val workInfo = WorkMethodHelper.WORK_INFO_DUMMY;
 		val workMethodAt = new WorkMethodAttendance(new WorkTimeCode("002"));
