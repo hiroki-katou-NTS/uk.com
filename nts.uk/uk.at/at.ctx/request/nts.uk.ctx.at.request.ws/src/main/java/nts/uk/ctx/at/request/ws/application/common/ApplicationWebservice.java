@@ -316,7 +316,7 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("deleteapp")
-	public ProcessResult deleteApp(AppDispInfoStartupDto command){
+	public ProcessResult deleteApp(AppDetailBehaviorCmd command){
 		return deleteApp.handle(command);
 	}
 	
