@@ -9,10 +9,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSet;
 
 /**
  * The Class JpaComDeforLaborMonthActCalSetRepository.
@@ -63,7 +62,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(ComDeforLaborMonthActCalSet domain) {
 		// Get info
-		this.queryProxy().find(domain.getComId(), KrcstWkpDeforMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(domain.getComId(), KrcstComDeforMCalSet.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			

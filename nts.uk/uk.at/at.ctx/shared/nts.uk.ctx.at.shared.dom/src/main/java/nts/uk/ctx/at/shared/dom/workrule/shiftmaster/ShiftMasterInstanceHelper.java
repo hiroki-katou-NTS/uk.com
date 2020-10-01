@@ -29,7 +29,7 @@ public class ShiftMasterInstanceHelper {
 	}
 	
 	public static WorkInformation getWorkInformationWorkTimeIsNull() {
-		return new WorkInformation("workTypeCode", null);
+		return new WorkInformation( "workTypeCode", null);
 	}
 
 

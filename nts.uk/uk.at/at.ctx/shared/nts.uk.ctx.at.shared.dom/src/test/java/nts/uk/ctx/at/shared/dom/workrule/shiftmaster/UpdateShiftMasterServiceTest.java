@@ -57,7 +57,7 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{

@@ -1,6 +1,5 @@
 module nts.uk.com.view.cmf002.c.viewmodel {
     import block = nts.uk.ui.block;
-    import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -118,7 +117,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     if (listExOutCateItemData && listExOutCateItemData.length) {
                         listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
                         let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
-                            return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
+                            // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                            const itemName: string = x.keywordAtr === 1
+                                ? self.reverseWord(x.itemName)
+                                : x.itemName;
+                            return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.keywordAtr);
                         });
                         self.listExOutCateItemData(rsCategoryItems);
                         $('#C8_3').ntsError('clear');
@@ -152,7 +155,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 if (listExOutCateItemData && listExOutCateItemData.length) {
                     listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
                     let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
-                        return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
+                        // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                        const itemName: string = x.keywordAtr === 1
+                            ? self.reverseWord(x.itemName)
+                            : x.itemName;
+                        return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.keywordAtr);
                     });
                     self.listExOutCateItemData(rsCategoryItems);
                 }
@@ -196,9 +203,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.isNewMode(true);
             self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), 0, null));
             self.itemType(0);
-            self.categoryItems([]);   
+            self.categoryItems([]);
             self.setFocus();
-            setTimeout(function() { errors.clearAll(); }, 50);    
+            setTimeout(function() { errors.clearAll(); }, 50);
         }
 
         isActiveSymbolAnd() {
@@ -331,14 +338,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
                             x.itemType, listCategoryItem);
                     });
-                    
+
                      let rsOutputItemTemp: Array<any> = _.map(outputItems, x => {
                         return {dispOutputItemCode: x.outItemCd, dispOutputItemName:x.outItemName};
                     });
-                    
+
                     self.listStandardOutputItemTemp(rsOutputItemTemp);
                     self.listStandardOutputItem(rsOutputItems);
-                    
+
                     if (code) {
                         if (code == self.selectedStandardOutputItemCode())
                             self.selectedStandardOutputItemCode.valueHasMutated();
@@ -439,7 +446,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         return x.outItemCd() == currentStandardOutputItem.outItemCd()
                     });
 
-                    service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {                     
+                    service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {
                         info({ messageId: "Msg_16" });
                         self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                             if (self.listStandardOutputItem().length == 0) {
@@ -451,7 +458,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                     self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                 }
                             }
-                            self.isUpdateExecution(true);                       
+                            self.isUpdateExecution(true);
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });
@@ -636,6 +643,42 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let self = this;
             setShared('CMF002_B_PARAMS_FROM_C', { isUpdateExecution: self.isUpdateExecution() });
             nts.uk.ui.windows.close();
+        }
+
+        // Reverse word
+        private reverseWord(word: string): string {
+            const mapReveseWord = {
+                employment: '雇用呼称',
+                department: '部門呼称',
+                class: '分類呼称',
+                jobTitle: '職位呼称',
+                person: '社員呼称',
+                office: '事業所呼称',
+                work: '作業呼称',
+                workPlace: '職場呼称',
+                project: 'プロジェクト',
+                adHocWork: '臨時勤務',
+                substituteHoliday: '振休',
+                substituteWork: '振出',
+                compensationHoliday: '代休',
+                exsessHoliday: '60H超過休暇',
+                bindingTime: '拘束時間',
+                payAbsenseDays: '給与欠勤日数',
+                payAttendanceDays: '給与出勤日数',
+                import: '取込',
+                toppage: 'トップページ',
+                code: 'コード',
+                name: '名称',
+            };
+            const keyword: string = word.substring(
+                word.lastIndexOf("{#") + 2,
+                word.lastIndexOf("#}")
+            );
+            const reveseWord: string = mapReveseWord[keyword];
+            if (!reveseWord) {
+                return word;
+            }
+            return word.replace(`{#${keyword}#}`, reveseWord);
         }
     }
 }

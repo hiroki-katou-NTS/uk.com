@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_OUT_OP_MNG")
+@Table(name = "OIOTT_EX_OUT_OP_MNG")
 public class OiomtExOutOpMng extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,7 @@ public class OiomtExOutOpMng extends UkJpaEntity implements Serializable {
 	* 
 	*/
 	@Basic(optional = true)
-	@Column(name = "DO_NOT_INTERRUPT")
+	@Column(name = "INTERRUPTION")
 	public int doNotInterrupt;
 
 	/**

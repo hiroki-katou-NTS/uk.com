@@ -13,25 +13,25 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -65,28 +65,32 @@ public class TimeLeavingOfDailyService {
 	public EventHandleResult<IntegrationOfDaily> correct(String companyId, IntegrationOfDaily working,
 			Optional<WorkingConditionItem> cachedWorkCondition, Optional<WorkType> cachedWorkType, boolean directToDB) {
 
-		WorkInfoOfDailyPerformance wi = working.getWorkInformation();
+		WorkInfoOfDailyPerformance wi = new WorkInfoOfDailyPerformance(working.getEmployeeId(), working.getYmd(), working.getWorkInformation());
 		if(wi == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 		
 		WorkType wt = getWithDefaul(cachedWorkType,
-				() -> getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
+				() -> getDefaultWorkType(wi.getWorkInformation().getRecordInfo().getWorkTypeCode().v(), companyId));
 		if (wt == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
-		TimeLeavingOfDailyPerformance tlo = getWithDefaul(working.getAttendanceLeave(),
+		Optional<TimeLeavingOfDailyPerformance> dailyPerformance = !working.getAttendanceLeave().isPresent()
+				|| working.getAttendanceLeave() == null ? Optional.empty()
+						: Optional.of(new TimeLeavingOfDailyPerformance(wi.getEmployeeId(), wi.getYmd(),
+								working.getAttendanceLeave().get()));
+		TimeLeavingOfDailyPerformance tlo = getWithDefaul(dailyPerformance,
 				() -> getTimeLeaveDefault(wi.getEmployeeId(), wi.getYmd()));
 
 		 DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 																		.employeeId(wi.getEmployeeId())
 																		.workingDate(wi.getYmd())
-																		.withTimeLeaving(tlo);
+																		.withTimeLeaving(wi.getEmployeeId(), wi.getYmd(),tlo !=null ? tlo.getAttendance():null);
 		
 		List<Integer> canbeCorrectedItem = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
 		List<ItemValue> beforeCorrectItemValues = converter.convert(canbeCorrectedItem);
 	
-		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(working.getEditState(), wi.getEmployeeId(), wi.getYmd());
+		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(wi.getEmployeeId(), wi.getYmd(), mapper)).collect(Collectors.toList()), wi.getEmployeeId(), wi.getYmd());
 		
 		if(isPairUpdatedByHand(editStates, 1) || isPairUpdatedByHand(editStates, 2)){
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
@@ -96,7 +100,7 @@ public class TimeLeavingOfDailyService {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 		if(tlo != null){
-			if(tlo.getTimeLeavingWorks().stream().anyMatch(tl -> isSpr(tl.getAttendanceStamp()) || isSpr(tl.getLeaveStamp()))){
+			if(tlo.getAttendance().getTimeLeavingWorks().stream().anyMatch(tl -> isSpr(tl.getAttendanceStamp()) || isSpr(tl.getLeaveStamp()))){
 				return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 			}
 		}
@@ -112,7 +116,7 @@ public class TimeLeavingOfDailyService {
 //					|| wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 				TimeLeavingOfDailyPerformance tl = null;
 				if (tlo != null) {
-					tl = mergeWithEditStates(working.getEditState(), tlo, wts);
+					tl = mergeWithEditStates(working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(wi.getEmployeeId(), wi.getYmd(), mapper)).collect(Collectors.toList()), tlo, wts);
 				}
 //				WorkInfoOfDailyPerformance clonedWI = new WorkInfoOfDailyPerformance(wi.getEmployeeId(), wi.getRecordInfo(), 
 //						wi.getScheduleInfo(), wi.getCalculationState(), 
@@ -141,7 +145,7 @@ public class TimeLeavingOfDailyService {
 		AtomicBoolean flag = new AtomicBoolean(false);
 		
 		stamp.ifPresent(s -> s.getStamp().ifPresent(ss -> {
-			if(ss.getStampSourceInfo() == StampSourceInfo.SPR){
+			if(ss.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION){
 				flag.set(true);
 			}
 		}));
@@ -157,7 +161,7 @@ public class TimeLeavingOfDailyService {
 
 	private boolean isItemUpdatedByHand(List<EditStateOfDailyPerformance> editStates, int itemId) {
 		Optional<EditStateOfDailyPerformance> itemState = editStates.stream()
-				.filter(es -> es.getAttendanceItemId() == itemId && es.getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION)
+				.filter(es -> es.getEditState().getAttendanceItemId() == itemId && es.getEditState().getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION)
 				.findFirst();
 		
 		return itemState.isPresent();
@@ -167,18 +171,18 @@ public class TimeLeavingOfDailyService {
 			TimeLeavingOfDailyPerformance correctedTlo, boolean directToDB,
 			DailyRecordToAttendanceItemConverter converter, List<Integer> canbeCorrectedItem, 
 			List<ItemValue> beforeCorrectItemValues) {
-		working.setAttendanceLeave(Optional.ofNullable(correctedTlo));
+		working.setAttendanceLeave(Optional.ofNullable(correctedTlo == null?null:correctedTlo.getAttendance()));
 
-		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(correctedTlo).convert(canbeCorrectedItem);
+		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(working.getEmployeeId(), working.getYmd(),correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
 		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.getItemId()).collect(Collectors.toList());
 		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.getItemId()));
 		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if(directToDB){
-			this.timeLeaveRepo.update(working.getAttendanceLeave().orElse(null));
-			this.editStateRepo.deleteByListItemId(working.getWorkInformation().getEmployeeId(), 
-													working.getWorkInformation().getYmd(), correctedItemIds);
+			this.timeLeaveRepo.update(new TimeLeavingOfDailyPerformance(working.getEmployeeId(), working.getYmd(), working.getAttendanceLeave().orElse(null)));
+			this.editStateRepo.deleteByListItemId(working.getEmployeeId(), 
+													working.getYmd(), correctedItemIds);
 		}
 		
 		return EventHandleResult.withResult(EventHandleAction.UPDATE, working);
@@ -214,7 +218,7 @@ public class TimeLeavingOfDailyService {
 	private TimeLeavingOfDailyPerformance mergeWithEditStates(List<EditStateOfDailyPerformance> editStates,
 			TimeLeavingOfDailyPerformance timeLeave, WorkTypeSet wts) {
 		List<Integer> inputByReflect = editStates.stream()
-				.filter(es -> isInputByReflect(es.getEditStateSetting())).map(c -> c.getAttendanceItemId())
+				.filter(es -> isInputByReflect(es.getEditState().getEditStateSetting())).map(c -> c.getEditState().getAttendanceItemId())
 				.collect(Collectors.toList());
 //		if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK) {
 //			/** 「所定勤務の設定．打刻の扱い方．出勤時刻を直行とする」＝ TRUE */
@@ -235,7 +239,7 @@ public class TimeLeavingOfDailyService {
 		List<Integer> needCheckItems = mergeItems();
 		return getWithDefaul(cached.isEmpty() ? Optional.empty() : Optional.of(cached), 
 							() -> getDefaultEditStates(empId, target, needCheckItems)).stream()
-								.filter(e -> needCheckItems.contains(e.getAttendanceItemId())).collect(Collectors.toList());
+								.filter(e -> needCheckItems.contains(e.getEditState().getAttendanceItemId())).collect(Collectors.toList());
 	}
 
 	/** 「日別実績の出退勤．出退勤の打刻」を削除する */
@@ -274,17 +278,20 @@ public class TimeLeavingOfDailyService {
 	private TimeLeavingOfDailyPerformance updateTimeLeave(String companyId, WorkInfoOfDailyPerformance workInfo,
 			TimeLeavingOfDailyPerformance timeLeave, Optional<WorkingConditionItem> workConditionItem, String empId,
 			GeneralDate target) {
+		if(timeLeave == null) {
+			return timeLeave;
+		}
 		/** 自動打刻セットする */
-		timeLeave = reflectService.createStamp(companyId, workInfo, workConditionItem, timeLeave, empId, target, null);
+		timeLeave = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(), workInfo.getYmd(), reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null));
 		if (timeLeave != null) {
-			timeLeave.setWorkTimes(new WorkTimes(countTime(timeLeave)));
+			timeLeave.getAttendance().setWorkTimes(new WorkTimes(countTime(timeLeave)));
 		}
 		return timeLeave;
 	}
 
 	/** 出退勤回数の計算 */
 	private int countTime(TimeLeavingOfDailyPerformance timeLeave) {
-		return timeLeave.getTimeLeavingWorks().stream()
+		return timeLeave.getAttendance().getTimeLeavingWorks().stream()
 				.filter(tl -> tl.getAttendanceStamp().isPresent()
 						&& tl.getAttendanceStamp().get().getStamp().isPresent() && tl.getLeaveStamp().isPresent()
 						&& tl.getLeaveStamp().get().getStamp().isPresent())
@@ -300,7 +307,7 @@ public class TimeLeavingOfDailyService {
 				}
 			}
 			
-			tl.getTimeLeavingWorks().stream().forEach(tlw -> {
+			tl.getAttendance().getTimeLeavingWorks().stream().forEach(tlw -> {
 //				boolean cantRemove = editState.stream().anyMatch(es -> isHandUpdatePair(tlw.getWorkNo().v(), es));
 //				if(!cantRemove){
 					tlw.getAttendanceStamp().ifPresent(as -> {
@@ -325,17 +332,17 @@ public class TimeLeavingOfDailyService {
 	}
 
 	private boolean isHandUpdatePair(int workNo, EditStateOfDailyPerformance es) {
-		return es.getAttendanceItemId() == CorrectEventConts.ATTENDANCE_ITEMS.get(workNo - 1) 
-				|| es.getAttendanceItemId() == CorrectEventConts.LEAVE_ITEMS.get(workNo - 1);
+		return es.getEditState().getAttendanceItemId() == CorrectEventConts.ATTENDANCE_ITEMS.get(workNo - 1) 
+				|| es.getEditState().getAttendanceItemId() == CorrectEventConts.LEAVE_ITEMS.get(workNo - 1);
 	}
 
 	private boolean shouldSaveStamp(TimeLeavingOfDailyPerformance tl) {
-		return tl.getTimeLeavingWorks().stream().anyMatch(tlx -> {
+		return tl.getAttendance().getTimeLeavingWorks().stream().anyMatch(tlx -> {
 			AtomicBoolean flag = new AtomicBoolean(false);
 			
 			tlx.getAttendanceStamp().ifPresent(tlxa -> {
 				tlxa.getStamp().ifPresent(tlxas -> {
-					if(tlxas.getStampSourceInfo() == StampSourceInfo.SPR){
+					if(tlxas.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION){
 						flag.set(true);
 					}
 				});
@@ -343,7 +350,7 @@ public class TimeLeavingOfDailyService {
 			
 			tlx.getLeaveStamp().ifPresent(tlxl -> {
 				tlxl.getStamp().ifPresent(tlxls -> {
-					if(tlxls.getStampSourceInfo() == StampSourceInfo.SPR){
+					if(tlxls.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION){
 						flag.set(true);
 					}
 				});
@@ -354,11 +361,11 @@ public class TimeLeavingOfDailyService {
 	}
 
 	private boolean isRemoveStamp(WorkStamp ass) {
-		return ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-				|| ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-				|| ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON
-				|| ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
-				|| ass.getStampSourceInfo() == StampSourceInfo.SPR;
+		return ass.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
+				|| ass.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
+				|| ass.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
+				|| ass.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET
+				|| ass.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION;
 	}
 
 	private Optional<WorkingConditionItem> getWorkConditionOrDefault(Optional<WorkingConditionItem> cached,

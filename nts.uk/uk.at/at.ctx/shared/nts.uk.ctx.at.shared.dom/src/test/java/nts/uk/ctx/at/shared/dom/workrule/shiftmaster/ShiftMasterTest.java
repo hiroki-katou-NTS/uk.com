@@ -76,7 +76,7 @@ public class ShiftMasterTest {
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
-		shiftMater.setWorkTimeCode(null);
+		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
 				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());

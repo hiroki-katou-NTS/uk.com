@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.ws.divergence.time;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -18,9 +19,8 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodFi
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeFinder;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
 /**
  * The Class DivergenceTimeWebService.
@@ -42,7 +42,7 @@ public class DivergenceTimeWebService extends WebService {
 
 	/** The div time save command handler. */
 	@Inject
-	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;
+	private DivergenceTimeInputMethodSaveCommandHandler divTimeSaveCommandHandler;	
 
 	/** The div time attendance finder. */
 	@Inject
@@ -112,20 +112,6 @@ public class DivergenceTimeWebService extends WebService {
 	}
 
 	/**
-	 * get item set.
-	 *
-	 * @param divTimeId
-	 *            the div time id
-	 * @return the item set
-	 */
-	@POST
-	@Path("getitemset/{divTimeId}")
-	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId) {
-		// return this.divTimeAttendanceFinder.getAllDivReasonByCode(divTimeId);
-		return null;
-	}
-
-	/**
 	 * Gets the at type.
 	 *
 	 * @return the at type
@@ -149,6 +135,14 @@ public class DivergenceTimeWebService extends WebService {
 	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
 		return this.divTimeAttendanceFinder.getAtName(dailyAttendanceItemIds);
 
+	}
+	
+	@POST
+	@Path("getMonthlyAttendanceDivergenceName")
+	public List<AttendanceNameDivergenceDto> getMonthlyAttendanceDivergenceName(List<Integer> monthlyAttendanceItemIds) {
+		return this.divTimeAttendanceFinder.getMonthlyAtName(monthlyAttendanceItemIds).stream()
+				.sorted((o1, o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber())
+				.collect(Collectors.toList());
 	}
 
 }

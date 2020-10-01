@@ -25,7 +25,7 @@ public class OiomtExOutLinkTablePk implements Serializable
     * 
     */
     @Basic(optional = false)
-    @Column(name = "CATEGORY_ID")
+    @Column(name = "CTG_ID")
     public int categoryId;
     
 }

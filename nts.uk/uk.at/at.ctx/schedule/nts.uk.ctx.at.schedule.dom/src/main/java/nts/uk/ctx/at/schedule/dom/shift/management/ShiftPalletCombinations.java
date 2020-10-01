@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 /**
  * シフトパレットのシフト組み合わせ
@@ -69,5 +70,13 @@ public class ShiftPalletCombinations implements DomainValue {
 		}
 
 		this.combinations = list;
+	}
+	
+	/**
+	 * [2] 利用するシフトマスタコードのリストを取得する																							
+	 */
+	public List<ShiftMasterCode> getListShiftMasterCode() {
+		List<ShiftMasterCode> data =combinations.stream().map(x->x.getShiftCode()).distinct().collect(Collectors.toList());
+		return data;
 	}
 }

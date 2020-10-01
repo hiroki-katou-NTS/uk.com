@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -28,26 +26,24 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ken_takasu
  *
  */
-@Setter
-@Getter
-@AllArgsConstructor
 public class WorkInformation {
 	private WorkTypeCode workTypeCode;
-	private WorkTimeCode workTimeCode;
+	
+	private Optional<WorkTimeCode> workTimeCode;
 
 	public WorkInformation(String workTypeCode, String workTimeCode) {
-		if (!StringUtils.isEmpty(workTypeCode)) {
-			this.workTypeCode = new WorkTypeCode(workTypeCode);
-		}
+		this.setWorkTypeCode(workTypeCode);
+		this.setWorkTimeCode(workTimeCode);
+	}
 
-		if (!StringUtils.isEmpty(workTimeCode)) {
-			this.workTimeCode = new WorkTimeCode(workTimeCode);
-		}
+	public WorkInformation(WorkTypeCode workTypeCode, WorkTimeCode workTimeCode) {
+		this.setWorkTypeCode(workTypeCode);
+		this.setWorkTimeCode(workTimeCode);
 	}
 	
 	public WorkInformation clone() {
 		if (workTypeCode != null && workTimeCode != null) {
-			return new WorkInformation(workTypeCode, workTimeCode);
+			return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
 		}
 
 		if (workTypeCode == null && workTimeCode == null) {
@@ -55,14 +51,48 @@ public class WorkInformation {
 		}
 
 		if (workTypeCode == null) {
-			return new WorkInformation("", workTimeCode.v());
+			return new WorkInformation("", workTimeCode.map(wtc -> wtc.v()).orElse(""));
 		}
 
 		return new WorkInformation(workTypeCode.v(), "");
 	}
 
+	public WorkTypeCode getWorkTypeCode() {
+		return this.workTypeCode;
+	}
+
+	public void setWorkTypeCode(String workTypeCode) {
+		if (!StringUtils.isEmpty(workTypeCode)) {
+			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+		}
+	}
+
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode;
+	}
+
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode.orElse(null);
+	}
+	
+	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
+		return this.workTimeCode;
+	}
+
 	public void removeWorkTimeInHolydayWorkType() {
-		this.workTimeCode = null;
+		this.workTimeCode = Optional.empty();
+	}
+
+	public void setWorkTimeCode(String workTimeCode) {
+		if (StringUtils.isEmpty(workTimeCode)) {
+			this.workTimeCode = Optional.empty();
+		} else {
+			this.workTimeCode = Optional.of(new WorkTimeCode(workTimeCode));
+		}
+	}
+
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.workTimeCode = Optional.ofNullable(workTimeCode);
 	}
 
 	/**
@@ -100,33 +130,34 @@ public class WorkInformation {
 		switch (setupType) {
 		case REQUIRED:// 必須
 			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
+			if (!this.workTimeCode.isPresent()) {
 				return ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET;
 			}
 			break;
-		case OPTIONAL:
+		case OPTIONAL:// 任意
 			// @就業時間帯コード ==null
-
-			if (this.getWorkTimeCode() == null) {
+			if (!this.workTimeCode.isPresent() ) {
 				return ErrorStatusWorkInfo.NORMAL;
 			}
 			break;
-		default:
-			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
+		default: // 不要
+			// @就業時間帯コード.isPresent
+			if (!this.workTimeCode.isPresent() ) {
 				return ErrorStatusWorkInfo.NORMAL;
 			}
-			// @就業時間帯コード.isPresent
 			return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 
 		}
 
 		// require.就業時間帯を取得する(ログイン会社ID, @就業時間帯コード) - CID sẽ dc truyền trên app
 		Optional<WorkTimeSetting> workTimeSetting = require
-				.findByCode(this.workTimeCode == null ? null : this.workTimeCode.v());
+				.findByCode(this.workTimeCode.isPresent() ? this.workTimeCode.get().v() : null);
 		// if $就業時間帯.isEmpty
 		if (!workTimeSetting.isPresent()) {
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
+		}
+		if(workTimeSetting.get().getAbolishAtr() == AbolishAtr.ABOLISH ) {
+			return ErrorStatusWorkInfo.WORKTIME_HAS_BEEN_ABOLISHED;
 		}
 
 		return ErrorStatusWorkInfo.NORMAL;
@@ -138,12 +169,10 @@ public class WorkInformation {
 	 * @return WorkStyle 出勤休日区分
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require) {
-		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
-		
+		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode == null ? null : this.workTypeCode.v());
 		if (workStyle == null) {
 			return Optional.empty();
 		}
-		
 		return Optional.of(workStyle);
 	}
 
@@ -156,30 +185,26 @@ public class WorkInformation {
 
 		// $勤務種類 = require.勤務種類を取得する( @勤務種類コード )
 		Optional<WorkType> workType = require.findByPK(this.workTypeCode.v());
-		
 		if (!workType.isPresent()) {
 			return Optional.empty();
 		}
-		
 		// @就業時間帯コード.isEmpty()
-		if (this.getWorkTimeCode() == null) {
+		if (!this.workTimeCode.isPresent()) {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
-		
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
-		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.v());
-		
+		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.get().v());
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		// $就業時間帯の設定.所定時間帯を取得する( $就業時間帯の設定.会社ID, @勤務種類コード, Optional.empty )
-		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.v(), this.workTypeCode.v(), null)
+		listTimezoneUse = require.getPredeterminedTimezone(this.workTimeCode.get().v(), this.workTypeCode.v(), null)
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC
-		listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
+		listTimezoneUse = listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
 				.collect(Collectors.toList());
 		// map 時間帯#時間帯を作る( $.開始, $.終了 )
 		List<TimeZone> listTimeZone = listTimezoneUse.stream().map(i -> new TimeZone(i.getStart(), i.getEnd()))
@@ -189,6 +214,7 @@ public class WorkInformation {
 	}
 
 	public static interface Require {
+
 		/**
 		 * [R-1] 勤務種類を取得する
 		 * 
@@ -239,6 +265,8 @@ public class WorkInformation {
 			return false;
 		}
 		
-		return workTimeCode.equals("102") || workTimeCode.equals("103");
+		return workTimeCode
+				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
+				.orElse(false);
 	}
 }

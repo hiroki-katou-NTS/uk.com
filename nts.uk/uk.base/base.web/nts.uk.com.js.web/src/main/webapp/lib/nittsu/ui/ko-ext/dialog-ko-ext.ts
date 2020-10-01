@@ -338,10 +338,29 @@ module nts.uk.ui.koExtentions {
                     $dialog.html("");
                     $dialog.append($errorboard).append($message);
     
-                    $dialog.closest("[role='dialog']").show();
-                    // hide "x" button
-                    $dialog.closest("[role='dialog']").find(".ui-dialog-titlebar-close").hide();
-                    //$dialog.dialog("open");    
+					const $container = $dialog.closest("[role='dialog']");
+					
+                    $container
+						.show()
+                    	// hide "x" button
+                    	.find(".ui-dialog-titlebar-close").hide();
+                	
+					//$dialog.dialog("open");
+
+					const $dialogs = (window.top as any).$('body>[role="dialog"]').toArray();
+					const zIndex: any = _.chain($dialogs)
+						.map((el: HTMLElement) => document.defaultView.getComputedStyle(el, null).getPropertyValue('z-index'))
+						.filter((index: string) => index.match(/^\d+$/))
+						.map((index: string) => parseInt(index))
+						.orderBy((index: number) => index)
+						.last();
+
+					// fixbug show error dialog after main modal
+					if (!$container.data('ziv')) {
+						const zIdx = zIndex.value() || 10000001;
+
+						$container.data('ziv', zIdx).css('z-index', zIdx);
+					}
                 }
                 else {
                     $dialog.closest("[role='dialog']").hide();

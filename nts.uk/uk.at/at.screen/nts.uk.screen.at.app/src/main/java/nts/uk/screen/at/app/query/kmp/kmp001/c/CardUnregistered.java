@@ -58,7 +58,10 @@ public class CardUnregistered {
 			cardUnregisteredDto.setStampAtr(m.getStampAtr());
 			cardUnregisteredDto.setStampDatetime(m.getStampDatetime());
 			return cardUnregisteredDto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList())
+				.stream()
+				.sorted((o1, o2) -> o1.getStampNumber().compareTo(o2.getStampNumber()))
+				.collect(Collectors.toList());
 
 	}
 
@@ -110,5 +113,4 @@ public class CardUnregistered {
 			return dakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(), period);
 		}
 	}
-
 }

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
@@ -15,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingGetMemento;
 
 /**
  * The Class JpaRoundingGetMemento.

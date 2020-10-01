@@ -70,7 +70,7 @@ public class GetAllWorkingHoursQuery {
 		List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyId,
 				request.getWorkPlaceId());
 		if (listWorkTime.size() > 0) {
-			Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+			//Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
 		}
 		List<String> worktimeCodes = listWorkTime.stream().map(x -> {
 			return x.getWorktimeCode().v();

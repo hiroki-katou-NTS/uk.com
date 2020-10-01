@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
@@ -26,16 +27,16 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcParam;
 import nts.uk.screen.at.app.dailymodify.command.common.DailyCalcResult;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
@@ -56,7 +57,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProc
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -192,14 +192,14 @@ public class DailyCalculationRCommandFacade {
 
 			resultUI = dailyCalcResult.getResultUI();
 			editedDomains = resultUI.getLstDailyDomain();
-			editedDomains.stream().forEach(d -> {
-				editedDtos.stream()
-						.filter(c -> c.employeeId().equals(d.getWorkInformation().getEmployeeId())
-								&& c.workingDate().equals(d.getWorkInformation().getYmd()))
-						.findFirst().ifPresent(dto -> {
-							d.getWorkInformation().setVersion(dto.getWorkInfo().getVersion());
-						});
-			});
+//			editedDomains.stream().forEach(d -> {
+//				editedDtos.stream()
+//						.filter(c -> c.employeeId().equals(d.getEmployeeId())
+//								&& c.workingDate().equals(d.getYmd()))
+//						.findFirst().ifPresent(dto -> {
+//							d.getWorkInformation().setVersion(dto.getWorkInfo().getVersion());
+//						});
+//			});
 
 			// check error sau khi tinh toan
 			// ErrorAfterCalcDaily
@@ -214,9 +214,9 @@ public class DailyCalculationRCommandFacade {
 
 			editedDomains = editedDomains.stream()
 					.filter(x -> !resultError.containsKey(
-							Pair.of(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd()))
+							Pair.of(x.getEmployeeId(), x.getYmd()))
 							&& !lstErrorCheckDetail.contains(
-									Pair.of(x.getWorkInformation().getEmployeeId(), x.getWorkInformation().getYmd())))
+									Pair.of(x.getEmployeeId(), x.getYmd())))
 					.collect(Collectors.toList());
 			domainOld = domainOld.stream()
 					.filter(x -> !resultError.containsKey(Pair.of(x.getEmployeeId(), x.getDate()))
