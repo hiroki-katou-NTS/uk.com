@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;

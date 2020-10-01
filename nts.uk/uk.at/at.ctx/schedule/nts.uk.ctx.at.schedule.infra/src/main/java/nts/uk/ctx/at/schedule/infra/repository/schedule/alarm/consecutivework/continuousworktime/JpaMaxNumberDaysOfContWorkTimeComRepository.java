@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.consecutiveattendance.continuousworktime;
+package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.consecutivework.continuousworktime;
 
 import java.util.Collections;
 import java.util.List;

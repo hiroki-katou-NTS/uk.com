@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework;
+package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance;
 
 import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;

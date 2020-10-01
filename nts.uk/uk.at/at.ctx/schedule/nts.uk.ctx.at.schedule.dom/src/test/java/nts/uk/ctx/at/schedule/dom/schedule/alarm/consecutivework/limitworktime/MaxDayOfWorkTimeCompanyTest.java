@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
