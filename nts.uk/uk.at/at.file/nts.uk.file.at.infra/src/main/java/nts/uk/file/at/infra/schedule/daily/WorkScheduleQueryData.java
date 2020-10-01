@@ -76,4 +76,6 @@ public class WorkScheduleQueryData {
 	
 	/** The remark data containter. */
 	RemarkQueryDataContainer remarkDataContainter;
+	
+	List<CodeName> lstReasonForDivergence;
 }

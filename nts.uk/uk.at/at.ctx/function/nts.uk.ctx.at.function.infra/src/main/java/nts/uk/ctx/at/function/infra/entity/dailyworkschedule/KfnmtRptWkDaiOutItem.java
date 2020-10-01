@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -31,8 +32,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The class KfnmtRptWkDaiOutItem
+ * 
  * @author LienPTK
- *
  */
 @Data
 @Entity
@@ -91,11 +92,12 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	@Column(name = "EXCLUS_VER")
 	public int exclusVer;
 
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
+	/** The lst kfnmt rpt wk dai outatds. */
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "kfnmtRptWkDaiOutItem", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds;
 
-	@OneToMany(cascade=CascadeType.ALL)
+	/** The lst kfnmt rpt wk dai outnotes. */
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "kfnmtRptWkDaiOutItem", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
 	private List<KfnmtRptWkDaiOutnote> lstKfnmtRptWkDaiOutnotes;
 
@@ -125,7 +127,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			entity.setAtdDisplay(new BigDecimal(obj.getAttendanceDisplay()));
 			entity.setCid(this.cid);
 			entity.setContractCd(this.contractCd);
-			entity.setExclusVer(this.exclusVer);
+			entity.setExclusVer(1);
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -140,7 +142,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			entity.setId(key);
 			entity.setCid(this.cid);
 			entity.setContractCd(this.contractCd);
-			entity.setExclusVer(this.exclusVer);
+			entity.setExclusVer(1);
 			entity.setUseCls(obj.isUsedClassification() ? BigDecimal.ONE : BigDecimal.ZERO);
 			return entity;
 		}).collect(Collectors.toList());
@@ -201,13 +203,4 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	public FontSizeEnum getFontSize() {
 		return FontSizeEnum.valueOf(this.charSizeType.intValue());
 	}
-	
-	public String getLayoutId() {
-		return this.layoutId;
-	}
-	
-	public void setLayoutId(String layoutId) {
-		this.layoutId = layoutId;
-	}
-
 }

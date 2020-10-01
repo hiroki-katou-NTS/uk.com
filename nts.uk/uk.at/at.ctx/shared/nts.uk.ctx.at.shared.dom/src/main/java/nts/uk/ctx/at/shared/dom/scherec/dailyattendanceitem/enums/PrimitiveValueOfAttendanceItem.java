@@ -60,7 +60,8 @@ public enum PrimitiveValueOfAttendanceItem {
 	MONTHLY_ANY_TIME(57, "月次任意時間"),
 	DAILY_ANY_NUM(58, "日次任意回数"),
 	MONTHLY_ANY_NUM(59, "月次任意回数"),
-	DIVERGENCE_REASON_CD(60, "乖離理由コード");
+	DIVERGENCE_REASON_CD(60, "乖離理由コード"),
+	ADDITION_SETTING_CODE(68, "加給設定コード");
 
 	public final int value;
 	public final String name;
