@@ -8,7 +8,7 @@ public enum LaborCostAndTimeType {
 
     WORKING_HOURS(1), // 就業時間
     
-    OVERTIME(9); // 時間外時間
+    OVERTIME(2); // 時間外時間
     
     public int value;
 
