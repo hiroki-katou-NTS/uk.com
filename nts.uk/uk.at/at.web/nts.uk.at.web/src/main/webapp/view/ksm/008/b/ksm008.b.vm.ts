@@ -25,9 +25,11 @@ module nts.uk.at.ksm008.b {
         // KCP005 end
         // KCP005 start
         componentOption: any;
-
         // KCP005 end
 
+        API = {
+            initscreen: 'screen/at/ksm/008/getinit'
+        }
         constructor(params: any) {
             super();
             this.declareCCG001();
@@ -40,12 +42,7 @@ module nts.uk.at.ksm008.b {
             $('#kcp005-component').ntsListComponent(vm.listComponentOption);
             $('#kcp005-select').ntsListComponent(vm.componentOption);
         }
-
-        test() {
-            alert("success");
-        }
-
-
+        
         mounted() {
         }
 
@@ -111,7 +108,6 @@ module nts.uk.at.ksm008.b {
                 employeeSearchs.push(employee);
             }
             vm.listComponentOption.employeeInputList(employeeSearchs);
-
         }
 
         declareKCP005() {
@@ -159,7 +155,7 @@ module nts.uk.at.ksm008.b {
 
         openDialogCDL009() {
             const vm = this;
-            const params = {selectedIds: [], isMultiple: false, baseDate: new Date(), target: 1};
+            const params = {selectedIds: [], isMultiple: false, baseDate: new Date(), target: TargetClassification.WORKPLACE};
             vm.$window
                 .storage('CDL009Params', params)
                 .then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
@@ -167,6 +163,10 @@ module nts.uk.at.ksm008.b {
                 .then((data: string | string[]) => {
                     // if (data != '') {
                     //     vm.employee.employeeId(ko.toJS(data));
+
+
+
+
                     // }
                 });
         }
@@ -253,6 +253,14 @@ module nts.uk.at.ksm008.b {
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
+    }
+
+    /**
+     * Class TargetClassification
+     */
+    export class TargetClassification {
+        static WORKPLACE = 1;
+        static DEPARTMENT = 2;
     }
 
 }

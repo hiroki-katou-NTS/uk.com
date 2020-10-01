@@ -176,7 +176,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         let eachContent = new TripContentDisp(
                             content.date,
                             content.opAchievementDetail.workTypeCD,
-                            content.opAchievementDetail.opWorkTypeName,
+                            content.opAchievementDetail.opWorkTypeName || "マスタ未登録",
                             content.opAchievementDetail.workTimeCD,
                             content.opAchievementDetail.opWorkTimeName,
                             content.opAchievementDetail.opWorkTime,
@@ -350,18 +350,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 } else {
                     currentRow.workTimeCD = "";
                     currentRow.opWorkTimeName = "なし";
-                    currentRow.opWorkTime = null;
-                    currentRow.opLeaveTime = null;
                 }
 
                 vm.dataFetch.valueHasMutated();
             }).fail(err => {
                 currentRow.workTimeCD = "";
                 currentRow.opWorkTimeName = "なし";
-                currentRow.opWorkTime = null;
-                currentRow.opLeaveTime = null;
-                vm.dataFetch.valueHasMutated();
 
+                vm.dataFetch.valueHasMutated();
                 vm.handleError(err);
 
             }).always(() => vm.$blockui("hide"));
@@ -416,11 +412,15 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(output);
             let contentChanged = vm.dataFetch().businessTripContent.tripInfos[index];
+            let startWorkTime = data.startWorkTime;
+            let endWorkTime = data.endWorkTime;
             let command = {
                 date: data.date,
                 businessTripInfoOutputDto: businessTripInfoOutputDto,
                 wkCode: data.wkTypeCd,
-                timeCode: codeChanged
+                timeCode: codeChanged,
+                startWorkTime,
+                endWorkTime
             };
 
             vm.$blockui("show");
@@ -438,8 +438,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 } else {
                     contentChanged.wkTimeCd = "";
                     contentChanged.wkTimeName = "なし";
-                    contentChanged.startWorkTime = null;
-                    contentChanged.endWorkTime = null;
                 }
 
                 vm.dataFetch.valueHasMutated();
@@ -448,8 +446,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 contentChanged.wkTimeCd = "";
                 contentChanged.wkTimeName = "なし";
-                contentChanged.startWorkTime = null;
-                contentChanged.endWorkTime = null;
 
                 vm.dataFetch.valueHasMutated();
 
@@ -538,10 +534,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         }
                         vm.dataFetch.valueHasMutated();
                     }
+
+                    setTimeout(() => {
+                        return $('#' + data.id).focus();
+                    }, 50);
+
                 });
-
-                $('#' + data.id).focus();
-
             });
 
         }
@@ -550,15 +548,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let param;
 
-            if (err.message && err.messageId) {
-
-                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
-                    err.message = err.parameterIds[0] + err.message;
-                    param = err;
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-
+            if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
+                err.message = err.parameterIds[0] + err.message;
+                param = err;
             } else {
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};

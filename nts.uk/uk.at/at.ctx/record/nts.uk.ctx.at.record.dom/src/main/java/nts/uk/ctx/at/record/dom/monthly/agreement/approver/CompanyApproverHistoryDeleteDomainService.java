@@ -18,7 +18,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 	/**
 	 * 会社別の承認者（36協定）の履歴を削除して、直前の履歴の終了日を変更する
 	 */
-	public AtomTask deleteApproverHistory(Require require, Approver36AgrByCompany histToDel){
+	public static AtomTask deleteApproverHistory(Require require, Approver36AgrByCompany histToDel){
 
 		return AtomTask.of(() -> {
 			require.deleteHistory(histToDel);
@@ -28,12 +28,12 @@ public class CompanyApproverHistoryDeleteDomainService {
 			if (optPrevHist.isPresent()) {
 				val prevHist = optPrevHist.get();
 				prevHist.setPeriod(new DatePeriod(prevHist.getPeriod().start(), GeneralDate.max()));
-				require.changeHistory(prevHist);
+				require.changeHistory(prevHist,prevHist.getPeriod().start());
 			}
 		});
 	}
 
-	public static interface Require {
+	public interface Require {
 		/**
 		 * [R-1] 直前の履歴を取得する Get previous history
 		 */
@@ -42,7 +42,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 		/**
 		 * [R-2] 履歴を変更する Change history
 		 */
-		void changeHistory(Approver36AgrByCompany hist);
+		void changeHistory(Approver36AgrByCompany hist,GeneralDate date);
 
 		/**
 		 * [R-3] 履歴を削除する Delete history

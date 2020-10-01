@@ -23,7 +23,7 @@ public interface Approver36AgrByCompanyRepo {
 	/**
 	 * [2] Update(会社別の承認者（36協定）)
 	 */
-	public void update(Approver36AgrByCompany domain);
+	public void update(Approver36AgrByCompany domain, GeneralDate startDateBeforeChange);
 
 	/**
 	 * [3] Delete(会社別の承認者（36協定）)

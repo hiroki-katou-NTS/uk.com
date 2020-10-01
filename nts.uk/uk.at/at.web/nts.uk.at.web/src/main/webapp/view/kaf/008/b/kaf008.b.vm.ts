@@ -158,8 +158,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             let wkDayInfo = _.filter(ko.toJS(workInfo), function (item) {
                                 return item.date == detail.date;
                             });
-                            if (wkDayInfo.length != 0) {
+                            if (wkDayInfo.length != 0 && wkDayInfo[0].workTypeDto) {
                                 workName = wkDayInfo[0].workTypeDto.name;
+                            } else {
+                                workName = "マスタ未登録";
                             }
                         }
 
@@ -167,8 +169,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item) {
                                 return item.worktimeCode == detail.wkTimeCd;
                             });
-                            if (wkTimeInfo.length != 0) {
+                            if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
                                 timeName = wkTimeInfo[0].workTimeDisplayName.workTimeName;
+                            } else {
+                                timeName = !detail.wkTimeCd ? "" : "マスタ未登録";
                             }
                         }
 
@@ -193,7 +197,11 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
-            }).always(() => vm.$blockui('hide'));
+            }).always(() => {
+                vm.$blockui('hide')
+                $('#kaf008-share #A5_3').focus();
+            });
+
         }
 
         // 出張申請を更新登録で更新する
@@ -225,7 +233,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     }
                 }).fail(err => {
                     vm.handleError(err);
-                }).always(() => vm.$blockui("hide"));
+                }).always(() => {
+                    vm.$errors("clear");
+                    vm.$blockui("hide");
+                });
         }
 
         dispose() {

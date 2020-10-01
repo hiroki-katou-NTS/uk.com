@@ -23,16 +23,17 @@ public class CompanyApproverHistoryAddDomainServiceTest {
 	@Test
 	public void test01() {
 		val domain = Helper.createApprover36AgrByCompany();
+		val update = Helper.createApprover36AgrByCompanyLast();
 		new Expectations() {{
 			require.getLatestHistory(GeneralDate.max());
-			result = Optional.of(domain);
+			result = Optional.of(update);
 		}};
 
 		val service = new CompanyApproverHistoryAddDomainService();
 		NtsAssert.atomTask(
 				() -> service.addApproverHistory(require, domain),
 				any -> require.addHistory(any.get()),
-				any -> require.changeLatestHistory(any.get())
+				any -> require.changeLatestHistory(any.get(),update.getPeriod().start())
 		);
 	}
 

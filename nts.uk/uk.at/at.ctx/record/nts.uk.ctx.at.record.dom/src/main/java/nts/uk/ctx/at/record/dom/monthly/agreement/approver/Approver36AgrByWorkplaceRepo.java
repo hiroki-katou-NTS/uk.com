@@ -23,7 +23,7 @@ public interface Approver36AgrByWorkplaceRepo {
 	/**
 	 * [2] Update(職場別の承認者（36協定）)
 	 */
-	public void update(Approver36AgrByWorkplace domain);
+	public void update(Approver36AgrByWorkplace domain,GeneralDate startDateBeforeChange);
 
 	/**
 	 * [3] Delete(職場別の承認者（36協定）)

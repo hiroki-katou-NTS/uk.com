@@ -20,10 +20,15 @@ module nts.uk.at.view.kaf022.q.viewmodel {
             {code: 6, name: "6"},
         ]);
 
+        // 申請理由
         appReasonDispAtr: KnockoutObservable<number>;
+        // 事前申請の超過メッセージ
         preExcessAtr: KnockoutObservable<number>;
+        // 実績超過メッセージ
         atdExcessAtr: KnockoutObservable<number>;
+        // 申請対象日に対して警告表示
         warningDays: KnockoutObservable<number>;
+        // 所属職場名表示
         dispWorkplaceNameAtr: KnockoutObservable<number>;
 
         constructor() {
