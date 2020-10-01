@@ -2773,10 +2773,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
-                self.stopRequest(false);
-                self.getListEmpIdSorted().done(() => {
-                    self.stopRequest(true);
-                });
+                let dataShare = getShared("ksu001la-result");
+                if (dataShare !== 'Cancel') {
+                    self.stopRequest(false);
+                    self.getListEmpIdSorted().done(() => {
+                        self.stopRequest(true);
+                    });
+                }
             });
         }
         
@@ -2786,10 +2789,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("KSU001M", self.listEmpData);
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
-                self.stopRequest(false);
-                self.getListEmpIdSorted().done(() => {
-                    self.stopRequest(true);
-                });
+                let dataShare = getShared("ksu001m-result");
+                if (dataShare !== 'Cancel') {
+                    self.stopRequest(false);
+                    self.getListEmpIdSorted().done(() => {
+                        self.stopRequest(true);
+                    });
+                }
             });
         }
 
