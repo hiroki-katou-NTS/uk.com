@@ -112,4 +112,22 @@ public interface LeaveManaDataRepository {
 	
 	//全ての状況
 	List<LeaveManagementData> getAllData();
+	
+	/**
+	 * 
+	 * @param cid
+	 * @param sid 社員ID
+	 * @param state 消化区分
+	 * @return
+	 */
+	List<LeaveManagementData> getBySidAndStateAtr(String cid, String sid, DigestionAtr state);
+
+	/**
+	 * Get by SidAndDatOff
+	 * @param cid
+	 * @param sid
+	 * @param state
+	 * @return
+	 */
+	List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs);
 }

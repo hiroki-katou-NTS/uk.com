@@ -46,11 +46,11 @@ public class ExtraHolidayManagementDataDto {
 		String companySettingExpiredDate = "";
 		for(LeaveManagementData data : listLeaveData){
 			DataExtractDto dto = DataExtractDto.convertFromLeaveDataToDto(0, data);
-			if(listLeaveComDayOffManagement.stream().filter(o -> o.getLeaveID().equals(data.getID())).findFirst().isPresent()){
-				dto.setLinked(1);
-			} else {
-				dto.setLinked(0);
-			}
+			//	if(listLeaveComDayOffManagement.stream().filter(o -> o.getLeaveID().equals(data.getID())).findFirst().isPresent()){
+			//		dto.setLinked(1);
+			//	} else {
+			//		dto.setLinked(0);
+			//	}
 			if (GeneralDate.today().after(data.getExpiredDate()) || data.getSubHDAtr() == DigestionAtr.EXPIRED){
 				dto.setExpired(data.getUnUsedDays().v());
 			}else {
@@ -60,11 +60,11 @@ public class ExtraHolidayManagementDataDto {
 		}
 		for(CompensatoryDayOffManaData data : listCompensatoryData){
 			DataExtractDto dto = DataExtractDto.convertFromCompensatoryDataToDto(1, data);
-			if(listLeaveComDayOffManagement.stream().filter(o -> o.getComDayOffID().equals(data.getComDayOffID())).findFirst().isPresent()){
-				dto.setLinked(1);
-			} else {
-				dto.setLinked(0);
-			}
+			//	if(listLeaveComDayOffManagement.stream().filter(o -> o.getComDayOffID().equals(data.getComDayOffID())).findFirst().isPresent()){
+			//		dto.setLinked(1);
+			//	} else {
+			//		dto.setLinked(0);
+			//	}
 			dto.setRemain(data.getRemainDays().v());
 			listExtraData.add(dto);
 		}
