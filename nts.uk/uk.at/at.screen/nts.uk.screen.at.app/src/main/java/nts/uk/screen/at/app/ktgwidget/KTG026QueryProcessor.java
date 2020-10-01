@@ -154,9 +154,9 @@ public class KTG026QueryProcessor {
 
 		// 上長用の時間外時間表示．対象社員の年間超過回数＝取得した「36協定超過情報」
 		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
-				.excessTimes(otHours.getAgreeInfo().getExcessTimes())
+				.excessTimes(otHours.getAgreeInfo())
 				.yearMonths(
-						otHours.getAgreeInfo().getYearMonths().stream().map(x -> x.v()).collect(Collectors.toList()))
+						otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
 				.build();
 		result.setAgreeInfo(agreeInfo);
 
@@ -191,9 +191,9 @@ public class KTG026QueryProcessor {
 		YearAndEmpOtHoursDto otHours = this.getYearAndEmployeeOTHours(employeeId, closingId, new Year(targetYear),
 				YearMonth.of(processingDate));
 		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
-				.excessTimes(otHours.getAgreeInfo().getExcessTimes())
+				.excessTimes(otHours.getAgreeInfo())
 				.yearMonths(
-						otHours.getAgreeInfo().getYearMonths().stream().map(x -> x.v()).collect(Collectors.toList()))
+						otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
 				.build();
 		// 「従業員用の時間外時間表示」を更新する
 		return EmployeesOvertimeDisplayDto.builder().ymOvertimes(otHours.getOvertimeHours()).agreeInfo(agreeInfo)
@@ -269,16 +269,12 @@ public class KTG026QueryProcessor {
 				
 			} else if (processingDate.lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月<=ループする年月]がtrue
 				// o【NO.333】36協定時間の取得
-				// TODO check lại cái 基準日＝ループする期間．終了日 - Base date = loop period. End date
 				AgreementTimeOfManagePeriod agreementTimeDetail = GetAgreementTime.get(require, employeeId, loopYM, new ArrayList<>(), loopYM.lastGeneralDate(), ScheRecAtr.SCHEDULE);
 				ymOvertimes.add(YearMonthOvertime.builder().yearMonth(ym).agreeTime(AgreementTimeOfManagePeriodDto.from(agreementTimeDetail)).build());
 			} else { // [INPUT．当月の年月<=ループする年月]がfalse
 				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
 				List<AgreementTimeOfManagePeriod> agreementTimeToppageLst = 
 						GetAgreementTimeOfMngPeriod.get(require, Arrays.asList(employeeId), new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
-//					getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(
-//						Arrays.asList(employeeId),
-//						new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
 				
 				agreementTimeToppageLst.stream().forEach(item -> 
 					ymOvertimes.add(YearMonthOvertime.builder().yearMonth(ym).agreeTime(AgreementTimeOfManagePeriodDto.from(item)).build())
