@@ -11,6 +11,8 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * シフトの勤務希望
@@ -46,7 +48,7 @@ public class ShiftExpectation implements WorkExpectation, DomainValue  {
 	}
 
 	@Override
-	public boolean isMatchingExpectation(Require require, WorkInformation workInformation,
+	public boolean isMatchingExpectation(WorkExpectation.Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		Optional<ShiftMaster> shiftMaster = require.getShiftMasterByWorkInformation(
@@ -62,13 +64,23 @@ public class ShiftExpectation implements WorkExpectation, DomainValue  {
 	}
 
 	@Override
-	public WorkExpectDisplayInfo getDisplayInformation(Require require) {
+	public WorkExpectDisplayInfo getDisplayInformation(WorkExpectation.Require require) {
 		List<String> shiftMasterNameList = require.getShiftMaster(this.workableShiftCodeList)
 												.stream().map(shiftmaster -> shiftmaster.getDisplayInfor().getName().v())
 												.collect(Collectors.toList());
 		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
 		return new WorkExpectDisplayInfo(asignmentMethod, shiftMasterNameList, Collections.emptyList());
+	}
+	
+	public static interface Require {
+		
+		// 勤務情報からシフトマスタを取得する
+		Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode, WorkTimeCode workTimeCode);
+
+		// シフトマスタを取得する
+		List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList);
+		
 	}
 	
 }
