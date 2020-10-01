@@ -11,6 +11,7 @@ import java.util.Optional;
 
 /**
  * 	DomainService: 職場の承認者履歴を削除する
+ * 	@author chinh.hm
  */
 @Stateless
 public class DeleteWorkplaceApproverHistoryDomainService {
@@ -23,7 +24,7 @@ public class DeleteWorkplaceApproverHistoryDomainService {
                     val preItem = optprevHist.get();
                     val newPeriod = new DatePeriod(preItem.getPeriod().start(),GeneralDate.max());
                     preItem.setPeriod(newPeriod);
-                    require.changeLatestHistory(preItem);
+                    require.changeLatestHistory(preItem,newPeriod.start());
                 }
         });
     }
@@ -34,7 +35,7 @@ public class DeleteWorkplaceApproverHistoryDomainService {
      //		[R-1] 直前の履歴を取得する :	職場別の承認者（36協定）Repository.指定終了日の履歴を取得する(職場ID,終了日)
      Optional<Approver36AgrByWorkplace> getLastHistory(String workplaceId, GeneralDate endDate);
      // 	[R-2] 履歴を変更する : 	職場別の承認者（36協定）Repository.Update(職場別の承認者（36協定）)
-     void changeLatestHistory(Approver36AgrByWorkplace domain);
+     void changeLatestHistory(Approver36AgrByWorkplace domain, GeneralDate date);
      // 		[R-3] 履歴を削除する: 	職場別の承認者（36協定）Repository.Delete(職場別の承認者（36協定）)
      void deleteHistory(Approver36AgrByWorkplace domain);
 

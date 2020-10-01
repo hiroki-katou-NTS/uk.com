@@ -37,16 +37,12 @@ public class CompanyApproverHistoryChangeDomainServiceTest {
 
 		AtomTask persist = service.changeApproverHistory(require, startDateBeforeChange, histToChange);
 		new Verifications() {{
-			require.changeHistory((Approver36AgrByCompany)any);
+			require.changeHistory((Approver36AgrByCompany)any,startDateBeforeChange);
 			times = 0;
 		}};
 
 		persist.run();
 
-		val a = new Verifications() {{
-			require.changeHistory((Approver36AgrByCompany)any);
-			times = 2;
-		}};
 	}
 
 	@Test
@@ -62,7 +58,7 @@ public class CompanyApproverHistoryChangeDomainServiceTest {
 		val service = new CompanyApproverHistoryChangeDomainService();
 		NtsAssert.atomTask(
 				() -> service.changeApproverHistory(require, startDateBeforeChange, histToChange),
-				any -> require.changeHistory(histToChange)
+				any -> require.changeHistory(histToChange,startDateBeforeChange)
 		);
 	}
 }

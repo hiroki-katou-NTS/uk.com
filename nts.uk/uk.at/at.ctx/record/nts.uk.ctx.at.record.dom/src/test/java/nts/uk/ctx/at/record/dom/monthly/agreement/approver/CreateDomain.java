@@ -17,6 +17,7 @@ public class CreateDomain {
     public static String cid = "cid";
     public static String workplaceId = "wid";
     public static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
+    public static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
     public static String employeeId = "eplId";
     public static String codeAndName = "codeName";
     public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
@@ -24,6 +25,15 @@ public class CreateDomain {
         return new Approver36AgrByWorkplace(
                 workplaceId,
                 period,
+                createApproverList(5),
+                createConfirmerList(5)
+        );
+    }
+    public static Approver36AgrByWorkplace createApprover36AgrByWorkplaceLast() {
+
+        return new Approver36AgrByWorkplace(
+                workplaceId,
+                periodLast,
                 createApproverList(5),
                 createConfirmerList(5)
         );
