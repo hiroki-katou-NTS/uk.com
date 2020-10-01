@@ -17,7 +17,7 @@ import nts.arc.testing.assertion.NtsAssert;
 public class AlarmCheckConditionScheduleTest {
 	@Test
 	public void getters() {
-		val alarmCheckCond =  new AlarmCheckConditionSchedule(new AlarmCheckConditionScheduleCode("alarmCheckCode"),
+		val alarmCheckCond =  AlarmCheckConditionSchedule.create(new AlarmCheckConditionScheduleCode("alarmCheckCode"),
 				"alarmCheckName",
 				true,
 				new ArrayList<>());
@@ -28,13 +28,11 @@ public class AlarmCheckConditionScheduleTest {
 
 	@Test
 	public void create_alarmCheckConditionSchedule_success() {
-
 		val subCondLst = createSubCondition(2);
-		val alarmCond = new AlarmCheckConditionSchedule(new AlarmCheckConditionScheduleCode("01"),
-				"alarmCheck1", true, subCondLst);
+		val alarmCond = AlarmCheckConditionSchedule.create(new AlarmCheckConditionScheduleCode("01"), "name", true, subCondLst);
 
 		assertThat(alarmCond.getCode().v()).isEqualTo("01");
-		assertThat(alarmCond.getConditionName()).isEqualTo("alarmCheck1");
+		assertThat(alarmCond.getConditionName()).isEqualTo("name");
 		assertThat(alarmCond.isMedicalOpt()).isTrue();
 		assertThat(alarmCond.getSubConditions()).containsExactlyElementsOf(subCondLst);
 	}
@@ -47,14 +45,14 @@ public class AlarmCheckConditionScheduleTest {
 		val updSubCd = new SubCode("1");															
 		val updMessage = new AlarmCheckMessage( "new message" );	
 		
-		val instance  = new AlarmCheckConditionSchedule(new AlarmCheckConditionScheduleCode("01"), "name", true, subCondLst);
+		val instance  = AlarmCheckConditionSchedule.create(new AlarmCheckConditionScheduleCode("01"), "name", true, subCondLst);
 		instance .updateMessage(updSubCd, updMessage);
 		
 		assertThat(instance.getSubConditions()).filteredOn(e -> e.getSubCode().equals(updSubCd))				
 				.extracting( e -> e.getMessage().getMessage() ).containsOnly( updMessage );		
 		assertThat(instance.getSubConditions()).filteredOn(e -> !e.getSubCode().equals(updSubCd))				
 				.containsExactlyInAnyOrderElementsOf(
-						subCondLst.stream().filter(c -> c.getSubCode().equals(updSubCd)).collect(Collectors.toList())
+						subCondLst.stream().filter(c -> !c.getSubCode().equals(updSubCd)).collect(Collectors.toList())
 				);	
 
 	}

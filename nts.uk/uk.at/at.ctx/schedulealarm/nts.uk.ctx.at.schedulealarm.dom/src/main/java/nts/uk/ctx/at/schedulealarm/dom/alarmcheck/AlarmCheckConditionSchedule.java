@@ -27,6 +27,12 @@ public class AlarmCheckConditionSchedule implements DomainAggregate{
 	/** サブ条件リスト */
 	private List<SubCondition> subConditions;
 	
+	public static AlarmCheckConditionSchedule create(AlarmCheckConditionScheduleCode code,
+			String conditionName, boolean medicalOpt, List<SubCondition> subConditions) {
+		sortSubConditions(subConditions);
+		return new AlarmCheckConditionSchedule(code, conditionName, medicalOpt, subConditions);
+	}
+	
 	/**
 	 * メッセージを変更する
 	 * @param subCode サブコード
@@ -37,14 +43,23 @@ public class AlarmCheckConditionSchedule implements DomainAggregate{
 		val subCond = this.subConditions.stream()
 						.filter(c -> c.getSubCode().equals(subCode))
 						.findFirst().get();
+		
 		val newMsgContent = new AlarmCheckMsgContent(subCond.getMessage().getDefaultMsg(), message);
 		val newSubCond = new SubCondition(subCond.getSubCode(), newMsgContent, subCond.getExplanation());
+		
 		subConditions.remove(subCond);
 		subConditions.add(newSubCond);
+		sortSubConditions(subConditions);
+	}
+	
+	/**
+	 * サブ条件リストをソートする
+	 * @param subConditions サブ条件リスト
+	 */
+	private static void sortSubConditions(List<SubCondition> subConditions) {
 		subConditions.sort((a, b) -> {
 			return a.getSubCode().v().compareTo(b.getSubCode().v());
 		});
-		
 	}
 
 }
