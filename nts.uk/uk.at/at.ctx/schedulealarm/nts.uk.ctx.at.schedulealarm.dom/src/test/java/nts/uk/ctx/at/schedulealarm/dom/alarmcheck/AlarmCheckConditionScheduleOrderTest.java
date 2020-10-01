@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedulealarm.dom.alarmcheck;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,43 +22,47 @@ public class AlarmCheckConditionScheduleOrderTest {
 		NtsAssert.invokeGetters(alarmOrder);
 
 	}
-	
+
 	/**
 	 * inv-1: 優先順リストの勤務予定のアラームチェック条件コードが重複しないこと
 	 * 優先順リストの勤務予定のアラームチェック条件コード == 02
 	 */
 	@Test
-	public void check_inv1_duplicate() {		
+	public void check_inv1_duplicate() {
 		NtsAssert.businessException("Msg_1621", ()-> {
 			AlarmCheckConditionScheduleOrder.create(
-					Arrays.asList(new AlarmCheckConditionScheduleCode("01"),
-								  new AlarmCheckConditionScheduleCode("02"),
-					              new AlarmCheckConditionScheduleCode("02")));
+					Arrays.asList(
+							new AlarmCheckConditionScheduleCode("01")
+						,	new AlarmCheckConditionScheduleCode("02")
+						,	new AlarmCheckConditionScheduleCode("02")
+					));
 		});
 	}
-	
+
 	/**
 	 * inv-2: 優先順リスト.size() > 0
 	 * 優先順リスト.size() == 0
 	 */
 	@Test
-	public void check_inv2_emptyList() {		
+	public void check_inv2_emptyList() {
 		NtsAssert.businessException("Msg_1622", ()-> {
 			AlarmCheckConditionScheduleOrder.create(Collections.emptyList());
 		});
 	}
-	
+
 	/**
 	 * 作る：成功
 	 */
 	public void create_alarmCheckConditionScheduleOrder_success() {
+
 		val codes = Arrays.asList(
-				  new AlarmCheckConditionScheduleCode("01"),
-				  new AlarmCheckConditionScheduleCode("02"),
-	              new AlarmCheckConditionScheduleCode("03"));
+							new AlarmCheckConditionScheduleCode("13")
+						,	new AlarmCheckConditionScheduleCode("05")
+						,	new AlarmCheckConditionScheduleCode("02")
+					);
 		val alarmOrder = AlarmCheckConditionScheduleOrder.create(codes);
-		
-		assertThat(alarmOrder.getCodes()).containsExactlyInAnyOrderElementsOf(codes);
-		
+
+		assertThat(alarmOrder.getCodes()).containsExactlyElementsOf(codes);
+
 	}
 }

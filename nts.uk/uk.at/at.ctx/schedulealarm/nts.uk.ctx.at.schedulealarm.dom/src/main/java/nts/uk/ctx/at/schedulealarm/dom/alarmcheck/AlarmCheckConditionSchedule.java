@@ -17,49 +17,63 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 public class AlarmCheckConditionSchedule implements DomainAggregate{
 	/** コード  */
 	private final AlarmCheckConditionScheduleCode code;
-	
+
 	/** 条件名 */
 	private final String conditionName;
-	
+
 	/** 医療オプション */
 	private final boolean medicalOpt ;
-	
+
 	/** サブ条件リスト */
 	private List<SubCondition> subConditions;
-	
-	public static AlarmCheckConditionSchedule create(AlarmCheckConditionScheduleCode code,
-			String conditionName, boolean medicalOpt, List<SubCondition> subConditions) {
+
+
+	/**
+	 * 作成する
+	 * @param code コード
+	 * @param conditionName 条件名
+	 * @param medicalOpt 医療オプション
+ 	 * @param subConditions サブ条件リスト
+	 * @return
+	 */
+	public static AlarmCheckConditionSchedule create(AlarmCheckConditionScheduleCode code, String conditionName
+			, boolean medicalOpt, List<SubCondition> subConditions) {
+
 		sortSubConditions(subConditions);
+
 		return new AlarmCheckConditionSchedule(code, conditionName, medicalOpt, subConditions);
+
 	}
-	
+
+
 	/**
 	 * メッセージを変更する
 	 * @param subCode サブコード
 	 * @param message メッセージ
 	 */
 	public void updateMessage(SubCode subCode, AlarmCheckMessage message) {
-		/** 実は　filter(subCode) データはいつもある*/
+		// ※指定されたサブコードは常に存在する
 		val subCond = this.subConditions.stream()
 						.filter(c -> c.getSubCode().equals(subCode))
 						.findFirst().get();
-		
-		val newMsgContent = new AlarmCheckMsgContent(subCond.getMessage().getDefaultMsg(), message);
-		val newSubCond = new SubCondition(subCond.getSubCode(), newMsgContent, subCond.getExplanation());
-		
-		subConditions.remove(subCond);
-		subConditions.add(newSubCond);
-		sortSubConditions(subConditions);
+
+		val newSubCond = new SubCondition(
+						subCond.getSubCode()
+					,	new AlarmCheckMsgContent(subCond.getMessage().getDefaultMsg(), message)
+					,	subCond.getExplanation()
+				);
+
+		this.subConditions.remove(subCond);
+		this.subConditions.add(newSubCond);
+		sortSubConditions(this.subConditions);
 	}
-	
+
 	/**
 	 * サブ条件リストをソートする
 	 * @param subConditions サブ条件リスト
 	 */
 	private static void sortSubConditions(List<SubCondition> subConditions) {
-		subConditions.sort((a, b) -> {
-			return a.getSubCode().v().compareTo(b.getSubCode().v());
-		});
+		subConditions.sort( (a, b) -> a.getSubCode().compareTo(b.getSubCode()) );
 	}
 
 }
