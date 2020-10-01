@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -41,7 +40,7 @@ public class AccessRestrictions extends AggregateRoot{
 	
 	/** [2] 許可IPアドレスを更新する */
 	public void updateIPAddress(AllowedIPAddress oldIp, AllowedIPAddress newIp) {
-		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(oldIp.getStartAddress()));
+		this.allowedIPaddress.removeIf(c-> (c.getStartAddress().equals(oldIp.getStartAddress())));
 		this.addIPAddress(newIp);
 		this.allowedIPaddress.sort((AllowedIPAddress x, AllowedIPAddress y) -> x.getStartAddress().toString().compareTo(y.getStartAddress().toString()));
 	}
@@ -55,10 +54,8 @@ public class AccessRestrictions extends AggregateRoot{
 	}
 	
 	/** [4] アクセス制限を追加する */
-	public AccessRestrictions() {
-		super();
+	public void createAccessRestrictions() {
 		this.accessLimitUseAtr = NotUseAtr.NOT_USE;
-		this.contractCode = new ContractCode(AppContexts.user().contractCode());
 		this.allowedIPaddress = new ArrayList<>();
 	}
 
