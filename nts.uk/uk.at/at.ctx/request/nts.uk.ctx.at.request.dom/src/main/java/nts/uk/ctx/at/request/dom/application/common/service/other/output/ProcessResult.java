@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -9,6 +10,7 @@ import lombok.Setter;
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 @Getter
 @Setter
 public class ProcessResult {
