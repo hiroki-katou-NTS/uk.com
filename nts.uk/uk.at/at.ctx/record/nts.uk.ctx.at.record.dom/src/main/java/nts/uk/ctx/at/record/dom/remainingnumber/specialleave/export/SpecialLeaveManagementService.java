@@ -26,16 +26,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.DividedDayEachProcess;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM2;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.DividedDayEachProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM2;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
+import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveAggregatePeriodWork;
@@ -44,8 +44,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.Specia
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveLapsedWork;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -61,7 +61,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
@@ -100,6 +100,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHoli
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.GrantDaysInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.GrantDaysInforByDates;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployee;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInfor;
@@ -566,7 +567,7 @@ public class SpecialLeaveManagementService {
 		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap 
 			= new HashMap<GeneralDate, SpecialLeaveDividedDayEachProcess>();
 		
-		sortedLstSpeData.forEach( c->{
+		for( SpecialLeaveGrantRemainingData c : sortedLstSpeData ){
 			
 			// 期限日
 			val deadline = c.getDeadline();
@@ -590,12 +591,12 @@ public class SpecialLeaveManagementService {
 				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 					= dividedDayMap.get(nextDayOfDeadLine);
 				if ( specialLeaveDividedDayEachProcess != null ){
-					specialLeaveDividedDayEachProcess.setLapsedAtr(true);
+					specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
 				}
 			} else {
 				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 					= new SpecialLeaveDividedDayEachProcess(nextDayOfDeadLine);
-				specialLeaveDividedDayEachProcess.setLapsedAtr(true);
+				specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
 				// リストへ追加
 				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
 			}
@@ -738,7 +739,7 @@ public class SpecialLeaveManagementService {
 		// 付与前か付与後か = 付与前
 		boolean afterGrant = false;
 		specialLeaveGrantList4.forEach(c->{
-			if ( c.isGrantAtr() ){ // 付与フラグ
+			if ( c.isAfterGrant() ){ // 付与フラグ
 				afterGrant = true;
 			}
 			c.setAfterGrant(afterGrant);
@@ -751,46 +752,25 @@ public class SpecialLeaveManagementService {
 		dividedDayList.addAll(dividedDayMap.values());
 		dividedDayList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		
-//		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork_first
-//			= 
+		// ループ1つ前の情報を保持
+		Optional<SpecialLeaveDividedDayEachProcess> specialLeaveDividedDayEachProcess_pre = Optional.empty();
 		
 		// 処理単位分割日でループ
 		boolean isFirst = true;
 		GeneralDate preYmd;
-		dividedDayList.forEach(c->{
+		
+		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
+			
 			if ( isFirst ){
-				
-				// 「特別休暇集計期間WORK」を作成
-				SpecialLeaveLapsedWork specialLeaveLapsedWork
-					= new SpecialLeaveLapsedWork();
-				
-				// 期間．開始日←パラメータ「開始日」
-				// 期間．終了日←最初の「処理単位分割日．年月日」の前日
-				specialLeaveLapsedWork.setLapsedAtr(false);
-				SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
-					= SpecialLeaveAggregatePeriodWork.of(
-							new DatePeriod(aggrPeriod.start(), c.getYmd().addDays(-1)),
-							true, false, false, specialLeaveLapsedWork, Optional.empty());
-				
-//				DatePeriod period,
-//				boolean dayBeforePeriodEnd,
-//				boolean nextDayAfterPeriodEnd,
-//				boolean afterGrant,
-//				SpecialLeaveLapsedWork lapsedAtr,
-//				SpecialLeaveGrantWork grantWork
-				
-				aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
-				
 				isFirst = false;
+				specialLeaveDividedDayEachProcess_pre = Optional.of(c);
 				preYmd = c.getYmd();
-				
 				continue;
 			}
 			
 			// 特別休暇集計期間WORKを作成し、Listに追加
 			SpecialLeaveLapsedWork specialLeaveLapsedWork
 				= new SpecialLeaveLapsedWork();
-			specialLeaveLapsedWork.setLapsedAtr(c.isLapsedAtr());
 			
 			// 期間．開始日←「処理単位分割日．年月日」
 			// 期間．終了日←次の「処理単位分割日．年月日」の前日
@@ -802,13 +782,16 @@ public class SpecialLeaveManagementService {
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 				= SpecialLeaveAggregatePeriodWork.of(
 					new DatePeriod(preYmd, c.getYmd().addDays(-1)),
-					c.isDayBeforePeriodEnd(), 
-					c.isNextDayAfterPeriodEnd(),
-					c.isAfterGrant(), 
-					specialLeaveLapsedWork, 
-					Optional.empty());
+					specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(), 
+					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
+					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(), 
+					specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+					specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
+			
 			aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
-		});
+			
+			specialLeaveDividedDayEachProcess_pre = Optional.of(c);
+		}
 		
 		// 次の処理単位分割日がない場合、パラメータ「終了日」の翌日
 		
@@ -820,9 +803,14 @@ public class SpecialLeaveManagementService {
 		// 期間．開始日←最後の「処理単位分割日．年月日」
 		// 期間．終了日←パラメータ「終了日」の翌日
 		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
-			= SpecialLeaveAggregatePeriodWork.of(
-					new DatePeriod(preYmd, nextDayOfPeriodEnd),
-					true, false, false, specialLeaveLapsedWork, Optional.empty());
+		= SpecialLeaveAggregatePeriodWork.of(
+			new DatePeriod(preYmd, nextDayOfPeriodEnd),
+			specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(), 
+			specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
+			specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(), 
+			specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+			specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
+		
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 		
 		return aggregatePeriodWorks;
@@ -1965,7 +1953,8 @@ public class SpecialLeaveManagementService {
 			InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
 			InterimRemainRepository interimRemainRepo, 
 			SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo,
-			SyCompanyRecordAdapter syCompanyRecordAdapter) {
+			SyCompanyRecordAdapter syCompanyRecordAdapter,
+			ClosureStatusManagementRepository closureStatusManagementRepo) {
 		
 		return new RequireM5Impl(
 				specialLeaveGrantRepo, 
@@ -1977,7 +1966,8 @@ public class SpecialLeaveManagementService {
 				interimSpecialHolidayMngRepo, 
 				interimRemainRepo, 
 				specialLeaveBasicInfoRepo, 
-				syCompanyRecordAdapter);
+				syCompanyRecordAdapter,
+				closureStatusManagementRepo);
 	}
 	
 	@AllArgsConstructor

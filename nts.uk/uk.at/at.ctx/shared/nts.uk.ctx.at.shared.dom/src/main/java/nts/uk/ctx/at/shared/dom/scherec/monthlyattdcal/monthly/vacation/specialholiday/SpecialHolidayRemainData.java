@@ -164,20 +164,21 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 				specialUseDaysBefore,
 				Optional.ofNullable(specialUseDaysAfter));
 		
-		// 特別休暇：未消化数
-		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion(
-				new SpecialLeaveRemainDay(remainDays.getUnDisgesteDays()),
-				Optional.empty());
+//		// ooooo要修正！！
+//		// 特別休暇：未消化数
+//		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion(
+//				new SpecialLeaveRemainDay(remainDays.getUnDisgesteDays()),
+//				Optional.empty());
 		
-		// 特別休暇
-		domain.specialLeave = new SpecialLeave(
-				(specialRemainAfter != null ? specialRemainAfter : specialRemainBefore),
-				specialRemainBefore,
-				new SpecialLeaveUseNumber(
-						specialUseNumberDays,
-						Optional.empty()),
-				unDegestionNumber,
-				Optional.ofNullable(specialRemainAfter));
+//		// 特別休暇
+//		domain.specialLeave = new SpecialLeave(
+//				(specialRemainAfter != null ? specialRemainAfter : specialRemainBefore),
+//				specialRemainBefore,
+//				new SpecialLeaveUseNumber(
+//						specialUseNumberDays,
+//						Optional.empty()),
+//				unDegestionNumber,
+//				Optional.ofNullable(specialRemainAfter));
 		
 		// 付与区分
 		domain.grantAtr = inPeriod.getRemainDays().getGrantDetailAfter().isPresent();

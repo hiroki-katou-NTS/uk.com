@@ -85,13 +85,18 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	}
 	
 	/**
-	 * 日数を使用日数に加算する
+	 * 使用数を加算する
 	 */
 	public void addUsedNumber(SpecialLeaveUseNumber usedNumber){
-		this.useDays.addUsedDays(usedNumber.getUsedDays().getUsedDayNumber().v());
-		if (this.useTimes.isPresent()){
-			this.useTimes.get().getUsedTime().addMinutes(
-					usedNumber.getUsedTime().get().getUsedTime().v());
+		
+		this.useDays.addUseDays(usedNumber.getUseDays());
+		
+		if ( usedNumber.getUseTimes().isPresent()){
+			if (this.useTimes.isPresent()){
+				this.useTimes.get().addUseTimes(usedNumber.getUseTimes().get());
+			}
 		}
 	}
 }
+
+

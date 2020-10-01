@@ -582,11 +582,6 @@ public class RemainNumberTempRequireService {
 		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
 			return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
 		}
-		
-		@Override
-		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
-			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-		}
 
 		@Override
 		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,

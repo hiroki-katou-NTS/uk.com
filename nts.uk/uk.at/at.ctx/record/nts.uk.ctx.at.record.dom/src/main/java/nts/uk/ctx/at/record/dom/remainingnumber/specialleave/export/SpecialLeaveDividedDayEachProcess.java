@@ -5,6 +5,9 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveGrantWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveLapsedWork;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 
 /**
@@ -13,32 +16,27 @@ import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
  *
  */
 @Getter
+@Setter
 public class SpecialLeaveDividedDayEachProcess {
 
 	/** 年月日 */
 	private GeneralDate ymd;
-	
+	/** 消滅情報WORK */
+	private SpecialLeaveLapsedWork lapsedWork;
+	/** 付与情報WORK */
+	private SpecialLeaveGrantWork grantWork;
 	/** 次回年休付与 */
-	@Setter
 	private Optional<NextSpecialLeaveGrant> nextSpecialLeaveGrant;
-	/** 期間終了内 */
-	@Setter
+	/** 終了日の期間かどうか */
 	private boolean dayBeforePeriodEnd;
-	/** 期間終了後翌日 */
-	@Setter
+	/** 終了日の翌日の期間かどうか */
 	private boolean nextDayAfterPeriodEnd;
-	/** 何回目の付与なのか */
-	@Setter
-	private int grantNumber = 0;	
 	/** 付与後 */
-	@Setter
 	private boolean afterGrant;
-	/** 付与フラグ */
-	@Setter
-	private boolean grantAtr;
-	/** 消滅フラグ */
-	@Setter
-	private boolean lapsedAtr;
+//	/** 何回目の付与なのか */
+//	@Setter
+//	private int grantNumber = 0;	
+	
 	
 	/**
 	 * コンストラクタ
@@ -47,12 +45,12 @@ public class SpecialLeaveDividedDayEachProcess {
 	public SpecialLeaveDividedDayEachProcess(GeneralDate ymd){
 		
 		this.ymd = ymd;
-		
+		this.lapsedWork = new SpecialLeaveLapsedWork();
+		this.grantWork = new SpecialLeaveGrantWork();
 		this.nextSpecialLeaveGrant = Optional.empty();
 		this.dayBeforePeriodEnd = true;
 		this.nextDayAfterPeriodEnd = false;
-		this.grantAtr = false;
-		this.lapsedAtr = false;
+		this.afterGrant = false;
 	}
 	
 //	/**

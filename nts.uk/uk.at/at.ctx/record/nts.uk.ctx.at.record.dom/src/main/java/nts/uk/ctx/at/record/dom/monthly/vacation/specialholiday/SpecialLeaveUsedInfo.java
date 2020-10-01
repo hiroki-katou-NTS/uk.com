@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional {
 

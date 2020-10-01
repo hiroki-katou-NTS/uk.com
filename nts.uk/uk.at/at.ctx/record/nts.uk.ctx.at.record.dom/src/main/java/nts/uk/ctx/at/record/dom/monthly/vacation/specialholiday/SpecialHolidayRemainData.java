@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
-
 /**
  * 特別休暇月別残数データ
  * 
@@ -50,7 +51,6 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 	 * 締め日付
 	 */
 	private ClosureDate closureDate;
-
 	/**
 	 * 特別休暇コード
 	 */
@@ -68,12 +68,16 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 	 */
 	private boolean grantAtr;
 	/**
+	 * 未消化数
+	 */
+	private SpecialLeaveUnDigestion unDegestionNumber;
+	/**
 	 * 特別休暇付与情報: 付与日数
 	 */
 	private Optional<SpecialLeaveGrantUseDay> grantDays;
 
 	/*
-	 * 特別休暇月別残数データを更新
+	 * 特別休暇月別残数データを作成
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
@@ -126,9 +130,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 			actualUseDays += actualUseDaysAfter.v();
 		}
 		SpecialLeaveUseDays actualUseNumberDays = new SpecialLeaveUseDays(
-				new SpecialLeaveRemainDay(actualUseDays),
-				actualUseDaysBefore,
-				Optional.ofNullable(actualUseDaysAfter));
+				new SpecialLeaveRemainDay(actualUseDays));
 		
 		// 実特別休暇
 		domain.actualSpecial = new ActualSpecialLeave(
@@ -160,16 +162,22 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 			specialUseDays += specialUseDaysAfter.v();
 		}
 		SpecialLeaveUseDays specialUseNumberDays = new SpecialLeaveUseDays(
-				new SpecialLeaveRemainDay(specialUseDays),
-				specialUseDaysBefore,
-				Optional.ofNullable(specialUseDaysAfter));
+				new SpecialLeaveRemainDay(specialUseDays));
 		
+		// ooooo要修正！！
 		// 特別休暇：未消化数
-		SpecialLeaveUnDigestion unDegestionNumber = new SpecialLeaveUnDigestion(
-				new SpecialLeaveRemainDay(remainDays.getUnDisgesteDays()),
-				Optional.empty());
+		SpecialLeaveRemainDay a = new SpecialLeaveRemainDay(remainDays.getUnDisgesteDays());
+		SpecialLeaveUnDigestion unDegestionNumber 
+			= new SpecialLeaveUnDigestion(a, Optional.empty());
+				
 		
 		// 特別休暇
+		SpecialLeaveUsedInfo specialLeaveUsedInfo
+			= SpecialLeaveUsedInfo.of(
+					new SpecialLeaveUseNumber(
+							specialUseNumberDays,
+							Optional.empty()), usedNumberBeforeGrant, specialLeaveUsedTimes, specialLeaveUsedDayTimes, usedNumberAfterGrantOpt)
+		
 		domain.specialLeave = new SpecialLeave(
 				(specialRemainAfter != null ? specialRemainAfter : specialRemainBefore),
 				specialRemainBefore,
@@ -178,6 +186,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 						Optional.empty()),
 				unDegestionNumber,
 				Optional.ofNullable(specialRemainAfter));
+	
 		
 		// 付与区分
 		domain.grantAtr = inPeriod.getRemainDays().getGrantDetailAfter().isPresent();

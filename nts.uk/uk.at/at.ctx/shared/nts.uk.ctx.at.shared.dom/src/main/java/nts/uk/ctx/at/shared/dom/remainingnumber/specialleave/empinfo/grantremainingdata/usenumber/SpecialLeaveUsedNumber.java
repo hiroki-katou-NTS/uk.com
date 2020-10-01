@@ -7,7 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
 
 @Getter
 @Setter
@@ -34,61 +39,16 @@ public class SpecialLeaveUsedNumber extends LeaveUsedNumber{
 //	 */
 //	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
 
-	private SpecialLeaveUsedNumber(
-			BigDecimal dayNumberOfUse, 
-			Integer timeOfUse, 
-			BigDecimal useSavingDays,
-			BigDecimal dayNumberOfExeeded, 
-			Integer timeOfExeeded) {
-		
-		this.days = new DayNumberOfUse(dayNumberOfUse == null? 0.0d: dayNumberOfUse.doubleValue());
-		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
-		this.useSavingDays = useSavingDays != null ? Optional.of(new DayNumberOfUse( useSavingDays.doubleValue()))
+
+	public SpecialLeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
+		this.days = new LeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays = stowageDays != null ? Optional.of(new AnnualLeaveUsedDayNumber(stowageDays))
 				: Optional.empty();
-		if(dayNumberOfExeeded == null && timeOfExeeded  == null) {
-			this.specialLeaveOverLimitNumber = Optional.empty();
-		} else {
-		this.specialLeaveOverLimitNumber = Optional
-				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded == null? 0.0d: dayNumberOfExeeded.doubleValue(), timeOfExeeded));
-		}
 	}
 
-	public static SpecialLeaveUsedNumber createFromJavaType(
-			BigDecimal dayNumberOfUse, 
-			Integer timeOfUse,
-			BigDecimal useSavingDays, 
-			BigDecimal dayNumberOfExeeded, 
-			Integer timeOfExeeded) {
-		return new SpecialLeaveUsedNumber(
-				dayNumberOfUse, 
-				timeOfUse, 
-				useSavingDays, 
-				dayNumberOfExeeded,
-				timeOfExeeded);
-	}
-	
-	private SpecialLeaveUsedNumber(double dayNumberOfUse, Integer timeOfUse, Double useSavingDays,
-			double dayNumberOfExeeded, Integer timeOfExeeded) {
-		this.dayNumberOfUse = new DayNumberOfUse(dayNumberOfUse);
-		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
-		this.useSavingDays = useSavingDays != null ? Optional.of(new DayNumberOfUse(useSavingDays))
-				: Optional.empty();
-		this.specialLeaveOverLimitNumber = Optional
-				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));
-	}
-
-	public static SpecialLeaveUsedNumber createFromJavaType(
-			double dayNumberOfUse, 
-			Integer timeOfUse,
-			Double dayNumberOfUsed, 
-			double dayNumberOfExeeded, 
-			Integer timeOfExeeded) {
-		return new SpecialLeaveUsedNumber(
-				dayNumberOfUse, 
-				timeOfUse, 
-				dayNumberOfUsed, 
-				dayNumberOfExeeded,
-				timeOfExeeded);
+	public static AnnualLeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
+		return new AnnualLeaveUsedNumber(days, minutes, stowageDays);
 	}
 
 }

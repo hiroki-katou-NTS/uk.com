@@ -430,8 +430,6 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}
 		return result;
 	}
-<<<<<<< HEAD
-=======
 
 	@Override
 	public List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam, Optional<Boolean> getEmpExternalCodeParam,
@@ -499,5 +497,4 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		return result;
 	}
 
->>>>>>> pj/at/jp_dev/nabe_team/jinno
 }

@@ -1285,18 +1285,19 @@ public class AggregateMonthlyRecordServiceProc {
 			val asOfStartNextDayOfPeriodEnd = aggrResult.getAnnualLeave().get().getAsOfStartNextDayOfPeriodEnd();
 			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
 
-			// 年休月別残数データを更新
-			AnnLeaRemNumEachMonth annLeaRemNum = AnnLeaRemNumEachMonth.of(this.employeeId, this.yearMonth,
-					this.closureId, this.closureDate, period, ClosureStatus.UNTREATED,
-					remainingNumber.getAnnualLeaveNoMinus(), remainingNumber.getAnnualLeaveWithMinus(),
-					remainingNumber.getHalfDayAnnualLeaveNoMinus(), remainingNumber.getHalfDayAnnualLeaveWithMinus(),
-					asOfStartNextDayOfPeriodEnd.getGrantInfo(), remainingNumber.getTimeAnnualLeaveNoMinus(),
-					remainingNumber.getTimeAnnualLeaveWithMinus(),
-					AnnualLeaveAttdRateDays.of(new MonthlyDays(daysForCalcAttdRate.getWorkingDays()),
-							new MonthlyDays(daysForCalcAttdRate.getPrescribedDays()),
-							new MonthlyDays(daysForCalcAttdRate.getDeductedDays())),
-					asOfStartNextDayOfPeriodEnd.isAfterGrantAtr());
-			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
+//			// ooooo要修正！！
+//			// 年休月別残数データを更新
+//			AnnLeaRemNumEachMonth annLeaRemNum = AnnLeaRemNumEachMonth.of(this.employeeId, this.yearMonth,
+//					this.closureId, this.closureDate, period, ClosureStatus.UNTREATED,
+//					remainingNumber.getAnnualLeaveNoMinus(), remainingNumber.getAnnualLeaveWithMinus(),
+//					remainingNumber.getHalfDayAnnualLeaveNoMinus(), remainingNumber.getHalfDayAnnualLeaveWithMinus(),
+//					asOfStartNextDayOfPeriodEnd.getGrantInfo(), remainingNumber.getTimeAnnualLeaveNoMinus(),
+//					remainingNumber.getTimeAnnualLeaveWithMinus(),
+//					AnnualLeaveAttdRateDays.of(new MonthlyDays(daysForCalcAttdRate.getWorkingDays()),
+//							new MonthlyDays(daysForCalcAttdRate.getPrescribedDays()),
+//							new MonthlyDays(daysForCalcAttdRate.getDeductedDays())),
+//					asOfStartNextDayOfPeriodEnd.isAfterGrantAtr());
+//			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
 
 			// 年休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors()

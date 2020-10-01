@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
 /**
@@ -66,13 +66,13 @@ public class SpecialLeaveUseDays extends DomainObject {
 	}
 	
 	@Override
-	protected AnnualLeaveUsedDays clone() {
-		AnnualLeaveUsedDays cloned = new AnnualLeaveUsedDays();
+	protected SpecialLeaveUseDays clone() {
+		SpecialLeaveUseDays cloned = new SpecialLeaveUseDays();
 		try {
-			cloned。 = new AnnualLeaveUsedDayNumber(this.usedDayNumber.v());
+			cloned.useDays = new SpecialLeaveRemainDay(this.useDays.v());
 		}
 		catch (Exception e){
-			throw new RuntimeException("AnnualLeaveUsedDays clone error.");
+			throw new RuntimeException("SpecialLeaveUseDays clone error.");
 		}
 		return cloned;
 	}
@@ -81,8 +81,8 @@ public class SpecialLeaveUseDays extends DomainObject {
 	 * 日数を使用日数に加算する
 	 * @param days 日数
 	 */
-	public void addUsedDays(double days){
-		this.usedDayNumber = new AnnualLeaveUsedDayNumber(this.usedDayNumber.v() + days);
+	public void addUseDays(SpecialLeaveUseDays days){
+		this.useDays = new SpecialLeaveRemainDay(this.useDays.v() + days.getUseDays().v());
 	}
 	
 //	/**

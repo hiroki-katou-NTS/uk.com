@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
@@ -48,12 +47,13 @@ public class SpecialLeaveAggregatePeriodWork {
 	}
 	
 	/**
-	 * ファクトリー
+	 * 
 	 * @param period 期間
+	 * @param dayBeforePeriodEnd
 	 * @param nextDayAfterPeriodEnd 期間終了後翌日
 	 * @param afterGrant 付与後
 	 * @param lapsedAtr 消滅フラグ
-	 * @param specialLeaveGrant 特休付与
+	 * @param grantWork
 	 * @return 特休集計期間WORK
 	 */
 	public static SpecialLeaveAggregatePeriodWork of(
