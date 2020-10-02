@@ -46,6 +46,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
+		if (sids.isEmpty())
+			return new ArrayList<>();
+
 		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
 				.setParameter("sids", sids).setParameter("startDate", period.start())
 				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
