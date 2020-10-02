@@ -65,7 +65,7 @@ public class FurikyuMngDataExtractionService {
 		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
 		// Step 取得した管理区分をチェック
 		if (emplManage.getIsManage().value == ManageDistinct.NO.value) {
-			throw new BusinessException("Msg_1731");
+			throw new BusinessException("Msg_1731",  "Com_CompensationHoliday");
 		} else {
 			// Step Input．設定期間区分をチェック
 			// select 全ての状況
@@ -83,7 +83,7 @@ public class FurikyuMngDataExtractionService {
 			}
 			// Step 取得したデータをチェック
 			if(payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {
-				throw new BusinessException("Msg_726");
+				throw new BusinessException("Msg_725");
 			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
 			if(substitutionOfHDManagementData.isEmpty()) {
@@ -101,19 +101,18 @@ public class FurikyuMngDataExtractionService {
 			// Step 振休残数データ情報を作成
 			List<RemainInfoData> lstRemainData = this.getRemainInfoData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, empId);
 			List<RemainInfoDto> lstDataRemainDto =  lstRemainData.stream().map(item -> {
-				RemainInfoDto itemData = RemainInfoDto.builder()
-						.occurrenceId(item.getOccurrenceId().isPresent() ? item.getOccurrenceId().get() : null)
-						.occurrenceHour(item.getOccurrenceHour().isPresent() ? item.getOccurrenceHour().get() : 0)
-						.occurrenceDay(item.getOccurrenceDay().isPresent() ? item.getOccurrenceDay().get() : 0d)
-						.accrualDate(item.getAccrualDate().isPresent() ? item.getAccrualDate().get().toString() :null)
-						.digestionId(item.getDigestionId().isPresent() ? item.getDigestionId().get() : "")
-						.digestionTimes(item.getDigestionTimes().isPresent() ? item.getDigestionTimes().get() : 0)
-						.digestionDays(item.getDigestionDays().isPresent() ? item.getDigestionDays().get() : 0d)
-						.digestionDay(item.getDigestionDay().isPresent() ? item.getDigestionDay().get().toString() : "")
-						.legalDistinction(item.getLegalDistinction().isPresent() ? item.getLegalDistinction().get() : 0)
-						.remainingHours(item.getRemainingHours().isPresent() ? item.getRemainingHours().get() : 0)
+				RemainInfoDto itemData =RemainInfoDto.builder()
+						.occurrenceId(item.getOccurrenceId().orElse(""))
+						.occurrenceHour(item.getOccurrenceHour().orElse(0))
+						.occurrenceDay(item.getOccurrenceDay().orElse(0d))
+						.accrualDate(item.getAccrualDate().map(t -> t.toString()).orElse(""))
+						.digestionId(item.getDigestionId().orElse(""))
+						.digestionTimes(item.getDigestionTimes().orElse(0))
+						.digestionDays(item.getDigestionDays().orElse(0d))
+						.digestionDay(item.getDigestionDay().map(t -> t.toString()).orElse(""))
+						.remainingHours(item.getRemainingHours().orElse(0))
 						.dayLetf(item.getDayLetf())
-						.deadLine(item.getDeadLine().isPresent() ? item.getDeadLine().get().toString() : "")
+						.deadLine(item.getDeadLine().map(t -> t.toString()).orElse(""))
 						.usedTime(item.getUsedTime())
 						.usedDay(item.getUsedDay())
 						.build();

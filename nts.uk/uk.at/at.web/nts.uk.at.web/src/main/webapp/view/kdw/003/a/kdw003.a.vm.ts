@@ -1238,12 +1238,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.displayFormat() == 0) {
                 if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
                     dataParent["employeeId"] = self.shareObject().initClock.employeeId;
-                    dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
                 } else {
                     dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
-                    dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                 }
                 dataParent["monthValue"] = self.valueUpdateMonth;
+                dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
             } else {
                 dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[0].dateDetail } : null;
             }
@@ -2663,6 +2662,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.flagCalculation = false;
             self.listErrorMonth = [];
+            self.shareObject(new ShareObject())
             character.restore("characterKdw003a").done((obj: Characteristics) => {
                 self.characteristics.employeeId = __viewContext.user.employeeId;
                 self.characteristics.companyId = __viewContext.user.companyId;
@@ -4096,25 +4096,38 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             })
 
             let dataShareCmm = {
-                appListAtr: 0,
-                appType: -1,
-                unapprovalStatus: true,
-                approvalStatus: false,//false
-                denialStatus: false,//false
-                agentApprovalStatus: false,//false
-                /**承認状況＿差戻*/
-                remandStatus: false,//false
-                /**承認状況＿取消*/
-                cancelStatus: false,//false
-                /**申請表示対象*/
-                appDisplayAtr: 0,//0
-                /**社員IDリスト*/
-                listEmployeeId: [rowItemSelect.employeeId],//[]
-                /**社員絞込条件*/
-                empRefineCondition: "",//'' ,
-                startDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
-                endDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
-
+				/** 期間開始日 */
+				periodStartDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
+				/** 期間終了日 */
+				periodEndDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD"),
+				/** 事後出力 */
+				postOutput: true,
+				/** 事前出力 */
+				preOutput: true,
+				/** 申請一覧区分 */
+				appListAtr: 0,
+				/** 申請表示順 */
+				appDisplayOrder: 0,
+				/** 表の幅登録 */
+				tableWidthRegis: false,
+				/** 社員IDリスト */
+				opListEmployeeID: [rowItemSelect.employeeId],
+				/** 承認状況＿差戻 */
+				opRemandStatus: false,
+				/** 承認状況＿取消 */
+				opCancelStatus: false,
+				/** 承認状況＿承認済 */
+				opApprovalStatus: false,
+				/** 承認状況＿代行承認済 */
+				opAgentApprovalStatus: false,
+				/** 承認状況＿否認 */
+				opDenialStatus: false,
+				/** 承認状況＿未承認 */
+				opUnapprovalStatus: true,
+				/** 申請種類 */
+				opAppTypeLst: [],
+				/** 申請種類リスト */
+				opListOfAppTypes: []
             }
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm).done(function() {
@@ -4659,7 +4672,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         openKDL020Dialog() {
             let self = this;
             setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] });
-            modal('/view/kdl/020/a/index.xhtml');
+            if(self.selectedEmployee().length > 1 ) {
+              modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+              modal("/view/kdl/020/a/single.xhtml");
+            }
         }
 
         openKDL009Dialog() {

@@ -37,6 +37,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         tabindex: number = -1;
         compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData> = ko.observableArray([]);
         value: any;
+        expirationDateRes: number = 0;
         /** A4_3  凡例 */
         legendOptions: any = {
             // name: '#[KDM001_153]',
@@ -95,7 +96,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     vm.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
-            window.onresize = function (event) {
+            window.onresize = function () {
                 $("#compositePayOutSubMngDataGrid_scrollContainer").height(window.innerHeight - 513);
                 $("#compositePayOutSubMngDataGrid_displayContainer").height(window.innerHeight - 513);
                 $("#compositePayOutSubMngDataGrid_container").height(window.innerHeight - 400);
@@ -130,6 +131,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'digestionDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dayLetfText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'startDate', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDateText', dataType: 'string', width: '120px', hidden: true },
                     {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
@@ -196,7 +199,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     },
                 ],
                 ntsControls: [
-                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value) { vm.removeData(value) }, controlType: 'Button' }
+                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value: any) { vm.removeData(value) }, controlType: 'Button' }
                 ]
             });
             vm.startDateString.subscribe(function (value) {
@@ -204,11 +207,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 vm.dateValue.valueHasMutated();
             });
             vm.endDateString.subscribe(function (value) {
-                vm.dateValue().endDate = value;
-                vm.dateValue.valueHasMutated();
+              vm.dateValue().endDate = value;
+              vm.dateValue.valueHasMutated();
             });
             vm.selectedItem.subscribe(x => {
-                vm.updateDataList(false);
+              vm.updateDataList(false);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
@@ -282,7 +285,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             $('#compositePayOutSubMngDataGrid').focus();
         }
 
-        updateDataList(isShowMsg) {
+        updateDataList(isShowMsg: boolean) {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
@@ -298,12 +301,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         let arrayResponse = res.remainingData;
                         let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
                         for (let i = 0; i < arrayResponse.length; i++) {
-                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
+                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));
                         }
 
                         // update data to view
                         self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
                         self.totalRemainingNumber(res.totalRemainingNumber);
+                        self.expirationDateRes = res.expirationDate;
                         self.expirationDate(self.getExpirationTime(res.expirationDate));
                         self.closureID = res.closureID;
                         self.newDataDisable(false);
@@ -343,7 +347,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         self.expirationDate("");
                         self.closureID = "";
                         self.newDataDisable(true);
-
+                        self.startDateString(res.startDate);
+                        self.endDateString(res.endDate);
                         // update grid
                         self.compositePayOutSubMngData = ko.observableArray([]);
                         $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
@@ -366,7 +371,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let dfd = $.Deferred();
             self.mounted();
             block.invisible();
-
             service.getInfoEmLogin().done(function (emp) {
                 service.getWpName().done(function (wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
@@ -440,7 +444,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             })
         }
 
-        pegSetting(value) {
+        pegSetting(value: any) {
             let self = this;
             let selectedRowData = value;
             if (value.dataType == 1) {
@@ -492,7 +496,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
         */
 
-        getExpirationTime(value) {
+        getExpirationTime(value: number) {
             if (value == 0) {
                 return getText("Enum_ExpirationTime_THIS_MONTH");
             } else if (value == 1) {
@@ -652,6 +656,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
       digestionDays: string;
       remainDays: number;
       digestionId: string;
+      startDate: string
+      expirationDate : number;
+      endDate: string;
 
       //add to fill grid A4_2_5
       dayLetf: string;
@@ -667,7 +674,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
       usedDayText: string;
       expiredDateText: string;
 
-      constructor(params) {
+      constructor(params:any,startDateP: string, endDateP:string ) {
+        this.startDate = startDateP;
+        this.endDate = endDateP;
         this.id = params.occurrenceId;
         this.occurrenceId = params.occurrenceId;
         this.digestionId = params.digestionId;
@@ -745,13 +754,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
           this.dayLetf = "" + params.dayLetf;
         }
           
-        if(params.deadLine === null) {
-            this.expiredDateText = '';
-        } else if (new Date(params.deadLine).getMonth() === new Date(params.accrualDate).getMonth() && new Date(params.deadLine).getFullYear() === new Date(params.accrualDate).getFullYear()) {
+        
+          let expiredDateText = moment.utc(params.deadLine);
+          let startDate = moment.utc(this.startDate);
+          let endDate = moment.utc(this.endDate);
+          if(params.deadLine === null) {
+           this.expiredDateText === '';
+          } else if(startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
             this.expiredDateText = getText('KDM001_161', [params.deadLine]);
-        } else {
-            this.expiredDateText = getText('KDM001_162', [params.deadLine]);
-        }
+          } else if(startDate.isSameOrAfter(expiredDateText) && params.expirationDate > 0){
+            this.expiredDateText =  getText('KDM001_162', [params.deadLine]);
+          } else{
+            this.expiredDateText =  getText('KDM001_163', [params.deadLine]);
+          }
+         
     }
   }
 

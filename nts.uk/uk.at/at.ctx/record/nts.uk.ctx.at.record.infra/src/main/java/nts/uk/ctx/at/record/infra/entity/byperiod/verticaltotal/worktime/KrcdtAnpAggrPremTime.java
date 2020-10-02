@@ -12,10 +12,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -37,6 +38,9 @@ public class KrcdtAnpAggrPremTime extends UkJpaEntity implements Serializable {
 	/** 割増時間 */
 	@Column(name = "PREMIUM_TIME")
 	public int premiumTime;
+	/** 割増金額 */
+	@Column(name = "PREMIUM_AMOUNT")
+	public int premiumAmount;
 
 	/** マッチング：任意期間別実績の勤怠時間 */
 	@ManyToOne
@@ -62,7 +66,8 @@ public class KrcdtAnpAggrPremTime extends UkJpaEntity implements Serializable {
 		
 		return AggregatePremiumTime.of(
 				this.PK.premiumTimeItemNo,
-				new AttendanceTimeMonth(this.premiumTime));
+				new AttendanceTimeMonth(this.premiumTime),
+				new AttendanceAmountMonth(this.premiumAmount));
 	}
 	
 	/**
@@ -86,5 +91,6 @@ public class KrcdtAnpAggrPremTime extends UkJpaEntity implements Serializable {
 	public void fromDomainForUpdate(AggregatePremiumTime domain){
 		
 		this.premiumTime = domain.getTime().v();
+		this.premiumAmount = domain.getAmount().v();
 	}
 }

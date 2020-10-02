@@ -11,7 +11,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
 
 /**
  * 月別確認済みかのチェックする
@@ -24,28 +23,50 @@ public class MonthActualConfirmDoneCheckImpl implements MonthActualConfirmDoneCh
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 
 	@Override
-	public boolean check(AppLimitSetting appLimitSetting, String companyID, String employeeID, GeneralDate appDate) {
-		if (!appLimitSetting.getCanAppAchievementMonthConfirm()) {
-			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
-			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
-			List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
-			try {
-				approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
-			} catch (Exception e) {
-				approveRootStatus = Collections.emptyList();
-			}
-			if(CollectionUtil.isEmpty(approveRootStatus)){
-				return false;
-			}
-			boolean isConfirm = false;
-			for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
-				if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
-					isConfirm = true;
-					break;
+	public boolean check(boolean overtimeCheck, boolean canAppAchievementMonthConfirm, String companyID, String employeeID, GeneralDate appDate) {
+		if (!canAppAchievementMonthConfirm) {
+			if(overtimeCheck) {
+				// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする
+				List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
+				try {
+					approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+				} catch (Exception e) {
+					approveRootStatus = Collections.emptyList();
 				}
-			}
-			if (isConfirm) {
-				return true;
+				if(CollectionUtil.isEmpty(approveRootStatus)){
+					return false;
+				}
+				boolean isConfirm = false;
+				for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+					if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+						isConfirm = true;
+						break;
+					}
+				}
+				if (isConfirm) {
+					return true;
+				}
+			} else {
+				// 承認ルート状況．上司確認をチェックする
+				List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
+				try {
+					approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+				} catch (Exception e) {
+					approveRootStatus = Collections.emptyList();
+				}
+				if(CollectionUtil.isEmpty(approveRootStatus)){
+					return false;
+				}
+				boolean isConfirm = false;
+				for(ApproveRootStatusForEmpImPort approve : approveRootStatus){
+					if(approve.getApprovalStatus().equals(ApprovalStatusForEmployeeImport.APPROVED)){
+						isConfirm = true;
+						break;
+					}
+				}
+				if(isConfirm){
+					return true;
+				}
 			}
 		}
 		return false;

@@ -29,11 +29,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateB
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeaveUpdateByWorkInfoChangeHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
@@ -43,6 +39,11 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -99,21 +100,27 @@ public class DailyCorrectEventServiceCenter {
 		WorkingConditionItem workCondition = getWorkCondition(eventBus, updated.getEmployeeId(), updated.getDate());
 		
 		IntegrationOfDaily domain = baseDto.toDomain(updated.getEmployeeId(), updated.getDate());
-		
+		WorkInfoOfDailyPerformance wi = new WorkInfoOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getWorkInformation());
+		List<EditStateOfDailyPerformance> editState = domain.getEditState().stream()
+				.map(c -> new EditStateOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c))
+				.collect(Collectors.toList());	
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getAttendanceLeave().isPresent()?domain.getAttendanceLeave().get():null);
 		triggerTimeLeave(companyId, workType, workCondition, 
-				eventBus, triggerBus, domain.getWorkInformation(), domain.getEditState(),
-				domain.getAttendanceLeave(), e -> {
+				eventBus, triggerBus, wi, editState,
+				timeLeavingOfDailyPerformance!=null?Optional.of(timeLeavingOfDailyPerformance):Optional.empty(), e -> {
 					if(e.getAction() == EventHandleAction.ABORT){
 						return;
 					}
 					
-					domain.setAttendanceLeave(Optional.ofNullable(e.getData()));
+					domain.setAttendanceLeave(Optional.ofNullable(e.getData().getAttendance()));
 					
 					correctedType.add(DailyDomainGroup.ATTENDACE_LEAVE);
 				});
-		
-		triggerBreakTime(companyId, workType, eventBus, triggerBus, domain.getWorkInformation(),
-				domain.getEditState(), domain.getBreakTime(), domain.getAttendanceLeave(), e -> {
+		List<BreakTimeOfDailyPerformance> breakTime = domain.getBreakTime().stream()
+				.map(c -> new BreakTimeOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c))
+				.collect(Collectors.toList());
+		triggerBreakTime(companyId, workType, eventBus, triggerBus, wi,
+				editState, breakTime, timeLeavingOfDailyPerformance!=null?Optional.of(timeLeavingOfDailyPerformance):Optional.empty(), e -> {
 					if(e.getAction() == EventHandleAction.ABORT){
 						return;
 					}
@@ -124,7 +131,7 @@ public class DailyCorrectEventServiceCenter {
 					} else if(e.getAction() == EventHandleAction.INSERT || e.getAction() == EventHandleAction.UPDATE) {
 						
 						domain.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
-						domain.getBreakTime().add(e.getData());
+						domain.getBreakTime().add(e.getData().getTimeZone());
 						domain.getBreakTime().sort((c1, c2) -> c1.getBreakType().compareTo(c2.getBreakType()));
 					}
 					correctedType.add(DailyDomainGroup.BREAK_TIME);
@@ -181,7 +188,7 @@ public class DailyCorrectEventServiceCenter {
 		if(eventBus.shouldCorreactBreakTime() && eventTriggerBus.triggerBreakTime){
 			UpdateBreakTimeByTimeLeaveChangeCommand breakTimeEvent = (UpdateBreakTimeByTimeLeaveChangeCommand) UpdateBreakTimeByTimeLeaveChangeCommand
 					.builder()
-					.cachedBreackTime(breakTimes.stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null))
+					.cachedBreackTime(breakTimes.stream().filter(b -> b.getTimeZone().getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null))
 					.employeeId(wi.getEmployeeId())
 					.targetDate(wi.getYmd())
 					.companyId(companyId)
@@ -262,7 +269,7 @@ public class DailyCorrectEventServiceCenter {
 		}
 		Set<String> workTypeCode = new HashSet<>();
 		sources.keySet().stream().forEach(s -> {
-			workTypeCode.add(s.getWorkInfo().getData().getRecordInfo().getWorkTypeCode().v());
+			workTypeCode.add(s.getWorkInfo().getData().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		});
 		Map<String, Set<GeneralDate>> employeeIds = sources.keySet().stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 					Collectors.collectingAndThen(Collectors.toList(), 
@@ -290,17 +297,17 @@ public class DailyCorrectEventServiceCenter {
 			DailyRecordWorkCommand dailyRecord = c.getKey();
 			WorkInfoOfDailyPerformance wi = dailyRecord.getWorkInfo().getData();
 			
-			triggerTimeLeave(companyId, workTypes.get(wi.getRecordInfo().getWorkTypeCode()), getBySidAndDate(workCondition, wi), 
+			triggerTimeLeave(companyId, workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode()), getBySidAndDate(workCondition, wi), 
 					eventTriggerBus, c.getValue(), wi, dailyRecord.getEditState().getData(),
 					dailyRecord.getTimeLeaving().getData(), e -> {
 						dailyRecord.getTimeLeaving().updateDataO(Optional.ofNullable(e.getData()));
 						dailyRecord.getTimeLeaving().shouldDeleteIfNull();
 					});
 			
-			triggerBreakTime(companyId, workTypes.get(wi.getRecordInfo().getWorkTypeCode()), eventTriggerBus, c.getValue(), wi,
+			triggerBreakTime(companyId, workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode()), eventTriggerBus, c.getValue(), wi,
 					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData(), dailyRecord.getTimeLeaving().getData(), e -> {
 						if(e.getAction() == EventHandleAction.DELETE){
-							dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
+							dailyRecord.getBreakTime().getData().removeIf(b -> b.getTimeZone().getBreakType() == BreakType.REFER_WORK_TIME);
 							dailyRecord.getBreakTime().shouldDeleteIfNull();
 						} else if(e.getAction() == EventHandleAction.INSERT || e.getAction() == EventHandleAction.UPDATE) {
 							dailyRecord.getBreakTime().updateData(e.getData());
@@ -309,7 +316,7 @@ public class DailyCorrectEventServiceCenter {
 			
 			/** TODO: need test (Tin!!!) */
 			IntegrationOfDaily domainForCorrect = dailyRecord.toDomain();
-			domainForCorrect = overtimeCorrectService.correct(domainForCorrect, Optional.ofNullable(workTypes.get(wi.getRecordInfo().getWorkTypeCode())), false);
+			domainForCorrect = overtimeCorrectService.correct(domainForCorrect, Optional.ofNullable(workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode())), false);
 			dailyRecord.getAttendanceTime().updateData(domainForCorrect.getAttendanceTimeOfDailyPerformance());
 			
 			return dailyRecord;
