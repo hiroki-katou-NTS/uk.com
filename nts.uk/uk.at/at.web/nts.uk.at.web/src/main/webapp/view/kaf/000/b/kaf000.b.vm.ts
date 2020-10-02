@@ -212,7 +212,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = _.indexOf(vm.listApp(), vm.currentApp());
             if (index > 0) {
                 vm.currentApp(vm.listApp()[index - 1]);
-				vm.loadData();
+				vm.$errors("clear").then(() => {
+					vm.loadData();	
+				});
             }
         }
 
@@ -221,7 +223,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = _.indexOf(vm.listApp(), vm.currentApp());
 			if (index < (vm.listApp().length-1)) {
                 vm.currentApp(vm.listApp()[index + 1]);
-				vm.loadData();
+				vm.$errors("clear").then(() => {
+					vm.loadData();	
+				});
             }
         }
 
