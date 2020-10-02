@@ -17,15 +17,16 @@ import java.util.Optional;
 public class DeleteWorkplaceApproverHistoryDomainService {
     // 	[1] 変更する
     public static AtomTask changeHistory(Require require, Approver36AgrByWorkplace deleteHist){
+        val optprevHist = require.getLastHistory(deleteHist.getWorkplaceId(),deleteHist.getPeriod().start().addDays(-1));
+
+        if(optprevHist.isPresent()){
+            val newPeriod = new DatePeriod(optprevHist.get().getPeriod().start(),GeneralDate.max());
+            optprevHist.get().setPeriod(newPeriod);
+        }
             return AtomTask.of(()->{
                 require.deleteHistory(deleteHist);
-                val optprevHist = require.getLastHistory(deleteHist.getWorkplaceId(),deleteHist.getPeriod().end().addDays(-1));
-                if(optprevHist.isPresent()){
-                    val preItem = optprevHist.get();
-                    val newPeriod = new DatePeriod(preItem.getPeriod().start(),GeneralDate.max());
-                    preItem.setPeriod(newPeriod);
-                    require.changeLatestHistory(preItem,newPeriod.start());
-                }
+                optprevHist.ifPresent(approver36AgrByWorkplace ->
+                        require.changeLatestHistory(approver36AgrByWorkplace, approver36AgrByWorkplace.getPeriod().start()));
         });
     }
 

@@ -24,10 +24,10 @@ public class KmkmtAgreementMonthSet extends UkJpaEntity implements Serializable{
     public KmkmtAgreementMonthSetPK kmkmtAgreementMonthSetPK;
 	
 	@Column(name ="ERROR_ONE_MONTH")
-	public BigDecimal errorOneMonth;
+	public int errorOneMonth;
 	
 	@Column(name ="ALARM_ONE_MONTH")
-	public BigDecimal alarmOneMonth;
+	public int alarmOneMonth;
 	
 	@Override
 	protected Object getKey() {

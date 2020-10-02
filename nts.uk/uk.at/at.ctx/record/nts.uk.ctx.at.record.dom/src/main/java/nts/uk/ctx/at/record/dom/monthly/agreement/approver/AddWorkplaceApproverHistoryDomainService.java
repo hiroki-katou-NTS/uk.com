@@ -23,16 +23,18 @@ public class AddWorkplaceApproverHistoryDomainService {
                 histTobeAdd.getApproverIds(),
                 histTobeAdd.getConfirmerIds()
         );
+        val optLastHist = requeire.getLatestHistory(histTobeAdd.getWorkplaceId(),GeneralDate.max());
+        if(optLastHist.isPresent()){
+            val itemlastHist = optLastHist.get();
+            val newPeriod = new DatePeriod(itemlastHist.getPeriod().start(),
+                    itemToBeAdd.getPeriod().start().addDays(-1));
+            itemlastHist.setPeriod(newPeriod);
+
+        }
         return AtomTask.of(()->{
             requeire.addHistory(itemToBeAdd);
-            val optLastHist = requeire.getLatestHistory(histTobeAdd.getWorkplaceId(),GeneralDate.max());
-            if(optLastHist.isPresent()){
-                val itemlastHist = optLastHist.get();
-                val newPeriod = new DatePeriod(itemlastHist.getPeriod().start(),
-                        itemToBeAdd.getPeriod().start().addDays(-1));
-                itemlastHist.setPeriod(newPeriod);
-                requeire.changeLatestHistory(itemlastHist,newPeriod.start());
-            }
+            optLastHist.ifPresent(approver36AgrByWorkplace -> requeire.changeLatestHistory
+                    (approver36AgrByWorkplace, approver36AgrByWorkplace.getPeriod().start()));
         });
 
     }

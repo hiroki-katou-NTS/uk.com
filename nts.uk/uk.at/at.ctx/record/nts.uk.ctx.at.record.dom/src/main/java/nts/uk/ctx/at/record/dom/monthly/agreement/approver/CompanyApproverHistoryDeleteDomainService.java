@@ -23,7 +23,7 @@ public class CompanyApproverHistoryDeleteDomainService {
 		return AtomTask.of(() -> {
 			require.deleteHistory(histToDel);
 
-			val prevEndDate = histToDel.getPeriod().end().addDays(-1);
+			val prevEndDate = histToDel.getPeriod().start().addDays(-1);
 			val optPrevHist = require.getPrevHistory(prevEndDate);
 			if (optPrevHist.isPresent()) {
 				val prevHist = optPrevHist.get();
