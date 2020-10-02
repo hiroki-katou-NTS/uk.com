@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
-import nts.uk.ctx.at.function.infra.entity.indexreconstruction.KfnctIndexReorgTablePk;
 import nts.uk.ctx.at.function.infra.entity.indexreconstruction.KfnctIndexReorgTable;
+import nts.uk.ctx.at.function.infra.entity.indexreconstruction.KfnctIndexReorgTablePk;
 
 /**
  * The Class JpaIndexReorgTableRepository.
@@ -21,9 +22,11 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM KfnctIndexReorgTable f";
 	
 	// Select one
-	private static final String QUERY_SELECT_BY_ID = QUERY_SELECT_ALL
+	private static final String QUERY_SELECT_BY_ID_AND_PHY_NAME = QUERY_SELECT_ALL
 			+ " WHERE f.pk.categoryNo = :categoryNo AND f.pk.tablePhysName = :tablePhysName";
-		
+	
+	private static final String QUERY_SELECT_BY_IDS = QUERY_SELECT_ALL
+			+ " WHERE f.pk.categoryNo IN (:categoryNos)";
 	/**
 	 * Find one.
 	 *
@@ -34,7 +37,7 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 	@Override
 	public Optional<IndexReorgTable> findOne(BigDecimal categoryNo, String tablePhysName) {
 		return this.queryProxy()
-			.query(QUERY_SELECT_BY_ID, KfnctIndexReorgTable.class)
+			.query(QUERY_SELECT_BY_ID_AND_PHY_NAME, KfnctIndexReorgTable.class)
 			.setParameter("categoryNo", categoryNo)
 			.setParameter("tablePhysName", tablePhysName)
 			.getSingle(IndexReorgTable::createFromMemento);
@@ -69,5 +72,19 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 		KfnctIndexReorgTable entity = new KfnctIndexReorgTable();
 		domain.setMemento(entity);
 		return entity;
+	}
+
+	/**
+	 * Find all by category ids.
+	 *
+	 * @param categoryIds the category ids
+	 * @return the list
+	 */
+	@Override
+	public List<IndexReorgTable> findAllByCategoryIds(List<BigDecimal> categoryIds) {
+		return this.queryProxy()
+			.query(QUERY_SELECT_BY_IDS, KfnctIndexReorgTable.class)
+			.setParameter("categoryNos", categoryIds)
+			.getList(IndexReorgTable::createFromMemento);
 	}
 }

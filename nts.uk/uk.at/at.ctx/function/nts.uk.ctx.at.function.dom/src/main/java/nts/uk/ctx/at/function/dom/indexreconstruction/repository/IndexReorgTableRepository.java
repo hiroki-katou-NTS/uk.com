@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
@@ -34,4 +35,12 @@ public interface IndexReorgTableRepository {
 	 * @param tablePhysName the table phys name
 	 */
 	void delete(BigDecimal categoryNo, String tablePhysName);
+	
+	/**
+	 * Find all by category ids.
+	 *
+	 * @param categoryIds the category ids
+	 * @return the list
+	 */
+	List<IndexReorgTable> findAllByCategoryIds(List<BigDecimal> categoryIds);
 }

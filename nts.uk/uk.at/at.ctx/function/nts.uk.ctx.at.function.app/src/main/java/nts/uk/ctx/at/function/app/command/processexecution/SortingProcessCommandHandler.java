@@ -84,13 +84,13 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		log.info(":更新処理自動実行_START_"+command.getExecItemCd()+"_"+GeneralDateTime.now());
 		//実行IDを新規採番する
 		String execItemId = IdentifierUtil.randomUniqueId();
-		// Step 4: 利用停止をチェックする-TODO
+		// Step 4: 利用停止をチェックする
 		String contractCode = AppContexts.user().contractCode();
 		UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyId);
 		if (isSuspension.isUsageStop()) {
 			// case 利用停止する
 			// Step 前回の更新処理が実行中の登録処理
-			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, true);
 			return;
 		} else {
 			// case 利用停止しない
@@ -106,7 +106,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 				// ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
 				boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
 				if (checkLastTime) {
-					// Step 実行中の場合の登録処理
+					// Step 実行中の場合の登録処理 - Registration process when running
 					this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
 				} else {
 					// Step 実行処理

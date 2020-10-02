@@ -53,11 +53,19 @@ module nts.uk.at.view.kbt002.g {
 
       }
 
-      private createLinkAndSharedObject(taskId, logHistory) {
+      private createLinkAndSharedObject(taskId: any, logHistory: any) {
         let self = this;
         // スケジュール作成のエラー内容を表示する
         switch (taskId) {
           case 0: // 外部受入
+            self.sharedObj = {
+              executionId: logHistory.execId,
+              isDaily: false,
+              nameObj: "外部受入"
+            };
+            nts.uk.ui.windows.setShared('inputDialogR', { sharedObj: self.sharedObj });
+            //画面「CMF001_外部受入」の「R:エラー一覧ダイアログ」を起動する
+            self.modalLink = "/view/cmf/001/r/index.xhtml";
             break;
           case 1: // スケジュールの作成
             self.sharedObj = {
@@ -147,7 +155,6 @@ module nts.uk.at.view.kbt002.g {
             break;
           case 6: // 任意期間の集計
             // 任意期間の集計のエラー内容を表示する
-            //画面「KFP001_任意期間の集計」の「G:エラー内容一覧」を起動する
             self.sharedObj = {
               arbitraryPeriodAggrExecId: logHistory.execId, //・任意期間集計実行ログID
               execItemCd: self.execLog.execItemCd,
@@ -155,11 +162,19 @@ module nts.uk.at.view.kbt002.g {
               nameObj: "任意期間の集計"
             };
             nts.uk.ui.windows.setShared('inputDialogG', { sharedObj: self.sharedObj });
+            //画面「KFP001_任意期間の集計」の「G:エラー内容一覧」を起動する
             self.modalLink = "/view/kfp/001/g/index.xhtml";  
             break;
           case 7: // 外部出力
             // 外部出力のエラー内容を表示する
+            self.sharedObj = {
+              executionId: logHistory.execId,
+              isDaily: false,
+              nameObj: "外部出力"
+            };
+            nts.uk.ui.windows.setShared('inputDialogY', { sharedObj: self.sharedObj });
             //画面「CMF002_外部出力」の「Y:エラーログダイアログ」を起動する
+            self.modalLink = "/view/cmf/002/y/index.xhtml";
             break;
           case 8: // アラーム抽出
             break;
@@ -188,6 +203,13 @@ module nts.uk.at.view.kbt002.g {
           case 12: // データの削除
             break;
           case 13: // インデックス再構成
+            self.sharedObj = {
+              executionId: logHistory.execId,
+              isDaily: false,
+              nameObj: "インデックス再構成"
+            };
+            nts.uk.ui.windows.setShared('inputDialogL', { sharedObj: self.sharedObj });
+            self.modalLink = "/view/kbt/002/l/index.xhtml";
             break;
           default:
             break;

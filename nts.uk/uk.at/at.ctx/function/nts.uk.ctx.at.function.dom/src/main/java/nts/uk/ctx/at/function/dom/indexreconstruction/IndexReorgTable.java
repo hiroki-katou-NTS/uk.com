@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO;
 
 /**
- *	 インデックス再構成テーブル
+ *	Domain インデックス再構成テーブル
  * 	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
