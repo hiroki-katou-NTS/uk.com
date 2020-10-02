@@ -27,13 +27,13 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
     private   static List<String> approverList =  Arrays.asList("abc","cba","efg");
     private   static List<String> confirmerList =  Arrays.asList("abc","cba","efg");
     private   static List<String> listWplId =  Arrays.asList("abc","cba","efg");
-    private static Approver36AgrByWorkplace domain = new Approver36AgrByWorkplace(
+    private static Approver36AgrByWorkplace domain =  Approver36AgrByWorkplace.create(
             workplaceId,
             period,
             approverList,
             confirmerList
         );
-    private static Approver36AgrByWorkplace domainLast = new Approver36AgrByWorkplace(
+    private static Approver36AgrByWorkplace domainLast =  Approver36AgrByWorkplace.create(
             workplaceId,
             periodLast,
             approverList,
