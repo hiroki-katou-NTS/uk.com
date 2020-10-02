@@ -12,6 +12,7 @@
         <!--</com:ValidatorScript>-->
 
         <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 
         <com:stylefile path="ksm008.f.main.css"/>
         <com:scriptfile path="ksm008.f.vm.js"/>
@@ -22,11 +23,11 @@
             <a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }"
                tabindex="1"> #{i18n.getText('KSM008_104')} </a>
             <button tabindex="2" class=""
-                    data-bind="click: onSelectCompany ">#{i18n.getText('KSM008_105')}</button>
+                    data-bind="click: initData ">#{i18n.getText('KSM008_105')}</button>
             <button tabindex="3" class="proceed"
-                    data-bind="click: onSelectCompany ">#{i18n.getText('KSM008_106')}</button>
+                    data-bind="click: initData ">#{i18n.getText('KSM008_106')}</button>
             <button tabindex="4" class="danger"
-                    data-bind="click: onSelectCompany, enable: true">#{i18n.getText('KSM008_107')}</button>
+                    data-bind="click: initData, enable: true">#{i18n.getText('KSM008_107')}</button>
         </div>
 
         <div id="contents-area">
@@ -141,6 +142,7 @@
                                            <!--showNumbering: false,-->
                                            <!--multiple: true}">-->
                     <!--</div>-->
+                    <div id="component-items-list"></div>
                 </div>
             </div>
         </div>

@@ -4,16 +4,37 @@ module nts.uk.at.ksm008.f {
     @bean()
     export class KSM008FViewModel extends ko.ViewModel {
 
+        listComponentOption: any;
+        selectedCode: KnockoutObservable<string> = ko.observable('');
+        employeeList: KnockoutObservableArray<UnitModel>;
 
         constructor(params: any) {
             super();
             const vm = this;
 
+            this.employeeList = ko.observableArray<UnitModel>([
+                { id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN' },
+                { id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN' },
+                { id: '3c', code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
+                { id: '3d', code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
+            ]);
+            vm.listComponentOption = {
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: vm.selectedCode,
+                //multiSelectedCode: [],
+                isDialog: true,
+                isShowSelectAllButton: false,
+                maxRows: 10
+            };
         }
 
         created() {
             const vm = this;
-            vm.initData().done().fail();
+
+            $('#component-items-list').ntsListComponent(vm.listComponentOption);
 
             _.extend(window, {vm});
         }
@@ -22,71 +43,45 @@ module nts.uk.at.ksm008.f {
 
         }
 
-        initData(): JQueryPromise<any> {
+        initData(){
             const vm = this;
-            // vm.$blockui("invisible");
-            let dfd = $.Deferred<void>();
 
             // Initial settings.
 
-            vm.onSelectCompany();
-            // vm.onSelectCompany().done(function() {
-            //     // dfd.resolve(vm);
-            // }).always(() => {
-            //     vm.$blockui("clear");
-            // });
-
-            return dfd.promise();
         }
 
-        /**
-         * on click tab panel company action event
-         */
-        onSelectCompany(): JQueryPromise<void> {
-            // $('.nts-input').ntsError('clear');
-            const vm = this;
-            // vm.$blockui("invisible");
-            let dfd = $.Deferred<void>();
-
-            vm.$dialog.error("Where are you, domain");
-            // vm.$blockui("clear");
-
-            return dfd.promise();
-        }
-
-        /**
-         * function on click saveConsecutiveDays action
-         */
-        saveConsecutiveDays() {
-            // if ($('.nts-input').ntsError('hasError')) {
-            //     return;
-            // };
-            const vm = this;
-            // vm.$blockui("invisible");
-            // var dto: CompanyEstablishmentDto = {
-            //     estimateTime: self.companyEstablishmentModel.estimateTimeModel.toDto(),
-            //     estimatePrice: self.companyEstablishmentModel.estimatePriceModel.toDto(),
-            //     estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
-            //
-            // };
-            // service.saveCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), dto).done(function() {
-            //     // show message 15
-            //     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-            //         // reload pa
-            //         self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
-            //     });
-            // }).fail(function(error) {
-            //     nts.uk.ui.dialog.alertError(error);
-            // }).always(() => {
-            //     $('#comboTargetYear').focus();
-            //     nts.uk.ui.block.clear();
-            // });
-            vm.$dialog.error("Where are you, domain");
-        }
 
         close() {
-            let self = this;
-            self.$window.close();
+            let vm = this;
+            vm.$window.close();
         }
+    }
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export interface UnitModel {
+        id?: string;
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+        optionalColumn?: any;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
 }
