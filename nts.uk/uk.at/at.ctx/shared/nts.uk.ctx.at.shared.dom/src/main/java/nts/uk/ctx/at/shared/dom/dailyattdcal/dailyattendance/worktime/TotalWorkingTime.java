@@ -64,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.v
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.PauseOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
@@ -260,7 +261,8 @@ public class TotalWorkingTime {
 													   new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 													   new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+													   new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+													   new PauseOfDaily(new AttendanceTime(0))));
 	}
 	
 	/**

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime;
 
+import java.sql.PseudoColumnUsage;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -25,13 +27,15 @@ public class HolidayOfDaily {
 	private SpecialHolidayOfDaily specialHoliday;
 	//年休
 	private AnnualOfDaily annual;
+	//振休
+	private PauseOfDaily pause;
 	
 	/**
 	 * Constructor 
 	 */
 	public HolidayOfDaily(AbsenceOfDaily absence, TimeDigestOfDaily timeDigest, YearlyReservedOfDaily yearlyReserved,
 			SubstituteHolidayOfDaily substitute, OverSalaryOfDaily overSalary, SpecialHolidayOfDaily specialHoliday,
-			AnnualOfDaily annual) {
+			AnnualOfDaily annual,PauseOfDaily pause) {
 		super();
 		this.absence = absence;
 		this.timeDigest = timeDigest;
@@ -40,6 +44,7 @@ public class HolidayOfDaily {
 		this.overSalary = overSalary;
 		this.specialHoliday = specialHoliday;
 		this.annual = annual;
+		this.pause = pause;
 	}
 	
 	public AttendanceTime calcTotalHolTime() {

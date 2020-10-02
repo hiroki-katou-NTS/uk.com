@@ -49,7 +49,8 @@ public class VacationClass {
 						new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 						new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 						new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-						new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+						new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new PauseOfDaily(new AttendanceTime(0))));
 	}
 
 	/**
@@ -157,9 +158,15 @@ public class VacationClass {
 		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
 
 		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
+		
+		//振休使用時間の計算
+		AttendanceTime pauseUseTime= vacationTimeOfcalcDaily(workType, VacationCategory.Pause, predSetting,
+				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
 
+		val pauseofDaily =new PauseOfDaily(pauseUseTime);
+				
 		return new HolidayOfDaily(absenceOfDaily, timeDigestOfDaily, yearlyReservedOfDaily, substituteOfDaily,
-				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily);
+				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily,pauseofDaily);
 	}
 
 	/**
