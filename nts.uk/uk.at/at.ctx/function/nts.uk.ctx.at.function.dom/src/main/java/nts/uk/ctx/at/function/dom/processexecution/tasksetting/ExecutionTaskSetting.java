@@ -30,17 +30,17 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	final static String ZEZO_TIME = "00:00";
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
 	
-	/* 1日の繰り返し間隔 */
-	private OneDayRepeatInterval oneDayRepInr;
+	/* 会社ID */
+	private String companyId;
 	
 	/* コード */
 	private ExecutionCode execItemCd;
 	
-	/* 会社ID */
-	private String companyId;
-	
 	/* 更新処理有効設定 */
 	private boolean enabledSetting;
+	
+	/* 1日の繰り返し間隔 */
+	private OneDayRepeatInterval oneDayRepInr;
 	
 	/* 次回実行日時 */
 	private Optional<GeneralDateTime> nextExecDateTime;
@@ -64,7 +64,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	private StartTime startTime;
 	
 	/* スケジュールID */
-	private String scheduleId;
+	private Optional<String> scheduleId;
 	
 	/* 終了処理スケジュールID*/
 	private Optional<String> endScheduleId;
@@ -144,7 +144,6 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	 * 次回実行日時の求め
 	 */
 	public void setNextExecDateTime() {
-		GeneralDate today = GeneralDate.today();
 		GeneralDateTime now = GeneralDateTime.now();
 		if (!this.isEnabledSetting()) {
 			this.nextExecDateTime = null;
@@ -284,7 +283,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.detailSetting = detailSetting;
 		this.startDate = startDate;
 		this.startTime = startTime;
-		this.scheduleId = scheduleId;
+		this.scheduleId = Optional.ofNullable(scheduleId);
 		this.endScheduleId = Optional.ofNullable(endScheduleId);
 	}
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
@@ -354,11 +353,11 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	}
 
 	public void setScheduleId(String scheduleId) {
-		this.scheduleId = scheduleId;
+		this.scheduleId = Optional.ofNullable(scheduleId);
 	}
 
 	public void setEndScheduleId(String endScheduleId) {
-		this.endScheduleId = Optional.ofNullable(endScheduleId) ;
+		this.endScheduleId = Optional.ofNullable(endScheduleId);
 	}
 	
 }

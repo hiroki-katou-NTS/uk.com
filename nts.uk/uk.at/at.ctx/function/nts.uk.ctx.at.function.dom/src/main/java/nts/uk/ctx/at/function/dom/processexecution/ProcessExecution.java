@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
- * 更新処理自動実行
+ * Domain 更新処理自動実行
  */
 @Getter
 @Builder

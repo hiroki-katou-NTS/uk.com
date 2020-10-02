@@ -36,19 +36,23 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLog pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC";
+	private static final String SELECT_All_BY_CID_AND_EXEC = SELECT_ALL
+			+ " WHERE pel.kfnmtProcExecLogPK.companyId = :companyId"
+			+ " AND pel.kfnmtProcExecLogPK.execItemCd IN :execItemCds"
+			+ " ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC";
 	
 	private static final String SELECT_BY_PK = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
 			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
 	
-	private static final String SELECT_BY_KEY = SELECT_ALL 
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
-			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
-	
-	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
-	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
+//	private static final String SELECT_BY_KEY = SELECT_ALL 
+//			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
+//			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
+//	
+//	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
+//	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
 	
 	
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
@@ -68,6 +72,15 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_All_BY_CID, KfnmtProcessExecutionLog.class)
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyIdAndExecItemCd(String companyId,
+			List<String> execItemCds) {
+		return this.queryProxy().query(SELECT_All_BY_CID_AND_EXEC, KfnmtProcessExecutionLog.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCds", execItemCds)
+				.getList(c -> c.toDomain());
 	}
 	
 	@Override

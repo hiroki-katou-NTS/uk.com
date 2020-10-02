@@ -1,5 +1,7 @@
-@CHARSET "UTF-8";
+.contents-container {
+	margin-left: 10px;
+}
 
-#igrid_container {
-	margin-left: 20px !important;
+.action-container {
+	margin-bottom: 10px;
 }
