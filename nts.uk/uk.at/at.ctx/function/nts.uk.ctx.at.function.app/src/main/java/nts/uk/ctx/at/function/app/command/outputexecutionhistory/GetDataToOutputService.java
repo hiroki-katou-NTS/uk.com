@@ -1,5 +1,21 @@
 package nts.uk.ctx.at.function.app.command.outputexecutionhistory;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -38,14 +54,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 import nts.uk.shr.infra.file.csv.CsvReportWriter;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Stateless
 public class GetDataToOutputService extends ExportService<Object> {
@@ -150,6 +158,12 @@ public class GetDataToOutputService extends ExportService<Object> {
     }
 
 
+    /**
+     * Gets the data output.
+     *ドメインモデル「更新処理自動実行ログ履歴」を取得する
+     * @param command the command
+     * @return the data output
+     */
     private UpdateProcessAutoRunDataDto getDataOutput(GetDataToOutputCommand command){
         // Step ドメインモデル「更新処理自動実行ログ履歴」を取得する
         List<ProcessExecutionLogHistory> listProcessExeHistory = this.updateProcessAutomaticExecutionLogHistory(command);
@@ -167,23 +181,25 @@ public class GetDataToOutputService extends ExportService<Object> {
         List<ProcessExecution> lisProcessExecution = this.acquireTheDomainModel(companyId, listProcessExeHistory);
 
         // Step OUTPUT「更新処理自動実行データ」を作成する
-        UpdateProcessAutoRunDataDto updateProAutoRunData = new UpdateProcessAutoRunDataDto();
-        updateProAutoRunData.setLstProcessExecution(lisProcessExecution);
-        updateProAutoRunData.setExportEmpName(command.isExportEmployeeName());
+        UpdateProcessAutoRunDataDto updateProAutoRunData = new UpdateProcessAutoRunDataDto(
+        		lisProcessExecution,
+        		Collections.emptyList(),
+        		Collections.emptyList(),
+        		command.isExportEmployeeName());
 
-        // 取得した「更新処理自動実行ログ履歴」をループする
         List<ExecutionLogDetailDto> lstLogDetail = new ArrayList<>();
-
         // sort ProcessExecutionLogHistory in  lastExecDateTime by ASC
         listProcessExeHistory.sort((o1, o2) -> o1.getLastExecDateTime().compareTo(o2.getLastEndExecDateTime()));
 
+        // 取得した「更新処理自動実行ログ履歴」をループする - Loop the acquired 「更新処理自動実行ログ履歴」
         for (ProcessExecutionLogHistory logHistory : listProcessExeHistory) {
+        	// 処理中の「更新処理自動実行ログ履歴．全体の業務エラー状態」を確認する
             // 全体の業務エラー状態 = true
             if (logHistory.getErrorBusiness()) {
-                // Step 処理中の「更新処理自動実行ログ履歴．各処理の終了状態．業務エラー状態」 = true の項目を確認する
                 // Sort list ExecutionTaskLog by enum
                 logHistory.getTaskLogList().sort(Comparator.comparingInt(taskLog -> taskLog.getProcExecTask().value));
 
+                // Step 処理中の「更新処理自動実行ログ履歴．各処理の終了状態．業務エラー状態」 = true の項目を確認する 
                 logHistory.getTaskLogList().forEach(taskLog -> {
                     if (taskLog.getErrorBusiness()) {
 
@@ -192,38 +208,40 @@ public class GetDataToOutputService extends ExportService<Object> {
                         execLogDetail.setProcessExecLogHistory(logHistory);
 
                         switch (taskLog.getProcExecTask()) {
-                            // Step ドメインモデル「スケジュール作成エラーログ」を取得する
+                            // Case 1 ドメインモデル「スケジュール作成エラーログ」を取得する
                             case SCH_CREATION:
                                 execLogDetail.setScheduleErrorLog(this.scheduleErrorLogRepo.findByExecutionId(execIdByLogHistory));
                                 break;
-                            // Step ドメインモデル「エラーメッセージ情報」を取得する
+                            // Case 2 ドメインモデル「エラーメッセージ情報」を取得する
                             case DAILY_CREATION:
                             case MONTHLY_AGGR:
                             case RFL_APR_RESULT:
                             case DAILY_CALCULATION:
                                 execLogDetail.setErrMessageInfo(this.errMessageInfoRepo.getAllErrMessageInfoByEmpID(execIdByLogHistory));
                                 break;
-                            // Step ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
+                            // Case 3 ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
                             case AGGREGATION_OF_ARBITRARY_PERIOD:
                                 execLogDetail.setAggrPeriodInfor(this.errorInfoRepo.findAll(execIdByLogHistory));
                                 break;
-                            // Step ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する
+                            // Case 4 ドメインモデル「承認中間データエラーメッセージ情報（日別実績）」を取得する
                             case APP_ROUTE_U_DAI:
                                 execLogDetail.setAppDataInfoDailies(this.appDataInfoDailyRepo.getAppDataInfoDailyByExeID(execIdByLogHistory));
                                 break;
 
-                            // Step ドメインモデル「承認中間データエラーメッセージ情報（月別実績）」を取得する
+                            // Case 5 ドメインモデル「承認中間データエラーメッセージ情報（月別実績）」を取得する
                             case APP_ROUTE_U_MON:
                                 execLogDetail.setAppDataInfoMonthlies(this.appDataInfoMonthlyRepo.getAppDataInfoMonthlyByExeID(execIdByLogHistory));
                                 break;
-                            // Step ドメインモデル「外部受入エラーログ」を取得する
+                            // Case 6 ドメインモデル「外部受入エラーログ」を取得する
                             case EXTERNAL_ACCEPTANCE:
 //                                execLogDetail.setExacErrorLogImports(this.exacErrorLogAdapter.getExacErrorLogByProcessId(execIdByLogHistory));
                                 break;
-                            // Step ドメインモデル「外部出力結果ログ」を取得する
+                            // Case 7 ドメインモデル「外部出力結果ログ」を取得する
                             case EXTERNAL_OUTPUT:
 //                                execLogDetail.setExternalOutLogImports(this.externalOutLogAdapter.getExternalOutLogById(companyId,execIdByLogHistory,0));
                                 break;
+						default:
+							break;
                         }
                         lstLogDetail.add(execLogDetail);
                     }
@@ -368,10 +386,17 @@ public class GetDataToOutputService extends ExportService<Object> {
                 rowCSV1.put(headerCSV1.get(4), proHis.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss"));
 
                 rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(),proHis.getLastEndExecDateTime()));
-                rowCSV1.put(headerCSV1.get(6), proHis.getOverallStatus().get().name);
-                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem().equals(null) ? null : true ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
-                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness().equals(null) ? null : true ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
-                rowCSV1.put(headerCSV1.get(9), proHis.getOverallError().get().name);
+                rowCSV1.put(headerCSV1.get(6), proHis.getOverallStatus().map(item -> item.value)
+                		.orElse(null));
+                rowCSV1.put(headerCSV1.get(7), proHis.getErrorSystem() == null 
+                		? null 
+                		: (proHis.getErrorSystem() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
+                rowCSV1.put(headerCSV1.get(8), proHis.getErrorBusiness() == null 
+                		? null 
+                		: (proHis.getErrorBusiness() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291")));
+                rowCSV1.put(headerCSV1.get(9), proHis.getOverallError()
+                		.map(item -> item.name)
+                		.orElse(null));
                 csv.writeALine(rowCSV1);
             }
 
