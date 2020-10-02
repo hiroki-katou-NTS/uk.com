@@ -18,11 +18,11 @@ module nts.uk.at.view.ksu001.la {
             enableDelete: KnockoutObservable<boolean> = ko.observable(true);
             isEditing: KnockoutObservable<boolean> = ko.observable(false);
             baseDate: KnockoutObservable<string> = ko.observable("");
+            exitStatus: KnockoutObservable<string> = ko.observable("Cancel");
             scheduleTeamModel: KnockoutObservable<ScheduleTeamModel> = ko.observable(new ScheduleTeamModel("", "", "", "",[]));
 
             constructor() {
                 var self = this;
-
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'name', width: 150 }
@@ -41,6 +41,7 @@ module nts.uk.at.view.ksu001.la {
 
                 self.selectedCode.subscribe((code: string) => {
                     let dfd = $.Deferred();
+                    blockUI.invisible();
                     if (_.isEmpty(code)) {
                         self.clearData();
                         dfd.resolve();
@@ -53,13 +54,15 @@ module nts.uk.at.view.ksu001.la {
                                 self.scheduleTeamModel().isEnableCode(false);
                                 self.scheduleTeamModel().workplaceGroupId(self.workplaceGroupId());
                                 self.isEditing(true);
+                                self.currentCodeListLeft([]);
+                                self.currentCodeListRight([]);
                                 self.getEmpOrgInfo();
                             }                           
-                            $('#scheduleTeamName').focus();
+                            $('#scheduleTeamName').focus();                            
                             dfd.resolve();
-                        })
-                        
+                        })                        
                     }
+                    blockUI.clear();
                     return dfd.promise();
                 });
 
@@ -95,7 +98,7 @@ module nts.uk.at.view.ksu001.la {
                                 self.clearData();
                             }
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                            nts.uk.ui.dialog.error({ messageId: res.messageId});
                             blockUI.clear(); 
                         });
                         self.getEmpOrgInfo();
@@ -103,7 +106,8 @@ module nts.uk.at.view.ksu001.la {
                     blockUI.clear();
                     dfd.resolve();
                 }).fail((res) =>{
-                    nts.uk.ui.dialog.info({ messageId: "Msg_1867" }).then(function(){
+                    nts.uk.ui.dialog.error({ messageId: "Msg_1867" }).then(function(){
+                        self.exitStatus("Cancel");
                         self.closeDialog();
                     });
                     blockUI.clear(); 
@@ -120,8 +124,6 @@ module nts.uk.at.view.ksu001.la {
                 request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
 
-                // self.currentCodeListRight([]);
-                // self.currentCodeListLeft([]);
                 service.findEmpOrgInfo(request).done((dataAll: Array<ItemModel>)=>{
                     _.each(dataAll, x =>{
                         if(x.teamName === ""){
@@ -138,7 +140,7 @@ module nts.uk.at.view.ksu001.la {
                         self.itemsLeft(_.sortBy(dataAll, [function(item){return item.employeeCd;}]));    
                     }                                    
                 }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    nts.uk.ui.dialog.error({ messageId: res.messageId });
                 });
             }
             public registerOrUpdate(): void {
@@ -157,14 +159,13 @@ module nts.uk.at.view.ksu001.la {
                 if (!self.isEditing()) {                    
                     //register                    
                     service.register(ko.toJSON(self.scheduleTeamModel)).done(() => {
-                        service.findAll(self.workplaceGroupId()).done((listScheduleTeam: Array<ScheduleTeam>) => {
-                            self.listScheduleTeam(listScheduleTeam);
-                            self.selectedCode(self.scheduleTeamModel().code());
-                            blockUI.clear();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
-                                $('#scheduleTeamName').focus();
-                            });                            
-                        });
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function(){
+                            service.findAll(self.workplaceGroupId()).done((listScheduleTeam: Array<ScheduleTeam>) => {
+                                self.listScheduleTeam(listScheduleTeam);                            
+                                self.selectedCode(self.scheduleTeamModel().code());
+                            });
+                        });           
+                        blockUI.clear();   
                     }).fail((res) => {
                         blockUI.clear();
                         if(res.messageId == "Msg_3"){
@@ -181,17 +182,18 @@ module nts.uk.at.view.ksu001.la {
                             }
                             return el;
                         }));                                             
-                        self.getEmpOrgInfo();
-                        blockUI.clear();
+                        self.getEmpOrgInfo();                        
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
                             $('#scheduleTeamName').focus();
                         }); 
+                        blockUI.clear();                                           
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId});                        
                     }).always (()=>{
                         blockUI.clear();
                     });
                 }
+                self.exitStatus("Update");
             }
 
             public remove(): void {
@@ -219,7 +221,6 @@ module nts.uk.at.view.ksu001.la {
                                 self.selectedCode(self.listScheduleTeam()[indexSelected].code);
                             }
                         });
-
                     }).always(function(){
                         blockUI.clear();
                     });
@@ -227,6 +228,7 @@ module nts.uk.at.view.ksu001.la {
                     blockUI.clear();
                     $('#scheduleTeamName').focus();
                 });
+                self.exitStatus("Update");
             }
 
             public moveItemLeftToRight(): void {
@@ -260,6 +262,7 @@ module nts.uk.at.view.ksu001.la {
                 let itemChosen = [];
                 let employeeCdChosen = [];
                 _.each(idBs, id => {
+                    empListRight[id.index].teamName = nts.uk.resource.getText('KSU001_3223');
                     itemChosen.push(empListRight[id.index]);
                     employeeCdChosen.push(id.id);
                 });
@@ -269,6 +272,8 @@ module nts.uk.at.view.ksu001.la {
             }
 
             public closeDialog(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared("ksu001la-result", self.exitStatus());
                 nts.uk.ui.windows.close();
             }
 

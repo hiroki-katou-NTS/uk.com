@@ -9,8 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

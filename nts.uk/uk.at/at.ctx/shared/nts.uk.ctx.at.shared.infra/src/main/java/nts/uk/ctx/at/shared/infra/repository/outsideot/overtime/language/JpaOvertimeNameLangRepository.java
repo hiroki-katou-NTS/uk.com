@@ -20,9 +20,9 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK_;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang_;

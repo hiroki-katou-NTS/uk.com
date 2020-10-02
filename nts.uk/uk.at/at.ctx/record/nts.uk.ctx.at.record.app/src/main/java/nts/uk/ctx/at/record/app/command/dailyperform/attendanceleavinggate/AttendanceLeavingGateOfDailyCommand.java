@@ -15,13 +15,13 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		if(item == null) {
-			this.data = Optional.empty(); 
-		}else {
-			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily(getEmployeeId(), getWorkDate(), ((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
-			this.data = item == null || !item.isHaveData() ? Optional.empty() 
-					: Optional.of(attendanceLeavingGateOfDaily);
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
 		}
+		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily(getEmployeeId(), getWorkDate(), ((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? Optional.empty() 
+				: Optional.of(attendanceLeavingGateOfDaily);
 	}
 
 	@Override
