@@ -374,7 +374,6 @@ module nts.uk.at.view.kwr001.a {
                     // update spec ver 25, only hidden temporary
                     // 2020/08/13 update specs ver 34
                     self.checkedA10_5(workScheduleOutputCondition.settingDetailTotalOutput.totalNumberDay);
-                    self.checkedA10_5(false);
                     self.checkedA10_6(workScheduleOutputCondition.settingDetailTotalOutput.grossTotal);
                     self.checkedA10_7(workScheduleOutputCondition.settingDetailTotalOutput.cumulativeWorkplace);
                     if (workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal) {
