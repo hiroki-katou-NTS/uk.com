@@ -6,11 +6,17 @@ module nts.uk.ui.at.ksu002.a {
 		<div class="cf">
 			<button class="small btn-copy" data-bind="
 					i18n: 'KSU002_10',
-					timeClick: -1
+					timeClick: -1,
+					attr: {
+						tabindex: $component.data.tabIndex
+					}
 				"></button>
 			<button class="small btn-edit" data-bind="
 					i18n: 'KSU002_11',
-					timeClick: -1
+					timeClick: -1,
+					attr: {
+						tabindex: $component.data.tabIndex
+					}
 				"></button>
 		</div>
 		<div class="cf">
@@ -18,15 +24,26 @@ module nts.uk.ui.at.ksu002.a {
 					icon: 44,
 					enable: $component.data.clickable.undo,
 					timeClick: -1,
-					click: function() { $component.data.clickBtn.apply($vm, ['undo']); }
+					click: function() { $component.data.clickBtn.apply($vm, ['undo']); },
+					attr: {
+						tabindex: $component.data.tabIndex
+					}
 				"></button>
 			<button class="small btn-redo" data-bind="
 					icon: 154,
 					enable: $component.data.clickable.redo,
 					timeClick: -1,
-					click: function() { $component.data.clickBtn.apply($vm, ['redo']); }
+					click: function() { $component.data.clickBtn.apply($vm, ['redo']); },
+					attr: {
+						tabindex: $component.data.tabIndex
+					}
 				"></button>
-			<button class="small btn-help" data-bind="i18n: 'KSU002_27'"></button>
+			<button class="small btn-help" data-bind="
+					i18n: 'KSU002_27',
+					attr: {
+						tabindex: $component.data.tabIndex
+					}
+				"></button>
 		</div>
 	</div>
 	<div class="component-action">
@@ -44,6 +61,9 @@ module nts.uk.ui.at.ksu002.a {
 					columns: [
 						{ prop: 'title', length: 10 },
 					]
+				},
+				attr: {
+					tabindex: $component.data.tabIndex
 				}"></div>
 		</div>
 		<div>
@@ -112,17 +132,19 @@ module nts.uk.ui.at.ksu002.a {
 		virtual: false
 	})
 	export class ActionBarComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+		init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
 
+			const tabIndex = element.getAttribute('tabindex') || '1';
 			const clickable = allBindingsAccessor.get('clickable');
 			const clickBtn = allBindingsAccessor.get('click-btn');
 
-			const params = { clickable, clickBtn };
+			const params = { clickable, clickBtn, tabIndex };
 			const component = { name, params };
 
 			element.classList.add('cf');
 			element.classList.add('action-bar');
+			element.removeAttribute('tabindex');
 
 			ko.applyBindingsToNode(element, { component }, bindingContext);
 
@@ -142,6 +164,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (!data) {
 				vm.data = {
+					tabIndex: "1",
 					clickBtn: () => { },
 					clickable: {
 						redo: ko.computed(() => true),
@@ -182,10 +205,15 @@ module nts.uk.ui.at.ksu002.a {
 			const vm = this;
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+			/* setTimeout(() => {
+				$(vm.$el).find('working-hours [tabindex="0"]').attr('tabindex', vm.data.tabIndex);
+			}, 1000); */
 		}
 	}
 
 	interface Parameter {
+		tabIndex: string;
 		clickable: {
 			undo: KnockoutComputed<boolean>;
 			redo: KnockoutComputed<boolean>;

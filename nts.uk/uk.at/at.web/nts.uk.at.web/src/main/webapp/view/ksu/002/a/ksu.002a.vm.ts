@@ -6,6 +6,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
+		WTYPE: '/screen/ksu/ksu002/getWorkType',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
 	};
 

@@ -22,24 +22,24 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="ksu-002a cf">
-					<button class="proceed" data-bind="i18n: 'KSU002_1', timeClick: -1, click: function() { $vm.showC(!ko.unwrap($vm.showC)); }"></button>
-					<button class="" data-bind="i18n: 'KSU002_2'"></button>
-					<button class="" data-bind="i18n: 'KSU002_2'"></button>
-					<button class="btn-right" data-bind="i18n: 'KSU002_4'"></button>
+					<button tabindex="1" class="proceed" data-bind="i18n: 'KSU002_1', timeClick: -1, click: function() { $vm.showC(!ko.unwrap($vm.showC)); }"></button>
+					<button tabindex="2" class="" data-bind="i18n: 'KSU002_2'"></button>
+					<button tabindex="3" class="" data-bind="i18n: 'KSU002_2'"></button>
+					<button tabindex="4" class="btn-right" data-bind="i18n: 'KSU002_4'"></button>
 				</div>
 			</div>
 			<div id="contents-area">
 				<div class="ksu-002a cf">
 					<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
 					<div class="cf">
-						<div data-bind="title-date: baseDate"></div>
-						<button class="small btn-guide" data-bind="icon: 999"></button>
+						<div tabindex="5" data-bind="title-date: baseDate"></div>
+						<button tabindex="-1" class="small btn-guide" data-bind="icon: 139"></button>
 					</div>
 					<div class="cf">
-						<div data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
+						<div tabindex="7" data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
 					</div>
 					<div class="cf" data-bind="if: !!ko.unwrap($vm.showC)">
-						<div tabindex="2" data-bind="
+						<div tabindex="8" data-bind="
 								scheduler: $vm.schedules,
 								width: 100,
 								baseDate: $vm.baseDate,

@@ -65,11 +65,11 @@ module nts.uk.ui.at.ksu002.a {
                 }
                 .scheduler .data-info .work-type .join,
                 .scheduler .data-info .work-type .leave {
-                    border-bottom: 1px dashed #808080;
+                    border-bottom: 1px dashed #b9b9b9;
                 }
                 .scheduler .data-info .work-type .join,
                 .scheduler .data-info .work-time .join {
-                    border-right: 1px dashed #808080;
+                    border-right: 1px dashed #b9b9b9;
                 }
                 .scheduler .data-info .work-type .join,
                 .scheduler .data-info .work-type .leave,
@@ -97,11 +97,13 @@ module nts.uk.ui.at.ksu002.a {
                     border-radius: 0 !important;
                     border: 0 !important;
                 }
-                .scheduler .ntsControl:focus input {
+                .scheduler .ntsControl input:focus {
                     box-shadow: 0px 0px 0px 1px #0096f2 !important;
+                    background-color: rgba(0, 150, 242, 0.1) !important;
                 }
                 .scheduler .ntsControl.error input {
                     box-shadow: 0px 0px 0px 1px #ff6666 !important;
+                    background-color: rgba(255, 102, 102, 0.1) !important;
                 }
             </style>`
     })

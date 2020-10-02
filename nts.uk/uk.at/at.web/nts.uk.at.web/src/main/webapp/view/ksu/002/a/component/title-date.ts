@@ -4,48 +4,57 @@ module nts.uk.ui.at.ksu002.a {
 	import c = nts.uk.ui.calendar;
 
 	const template = `
-		<div class="cf" data-bind="ntsDatePicker: { 
-			value: yearMonth,
-			dateFormat: 'yearmonth' ,
-		 	valueFormat: 'YYYYMM',
-	  		fiscalMonthsMode: true,
-			defaultClass: 'round-orange',
-			showJumpButtons: true  }">
-		</div>
-		
+		<div class="cf" data-bind="
+			attr: {
+				tabindex: $component.params.tabIndex
+			},
+			ntsDatePicker: { 
+				value: yearMonth,
+				dateFormat: 'yearmonth' ,
+				valueFormat: 'YYYYMM',
+				fiscalMonthsMode: true,
+				defaultClass: 'round-orange',
+				showJumpButtons: true
+			}"></div>
 		<div class="title-label">
 			<span data-bind="i18n: 'KSU002_23'"></span>
 			<span data-bind="i18n: 'KSU002_7'"></span>
-		</div>
-		
-        <div data-bind="ntsComboBox: {
-            width: '200px',
-            name: $component.$i18n('KSU002_22'),
-            value: $component.selectedRangeIndex,
-            options: $component.dateRanges,
-            optionsValue: 'id',
-            optionsText: 'title',
-            editable: false,
-            selectFirstIfNull: true,
-            columns: [
-                { prop: 'title', length: 10 },
-            ]}"></div>
-
+		</div>		
+        <div data-bind="
+			attr: {
+				tabindex: $component.params.tabIndex
+			},
+			ntsComboBox: {
+				width: '200px',
+				name: $component.$i18n('KSU002_22'),
+				value: $component.selectedRangeIndex,
+				options: $component.dateRanges,
+				optionsValue: 'id',
+				optionsText: 'title',
+				editable: false,
+				selectFirstIfNull: true,
+				columns: [
+					{ prop: 'title', length: 10 },
+				]
+			}"></div>
 		<div class="title-label">
 			<span data-bind="i18n: 'KSU002_6'"></span>
 			<span data-bind="i18n: 'KSU002_7'"></span>
 		</div>
-
-		<div class="cf" data-bind="ntsSwitchButton: {
-			name: $i18n('KSU002_6'),
-			value: ko.observable(1),
-			options: [
-				{ code: 1, name: $i18n('KSU002_8') },
-				{ code: 2, name: $i18n('KSU002_9') }
-			],
-			optionsText: 'name',
-			optionsValue: 'code' }"></div>
-					
+		<div class="cf" data-bind="
+			attr: {
+				tabindex: $component.params.tabIndex
+			},
+			ntsSwitchButton: {
+				name: $i18n('KSU002_6'),
+				value: ko.observable(1),
+				options: [
+					{ code: 1, name: $i18n('KSU002_8') },
+					{ code: 2, name: $i18n('KSU002_9') }
+				],
+				optionsText: 'name',
+				optionsValue: 'code'
+			}"></div>					
 		<style type="text/css" rel="stylesheet">
             .title-date {
 				margin: 5px 0;
@@ -93,15 +102,18 @@ module nts.uk.ui.at.ksu002.a {
 		virtual: false
 	})
 	export class TitleDateComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+		init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
 			const dateRange = valueAccessor();
 			const mode = allBindingsAccessor.get('mode');
-			const params = { mode, dateRange };
+			const tabIndex = element.getAttribute('tabindex') || '1';
+			const params = { mode, dateRange, tabIndex };
 			const component = { name, params };
 
 			element.classList.add('cf');
 			element.classList.add('title-date');
+
+			element.removeAttribute('tabindex');
 
 			ko.applyBindingsToNode(element, { component }, bindingContext);
 
@@ -134,6 +146,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (!params) {
 				vm.params = {
+					tabIndex: "1",
 					dateRange: ko.observable({ begin, finish }),
 					mode: ko.observable(1)
 				};
@@ -213,6 +226,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface Params {
+		tabIndex: string;
 		dateRange: KnockoutObservable<c.DateRange | null>;
 		mode: KnockoutObservable<ACHIEVEMENT>;
 	}
