@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

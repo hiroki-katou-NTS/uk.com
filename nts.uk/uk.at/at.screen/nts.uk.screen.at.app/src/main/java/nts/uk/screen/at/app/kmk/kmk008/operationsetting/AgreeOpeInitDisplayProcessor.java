@@ -12,7 +12,7 @@ import java.util.Optional;
  * Screen kmk008 G : 初期表示を行う
  */
 @Stateless
-public class PerformInitDisplayProcessor {
+public class AgreeOpeInitDisplayProcessor {
 
     @Inject
     private AgreementOperationSettingRepository operationSettingRepository;
