@@ -139,15 +139,8 @@ module nts.uk.at.view.kbt002.j {
     */
     public closeDialog() {
       const vm = this;
-      // 閉じるの確認メッセージ => キャンセルの確認メッセージ
-      vm.$dialog.confirm({ messageId: "Msg_19" })
-        .then((result: 'no' | 'yes' | 'cancel') => {
-          if (result === 'yes') {
-            //「閉じる処理を実行」を選択した場合
-            // 画面を閉じる
-            vm.$window.close();
-          }
-        });
+      // 画面を閉じる
+      vm.$window.close();
     }
   }
 
