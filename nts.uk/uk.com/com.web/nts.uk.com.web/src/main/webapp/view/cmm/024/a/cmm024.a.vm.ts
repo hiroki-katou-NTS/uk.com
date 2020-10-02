@@ -1,5 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
+import { isBuffer } from "lodash";
+
 module nts.uk.com.view.cmm024.a {
 	import service = nts.uk.com.view.cmm024.a.service;
 	import EmployeeDto = nts.uk.com.view.cmm024.a.service.EmployeeDto;
@@ -131,17 +133,12 @@ module nts.uk.com.view.cmm024.a {
 
 			if (vm.companyScheduleHistoryList().length > 0) {
 
-				if (value === null) {
-					value = vm.companyScheduleHistoryList()[0].code;
-				}
+				value = (value === null) ? vm.companyScheduleHistoryList()[0].code : value;
 
 				//allow/not allow add new or updated with the first item
 				isAllowSetting = vm.companyScheduleHistoryList()[0].code === value;
-				vm.screenAModeAddNew(isAllowSetting);
-				vm.screenAModeEdit(isAllowSetting);
-				vm.allowSettingA(isAllowSetting);
-				vm.screenAMode(ScreenModel.EDIT);
-				vm.enableRegisterA(true);
+				vm.resetSettingsScreenA(true, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
+
 				//highlight history that has selected
 				scheduleHistory = vm.companyScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
@@ -157,10 +154,7 @@ module nts.uk.com.view.cmm024.a {
 				vm.createEmployeesPanelList('A', 2, objFind.personalInfoConfirm);
 
 			} else {
-				vm.screenAModeAddNew(true);
-				vm.screenAModeEdit(false);
-				vm.allowSettingA(true);
-				vm.enableRegisterA(false);
+				vm.resetSettingsScreenA(false, true, false, true, ScreenModel.ADDNEW);
 			}
 		}
 
@@ -329,14 +323,16 @@ module nts.uk.com.view.cmm024.a {
 
 
 		resetSettingsScreenA(register: boolean, addnew: boolean,
-			edit: boolean, periodlist: boolean, screenmode: number) {
-			let vm = this;
+			edit: boolean, enablePeriodlist: boolean, mode: number) {
 
+			let vm = this;
 			vm.enableRegisterA(register);
 			vm.screenAModeAddNew(addnew);
 			vm.screenAModeEdit(edit);
-			vm.enableScheduleHistoryB(periodlist);
-			vm.screenAMode(screenmode);
+			vm.enableScheduleHistoryB(enablePeriodlist);
+			vm.screenAMode(mode);
+			vm.allowSettingA(false);
+			if (addnew || edit) vm.allowSettingA(true);
 		}
 
 		/**
@@ -382,23 +378,27 @@ module nts.uk.com.view.cmm024.a {
 							}
 
 							if (screen === 'A') {
-								vm.screenAMode(ScreenModel.EDIT);
 								vm.companyScheduleHistoryListing();
-								vm.screenAModeAddNew(true);
-								vm.screenAModeEdit(true);
+								vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 							} else {
 								vm.workplaceScheduleHistoryListing();
-								vm.screenBModeAddNew(true);
-								vm.screenBModeEdit(true);
-								vm.screenBMode(ScreenModel.EDIT);
+								vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
 							}
 						} else {
 							if (screen === 'A') {
-								vm.screenAModeAddNew(true);
-								vm.screenAModeEdit(true);
+								vm.resetSettingsScreenA(
+									vm.enableRegisterA(),
+									true, true,
+									vm.allowSettingA(),
+									vm.screenAMode()
+								);
 							} else {
-								vm.screenBModeAddNew(true);
-								vm.screenBModeEdit(true);
+								vm.resetSettingsScreenB(
+									vm.enableRegisterB(),
+									true, true,
+									vm.allowSettingB(),
+									vm.screenBMode()
+								);
 							}
 						}
 					});
@@ -646,14 +646,10 @@ module nts.uk.com.view.cmm024.a {
 
 			if (vm.workplaceScheduleHistoryList().length > 0) {
 
-				if (value === null) {
-					value = vm.workplaceScheduleHistoryList()[0].code;
-				}
-				//
-				isAllowSetting = vm.workplaceScheduleHistoryList()[0].code === value;
-				vm.allowSettingB(isAllowSetting);
+				value = (value === null) ? vm.workplaceScheduleHistoryList()[0].code : value;
 
-				vm.resetSettingsScreenB(false, true, true, true, ScreenModel.EDIT);
+				isAllowSetting = (vm.workplaceScheduleHistoryList()[0].code === value);
+				vm.resetSettingsScreenB(false, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
 
 				scheduleHistory = vm.workplaceScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
@@ -668,10 +664,7 @@ module nts.uk.com.view.cmm024.a {
 				//従業員代表パネル
 				vm.createEmployeesPanelList('B', 2, objFind.personalInfoConfirm);
 			} else {
-				vm.screenBModeAddNew(true);
-				vm.screenBModeEdit(false);
-				vm.allowSettingB(true);
-				vm.enableRegisterB(false);
+				vm.resetSettingsScreenB(false, true, false, true, ScreenModel.ADDNEW);
 			}
 		}
 
@@ -766,14 +759,16 @@ module nts.uk.com.view.cmm024.a {
 		}
 
 		resetSettingsScreenB(register: boolean, addnew: boolean,
-			edit: boolean, periodlist: boolean, mode: number) {
+			edit: boolean, enablePeriodlist: boolean, mode: number) {
 			let vm = this;
 
 			vm.enableRegisterB(register);
 			vm.screenBModeAddNew(addnew);
 			vm.screenBModeEdit(edit);
-			vm.enableScheduleHistoryB(periodlist);
+			vm.enableScheduleHistoryB(enablePeriodlist);
 			vm.screenBMode(mode);
+			vm.allowSettingB(false);
+			if (addnew || edit) vm.allowSettingB(true);
 		}
 		/**
 		 * 
