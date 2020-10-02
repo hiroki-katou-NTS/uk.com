@@ -92,6 +92,7 @@ public class ProcessExecutionLogFinder {
 					ProcessExecutionLogManage processExecutionLogManage = mapProcessExecutionLogManage.get(execItemCd);
 					ExecutionTaskSetting executionTaskSetting = mapExecutionTaskSetting.get(execItemCd);
 					ExecutionItemInfomationDto dto = ExecutionItemInfomationDto.builder()
+							.execItemCd(execItemCd)
 							// 実行項目情報．更新処理自動実行 = 取得した「更新処理自動実行」
 							.updateProcessAutoExec(processExecution != null 
 									? ProcessExecutionDto.fromDomain(processExecution) 
@@ -118,7 +119,7 @@ public class ProcessExecutionLogFinder {
 					
 					// 作成した「実行項目情報．実行タスク設定．更新処理
 					ExecutionTaskSettingDto execTaskSetDto = dto.getExecutionTaskSetting();
-					if (execTaskSetDto.isEnabledSetting()) {
+					if (execTaskSetDto != null && execTaskSetDto.isEnabledSetting()) {
 						// 次回実行日時作成処理
 						GeneralDateTime nextExecDateTime = this.processExecutionService.processNextExecDateTimeCreation(executionTaskSetting);
 						

@@ -12,6 +12,8 @@ import nts.arc.time.GeneralDateTime;
 @Data
 @Builder
 public class ExecutionItemInfomationDto {
+	
+	String execItemCd;
 
 	/**
 	 * 次回実行日時を過ぎているか
