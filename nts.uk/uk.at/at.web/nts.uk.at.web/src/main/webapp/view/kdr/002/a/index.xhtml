@@ -5,6 +5,9 @@
 
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
+		<com:ValidatorScript>
+			nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.NumberDayAward
+		</com:ValidatorScript>
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr002.a.main.css" />
@@ -16,7 +19,9 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
 		</ui:define>
+
 
 		<ui:define name="content">
 			<div id="functions-area">
@@ -153,14 +158,15 @@
 								<div class="align-seft-center">
 									<input  tabindex="10"
 										data-bind="ntsNumberEditor:{
-										name: '#[KDR002_58]',
-										value: inputExtraction,
-										required: (isExtraction() === true),
-										enable: (isExtraction() === true),
-										option: {
-										width : '65px',
-											unitID: 'DAYS'
-										}}" />
+											constraint: 'NumberDayAward',
+											name: '#[KDR002_58]',
+											value: inputExtraction,
+											required: true,
+											enable: (isExtraction() === true),
+											option: {
+												width : '65px',
+												unitID: 'DAYS'
+											}}" />
 								</div>
 								<!-- A5_3 -->
 								<div id="page_break_cbb" class="div_line_col_2 align-seft-center ml-10 w-100"

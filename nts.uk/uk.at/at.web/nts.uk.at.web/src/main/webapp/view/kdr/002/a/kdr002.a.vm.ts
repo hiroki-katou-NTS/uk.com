@@ -106,7 +106,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // A5_7
         isExtraction: KnockoutObservable<boolean> = ko.observable(false);
         // A5_2
-        inputExtraction: KnockoutObservable<String> = ko.observable('');
+        inputExtraction: KnockoutObservable<number> = ko.observable(null);
         numbereditor: any;
         // A5_3
         optionExtraction: KnockoutObservableArray<any> = ko.observableArray([
@@ -490,7 +490,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         //抽出条件 - Extraction condition - A5_7
         extCondition: boolean,
         //抽出条件_設定．日数 - Extraction condition_setting. Days - A5_2
-        extConditionSettingDay: string,
+        extConditionSettingDay: number,
         //抽出条件_設定．比較条件 - Extraction condition_setting. Comparison conditions - A5_3
         extConditionSettingCoparison: any,
         //ダブルトラック時の期間拡張 - Extended period for double track - A7_2
