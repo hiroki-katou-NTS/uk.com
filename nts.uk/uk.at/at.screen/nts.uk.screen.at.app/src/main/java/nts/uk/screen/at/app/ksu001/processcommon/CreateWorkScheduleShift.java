@@ -1,10 +1,10 @@
 /**
  * 
  */
-package nts.uk.screen.at.app.ksu001.getworkscheduleshift;
+package nts.uk.screen.at.app.ksu001.processcommon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,37 +15,25 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.layer.app.cache.DateHistoryCache;
-import nts.arc.layer.app.cache.KeyDateHistoryCache;
-import nts.arc.layer.app.cache.NestedMapCache;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DeterEditStatusShiftService;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -54,29 +42,20 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftResult;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ShiftEditStateDto;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
- * ScreenQuery 勤務予定（シフト）を取得する
+ * ScreenQuery 勤務予定で勤務予定（シフト）dtoを作成する
  *
  */
 @Stateless
-public class GetScheduleOfShift {
+public class CreateWorkScheduleShift {
 	
-	@Inject
-	private WorkScheduleRepository workScheduleRepo;
-	@Inject
-	private EmpComHisAdapter empComHisAdapter;
-	@Inject
-	private WorkingConditionRepository workCondRepo;
-	@Inject
-	private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-	@Inject
-	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-	@Inject
-	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -89,21 +68,11 @@ public class GetScheduleOfShift {
 	private ShiftMasterRepository shiftMasterRepo;
 	
 	
-	public ScheduleOfShiftResult getWorkScheduleShift(ScheduleOfShiftParam param) {
+	public WorkScheduleShiftResult getWorkScheduleShift(
+			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
+			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
 
-		// step 1 start
-		// call 予定管理状態に応じて勤務予定を取得する
-		long start = System.nanoTime();
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		RequireWorkScheManaStatusImpl requireImpl1 = new RequireWorkScheManaStatusImpl(param.listSid, period, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter,
-				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
-		
-		// 管理状態と勤務予定Map
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(requireImpl1, param.listSid, period);
-		long end = System.nanoTime();
-		long duration = (end - start) / 1000000; // ms;
-		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
-		
+		// step 1 
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (v.isPresent()) {
@@ -113,19 +82,16 @@ public class GetScheduleOfShift {
 				}
 			}
 		});
-		// step 1 end
-		
-		// step 2 
 		// call 日別勤怠の実績で利用する勤務情報のリストを取得する
 		List<WorkInformation> lstWorkInfo = GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(workInfoOfDailyAttendances);
 		
-		// step 3
+		// step 2
 		// call シフトマスタと出勤休日区分の組み合わせを取得する
 		GetCombinationrAndWorkHolidayAtrService.Require requireImpl2 = new RequireCombiAndWorkHolidayImpl(shiftMasterRepo, basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(requireImpl2,AppContexts.user().companyId(), lstWorkInfo);
 		
-		List<ShiftMasterMapWithWorkStyle> listShiftMaster = param.listShiftMasterNotNeedGetNew;
-		List<String> listShiftMasterCodeNotNeedGetNew = param.listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
+		List<ShiftMasterMapWithWorkStyle> listShiftMaster = listShiftMasterNotNeedGetNew;
+		List<String> listShiftMasterCodeNotNeedGetNew     = listShiftMasterNotNeedGetNew.stream().map(mapper -> mapper.getShiftMasterCode()).collect(Collectors.toList()); // ko cần get mới
 
 		for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : mapShiftMasterWithWorkStyle.entrySet()) {
 			String shiftMasterCd = entry.getKey().getShiftMasterCode().toString();
@@ -139,26 +105,26 @@ public class GetScheduleOfShift {
 		}
 		
 		
-		// step 4
+		// step 3
 		// call loop：entry(Map.Entry) in 管理状態と勤務予定Map
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			ScheManaStatuTempo key = k;
 			Optional<WorkSchedule> value = v;
 
-			// step 4.1
+			// step 3.1
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			if (value.isPresent()) {
 				WorkSchedule workSchedule = value.get();
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
-				// 4.2.1
+				// 3.2.1
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
 				Optional<WorkStyle> workStyle = Optional.empty();
 				if(workInformation.getWorkTypeCode() != null){
 					workStyle = workInformation.getWorkStyle(require2);
 				}		
 						
-				// 4.2.2
+				// 3.2.2
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
 				
@@ -175,7 +141,7 @@ public class GetScheduleOfShift {
 					System.out.println("Schedule : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
 				}
 				
-				// 4.2.3
+				// 3.2.3
 				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 						.employeeId(key.getEmployeeID())
 						.date(key.getDate())
@@ -207,7 +173,7 @@ public class GetScheduleOfShift {
 				listWorkScheduleShift.add(dto);
 				
 			} else {
-				// 4.3
+				// 3.3
 				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 						.employeeId(key.getEmployeeID())
 						.date(key.getDate())
@@ -239,7 +205,16 @@ public class GetScheduleOfShift {
 			}
 		});
 		
-		return new ScheduleOfShiftResult(listWorkScheduleShift, listShiftMaster);
+		// convert list to Map
+		Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle2 = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
+		for (ShiftMasterMapWithWorkStyle obj : listShiftMaster) {
+			ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(new ShiftMasterName(obj.shiftMasterName), new ColorCodeChar6(obj.color), new Remarks(obj.remark));
+			ShiftMaster ShiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(obj.shiftMasterCode), displayInfor, obj.workTypeCode, obj.workTimeCode);
+			mapShiftMasterWithWorkStyle2.put(ShiftMaster, obj.workStyle == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(Integer.valueOf(obj.workStyle), WorkStyle.class)));
+		}
+		
+		return new WorkScheduleShiftResult(listWorkScheduleShift, mapShiftMasterWithWorkStyle2);
 	}
 	
 	@AllArgsConstructor
@@ -332,105 +307,6 @@ public class GetScheduleOfShift {
 		@Override
 		public WorkStyle checkWorkDay(String workTypeCode) {
 			return basicScheduleService.checkWorkDay(workTypeCode);
-		}
-	}
-	
-	
-	@AllArgsConstructor
-	private static class RequireWorkScheManaStatusImpl implements WorkScheManaStatusService.Require {
-		
-		private WorkScheduleRepository workScheduleRepo;
-		private EmpComHisAdapter empComHisAdapter;
-		private WorkingConditionRepository workCondRepo;
-		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
-		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
-		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		
-		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
-		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
-		private KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
-		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;
-		private KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
-		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-
-		public RequireWorkScheManaStatusImpl(List<String> empIdList, DatePeriod period, WorkScheduleRepository workScheduleRepo,
-				EmpComHisAdapter empComHisAdapter, WorkingConditionRepository workCondRepo,
-				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
-				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
-			
-			long start1 = System.nanoTime();
-			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
-			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
-					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
-			System.out.println("thoi gian get data WorkSchedule " + ((System.nanoTime() - start1 )/1000000) + "ms");
-			
-			long start2 = System.nanoTime();
-			List<EmpEnrollPeriodImport> affCompanyHists =  empComHisAdapter.getEnrollmentPeriod(empIdList, period);
-			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
-			
-			long start3 = System.nanoTime();
-			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
-			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3 )/1000000) + "ms");
-			
-			long start4 = System.nanoTime();
-			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
-			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4 )/1000000) + "ms");
-			
-			long start5 = System.nanoTime();
-			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
-			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5 )/1000000) + "ms");
-			
-			long start6 = System.nanoTime();
-			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
-			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(listData.stream()
-					.collect(Collectors.toMap( h -> h.getWorkingConditionItem().getEmployeeId(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6 )/1000000) + "ms");
-			
-			System.out.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1 )/1000000) + "ms");
-		}
-		
-		@Override
-		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
-			Optional<WorkSchedule> result = workScheduleCache.get(employeeID, ymd);
-			return result;
-		}
-		
-		@Override
-		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
-			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
-			return data;
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
-			Optional<WorkingConditionItemWithPeriod> data = workCondItemWithPeriodCache.get(employeeId, baseDate);
-			return data.isPresent() ? Optional.of(data.get().getWorkingConditionItem()) : Optional.empty();
-		}
-
-		@Override
-		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String sid, GeneralDate startDate) {
-			Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(sid, startDate);
-			return data;
-		}
-
-		@Override
-		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String sid, GeneralDate startDate) {
-			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(sid, startDate);
-			return data;
-		}
-
-		@Override
-		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
-			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
-			return data;
 		}
 	}
 }
