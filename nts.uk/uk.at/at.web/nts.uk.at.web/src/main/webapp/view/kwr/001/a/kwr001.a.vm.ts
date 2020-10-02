@@ -29,6 +29,7 @@ module nts.uk.at.view.kwr001.a {
             selectionType: KnockoutObservable<number> = ko.observable(0);
             standardSettingLayoutId: string;
             freeSettingLayoutId: string;
+            freeSettingEnabled: KnockoutObservable<boolean> = ko.observable(false);
 
             // switch button A8_2
             dataZeroDisplayType: KnockoutObservableArray<any> = ko.observableArray([
@@ -260,9 +261,9 @@ module nts.uk.at.view.kwr001.a {
                 
                 // TODO: hoangdd - lay du lieu tu service
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', 'なし'),
-                    new ItemModel('1', '社員'),
-                    new ItemModel('2', '職場')
+                    new ItemModel('0', nts.uk.resource.getText("KWR001_161")),
+                    new ItemModel('1', nts.uk.resource.getText('KWR001_162')),
+                    new ItemModel('2', nts.uk.resource.getText('KWR001_163'))
                 ]);
                 
                 self.selectedCodeA9_2 = ko.observable(1);
@@ -332,9 +333,7 @@ module nts.uk.at.view.kwr001.a {
                         if (dataService.freeSetting) {
                             self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
                         }
-                        self.selectionType(dataService.selectionType);
-                        self.enableA7_8(dataService.selectionType === ItemSelectionType.FREE_SETTING);
-                        self.enableA7_2(dataService.selectionType === ItemSelectionType.STANDARD_SELECTION);
+                        self.freeSettingEnabled(dataService.configFreeSetting);
                         switch (dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:

@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class DailyItemDto {
 	
-	private int timeId; 
+	private Integer timeId; 
 	
 	private String name;
 

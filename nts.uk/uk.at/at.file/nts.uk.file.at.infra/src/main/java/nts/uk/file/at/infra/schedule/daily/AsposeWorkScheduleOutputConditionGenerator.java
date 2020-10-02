@@ -79,6 +79,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
@@ -88,6 +89,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -211,10 +213,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private EmploymentRepository employmentRepository;
 	
 	/** The job title adapter. */
-//	@Inject
-//	private DailyAttendanceItemNameDomainService attendanceNameService;
-	
-	/** The job title adapter. */
 	@Inject
 	private JobTitleImportAdapter jobTitleAdapter;
 	
@@ -237,10 +235,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The data processor. */
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
-	
-//	@Inject
-//	private DailyAttdItemAuthRepository daiAttItemAuthRepo;
-	
+
 	/** The company daily item service. */
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
@@ -260,6 +255,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	@Inject
 	private DivergenceReasonInputMethodRepository divergenceReasonInputMethodRepository;
+	
+	// for addition
+	@Inject
+	private BPSettingRepository bpSettingRepository;
 	
 	/** The Constant filename. */
 	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
@@ -815,9 +814,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			queryData.setLstBusiness(lstBusiness);
 		}
 		
-		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_FOR_DIVERGENCE).anyMatch(y -> x == y)).count() > 0) {
-			
-		}
+		// get all addition of attendance item when PrimitiveValueOfAttendanceItem == 68
+		List<String> itemDtos = this.companyDailyItemService.findByAttendanceItems(companyId, itemsId).stream()
+				.filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.map(t -> t.getTimeId().toString())
+				.collect(Collectors.toList());
+		List<CodeName> lstAddtition = this.bpSettingRepository.findByCompanyAndCode(companyId, itemDtos).stream()
+				.map(t -> new CodeName(t.getCode().v(), t.getName().v(), ""))
+				.collect(Collectors.toList());
+		queryData.setLstAddition(lstAddtition);
 		
 		// Collect optional item from KMK002 if there is at least 1 attendance id fall into id 641 -> 740
 		List<Integer> lstOptionalAttendanceId = itemsId.stream()
@@ -1006,6 +1011,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         List<String> tempErrorCode = errorListAllEmployee.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).distinct().collect(Collectors.toList());
 		List<ErrorAlarmWorkRecord> lstAllErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, tempErrorCode);
 		
+		List<Integer> additionLst = this.companyDailyItemService
+				.findByAttendanceItems(companyId,
+						outSche.getLstDisplayedAttendance().stream()
+						.map(AttendanceItemsDisplay::getAttendanceDisplay)
+						.collect(Collectors.toList()))
+				.stream().filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.map(t -> t.getTimeId()).collect(Collectors.toList());
+		
 		Map<GeneralDate, WorkplaceDailyReportData> workplaceDailyReportDataMap = reportData.getDailyReportData().getLstDailyReportData().stream().collect(Collectors.toMap(WorkplaceDailyReportData::getDate, Function.identity()));
 		
 		for (String employeeId: lstEmployeeId) {
@@ -1062,7 +1075,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									
 									List<String> names = lstItemMasterUnregistered.stream()
 											.map(item -> this.getNameFromCode(item.getItemId(),
-													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
+													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst))
 											.collect(Collectors.toList());
 
 									boolean masterUnregistedFlag = names.stream()
@@ -1151,7 +1164,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 								int attendanceId = itemValue.getItemId();
 								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
+									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst);
 									itemValue.setValue(value);
 								}
 								// Workaround for optional attendance item from KMK002
@@ -1264,6 +1277,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (workplaceData != null) {
 			workplaceData.lstEmployeeReportData.add(employeeData);
 		}	
+
+		List<Integer> additionLst = this.companyDailyItemService
+				.findByAttendanceItems(companyId,
+						outSche.getLstDisplayedAttendance().stream()
+						.map(AttendanceItemsDisplay::getAttendanceDisplay)
+						.collect(Collectors.toList()))
+				.stream().filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.map(t -> t.getTimeId()).collect(Collectors.toList());
 		
 		lstAttendanceResultImport.stream()
 			.filter(x -> x.getEmployeeId().equals(employeeId))
@@ -1309,7 +1330,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						
 						List<String> names = lstItemMasterUnregistered.stream()
 								.map(item -> this.getNameFromCode(item.getItemId(),
-										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
+										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst))
 								.collect(Collectors.toList());
 
 						boolean masterUnregistedFlag = names.stream()
@@ -1395,7 +1416,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 					int attendanceId = itemValue.getItemId();
 					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
+						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst);
 						itemValue.setValue(value);
 					}
 					// Workaround for optional attendance item from KMK002
@@ -3642,7 +3663,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, String code
 			, WorkScheduleQueryData queryData
 			, OutputItemDailyWorkSchedule outSche
-			, SwitchItemDisplay displayType) {
+			, SwitchItemDisplay displayType
+			, List<Integer> addtionItem) {
 		// Get all data
 		List<WorkType> lstWorkType = queryData.getLstWorkType();
 		List<WorkTimeSetting> lstWorkTime = queryData.getLstWorkTime();
@@ -3653,6 +3675,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstPosition = queryData.getLstPosition();
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
 		List<CodeName> lstBusiness = queryData.getLstBusiness();
+		List<CodeName> lstAddition = queryData.getLstAddition();
 		
 		// Not set -> won't check master unregistered
 		if (StringUtils.isEmpty(code)) {
@@ -3789,6 +3812,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (IntStream.of(ATTENDANCE_ID_USE_MAP).anyMatch(id -> id == attendanceId)) {
 			return EnumAdaptor.valueOf(Integer.valueOf(code), ManageAtr.class).description;
 		}
+		
+		// for addition
+		if (addtionItem.contains(attendanceId)) {
+			Optional<CodeName> oAddtion = lstAddition.stream()
+					.filter(add -> add.getCode().equalsIgnoreCase(code)).findFirst();
+			if (!oAddtion.isPresent()) {
+				return code + " " + MASTER_UNREGISTERED;
+			}
+
+			CodeName addition = oAddtion.get();
+			
+			// 
+			return displayType == SwitchItemDisplay.DISPLAY_NAME ? addition.getName() : addition.getCode();
+		}
 
 		return "";
 	}
@@ -3885,4 +3922,5 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		return returnList;
 	}
+
 }

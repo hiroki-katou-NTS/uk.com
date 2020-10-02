@@ -105,6 +105,7 @@ public class WorkScheduleOutputConditionFinder {
 		boolean isFreeSetting = this.dailyPerformAuthorRepo.getAuthorityOfEmployee(roleId,
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 
+		dto.setConfigFreeSetting(isFreeSetting);
 		// 自由設定(A7_7～A7_12)の活性制御を行う
 		dto.setSelectionType(isFreeSetting ? ItemSelectionType.FREE_SETTING.value : ItemSelectionType.STANDARD_SELECTION.value);
 

@@ -44,6 +44,8 @@ public class WorkScheduleOutputConditionDto {
 	
 	/** The free setting. */
 	private FreeSettingOfOutputItemForDailyWorkScheduleDto freeSetting;
+	
+	private boolean configFreeSetting;
 
 	/**
 	 * Instantiates a new work schedule output condition dto.

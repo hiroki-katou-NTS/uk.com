@@ -386,11 +386,12 @@ module nts.uk.at.view.kwr001.c {
                             self.C3_2_value(dataScrD.codeCopy);
                             self.C3_3_value(dataScrD.nameCopy);
                             self.layoutId = null;
+                            debugger
                             if (_.size(dataScrD.lstAtdChoose.msgErr)) {
                                 nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
                                     self.saveData(dataScrD);
                                 });
-                            }else {
+                            } else {
                                 self.saveData(dataScrD);
                             }
 
