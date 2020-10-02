@@ -15,12 +15,12 @@ module nts.uk.at.view.kdr002.a {
             return ajax("at", path.findClosureByEmpID);
         }
 
-        export function exportExcel(data) {
+        export function exportExcel(data: any) {
             return nts.uk.request.exportFile("at", path.exportExcel, data);
         }
 
 
-        export function findClosureById(id): JQueryPromise<any> {
+        export function findClosureById(id: any): JQueryPromise<any> {
             return ajax("at", format(path.findClosureById, id));
          }
 

@@ -12,8 +12,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
     import dialog = nts.uk.ui.dialog.info;
     import formatDate = nts.uk.time.formatDate;
     import parseYearMonthDate = nts.uk.time.parseYearMonthDate;
-    import char = nts.uk.characteristics;
     import Closure = service.model.Closure;
+    import char = nts.uk.characteristics;
 
     export class ScreenModel {
         selectedImplementAtrCode: KnockoutObservable<number>;
@@ -248,23 +248,26 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             let self = this;
             self.selectedDateType(screenInfo.selectedDateType);
             self.selectedReferenceType(screenInfo.selectedReferenceType);
-            if (screenInfo.printDate) {
-                //指定月 ≠ null
-                //取得したデータを画面に表示する
-                self.printDate(screenInfo.printDate);
-            } else {
-                //指定月 = null
-                //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
-                self.printDate(closure.closureMonth);
-            }
+            self.isExtraction(screenInfo.extCondition);
+            self.inputExtraction(screenInfo.extConditionSettingDay);
+            self.optionExtraction(screenInfo.extConditionSettingCoparison);
+            self.doubleTrack(screenInfo.doubleTrack);
+            self.printAnnualLeaveDateSelect(screenInfo.printAnnualLeaveDate);
+            self.pageBreakSelected(screenInfo.pageBreakSelected);
+            // if (screenInfo.printDate) {
+            //     //指定月 ≠ null
+            //     //取得したデータを画面に表示する
+            //     self.printDate(screenInfo.printDate);
+            // } else {
+            //     //指定月 = null
+            //     //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
+            //     self.printDate(closure.closureMonth);
+            // }
             self.pageBreakSelected(screenInfo.pageBreakSelected);
         }
 
-        /**
-         * function export excel button
-         * mode 0 : excel , mode 1 : pdf
-         */
-        public exportButton(mode: number) {
+
+        private exportExcel() {
             let self = this;
 
             $('.nts-input').trigger("validate");
@@ -272,10 +275,38 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 return;
             }
 
-            if (mode = PrintMode.EXCEL) {
+            //印刷前チェック処理
+            if (!self.selectedEmployeeCode().length) {
+                alError({ messageId: 'Msg_884' });
+                return;
+            }
+            //事前条件①および②をチェックする
+            block.invisible();
+            self.checkClosureDate().done((isNoError) => {
+                block.clear();
+                let printQuery = new PrintQuery(self);
+                if (printQuery.selectedDateType == 1) {
+                    if (!isNoError) {
+                        alError({ messageId: "Msg_1500" });
+                        return;
+                    } else {
+                        self.doPrint(printQuery);
+                    }
+                } else {
+                    self.doPrint(printQuery);
+                }
 
-            } else {
+            }).fail(() => {
+                block.clear();
+            });
+        }
 
+        private exportPDF() {
+            let self = this;
+
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
             }
 
             //印刷前チェック処理
@@ -368,17 +399,36 @@ module nts.uk.at.view.kdr002.a.viewmodel {
     }
     export class PrintQuery {
         programName: string;
+
         exportTime: string;
         // 対象期間
         selectedDateType: number;
         // 参照区分
         selectedReferenceType: number;
-        // 指定月
-        printDate: number;
+    // 指定月
+    // printDate: number;
         // 改ページ区分
         pageBreakSelected: number;
+
         selectedEmployees: Array<UnitModel>;
-        closureData: any
+
+        closureData: any;
+
+        // 抽出条件
+        extCondition: boolean;
+
+        //抽出条件_設定．日数 - Extraction condition_setting. Days - A5_2
+        extConditionSettingDay: any;
+
+        //抽出条件_設定．比較条件 - Extraction condition_setting. Comparison conditions - A5_3
+        extConditionSettingCoparison: any;
+
+        //ダブルトラック時の期間拡張 - Extended period for double track - A7_2
+        doubleTrack: boolean;
+
+        //年休取得日の印字方法 - How to print the annual leave acquisition date - A6_2
+        printAnnualLeaveDate: any;
+
 
         constructor(screen: ScreenModel) {
             let self = this,
@@ -387,10 +437,14 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.exportTime = moment().format();
             self.selectedDateType = screen.selectedDateType();
             self.selectedReferenceType = screen.selectedReferenceType();
-            self.printDate = screen.printDate();
             self.pageBreakSelected = screen.pageBreakSelected();
             self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code) != -1; });
             self.closureData = screen.closureData();
+            self.extCondition = screen.isExtraction();
+            self.extConditionSettingDay = screen.inputExtraction();
+            self.extConditionSettingCoparison = screen.optionExtractionValue();
+            self.doubleTrack = screen.doubleTrack();
+            self.printAnnualLeaveDate = screen.printAnnualLeaveDateSelect();
         }
 
         public toScreenInfo() {
@@ -398,20 +452,35 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             return {
                 selectedDateType: self.selectedDateType,
                 selectedReferenceType: self.selectedReferenceType,
-                printDate: self.printDate,
-                pageBreakSelected: self.pageBreakSelected
+                // printDate: self.printDate,
+                pageBreakSelected: self.pageBreakSelected,
+                extCondition: self.extCondition,
+                extConditionSettingDay: self.extConditionSettingDay,
+                extConditionSettingCoparison: self.extConditionSettingCoparison,
+                doubleTrack: self.doubleTrack,
+                printAnnualLeaveDate: self.printAnnualLeaveDate
             }
         }
     }
     //年休管理表の出力条件
     export interface IScreenInfo {
-        //対象期間
+        //対象期間 - Target period - A3_2
         selectedDateType: number,
-        //参照区分
+        //参照区分 - Reference classification - A3_5
         selectedReferenceType: number,
-        //指定月
-        printDate: number,
-        //参照の選択
+        //指定月 - Specified month
+        // printDate: number,
+        //抽出条件 - Extraction condition - A5_7
+        extCondition: boolean,
+        //抽出条件_設定．日数 - Extraction condition_setting. Days - A5_2
+        extConditionSettingDay: string,
+        //抽出条件_設定．比較条件 - Extraction condition_setting. Comparison conditions - A5_3
+        extConditionSettingCoparison: any,
+        //ダブルトラック時の期間拡張 - Extended period for double track - A7_2
+        doubleTrack: boolean,
+        //年休取得日の印字方法 - How to print the annual leave acquisition date - A6_2
+        printAnnualLeaveDate: any,
+        //参照の選択 - 改ページ区分 - Page break classification - A4_2
         pageBreakSelected: number
     }
 
@@ -458,11 +527,5 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             this.name = name;
         }
     }
-
-    export enum PrintMode {
-        EXCEL = 0, // EXCEL
-        PDF = 1, // PDF
-    };
-
 
 }

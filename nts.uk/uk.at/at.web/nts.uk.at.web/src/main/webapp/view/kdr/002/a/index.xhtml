@@ -22,10 +22,10 @@
 			<div id="functions-area">
 				<!-- A1_1 EXCEL-->
 				<button id="A1_1" class="proceed" tabindex="1"
-					data-bind="click: exportButton(0), enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_1')}</button>
+					data-bind="click: exportExcel, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_1')}</button>
 				<!-- A1_3 PDF-->
 				<button id="A1_1" class="proceed" tabindex="2"
-					data-bind="click: exportButton(1), enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_40')}</button>
+					data-bind="click: exportPDF, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_40')}</button>
 			</div>
 
 			<div class="fixed-flex-layout" id="contents-area">
