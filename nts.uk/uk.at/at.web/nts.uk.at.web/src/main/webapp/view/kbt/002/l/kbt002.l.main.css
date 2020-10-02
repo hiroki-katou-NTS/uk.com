@@ -1,17 +1,13 @@
-.border-alignment {
-  padding: 20px;
-}
 .padding-table {
   padding-bottom: 20px;
   float: left;
   width: 100%;
 }
-
-.border-alignment > .header-alignment {
-  padding-bottom: 20px;
+.label-aligment{
+  min-width: 100px;
 }
 
-.border-alignment > .table-alignment {
+.table-alignment {
   padding-bottom: 20px;
 }
 

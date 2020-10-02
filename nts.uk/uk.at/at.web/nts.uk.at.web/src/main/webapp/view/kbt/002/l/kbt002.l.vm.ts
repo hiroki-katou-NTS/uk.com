@@ -5,7 +5,7 @@ module nts.uk.at.view.kbt002.l {
   @bean()
   export class KBT002LViewModel extends ko.ViewModel {
 
-    items: KnockoutObservableArray<ProcExecIndexResult> = ko.observableArray([]);
+    items: KnockoutObservableArray<ProcExecIndexResultDto> = ko.observableArray([]);
     columns: KnockoutObservableArray<NtsGridListColumn>;
     currentCode: KnockoutObservable<any>;
     currentCodeList: KnockoutObservableArray<any>;
@@ -13,7 +13,6 @@ module nts.uk.at.view.kbt002.l {
     switchOptions: KnockoutObservableArray<any>;
     execId: KnockoutObservable<string> = ko.observable('');
     tableOfGoals: KnockoutObservable<string> = ko.observable('');
-    numberTable : KnockoutObservableArray<string> = ko.observableArray();
 
     created(){
       const vm = this;
@@ -29,49 +28,41 @@ module nts.uk.at.view.kbt002.l {
       this.currentCode = ko.observable();
       this.currentCodeList = ko.observableArray([]);
 
-      const sharedData = nts.uk.ui.windows.getShared('inputDialogL');
+      const sharedData = getShared('inputDialogL');
       if(sharedData){
-        vm.execId = sharedData.execId;
+        vm.execId = sharedData.executionId;
       }
       vm.getProExecIndex();
     }
 
     getProExecIndex(){
     const vm = this;
-    service.indexResconstruction("b08d2311-d51f-4e1b-96e7-f7ebcbfa29f3").done((data : ProExecIndexAndNumberTarget) => {
+    vm.$blockui('grayout');
+    service.indexResconstruction(vm.execId()).then((data : ProExecIndexAndNumberTargetDto) => {
+      vm.$blockui('clear');
       if(data.indexReconstructionResult){
         vm.items(data.indexReconstructionResult);
       }
-      const numberT : string[] = [String(data.numberOfTargetTable)]
-      // vm.numberTable(numberT);
-      // console.log(vm.numberTable())
-
-      vm.tableOfGoals(getTextResource("KDL009_25", [numberT]))
+      vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable+'']))
       })
-    }
+      .always(() => vm.$blockui("clear"));
+   }
 
     closeDialog(){
       const vm = this;
       vm.$window.close();
     }
   }
-  export class ProExecIndexAndNumberTarget {
+  export interface ProExecIndexAndNumberTargetDto {
     numberOfTargetTable :  number;
     executionId: string;
-    indexReconstructionResult: ProcExecIndexResult[];
-
-    constructor(init?: Partial<ProExecIndexAndNumberTarget>) {
-      $.extend(this, init);
-    }
+    indexReconstructionResult: ProcExecIndexResultDto[];
   }
 
- export class ProcExecIndexResult {
+ export interface ProcExecIndexResultDto {
     indexName: string;
     tablePhysicalName: string;
     fragmentationRate: number;
     fragmentationRateAfterProcessing: number;
-    constructor(init?: Partial<ProcExecIndexResult>) {
-      $.extend(this, init);
-    }
   }
 }

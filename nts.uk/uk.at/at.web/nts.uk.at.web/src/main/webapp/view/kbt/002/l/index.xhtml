@@ -9,8 +9,8 @@
       <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 860,
-                height : 620
+                width : 840,
+                height : 650
             };
         </script>
         <com:stylefile path="kbt002.l.main.css" />
@@ -20,11 +20,11 @@
       </ui:define>
       <!-- content -->
       <ui:define name="content">
-        <div class="border-alignment">
+        <div id="contents-area">
           <div class="header-alignment">
             <table>
               <tr class="padding-table">
-                <td>
+                <td class="label-aligment">
                   <div data-bind="ntsFormLabel: {}">
                     <span>#{i18n.getText('KBT002_180')}</span>
                   </div>
@@ -34,7 +34,7 @@
                 </td>
               </tr>
               <tr class="padding-table">
-                <td>
+                <td class="label-aligment">
                   <div data-bind="ntsFormLabel: {}">
                     <span>#{i18n.getText('KBT002_326')}</span>
                   </div>
@@ -57,7 +57,7 @@
           </div>
         </div>
         <div id="functions-area-bottom">
-          <button tabindex="13" class="padding-button" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
+          <button tabindex="1" class="padding-button" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
         </div>
       </ui:define>
     </ui:composition>
