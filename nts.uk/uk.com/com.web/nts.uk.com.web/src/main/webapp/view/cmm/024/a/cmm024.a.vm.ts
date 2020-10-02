@@ -66,12 +66,6 @@ module nts.uk.com.view.cmm024.a {
 			};
 
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
-			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
-				if (wkpId) {
-					vm.selectedWkpId(wkpId);
-					vm.workplaceScheduleHistoryListing();
-				}
-			});
 		}
 
 		// start point of object
@@ -102,6 +96,13 @@ module nts.uk.com.view.cmm024.a {
 				vm.dispplayInfoOnScreenB(value);
 			});
 
+			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
+				if (wkpId) {
+					vm.selectedWkpId(wkpId);
+					vm.workplaceScheduleHistoryListing();
+				}
+			});
+
 			//responsive
 			if ($(window).width() < 1360) {
 				$('.contents-area').addClass('fix1280');
@@ -120,12 +121,11 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this,
 				isAllowSetting: boolean = false,
 				objFind: ScheduleHistoryDto = null,
-				scheduleHistory: Array<any> = [];
+				scheduleHistory: Array<any> = vm.companyScheduleHistoryList();
 
-			if (vm.companyScheduleHistoryList().length > 0) {
-				value = (value === null) ? vm.companyScheduleHistoryList()[0].code : value;
-				//allow/not allow add new or updated with the first item
-				isAllowSetting = vm.companyScheduleHistoryList()[0].code === value;
+			if (scheduleHistory.length > 0) {
+				value = (value === null) ? scheduleHistory[0].code : value;
+				isAllowSetting = scheduleHistory[0].code === value;
 				vm.resetSettingsScreenA(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
 				//highlight history that has selected
 				scheduleHistory = vm.companyScheduleHistoryList();
@@ -272,7 +272,7 @@ module nts.uk.com.view.cmm024.a {
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
 
 					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
-						currentScheduleHistoryList = vm.updateScheduleHistoryListing( vm.companyScheduleHistoryList(), data);
+						currentScheduleHistoryList = vm.updateScheduleHistoryListing(vm.companyScheduleHistoryList(), data);
 						//re-update the list
 						vm.companyScheduleHistoryList(currentScheduleHistoryList);
 						vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
@@ -311,6 +311,11 @@ module nts.uk.com.view.cmm024.a {
 			vm.enableScheduleHistoryB(enablePeriodlist);
 			vm.screenAMode(mode);
 			vm.allowSettingA(register);
+			//clear model
+			let historyPerido = vm.companyScheduleHistoryList();
+			if (historyPerido.length <= 0) {
+				vm.modelA(new Model(null, null, null, [], []));
+			}
 		}
 
 		/**
@@ -335,7 +340,10 @@ module nts.uk.com.view.cmm024.a {
 			data.workPlaceCompanyId = (screen === 'A') ? vm.company().id : vm.selectedWkpId();
 			data.screen = screen;
 
-			if (!vm.screenAModeEdit()) {
+			if (screen == 'A' && !vm.screenAModeEdit()) {
+				vm.$dialog.error({ messageId: 'Msg_154' });
+				return;
+			} else if (screen == 'B' && !vm.screenBModeEdit()) {
 				vm.$dialog.error({ messageId: 'Msg_154' });
 				return;
 			}
@@ -619,13 +627,12 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this,
 				isAllowSetting: boolean = false,
 				objFind: ScheduleHistoryDto = null,
-				scheduleHistory: Array<any> = [];
+				scheduleHistory: Array<any> = vm.workplaceScheduleHistoryList();
 
-			if (vm.workplaceScheduleHistoryList().length > 0) {
-				value = (value === null) ? vm.workplaceScheduleHistoryList()[0].code : value;
-				isAllowSetting = (vm.workplaceScheduleHistoryList()[0].code === value);
+			if (scheduleHistory.length > 0) {
+				value = (value === null) ? scheduleHistory[0].code : value;
+				isAllowSetting = (scheduleHistory[0].code === value);
 				vm.resetSettingsScreenB(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
-				scheduleHistory = vm.workplaceScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
@@ -732,13 +739,17 @@ module nts.uk.com.view.cmm024.a {
 		resetSettingsScreenB(register: boolean, addnew: boolean,
 			edit: boolean, enablePeriodlist: boolean, mode: number) {
 			let vm = this;
-
 			vm.enableRegisterB(register);
 			vm.screenBModeAddNew(addnew);
 			vm.screenBModeEdit(edit);
 			vm.enableScheduleHistoryB(enablePeriodlist);
 			vm.screenBMode(mode);
 			vm.allowSettingB(register);
+			//clear model
+			let historyPeriod = vm.workplaceScheduleHistoryList();
+			if (historyPeriod.length <= 0) {
+				vm.modelB(new Model(null, null, null, [], []));
+			}
 		}
 		/**
 		 * 

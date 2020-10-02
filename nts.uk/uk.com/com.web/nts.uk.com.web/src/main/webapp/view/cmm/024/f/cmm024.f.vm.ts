@@ -19,6 +19,7 @@ module nts.uk.com.view.cmm024.f {
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 		treeGrid: TreeComponentOption;
+		enableSubmitButton: KnockoutObservable<boolean> = ko.observable(false);
 		//getShare & setShare
 		workplaceId: KnockoutObservable<string> = ko.observable(null);
 		currentCodeListSwap: KnockoutObservableArray<EmployeeDto> = ko.observableArray([]);
@@ -58,6 +59,8 @@ module nts.uk.com.view.cmm024.f {
 		created(params: any) {
 			// start point of object
 			let vm = this;
+
+			vm.enableSubmitButton(false);
 		}
 
 		mounted() {
@@ -90,6 +93,10 @@ module nts.uk.com.view.cmm024.f {
 					vm.getEmployeesFromCompanyWorkplace(workplaceId);
 				}
 			});
+
+			vm.currentCodeListSwap.subscribe((value) => {
+				vm.enableSubmitButton(value.length > 0);
+			})
 		}
 
 
