@@ -134,7 +134,7 @@ module nts.uk.at.view.ksu001.q {
 				self.currencyeditor = {
 					option: new nts.uk.ui.option.CurrencyEditorOption({
 						grouplength: 3,
-						currencyposition:"right",						
+						currencyposition:"right",	
 						currencyformat: "JPY"
 					}),
 				};
