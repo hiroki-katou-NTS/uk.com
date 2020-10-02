@@ -8,9 +8,12 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -22,43 +25,67 @@ public class CompanyApproverHistoryChangeDomainServiceTest {
 	@Injectable
 	private CompanyApproverHistoryChangeDomainService.Require require;
 
+	/**
+	 * getPrevHistory OK
+	 */
 	@Test
 	public void test01() {
-		val histToChange 	= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/11", "2020/09/15");
-		val prevHist 		= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/01", "2020/09/05");
-		val startDateBeforeChange = GeneralDate.fromString("2020/09/06", Helper.DATE_FORMAT_YYYYMMDD);
+		val histToChange = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/11"), Helper.createDate("2020/09/15")),
+				Arrays.asList("approver01"),
+				Arrays.asList("confirmer01")
+		);
+
+		val prevHist = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/01"), Helper.createDate("2020/09/05")),
+				Arrays.asList("approver01"),
+				Arrays.asList("confirmer01")
+		);
+
+		val startDateBeforeChange = Helper.createDate("2020/09/06");
 
 		new Expectations() {{
 			require.getPrevHistory(startDateBeforeChange.addDays(-1));
 			result = Optional.of(prevHist);
 		}};
 
- 		val service = new CompanyApproverHistoryChangeDomainService();
+		AtomTask atomTask = CompanyApproverHistoryChangeDomainService
+				.changeApproverHistory(require, startDateBeforeChange, histToChange);
 
-		AtomTask persist = service.changeApproverHistory(require, startDateBeforeChange, histToChange);
-		new Verifications() {{
-			require.changeHistory((Approver36AgrByCompany)any,startDateBeforeChange);
-			times = 0;
-		}};
-
-		persist.run();
-
+		NtsAssert.atomTask(
+				() -> atomTask,
+				any -> require.changeHistory(histToChange, startDateBeforeChange),
+				any -> require.changeHistory(prevHist, Helper.createDate("2020/09/01"))
+		);
 	}
 
+	/**
+	 * getPrevHistory returns empty
+	 */
 	@Test
 	public void test02() {
-		val histToChange 	= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/11", "2020/09/15");
-		val startDateBeforeChange = GeneralDate.fromString("2020/09/06", Helper.DATE_FORMAT_YYYYMMDD);
+		val histToChange = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/11"), Helper.createDate("2020/09/15")),
+				Arrays.asList("approver01"),
+				Arrays.asList("confirmer01")
+		);
+
+		val startDateBeforeChange = Helper.createDate("2020/09/06");
 
 		new Expectations() {{
 			require.getPrevHistory(startDateBeforeChange.addDays(-1));
 			result = Optional.empty();
 		}};
 
-		val service = new CompanyApproverHistoryChangeDomainService();
+		AtomTask atomTask = CompanyApproverHistoryChangeDomainService
+				.changeApproverHistory(require, startDateBeforeChange, histToChange);
+
 		NtsAssert.atomTask(
-				() -> service.changeApproverHistory(require, startDateBeforeChange, histToChange),
-				any -> require.changeHistory(histToChange,startDateBeforeChange)
+				() -> atomTask,
+				any -> require.changeHistory(histToChange, startDateBeforeChange)
 		);
 	}
 }

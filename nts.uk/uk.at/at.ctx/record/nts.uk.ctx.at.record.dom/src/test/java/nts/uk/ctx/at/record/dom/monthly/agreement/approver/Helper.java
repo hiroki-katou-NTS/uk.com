@@ -26,7 +26,9 @@ public class Helper {
 				createApproverList(5),
 				createConfirmerList(5)
 		);
-	}public static Approver36AgrByCompany createApprover36AgrByCompanyLast() {
+	}
+
+	public static Approver36AgrByCompany createApprover36AgrByCompanyLast() {
 		return Approver36AgrByCompany.create(
 				cid,
 				periodLast,
@@ -71,5 +73,9 @@ public class Helper {
 			stringList.add(sample + i);
 		}
 		return stringList;
+	}
+
+	public static GeneralDate createDate(String strDate){
+		return GeneralDate.fromString(strDate, "yyyy/MM/dd");
 	}
 }

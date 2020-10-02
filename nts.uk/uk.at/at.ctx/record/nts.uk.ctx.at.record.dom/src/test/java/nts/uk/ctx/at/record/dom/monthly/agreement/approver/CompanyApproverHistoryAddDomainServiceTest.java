@@ -6,9 +6,11 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -22,7 +24,13 @@ public class CompanyApproverHistoryAddDomainServiceTest {
 
 	@Test
 	public void test01() {
-		val domain = Helper.createApprover36AgrByCompany();
+		val domain = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/11"), Helper.createDate("2020/09/15")),
+				Arrays.asList("approver01"),
+				Arrays.asList("confirmer01")
+		);
+
 		val update = Helper.createApprover36AgrByCompanyLast();
 		new Expectations() {{
 			require.getLatestHistory(GeneralDate.max());

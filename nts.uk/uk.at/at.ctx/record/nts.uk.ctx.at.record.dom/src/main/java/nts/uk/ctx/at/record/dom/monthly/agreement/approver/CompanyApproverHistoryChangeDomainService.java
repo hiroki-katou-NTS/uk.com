@@ -17,6 +17,7 @@ public class CompanyApproverHistoryChangeDomainService {
 
 	/**
 	 * [1] 変更する
+	 *
 	 * 会社別の承認者（36協定）の履歴を変更して、直前の履歴の終了日を変更する
 	 */
 	public static AtomTask changeApproverHistory(
@@ -24,21 +25,24 @@ public class CompanyApproverHistoryChangeDomainService {
 			GeneralDate startDateBeforeChange,
 			Approver36AgrByCompany histToChange) {
 
-		return AtomTask.of(() -> {
-			require.changeHistory(histToChange,startDateBeforeChange);
+		val optPrevHist = require.getPrevHistory(startDateBeforeChange.addDays(-1));
 
-			val optPrevHist = require.getPrevHistory(startDateBeforeChange.addDays(-1));
+		if (optPrevHist.isPresent()) {
+			val newEndDate = histToChange.getPeriod().start().addDays(-1);
+			val periodWithNewEndDate = new DatePeriod(optPrevHist.get().getPeriod().start(), newEndDate);
+			optPrevHist.get().setPeriod(periodWithNewEndDate);
+		}
+
+		return AtomTask.of(() -> {
+			require.changeHistory(histToChange, startDateBeforeChange);
+
 			if (optPrevHist.isPresent()) {
-				val prevHist = optPrevHist.get();
-				val newEndDate = histToChange.getPeriod().start().addDays(-1);
-				val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(), newEndDate);
-				prevHist.setPeriod(periodWithNewEndDate);
-				require.changeHistory(prevHist,periodWithNewEndDate.start());
+				require.changeHistory(optPrevHist.get(),optPrevHist.get().getPeriod().start());
 			}
 		});
 	}
 
-	public static interface Require {
+	public interface Require {
 		/**
 		 * [R-1] 直前の履歴を取得する Get previous history
 		 * 会社別の承認者（36協定）Repository.指定終了日の履歴を取得する(会社ID,終了日)
