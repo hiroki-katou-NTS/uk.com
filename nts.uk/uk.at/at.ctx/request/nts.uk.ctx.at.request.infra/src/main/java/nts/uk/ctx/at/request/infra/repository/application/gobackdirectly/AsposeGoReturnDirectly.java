@@ -80,15 +80,15 @@ public class AsposeGoReturnDirectly {
                 }
                 
                 // Get text for value D10
-                NotUseAtr straightLineAtr = gobackDirectly.get().getStraightLine();
-                if(straightLineAtr.equals(NotUseAtr.USE)) {
+                NotUseAtr straightDistinction = gobackDirectly.get().getStraightDistinction();
+                if(straightDistinction.equals(NotUseAtr.USE)) {
                     valueD10 = I18NText.getText("KAF009_47");
                 } else {
                     valueD10 = I18NText.getText("KAF009_48");
                 }
                 // Get text for value D11
-                NotUseAtr straightDistinction = gobackDirectly.get().getStraightDistinction();
-                if(straightDistinction.equals(NotUseAtr.USE)) {
+                NotUseAtr straightLineAtr = gobackDirectly.get().getStraightLine();
+                if(straightLineAtr.equals(NotUseAtr.USE)) {
                     valueD11 = I18NText.getText("KAF009_47");
                 } else {
                     valueD11 = I18NText.getText("KAF009_48");
