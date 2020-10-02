@@ -43,6 +43,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @Entity
 @Table(name="KFNMT_EXEC_TASK_SETTING")
 @AllArgsConstructor
@@ -105,7 +106,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* 次回実行日時 */
 	@Column(name = "NEXT_EXEC_DATE_TIME")
 	public GeneralDateTime nextExecDateTime;
-	
 	
 	/* 日 */
 	@Column(name = "MONDAY")
@@ -186,6 +186,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* スケジュールID */
 	@Column(name = "SCHEDULE_ID")
 	public String scheduleId;
+	
 	/* 終了処理スケジュールID*/
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
@@ -273,40 +274,51 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	 */
 	public static KfnmtExecutionTaskSetting toEntity(ExecutionTaskSetting domain) {
 		return new KfnmtExecutionTaskSetting(
-							new KfnmtExecutionTaskSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
-							domain.getVersion(),
-							AppContexts.user().contractCode(),
-							domain.getStartDate(),
-							domain.getStartTime().v(),
-							domain.getEndTime() == null ? 0 : domain.getEndTime().getEndTimeCls().value,
-							domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
-							domain.getOneDayRepInr() == null ? 0 : domain.getOneDayRepInr().getOneDayRepCls().value,
-							(domain.getOneDayRepInr().getDetail() == null || !domain.getOneDayRepInr().getDetail().isPresent()) ? null : domain.getOneDayRepInr().getDetail().get().value,
-							domain.getContent() == null ? 0 : domain.getContent().value,
-							domain.getEndDate() == null ? 0 : domain.getEndDate().getEndDateCls().value,
-							domain.getEndDate() == null ? null : domain.getEndDate().getEndDate(),
-							domain.isEnabledSetting() ? 1 : 0,
-							(domain.getNextExecDateTime() == null || !domain.getNextExecDateTime().isPresent())  ? null : domain.getNextExecDateTime().get(),
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isThursday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isFriday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isSaturday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isSunday() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJanuary() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isFebruary() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isMarch() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isApril() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isMay() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJune() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJuly() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isAugust() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isSeptember() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
-							domain.getScheduleId(), (domain.getEndScheduleId()!=null && domain.getEndScheduleId().isPresent())?domain.getEndScheduleId().get():null,		
-							new ArrayList<>());
+				new KfnmtExecutionTaskSettingPK(
+						domain.getCompanyId(), 
+						domain.getExecItemCd().v()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
+				domain.getStartDate(),
+				domain.getStartTime().v(),
+				domain.getEndTime() == null ? 0 : domain.getEndTime().getEndTimeCls().value,
+				domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
+				domain.getOneDayRepInr() == null ? 0 : domain.getOneDayRepInr().getOneDayRepCls().value,
+				(domain.getOneDayRepInr().getDetail() == null || !domain.getOneDayRepInr().getDetail().isPresent()) 
+						? null 
+						: domain.getOneDayRepInr().getDetail().get().value,
+				domain.getContent() == null ? 0 : domain.getContent().value,
+				domain.getEndDate() == null ? 0 : domain.getEndDate().getEndDateCls().value,
+				domain.getEndDate() == null ? null : domain.getEndDate().getEndDate(),
+				domain.isEnabledSetting() ? 1 : 0,
+				(domain.getNextExecDateTime() == null || !domain.getNextExecDateTime().isPresent()) 
+						? null 
+						: domain.getNextExecDateTime().get(),
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isThursday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isFriday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isSaturday() ? 1 : 0,
+				domain.getDetailSetting().getWeekly().getWeekdaySetting().isSunday() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isJanuary() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isFebruary() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isMarch() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isApril() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isMay() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isJune() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isJuly() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isAugust() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isSeptember() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
+				domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
+				(domain.getScheduleId() != null && domain.getScheduleId().isPresent())
+						? domain.getScheduleId().get()
+						: null,		
+				(domain.getEndScheduleId() != null && domain.getEndScheduleId().isPresent())
+						? domain.getEndScheduleId().get()
+						: null,		
+				new ArrayList<>());
 	}
 }

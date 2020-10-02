@@ -3,9 +3,6 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 
 /**
  * Output 実行項目情報
@@ -39,16 +36,16 @@ public class ExecutionItemInfomationDto {
 	/**
 	 * 更新処理自動実行ログ
 	 */
-	ProcessExecutionLog updateProcessAutoExecLog;
+	ProcessExecutionLogDto updateProcessAutoExecLog;
 	
 	/**
 	 * 更新処理自動実行管理
 	 */
-	ProcessExecutionLogManage updateProcessAutoExecManage;
+	ProcessExecutionLogManageDto updateProcessAutoExecManage;
 	
 	/**
 	 * 実行タスク設定
 	 */
-	ExecutionTaskSetting executionTaskSetting;
+	ExecutionTaskSettingDto executionTaskSetting;
 	
 }

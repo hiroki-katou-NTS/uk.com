@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 
 @Data
@@ -18,35 +19,44 @@ public class ExecutionTaskSettingDto {
 	/* コード */
 	private String execItemCd;
 	
+	/* 更新処理有効設定 */
+	private boolean enabledSetting;
+	
+	/* 1日の繰り返し間隔.繰り返し間隔 */
+	private Integer oneDayRepInterval;
+	
+	/* 1日の繰り返し間隔.指定区分 */
+	private Integer oneDayRepClassification;
+	
+	/* 次回実行日時 */
+	private GeneralDateTime nextExecDateTime;
+	
+	/* 終了日.終了日日付指定 */
+	private GeneralDate endDate;
+	
+	/* 終了日.実行タスク終了日区分 */
+	private Integer endDateCls;
+	
+	/* 終了時刻.終了時刻 */
+	private Integer endTime;
+	
+	/* 終了時刻.実行タスク終了時刻ありなし区分 */
+	private Integer endTimeCls;
+	
+	/* 繰り返し内容 */
+	private Integer repeatContent;
+	
 	/* 開始日 */
 	private GeneralDate startDate;
 	
 	/* 開始時刻 */
 	private Integer startTime;
 	
-	/* 実行タスク終了時刻設定 */
-	private Integer endTimeCls;
+	/* スケジュールID */
+	private String scheduleId;
 	
-	/* 終了時刻 */
-	private Integer endTime;
-	
-	/* 実行タスク終了時刻設定 */
-	private Integer oneDayRepCls;
-	
-	/* 繰り返し間隔 */
-	private Integer oneDayRepInterval;
-	
-	/* 繰り返し内容 */
-	private Integer repeatContent;
-	
-	/* 実行タスク終了日区分 */
-	private Integer endDateCls;
-	
-	/* 終了日日付指定 */
-	private GeneralDate endDate;
-	
-	/* 更新処理有効設定 */
-	private boolean enabledSetting;
+	/* 終了処理スケジュールID*/
+	private String endScheduleId;
 	
 	/* 日 */
 	private boolean monday;
@@ -113,16 +123,19 @@ public class ExecutionTaskSettingDto {
 							.stream().map(x -> x.value).collect(Collectors.toList());
 		return new ExecutionTaskSettingDto(domain.getCompanyId(),
 											domain.getExecItemCd().v(),
+											domain.isEnabledSetting(),
+											domain.getOneDayRepInr().getDetail().map(o -> o.value).orElse(null),
+											domain.getOneDayRepInr().getOneDayRepCls().value,
+											domain.getNextExecDateTime().orElse(null),
+											domain.getEndDate().getEndDate(),
+											domain.getEndDate().getEndDateCls().value,
+											domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
+											domain.getEndTime().getEndTimeCls().value,
+											domain.getContent().value,
 											domain.getStartDate(),
 											domain.getStartTime().v(),
-											domain.getEndTime().getEndTimeCls().value,
-											domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
-											domain.getOneDayRepInr().getOneDayRepCls().value,
-											domain.getOneDayRepInr().getDetail() == null||!domain.getOneDayRepInr().getDetail().isPresent() ? null : domain.getOneDayRepInr().getDetail().get().value,
-											domain.getContent().value,
-											domain.getEndDate().getEndDateCls().value,
-											domain.getEndDate().getEndDate(),
-											domain.isEnabledSetting(),
+											domain.getScheduleId().orElse(null),
+											domain.getEndScheduleId().orElse(null),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday(),
