@@ -131,7 +131,7 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<HolidayAppType> opHolidayAppType) {
 		// 申請理由内容　＝　String.Empty
 		String result = Strings.EMPTY;
-		if(!(screenAtr != ScreenAtr.KAF018 && appReason!= null && appReasonDisAtr == DisplayAtr.DISPLAY)) {
+		if(!(screenAtr != ScreenAtr.KAF018 && (appReason!= null && Strings.isNotBlank(appReason.v())) && appReasonDisAtr == DisplayAtr.DISPLAY)) {
 			return result;
 		}
 		// アルゴリズム「申請内容定型理由取得」を実行する
