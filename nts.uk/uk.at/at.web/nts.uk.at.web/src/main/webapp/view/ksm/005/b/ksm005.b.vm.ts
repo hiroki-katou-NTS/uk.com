@@ -315,8 +315,8 @@ module nts.uk.at.view.ksm005.b {
              */
             public getUserLogin(): UserInfoDto {
                 var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
+                    companyId: __viewContext.user.companyId,
+                    employeeId: __viewContext.user.employeeId
                 };
                 return userinfo;
             }
