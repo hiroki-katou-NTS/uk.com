@@ -149,11 +149,12 @@ public class AsposeGoReturnDirectly {
             
             // Delete item A1_1 A1_2 and A2_1 A2_2 by condition
             if(gobackDirectly.isPresent()) {
-                if(!gobackDirectly.get().getIsChangedWork().isPresent() || (gobackDirectly.get().getIsChangedWork().isPresent() &&!gobackDirectly.get().getIsChangedWork().get().equals(NotUseAtr.USE) 
+                if((!gobackDirectly.get().getIsChangedWork().isPresent() && !infoGoBackCommonDirectOutput.getGoBackReflect().getReflectApplication().equals(ApplicationStatus.DO_REFLECT)) 
+                        || (gobackDirectly.get().getIsChangedWork().isPresent() &&!gobackDirectly.get().getIsChangedWork().get().equals(NotUseAtr.USE) 
                         && !infoGoBackCommonDirectOutput.getGoBackReflect().getReflectApplication().equals(ApplicationStatus.DO_REFLECT))) {
                     cells.deleteRow(8);
                     cells.deleteRow(7);
-                    return 2;
+                    return 2; 
                 }
             }
             
