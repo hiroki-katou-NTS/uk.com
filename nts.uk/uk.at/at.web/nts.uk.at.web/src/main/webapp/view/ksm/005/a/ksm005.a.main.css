@@ -73,6 +73,7 @@
 
 .ksm005a  .fc-row .fc-content-skeleton .fc-content .fc-title {
     line-height: 20px;
+	font-size: small;
 }
 .ksm005a .code-name {
 	display: flex;
