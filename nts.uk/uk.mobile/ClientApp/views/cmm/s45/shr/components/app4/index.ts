@@ -40,6 +40,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
         }).then((res: any) => {
             this.fetchData(self.params);
         });
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            this.fetchData(self.params);
+        });
     }
 
 
@@ -63,16 +66,22 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
         this.bindCodition(params);
 
-        let workTypeCode = params.goBackApplication.dataWork.workType;
+        let workTypeCode;
+        if (params.goBackApplication.dataWork) {
+            workTypeCode = params.goBackApplication.dataWork.workType;
+        }
         let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS07_10');
-        this.$app().workType = workTypeCode + '  ' + workTypeName;
+        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS09_20');
+        this.$app().workType = workTypeCode ? (workTypeCode + '  ' + workTypeName) : this.$i18n('KAFS09_20');
 
-        let workTimeCode = params.goBackApplication.dataWork.workTime;
+        let workTimeCode;
+        if (params.goBackApplication.dataWork) {
+            workTimeCode = params.goBackApplication.dataWork.workTime;
+        }
         let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
+        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS09_21');
         if (!workTimeCode) {
-            workTimeCode = this.$i18n('KAFS07_9');
+            workTimeCode = this.$i18n('KAFS09_20');
             workTimeName = '';
         }
         this.$app().workTime = workTimeCode + '  ' + workTimeName;
@@ -103,9 +112,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
 // dto 
 class AppWorkChange {
 
-    public workType: string = 'workType';
+    public workType: string = '';
 
-    public workTime: string = 'workTime';
+    public workTime: string = '';
 
     public workHours1: string = '';
 

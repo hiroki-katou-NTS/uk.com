@@ -821,7 +821,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             } else {
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
-                if (objWtime[0].workTimeSetting == 2) {
+                if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
                     $("#listWorkTime").addClass("disabledWorkTime");
                 }
             }

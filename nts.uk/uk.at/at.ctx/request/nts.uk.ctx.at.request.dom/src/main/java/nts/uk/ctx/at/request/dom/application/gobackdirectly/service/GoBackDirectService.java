@@ -58,7 +58,15 @@ public interface GoBackDirectService {
 	 */
 	public InforGoBackCommonDirectOutput getDataDetailAlgorithm(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
-	
+	/**
+	 * Refactor5
+	 * @param companyId
+	 * @param dates
+	 * @param sids
+	 * @param inforGoBackCommonDirectOutput
+	 * @return
+	 */
+	public InforGoBackCommonDirectOutput getDateChangeMobileAlgorithm(String companyId, List<GeneralDate> dates, List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
 	
 	
 }

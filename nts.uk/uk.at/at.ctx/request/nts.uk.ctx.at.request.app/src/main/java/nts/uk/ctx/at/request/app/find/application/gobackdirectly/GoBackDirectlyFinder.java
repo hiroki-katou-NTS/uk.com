@@ -354,7 +354,22 @@ public class GoBackDirectlyFinder {
 			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(paramStart.getCompanyId(), appId, appDispInfoStartupOutput));
 		}
 	}
-	
+	/**
+	 * Refactor 5 info when changing date by kaf009
+	 * @param paramStart
+	 * @return
+	 */
+	public InforGoBackCommonDirectDto getChangeDateKAFS09(ParamChangeDate paramStart) {
+		String companyId = AppContexts.user().companyId();
+		
+		return InforGoBackCommonDirectDto.fromDomain(
+				goBackDirectService.getDateChangeMobileAlgorithm(
+						companyId,
+						paramStart.getAppDates().stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd")).collect(Collectors.toList()),
+						paramStart.getEmployeeIds(),
+						paramStart.getInforGoBackCommonDirectDto().toDomain())
+				);
+	}
 	
 
 }

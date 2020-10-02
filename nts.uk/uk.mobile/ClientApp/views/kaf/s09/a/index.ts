@@ -30,7 +30,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // to edit
     @Prop({ default: null })
     public params?: any;
-    public title: string = 'KafS07A';
+    public title: string = 'KafS09A';
 
     public model: Model = new Model();
 
@@ -47,6 +47,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     public kaf000_C_Params: any = null;
 
+    public isChangeDate: boolean = false;
     public user: any;
     public application: any = {
         version: 1,
@@ -140,17 +141,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.bindStart();
             self.$mask('hide');
         }).catch((err: any) => {
-            self.$mask('hide');
-            if (err.messageId) {
-                this.$modal.error({ messageId: err.messageId });
-            } else {
-
-                if (_.isArray(err.errors)) {
-                    this.$modal.error({ messageId: err.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: err.errors.messageId });
+            self.handleErrorMessage(err).then((res: any) => {
+                if (err.messageId == 'Msg_43') {
+                    self.$goto('ccg008a');
                 }
-            }
+            });
         });
     }
 
@@ -168,7 +163,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
@@ -182,7 +177,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 newModeContent: {
                     // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
                     appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: true,
+                    useMultiDaySwitch: false,
                     initSelectMultiDay: false
                 },
                 detailModeContent: null
@@ -300,7 +295,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public bindStart() {
         const self = this;
         self.bindVisibleView();
-        self.bindCommon();
+        self.bindCommon(self.dataOutput);
         self.bindWork();
         self.bindDirectBounce();
         self.checkChangeWork();
@@ -317,10 +312,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         let params = self.dataOutput;
         let goBackDirect = self.dataOutput;
-        if (!goBackDirect) {
+        if (!goBackDirect && !self.isChangeDate) {
 
             return;
         }
+        self.isChangeDate = false;
         self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workType ? goBackDirect.goBackApplication.dataWork.workType : null) : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
@@ -336,13 +332,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
         if (params.predetemineTimeSetting) {
             let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
             let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            self.model.workTime.time = self.$dt.timedr(startTime) + '~' + self.$dt.timedr(endTime);
+            self.model.workTime.time = self.$dt.timedr(startTime) + self.$i18n('KAFS09_12') + self.$dt.timedr(endTime);
         }
     }
 
 
-    public bindCommon() {
-        
+    public bindCommon(params: any) {
+        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartup.appDispInfoNoDateOutput;
+        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartup.appDispInfoWithDateOutput;
+        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartup.appDetailScreenInfo;
     }
     public appGoBackDirect: any;
     public bindAppWorkChangeRegister() {
@@ -400,43 +398,64 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.$mask('hide');
+                self.isChangeDate = true;
                 self.dataOutput = res.data;
+                self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
                 self.bindStart();
-                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-                    msgID = '';
+                let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = '';
+                if (useDivision == 0) {
+                    self.$modal.error('Msg_323').then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');   
+                        }
+                    });
+                    if (recordDate == 0) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            
+                if (_.isNull(opErrorFlag)) {
+                    return true;    
+                }
                 switch (opErrorFlag) {
                     case 1:
                         msgID = 'Msg_324';
                         break;
-                    case 2:
+                    case 2: 
                         msgID = 'Msg_238';
                         break;
                     case 3:
                         msgID = 'Msg_237';
                         break;
-                    default:
+                    default: 
                         break;
                 }
-                if (!_.isEmpty(msgID)) {
-                    self.$modal.error({ messageId: msgID });
+                if (_.isEmpty(msgID)) { 
+                    return true;
                 }
-                self.$mask('hide');
+                self.$modal.error({ messageId: msgID }).then(() => {
+                    if (recordDate == 0) {
+                        self.$goto('ccg008a');    
+                    }    
+                });
+
+                return false;
+                
             })
             .catch((res: any) => {
                 self.$mask('hide');
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
+                self.handleErrorMessage(res).then((msgId: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
                     }
-                }
-
-
-            });
+                });
+            }); 
 
     }
     public registerData(res: any) {
@@ -452,19 +471,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                    self.dataOutput = res;
+                    // self.bindCommon(self.data);
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
 
         } else {
@@ -475,19 +490,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                    self.dataOutput = res;
+                    // self.bindCommon(self.data);
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
     }
@@ -555,19 +566,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }
 
         }).catch((res: any) => {
-            self.$mask('hide');
-            // show message error
-            if (res.messageId) {
-                self.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    self.$modal.error({ messageId: res.errors[0].messageId });
-                } else {
-                    self.$modal.error({ messageId: res.errors.messageId });
-                }
-            }
-
+            self.handleErrorMessage(res);
         });
 
     }
@@ -632,22 +631,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         } else {
             this.$modal(
                 'worktime',
                 {
-                    isAddNone: 1,
+                    isAddNone: 0,
                     seledtedWkTimeCDs: _.map(self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                     selectedWorkTimeCD: this.model.workTime.code,
                     isSelectWorkTime: 1
@@ -659,22 +649,27 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
 
 
 
 
+    }
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
     }
 
     public dataFetch() {
@@ -757,7 +752,7 @@ export enum ApplicationStatus {
 const API = {
     checkBeforRegister: 'at/request/application/gobackdirectly/checkBeforeRegisterNew',
     registerAppGoBackDirect: 'at/request/application/gobackdirectly/registerNewKAF009',
-    updateAppWorkChange: 'at/request/application/gobackdirectly/getAppDataByDate',
+    updateAppWorkChange: 'at/request/application/gobackdirectly/mobile/getAppDataByDate',
     startS09: 'at/request/application/gobackdirectly/mobile/start',
     updateApp: 'at/request/application/gobackdirectly/updateNewKAF009'
 
