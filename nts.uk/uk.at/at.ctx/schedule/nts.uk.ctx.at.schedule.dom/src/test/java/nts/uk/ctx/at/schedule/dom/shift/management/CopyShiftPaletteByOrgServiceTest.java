@@ -8,7 +8,10 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.shift.management.CopyShiftPaletteByOrgService.Require;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.CopyShiftPaletteByOrgService;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.CopyShiftPaletteByOrgService.Require;
 
 @RunWith(JMockit.class)
 public class CopyShiftPaletteByOrgServiceTest {
@@ -21,9 +24,9 @@ public class CopyShiftPaletteByOrgServiceTest {
 	 */
 	@Test
 	public void testDuplicate_throw_1712() {
-		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
+		ShiftPaletteOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = false;
 
 		new Expectations() {
@@ -44,9 +47,9 @@ public class CopyShiftPaletteByOrgServiceTest {
 	 */
 	@Test
 	public void testDuplicate() {
-		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault_workplacegrp();
+		ShiftPaletteOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault_workplacegrp();
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = true;
 
 		new Expectations() {
@@ -66,9 +69,9 @@ public class CopyShiftPaletteByOrgServiceTest {
 	 */
 	@Test
 	public void testDuplicate_2() {
-		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
+		ShiftPaletteOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = true;			
 		new Expectations() {
 			{
@@ -82,9 +85,9 @@ public class CopyShiftPaletteByOrgServiceTest {
 	
 	@Test
 	public void testDuplicate_3() {
-		ShiftPalletsOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
+		ShiftPaletteOrg shiftPalletsOrg = ShiftPalletsOrgHelper.getShiftPalletsOrgDefault();
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = false;			
 		new Expectations() {
 			{

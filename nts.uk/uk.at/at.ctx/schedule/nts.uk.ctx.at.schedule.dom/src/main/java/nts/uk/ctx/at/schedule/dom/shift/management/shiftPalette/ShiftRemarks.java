@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

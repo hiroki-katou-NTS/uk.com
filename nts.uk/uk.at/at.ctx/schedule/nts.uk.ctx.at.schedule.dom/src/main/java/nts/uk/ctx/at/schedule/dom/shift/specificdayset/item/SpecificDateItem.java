@@ -1,13 +1,12 @@
-package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item;
+package nts.uk.ctx.at.schedule.dom.shift.specificdayset.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.UseAtr;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * 
  * 特定日項目
@@ -19,7 +18,7 @@ public class SpecificDateItem extends AggregateRoot {
 	
 	private String companyId;
 	
-	private UseAtr useAtr;
+	private NotUseAtr useAtr;
 	
 	private SpecificDateItemNo specificDateItemNo;
 	
@@ -28,7 +27,7 @@ public class SpecificDateItem extends AggregateRoot {
 	public static SpecificDateItem createFromJavaType(String companyId, Integer useAtr, Integer specificDateItemNo, String specificName) {
 		return new SpecificDateItem(
 				companyId,
-				EnumAdaptor.valueOf(useAtr, UseAtr.class), 
+				NotUseAtr.valueOf(useAtr), 
 				new SpecificDateItemNo(specificDateItemNo), 
 				new SpecificName(specificName));
 	}

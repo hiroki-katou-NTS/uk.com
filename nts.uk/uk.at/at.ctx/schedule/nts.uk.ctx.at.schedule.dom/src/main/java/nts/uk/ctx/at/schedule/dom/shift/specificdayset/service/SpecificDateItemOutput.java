@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.service;
+package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
 
 import java.util.List;
 

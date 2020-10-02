@@ -1,8 +1,6 @@
-package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.repository;
+package nts.uk.ctx.at.schedule.dom.shift.specificdayset.item;
 
 import java.util.List;
-
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
 
 public interface SpecificDateItemRepository {
 	

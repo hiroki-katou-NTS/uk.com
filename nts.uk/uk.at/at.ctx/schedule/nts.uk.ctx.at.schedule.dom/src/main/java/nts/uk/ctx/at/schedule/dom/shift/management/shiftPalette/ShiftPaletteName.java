@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -10,9 +10,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 
 @StringMaxLength(10)
-public class ShiftPalletName extends StringPrimitiveValue<ShiftPalletName>{
+public class ShiftPaletteName extends StringPrimitiveValue<ShiftPaletteName>{
 
-	public ShiftPalletName(String rawValue) {
+	public ShiftPaletteName(String rawValue) {
 		super(rawValue);
 	}
 

@@ -11,6 +11,14 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper.PalletHelper.PalletDisplayInfoHelper;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPalette;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsOrgHelper;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -27,16 +35,16 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_0page_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			ShiftPalletsOrg.create(
+			ShiftPaletteOrg.create(
 					TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					0, 
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), //dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), //dummy
 									NotUseAtr.USE, //dummy
 									new ShiftRemarks("shRemar")), //dummy
 							Arrays.asList(
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											1, //dummy
 											new ShiftCombinationName("shComName1"), //dummy
 											Arrays.asList(new Combinations(
@@ -49,16 +57,16 @@ public class ShiftPalletsOrgTest {
 	public void create_shiftPalletsOrg_11pages_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			ShiftPalletsOrg.create(
+			ShiftPaletteOrg.create(
 					TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					11, 
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), //dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), //dummy
 									NotUseAtr.USE, //dummy
 									new ShiftRemarks("shRemar")), //dummy
 							Arrays.asList(
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											1, //dummy
 											new ShiftCombinationName("shComName1"), //dummy
 											Arrays.asList(new Combinations(
@@ -70,25 +78,25 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void create_shiftPalletsOrg_sort() {
 
-		ShiftPalletsOrg target = ShiftPalletsOrg.create(
+		ShiftPaletteOrg target = ShiftPaletteOrg.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					1, //dummy
-					new ShiftPallet(
+					new ShiftPalette(
 							PalletDisplayInfoHelper.DUMMY,
 							Arrays.asList(
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										3, 
 										new ShiftCombinationName("combiNa30"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
 												new ShiftMasterCode("0000010")))), // dummy
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										5, 
 										new ShiftCombinationName("combiNa05"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
 												new ShiftMasterCode("0000032")))), // dummy
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										1, 
 										new ShiftCombinationName("combiNa10"), // dummy
 										Arrays.asList(new Combinations(
@@ -103,16 +111,16 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void create_shiftPalletsOrg_1page__success() {
 
-		ShiftPalletsOrg target = new ShiftPalletsOrg(
+		ShiftPaletteOrg target = new ShiftPaletteOrg(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				1, 
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), 
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), 
 								NotUseAtr.USE, 
 								new ShiftRemarks("shRemar")), 
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
@@ -149,16 +157,16 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void create_shiftPalletsOrg_10pages__success() {
 
-		ShiftPalletsOrg target = new ShiftPalletsOrg(
+		ShiftPaletteOrg target = new ShiftPaletteOrg(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 				10, 
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), 
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), 
 								NotUseAtr.USE, 
 								new ShiftRemarks("shRemar")), 
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
@@ -195,41 +203,41 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void modifyShiftPalletsOrg_success() {
 
-		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+		ShiftPaletteOrg shiftPalletsOrg = new ShiftPaletteOrg(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("e34d86c4-1e32-463e-b86c-68551e0bbf18"),
 					1, //dummy
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), //dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), //dummy
 									NotUseAtr.USE, //dummy
 									new ShiftRemarks("shRemar")), //dummy
 							Arrays.asList( 
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											2, 
 											new ShiftCombinationName("combiName"),
 											Arrays.asList(new Combinations(
 													1, 
 													new ShiftMasterCode("0000001")))))));
 
-		ShiftPallet shiftPallet = new ShiftPallet(
-				new ShiftPalletDisplayInfor(
-						new ShiftPalletName("shpaName"), //dummy
+		ShiftPalette shiftPallet = new ShiftPalette(
+				new ShiftPaletteDisplayInfor(
+						new ShiftPaletteName("shpaName"), //dummy
 						NotUseAtr.USE, //dummy
 						new ShiftRemarks("shRemar")),//dummy
 				Arrays.asList(
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								7, 
 								new ShiftCombinationName("name71"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftMasterCode("0000001")))),
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								4, 
 								new ShiftCombinationName("name40"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftMasterCode("0000001")))),
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								5, 
 								new ShiftCombinationName("name05"), 
 								Arrays.asList(new Combinations(
@@ -246,41 +254,41 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void modifyShiftPalletsOrg_success_useworkplacegroup() {
 
-		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+		ShiftPaletteOrg shiftPalletsOrg = new ShiftPaletteOrg(
 				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("h35d96c4-1e32-8756-b86c-68551e0bbf18"),
 					1, //dummy
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), //dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), //dummy
 									NotUseAtr.USE, //dummy
 									new ShiftRemarks("shRemar")), //dummy
 							Arrays.asList( 
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											2, 
 											new ShiftCombinationName("combiName"),
 											Arrays.asList(new Combinations(
 													1, 
 													new ShiftMasterCode("0000001")))))));
 
-		ShiftPallet shiftPallet = new ShiftPallet(
-				new ShiftPalletDisplayInfor(
-						new ShiftPalletName("shpaName"), //dummy
+		ShiftPalette shiftPallet = new ShiftPalette(
+				new ShiftPaletteDisplayInfor(
+						new ShiftPaletteName("shpaName"), //dummy
 						NotUseAtr.USE, //dummy
 						new ShiftRemarks("shRemar")),//dummy
 				Arrays.asList(
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								7, 
 								new ShiftCombinationName("name71"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftMasterCode("0000001")))),
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								4, 
 								new ShiftCombinationName("name40"), 
 								Arrays.asList(new Combinations(
 										1, 
 										new ShiftMasterCode("0000001")))),
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								5, 
 								new ShiftCombinationName("name05"), 
 								Arrays.asList(new Combinations(
@@ -297,24 +305,24 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void testReproductUseWorkplaceGroup() {
 
-		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+		ShiftPaletteOrg shiftPalletsOrg = new ShiftPaletteOrg(
 				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP,Optional.empty(), Optional.of("e34d86c4-1e32-463e-b86c-68551e0bbf18")),
 				1, //dummy
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), //dummy
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), //dummy
 								NotUseAtr.USE, //dummy
 								new ShiftRemarks("shRemar")), //dummy
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
 												new ShiftMasterCode("0000001")))))));
 		
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
-		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletNameNew");
+		ShiftPaletteOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
 		
 		assertThat(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
 		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
@@ -326,24 +334,24 @@ public class ShiftPalletsOrgTest {
 	@Test
 	public void testReproductUseWorkplace() {
 
-		ShiftPalletsOrg shiftPalletsOrg = new ShiftPalletsOrg(
+		ShiftPaletteOrg shiftPalletsOrg = new ShiftPaletteOrg(
 				new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.of("e34d86c4-1e32-463e-b86c-68551e0bbf18"),Optional.empty()),
 				1, //dummy
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), //dummy
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), //dummy
 								NotUseAtr.USE, //dummy
 								new ShiftRemarks("shRemar")), //dummy
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
 												new ShiftMasterCode("0000001")))))));
 		
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletNameNew");
-		ShiftPalletsOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletNameNew");
+		ShiftPaletteOrg shiftPalletsOrgNew = shiftPalletsOrg.reproduct(2, shiftPalletName);
 		
 		assertThat(shiftPalletsOrgNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
 		assertThat(shiftPalletsOrgNew.getPage()).isEqualTo(2);
@@ -354,7 +362,7 @@ public class ShiftPalletsOrgTest {
 
 	@Test
 	public void getters() {
-		ShiftPalletsOrg target = ShiftPalletsOrgHelper.DUMMY;
+		ShiftPaletteOrg target = ShiftPalletsOrgHelper.DUMMY;
 		NtsAssert.invokeGetters(target);
 	}
 }

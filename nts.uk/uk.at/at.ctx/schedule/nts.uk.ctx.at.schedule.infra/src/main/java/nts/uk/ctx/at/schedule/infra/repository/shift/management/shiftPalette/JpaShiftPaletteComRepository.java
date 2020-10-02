@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.shift.management;
+package nts.uk.ctx.at.schedule.infra.repository.shift.management.shiftPalette;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,15 +17,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiDtl;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteCmpPk;
+import nts.uk.ctx.at.schedule.infra.repository.shift.management.Shifutoparetto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaShiftPalletComRepository extends JpaRepository implements ShiftPalletsComRepository {
+public class JpaShiftPaletteComRepository extends JpaRepository implements ShiftPaletteComRepository {
 
 	private static final String SELECT;
 
@@ -133,12 +134,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public void add(ShiftPalletsCom shiftPalletsCom) {
+	public void add(ShiftPaletteCom shiftPalletsCom) {
 		commandProxy().insert(KscmtPaletteCmp.fromDomain(shiftPalletsCom));
 	}
 
 	@Override
-	public void update(ShiftPalletsCom shiftPalletsCom) {
+	public void update(ShiftPaletteCom shiftPalletsCom) {
 
 		Optional<KscmtPaletteCmp> getEntity = this.queryProxy().find(
 				new KscmtPaletteCmpPk(AppContexts.user().companyId(), shiftPalletsCom.getPage()),
@@ -153,7 +154,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 					.filter(item -> !shiftPalletsCom.getShiftPallet().getCombinations().stream()
 							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
 					.collect(Collectors.toList());
-			List<ShiftPalletCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations().stream()
+			List<ShiftPaletteCombinations> combinations = shiftPalletsCom.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
 			List<Shifutoparetto> shifutoparettos = new ArrayList<>();
 			List<KscmtPaletteCmpCombi> combis = combinations.stream()
@@ -238,7 +239,7 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public void delete(ShiftPalletsCom shiftPalletsCom) {
+	public void delete(ShiftPaletteCom shiftPalletsCom) {
 
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("companyId", shiftPalletsCom.getCompanyId());
@@ -255,13 +256,13 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public Optional<ShiftPalletsCom> findShiftPallet(String companyId, int page) {
+	public Optional<ShiftPaletteCom> findShiftPallet(String companyId, int page) {
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("companyId", companyId);
 		query = query.replaceFirst("page", String.valueOf(page));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<ShiftPalletsCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 
 			if (palletsComs.isEmpty())
@@ -274,12 +275,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public List<ShiftPalletsCom> findShiftPallet(String companyId) {
+	public List<ShiftPaletteCom> findShiftPallet(String companyId) {
 		String query = FIND_BY_COMPANY;
 		query = query.replaceFirst("companyId", companyId);
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<ShiftPalletsCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			return palletsComs;
 		} catch (SQLException ex) {
@@ -288,12 +289,12 @@ public class JpaShiftPalletComRepository extends JpaRepository implements ShiftP
 	}
 	
 	@Override
-	public List<ShiftPalletsCom> findShiftPalletUse(String companyId) {
+	public List<ShiftPaletteCom> findShiftPalletUse(String companyId) {
 		String query = FIND_BY_COMPANY_USE;
 		query = query.replaceFirst("companyId", companyId);
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<ShiftPalletsCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteCom> palletsComs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			return palletsComs;
 		} catch (SQLException ex) {

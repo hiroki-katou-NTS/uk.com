@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  *
  */
 @AllArgsConstructor
-public class ShiftPalletsOrg implements DomainAggregate {
+public class ShiftPaletteOrg implements DomainAggregate {
 
 	/** 対象組織 */
 	@Getter
@@ -25,9 +25,9 @@ public class ShiftPalletsOrg implements DomainAggregate {
 
 	/** シフトパレット */
 	@Getter
-	private ShiftPallet shiftPallet;
+	private ShiftPalette shiftPallet;
 
-	public static ShiftPalletsOrg create(TargetOrgIdenInfor targeOrg, int page, ShiftPallet shiftPallet) {
+	public static ShiftPaletteOrg create(TargetOrgIdenInfor targeOrg, int page, ShiftPalette shiftPallet) {
 
 		// inv-1 1 <= @ページ <= 10
 		if (!(1 <= page && page <= 10)) {
@@ -37,7 +37,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 
-		return new ShiftPalletsOrg(targeOrg, page, shiftPallet);
+		return new ShiftPaletteOrg(targeOrg, page, shiftPallet);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class ShiftPalletsOrg implements DomainAggregate {
 	 * @param require
 	 * @param shiftPallet
 	 */
-	public void modifyShiftPallets(ShiftPallet shiftPallet) {
+	public void modifyShiftPallets(ShiftPalette shiftPallet) {
 		// シフトパレット.組み合わせ.シフト組み合わせの順番を整頓する()
 		shiftPallet.getCombinations().sort((p1, p2) -> p1.getPositionNumber() - p2.getPositionNumber());
 
@@ -58,14 +58,14 @@ public class ShiftPalletsOrg implements DomainAggregate {
 	 * @author tutk
 	 *
 	 */
-	public ShiftPalletsOrg reproduct(int destinationPage, ShiftPalletName shiftPalletName){
-		ShiftPallet shiftPallet = this.shiftPallet.reproduct(shiftPalletName);
-		return new ShiftPalletsOrg(this.targeOrg, destinationPage, shiftPallet);
+	public ShiftPaletteOrg reproduct(int destinationPage, ShiftPaletteName shiftPalletName){
+		ShiftPalette shiftPallet = this.shiftPallet.reproduct(shiftPalletName);
+		return new ShiftPaletteOrg(this.targeOrg, destinationPage, shiftPallet);
 	}
 
 	public static interface Require {
 		// 会社別シフトパレットRepository.Update(会社別シフトパレット)
-		void update(ShiftPalletsOrg shiftPalletsOrg);
+		void update(ShiftPaletteOrg shiftPalletsOrg);
 
 	}
 }

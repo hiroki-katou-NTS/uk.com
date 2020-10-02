@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import lombok.Getter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -9,11 +9,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 
-public class ShiftPalletDisplayInfor{
+public class ShiftPaletteDisplayInfor{
 
 	/** 名称 */
 	@Getter
-	private ShiftPalletName shiftPalletName;
+	private ShiftPaletteName shiftPalletName;
 	
 	/** 使用区分 */
 	@Getter
@@ -23,7 +23,7 @@ public class ShiftPalletDisplayInfor{
 	@Getter
 	private ShiftRemarks remarks;
 
-	public ShiftPalletDisplayInfor(ShiftPalletName shiftPalletName, NotUseAtr shiftPalletAtr, ShiftRemarks remarks) {
+	public ShiftPaletteDisplayInfor(ShiftPaletteName shiftPalletName, NotUseAtr shiftPalletAtr, ShiftRemarks remarks) {
 		this.shiftPalletName = shiftPalletName;
 		this.shiftPalletAtr = shiftPalletAtr;
 		this.remarks = remarks;

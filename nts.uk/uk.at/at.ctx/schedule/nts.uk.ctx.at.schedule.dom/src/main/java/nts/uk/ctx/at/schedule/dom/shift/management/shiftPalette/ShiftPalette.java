@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +18,22 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @RequiredArgsConstructor
-public class ShiftPallet implements DomainValue {
+public class ShiftPalette implements DomainValue {
 
 	/** 表示情報 */
 	@Getter
-	private final ShiftPalletDisplayInfor displayInfor;
+	private final ShiftPaletteDisplayInfor displayInfor;
 
 	/** 組み合わせ */
 	@Getter
-	private final List<ShiftPalletCombinations> combinations;
+	private final List<ShiftPaletteCombinations> combinations;
 	
 	/**
 	 * [C-1] 作る																							
 	 * @param displayInfor
 	 * @param combinations
 	 */
-	public static ShiftPallet create(ShiftPalletDisplayInfor displayInfor, List<ShiftPalletCombinations> combinations) {
+	public static ShiftPalette create(ShiftPaletteDisplayInfor displayInfor, List<ShiftPaletteCombinations> combinations) {
 		// 会社別シフトパレット(最大20個)を修正する。
 		if (!(1 <= combinations.size() && combinations.size() <= 20)) {
 			throw new BusinessException("Msg_1616");
@@ -46,7 +46,7 @@ public class ShiftPallet implements DomainValue {
 		}
 		
 		combinations.sort((p1, p2)-> p1.getPositionNumber() - p2.getPositionNumber());
-		return new ShiftPallet(displayInfor, combinations);
+		return new ShiftPalette(displayInfor, combinations);
 	}
 	
 	/**
@@ -63,10 +63,10 @@ public class ShiftPallet implements DomainValue {
 	/**
 	 * [2] 複製する																							
 	 */
-	public ShiftPallet reproduct(ShiftPalletName shiftPalletName) {
-		ShiftPalletDisplayInfor shiftPalletDisplayInfor = new ShiftPalletDisplayInfor(shiftPalletName, NotUseAtr.USE,
+	public ShiftPalette reproduct(ShiftPaletteName shiftPalletName) {
+		ShiftPaletteDisplayInfor shiftPalletDisplayInfor = new ShiftPaletteDisplayInfor(shiftPalletName, NotUseAtr.USE,
 				displayInfor.getRemarks());
-		return new ShiftPallet(shiftPalletDisplayInfor, this.combinations);
+		return new ShiftPalette(shiftPalletDisplayInfor, this.combinations);
 		
 	}
 	

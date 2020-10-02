@@ -8,15 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPalette;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -41,12 +41,12 @@ public class InsertShiftPalletComCommand {
 	public String note;
 	public List<InsertShiftPalletCommand> listInsertPatternItemCommand;
 	
-	public ShiftPalletsCom toDomain() {
-		return new ShiftPalletsCom(AppContexts.user().companyId(), groupNo, new ShiftPallet(
-				new ShiftPalletDisplayInfor(new ShiftPalletName(groupName),
+	public ShiftPaletteCom toDomain() {
+		return new ShiftPaletteCom(AppContexts.user().companyId(), groupNo, new ShiftPalette(
+				new ShiftPaletteDisplayInfor(new ShiftPaletteName(groupName),
 						EnumAdaptor.valueOf(groupUsageAtr, NotUseAtr.class), new ShiftRemarks(note)),
 				listInsertPatternItemCommand.stream()
-						.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
+						.map(c -> new ShiftPaletteCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
 								c.listInsertWorkPairSetCommand.stream()
 										.map(d -> new Combinations(d.pairNo, new ShiftMasterCode(d.shiftCode)))
 										.collect(Collectors.toList())))
@@ -54,14 +54,14 @@ public class InsertShiftPalletComCommand {
 
 	}
 	
-	public ShiftPalletsOrg toDom(){	
-		return new ShiftPalletsOrg(
+	public ShiftPaletteOrg toDom(){	
+		return new ShiftPaletteOrg(
 				new TargetOrgIdenInfor(EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class) , Optional.of(workplaceId), Optional.of(workplaceId)),
-				groupNo, new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(groupName),
+				groupNo, new ShiftPalette(
+						new ShiftPaletteDisplayInfor(new ShiftPaletteName(groupName),
 								EnumAdaptor.valueOf(groupUsageAtr, NotUseAtr.class), new ShiftRemarks(note)),
 						listInsertPatternItemCommand.stream()
-								.map(c -> new ShiftPalletCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
+								.map(c -> new ShiftPaletteCombinations(c.patternNo, new ShiftCombinationName(c.patternName),
 										c.listInsertWorkPairSetCommand.stream()
 												.map(d -> new Combinations(d.pairNo, new ShiftMasterCode(d.shiftCode)))
 												.collect(Collectors.toList())))

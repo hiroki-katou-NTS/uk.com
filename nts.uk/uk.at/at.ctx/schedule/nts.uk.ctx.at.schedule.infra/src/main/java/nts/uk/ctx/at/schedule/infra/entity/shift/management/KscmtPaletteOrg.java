@@ -16,12 +16,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPalette;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -64,7 +64,7 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 		return pk;
 	}
 
-	public static KscmtPaletteOrg fromDomain(ShiftPalletsOrg shiftPalletsOrg ){
+	public static KscmtPaletteOrg fromDomain(ShiftPaletteOrg shiftPalletsOrg ){
 		KscmtPaletteOrgPk pk = new KscmtPaletteOrgPk(AppContexts.user().companyId(), shiftPalletsOrg.getTargeOrg().getUnit().value ,
 				shiftPalletsOrg.getTargeOrg().getUnit().value == 0 
 				? shiftPalletsOrg.getTargeOrg().getWorkplaceId().get() : shiftPalletsOrg.getTargeOrg().getWorkplaceGroupId().get(), shiftPalletsOrg.getPage());
@@ -77,7 +77,7 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 				.map(x -> KscmtPaletteOrgCombi.fromDomain(x, pk)).collect(Collectors.toList()));
 	}
 
-	public void toEntity(ShiftPalletsOrg shiftPalletsCom) {
+	public void toEntity(ShiftPaletteOrg shiftPalletsCom) {
 		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
 		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
 		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
@@ -92,7 +92,7 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 
 	}
 	//new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class)
-	public ShiftPalletsOrg toDomain() {
+	public ShiftPaletteOrg toDomain() {
 		String workplaceId = null;
 		String groupWorkplaceId = null;
 		if (pk.targetUnit == 0) {
@@ -100,10 +100,10 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 		} else if (pk.targetUnit == 1)
 			groupWorkplaceId = pk.targetId;
 		
-		return new ShiftPalletsOrg( new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class), Optional.ofNullable(workplaceId), Optional.ofNullable(groupWorkplaceId)) ,
+		return new ShiftPaletteOrg( new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class), Optional.ofNullable(workplaceId), Optional.ofNullable(groupWorkplaceId)) ,
 				pk.page,
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName), EnumAdaptor.valueOf(useAtr, NotUseAtr.class),
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(new ShiftPaletteName(pageName), EnumAdaptor.valueOf(useAtr, NotUseAtr.class),
 								new ShiftRemarks(note)),
 						orgCombis.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 	}

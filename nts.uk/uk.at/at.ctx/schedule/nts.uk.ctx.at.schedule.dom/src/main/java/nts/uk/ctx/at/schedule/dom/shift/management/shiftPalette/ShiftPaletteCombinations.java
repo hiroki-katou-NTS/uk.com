@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
  *
  */
 
-public class ShiftPalletCombinations implements DomainValue {
+public class ShiftPaletteCombinations implements DomainValue {
 
 	/** 位置番号 */
 	@Getter
@@ -32,7 +32,7 @@ public class ShiftPalletCombinations implements DomainValue {
 
 	// 説明：新しい＜シフトパレットのシフト組み合わせ＞を作る。
 	// 不変条件をチェックするため。
-	public ShiftPalletCombinations(int positionNumber, ShiftCombinationName combinationName,
+	public ShiftPaletteCombinations(int positionNumber, ShiftCombinationName combinationName,
 			List<Combinations> combinations) {
 
 		// inv-1 1 <= 位置番号 <= 20

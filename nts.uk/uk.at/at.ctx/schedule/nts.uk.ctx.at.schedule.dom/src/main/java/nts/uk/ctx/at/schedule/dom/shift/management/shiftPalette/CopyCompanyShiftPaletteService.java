@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management;
+package nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
@@ -18,8 +18,8 @@ public class CopyCompanyShiftPaletteService {
 	 * @param overwrite 上書きするか
 	 * @return
 	 */
-	public static AtomTask duplicate(Require require,ShiftPalletsCom shiftPalletsCom,
-			int page,ShiftPalletName shiftPalletName,boolean overwrite) {
+	public static AtomTask duplicate(Require require,ShiftPaletteCom shiftPalletsCom,
+			int page,ShiftPaletteName shiftPalletName,boolean overwrite) {
 		boolean checkExists = require.exists(shiftPalletsCom.getCompanyId(), page);
 		if(checkExists && !overwrite) {
 			throw new BusinessException("Msg_1712",page+"");
@@ -28,7 +28,7 @@ public class CopyCompanyShiftPaletteService {
 			if(checkExists) {
 				require.deleteByPage(shiftPalletsCom.getCompanyId(), page);
 			}
-			ShiftPalletsCom shiftPalletsComNew = shiftPalletsCom.reproduct(page, shiftPalletName);
+			ShiftPaletteCom shiftPalletsComNew = shiftPalletsCom.reproduct(page, shiftPalletName);
 			require.add(shiftPalletsComNew);
 		});
 	}
@@ -53,7 +53,7 @@ public class CopyCompanyShiftPaletteService {
 		 * [R-3] 会社別シフトパレットを登録する  ShiftPalletsComRepository																							
 		 * @param shiftPalletsCom
 		 */
-		void add(ShiftPalletsCom shiftPalletsCom);
+		void add(ShiftPaletteCom shiftPalletsCom);
 		
 	}
 }

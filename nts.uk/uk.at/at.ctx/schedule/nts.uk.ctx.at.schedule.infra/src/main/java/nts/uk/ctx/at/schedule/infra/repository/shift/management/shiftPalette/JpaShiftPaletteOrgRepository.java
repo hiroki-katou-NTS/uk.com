@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.shift.management;
+package nts.uk.ctx.at.schedule.infra.repository.shift.management.shiftPalette;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,15 +17,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrg;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtl;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.ctx.at.schedule.infra.repository.shift.management.ShifutoparettoWorkPlace;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,7 +39,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftPalletsOrgRepository {
+public class JpaShiftPaletteOrgRepository extends JpaRepository implements ShiftPaletteOrgRepository {
 
 	private static final String SELECT;
 
@@ -162,13 +163,13 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public void add(ShiftPalletsOrg shiftPalletsOrg) {
+	public void add(ShiftPaletteOrg shiftPalletsOrg) {
 		commandProxy().insert(KscmtPaletteOrg.fromDomain(shiftPalletsOrg));
 
 	}
 
 	@Override
-	public void update(ShiftPalletsOrg shiftPalletsOrg) {
+	public void update(ShiftPaletteOrg shiftPalletsOrg) {
 
 		Optional<KscmtPaletteOrg> getEntity = this
 				.queryProxy().find(
@@ -189,7 +190,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 					.filter(item -> !shiftPalletsOrg.getShiftPallet().getCombinations().stream()
 							.map(i -> i.getPositionNumber()).collect(Collectors.toList()).contains(item))
 					.collect(Collectors.toList());
-			List<ShiftPalletCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations().stream()
+			List<ShiftPaletteCombinations> combinations = shiftPalletsOrg.getShiftPallet().getCombinations().stream()
 					.filter(i -> !position.contains(i.getPositionNumber())).collect(Collectors.toList());
 			List<ShifutoparettoWorkPlace> shifutoparettos = new ArrayList<>();
 			List<KscmtPaletteOrgCombi> combis = combinations.stream()
@@ -284,7 +285,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public void delete(ShiftPalletsOrg shiftPalletsOrg) {
+	public void delete(ShiftPaletteOrg shiftPalletsOrg) {
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("targetUnit", String.valueOf(shiftPalletsOrg.getTargeOrg().getUnit().value));
 		query = query.replaceFirst("targetId", shiftPalletsOrg.getTargeOrg().getWorkplaceId().get());
@@ -299,14 +300,14 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public Optional<ShiftPalletsOrg> findShiftPalletOrg(int targetUnit, String targetId, int page) {
+	public Optional<ShiftPaletteOrg> findShiftPalletOrg(int targetUnit, String targetId, int page) {
 		String query = FIND_BY_PAGE;
 		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
 		query = query.replaceFirst("targetId", targetId);
 		query = query.replaceFirst("page", String.valueOf(page));
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
-			List<ShiftPalletsOrg> shiftPalletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteOrg> shiftPalletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			if (shiftPalletsOrgs.isEmpty())
 				return Optional.empty();
@@ -317,14 +318,14 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 
 	@Override
-	public List<ShiftPalletsOrg> findbyWorkPlaceId(int targetUnit, String workplaceId) {
+	public List<ShiftPaletteOrg> findbyWorkPlaceId(int targetUnit, String workplaceId) {
 		String query = FIND_BY_TARGETID;
 		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
 		query = query.replaceFirst("targetId", workplaceId);
 
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			ResultSet rs = statement.executeQuery();
-			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			return palletsOrgs;
 		} catch (SQLException e) {
@@ -333,7 +334,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 	
 	@Override
-	public List<ShiftPalletsOrg> findbyWorkPlaceIdUse(int targetUnit, String workplaceId) {
+	public List<ShiftPaletteOrg> findbyWorkPlaceIdUse(int targetUnit, String workplaceId) {
 		if (workplaceId == null) {
 			return new ArrayList<>();
 		}
@@ -343,7 +344,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			ResultSet rs = statement.executeQuery();
-			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			return palletsOrgs;
 		} catch (SQLException e) {
@@ -352,13 +353,13 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 	
 	@Override
-	public List<ShiftPalletsOrg> findByCID(String cid) {
+	public List<ShiftPaletteOrg> findByCID(String cid) {
 		String query = FIND_BY_CID;
 		query = query.replaceFirst("cid", String.valueOf(cid));
 
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			ResultSet rs = statement.executeQuery();
-			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+			List<ShiftPaletteOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
 					.collect(Collectors.toList());
 			return palletsOrgs;
 		} catch (SQLException e) {
@@ -387,7 +388,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	public boolean exists(TargetOrgIdenInfor targeOrg, int page) {
 		String targetId = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE ? targeOrg.getWorkplaceId().get()
 				: targeOrg.getWorkplaceGroupId().get();
-		Optional<ShiftPalletsOrg> data = findShiftPalletOrg(targeOrg.getUnit().value, targetId, page);
+		Optional<ShiftPaletteOrg> data = findShiftPalletOrg(targeOrg.getUnit().value, targetId, page);
 		return data.isPresent();
 	}
 

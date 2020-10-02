@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.pubimp.shift.management;
+package nts.uk.ctx.at.schedule.pubimp.shift.businesscalendar;
 
 import java.util.Optional;
 
@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.management.BusinessDayCalendarService;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDayCalendarService;
 import nts.uk.ctx.at.schedule.dom.shift.management.TargetDaysHDCls;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarExport;
 import nts.uk.ctx.at.schedule.pub.shift.management.BusinessDayCalendarPub;

@@ -6,19 +6,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ShiftPalletComFinder {
 	@Inject
-	private ShiftPalletsComRepository shiftPalletsComRepository;
+	private ShiftPaletteComRepository shiftPalletsComRepository;
 	
 	
 	public List<ComPatternScreenDto> getShiftPalletCom() {
 		String companyId = AppContexts.user().companyId();
-		List<ShiftPalletsCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPallet(companyId);
+		List<ShiftPaletteCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPallet(companyId);
 		
 		List<ComPatternScreenDto> listShiftPalletsComDto = listShiftPalletsCom.stream()
 			.map(c -> new ComPatternScreenDto(c.getPage(),
