@@ -102,6 +102,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
@@ -891,7 +892,7 @@ public class ScheduleCreatorExecutionTransaction {
 							mapper -> new ScheduleTimeSheet(mapper.getWorkNo(), mapper.getStart().v(), mapper.getEnd().v()))
 							.collect(Collectors.toList()));
 					// 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
-					integrationOfDaily.setShortTime(Optional.ofNullable(null));
+					//integrationOfDaily.setShortTime(Optional.ofNullable(null));
 					if(!prepareWorkOutput.getLstWorkTimeDto().isEmpty()) {
 						List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
 					for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
@@ -915,21 +916,26 @@ public class ScheduleCreatorExecutionTransaction {
 					//出退勤。遅刻を取り消した＝False
 					//出退勤。早退を取り消した＝False
 					if(integrationOfDaily.getAttendanceLeave().isPresent() && !integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().isEmpty()) {
-					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().forEach(x->{
-						prepareWorkOutput.getScheduleTimeZone().forEach(y->{
-								x.setWorkNo(new WorkNo(y.getWorkNo()));
-								if(x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-								x.getAttendanceStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getStart()));
-								x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								if(x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-								x.getLeaveStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getStart()));
-								x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								x.setCanceledLate(false);
-								x.setCanceledEarlyLeave(false);
-						});
-					});
+						for(TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
+							int i = 0;
+							if(y.getWorkNo() == 2) {
+								i = 1;
+							}
+							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().sorted((a,b) -> a.getWorkNo().compareTo(b.getWorkNo())).collect(Collectors.toList());
+							TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i);
+							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i).setWorkNo(new WorkNo(y.getWorkNo()));
+									if(x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+									x.getAttendanceStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getStart()));
+									x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+									}
+									if(x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+									x.getLeaveStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional.ofNullable(y.getEnd()));
+									x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
+									}
+									x.setCanceledLate(false);
+									x.setCanceledEarlyLeave(false);
+
+						}
 					};
 					// 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
 					// 編集状態あり
@@ -1561,7 +1567,7 @@ public class ScheduleCreatorExecutionTransaction {
 			return Optional.ofNullable(setting);
 			
 		} else {
-		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
+		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (workplaceHistItem.value == WorkScheduleMasterReferenceAtr.WORK_PLACE.value) {
 
 			// EA No1683
@@ -1587,15 +1593,12 @@ public class ScheduleCreatorExecutionTransaction {
 					// return basic work setting
 					Optional<Integer> workdayDivision = basicWorkSettingHandler
 							.getWorkdayDivisionByWkp(workdayDivisions);
-					
-					// xử lý 職場の基本勤務設定を取得する
-					BasicWorkSettingByWorkplaceGetterCommand commandGetter = new BasicWorkSettingByWorkplaceGetterCommand(
-							creator.getEmployeeId(), geterCommand, workplaceIds, workdayDivision.get());
-					Optional<BasicWorkSetting> basicWorkSetting = basicWorkSettingHandler
-							.getBasicWorkSettingByWorkplace(commandGetter);
+					// 「基本勤務設定」を取得する
+					Optional<BasicWorkSetting> basicWorkSettings =this.getWorkSettingBasic(geterCommand, command, dateInPeriod, creator, workdayDivision, 
+							workplaceHistItem, workdayDivisions.getWorkplaceIds(), optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 
 					// 取得した「基本勤務設定」を返す
-					return basicWorkSetting;
+					return basicWorkSettings;
 				}
 			}
 			// add log error employee => 602
@@ -1622,32 +1625,9 @@ public class ScheduleCreatorExecutionTransaction {
 							creator.getEmployeeId(), geterCommand,
 							optClassificationHistItem.get().getClassificationItems().get(0).getClassificationCode());
 					Optional<Integer> workdayDivision = basicWorkSettingHandler.getWorkdayDivisionByClass(baseGetter);
-					// gọi đến ドメインモデル「分類基本勤務設定」を取得する
-					Optional<ClassificationBasicWork> optionalClassificationBasicWork = this.classificationBasicWorkRepository
-							.findById(command.getCompanyId(), baseGetter.getClassificationCode(),
-									workdayDivision.get());
-
-					// if 取得できない
-					if (!optionalClassificationBasicWork.isPresent()) {
-						// xử lý ドメインモデル「全社基本勤務設定」を取得する
-						Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
-								.findById(command.getCompanyId(), workdayDivision.get());
-
-						// if 取得できない
-						if (!optionalCompanyBasicWork.isPresent()) {
-							this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
-							return Optional.empty();
-						}
-					}
-
-					// 取得できる
-					// 取得した「基本勤務設定」を返す
-					BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
-							creator.getEmployeeId(), geterCommand, baseGetter.getClassificationCode(),
-							workdayDivision.get());
-					Optional<BasicWorkSetting> basicWorkSetting = basicWorkSettingHandler
-							.getBasicWorkSettingByClassification(settingByClassification);
-					return basicWorkSetting;
+					Optional<BasicWorkSetting> basicWorkSettings =this.getWorkSettingBasic(geterCommand, command, dateInPeriod, creator, workdayDivision, 
+							workplaceHistItem, new ArrayList<>(), null, optClassificationHistItem.get().getClassificationItems().get(0).getClassificationCode());
+					return basicWorkSettings;
 				}
 			}
 			// add log error employee => 602
@@ -1658,6 +1638,57 @@ public class ScheduleCreatorExecutionTransaction {
 		return Optional.empty();
 	}
 
+	/** 
+	 * 「基本勤務設定」を取得する 2020
+	 */
+	public Optional<BasicWorkSetting> getWorkSettingBasic(ScheduleErrorLogGeterCommand geterCommand, ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, ScheduleCreator creator, Optional<Integer> workdayDivision, 
+			WorkScheduleMasterReferenceAtr workplaceHistItem, List<String> workplaceIds, String workplaceId, String  classificationCode) {
+		Optional<BasicWorkSetting> basicWorkSetting  = Optional.empty();
+		// 職場の場合
+		if(workplaceHistItem.value == WorkScheduleMasterReferenceAtr.WORK_PLACE.value ) {
+			// 職場ID一覧を確認する
+			if(workplaceIds.isEmpty()) {
+				// [No.571]職場の上位職場を基準職場を含めて取得する
+				workplaceIds = this.scWorkplaceAdapter.getWorkplaceIdAndUpper(command.getCompanyId(),
+						dateInPeriod, workplaceId);
+			}
+			// xử lý 職場の基本勤務設定を取得する
+			BasicWorkSettingByWorkplaceGetterCommand commandGetter = new BasicWorkSettingByWorkplaceGetterCommand(
+					creator.getEmployeeId(), geterCommand, workplaceIds, workdayDivision.get());
+			basicWorkSetting = basicWorkSettingHandler
+					.getBasicWorkSettingByWorkplace(commandGetter);
+			
+		}
+		
+		// 分類の場合
+		if(workplaceHistItem.value == WorkScheduleMasterReferenceAtr.CLASSIFICATION.value ) {
+			// gọi đến ドメインモデル「分類基本勤務設定」を取得する
+			Optional<ClassificationBasicWork> optionalClassificationBasicWork = this.classificationBasicWorkRepository
+					.findById(command.getCompanyId(), classificationCode,
+							workdayDivision.get());
+			// if 取得できない
+			if (!optionalClassificationBasicWork.isPresent()) {
+				// xử lý ドメインモデル「全社基本勤務設定」を取得する
+				Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
+						.findById(command.getCompanyId(), workdayDivision.get());
+
+				// if 取得できない
+				if (!optionalCompanyBasicWork.isPresent()) {
+					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
+					return Optional.empty();
+				}
+			}
+
+			// 取得できる
+			// 取得した「基本勤務設定」を返す
+			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
+					creator.getEmployeeId(), geterCommand, classificationCode,
+					workdayDivision.get());
+			 basicWorkSetting = basicWorkSettingHandler
+					.getBasicWorkSettingByClassification(settingByClassification);
+		}
+		return basicWorkSetting;
+	}
 	/**
 	 * Creates the work schedule by recreate.
 	 * 
