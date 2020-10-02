@@ -47,18 +47,26 @@ public class ChangeableWorkingTimeZone {
 		,	List<ChangeableWorkingTimeZonePerNo> forWorkOnDayOff
 	) {
 
-		// Invariant: 1日, 午前, 午後
+		// Invariant: List size for 1日, 午前, 午後
 		Arrays.asList( forWholeDay, forAm, forPm ).stream()
-			.forEach( e -> {
-				if ( e.isEmpty() || e.size() > 2 ) {
-					throw new RuntimeException("Size of regular working times must be between 1 to 2. size: " + e.size());
+			.forEach( list -> {
+				if ( list.isEmpty() || list.size() > 2 ) {
+					throw new RuntimeException("Size of regular working times is out of range. size: " + list.size());
 				}
 			});
 
-		// Invariant: 休出
+		// Invariant: List size for 休出
 		if ( forWorkOnDayOff.size() > 2 ) {
-			throw new RuntimeException("Size of work on day times must be less than or equal to 2. size: " + forWorkOnDayOff.size());
+			throw new RuntimeException("Size of work on day times is out of range. size: " + forWorkOnDayOff.size());
 		}
+
+		// Invariant: Duplicate of WorkNo
+		Arrays.asList( forWholeDay, forAm, forPm, forWorkOnDayOff ).stream()
+			.forEach( list -> {
+				if (list.size() != list.stream().map( e -> e.getWorkNo() ).distinct().count()) {
+					throw new RuntimeException("WorkNo is duplicated.");
+				}
+			});
 
 
 		/*

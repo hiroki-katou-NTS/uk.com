@@ -30,13 +30,31 @@ public class ChangeableWorkingTimeZonePerNo {
 
 
 	/**
+	 * 作成する
+	 * @param workNo 勤務NO
+	 * @param forStart 開始時刻の変更可能な時間帯
+	 * @param forEnd 終了時刻の変更可能な時間帯
+	 * @return 変更可能な時間帯
+	 */
+	public static ChangeableWorkingTimeZonePerNo create( WorkNo workNo, TimeSpanForCalc forStart, TimeSpanForCalc forEnd ) {
+
+		// 不変条件： 勤務NO between 1 and 2
+		if ( workNo.lessThan( 1 ) || workNo.greaterThan( 2 ) ) {
+			throw new RuntimeException( "WorkNo is out of range. value:" + workNo.v() );
+		}
+
+		return new ChangeableWorkingTimeZonePerNo( workNo, forStart, forEnd );
+
+	}
+
+	/**
 	 * 開始と終了が同じ
 	 * @param workNo 勤務NO
 	 * @param timeSpan 時間帯
 	 * @return 勤務NOごとの変更可能な勤務時間帯(開始時刻と終了時刻の時間帯が同じ)
 	 */
 	public static ChangeableWorkingTimeZonePerNo createAsStartEqualsEnd( WorkNo workNo, TimeSpanForCalc timeSpan ) {
-		return new ChangeableWorkingTimeZonePerNo( workNo, timeSpan, timeSpan );
+		return ChangeableWorkingTimeZonePerNo.create( workNo, timeSpan, timeSpan );
 	}
 
 	/**
@@ -46,7 +64,7 @@ public class ChangeableWorkingTimeZonePerNo {
 	 * @return 勤務NOごとの変更可能な勤務時間帯(変更可能な時間帯がない)
 	 */
 	public static ChangeableWorkingTimeZonePerNo createAsUnchangeable( WorkNo workNo, TimeSpanForCalc workingTimespan) {
-		return new ChangeableWorkingTimeZonePerNo( workNo
+		return ChangeableWorkingTimeZonePerNo.create( workNo
 						, new TimeSpanForCalc( workingTimespan.getStart(), workingTimespan.getStart() )
 						, new TimeSpanForCalc( workingTimespan.getEnd(), workingTimespan.getEnd() )
 					);

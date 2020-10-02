@@ -106,10 +106,10 @@ public class ChangeableWorkingTimeZoneTest {
 
 
 	/**
-	 * Target	: Invariant forOneDay
+	 * Target	: Invariant - List size of forOneDay
 	 */
 	@Test
-	public void testInvariant_forOneDay() {
+	public void testInvariantListSize_forOneDay() {
 
 		// Assertion: Size of 'forOneDay' is 0 -> SystemError
 		NtsAssert.systemError(() -> {
@@ -117,7 +117,7 @@ public class ChangeableWorkingTimeZoneTest {
 				.create(ChangeableWorkingTimeZoneTestHelper.PerNo.createDummyList(0), DUMMY_LIST, DUMMY_LIST, DUMMY_LIST);
 		});
 
-		// Assertion: Size of 'forOneDay' between 1 and 2 -> OK
+		// Assertion: Size of 'forOneDay' between 1 to 2 -> OK
 		IntStream.rangeClosed( 1, 2 ).boxed()
 			.forEach( num -> {
 				ChangeableWorkingTimeZone
@@ -133,10 +133,10 @@ public class ChangeableWorkingTimeZoneTest {
 	}
 
 	/**
-	 * Target	: Invariant forAm
+	 * Target	: Invariant - List size of forAm
 	 */
 	@Test
-	public void testInvariant_forAm() {
+	public void testInvariantListSize_forAm() {
 
 		// Assertion: Size of 'forAm' is 0 -> SystemError
 		NtsAssert.systemError(() -> {
@@ -160,10 +160,10 @@ public class ChangeableWorkingTimeZoneTest {
 	}
 
 	/**
-	 * Target	: Invariant forPm
+	 * Target	: Invariant - List size of forPm
 	 */
 	@Test
-	public void testInvariant_forPm() {
+	public void testInvariantListSize_forPm() {
 
 		// Assertion: Size of 'forPm' is 0 -> SystemError
 		NtsAssert.systemError(() -> {
@@ -187,10 +187,10 @@ public class ChangeableWorkingTimeZoneTest {
 	}
 
 	/**
-	 * Target	: Invariant forWorkOnDayOff
+	 * Target	: Invariant - List size of forWorkOnDayOff
 	 */
 	@Test
-	public void testInvariant_forWorkOnDayOff() {
+	public void testInvariantListSize_forWorkOnDayOff() {
 
 		// Assertion: Size of 'forWorkOnDayOff' between 0 and 2 -> OK
 		IntStream.rangeClosed( 0, 2 ).boxed()
@@ -203,6 +203,49 @@ public class ChangeableWorkingTimeZoneTest {
 		NtsAssert.systemError(() -> {
 			ChangeableWorkingTimeZone
 				.create(DUMMY_LIST, DUMMY_LIST, DUMMY_LIST, ChangeableWorkingTimeZoneTestHelper.PerNo.createDummyList(3));
+		});
+
+	}
+
+
+	/**
+	 * Target	: Invariant - Duplicated WorkNo
+	 */
+	@Test
+	public void testInvariantDuplicatedWorkNo() {
+
+		// 重複していないリスト
+		val NOT_DUPLICATED = Arrays.asList(
+				ChangeableWorkingTimeZoneTestHelper.PerNo.createDummy(1)
+			,	ChangeableWorkingTimeZoneTestHelper.PerNo.createDummy(2)
+		);
+		// 重複しているリスト
+		val __DUPLICATED__ = Arrays.asList(
+				ChangeableWorkingTimeZoneTestHelper.PerNo.createDummy(1)
+			,	ChangeableWorkingTimeZoneTestHelper.PerNo.createDummy(1)
+		);
+
+		// Assertion: Not duplicated WorkNo in all -> OK
+		ChangeableWorkingTimeZone.create(NOT_DUPLICATED, NOT_DUPLICATED, NOT_DUPLICATED, NOT_DUPLICATED);
+
+		// Assertion: Duplicated WorkNo in 'forOneDay' -> System Error
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZone.create(__DUPLICATED__, NOT_DUPLICATED, NOT_DUPLICATED, NOT_DUPLICATED);
+		});
+
+		// Assertion: Duplicated WorkNo in 'forAm' -> System Error
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZone.create(NOT_DUPLICATED, __DUPLICATED__, NOT_DUPLICATED, NOT_DUPLICATED);
+		});
+
+		// Assertion: Duplicated WorkNo in 'forPm' -> System Error
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZone.create(NOT_DUPLICATED, NOT_DUPLICATED, __DUPLICATED__, NOT_DUPLICATED);
+		});
+
+		// Assertion: Duplicated WorkNo in 'forWorkOnDayOff' -> System Error
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZone.create(NOT_DUPLICATED, NOT_DUPLICATED, NOT_DUPLICATED, __DUPLICATED__);
 		});
 
 	}

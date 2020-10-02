@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -24,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAre
 @RunWith(JMockit.class)
 public class ChangeableWorkingTimeZonePerNoTest {
 
+	private TimeSpanForCalc DUMMY_TIMESPAN = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  5, 00,  22, 00 );
+
 	@Test
 	public void testGetters() {
 		val instance = ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
@@ -33,6 +36,27 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		NtsAssert.invokeGetters(instance);
 	}
 
+
+	/**
+	 * Target	: create
+	 */
+	@Test
+	public void testCreate() {
+
+		// 勤務NO
+		val workNo = new WorkNo(1);
+		// 時間帯
+		val forStart = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 06, 45, 10, 15 );
+		val forEnd = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 18, 30, 21, 30 );
+
+		// Execute
+		val result = ChangeableWorkingTimeZonePerNo.create( workNo, forStart, forEnd );
+
+		// Assertion
+		assertThat( result.getWorkNo() ).isEqualTo( workNo );
+		assertThat( result.getForStart() ).isEqualTo( forStart );
+		assertThat( result.getForEnd() ).isEqualTo( forEnd );
+	}
 
 	/**
 	 * Target	: createAsStartEqualsEnd
@@ -82,6 +106,31 @@ public class ChangeableWorkingTimeZonePerNoTest {
 
 
 	/**
+	 * Target	: Invariant workNo
+	 */
+	@Test
+	public void testInvariant_WorkNo() {
+
+		// Assertion: Value of 'WorkNo' is 0 -> SystemError
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZonePerNo.create( new WorkNo(0), DUMMY_TIMESPAN, DUMMY_TIMESPAN );
+		});
+
+		// Assertion: Value of 'WorkNo' between 1 to 2 -> OK
+		IntStream.rangeClosed( 1, 2 ).boxed()
+			.forEach( num -> {
+				ChangeableWorkingTimeZonePerNo.create( new WorkNo(num), DUMMY_TIMESPAN, DUMMY_TIMESPAN );
+			});
+
+		// Assertion: SValue of 'WorkNo' is 3 -> SystemError
+		NtsAssert.systemError(() -> {
+			ChangeableWorkingTimeZonePerNo.create( new WorkNo(3), DUMMY_TIMESPAN, DUMMY_TIMESPAN );
+		});
+
+	}
+
+
+	/**
 	 * Target	: [private] getTimeSpan
 	 */
 	@Test
@@ -92,7 +141,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 終了側
 		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
 		// 勤務NOごとの変更可能な勤務時間帯
-		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(3), start, end );
+		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
 		// Expected
 		val expected = new HashMap<ClockAreaAtr, TimeSpanForCalc>();
@@ -125,7 +174,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 終了側
 		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
 		// 勤務NOごとの変更可能な勤務時間帯
-		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(3), start, end );
+		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
 		// Target: 開始側
 		{
@@ -167,7 +216,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 終了側
 		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
 		// 勤務NOごとの変更可能な勤務時間帯
-		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(3), start, end );
+		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
 		// Target: 開始側
 		{
