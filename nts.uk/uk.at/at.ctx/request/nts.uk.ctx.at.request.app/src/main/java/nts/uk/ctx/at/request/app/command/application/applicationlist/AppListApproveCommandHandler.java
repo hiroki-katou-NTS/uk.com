@@ -70,7 +70,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		AppListApproveCommand command = context.getCommand();
 		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
-		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+//		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		// ドメインモデル「承認一覧表示設定」を取得する (Lấy domain Approval List display Setting)
 		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
 		// 承認一覧表示設定より作業動作データをセット (set dữ liệu chạy công việc từ 承認一覧表示設定)
@@ -106,7 +106,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 				return;
 			}
 			// アルゴリズム「申請一覧の承認登録」を実行する
-			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
+			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, Collections.emptyList());
 			if(pair.getLeft()) {
 				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			} else {
