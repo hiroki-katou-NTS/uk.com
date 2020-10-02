@@ -43,11 +43,7 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
     @EmbeddedId
     public Ksrmt36AgrMgtWkpPk ksrmt36AgrMgtWkpPk;
 
-    /**
-     * 排他バージョン
-     */
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
+
     /**
      * 契約コード
      */
@@ -159,7 +155,6 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
         val cid = AppContexts.user().companyId();
         return new Ksrmt36AgrMgtWkp(
                 new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId(), domain.getLaborSystemAtr().value),
-                1,
                 contractCD,
                 cid,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間

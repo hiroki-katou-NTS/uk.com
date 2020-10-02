@@ -39,7 +39,6 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     public void insert(AgreementTimeOfWorkPlace domain) {
 
         this.commandProxy().insert(Ksrmt36AgrMgtWkp.toEntity(domain));
-        this.getEntityManager().flush();
     }
 
     @Override
@@ -54,7 +53,6 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         if (entity.isPresent()) {
             this.commandProxy().remove(Ksrmt36AgrMgtWkp.class, new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId()
                     , domain.getLaborSystemAtr().value));
-            this.getEntityManager().flush();
         }
     }
 
