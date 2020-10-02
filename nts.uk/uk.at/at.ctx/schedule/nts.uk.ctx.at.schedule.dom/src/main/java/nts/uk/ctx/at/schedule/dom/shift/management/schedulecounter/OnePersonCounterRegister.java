@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.arc.task.tran.AtomTask;
@@ -22,7 +22,7 @@ public class OnePersonCounterRegister {
 	 */
 	public static OnePersonCounterRegisterResult register(Require require, OnePersonCounter target) {
 		
-		List<OnePersonCounterCategory> notDetailSettingList = Collections.emptyList();
+		List<OnePersonCounterCategory> notDetailSettingList = new ArrayList<>();
 		
 		if ( target.isUsed(OnePersonCounterCategory.TIMES_COUNTING_1) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_1) ) {
 			notDetailSettingList.add(OnePersonCounterCategory.TIMES_COUNTING_1);
