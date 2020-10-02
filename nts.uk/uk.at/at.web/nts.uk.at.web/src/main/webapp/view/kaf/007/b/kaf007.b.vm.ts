@@ -49,11 +49,6 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
             vm.setupType = null;
 
-            params.printContentOfEachAppDto.opPrintContentOfWorkChange = {
-                appWorkChangeDispInfo: null,
-                appWorkChange: null
-            };
-
             vm.createParamKAF007();
 
             // gui event con ra viewmodel cha
@@ -77,7 +72,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     console.log(res);
                     if (res) {
                         vm.fetchData(res);
-                        vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = res;
+                        vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
                     }
                 }).fail(err => {
                     vm.handleError(err);
