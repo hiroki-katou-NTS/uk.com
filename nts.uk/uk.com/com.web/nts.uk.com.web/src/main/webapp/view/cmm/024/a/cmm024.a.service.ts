@@ -57,9 +57,7 @@ module nts.uk.com.view.cmm024.a {
 				this.employeeName = name;
 				this.personId = personId;
 				this.employeeId = employeeId;
-				this.displayName = !nts.uk.util.isNullOrEmpty(_.trim(this.employeeCode))
-					? _.trim(name)
-					: '____';
+				this.displayName = !nts.uk.util.isNullOrEmpty(_.trim(this.employeeCode)) ? _.trim(name) : '';
 			}
 		}
 

@@ -54,7 +54,6 @@ module nts.uk.com.view.cmm024.f {
 				tabindex: 1,
 				systemType: SystemType.EMPLOYMENT, //2
 			};
-			//$('#tree-grid').ntsTreeComponent(vm.treeGrid);
 		}
 
 		created(params: any) {
@@ -66,6 +65,8 @@ module nts.uk.com.view.cmm024.f {
 			// raise event when view initial success full
 			let vm = this,
 				selectType: number = 0;
+
+			vm.$blockui('hide');
 
 			$('#tree-grid').ntsTreeComponent(vm.treeGrid);
 
@@ -83,19 +84,13 @@ module nts.uk.com.view.cmm024.f {
 
 				vm.currentCodeListSwap(codeList);
 				vm.oldCodeListSwap(codeList);
-				/*vm.workplaceId(data.workplaceId);
-				vm.multiSelectedId().push(data.workplaceId);
-				 selectType = (!nts.uk.util.isNullOrEmpty(vm.workplaceId()))
-					? SelectType.SELECT_BY_SELECTED_CODE
-					: SelectType.SELECT_FIRST_ITEM;
-				vm.treeGrid.selectType = selectType;*/
-
 			});
 
 			vm.multiSelectedId.subscribe((workplaceId) => {
-				vm.getEmployeesFromCompanyWorkplace(workplaceId);
+				if (!nts.uk.util.isNullOrUndefined(workplaceId)) {
+					vm.getEmployeesFromCompanyWorkplace(workplaceId);
+				}
 			});
-
 		}
 
 
@@ -105,8 +100,10 @@ module nts.uk.com.view.cmm024.f {
 				employees: Array<EmployeeDto> = [],
 				params = { workplaceId: wpId, baseDate: vm.baseDate };
 
-			vm.$blockui('show');
 			if (!nts.uk.util.isNullOrEmpty(wpId)) {
+
+				vm.$blockui('show');
+
 				service.getEmployeesListByWorkplace(ko.toJS(params))
 					.done((response) => {
 						if (!nts.uk.util.isNullOrEmpty(response)) {
@@ -124,6 +121,7 @@ module nts.uk.com.view.cmm024.f {
 						vm.$blockui('hide');
 
 					})
+					.fail(() => vm.$blockui('hide'))
 					.always(() => vm.$blockui('hide'));
 			}
 		}

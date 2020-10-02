@@ -21,7 +21,7 @@ module nts.uk.com.view.cmm024.a {
 		enableRegisterA: KnockoutObservable<boolean> = ko.observable(true);
 		company: KnockoutObservable<any> = ko.observable({ name: null, id: null });
 		screenAModeAddNew: KnockoutObservable<boolean> = ko.observable(true);
-		screenAModeEdit: KnockoutObservable<boolean> = ko.observable(true);
+		screenAModeEdit: KnockoutObservable<boolean> = ko.observable(false);
 		screenAMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryA: KnockoutObservable<boolean> = ko.observable(true);
 		allowSettingA: KnockoutObservable<boolean> = ko.observable(true);
@@ -35,11 +35,11 @@ module nts.uk.com.view.cmm024.a {
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
 		screenBModeAddNew: KnockoutObservable<boolean> = ko.observable(true);
-		screenBModeEdit: KnockoutObservable<boolean> = ko.observable(true);
+		screenBModeEdit: KnockoutObservable<boolean> = ko.observable(false);
 		screenBMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryB: KnockoutObservable<boolean> = ko.observable(true);
 		allowSettingB: KnockoutObservable<boolean> = ko.observable(true);
-
+		isShowPanelB: KnockoutObservable<boolean> = ko.observable(false);
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
@@ -226,10 +226,10 @@ module nts.uk.com.view.cmm024.a {
 
 			service.registerScheduleHistoryByCompany(params)
 				.done((response) => {
-					vm.$dialog.info({ messageId: 'Msg_15' });
-					//vm.enableRegisterA(true);					
-					vm.dispplayInfoOnScreenA();
-					vm.$blockui('hide');
+					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+						vm.companyScheduleHistoryListing();
+						vm.$blockui('hide');
+					});
 				}).fail((error) => {
 					console.log(error);
 				}).always(() => {
@@ -268,12 +268,10 @@ module nts.uk.com.view.cmm024.a {
 
 			service.updateScheduleHistoryByCompany(params)
 				.done((response) => {
-					vm.$dialog.info({ messageId: 'Msg_15' });
-					//let currentScheduleHistoryList = vm.companyScheduleHistoryList();
-					//vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
-					//vm.screenAMode(ScreenModel.EDIT);
-					vm.dispplayInfoOnScreenA();
-					vm.$blockui('hide');
+					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+						vm.companyScheduleHistoryListing();
+						vm.$blockui('hide');
+					});
 				}).fail((error) => {
 					console.log(error);
 				}).always(() => {
@@ -303,7 +301,7 @@ module nts.uk.com.view.cmm024.a {
 						vm.companyScheduleHistoryList(currentScheduleHistoryList);
 						vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
 
-						vm.resetScreenAAfterLoadedC(true, false, false, false, ScreenModel.ADDNEW);
+						vm.resetSettingsScreenA(true, false, false, false, ScreenModel.ADDNEW);
 
 						//update schedule history
 						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
@@ -321,16 +319,16 @@ module nts.uk.com.view.cmm024.a {
 					} else {
 
 						if (currentScheduleHistoryList.length > 0)
-							vm.resetScreenAAfterLoadedC(true, true, true, true, ScreenModel.EDIT);
+							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 						else
-							vm.resetScreenAAfterLoadedC(false, true, false, false, ScreenModel.EDIT);
+							vm.resetSettingsScreenA(false, true, false, false, ScreenModel.EDIT);
 					}
 				});
 			});
 		}
 
 
-		resetScreenAAfterLoadedC(register: boolean, addnew: boolean,
+		resetSettingsScreenA(register: boolean, addnew: boolean,
 			edit: boolean, periodlist: boolean, screenmode: number) {
 			let vm = this;
 
@@ -490,7 +488,7 @@ module nts.uk.com.view.cmm024.a {
 										history.startDate,
 										history.endDate,
 										history.personalInfoApprove,
-										history.personalInfoConfirm,
+										history.personalInfoConfirm
 									)
 								);
 							});
@@ -651,13 +649,11 @@ module nts.uk.com.view.cmm024.a {
 				if (value === null) {
 					value = vm.workplaceScheduleHistoryList()[0].code;
 				}
-
+				//
 				isAllowSetting = vm.workplaceScheduleHistoryList()[0].code === value;
-
-				vm.screenBModeAddNew(isAllowSetting);
-				vm.screenBModeEdit(isAllowSetting);
 				vm.allowSettingB(isAllowSetting);
-				vm.enableRegisterB(true);
+
+				vm.resetSettingsScreenB(false, true, true, true, ScreenModel.EDIT);
 
 				scheduleHistory = vm.workplaceScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
@@ -677,6 +673,15 @@ module nts.uk.com.view.cmm024.a {
 				vm.allowSettingB(true);
 				vm.enableRegisterB(false);
 			}
+		}
+
+		/**
+		 * Active Panel B
+		*/
+		showPanelB() {
+			let vm = this;
+
+			vm.isShowPanelB(true);
 		}
 
 		/**
@@ -707,12 +712,6 @@ module nts.uk.com.view.cmm024.a {
 			}
 
 			//reset screen to nomal model
-			vm.resetScreenB();
-		}
-
-		resetScreenB() {
-			let vm = this;
-
 			vm.screenBModeAddNew(true);
 			vm.screenBModeEdit(true);
 			vm.enableScheduleHistoryB(true);
@@ -741,7 +740,7 @@ module nts.uk.com.view.cmm024.a {
 						vm.workplaceScheduleHistoryList(currentScheduleHistoryList);
 						vm.workplaceScheduleHistorySelected(currentScheduleHistoryList[0].code);
 
-						vm.resetScreenBAfterLoadedC(true, false, false, false, ScreenModel.ADDNEW);
+						vm.resetSettingsScreenB(true, false, false, false, ScreenModel.ADDNEW);
 						//update schedule history
 						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
 							vm.modelB(new Model(
@@ -758,23 +757,23 @@ module nts.uk.com.view.cmm024.a {
 
 					} else {
 						if (currentScheduleHistoryList.length > 0)
-							vm.resetScreenBAfterLoadedC(true, true, true, true, ScreenModel.EDIT);
+							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
 						else
-							vm.resetScreenBAfterLoadedC(false, true, false, false, ScreenModel.EDIT);
+							vm.resetSettingsScreenB(false, true, false, false, ScreenModel.EDIT);
 					}
 				});
 			});
 		}
 
-		resetScreenBAfterLoadedC(register: boolean, addnew: boolean,
-			edit: boolean, periodlist: boolean, screenmode: number) {
+		resetSettingsScreenB(register: boolean, addnew: boolean,
+			edit: boolean, periodlist: boolean, mode: number) {
 			let vm = this;
 
 			vm.enableRegisterB(register);
 			vm.screenBModeAddNew(addnew);
 			vm.screenBModeEdit(edit);
 			vm.enableScheduleHistoryB(periodlist);
-			vm.screenBMode(screenmode);
+			vm.screenBMode(mode);
 		}
 		/**
 		 * 
@@ -789,7 +788,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-			//get Schedule of a company
+			//get Schedule of a workplace
 			service.getScheduleHistoryListWorkPlace(vm.selectedWkpId())
 				.done((response) => {
 
@@ -832,6 +831,7 @@ module nts.uk.com.view.cmm024.a {
 					vm.$blockui('hide');
 
 				})
+				.fail(() => vm.$blockui('hide'))
 				.always(() => {
 					vm.$blockui('hide');
 				});
@@ -867,9 +867,10 @@ module nts.uk.com.view.cmm024.a {
 
 			service.updateScheduleHistoryByWorlplace(params)
 				.done((response) => {
-					vm.$dialog.info({ messageId: 'Msg_15' });
-					vm.dispplayInfoOnScreenB();
-					vm.$blockui('hide');
+					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+						vm.workplaceScheduleHistoryListing();
+						vm.$blockui('hide');
+					});
 				}).fail((error) => {
 					vm.$dialog.info({ messageId: error.messageId });
 				}).always(() => {
@@ -904,13 +905,12 @@ module nts.uk.com.view.cmm024.a {
 
 			service.registerScheduleHistoryByWorlplace(params)
 				.done((response) => {
-					vm.$dialog.info({ messageId: 'Msg_15' });
-					//vm.enableRegisterB(true);
-					vm.dispplayInfoOnScreenB();
-					vm.$blockui('hide');
-					vm.screenBMode(ScreenModel.EDIT);
+					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+						vm.workplaceScheduleHistoryListing();
+						vm.$blockui('hide');
+					});
 				}).fail((error) => {
-					vm.$dialog.info({ messageId: error.messageId });
+					vm.$dialog.info({ messageId: error.messageId }).then(() => vm.$blockui('hide'));
 				}).always(() => {
 					vm.$blockui('hide');
 				});
