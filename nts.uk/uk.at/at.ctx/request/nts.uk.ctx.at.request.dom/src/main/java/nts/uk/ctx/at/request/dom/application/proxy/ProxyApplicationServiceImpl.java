@@ -9,12 +9,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,10 +26,10 @@ public class ProxyApplicationServiceImpl implements ProxyApplicationService {
 	private EmployeeRequestAdapter empAdaptor;
 
 	@Inject
-	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
+	private RequestByWorkplaceRepository requestByWorkplaceRepository;
 
 	@Inject
-	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
+	private RequestByCompanyRepository requestByCompanyRepository;
 
 	@Override
 	public List<String> errorCheckDepartment(List<String> employeeIds, int applicationType) {
@@ -42,11 +44,10 @@ public class ProxyApplicationServiceImpl implements ProxyApplicationService {
 		for (String employeeId : employeeIds) {
 			//申請本人の所属職場を含める上位職場を取得する
 			List<String> workplaceIds = this.empAdaptor.findWpkIdsBySid(companyId, employeeId, baseDate);
-			List<ApprovalFunctionSetting> existedSettingList = new ArrayList<>();
+			List<ApprovalFunctionSet> existedSettingList = new ArrayList<>();
 			for(String workplaceId: workplaceIds){
 				//ドメインモデル「職場別申請承認設定」を取得する
-				Optional<ApprovalFunctionSetting> settingOfEarchWorkplaceOp = this.requestOfEachWorkplaceRepository
-						.getFunctionSetting(companyId, workplaceId, applicationType);
+				Optional<ApprovalFunctionSet> settingOfEarchWorkplaceOp = requestByWorkplaceRepository.findByWkpAndAppType(companyId, workplaceId, EnumAdaptor.valueOf(applicationType, ApplicationType.class));
 				if(settingOfEarchWorkplaceOp.isPresent()){
 					existedSettingList.add(settingOfEarchWorkplaceOp.get());
 					break;
@@ -56,8 +57,7 @@ public class ProxyApplicationServiceImpl implements ProxyApplicationService {
 			// ドメインモデル「職場別申請承認設定」を取得できたかチェックする
 			if (existedSettingList.isEmpty()) {
 				// ドメインモデル「会社別申請承認設定」を取得する
-				Optional<ApprovalFunctionSetting> rqOptional = this.requestOfEachCompanyRepository
-						.getFunctionSetting(companyId, applicationType);
+				Optional<ApprovalFunctionSet> rqOptional = requestByCompanyRepository.findByAppType(companyId, EnumAdaptor.valueOf(applicationType, ApplicationType.class));
 				if (rqOptional.isPresent()) {
 					existedSettingList.add(rqOptional.get());
 				}

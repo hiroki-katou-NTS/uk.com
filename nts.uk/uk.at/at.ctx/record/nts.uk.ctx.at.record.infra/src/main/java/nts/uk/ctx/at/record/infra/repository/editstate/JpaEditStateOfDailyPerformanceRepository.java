@@ -24,10 +24,10 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -79,7 +79,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		this.commandProxy().insertAll(
 						editStates.stream()
 								.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
-										c.getYmd(), c.getAttendanceItemId()), c.getEditStateSetting().value))
+										c.getYmd(), c.getEditState().getAttendanceItemId()), c.getEditState().getEditStateSetting().value))
 								.collect(Collectors.toList()));
 		
 	}
@@ -109,7 +109,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		this.commandProxy().updateAll(
 				editStates.stream()
 						.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
-								c.getYmd(), c.getAttendanceItemId()), c.getEditStateSetting().value))
+								c.getYmd(), c.getEditState().getAttendanceItemId()), c.getEditState().getEditStateSetting().value))
 						.collect(Collectors.toList()));
 	
 	}
@@ -121,7 +121,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		
 		List<KrcdtDailyRecEditSet> olds = internalFinds(keys, c -> c);
 		
-		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getAttendanceItemId() == c.krcdtDailyRecEditSetPK.attendanceItemId
+		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getEditState().getAttendanceItemId() == c.krcdtDailyRecEditSetPK.attendanceItemId
 																&& e.getEmployeeId().equals(c.krcdtDailyRecEditSetPK.employeeId) 
 																&& e.getYmd().equals(c.krcdtDailyRecEditSetPK.processingYmd)));
 		
@@ -216,12 +216,12 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void addAndUpdate(List<EditStateOfDailyPerformance> editStates) {
 		editStates.forEach(x -> {
-			if(this.findByKeyId(x.getEmployeeId(), x.getYmd(), x.getAttendanceItemId()).isPresent()){
+			if(this.findByKeyId(x.getEmployeeId(), x.getYmd(), x.getEditState().getAttendanceItemId()).isPresent()){
 				this.commandProxy().update(new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
-						x.getYmd(), x.getAttendanceItemId()), x.getEditStateSetting().value));
+						x.getYmd(), x.getEditState().getAttendanceItemId()), x.getEditState().getEditStateSetting().value));
 			}else{
 				KrcdtDailyRecEditSet entity = new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
-						x.getYmd(), x.getAttendanceItemId()), x.getEditStateSetting().value);
+						x.getYmd(), x.getEditState().getAttendanceItemId()), x.getEditState().getEditStateSetting().value);
 				this.commandProxy().insert(entity);
 			}
 		});

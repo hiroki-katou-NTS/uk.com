@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.setting.company.divergencereason;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +20,6 @@ public class ReasonTypeItem {
 	/**
 	 * 既定
 	 */
-	public DefaultFlg defaultFlg;
+	//public DefaultFlg defaultFlg;
 
 }

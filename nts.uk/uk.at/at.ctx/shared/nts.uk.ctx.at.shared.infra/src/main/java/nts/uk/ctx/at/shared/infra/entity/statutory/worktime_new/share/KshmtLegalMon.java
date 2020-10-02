@@ -8,7 +8,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyLaborTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

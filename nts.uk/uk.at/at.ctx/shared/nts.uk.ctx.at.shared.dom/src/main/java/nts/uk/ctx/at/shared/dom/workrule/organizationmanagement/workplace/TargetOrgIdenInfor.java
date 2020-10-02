@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 
 /**
  * VO : 対象組織識別情報
+ * 
  * @author tutk
  *
  */
@@ -26,26 +27,20 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 */
 	@Getter
 	private final TargetOrganizationUnit unit;
-	
+
 	/**
 	 * 職場ID
 	 */
 	@Getter
 	private final Optional<String> workplaceId;
-	
+
 	/**
 	 * 職場グループID
 	 */
 	@Getter
 	private final Optional<String> workplaceGroupId;
 
-	public TargetOrgIdenInfor(TargetOrganizationUnit unit, String workplaceId, String workplaceGroupId) {
-		super();
-		this.unit = unit;
-		this.workplaceId = Optional.ofNullable(workplaceId);
-		this.workplaceGroupId = Optional.ofNullable(workplaceGroupId);
-	}
-
+	
 	public TargetOrgIdenInfor(TargetOrganizationUnit unit, Optional<String> workplaceId,
 			Optional<String> workplaceGroupId) {
 		super();
@@ -53,6 +48,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 		this.workplaceId = workplaceId;
 		this.workplaceGroupId = workplaceGroupId;
 	}
+
 	/**
 	 * [C-1] 職場グループを指定して識別情報を作成する
 	 * 
@@ -153,8 +149,5 @@ public class TargetOrgIdenInfor implements DomainValue {
 		List<String> getWKPID( String WKPGRPID);
 
 	}
-	
-	
-	
-	
+
 }

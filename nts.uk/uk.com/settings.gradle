@@ -108,9 +108,6 @@ include 'com.file:nts.uk.file.com.ws'
 include 'com.file:nts.uk.file.com.app'
 include 'com.file:nts.uk.file.com.infra'
 
-include 'com.nrl:nts.uk.nrl.ws'
-include 'com.nrl:nts.uk.nrl.app'
-
 include 'pereg.ctx:nts.uk.ctx.pereg.app'
 include 'pereg.ctx:nts.uk.ctx.pereg.dom'
 include 'pereg.ctx:nts.uk.ctx.pereg.infra'

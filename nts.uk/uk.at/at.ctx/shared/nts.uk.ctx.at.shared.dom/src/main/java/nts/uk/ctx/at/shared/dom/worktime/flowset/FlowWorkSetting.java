@@ -4,7 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -13,13 +20,15 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * The Class FlowWorkSetting.
  */
 // 流動勤務設定
 @Getter
-public class FlowWorkSetting extends WorkTimeAggregateRoot {
+@NoArgsConstructor
+public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	/** The company id. */
 	// 会社ID
@@ -163,5 +172,72 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 		if (screenMode == ScreenMode.SIMPLE) {
 			this.halfDayWorkTimezone.correctDefaultData();
 		}
+	}
+	
+	/**
+ 	 * create this Instance
+ 	 * TODO 必要に応じてcloneする変数を増やす。
+	 * @return new Instance
+	 */
+	@Override
+	public FlowWorkSetting clone() {
+		FlowWorkSetting cloned = new FlowWorkSetting();
+		try {
+			cloned.companyId = this.companyId;
+			cloned.workingCode = new WorkTimeCode(this.workingCode.v());
+			cloned.offdayWorkTimezone = this.offdayWorkTimezone.clone();
+			cloned.commonSetting = this.commonSetting.clone();
+			cloned.restSetting = this.restSetting.clone();
+			cloned.halfDayWorkTimezone = this.halfDayWorkTimezone.clone();
+			cloned.stampReflectTimezone = this.stampReflectTimezone.clone();
+			cloned.legalOTSetting = LegalOTSetting.valueOf(this.legalOTSetting.value);
+			cloned.flowSetting = this.flowSetting.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowWorkSetting clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	 * 平日勤務時間帯.勤務時間帯.残業時間帯を取得する(就業時間帯NOの昇順）
+	 * @return 残業時間帯
+	 */
+	public List<FlowOTTimezone> getHalfDayWorkTimezoneLstOTTimezone() {
+		List<FlowOTTimezone> lstOTTimezone = this.halfDayWorkTimezone.getWorkTimeZone().getLstOTTimezone();
+		lstOTTimezone.sort((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()));
+		return lstOTTimezone;
+	}
+	
+	/**
+	 * 平日勤務時間帯.勤務時間帯.休出時間帯を取得する(就業時間帯NOの昇順）
+	 * @return 休出時間帯
+	 */
+	public List<FlowWorkHolidayTimeZone> getOffdayWorkTimezoneLstWorkTimezone() {
+		return this.offdayWorkTimezone.getLstWorkTimezone().stream()
+				.sorted((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 勤務種類から流動勤務の休憩時間帯を取得する
+	 * @param workType
+	 * @return 流動勤務の休憩時間帯
+	 */
+	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
+		if(workType.getDailyWork().isHolidayWork()) {
+			return this.offdayWorkTimezone.getRestTimeZone();
+		}
+		return this.halfDayWorkTimezone.getRestTimezone();
+	}
+	
+	/**
+	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
+	 * @return Map<就業時間帯No, 法定内の残業枠No>
+	 */
+	public Map<EmTimezoneNo, OverTimeFrameNo> getLegalOverTimeFrameNoMap() {
+		return this.getHalfDayWorkTimezoneLstOTTimezone().stream()
+				//就業時間帯の残業枠はOvertimeWorkFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
 	}
 }

@@ -6,35 +6,51 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.calculation.CalcResultOfAnyItem;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 
 /** 日別実績の任意項目*/
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class AnyItemValueOfDaily {
-	
+	//社員ID
 	private String employeeId;
-	
+	//年月日
 	private GeneralDate ymd;
 
-	/** 任意項目値: 任意項目値 */
-	private List<AnyItemValue> items;
+	//任意項目
+	private AnyItemValueOfDailyAttd anyItem;
 	
+	public AnyItemValueOfDaily(String employeeId, GeneralDate ymd, List<AnyItemValue> items) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.anyItem = new AnyItemValueOfDailyAttd(items);
+	}
+	
+	public AnyItemValueOfDaily(String employeeId, GeneralDate ymd, AnyItemValueOfDailyAttd anyItem) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.anyItem = anyItem;
+	}
 	
 	
     /**
@@ -53,7 +69,7 @@ public class AnyItemValueOfDaily {
     											   		  Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt, 
     											   		  Optional<DailyStoredProcessResult> resultProcedure) {
     	
-    	Optional<AnyItemValueOfDaily> dailyAnyItem = dailyRecordDto.get().anyItems();
+    	Optional<AnyItemValueOfDailyAttd> dailyAnyItem = dailyRecordDto.get().anyItems();
         //任意項目分ループ
         List<CalcResultOfAnyItem> anyItemList = new ArrayList<>();
         
@@ -89,7 +105,7 @@ public class AnyItemValueOfDaily {
         	
             //計算した(calcResult)値を Converter内へ格納
         	if(dailyAnyItem.isPresent()) {
-        		List<AnyItemValue> forcsItem = dailyAnyItem.get().items;
+        		List<AnyItemValue> forcsItem = dailyAnyItem.get().getItems();
         		Optional<AnyItemValue> getAnyItem = storedValue.isPresent() ? 
         												storedValue : 
         												forcsItem.stream().filter(tc -> tc.getItemNo().v().equals(optionalItem.getOptionalItemNo().v())).findFirst();
@@ -112,9 +128,9 @@ public class AnyItemValueOfDaily {
         														 calcResult.getMoney().map(v -> new AnyItemAmount(v.intValue())),
         														 calcResult.getTime().map(v -> new AnyItemTime(v.intValue()))));
         		}     
-            	dailyAnyItem.get().items = forcsItem;
+            	dailyAnyItem.get().setItems(forcsItem);
             	//
-            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
+            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(employeeId,ymd,dailyAnyItem.get()));
         	}
         }
         
@@ -122,7 +138,7 @@ public class AnyItemValueOfDaily {
         
         for(CalcResultOfAnyItem calcResultOfAnyItem:anyItemList) {
         	int itemNo = calcResultOfAnyItem.getOptionalItemNo().v();
-        	result.getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
+        	result.getAnyItem().getItems().add(new AnyItemValue(new AnyItemNo(itemNo),
 					  							   calcResultOfAnyItem.getCount().map(v -> new AnyItemTimes(BigDecimal.valueOf(v.doubleValue()))),
 					  							   calcResultOfAnyItem.getMoney().map(v -> new AnyItemAmount(v.intValue())),
 					  							   calcResultOfAnyItem.getTime().map(v -> new AnyItemTime(v.intValue()))));
@@ -142,6 +158,6 @@ public class AnyItemValueOfDaily {
     }
 
     public Optional<AnyItemValue> getNo(int no) {
-    	return items.stream().filter(i -> i.getItemNo().v() == no).findFirst();
+    	return this.anyItem.getItems().stream().filter(i -> i.getItemNo().v() == no).findFirst();
     }
 }

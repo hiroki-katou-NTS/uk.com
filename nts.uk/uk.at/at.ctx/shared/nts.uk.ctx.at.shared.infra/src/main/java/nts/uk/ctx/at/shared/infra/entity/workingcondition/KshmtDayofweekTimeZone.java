@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,6 +13,10 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * The Class KshmtDayofweekTimeZone.
@@ -21,6 +26,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "KSHMT_DAYOFWEEK_TIME_ZONE")
 public class KshmtDayofweekTimeZone extends KshmtTimeZone implements Serializable {
+
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -75,6 +81,24 @@ public class KshmtDayofweekTimeZone extends KshmtTimeZone implements Serializabl
 	@Override
 	protected Object getKey() {
 		return this.kshmtDayofweekTimeZonePK;
+	}
+	
+	public TimeZone toDomain() {
+		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtDayofweekTimeZonePK.getCnt(), this.getStartTime(), this.getEndTime());
+		
+	}
+	
+	public static KshmtDayofweekTimeZone toEntity(TimeZone timeZone,String historyId,int perWorkDayOffAtr) {
+		KshmtDayofweekTimeZone data =  new KshmtDayofweekTimeZone(new KshmtDayofweekTimeZonePK(historyId, perWorkDayOffAtr, timeZone.getCnt()));
+		data.setUseAtr(timeZone.getUseAtr().value);
+		data.setStartTime(timeZone.getStart().valueAsMinutes());
+		data.setEndTime(timeZone.getEnd().valueAsMinutes());
+		return data;
+	}
+	
+	public KshmtDayofweekTimeZone(KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK) {
+		super();
+		this.kshmtDayofweekTimeZonePK = kshmtDayofweekTimeZonePK;
 	}
 
 }

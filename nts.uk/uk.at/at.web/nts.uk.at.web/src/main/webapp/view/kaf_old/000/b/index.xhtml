@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.AppReason
+				nts.uk.ctx.at.request.dom.application.ApproverReason
+				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
+				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
+				nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../../kdl/034/a/kdl034.a.vm.js" />
+			<com:scriptfile path="../shr/kaf000.shr.vm.js" />
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
+			<com:stylefile path="../../009/share/kaf009.share.style.css" />
+			<com:stylefile path="../../007/share/kaf007.share.style.css" />
+			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
+			<com:stylefile path="../../006/shr/kaf006.shr.main.css" />
+			<com:stylefile path="../../010/cm/kaf010.cm.main.css" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
+			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
+			<com:scriptfile path="../../002/m2/kaf002.m2.vm.js" />
+			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
+			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
+			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.service.js" />
+			<com:scriptfile path="../../006/shr/kaf006.shr.service.js" />
+			<com:scriptfile path="kaf000.b.service.js" />
+			<com:stylefile path="kaf000.b.main.css" />
+			<com:scriptfile path="kaf000.b.vm.js" />
+			<!-- 004 start-->
+			<com:scriptfile path="../../004/b/kaf004.b.service.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
+			<com:stylefile path="../../004/e/kaf004.e.style.css" />
+			<!-- 004 end-->
+			<com:scriptfile path="../../009/share/kaf009.share.vm.js" />
+			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
+			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
+			<com:scriptfile path="../../002/c/kaf002.c.vm.js" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="../../006/shr/kaf006.shr.vm.js" />
+			<com:scriptfile path="../../005/b/kaf005.b.vm.js" />
+			<com:scriptfile path="../../006/b/kaf006.b.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
+			<com:scriptfile path="../../007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="../../010/shr/kaf010.shr.service.js" />
+			<com:scriptfile path="../../010/shr/kaf010.shr.vm.js" />
+			<com:scriptfile path="../../010/b/kaf010.b.vm.js" />
+
+			<!-- 011 start-->
+			<com:stylefile path="../../011/cm/kaf011.cm.style.css" />
+			<com:scriptfile path="../../011/shr/kaf011.shr.service.js" />
+			<com:scriptfile path="../../011/shr/kaf011.shr.vm.js" />
+			<com:scriptfile path="../../011/a/kaf011.a.vm.js" />
+			<com:scriptfile path="../../011/b/kaf011.b.vm.js" />
+			<!-- 011 end-->
+
+			<com:scriptfile path="kaf000.b.start.js" />
+		</ui:define>
+		<ui:define name="content">
+<ui:include src="index2.xhtml" />
+
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

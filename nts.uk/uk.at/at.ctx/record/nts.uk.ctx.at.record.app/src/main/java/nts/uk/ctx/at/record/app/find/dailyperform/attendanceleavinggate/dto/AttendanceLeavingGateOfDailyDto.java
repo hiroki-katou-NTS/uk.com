@@ -11,14 +11,15 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -52,13 +53,28 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 	public static AttendanceLeavingGateOfDailyDto getDto(AttendanceLeavingGateOfDaily domain){
 		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();
 		if (domain != null) {
-			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
+			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getTimeZone().getAttendanceLeavingGates(),
 					(c) -> new TimeSheetDto(c.getWorkNo().v(),
 											TimeStampDto.createTimeStamp(c.getAttendance().orElse(null)),
 											TimeStampDto.createTimeStamp(c.getLeaving().orElse(null)),
 											0)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static AttendanceLeavingGateOfDailyDto getDto(String employeeID,GeneralDate ymd,AttendanceLeavingGateOfDailyAttd domain){
+		AttendanceLeavingGateOfDailyDto dto = new AttendanceLeavingGateOfDailyDto();
+		if (domain != null) {
+			dto.setAttendanceLeavingGateTime(ConvertHelper.mapTo(domain.getAttendanceLeavingGates(),
+					(c) -> new TimeSheetDto(c.getWorkNo().v(),
+											TimeStampDto.createTimeStamp(c.getAttendance().orElse(null)),
+											TimeStampDto.createTimeStamp(c.getLeaving().orElse(null)),
+											0)));
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.exsistData();
 		}
 		return dto;
@@ -75,7 +91,7 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AttendanceLeavingGateOfDaily toDomain(String employeeId, GeneralDate ymd) {
+	public AttendanceLeavingGateOfDailyAttd toDomain(String employeeId, GeneralDate ymd) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -85,9 +101,10 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 		if (ymd == null) {
 			ymd = this.workingDate();
 		}
-		return new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
+		AttendanceLeavingGateOfDaily domain =  new AttendanceLeavingGateOfDaily(employeeId, ymd, ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getNo()),
 													TimeStampDto.toDomain(c.getStart()),
 													TimeStampDto.toDomain(c.getEnd()))));
+		return domain.getTimeZone();
 	}
 }

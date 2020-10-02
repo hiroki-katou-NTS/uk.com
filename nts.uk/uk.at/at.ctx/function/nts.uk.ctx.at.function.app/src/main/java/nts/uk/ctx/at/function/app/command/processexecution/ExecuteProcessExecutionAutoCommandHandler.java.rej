@@ -1,0 +1,10 @@
+diff a/nts.uk/uk.at/at.ctx/function/nts.uk.ctx.at.function.app/src/main/java/nts/uk/ctx/at/function/app/command/processexecution/ExecuteProcessExecutionAutoCommandHandler.java b/nts.uk/uk.at/at.ctx/function/nts.uk.ctx.at.function.app/src/main/java/nts/uk/ctx/at/function/app/command/processexecution/ExecuteProcessExecutionAutoCommandHandler.java	(rejected hunks)
+@@ -1251,7 +1251,7 @@
+ 		} else {
+ 			// #107055
+ 			// ・実施区分 → 通常作成
+-			s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
++			//s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+ 			// ・再作成区分 → 全件 とする
+ 			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+ 			// ・処理実行区分 → もう一度作り直す とする

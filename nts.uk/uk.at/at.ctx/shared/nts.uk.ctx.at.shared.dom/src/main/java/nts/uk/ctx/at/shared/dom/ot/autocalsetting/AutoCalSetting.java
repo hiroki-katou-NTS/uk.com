@@ -49,4 +49,9 @@ public class AutoCalSetting extends ValueObject {
 		return new AutoCalSetting(this.upLimitORtSet, atr);
 	}
 
+	public void setCalAtr(AutoCalAtrOvertime calAtr) {
+		this.calAtr = calAtr;
+	}
+
+	
 }

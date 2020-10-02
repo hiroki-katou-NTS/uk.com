@@ -15,7 +15,7 @@ public class CopyAppEmploymentSetCommand {
 	/**
 	 * Overide flag
 	 */
-	private boolean overide;
+	private boolean override;
 	/**
 	 * Selected employment code
 	 */

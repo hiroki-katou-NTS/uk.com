@@ -22,4 +22,10 @@ public interface ShiftPalletsComRepository {
 	boolean isDuplicateRoleSetCd(String companyId, int page, int position);
 	//Delete 
 	public void deleteByPage(String companyID,int page);
+
+	//[5] 使用するシフトパレットをすべて取得する
+	public List<ShiftPalletsCom> findShiftPalletUse(String companyId);
+	
+	//[6]exists(会社ID, ページ)
+	public boolean exists(String companyID,int page);
 }

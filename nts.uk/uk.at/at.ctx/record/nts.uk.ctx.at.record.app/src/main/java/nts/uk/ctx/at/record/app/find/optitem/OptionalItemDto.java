@@ -9,16 +9,16 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRange;
-import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem;
 
 /**
  * The Class OptionalItemDto.

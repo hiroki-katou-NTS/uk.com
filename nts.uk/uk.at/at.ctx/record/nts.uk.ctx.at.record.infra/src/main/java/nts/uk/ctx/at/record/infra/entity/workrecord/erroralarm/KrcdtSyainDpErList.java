@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -45,7 +45,7 @@ public class KrcdtSyainDpErList extends KrcdtEmpErAlCommon implements Serializab
 				er.getEmployeeID(), er.getDate(),
 				er.getCompanyID(), 
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd,
-				er.getAttendanceItemList().stream()
+				er.getAttendanceItemList().isEmpty() || er.getAttendanceItemList().get(0) == null ? new ArrayList<>() : er.getAttendanceItemList().stream()
 						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
