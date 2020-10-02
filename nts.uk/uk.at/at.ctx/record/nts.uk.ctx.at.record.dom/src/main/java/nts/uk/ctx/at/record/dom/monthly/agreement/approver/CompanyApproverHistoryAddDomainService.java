@@ -20,7 +20,7 @@ public class CompanyApproverHistoryAddDomainService {
 	 * 会社別の承認者（36協定）の履歴を追加して、直前の履歴の終了日を変更する
 	 */
 	public static AtomTask addApproverHistory(Require require, Approver36AgrByCompany histToAdd){
-		val histToAddClone = new Approver36AgrByCompany(
+		val histToAddClone = Approver36AgrByCompany.create(
 				histToAdd.getCompanyId(),
 				histToAdd.getPeriod(),
 				histToAdd.getApproverList(),

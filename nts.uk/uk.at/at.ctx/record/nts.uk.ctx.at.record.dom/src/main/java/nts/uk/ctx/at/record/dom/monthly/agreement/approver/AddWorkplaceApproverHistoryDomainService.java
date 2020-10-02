@@ -4,7 +4,6 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -17,7 +16,7 @@ import java.util.Optional;
 public class AddWorkplaceApproverHistoryDomainService {
     //		[1] 追加する : 	職場別の承認者（36協定）の履歴を追加して、直前の履歴の終了日を変更する
     public static AtomTask addNewWorkplaceApproverHistory(Requeire requeire,Approver36AgrByWorkplace histTobeAdd){
-        val itemToBeAdd = new Approver36AgrByWorkplace(
+        val itemToBeAdd = Approver36AgrByWorkplace.create(
                 histTobeAdd.getWorkplaceId(),
                 histTobeAdd.getPeriod(),
                 histTobeAdd.getApproverIds(),
