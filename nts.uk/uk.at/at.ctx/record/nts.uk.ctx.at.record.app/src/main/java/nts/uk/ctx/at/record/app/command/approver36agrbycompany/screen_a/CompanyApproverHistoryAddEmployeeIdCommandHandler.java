@@ -34,7 +34,8 @@ public class CompanyApproverHistoryAddEmployeeIdCommandHandler extends CommandHa
             cid = AppContexts.user().companyId();
         }
         val domainPrev = repo.getByCompanyIdAndEndDate(cid,GeneralDate.max());
-        val domainRegister = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApproveList(), command.getConfirmedList());
+        val domainRegister = new Approver36AgrByCompany(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+                command.getApproveList(), command.getConfirmedList());
         if(domainPrev.isPresent()){
             DatePeriod period = new DatePeriod(domainPrev.get().getPeriod().start(),command.getPeriod().start().addDays(-1));
             val domainUpdate = new Approver36AgrByCompany(cid,period,domainPrev.get().getApproverList(),domainPrev.get().getConfirmerList());

@@ -34,7 +34,8 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        val domainUpdate = new Approver36AgrByCompany(cid, command.getPeriod(), command.getApprovedList(),
+        val domainUpdate = new Approver36AgrByCompany(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+                command.getApprovedList(),
                 command.getConfirmedList());
         val domainPrevOpt = repo.getByCompanyIdAndEndDate(cid,command.getStartDateBeforeChange().addDays(-1));
         if(domainPrevOpt.isPresent()){
@@ -43,7 +44,7 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
             val domain = new Approver36AgrByCompany(domainPrev.getCompanyId(),period,domainPrev.getApproverList(),domainPrev.getConfirmerList() );
             repo.update(domain,domain.getPeriod().start());
         }
-        repo.update(domainUpdate,command.getStartDateBeforeChange());
+        repo.insert(domainUpdate);
 
     }
 
