@@ -25,12 +25,9 @@ module nts.uk.com.view.cmm024.a {
 		screenAMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryA: KnockoutObservable<boolean> = ko.observable(true);
 		allowSettingA: KnockoutObservable<boolean> = ko.observable(true);
-
 		companyScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		companyScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		companyScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
-
-
 		//Screen B
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
@@ -43,15 +40,11 @@ module nts.uk.com.view.cmm024.a {
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
-
 		// KCP010
 		kcp010Model: kcp010.viewmodel.ScreenModel;
 		listComponentOption: service.ComponentOption;
 		selectedWkpId: KnockoutObservable<string>;
 		selectedCode: any;
-
-		max_items: number = 5;
-		linkSetting: string = 'linkSetting';
 
 		constructor(params: any) {
 			// start point of object
@@ -69,7 +62,7 @@ module nts.uk.com.view.cmm024.a {
 			// Initial listComponentOption
 			vm.listComponentOption = {
 				targetBtnText: vm.$i18n("KCP010_3"),
-				tabIndex: 4
+				tabIndex: -1
 			};
 
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
@@ -130,13 +123,10 @@ module nts.uk.com.view.cmm024.a {
 				scheduleHistory: Array<any> = [];
 
 			if (vm.companyScheduleHistoryList().length > 0) {
-
 				value = (value === null) ? vm.companyScheduleHistoryList()[0].code : value;
-
 				//allow/not allow add new or updated with the first item
 				isAllowSetting = vm.companyScheduleHistoryList()[0].code === value;
-				vm.resetSettingsScreenA(true, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
-
+				vm.resetSettingsScreenA(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
 				//highlight history that has selected
 				scheduleHistory = vm.companyScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
@@ -144,13 +134,10 @@ module nts.uk.com.view.cmm024.a {
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
 					vm.companyScheduleHistoryObjSelected(objFind); //send to screen B, D
 				}
-
 				//36承認者パネル
 				vm.createEmployeesPanelList('A', 1, objFind.personalInfoApprove);
-
 				//従業員代表パネル
 				vm.createEmployeesPanelList('A', 2, objFind.personalInfoConfirm);
-
 			} else {
 				vm.resetSettingsScreenA(false, true, false, true, ScreenModel.ADDNEW);
 			}
@@ -285,17 +272,10 @@ module nts.uk.com.view.cmm024.a {
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
 
 					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
-						currentScheduleHistoryList = vm.updateScheduleHistoryListing(
-							vm.companyScheduleHistoryList(),
-							data);
-
+						currentScheduleHistoryList = vm.updateScheduleHistoryListing( vm.companyScheduleHistoryList(), data);
 						//re-update the list
 						vm.companyScheduleHistoryList(currentScheduleHistoryList);
 						vm.companyScheduleHistorySelected(currentScheduleHistoryList[0].code);
-
-						vm.resetSettingsScreenA(true, false, false, false, ScreenModel.ADDNEW);
-
-						//update schedule history
 						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
 							vm.modelA(new Model(
 								vm.$user.companyCode,
@@ -308,8 +288,9 @@ module nts.uk.com.view.cmm024.a {
 							vm.modelA().startDate(data.scheduleHistoryItem.startDate);
 							vm.modelA().endDate(data.scheduleHistoryItem.endDate);
 						}
+						//disable/enable buttons
+						vm.resetSettingsScreenA(true, false, false, false, ScreenModel.ADDNEW);
 					} else {
-
 						if (currentScheduleHistoryList.length > 0)
 							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 						else
@@ -329,8 +310,7 @@ module nts.uk.com.view.cmm024.a {
 			vm.screenAModeEdit(edit);
 			vm.enableScheduleHistoryB(enablePeriodlist);
 			vm.screenAMode(mode);
-			vm.allowSettingA(false);
-			if (addnew || edit) vm.allowSettingA(true);
+			vm.allowSettingA(register);
 		}
 
 		/**
@@ -490,14 +470,11 @@ module nts.uk.com.view.cmm024.a {
 									)
 								);
 							});
-
 							//sort DECS
 							tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
 						}
-
 						//create schedule history listing
 						vm.companyScheduleHistoryList(tempScheduleList);
-
 						if (vm.companyScheduleHistoryList().length > 0) {
 							//get the first item of list
 							selectedHistory = vm.companyScheduleHistoryList()[0];
@@ -507,8 +484,10 @@ module nts.uk.com.view.cmm024.a {
 						} else {
 							vm.companyScheduleHistorySelected(null);
 							vm.companyScheduleHistoryObjSelected(null);
-							vm.dispplayInfoOnScreenA(null);
 							vm.enableRegisterA(false);
+							vm.modelB().approverPanel([]);
+							vm.modelB().employeesRepresentative([]);
+							vm.dispplayInfoOnScreenA(null);
 						}
 
 					}
@@ -643,12 +622,9 @@ module nts.uk.com.view.cmm024.a {
 				scheduleHistory: Array<any> = [];
 
 			if (vm.workplaceScheduleHistoryList().length > 0) {
-
 				value = (value === null) ? vm.workplaceScheduleHistoryList()[0].code : value;
-
 				isAllowSetting = (vm.workplaceScheduleHistoryList()[0].code === value);
-				vm.resetSettingsScreenB(false, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
-
+				vm.resetSettingsScreenB(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
 				scheduleHistory = vm.workplaceScheduleHistoryList();
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
@@ -658,7 +634,6 @@ module nts.uk.com.view.cmm024.a {
 
 				//36承認者パネル
 				vm.createEmployeesPanelList('B', 1, objFind.personalInfoApprove);
-
 				//従業員代表パネル
 				vm.createEmployeesPanelList('B', 2, objFind.personalInfoConfirm);
 			} else {
@@ -730,8 +705,6 @@ module nts.uk.com.view.cmm024.a {
 						//re-update the list
 						vm.workplaceScheduleHistoryList(currentScheduleHistoryList);
 						vm.workplaceScheduleHistorySelected(currentScheduleHistoryList[0].code);
-
-						vm.resetSettingsScreenB(true, false, false, false, ScreenModel.ADDNEW);
 						//update schedule history
 						if (data.registrationHistoryType == HistoryRes.HISTORY_NEW) {
 							vm.modelB(new Model(
@@ -745,7 +718,7 @@ module nts.uk.com.view.cmm024.a {
 							vm.modelB().startDate(data.scheduleHistoryItem.startDate);
 							vm.modelB().endDate(data.scheduleHistoryItem.endDate);
 						}
-
+						vm.resetSettingsScreenB(true, false, false, false, ScreenModel.ADDNEW);
 					} else {
 						if (currentScheduleHistoryList.length > 0)
 							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
@@ -765,8 +738,7 @@ module nts.uk.com.view.cmm024.a {
 			vm.screenBModeEdit(edit);
 			vm.enableScheduleHistoryB(enablePeriodlist);
 			vm.screenBMode(mode);
-			vm.allowSettingB(false);
-			if (addnew || edit) vm.allowSettingB(true);
+			vm.allowSettingB(register);
 		}
 		/**
 		 * 
@@ -798,14 +770,12 @@ module nts.uk.com.view.cmm024.a {
 									)
 								);
 							});
-
 							//sort DECS
 							tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
 						}
 
 						//create schedule history listing
 						vm.workplaceScheduleHistoryList(tempScheduleList);
-
 						if (vm.workplaceScheduleHistoryList().length > 0) {
 							//get the first item of list
 							selectedHistory = vm.workplaceScheduleHistoryList()[0];

@@ -14,12 +14,12 @@
                 data-bind="click: RegisterB, enable: enableRegisterB">#{i18n.getText('CMM024_1')}</button>
         </div>
         <div class="contents-area">
-            <div class="workplace">
+            <div class="workplace" tabindex="-1">
                 <div id="wkp-component" tabindex="5"></div>
             </div>
             <div class="panel-content">
                 <div class="panel-left bg-green caret-right caret-background">
-                    <div class="buttons" tabindex="-1">
+                    <div class="buttons">
                         <button class="left" tabindex="2"
                             data-bind="click: screenBShowDialogC, enable: screenBModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right" tabindex="3"
@@ -54,7 +54,7 @@
                                     #{i18n.getText('CMM024_10')}</div>
                             </div>
                             <div class="employee-lists-b employee-lists employees-list-approved"
-                                data-bind="with: modelB">
+                                data-bind="with: modelB" tabindex="-1">
                                 <div data-bind="foreach: approverPanel">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
                                                 action: function($data){ vm.showDialogScreenF(1, 'B') }
@@ -75,7 +75,8 @@
                             <div class="panel-info">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM024_11')}</div>
                             </div>
-                            <div class="employee-lists employees-waiting-approve" data-bind="with: modelB">
+                            <div class="employee-lists employees-waiting-approve" data-bind="with: modelB"
+                                tabindex="-1">
                                 <div data-bind="foreach: employeesRepresentative">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
                                                 action: function($data){ vm.showDialogScreenF(2, 'B') }

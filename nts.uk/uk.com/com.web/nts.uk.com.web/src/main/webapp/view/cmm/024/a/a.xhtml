@@ -16,7 +16,7 @@
         <div class="contents-area">
             <div class="panel-content">
                 <div class="panel-left bg-green caret-right caret-background">
-                    <div class="buttons" tabindex="-1">
+                    <div class="buttons">
                         <button class="left" tabindex="2"
                             data-bind="click: screenAShowDialogC, enable: screenAModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right" tabindex="3"
@@ -51,7 +51,7 @@
                                     #{i18n.getText('CMM024_10')}</div>
                             </div>
                             <div class="employee-lists-a employee-lists employees-list-approved"
-                                data-bind="with: modelA">
+                                data-bind="with: modelA" tabindex="-1">
                                 <div data-bind="foreach: approverPanel">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
                                                         action: function($data){ vm.showDialogScreenF(1, 'A') } 
@@ -72,7 +72,8 @@
                             <div class="panel-info">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM024_11')}</div>
                             </div>
-                            <div class="employee-lists employees-waiting-approve" data-bind="with: modelA">
+                            <div class="employee-lists employees-waiting-approve" data-bind="with: modelA"
+                                tabindex="-1">
                                 <div data-bind="foreach: employeesRepresentative">
                                     <a class="hyperlink" data-bind="ntsLinkButton: { 
                                                         action: function($data){ vm.showDialogScreenF(2, 'A') } 
