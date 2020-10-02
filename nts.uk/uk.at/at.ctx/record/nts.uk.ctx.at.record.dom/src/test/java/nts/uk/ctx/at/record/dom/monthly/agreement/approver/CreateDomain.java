@@ -22,7 +22,7 @@ public class CreateDomain {
     public static String codeAndName = "codeName";
     public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
 
-        return new Approver36AgrByWorkplace(
+        return Approver36AgrByWorkplace.create(
                 workplaceId,
                 period,
                 createApproverList(5),
@@ -31,7 +31,7 @@ public class CreateDomain {
     }
     public static Approver36AgrByWorkplace createApprover36AgrByWorkplaceLast() {
 
-        return new Approver36AgrByWorkplace(
+        return Approver36AgrByWorkplace.create(
                 workplaceId,
                 periodLast,
                 createApproverList(5),

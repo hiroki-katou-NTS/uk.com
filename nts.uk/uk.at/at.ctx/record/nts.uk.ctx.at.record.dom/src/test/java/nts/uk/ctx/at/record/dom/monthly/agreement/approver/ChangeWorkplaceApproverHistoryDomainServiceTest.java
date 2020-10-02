@@ -24,14 +24,14 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
     @Test
     public void test_01(){
         val referenceDate = GeneralDate.today();
-        val historyItem = new Approver36AgrByWorkplace(
+        val historyItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(referenceDate,GeneralDate.max()),
                 CreateDomain.createApproverList(5),
                 CreateDomain.createConfirmerList(5)
 
         );
-        val preVHistoryItem = new Approver36AgrByWorkplace(
+        val preVHistoryItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(referenceDate.addDays(-5),referenceDate.addDays(-1)),
                 CreateDomain.createApproverList(5),
@@ -54,7 +54,7 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
     @Test
     public void test_02(){
         val referenceDate = GeneralDate.today();
-        val historyItem = new Approver36AgrByWorkplace(
+        val historyItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(referenceDate,GeneralDate.max()),
                 CreateDomain.createApproverList(5),

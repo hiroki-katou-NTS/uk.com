@@ -36,11 +36,12 @@ public class AppApproval {
 	 * @param approvalComment 承認コメント
 	 * @return AtomTask
 	 */
-	public static AtomTask change(Require require,
-								  String applicantId,
-								  String approverId,
-								  ApprovalStatus approvalStatus,
-								  Optional<AgreementApprovalComments> approvalComment) {
+	public static AtomTask change(
+			Require require,
+			String applicantId,
+			String approverId,
+			ApprovalStatus approvalStatus,
+			Optional<AgreementApprovalComments> approvalComment) {
 
 		// $申請
 		val optApp = require.getApp(applicantId); // [R-1] 申請を取得する
