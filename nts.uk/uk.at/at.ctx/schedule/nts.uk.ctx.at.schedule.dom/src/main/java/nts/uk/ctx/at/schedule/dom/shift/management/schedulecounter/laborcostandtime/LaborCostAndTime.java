@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostand
 import java.util.Optional;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -33,6 +34,56 @@ public class LaborCostAndTime implements DomainValue{
     /**
      * 予算		
      */
-    private final Optional<NotUseAtr> bugget;
-	
+    private final Optional<NotUseAtr> budget;
+    
+    
+    
+    /**
+     * 合計設定を作る
+     * @param useClassification
+     * @param time
+     * @param laborCost
+     * @param budget
+     * @return
+     */
+    public static LaborCostAndTime createTotal( 		
+    		NotUseAtr useClassification,
+    		NotUseAtr time,
+    		NotUseAtr laborCost,
+    		NotUseAtr budget) {
+    	
+    	if ( useClassification == NotUseAtr.USE && 
+    			time == NotUseAtr.NOT_USE && 
+    			laborCost == NotUseAtr.NOT_USE &&
+    			budget == NotUseAtr.NOT_USE
+    			) {
+        		throw new BusinessException("");
+        	}
+    	
+    	return new LaborCostAndTime(useClassification, time, laborCost, Optional.of(budget));
+    }
+    
+    /**
+     * 作る
+     * 合計を抜ける
+     * @param useClassification
+     * @param time
+     * @param laborCost
+     * @return
+     */
+    public static LaborCostAndTime create(
+    		NotUseAtr useClassification,
+    		NotUseAtr time,
+    		NotUseAtr laborCost){
+    	
+    	if ( useClassification == NotUseAtr.USE && 
+    			time == NotUseAtr.NOT_USE && 
+    			laborCost == NotUseAtr.NOT_USE
+    			) {
+        		throw new BusinessException("");
+        	}
+    	
+    	return new LaborCostAndTime(useClassification, time, laborCost, Optional.empty());
+    }
+    
 }

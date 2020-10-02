@@ -33,12 +33,6 @@ public class WplCounterLaborCostAndTime implements DomainAggregate{
 		LaborCostAndTime workingHours = list.get(LaborCostAndTimeType.WORKING_HOURS);
 		LaborCostAndTime overtime = list.get(LaborCostAndTimeType.OVERTIME);
 		
-		if ( !total.getBugget().isPresent() || 
-			  workingHours.getBugget().isPresent() || 
-			  overtime.getBugget().isPresent()) {
-			throw new RuntimeException("invalid value"); 
-		}
-		
 		boolean valid = total.getUseClassification() == NotUseAtr.USE ||
 				workingHours.getUseClassification() == NotUseAtr.USE ||
 				overtime.getUseClassification() == NotUseAtr.USE;
