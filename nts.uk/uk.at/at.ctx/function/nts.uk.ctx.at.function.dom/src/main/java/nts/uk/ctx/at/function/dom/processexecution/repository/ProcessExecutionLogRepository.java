@@ -7,6 +7,9 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 
 public interface ProcessExecutionLogRepository {
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId);
+	
+	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyIdAndExecItemCd(String companyId, List<String> execItemCds);
+	
 	public Optional<ProcessExecutionLog> getLogByCIdAndExecCd(String companyId, String execItemCd, String execId);
 	public Optional<ProcessExecutionLog> getLog(String companyId, String execItemCd);
 	public void insert(ProcessExecutionLog domain);

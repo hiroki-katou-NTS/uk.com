@@ -31,10 +31,10 @@ import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
@@ -129,8 +129,8 @@ public class ProcessExecutionWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getProcExecLogList")
-	public List<ProcessExecutionLogDto> getProcExecLogList() {
+	@Path("getExecItemInfoList")
+	public List<ExecutionItemInfomationDto> getProcExecLogList() {
 		return this.execLogFinder.findAll();
 	}
 	
