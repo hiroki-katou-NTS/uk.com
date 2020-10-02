@@ -63,7 +63,7 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 */
 	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSid(ItemSelectionEnum itemSelectionEnum
 			, String companyId
-			, Optional<String> employeeId); 
+			, String employeeId); 
 	
 	/**
 	 * ドメインモデル「月別勤務表の出力項目」を削除する (Xóa domain model "Output item of monthly work schedule")
@@ -73,7 +73,7 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @param employeeId 社員ID
 	 */
 	void deleteBySelectionAndCidAndSidAndCode (ItemSelectionEnum itemSelectionEnum
-					,String companyId, String code, Optional<String> employeeId); 
+					,String companyId, String code, String employeeId); 
 	
 	/**
 	   * ドメインモデル「月別勤務表の出力項目」を取得する (Acquire domain model "Output items of monthly work schedule")
@@ -84,7 +84,7 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @return
 	 */
 	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode (ItemSelectionEnum itemSelectionEnum
-			,String companyId, String code, Optional<String> employeeId); 
+			,String companyId, String code, String employeeId); 
 
 	/**
 	 *  パラメータ.出力項目一覧の件数をチェックする
@@ -95,5 +95,5 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @return the list
 	 */
 	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndSidAndNameAndCode (ItemSelectionEnum itemSelectionEnum
-			,String name, String code, Optional<String> employeeId);
+			,String name, String code, String employeeId);
 }

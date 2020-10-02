@@ -63,7 +63,11 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	
 	/** The Item selection type*/
 	// 項目選択種類
-	private ItemSelectionEnum  itemSelectionType;
+	private ItemSelectionEnum  itemType;
+	
+	/** The Contract_CD*/
+	// 項目選択種類
+	private String contractCD;
 	
 	/** The Constant MAX_ATTENDANCE_ITEM. */
 	private static final int MAX_ATTENDANCE_ITEM = 48;
@@ -88,7 +92,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		this.layoutID = memento.getLayoutID();
 		this.employeeID = memento.getEmployeeID();
 		this.textSize = memento.getTextSize();
-		this.itemSelectionType = memento.getItemSelectionEnum();
+		this.itemType = memento.getItemSelectionEnum();
 	}
 
 	/**
@@ -110,7 +114,8 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setLayoutID(this.layoutID);
 		memento.setEmployeeID(this.employeeID);
 		memento.setTextSize(this.textSize);
-		memento.setItemSelectionEnum(this.itemSelectionType);
+		memento.setItemSelectionEnum(this.itemType);
+		memento.setContractCD(AppContexts.user().contractCode());
 	}
 
 	/*
@@ -147,7 +152,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		result = prime * result + ((employeeID == null) ? 0 : employeeID.hashCode());
 		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
 		result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
-		result = prime * result + ((itemSelectionType == null) ? 0 : itemSelectionType.hashCode());
+		result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
 		result = prime * result + ((layoutID == null) ? 0 : layoutID.hashCode());
 		result = prime * result + ((lstDisplayedAttendance == null) ? 0 : lstDisplayedAttendance.hashCode());
 		result = prime * result + ((printSettingRemarksColumn == null) ? 0 : printSettingRemarksColumn.hashCode());
@@ -186,7 +191,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 				return false;
 		} else if (!itemName.equals(other.itemName))
 			return false;
-		if (itemSelectionType != other.itemSelectionType)
+		if (itemType != other.itemType)
 			return false;
 		if (layoutID == null) {
 			if (other.layoutID != null)

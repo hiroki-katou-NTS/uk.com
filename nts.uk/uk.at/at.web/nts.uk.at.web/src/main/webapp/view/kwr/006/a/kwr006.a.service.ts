@@ -1,5 +1,7 @@
 module nts.uk.at.view.kwr006.a {
     export module service {
+        const SLASH = "/";
+
         var paths = {
             exportSchedule: "screen/at/monthlyschedule/export",
             getPeriod: "at/function/monthlyworkschedule/get/monthlyPeriod",
@@ -26,8 +28,8 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getPeriod);
         }
 
-        export function findAllOutputItemMonthlyWorkSchedule(): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
-            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule);
+        export function findAllOutputItemMonthlyWorkSchedule(itemSelectionType: number): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
+            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule + SLASH + itemSelectionType);
         }
 
         export function getCurrentLoginerRole(): JQueryPromise<any> {
@@ -39,6 +41,7 @@ module nts.uk.at.view.kwr006.a {
             export interface OutputItemMonthlyWorkScheduleDto {
                 itemCode: string;
                 itemName: string;
+                layoutId : string;
             }
 
             export interface MonthlyWorkScheduleQuery {

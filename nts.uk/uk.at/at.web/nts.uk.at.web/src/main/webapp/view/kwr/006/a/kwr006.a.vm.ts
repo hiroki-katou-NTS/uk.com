@@ -29,7 +29,8 @@ module nts.uk.at.view.kwr006.a {
             standardSettingId: string;
             freeSettingId: string;
             // dropdownlist A7_3
-            itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
+            itemCodeStandardSelection: KnockoutObservableArray<ItemModel>;
+            itemCodeFreeSetting: KnockoutObservableArray<ItemModel>;
             enableA7_3: KnockoutObservable<boolean>;
             enableA7_11: KnockoutObservable<boolean>;
 
@@ -128,7 +129,9 @@ module nts.uk.at.view.kwr006.a {
                 self.endDatepicker = ko.observable("");
 
                 // dropdownlist A7_3
-                self.itemListCodeTemplate = ko.observableArray([]);
+                self.itemCodeStandardSelection = ko.observableArray([]);
+                // dropdownlist A7_11
+                self.itemCodeFreeSetting = ko.observableArray([]);
 
                 self.selectedEmployee = ko.observableArray([]);
 
@@ -178,24 +181,24 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 // A9_2
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_99")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_100")),
-                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"))
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_99"), ""),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_100"), ""),
+                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"), "")
                 ]);
                 // A6_2
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_10")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_11"))
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_10"), ""),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_11"), "")
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_88")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"))
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_88"), ""),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"), "")
                 ]);
                 // A13_1
                 self.dataDisplaySwitching = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_97")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"))
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_97"), ""),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"), "")
                 ]);
             }
 
@@ -427,6 +430,7 @@ module nts.uk.at.view.kwr006.a {
             public openScreenC(): void {
                 let self = this;
                 nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
+                nts.uk.ui.windows.setShared('itemTypeSelection', self.itemSelection());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml', { height: 750 }).onClosed(() => {
                     self.loadListOutputItemMonthlyWorkSchedule().done(() => {
                         let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
@@ -489,9 +493,14 @@ module nts.uk.at.view.kwr006.a {
             private loadListOutputItemMonthlyWorkSchedule(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findAllOutputItemMonthlyWorkSchedule().done(data => {
+                service.findAllOutputItemMonthlyWorkSchedule(0).done(data => {
                     let datas = _.sortBy(data, item => item.itemCode);
-                    self.itemListCodeTemplate(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
+                    self.itemCodeStandardSelection(_.map(datas, item => new ItemModel(item.itemCode, item.itemName, item.layoutId)));
+                    dfd.resolve();
+                });
+                service.findAllOutputItemMonthlyWorkSchedule(1).done(data => {
+                    let datas = _.sortBy(data, item => item.itemCode);
+                    self.itemCodeFreeSetting(_.map(datas, item => new ItemModel(item.itemCode, item.itemName, item.layoutId)));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -538,10 +547,11 @@ module nts.uk.at.view.kwr006.a {
         class ItemModel {
             code: string;
             name: string;
-
-            constructor(code: string, name: string) {
+            layoutId: string;
+            constructor(code: string, name: string, layoutId: string) {
                 this.code = code;
                 this.name = name;
+                this.layoutId = layoutId;
             }
         }
 

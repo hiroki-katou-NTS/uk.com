@@ -1,7 +1,6 @@
 module nts.uk.at.view.kwr006.c {
     export module service {
-        const SLASH = "/";
-
+        const SLASH = '/'
         var paths = {
             getDataStartPage: "at/function/monthlyworkschedule/find",
             save: "at/function/monthlyworkschedule/save",
@@ -10,16 +9,16 @@ module nts.uk.at.view.kwr006.c {
             getEnumRemarkInputContent: "at/function/monthlyworkschedule/enumRemarkInputContent",            
         }
 
-        export function getDataStartPage(): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.getDataStartPage);
+        export function getDataStartPage(itemSelectionType : number): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getDataStartPage+ SLASH + itemSelectionType);
         }
 
         export function save(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.save, command);
         }
 
-        export function remove(code: string): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.remove + SLASH + code);
+        export function remove(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.remove, command);
         }
 
         export function getEnumSettingPrint(): JQueryPromise<any> {

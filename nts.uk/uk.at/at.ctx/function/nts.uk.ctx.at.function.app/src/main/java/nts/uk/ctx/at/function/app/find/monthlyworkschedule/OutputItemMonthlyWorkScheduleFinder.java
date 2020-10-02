@@ -33,6 +33,7 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCor
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceAdapter;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceImport;
@@ -128,21 +129,33 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		return false;
 	}
 
-	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
-		return this.outputItemMonthlyWorkScheduleRepository.findByCid(AppContexts.user().companyId()).stream()
+	/**
+	 *	UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).
+	 *A：月別勤務表 (Monthly work schedule).アルゴリズム (Thuat toan).起動処理 (Xu ly khoi dong).起動処理 (Xu ly khoi dong)
+	 */
+	public List<OutputItemMonthlyWorkScheduleDto> findAll(int itemType) {
+		String employeeId = AppContexts.user().employeeId();
+		List<OutputItemMonthlyWorkSchedule> result = this.outputItemMonthlyWorkScheduleRepository
+				.findBySelectionAndCidAndSid(ItemSelectionEnum.valueOf(itemType)
+											, AppContexts.user().companyId()
+											, employeeId);
+		return result.isEmpty() ? null : result.stream()
 				.map(item -> {
 					OutputItemMonthlyWorkScheduleDto dto = new OutputItemMonthlyWorkScheduleDto();
 					dto.setItemCode(item.getItemCode().v());
 					dto.setItemName(item.getItemName().v());
+					dto.setLayoutID(item.getLayoutID());
 					return dto;
 				}).collect(Collectors.toList());
-	}
+		}
 
 	/**
-	 * Find by cid.
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).C：出力項目設定 (Setting hạng mục output).アルゴリズム(Thuật toán).
+	   *  初期データ取得処理 (Xử lý lấy data ban đầu).初期データ取得処理
+	 * Find by SelectionType, Cid and Sid.
 	 * @return the map
 	 */
-	public Map<String, Object> findByCid() {
+	public Map<String, Object> findBySelectionAndCidAndSid(int itemType) {
 		String companyID = AppContexts.user().companyId();
 		Map<String, Object> mapDtoReturn = new HashMap<>();
 		// ドメインモデル「画面で使用可能な月次勤怠項目」を取得する
@@ -173,7 +186,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		// ドメインモデル「月別勤務表の出力項目」をすべて取得する
 		// get all domain OutputItemMonthlyWorkSchedule
 		List<OutputItemMonthlyWorkSchedule> lstOutputItemMonthlyWorkSchedule = this.outputItemMonthlyWorkScheduleRepository
-				.findByCid(companyID);
+				.findBySelectionAndCidAndSid(ItemSelectionEnum.valueOf(itemType),
+														AppContexts.user().companyId(), 
+														AppContexts.user().employeeId());
 
 		if (!lstOutputItemMonthlyWorkSchedule.isEmpty()) {
 			mapDtoReturn.put("outputItemMonthlyWorkSchedule", lstOutputItemMonthlyWorkSchedule.stream().map(domain -> {
@@ -184,6 +199,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 						toDtoTimeItemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeNameAttendance));
 				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn().value);
 				dto.setRemarkInputContent(domain.getRemarkInputNo().value);
+				dto.setLayoutID(domain.getLayoutID());
 				return dto;
 			}).sorted(Comparator.comparing(OutputItemMonthlyWorkScheduleDto::getItemCode))
 					.collect(Collectors.toList()));
@@ -248,9 +264,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		String companyId = AppContexts.user().companyId();
 		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
 		// Get employee by command
-		Optional<String> employeeId = !StringUtil.isNullOrEmpty(copyCommand.getEmployeeID(), false)
-										? Optional.of(copyCommand.getEmployeeID())
-										: Optional.empty();
+		String employeeId = AppContexts.user().employeeId();
 		//	パラメータ.出力項目一覧の件数をチェックする
 		List<OutputItemMonthlyWorkSchedule> listDisplayItem = this.outputItemMonthlyWorkScheduleRepository
 				.findBySelectionAndSidAndNameAndCode(copyCommand.getItemSelectionEnum(), copyCommand.getName(), copyCommand.getCodeCopy(), employeeId);
@@ -282,7 +296,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, copyCommand.getCodeSourceSerivce(), copyCommand.getFontSize());
 			returnDto.setLstDisplayTimeItem(dtos);
 
-			Map<String, Object> kwr006Lst = this.findByCid();
+			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid( copyCommand.getItemSelectionEnum().value);
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
 					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));

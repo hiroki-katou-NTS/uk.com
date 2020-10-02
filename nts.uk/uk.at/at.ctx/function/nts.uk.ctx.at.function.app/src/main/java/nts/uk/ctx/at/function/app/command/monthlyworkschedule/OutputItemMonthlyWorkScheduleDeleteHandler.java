@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,9 +23,7 @@ public class OutputItemMonthlyWorkScheduleDeleteHandler extends CommandHandler<O
 		OutputItemMonthlyWorkScheduleDeleteCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		// Get employee by command
-		Optional<String> employeeId = !StringUtil.isNullOrEmpty(command.getEmployeeID(), false)
-										? Optional.of(command.getEmployeeID())
-										: Optional.empty();
+		String employeeId = AppContexts.user().employeeId();
 		repository.deleteBySelectionAndCidAndSidAndCode(command.getItemSelectionEnum(), companyId, command.getItemCode().v(), employeeId);
 	}
 

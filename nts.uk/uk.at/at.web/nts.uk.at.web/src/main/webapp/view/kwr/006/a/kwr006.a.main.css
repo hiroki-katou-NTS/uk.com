@@ -5,6 +5,18 @@
 	margin: 5px;
 }
 
+.panel.panel-frame.work-place-accum.style-normal{
+    padding-top: 2px;
+    border-top-width: 1px;
+    padding-bottom: 2px;
+    border-bottom-width: 1px;
+    margin-left: 5px;
+}
+.A11_1{
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
 .A1_5, .A1_6 {
 	display: inline-block;
 }
@@ -117,9 +129,6 @@ hr {
 
 #btnSetErrorAlarmCd {
 	margin-left: 20px;
-}
-
-#output-format {
 }
 
 #nts-component-list {

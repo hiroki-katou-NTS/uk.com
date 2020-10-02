@@ -67,7 +67,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	// column 項目選択種類
 	@Column(name = "ITEM_TYPE")
-	private Integer itemType;
+	private int itemType;
 
 	// column 社員ID
 	@Column(name = "EMPLOYEE_ID")
@@ -112,7 +112,9 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 			kfnmtRptWkMonOuttdPK.setOrderNo(item.getOrderNo());
 			kfnmtRptWkMonOuttdPK.setLayoutID(this.layoutID);
 			KfnmtRptWkMonOuttd kfnmtRptWkMonOuttd = new KfnmtRptWkMonOuttd();
-			kfnmtRptWkMonOuttd.setPk(kfnmtRptWkMonOuttdPK);	
+			kfnmtRptWkMonOuttd.setPk(kfnmtRptWkMonOuttdPK);
+			kfnmtRptWkMonOuttd.setCompanyID(this.companyID);
+			kfnmtRptWkMonOuttd.setContractCd(this.contractCd);
 			return kfnmtRptWkMonOuttd;
 		}).collect(Collectors.toList());
 	}
@@ -197,4 +199,11 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	public String getLayoutID() {
 		return this.layoutID;
 	}
+
+	@Override
+	public void setContractCD(String contractCD) {
+		this.contractCd = contractCD;
+	}
+
+	
 }

@@ -28,15 +28,16 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 		OutputItemMonthlyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		OutputItemMonthlyWorkSchedule domain = new OutputItemMonthlyWorkSchedule(command);
+		domain.setContractCD(AppContexts.user().contractCode());
+		domain.setCompanyID(companyId);
+		domain.setEmployeeID(AppContexts.user().employeeId());
 		// Get employee by command
-		Optional<String> employeeId = !StringUtil.isNullOrEmpty(command.getEmployeeID(), false)
-										? Optional.of(command.getEmployeeID())
-										: Optional.empty();
+
 		if (command.isNewMode()) {
 			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(command.getItemSelectionEnum()
 					, companyId
 					, command.getItemCode().v()
-					, employeeId);
+					, AppContexts.user().employeeId());
 			if (oDomain.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}

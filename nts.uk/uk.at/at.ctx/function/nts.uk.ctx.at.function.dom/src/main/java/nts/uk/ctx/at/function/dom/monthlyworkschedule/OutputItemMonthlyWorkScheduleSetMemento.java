@@ -75,5 +75,12 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 * @param itemSelectionEnum the new item selection enum
 	 */
 	void setItemSelectionEnum(ItemSelectionEnum itemSelectionEnum);
+	
+	/**
+	 * Sets the contract_CD.
+	 *
+	 * @param contract_CD the new contract_CD
+	 */
+	void setContractCD(String contractCD);
 
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -70,10 +71,10 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 *
 	 * @return the map
 	 */
-	@Path("find")
+	@Path("find/{itemType}")
 	@POST
-	public Map<String, Object> find() {
-		return this.outputItemMonthlyWorkScheduleFinder.findByCid();
+	public Map<String, Object> find(@PathParam("itemType") int itemType) {
+		return this.outputItemMonthlyWorkScheduleFinder.findBySelectionAndCidAndSid(itemType);
 	}
 
 	/**
@@ -81,10 +82,10 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 *
 	 * @return the list
 	 */
-	@Path("findall")
+	@Path("findall/{itemType}")
 	@POST
-	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
-		return this.outputItemMonthlyWorkScheduleFinder.findAll();
+	public List<OutputItemMonthlyWorkScheduleDto> findAll(@PathParam("itemType") int itemType) {
+		return this.outputItemMonthlyWorkScheduleFinder.findAll(itemType);
 	}
 
 	/**
