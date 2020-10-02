@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
@@ -13,15 +14,21 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppCreate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
+import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -162,6 +169,31 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
             return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
+        }
+
+        @Override
+        public Optional<AgreMaxAverageTimeMulti> getMaxAverageMulti(String employeeId, GeneralDate criteria, YearMonth yearMonth) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<AgreementTimeYear> timeYear(String employeeId, GeneralDate criteria, Year year) {
+            return Optional.empty();
+        }
+
+        @Override
+        public AgreementExcessInfo algorithm(String employeeId, Year year) {
+            return null;
+        }
+
+        @Override
+        public Optional<AgreementYearSetting> agreementYearSetting(String sid, int year) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+            return Optional.empty();
         }
     }
 }

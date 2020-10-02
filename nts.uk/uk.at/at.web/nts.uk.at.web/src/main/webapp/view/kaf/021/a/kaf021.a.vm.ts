@@ -37,6 +37,8 @@ module nts.uk.at.kaf021.a {
                 let cache: CacheData = JSON.parse(cacheJson);
                 if (cache) {
                     vm.datas = cache.datas;
+                    vm.empItems = cache.empItems;
+                    vm.canNextScreen(vm.empItems.length > 0);
                     vm.appTypeSelected(cache.appType);
                 } else {
                     vm.getMockData();
@@ -113,7 +115,7 @@ module nts.uk.at.kaf021.a {
                     });
                 })
             });
-           
+
             _.extend(window, { vm });
         }
 
@@ -140,7 +142,7 @@ module nts.uk.at.kaf021.a {
                 vm.appTypes.push(new common.AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
                 vm.appTypes.push(new common.AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
                 vm.appTypeSelected.valueHasMutated();
-               
+
                 dfd.resolve();
             }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
 
@@ -150,6 +152,8 @@ module nts.uk.at.kaf021.a {
         fetchData(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
+            vm.canNextScreen(false);
+            vm.empItems = [];
             if (_.isEmpty(vm.empSearchItems)) {
                 vm.datas = [];
                 dfd.resolve();
@@ -252,8 +256,6 @@ module nts.uk.at.kaf021.a {
                     }
                 ]
             }).create();
-            vm.canNextScreen(false);
-            vm.empItems = [];
         }
 
         getColumns(): Array<any> {
@@ -365,7 +367,7 @@ module nts.uk.at.kaf021.a {
                 default: return [];
             }
         }
-        
+
         checkNextScreen(rowId: any, check: any) {
             const vm = this;
             if (check) {
@@ -384,11 +386,11 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             let dataAll: Array<common.EmployeeAgreementTime> = $("#grid").mGrid("dataSource", true);
             let dataSelected = _.filter(dataAll, (item: common.EmployeeAgreementTime) => { return item.checked });
-            let cache = new CacheData(vm.appTypeSelected(), dataAll);
+            let cache = new CacheData(vm.appTypeSelected(), dataAll, vm.empItems);
             localStorage.setItem('kaf021a_cache', JSON.stringify(cache));
-            vm.$jump('at', '/view/kaf/021/b/index.xhtml', { 
-                datas: dataSelected, 
-                appType: vm.appTypeSelected() ,
+            vm.$jump('at', '/view/kaf/021/b/index.xhtml', {
+                datas: dataSelected,
+                appType: vm.appTypeSelected(),
                 processingMonth: vm.processingMonth
             });
         }
@@ -713,10 +715,12 @@ module nts.uk.at.kaf021.a {
     class CacheData {
         appType: common.AppTypeEnum;
         datas: Array<common.EmployeeAgreementTime>;
+        empItems: Array<string> = [];
 
-        constructor(appType: common.AppTypeEnum, datas: Array<common.EmployeeAgreementTime>) {
+        constructor(appType: common.AppTypeEnum, datas: Array<common.EmployeeAgreementTime>, empItems: Array<string> = []) {
             this.appType = appType;
             this.datas = datas;
+            this.empItems = empItems;
         }
     }
 }

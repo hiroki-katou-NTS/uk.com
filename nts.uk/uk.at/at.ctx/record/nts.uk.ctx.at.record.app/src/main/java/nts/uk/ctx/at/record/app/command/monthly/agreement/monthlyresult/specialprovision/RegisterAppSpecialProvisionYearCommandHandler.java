@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Agre
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -163,6 +164,11 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
             return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
+        }
+
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+            return Optional.empty();
         }
     }
 }

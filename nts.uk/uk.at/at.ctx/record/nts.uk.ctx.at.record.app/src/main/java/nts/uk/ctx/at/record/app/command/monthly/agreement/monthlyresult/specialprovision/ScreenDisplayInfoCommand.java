@@ -79,7 +79,7 @@ public class ScreenDisplayInfoCommand {
     int yearAlarm;
 
     public ScreenDisplayInfo toScreenDisplayInfo() {
-        Overtime overtime = new Overtime(new AgreementOneMonthTime(yearTime), new AgreementOneMonthTime(monthTime));
+        Overtime overtime = new Overtime(new AgreementOneMonthTime(monthTime), new AgreementOneYearTime(yearTime));
         OvertimeIncludingHoliday overtimeIncludingHoliday = new OvertimeIncludingHoliday(
                 new AgreementOneMonthTime(0),
                 new AgreementOneMonthTime(0),

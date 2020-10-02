@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.kaf021.find;
+package nts.uk.screen.at.app.kaf021.query.a;
 
 import lombok.Value;
 

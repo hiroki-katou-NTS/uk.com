@@ -6,6 +6,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 
+import java.util.Optional;
+
 @Value
 public class MonthlyAppContentCommand {
 
@@ -27,7 +29,7 @@ public class MonthlyAppContentCommand {
     /**
      * 36協定特別条項の適用申請.申請時間.1ヶ月時間
      */
-    int alarmTime;
+    Integer alarmTime;
 
     /**
      * 36協定特別条項の適用申請.申請時間.申請時間.1ヶ月時間.年月度
@@ -41,6 +43,6 @@ public class MonthlyAppContentCommand {
 
     public MonthlyAppContent toMonthlyAppContent() {
         return new MonthlyAppContent(employeeId, new YearMonth(yearMonth), new AgreementOneMonthTime(errorTime),
-                new AgreementOneMonthTime(alarmTime), new ReasonsForAgreement(reason));
+                alarmTime == null ? Optional.empty() : Optional.of(new AgreementOneMonthTime(alarmTime)), new ReasonsForAgreement(reason));
     }
 }

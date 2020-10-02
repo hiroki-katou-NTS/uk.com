@@ -1,10 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.kaf021.b {
-    import textFormat = nts.uk.text.format;
-    import parseTime = nts.uk.time.parseTime;
     import common = nts.uk.at.kaf021.common;
     import formatYearMonth = nts.uk.time.formatYearMonth;
+    import validation = nts.uk.ui.validation;
 
     const API = {
         REGISTER_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/register-month',
@@ -16,6 +15,9 @@ module nts.uk.at.kaf021.b {
         datas: Array<EmployeeAgreementTimeNew> = [];
         appType: common.AppTypeEnum = null;
         processingMonth: number;
+
+        yearTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: false });
+        monthTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneMonthTime", { required: false });
         constructor() {
             super();
             const vm = this;
@@ -44,6 +46,8 @@ module nts.uk.at.kaf021.b {
                 }
             }
             vm.loadMGrid();
+
+            _.extend(window, { vm });
         }
 
         mounted() {
@@ -132,7 +136,8 @@ module nts.uk.at.kaf021.b {
                     // B3_13
                     { headerText: vm.$i18n("KAF021_27"), key: vm.getCurrentMaxKey(), dataType: 'string', width: '75px', ntsControl: "Label" },
                     // B3_14
-                    { headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px',
+                    {
+                        headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px',
                         constraint: {
                             primitiveValue: vm.isYearMode() ? 'AgreementOneYearTime' : 'AgreementOneMonthTime',
                             required: true
@@ -142,12 +147,12 @@ module nts.uk.at.kaf021.b {
             });
 
             // B3_15
-            columns.push({ 
+            columns.push({
                 headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '320px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
-                } 
+                }
             });
             return columns;
         }
@@ -172,7 +177,7 @@ module nts.uk.at.kaf021.b {
             return cellStates;
         }
 
-        convertParams(params: any){
+        convertParams(params: any) {
             const vm = this;
             vm.appType = params.appType;
             vm.processingMonth = params.processingMonth;
@@ -186,43 +191,36 @@ module nts.uk.at.kaf021.b {
                     wkpName: item.wkpName,
                     employeeName: item.employeeName,
 
-                    monthStr: item["month" + month +"Str"],
-                    monthTime: item["month" + month +"Time"],
-                    monthMaxTime: item["month" + month +"MaxTime"],
-                    monthTimeStr: item["month" + month +"TimeStr"],
-                    monthMaxTimeStr: item["month" + month +"MaxTimeStr"],
-                    monthStatus: item["month" + month +"Status"],
-                    monthError: item["month" + month +"Error"],
-                    monthAlarm: item["month" + month +"Alarm"],
+                    monthStr: item["month" + month + "Str"],
+                    monthTime: item["month" + month + "Time"],
+                    monthMaxTime: item["month" + month + "MaxTime"],
+                    monthTimeStr: item["month" + month + "TimeStr"],
+                    monthMaxTimeStr: item["month" + month + "MaxTimeStr"],
+                    monthError: item["month" + month + "Error"],
+                    monthAlarm: item["month" + month + "Alarm"],
 
                     yearStr: item.yearStr,
                     yearTime: item.yearTime,
                     yearMaxTime: item.yearMaxTime,
                     yearTimeStr: item.yearTimeStr,
                     yearMaxTimeStr: item.yearMaxTimeStr,
-                    yearStatus: item.yearStatus,
                     yearError: item.yearError,
                     yearAlarm: item.yearAlarm,
 
                     monthAverage2: item.monthAverage2,
                     monthAverage2Str: item.monthAverage2Str,
-                    monthAverage2Status: item.monthAverage2Status,
 
                     monthAverage3: item.monthAverage3,
                     monthAverage3Str: item.monthAverage3Str,
-                    monthAverage3Status: item.monthAverage3Status,
 
                     monthAverage4: item.monthAverage4,
                     monthAverage4Str: item.monthAverage4Str,
-                    monthAverage4Status: item.monthAverage4Status,
 
                     monthAverage5: item.monthAverage5,
                     monthAverage5Str: item.monthAverage5Str,
-                    monthAverage5Status: item.monthAverage5Status,
 
                     monthAverage6: item.monthAverage6,
                     monthAverage6Str: item.monthAverage6Str,
-                    monthAverage6Status: item.monthAverage6Status,
 
                     exceededNumber: item.exceededNumber,
                     newMax: null,
@@ -240,40 +238,40 @@ module nts.uk.at.kaf021.b {
                 let commandYears: Array<RegisterAppSpecialProvisionYearCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
                     let content: AnnualAppContentCommand = {
-                        applicantId: null,
-                        employeeId: item.employeeId,
-                        errorTime: null,
-                        alarmTime: null,
-                        year: null,
+                        applicantId: item.employeeId, //TODO
+                        employeeId: item.employeeId, //TODO
+                        errorTime: moment.duration(item.newMax).asMinutes(),
+                        alarmTime: moment.duration(item.newMax).asMinutes(),
+                        year: 2020, //TODO
                         reason: item.reason
                     };
                     let screenInfo: ScreenDisplayInfoCommand = {
                         /** B4_3 */
-                        monthTime: null,
+                        monthTime: item.monthTime,
                         /** B4_3 */
-                        monthTargetTime: null,
+                        monthTargetTime: item.monthMaxTime,
                         /** B4_4 */
-                        yearTime: null,
+                        yearTime: item.yearTime,
                         /** B4_5 */
-                        monthAverage2: null,
+                        monthAverage2: item.monthAverage2,
                         /** B4_6 */
-                        monthAverage3: null,
+                        monthAverage3: item.monthAverage3,
                         /** B4_7 */
-                        monthAverage4: null,
+                        monthAverage4: item.monthAverage4,
                         /** B4_8 */
-                        monthAverage5: null,
+                        monthAverage5: item.monthAverage5,
                         /** B4_9 */
-                        monthAverage6: null,
+                        monthAverage6: item.monthAverage6,
                         /** B4_10 */
-                        exceededNumber: null,
+                        exceededNumber: item.exceededNumber,
                         /** B4_11 */
-                        monthError: null,
+                        monthError: 0,
                         /** B4_11 */
-                        monthAlarm: null,
+                        monthAlarm: 0,
                         /** B4_11 */
-                        yearError: null,
+                        yearError: item.yearError,
                         /** B4_11 */
-                        yearAlarm: null,
+                        yearAlarm: item.yearAlarm
                     };
                     let commandYear: RegisterAppSpecialProvisionYearCommand = {
                         content: content,
@@ -281,11 +279,66 @@ module nts.uk.at.kaf021.b {
                     };
                     commandYears.push(commandYear);
                 })
-
+                vm.$ajax(API.REGISTER_YEAR, commandYears).done((res: any) => {
+                    localStorage.setItem('kaf021b_cache', null);
+                    vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                }).fail((error: any) => {
+                    vm.$dialog.error(error);
+                })
+            } else {
+                let commandMonths: Array<RegisterAppSpecialProvisionMonthCommand> = [];
+                _.each(data, (item: EmployeeAgreementTimeNew) => {
+                    let content: MonthlyAppContentCommand = {
+                        applicantId: item.employeeId, //TODO
+                        employeeId: item.employeeId, //TODO
+                        errorTime: moment.duration(item.newMax).asMinutes(),
+                        alarmTime: moment.duration(item.newMax).asMinutes(),
+                        yearMonth: vm.processingMonth,
+                        reason: item.reason
+                    };
+                    let screenInfo: ScreenDisplayInfoCommand = {
+                        /** B4_3 */
+                        monthTime: item.monthTime,
+                        /** B4_3 */
+                        monthTargetTime: item.monthMaxTime,
+                        /** B4_4 */
+                        yearTime: item.yearTime,
+                        /** B4_5 */
+                        monthAverage2: item.monthAverage2,
+                        /** B4_6 */
+                        monthAverage3: item.monthAverage3,
+                        /** B4_7 */
+                        monthAverage4: item.monthAverage4,
+                        /** B4_8 */
+                        monthAverage5: item.monthAverage5,
+                        /** B4_9 */
+                        monthAverage6: item.monthAverage6,
+                        /** B4_10 */
+                        exceededNumber: item.exceededNumber,
+                        /** B4_11 */
+                        monthError: item.monthError,
+                        /** B4_11 */
+                        monthAlarm: item.monthAlarm,
+                        /** B4_11 */
+                        yearError: 0,
+                        /** B4_11 */
+                        yearAlarm: 0
+                    };
+                    let commandYear: RegisterAppSpecialProvisionMonthCommand = {
+                        content: content,
+                        screenInfo: screenInfo
+                    };
+                    commandMonths.push(commandYear);
+                })
+                vm.$ajax(API.REGISTER_MONTH, commandMonths).done((res: any) => {
+                    localStorage.setItem('kaf021b_cache', null);
+                    vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                }).fail((error: any) => {
+                    vm.$dialog.error(error);
+                })
             }
 
-            localStorage.setItem('kaf021b_cache', null);
-            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+           
         }
 
         preScreen() {
@@ -330,7 +383,7 @@ module nts.uk.at.kaf021.b {
             }
         }
 
-        isYearMode(){
+        isYearMode() {
             const vm = this;
             return vm.appType == common.AppTypeEnum.YEARLY;
         }
@@ -346,7 +399,6 @@ module nts.uk.at.kaf021.b {
         monthMaxTime: any;
         monthTimeStr: any;
         monthMaxTimeStr: any;
-        monthStatus: common.AgreementTimeStatusOfMonthly;
         monthError: any;
         monthAlarm: any;
 
@@ -355,29 +407,23 @@ module nts.uk.at.kaf021.b {
         yearMaxTime: any;
         yearTimeStr: any;
         yearMaxTimeStr: any;
-        yearStatus: common.AgreTimeYearStatusOfMonthly;
         yearError: any;
         yearAlarm: any;
 
         monthAverage2: any;
         monthAverage2Str: any;
-        monthAverage2Status: common.AgreMaxTimeStatusOfMonthly;
 
         monthAverage3: any;
         monthAverage3Str: any;
-        monthAverage3Status: common.AgreMaxTimeStatusOfMonthly;
 
         monthAverage4: any;
         monthAverage4Str: any;
-        monthAverage4Status: common.AgreMaxTimeStatusOfMonthly;
 
         monthAverage5: any;
         monthAverage5Str: any;
-        monthAverage5Status: common.AgreMaxTimeStatusOfMonthly;
 
         monthAverage6: any;
         monthAverage6Str: any;
-        monthAverage6Status: common.AgreMaxTimeStatusOfMonthly;
 
         exceededNumber: number;
         newMax: number;

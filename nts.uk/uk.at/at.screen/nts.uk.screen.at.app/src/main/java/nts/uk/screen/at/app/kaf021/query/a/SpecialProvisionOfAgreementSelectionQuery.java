@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.kaf021.find;
+package nts.uk.screen.at.app.kaf021.query.a;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -11,6 +11,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 
@@ -28,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
-public class Kaf021Finder {
+public class SpecialProvisionOfAgreementSelectionQuery {
 
     @Inject
     private ClosurePeriodForAllQuery closurePeriodForAllQuery;
@@ -40,6 +41,8 @@ public class Kaf021Finder {
     private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
     @Inject
     private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
+    @Inject
+    private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
 
     /**
      * 初期起動を行う

@@ -1,10 +1,9 @@
 package nts.uk.screen.at.ws.kaf.kaf021;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.kaf021.find.EmployeeAgreementTimeDto;
-import nts.uk.screen.at.app.kaf021.find.EmployeeBasicInfoDto;
-import nts.uk.screen.at.app.kaf021.find.Kaf021Finder;
-import nts.uk.screen.at.app.kaf021.find.StartupInfo;
+import nts.uk.screen.at.app.kaf021.query.a.EmployeeAgreementTimeDto;
+import nts.uk.screen.at.app.kaf021.query.a.SpecialProvisionOfAgreementSelectionQuery;
+import nts.uk.screen.at.app.kaf021.query.a.StartupInfo;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,29 +16,29 @@ import java.util.List;
 public class Kaf021WebService extends WebService {
 
     @Inject
-    private Kaf021Finder kaf021Finder;
+    private SpecialProvisionOfAgreementSelectionQuery kaf021A_query;
 
     @POST
     @Path("init")
     public StartupInfo init() {
-        return this.kaf021Finder.initStarup();
+        return this.kaf021A_query.initStarup();
     }
 
     @POST
     @Path("get-current-month")
     public List<EmployeeAgreementTimeDto> getCurrentMonth(EmployeeInfoParam param) {
-        return this.kaf021Finder.getEmloyeeInfoForCurrentMonth(param.getEmployees());
+        return this.kaf021A_query.getEmloyeeInfoForCurrentMonth(param.getEmployees());
     }
 
     @POST
     @Path("get-next-month")
     public List<EmployeeAgreementTimeDto> getNextMonth(EmployeeInfoParam param) {
-        return this.kaf021Finder.getEmloyeeInfoForNextMonth(param.getEmployees());
+        return this.kaf021A_query.getEmloyeeInfoForNextMonth(param.getEmployees());
     }
 
     @POST
     @Path("get-year")
     public List<EmployeeAgreementTimeDto> getYear(EmployeeInfoParam param) {
-        return this.kaf021Finder.getEmloyeeInfoForYear(param.getEmployees());
+        return this.kaf021A_query.getEmloyeeInfoForYear(param.getEmployees());
     }
 }
