@@ -23,9 +23,9 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 			+ "ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd";
 	
 	private static final String SELECT_All_BY_CID_AND_EXEC = SELECT_ALL
-			+ " WHERE pel.kfnmtExecTaskSettingPK.companyId = :companyId"
-			+ " AND pel.kfnmtExecTaskSettingPK.execItemCd IN :execItemCds"
-			+ " ORDER BY pel.kfnmtExecTaskSettingPK.execItemCd ASC";
+			+ " WHERE ets.kfnmtExecTaskSettingPK.companyId = :companyId"
+			+ " AND ets.kfnmtExecTaskSettingPK.execItemCd IN :execItemCds"
+			+ " ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd ASC";
 	
 	/**
 	 * get by key

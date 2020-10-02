@@ -70,7 +70,7 @@ public class ProcessExecutionLogManageDto {
 		return new ProcessExecutionLogManageDto(
 				domain.getExecItemCd().v(),
 				domain.getCompanyId(),
-				domain.getOverallError().value,
+				domain.getOverallError() == null ? null : domain.getOverallError().value,
 				domain.getOverallStatus().map(o -> o.value).orElse(null),
 				domain.getLastEndExecDateTime(),
 				domain.getCurrentStatus().value,

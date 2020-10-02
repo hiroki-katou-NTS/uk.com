@@ -110,9 +110,13 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 	public BigDecimal getAverageRunTime(String companyId, ExecutionCode execItemCd) {
 		// ドメインモデル「更新処理自動実行ログ履歴」を取得する
 		List<ProcessExecutionLogHistory> listHistory = this.processExecLogHistoryRepo.getByCompanyIdAndExecItemCd(companyId, execItemCd.v());
+		if (listHistory.isEmpty()) {
+			return BigDecimal.ZERO;
+		}
 		
 		// 実行平均時間を計算する
 		Integer sumExecutionTime = listHistory.stream()
+				.filter(history -> history.getLastEndExecDateTime() != null && history.getLastExecDateTime() != null)
 				.mapToInt(history -> history.getLastEndExecDateTime().seconds() - history.getLastExecDateTime().seconds())
 				.sum();
 		
