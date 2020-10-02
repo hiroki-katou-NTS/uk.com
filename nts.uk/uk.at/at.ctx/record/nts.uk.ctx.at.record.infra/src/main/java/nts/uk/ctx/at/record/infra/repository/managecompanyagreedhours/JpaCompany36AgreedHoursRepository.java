@@ -17,7 +17,6 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     @Override
     public void insert(AgreementTimeOfCompany domain) {
         this.commandProxy().insert(Ksrmt36AgrMgtCmp.toEntity(domain));
-        this.getEntityManager().flush();
     }
 
     @Override
