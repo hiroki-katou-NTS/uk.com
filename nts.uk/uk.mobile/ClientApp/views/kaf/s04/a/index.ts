@@ -25,7 +25,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public kafS00CParams !: IParamS00C;
     public user !: any;
     public data !: any;
-    public appDispInfoStartupOutput!: IAppDispInfoStartupOutput;
+    public appDispInfoStartupOutput: any;
 
 
     public created() {
@@ -48,12 +48,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
                     appDates: [],
                     appDispInfoStartupDto: vm.appDispInfoStartupOutput,
-                };
-                vm.$mask('show');
+                }
                 vm.$http.post('at', API.startKAFS04, params).then((res: any) => {
-                    vm.data = res.data;
-                    vm.$mask('hide');
-                });
+                    vm.data = res;
+                })
                 vm.initComponentA();
                 vm.initComponetB();
                 vm.initComponentC();
@@ -180,117 +178,117 @@ interface IAppLimitSetting {
 }
 
 interface IEmployeeInfoLst {
-    sid: string;
-    scd: string;
-    bussinessName: string;
+    sid: string,
+    scd: string,
+    bussinessName: string
 }
 
 interface IAppLimitSetting {
-    canAppAchievementMonthConfirm: boolean;
-    canAppAchievementLock: boolean;
-    canAppFinishWork: boolean;
-    requiredAppReason: boolean;
-    standardReasonRequired: boolean;
-    canAppAchievementConfirm: boolean;
+    canAppAchievementMonthConfirm: boolean,
+    canAppAchievementLock: boolean,
+    canAppFinishWork: boolean,
+    requiredAppReason: boolean,
+    standardReasonRequired: boolean,
+    canAppAchievementConfirm: boolean
 }
 
 interface IAppTypeSetting {
-    appType: number | null;
-    sendMailWhenRegister: boolean;
-    sendMailWhenApproval: boolean;
-    displayInitialSegment: number | null;
-    canClassificationChange: boolean;
+    appType: number | null,
+    sendMailWhenRegister: boolean,
+    sendMailWhenApproval: boolean,
+    displayInitialSegment: number | null,
+    canClassificationChange: boolean
 }
 
 interface IAppDeadlineSetLst {
-    useAtr: number | null;
-    closureId: number | null;
-    deadline: number | null;
-    deadlineCriteria: number | null;
+    useAtr: number | null,
+    closureId: number | null,
+    deadline: number | null,
+    deadlineCriteria: number | null
 }
 
 interface IReceptionRestrictionSetting {
-    otAppBeforeAccepRestric: null;
+    otAppBeforeAccepRestric: null,
     afterhandRestriction: {
         allowFutureDay: boolean
-    };
+    },
     beforehandRestriction: {
         dateBeforehandRestrictions: number | null,
         toUse: boolean
-    };
-    appType: number | null;
+    },
+    appType: number | null
 }
 
 interface IAppUseSetLst {
-    useDivision: number | null;
-    appType: number | null;
-    memo: string;
+    useDivision: number | null,
+    appType: number | null,
+    memo: string
 }
 
 interface IEmpHistImport {
-    employeeId: string;
-    employmentCode: string;
-    employmentName: string;
-    startDate: string;
-    endDate: string;
+    employeeId: string,
+    employmentCode: string,
+    employmentName: string,
+    startDate: string,
+    endDate: string
 }
 
 interface ITargetWorkTypeByAppLst {
-    appType: number | null;
-    displayWorkType: boolean;
-    workTypeLst: any[];
-    opBreakOrRestTime: null;
-    opHolidayTypeUse: boolean;
-    opHolidayAppType: number | null;
-    opBusinessTripAppWorkType: null;
+    appType: number | null,
+    displayWorkType: boolean,
+    workTypeLst: any[],
+    opBreakOrRestTime: null,
+    opHolidayTypeUse: boolean,
+    opHolidayAppType: number | null,
+    opBusinessTripAppWorkType: null
 }
 
 interface IListApprover {
-    approverID: string;
-    approvalAtrValue: number | null;
-    approvalAtrName: string;
-    agentID: string;
-    approverName: string;
-    representerID: string;
-    representerName: string;
-    approvalDate: null;
-    approvalReason: string;
-    approverMail: string;
-    representerMail: string;
-    approverInListOrder: number | null;
+    approverID: string,
+    approvalAtrValue: number | null,
+    approvalAtrName: string,
+    agentID: string,
+    approverName: string,
+    representerID: string,
+    representerName: string,
+    approvalDate: null,
+    approvalReason: string,
+    approverMail: string,
+    representerMail: string,
+    approverInListOrder: number | null
 }
 
 interface IListApprovalFrame {
-    frameOrder: number | null;
-    listApprover: IListApprover[];
-    confirmAtr: number | null;
-    appDate: string;
+    frameOrder: number | null,
+    listApprover: IListApprover[],
+    confirmAtr: number | null,
+    appDate: string
 }
 
 interface IOpListApprovalPhaseState {
-    phaseOrder: number | null;
-    approvalAtrValue: number | null;
-    approvalAtrName: string;
-    approvalFormValue: number | null;
-    listApprovalFrame: IListApprovalFrame[];
+    phaseOrder: number | null,
+    approvalAtrValue: number | null,
+    approvalAtrName: string,
+    approvalFormValue: number | null,
+    listApprovalFrame: IListApprovalFrame[]
 }
 
-interface IOpWorkTimeLst {
-    companyId: string;
-    worktimeCode: string;
+interface opWorkTimeLst {
+    companyId: string,
+    worktimeCode: string,
     workTimeDivision: {
         workTimeDailyAtr: number | null,
         workTimeMethodSet: number | null
-    };
-    isAbolish: boolean;
-    colorCode: string;
+    },
+    isAbolish: boolean,
+    colorCode: string,
     workTimeDisplayName: {
         workTimeName: string,
         workTimeAbName: string,
         workTimeSymbol: string
-    };
-    memo: string;
-    note: string;
+    },
+    memo: string,
+    note: string
 }
 
 interface IAppDispInfoStartupOutput {
@@ -319,7 +317,7 @@ interface IAppDispInfoStartupOutput {
         opAdvanceReceptionHours: null,
         opAdvanceReceptionDate: null,
         opEmployeeInfo: null
-    };
+    },
     appDispInfoWithDateOutput: {
         approvalFunctionSet: {
             appUseSetLst: IAppUseSetLst[]
@@ -330,7 +328,7 @@ interface IAppDispInfoStartupOutput {
         appDeadlineUseCategory: number | null,
         opEmploymentSet: {
             companyID: string,
-            employmentCD: string,
+            employmentCD: "01",
             targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[],
         },
         opListApprovalPhaseState: IOpListApprovalPhaseState[],
@@ -338,8 +336,8 @@ interface IAppDispInfoStartupOutput {
         opActualContentDisplayLst: null,
         opPreAppContentDispDtoLst: null,
         opAppDeadline: string,
-        opWorkTimeLst: IOpWorkTimeLst[],
-    };
-    appDetailScreenInfo: null;
+        opWorkTimeLst: opWorkTimeLst[],
+    },
+    appDetailScreenInfo: null
 }
 
