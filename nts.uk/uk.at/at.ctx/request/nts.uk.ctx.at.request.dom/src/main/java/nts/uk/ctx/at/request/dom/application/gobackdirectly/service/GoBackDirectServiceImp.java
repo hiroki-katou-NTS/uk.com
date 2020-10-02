@@ -158,9 +158,8 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	public InforGoBackCommonDirectOutput getDateChangeAlgorithm(String companyId, List<GeneralDate> dates,
 			List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
 		// 申請日を変更する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(companyId, dates,
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
+		// cause KAF000 call service to get AppDispInfoWithDateOutput so do not call this 申請日を変更する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput();
 		inforGoBackCommonDirectOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId,  sids == null ? null : sids.get(0), dates.get(0),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),
@@ -214,6 +213,39 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		}
 		output.setAppDispInfoStartup(appDispInfoStartupOutput);
 		return output;
+	}
+
+	@Override
+	public InforGoBackCommonDirectOutput getDateChangeMobileAlgorithm(String companyId, List<GeneralDate> dates,
+			List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(companyId,
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION,
+				dates,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
+				true,
+				Optional.empty());
+		inforGoBackCommonDirectOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId,  sids == null ? null : sids.get(0), dates.get(0),
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent()
+						? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpEmploymentSet().get()
+						: null,
+						inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent()
+						? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().get()
+						: null,
+						inforGoBackCommonDirectOutput.getAppDispInfoStartup()		
+				);
+		
+		inforGoBackCommonDirectOutput.setWorkType(inforWorkGoBackDirectOutput.getWorkType());
+		inforGoBackCommonDirectOutput.setWorkTime(inforWorkGoBackDirectOutput.getWorkTime());
+		inforGoBackCommonDirectOutput.setLstWorkType(inforWorkGoBackDirectOutput.getLstWorkType());
+		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDetailScreenInfo().isPresent()) {
+			if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDetailScreenInfo().get().getOutputMode() == OutputMode.EDITMODE) {
+				//新規モード：ドメイン「直行直帰申請」がない。
+				inforGoBackCommonDirectOutput.setGoBackDirectly(Optional.empty());
+			}
+		}
+		return inforGoBackCommonDirectOutput;
 	}
 
 }

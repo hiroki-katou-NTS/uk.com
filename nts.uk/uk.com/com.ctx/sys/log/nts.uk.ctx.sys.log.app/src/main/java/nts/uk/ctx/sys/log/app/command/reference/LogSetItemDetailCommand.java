@@ -34,7 +34,7 @@ public class LogSetItemDetailCommand {
 	 */
 	private String cid;
 	
-	public LogSetItemDetail toDomain(String logSetId) {
+	public LogSetItemDetail toDomain(String logSetId, String cid) {
 		return new LogSetItemDetail(logSetId, itemNo, frame, 
 				new LogCondition(condition), SymbolEnum.valueOf(sybol), cid);			
 	}

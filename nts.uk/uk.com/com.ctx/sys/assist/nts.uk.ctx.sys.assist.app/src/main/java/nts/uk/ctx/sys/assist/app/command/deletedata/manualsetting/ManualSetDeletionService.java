@@ -48,6 +48,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ResultState;
 import nts.uk.ctx.sys.assist.dom.deletedata.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 import nts.uk.shr.infra.file.csv.CsvReportWriter;
@@ -205,10 +206,14 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		int delType = DelType.MANUAL.value;
 		int fileSize = 0;
 		int numberEmployees = 0;
-		LoginInfo loginInfo = new LoginInfo();
+		String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
+		String pcName = AppContexts.requestedWebApi().getRequestPcName();
+		String account = AppContexts.windowsAccount().getUserName();
+		LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
+		List<ResultLogDeletion> listResultLogDeletions = new ArrayList<ResultLogDeletion>();
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
 				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
-				domain.getSystemType(), domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
+				listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
 				fileSize, null, loginInfo);
 		repoResultDel.add(resultDomain);
 	}

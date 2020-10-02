@@ -20,14 +20,19 @@ public class OneYearTime {
 		this.upperLimit = new AgreementOneYearTime(0);
 	}
 
-	public OneYearTime(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
-		super();
-		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
-		if (this.upperLimit.lessThan(erAlTime.getError())) {
-			throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
-		}
+	private OneYearTime(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
 		this.erAlTime = erAlTime;
 		this.upperLimit = upperLimit;
+	}
+	
+	public static OneYearTime of(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
+
+		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
+		if (upperLimit.lessThan(erAlTime.getError())) {
+			throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
+		}
+
+		return new OneYearTime(erAlTime, upperLimit);
 	}
 	
 	/** エラーチェック */

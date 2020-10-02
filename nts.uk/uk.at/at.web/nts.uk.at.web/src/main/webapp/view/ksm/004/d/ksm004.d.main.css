@@ -1,7 +1,5 @@
 #table-top {
 	width: 440px;
-	margin-top: 10px;
-	margin-left: 10px;
 }
 
 #table-top tr td:nth-child(1){
@@ -12,7 +10,9 @@
 }
 
 #table-top .ntsCheckBox{
+	margin-top: 1px;
 	padding-left: 0px;
+	padding-bottom: 0px;
 }
 
 #daterangepicker .ntsControl.nts-datepicker-wrapper{
@@ -20,7 +20,7 @@
 }
 
 .nts-fixed-table{
-	margin-left: 90px;
+	margin-left: 80px;
 	margin-top: 10px;
 }
 
@@ -70,4 +70,12 @@
 
 #functions-area-bottom{
 	 height: 110px;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td {
+	background-color: #FFFFFF;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr > td:nth-child(2):hover {
+	background-color: #c5f1f7;
 }
