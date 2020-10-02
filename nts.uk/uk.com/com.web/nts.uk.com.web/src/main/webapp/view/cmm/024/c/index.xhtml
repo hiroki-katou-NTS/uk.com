@@ -24,7 +24,7 @@
                     <div class="col-left" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('CMM024_21')}</div>
                     <div class="col-right">
                         <div class="date-col">
-                            <div data-bind="ntsDatePicker: {
+                            <div tabindex="1" data-bind="ntsDatePicker: {
                             value: newStartDate,
                             required: true,
                             dateFormat: 'YYYY/MM/DD',
@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class="col-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM024_24')}</div>
                     <div class="col-right">
-                        <div data-bind="ntsRadioBoxGroup: {
+                        <div tabindex="2" data-bind="ntsRadioBoxGroup: {
                                     options: registrationHistory,
                                     optionsValue: 'id',
                                     optionsText: 'name',

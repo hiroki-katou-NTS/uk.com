@@ -4,7 +4,6 @@ module nts.uk.com.view.cmm024.f {
 
 	import service = nts.uk.com.view.cmm024.a.service;
 	import EmployeeDto = nts.uk.com.view.cmm024.a.service.EmployeeDto;
-	//import UnitModel = kcp.share.tree.UnitModel;
 	import TreeComponentOption = kcp.share.tree.TreeComponentOption;
 	import StartMode = kcp.share.tree.StartMode;
 	import SelectType = kcp.share.tree.SelectionType;
@@ -51,7 +50,7 @@ module nts.uk.com.view.cmm024.f {
 				isDialog: true,
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 10,
-				tabindex: 1,
+				tabindex: 2,
 				systemType: SystemType.EMPLOYMENT, //2
 			};
 		}

@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-import { isBuffer } from "lodash";
-
 module nts.uk.com.view.cmm024.a {
 	import service = nts.uk.com.view.cmm024.a.service;
 	import EmployeeDto = nts.uk.com.view.cmm024.a.service.EmployeeDto;
@@ -282,7 +280,7 @@ module nts.uk.com.view.cmm024.a {
 				currentScheduleHistoryList: Array<ScheduleHistoryDto> = vm.companyScheduleHistoryList();
 
 			vm.$window.storage("scheduleHistorySelected", vm.companyScheduleHistoryObjSelected());
-			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: 'Test Title' }).then(function () {
+			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: vm.$i18n('CMM024_92') }).then(function () {
 				//開始年月日テキストボックス
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
 
@@ -365,7 +363,7 @@ module nts.uk.com.view.cmm024.a {
 			//ScheduleHistoryModel
 			vm.$window.storage("CMM024_D_INPUT", data);
 			vm.$window.modal("/view/cmm/024/d/index.xhtml",
-				{ title: 'Test Title' }).then(function () {
+				{ title: vm.$i18n('CMM024_93') }).then(function () {
 
 					vm.$window.storage("CMM024_D_RESULT").then((data: any) => {
 
@@ -435,7 +433,7 @@ module nts.uk.com.view.cmm024.a {
 				});
 
 				vm.$window.modal("/view/cmm/024/f/index.xhtml",
-					{ title: 'Test Title' }).then(function () {
+					{ title: vm.$i18n('CMM024_94') }).then(function () {
 						//36承認者パネル
 						vm.$window.storage("newWorkPlaceCodeList").then((data) => {
 							let dataList: any = [];
@@ -719,7 +717,7 @@ module nts.uk.com.view.cmm024.a {
 				currentScheduleHistoryList: Array<ScheduleHistoryDto> = vm.workplaceScheduleHistoryList();
 
 			vm.$window.storage("scheduleHistorySelected", vm.workplaceScheduleHistoryObjSelected());
-			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: 'Test Title' }).then(function () {
+			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: vm.$i18n('CMM024_92') }).then(function () {
 				//開始年月日テキストボックス
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
 

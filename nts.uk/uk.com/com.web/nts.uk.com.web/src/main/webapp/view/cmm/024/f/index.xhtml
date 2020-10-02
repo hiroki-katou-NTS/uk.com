@@ -23,7 +23,7 @@
             <div id="contents-area" class="cmm024-f">
                 <div class="row">
                     <div class="col-left">
-                        <div id="tree-grid" data-bind="enable: false"></div>
+                        <div tabindex="1" id="tree-grid" data-bind="enable: false"></div>
                     </div>
                     <div class="col-right">
                         <div class="row row-title">
@@ -34,7 +34,7 @@
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM024_54')}</div>
                             </div>
                         </div>
-                        <div id="swap-list" class="ntsSwapList" data-bind="ntsSwapList: {
+                        <div id="swap-list" tabindex="2" class="ntsSwapList" data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
                             height: 330,
                             dataSource: itemsSwap,

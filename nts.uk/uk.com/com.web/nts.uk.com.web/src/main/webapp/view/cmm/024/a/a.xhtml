@@ -10,23 +10,19 @@
         </ui:define>
         <div class="sidebar-content-header">
             <span class="title">#{i18n.getText('Com_Company')}</span>
-            <button class="proceed"
+            <button class="proceed" tabindex="4"
                 data-bind="click: RegisterA, enable: enableRegisterA">#{i18n.getText('CMM024_1')}</button>
         </div>
         <div class="contents-area">
-            <!-- <div class="company-name title" data-bind="with: company">
-                <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM024_3')}</div>
-                <label data-bind="text: name"></label>&lt;!&ndash; A1-6&ndash;&gt;
-            </div>-->
             <div class="panel-content">
                 <div class="panel-left bg-green caret-right caret-background">
-                    <div class="buttons">
-                        <button class="left"
+                    <div class="buttons" tabindex="-1">
+                        <button class="left" tabindex="2"
                             data-bind="click: screenAShowDialogC, enable: screenAModeAddNew">#{i18n.getText('CMM024_4')}</button>
-                        <button class="danger right"
+                        <button class="danger right" tabindex="3"
                             data-bind="click: function() { screenShowDialogD('A') }, enable: screenAModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
-                    <div class="ntsGrid">
+                    <div class="ntsGrid" tabindex="1">
                         <table id="historyList" data-bind="ntsGridList: {
                                 height: 265,
                                 dataSource: companyScheduleHistoryList,
