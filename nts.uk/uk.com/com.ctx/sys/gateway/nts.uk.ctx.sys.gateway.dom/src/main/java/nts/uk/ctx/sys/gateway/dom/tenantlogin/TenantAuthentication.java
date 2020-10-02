@@ -35,10 +35,10 @@ public class TenantAuthentication {
 	 * @param passwordPlainText
 	 * @return
 	 */
-	public static TenantAuthentication create(String tenantCode, String passwordPlainText) {
+	public static TenantAuthentication create(String tenantCode, String passwordPlainText, GeneralDate startDate) {
 		
 		String hashedPassword = PasswordHash.generate(passwordPlainText, tenantCode);
-		val availablePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.max());
+		val availablePeriod = new DatePeriod(startDate, GeneralDate.max());
 		
 		return new TenantAuthentication(tenantCode, hashedPassword, availablePeriod);
 	}
