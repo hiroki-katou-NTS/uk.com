@@ -431,7 +431,7 @@ public class SaveExecutionTaskSettingCommandHandler
 	private void unscheduleOld(SaveExecutionTaskSettingCommand command, String companyId) {
 		ExecutionTaskSetting executionTaskSetting = this.execTaskSettingRepo
 				.getByCidAndExecCd(companyId, command.getExecItemCd()).get();
-		String oldScheduleId = executionTaskSetting.getScheduleId();
+		String oldScheduleId = executionTaskSetting.getScheduleId().orElse(null);
 
 		Optional<String> oldEndScheduleIdOpt = executionTaskSetting.getEndScheduleId();
 		if (oldEndScheduleIdOpt.isPresent()) {
