@@ -22,7 +22,6 @@ import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -38,6 +37,7 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfIni
 import nts.uk.screen.at.app.ksu001.getshiftpalette.PageInfo;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.TargetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 
 /**
  * @author laitv 初期起動 path:

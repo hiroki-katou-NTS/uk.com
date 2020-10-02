@@ -210,16 +210,18 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExports.add(applicationExport);
 				} else {
 					// 申請種類＝勤務変更申請　＆　休日を除外するの場合
-					AppWorkChange_Old appWorkChange = appWorkChanges.stream().filter(c -> c.getAppId().equals(app.getAppID())).findFirst().get();
+					AppWorkChange_Old appWorkChange = appWorkChanges.stream().filter(c -> c.getAppId().equals(app.getAppID())).findFirst().orElse(null);
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
-						if(appWorkChange.getExcludeHolidayAtr()==0){
-							ApplicationExport applicationExport = new ApplicationExport();
-							applicationExport.setAppDate(loopDate);
-							applicationExport.setAppType(app.getAppType().value);
-							applicationExport.setEmployeeID(app.getEmployeeID());
-							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
-							applicationExports.add(applicationExport);
+						if(appWorkChange != null){
+							if (appWorkChange.getExcludeHolidayAtr()==0) {
+								ApplicationExport applicationExport = new ApplicationExport();
+								applicationExport.setAppDate(loopDate);
+								applicationExport.setAppType(app.getAppType().value);
+								applicationExport.setEmployeeID(app.getEmployeeID());
+								applicationExport.setReflectState(app.getAppReflectedState().value);
+								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExports.add(applicationExport);								
+							}
 						} else {
 							// Imported「勤務予定基本情報」を取得する
 							Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);

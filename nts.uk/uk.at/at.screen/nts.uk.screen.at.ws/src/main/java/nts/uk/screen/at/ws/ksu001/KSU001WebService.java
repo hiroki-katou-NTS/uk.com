@@ -1,5 +1,7 @@
 package nts.uk.screen.at.ws.ksu001;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,6 +25,8 @@ import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
+import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPaste;
+import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPasteParam;
 
 /**
  * 
@@ -45,6 +49,8 @@ public class KSU001WebService extends WebService{
 	private GetDataWhenChangePage getDataWhenChangePage;
 	@Inject
 	private GetDataAfterSortEmp sortEmployees;
+	@Inject
+	private ValidDataWhenPaste valid;
 	
 	@POST
 	@Path("start")
@@ -104,5 +110,11 @@ public class KSU001WebService extends WebService{
 	@Path("order-employee")
 	public DataAfterSortEmpDto orderEmployee(OrderEmployeeParam param) {
 		return sortEmployees.getData(param);
+	}
+	
+	@POST
+	@Path("valid-when-paste")
+	public boolean validWhenPaste(List<ValidDataWhenPasteParam> shiftmasters) {
+		return valid.valid(shiftmasters);
 	}
 }

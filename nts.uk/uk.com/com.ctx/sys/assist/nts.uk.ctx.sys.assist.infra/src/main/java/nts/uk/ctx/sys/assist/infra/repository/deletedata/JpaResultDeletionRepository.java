@@ -1,24 +1,25 @@
 package nts.uk.ctx.sys.assist.infra.repository.deletedata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.New;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
-import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletion;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletionPK;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
+
 
 @Stateless
 public class JpaResultDeletionRepository extends JpaRepository implements ResultDeletionRepository {
@@ -26,6 +27,18 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultDeletion f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.sspdtResultDeletionPK.delId = :delId ";
+	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
+			" SELECT f FROM SspdtResultDeletion f "
+			+ " WHERE f.companyID =:cid "
+			+ " AND f.startDateTimeDel >=:startDateOperator "
+			+ " AND f.startDateTimeDel <=:endDateOperator ";
+
+private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
+			" SELECT f FROM SspdtResultDeletion f "
+			+ " WHERE f.companyID =:cid "
+			+ " AND f.startDateTimeDel =:startDateOperator "
+			+ " AND f.startDateTimeDel =:endDateOperator "
+			+ " AND f.sId IN :practitioner ";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {
@@ -79,5 +92,29 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 			data.passwordCompressFileEncrypt = password;
 			this.commandProxy().update(data);
 		});
+	}
+
+	@Override
+	public List<ResultDeletion> getResultOfDeletion(String cid, GeneralDateTime startDateOperator,
+			GeneralDateTime endDateOperator, List<String> listOperatorEmployeeId) {
+	List<ResultDeletion> list = new ArrayList<ResultDeletion>();
+		
+		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
+			list.addAll(
+					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.setParameter("practitioner", listOperatorEmployeeId)
+					.getList(item -> item.toDomain()));
+		} else {
+			list.addAll(
+					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.getList(item -> item.toDomain()));
+		}
+		return list;
 	}
 }

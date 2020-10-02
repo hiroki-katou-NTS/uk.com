@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.infra.repository.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
@@ -21,7 +24,17 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtResultOfSaving f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.storeProcessingId =:storeProcessingId ";
-
+	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
+				+ " WHERE f.cid =:cid "
+				+ " AND f.saveStartDatetime >=:startDateOperator "
+				+ " AND f.saveStartDatetime <=:endDateOperator ";
+	
+	private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
+				+ " WHERE f.cid =:cid "
+				+ " AND f.saveStartDatetime =:startDateOperator "
+				+ " AND f.saveStartDatetime =:endDateOperator "
+				+ " AND f.practitioner IN :practitioner ";
+	
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtResultOfSaving.class)
@@ -79,5 +92,33 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			this.commandProxy().update(data);
 		});
 		
+	}
+
+	@Override
+	public List<ResultOfSaving> getResultOfSaving(
+			String cid,
+			GeneralDateTime startDateOperator, 
+			GeneralDateTime endDateOperator, 
+			List<String> listOperatorEmployeeId) {
+		
+		List<ResultOfSaving> resultOfSavings = new ArrayList<ResultOfSaving>();
+		
+		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
+			resultOfSavings.addAll(
+					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.setParameter("practitioner", listOperatorEmployeeId)
+					.getList(item -> item.toDomain()));
+		} else {
+			resultOfSavings.addAll(
+					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.getList(item -> item.toDomain()));
+		}
+		return resultOfSavings;
 	}
 }
