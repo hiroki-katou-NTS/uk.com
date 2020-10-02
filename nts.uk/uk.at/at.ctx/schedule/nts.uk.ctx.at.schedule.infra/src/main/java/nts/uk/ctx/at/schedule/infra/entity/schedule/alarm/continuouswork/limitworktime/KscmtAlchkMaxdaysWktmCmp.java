@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay;
@@ -22,6 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KSCMT_ALCHK_MAXDAYS_WKTM_CMP")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KscmtAlchkMaxdaysWktmCmp extends ContractUkJpaEntity {
 	
 	public static final Function<NtsResultRecord, KscmtAlchkMaxdaysWktmCmp> mapper = 
