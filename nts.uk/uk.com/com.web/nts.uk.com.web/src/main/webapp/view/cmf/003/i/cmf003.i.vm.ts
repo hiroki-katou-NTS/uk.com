@@ -22,15 +22,15 @@ module nts.uk.com.view.cmf003.i {
     ];
     columnHeadersRes: any[] = [
       { headerText: '', key: 'rowNumber', width: '30px' },
-      { headerText: getText('CMF003_309'), key: 'deleteFile', width: '75px', dataType: 'string', ntsControl: "Button" },
-      { headerText: getText('CMF003_310'), key: 'download', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
+      { headerText: getText('CMF003_309'), key: 'deletedFiles', width: '75px', dataType: 'string', ntsControl: "Button" },
+      { headerText: getText('CMF003_310'), key: 'deletedFiles', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
       { headerText: getText('CMF003_311'), key: 'save', width: '75px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_312'), key: 'startDateTime', width: '150px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_312'), key: 'saveStartDateTime', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_313'), key: 'practitioner', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_314'), key: 'saveName', width: '150px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_315'), key: 'storageClassification', width: '75px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_316'), key: 'saveCount', width: '75px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_317'), key: 'fileName', width: '250px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_315'), key: 'saveForm', width: '75px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_316'), key: 'targetNumberPeople', width: '75px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_317'), key: 'saveFileName', width: '250px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_318'), key: 'fileSize', width: '150px', dataType: 'string', ntsControl: "Label" },
     ];
     states: State[] = [];
@@ -163,7 +163,7 @@ module nts.uk.com.view.cmf003.i {
         ],
         ntsControls: [
           { name: 'Button', controlType: 'Button', text: getText('#CMF003_319'), enable: true, click: vm.deleteFile() },
-          { name: 'FlexImage', source: 'ui-icon ui-icon-info', click: vm.download(), controlType: 'FlexImage' },
+          { name: 'FlexImage', source: '../resource/102.png', click: vm.download(), controlType: 'FlexImage' },
         ]
       }).create();
     }
@@ -205,18 +205,21 @@ module nts.uk.com.view.cmf003.i {
     saveName: string;
   }
 
-  export interface DataDto {
-    rowNumber: number;
-    id: string;
-    // dataRecoveryProcessId: string;
-    // dataSaveProcessId: string;
-    startDatetime: string;
-    practitioner: string;
+  export class DataDto {
+    storeProcessingId: string;
+    cid: string;
+    fileSize: number;
+    saveSetCode: string;
+    saveFileName: string;
     saveName: string;
-    restoreCount: string;
-    fileName: string;
-    saveCount: string;
+    saveForm: number;
     saveStartDatetime: string;
-    executionResult: string;
+    saveEndDatetime: string;
+    deletedFiles: number;
+    practitioner: string;
+    targetNumberPeople: number;
+    saveStatus: number;
+    fileId: string;
+    save: string = getText('CMF003_330');
   }
 }

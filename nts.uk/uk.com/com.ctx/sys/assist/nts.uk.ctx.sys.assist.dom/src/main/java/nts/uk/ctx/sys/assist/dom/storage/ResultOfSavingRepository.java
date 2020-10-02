@@ -36,4 +36,6 @@ public interface ResultOfSavingRepository {
 	List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds);
 	
 	List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes);
+	
+	List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to);
 }

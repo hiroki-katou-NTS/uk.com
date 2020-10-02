@@ -678,8 +678,9 @@ module nts.uk.com.view.cmf003.b {
           if (self.selectedTitleAtr() == 1 && self.selectedEmployeeCode().length == 0) {
             alertError({ messageId: 'Msg_498' });
           } else {
-            self.initE();
-            self.next();
+            // self.initE();
+            // self.next();
+            self.gotoscreenF();
             $("#E5_2").focus();
           }
       }

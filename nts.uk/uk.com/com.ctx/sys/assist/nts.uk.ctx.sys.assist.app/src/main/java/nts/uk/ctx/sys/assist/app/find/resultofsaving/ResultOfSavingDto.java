@@ -108,7 +108,7 @@ public class ResultOfSavingDto {
 				domain.getStoreProcessingId(), 
 				domain.getCid(), 
 				domain.getFileSize().orElse(null), 
-				domain.getPatternCode().map(i -> i.v()).orElse(null), 
+				domain.getPatternCode().v(), 
 				domain.getSaveFileName().map(i -> i.v()).orElse(null),
 				domain.getSaveName().v(),
 				domain.getSaveForm().value,

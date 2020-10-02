@@ -11,7 +11,6 @@ import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
-//import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

@@ -15,10 +15,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverResult;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfLog;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -41,6 +43,8 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 				+ " AND f.practitioner IN :practitioner ";
 	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.patternCode IN :saveSetCodes";
+	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspmtResultOfSaving r "
+			+ "WHERE r.startDateTime >= :start AND r.startDateTime <= :end ";
 
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
@@ -150,5 +154,14 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 				.setParameter("saveSetCodes", saveSetCodes)
 				.getList(SspmtResultOfSaving::toDomain);
 				
+	}
+	
+	@Override
+	public List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
+		List<ResultOfSaving> list = this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspmtResultOfSaving.class)
+				.setParameter("start", from)
+				.setParameter("end", to)
+				.getList(SspmtResultOfSaving::toDomain);
+		return list;
 	}
 }

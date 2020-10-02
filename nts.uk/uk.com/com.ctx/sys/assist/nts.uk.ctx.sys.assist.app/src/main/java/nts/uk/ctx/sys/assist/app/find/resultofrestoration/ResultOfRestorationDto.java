@@ -5,7 +5,7 @@ package nts.uk.ctx.sys.assist.app.find.resultofrestoration;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
@@ -13,10 +13,10 @@ import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 
 
 /**
- * データ復旧の結果
+ * Dto データ復旧の結果
  */
+@Data
 @AllArgsConstructor
-@Value
 public class ResultOfRestorationDto {
 	/**
 	 * データ復旧処理ID
@@ -71,7 +71,9 @@ public class ResultOfRestorationDto {
 	 */
 	private String saveName;
 
-	 //field ログイン情報
+	/**
+	 * ログイン情報
+	 */
     private LoginInfo loginInfo;
     
 	public static ResultOfRestorationDto fromDomain(DataRecoveryResult domain) {

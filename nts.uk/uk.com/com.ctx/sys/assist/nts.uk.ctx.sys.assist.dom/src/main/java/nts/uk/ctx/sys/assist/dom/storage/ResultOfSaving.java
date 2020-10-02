@@ -38,7 +38,7 @@ public class ResultOfSaving extends AggregateRoot
     /**
     * パターンコード
     */
-    private Optional<PatternCode> patternCode;
+    private PatternCode patternCode;
     
     /**
     * 保存ファイル名
@@ -120,7 +120,7 @@ public class ResultOfSaving extends AggregateRoot
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
 		this.fileSize = Optional.ofNullable(fileSize);
-		this.patternCode = patternCode == null ? Optional.empty() : Optional.of(new PatternCode(patternCode));
+		this.patternCode = new PatternCode(patternCode);
 		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveName));
 		this.saveName = new SaveName(saveName);
 		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
