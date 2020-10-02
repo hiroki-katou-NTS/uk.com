@@ -4,6 +4,8 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ErrorClassification;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ExcessErrorContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
@@ -12,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,18 +30,20 @@ public class AnnualAppUpdate {
 	/**
 	 * [1] 変更する
 	 * 登録した36協定特別条項の適用申請の申請時間を変更する
-	 * @param require @Require
-	 * @param cid 会社ID
-	 * @param applicantId 申請ID
-	 * @param agrOneYearTime  36協定1年間時間
-	 * @param reason 36協定申請理由
-	 * @return 申請作成結果
+	 * @param require 			@Require
+	 * @param cid 				会社ID
+	 * @param applicantId 		申請ID
+	 * @param agrOneYearTime	36協定1年間時間
+	 * @param reason 			36協定申請理由
+	 * @return 					申請作成結果
 	 */
-	public static AppCreationResult update(Require require,
-									String cid,
-									String applicantId,
-									AgreementOneYearTime agrOneYearTime,
-									ReasonsForAgreement reason) {
+	public static AppCreationResult update(
+			Require require,
+			String cid,
+			String applicantId,
+			AgreementOneYearTime agrOneYearTime,
+			ReasonsForAgreement reason) {
+
 		// $36協定申請
 		Optional<SpecialProvisionsOfAgreement> optApp = require.getApp(applicantId); // R1
 
@@ -50,35 +56,39 @@ public class AnnualAppUpdate {
 		val oneYear = setting.getOneYear();
 
 		// $エラー結果
-		val errResult = oneYear.checkErrorTimeExceeded(agrOneYearTime);
-		if (errResult.getKey()) {
-			return new AppCreationResult(
-					applicantId,
-					ResultType.YEARLY_LIMIT_EXCEEDED,
+		val errorResult = oneYear.checkErrorTimeExceeded(agrOneYearTime);
+
+		// $上限エラー
+		List<ExcessErrorContent> limitError = new ArrayList();
+		if (errorResult.getKey()) {
+			// $上限エラー
+			limitError.add(ExcessErrorContent.create(
+					ErrorClassification.OVERTIME_LIMIT_ONE_YEAR,
 					Optional.empty(),
-					Optional.empty(),
-					Optional.of(errResult.getValue())
-					);
+					Optional.of(errorResult.getValue()),
+					Optional.empty()));
 		}
 
-		// $年間のアラーム
-		val annualAlarm = oneYear.calculateAlarmTime(agrOneYearTime);
+		AtomTask atomTask = null;
+		if(limitError.isEmpty()) {
+			// $年間のアラーム
+			val annualAlarm = setting.getOneYear().calculateAlarmTime(agrOneYearTime);
 
-		// $エラーアラーム
-		val errAlarm = OneYearErrorAlarmTime.of(agrOneYearTime, annualAlarm);
+			// $エラーアラーム
+			val errAlarm = OneYearErrorAlarmTime.of(agrOneYearTime, annualAlarm);
 
-		// $36協定申請
-		val app = optApp.get();
-		app.changeApplicationYear(errAlarm, reason);
+			// $36協定申請.年間の申請時間を変更する
+			val app = optApp.get();
+			app.changeApplicationYear(errAlarm, reason);
 
-		AtomTask at =  AtomTask.of(() -> { require.updateApp(app); });
+			// AtomTask
+			atomTask =  AtomTask.of(() -> { require.updateApp(app); });
+		}
 
 		return new AppCreationResult(
 				applicantId,
-				ResultType.NO_ERROR,
-				Optional.of(at),
-				Optional.empty(),
-				Optional.empty()
+				Optional.ofNullable(atomTask),
+				limitError
 		);
 	}
 
