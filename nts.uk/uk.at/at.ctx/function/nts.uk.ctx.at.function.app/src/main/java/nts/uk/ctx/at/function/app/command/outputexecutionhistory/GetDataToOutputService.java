@@ -1,20 +1,5 @@
 package nts.uk.ctx.at.function.app.command.outputexecutionhistory;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -53,6 +38,14 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 import nts.uk.shr.infra.file.csv.CsvReportWriter;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Stateless
 public class GetDataToOutputService extends ExportService<Object> {
@@ -121,10 +114,6 @@ public class GetDataToOutputService extends ExportService<Object> {
 
     @Inject
     private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
-
-
-//    @Inject
-//    private ExacErrorLogAdapter exacErrorLogAdapter;
 
 //    @Inject
 //    private ExternalOutLogAdapter externalOutLogAdapter;

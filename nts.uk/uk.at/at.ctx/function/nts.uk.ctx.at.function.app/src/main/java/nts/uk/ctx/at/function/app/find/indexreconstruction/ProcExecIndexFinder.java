@@ -13,13 +13,13 @@ public class ProcExecIndexFinder {
     @Inject
     private ProcExecIndexRepository repo;
 
-    public ProExecIndexDtoAndNumberTargetTableDto findOne(String executionId){
+    public Optional<ProExecIndexDtoAndNumberTargetTableDto> findByExectionId(String executionId){
         Optional<ProcExecIndex> result = this.repo.findByExecId(executionId);
-        if (!result.isPresent()) {
+        if (result.isPresent()) {
             ProcExecIndexDto procExecIndexDto = ProcExecIndexDto.fromDomain(result.get());
-           return ProExecIndexDtoAndNumberTargetTableDto.fromProExecIndexDto(procExecIndexDto);
+           return Optional.of(ProExecIndexDtoAndNumberTargetTableDto.fromProExecIndexDto(procExecIndexDto));
         }
-        return null;
+        return Optional.empty();
     }
 
 }
