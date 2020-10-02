@@ -115,12 +115,12 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 			return new ArrayList<>();
 		}
 		List<AppWorkChange_Old> resultList = new ArrayList<>();
-//		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange_Old.class)
-//								  .setParameter("companyID", companyID)
-//								  .setParameter("lstAppId", subList)
-//								  .getList(item -> toDomain(item)));
-//		});
+		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange_Old.class)
+								  .setParameter("companyID", companyID)
+								  .setParameter("lstAppId", subList)
+								  .getList(item -> toDomain(item)));
+		});
 		return resultList;
 	}
 
