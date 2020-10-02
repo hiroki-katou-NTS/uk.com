@@ -6,6 +6,12 @@ import java.util.List;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
 
+/**
+ * 個人計を登録する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.個人計を登録する
+ * @author dan_pv
+ *
+ */
 public class OnePersonCounterRegister {
 	
 	/**
