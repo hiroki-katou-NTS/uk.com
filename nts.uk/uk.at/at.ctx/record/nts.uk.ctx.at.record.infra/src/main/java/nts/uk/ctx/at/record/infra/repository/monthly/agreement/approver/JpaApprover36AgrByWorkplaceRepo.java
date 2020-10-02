@@ -42,7 +42,7 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 
 		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
 		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
-		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
+		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
 
 			this.commandProxy().remove(Krcmt36AgrApvWkp.class,pk);
