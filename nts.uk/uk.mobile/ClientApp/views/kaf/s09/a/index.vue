@@ -87,14 +87,14 @@
         type="button"
         class="btn btn-primary btn-block"
         v-on:click="register()"
-      >{{'KAFS07_8' | i18n}}</button>
+      >{{'KAFS09_11' | i18n}}</button>
       <!-- 画面モード = 編集モード -->
       <button
         v-else
         type="button"
         class="btn btn-primary btn-block"
         v-on:click="register()"
-      >{{'KAFS07_16' | i18n}}</button>
+      >{{'KAFS09_2' | i18n}}</button>
     </div>
 
 
