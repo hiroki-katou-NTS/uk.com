@@ -22,11 +22,11 @@ import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkCha
 public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAppWorkChangeRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange_Old f";
     
     private static final String SELECT_BY_KEY_STRING =SELECT_ALL_QUERY_STRING + " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ";
     
-    private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppWorkChange a"
+    private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppWorkChange_Old a"
     		+ " WHERE a.appWorkChangePk.cid = :companyID"
     		+ " AND a.appWorkChangePk.appId IN :lstAppId";
 
