@@ -83,7 +83,7 @@ public class FurikyuMngDataExtractionService {
 			}
 			// Step 取得したデータをチェック
 			if(payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {
-				throw new BusinessException("Msg_726");
+				throw new BusinessException("Msg_725");
 			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
 			if(substitutionOfHDManagementData.isEmpty()) {

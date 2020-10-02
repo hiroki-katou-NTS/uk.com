@@ -96,7 +96,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     vm.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
-            window.onresize = function (event) {
+            window.onresize = function () {
                 $("#compositePayOutSubMngDataGrid_scrollContainer").height(window.innerHeight - 513);
                 $("#compositePayOutSubMngDataGrid_displayContainer").height(window.innerHeight - 513);
                 $("#compositePayOutSubMngDataGrid_container").height(window.innerHeight - 400);
@@ -131,6 +131,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'digestionDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dayLetfText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'startDate', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDateText', dataType: 'string', width: '120px', hidden: true },
                     {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
@@ -143,7 +145,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         headerText: getText('KDM001_9'),
                         key: 'occurrenceDay',
                         width: '86px',
-                        template: '<div style="float:right"> ${occurrenceDay} ${genExpiredDateText(deadLine)} </div>',
+                        template: '<div style="float:right"> ${occurrenceDay} ${occurredDaysText} </div>',
                         dataType: 'string',
                     },
                     { 
@@ -197,12 +199,19 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     },
                 ],
                 ntsControls: [
-                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value) { vm.removeData(value) }, controlType: 'Button' }
+                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value: any) { vm.removeData(value) }, controlType: 'Button' }
                 ]
             });
             vm.startDateString.subscribe(function (value) {
                 vm.dateValue().startDate = value;
                 vm.dateValue.valueHasMutated();
+            });
+            vm.endDateString.subscribe(function (value) {
+              vm.dateValue().endDate = value;
+              vm.dateValue.valueHasMutated();
+            });
+            vm.selectedItem.subscribe(x => {
+              vm.updateDataList(false);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
@@ -276,7 +285,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             $('#compositePayOutSubMngDataGrid').focus();
         }
 
-        updateDataList(isShowMsg) {
+        updateDataList(isShowMsg: boolean) {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
@@ -290,11 +299,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
                         let arrayResponse = res.remainingData;
-                        self.startDateString = res.startDate;
-                        self.endDateString = res.endDate;
                         let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
                         for (let i = 0; i < arrayResponse.length; i++) {
-                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i]));
+                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));
                         }
 
                         // update data to view
@@ -364,7 +371,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let dfd = $.Deferred();
             self.mounted();
             block.invisible();
-
             service.getInfoEmLogin().done(function (emp) {
                 service.getWpName().done(function (wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
@@ -432,26 +438,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
         }
 
-        public genExpiredDateText(deadLine){
-          const vm = this;
-          let expiredDateText = moment.utc(deadLine);
-          let startDate = moment.utc(vm.startDateString());
-          let endDate = moment.utc(vm.endDateString());
-          if(startDate.isSameOrBefore(deadLine) && endDate.isSameOrAfter(deadLine)){
-            return  getText('KDM001_161', [deadLine]);
-          }
-          if(startDate.isSameOrAfter(deadLine) && vm.expirationDateRes > 0){
-            return getText('KDM001_162', [deadLine]);
-          }
-          return getText('KDM001_163', [deadLine]);
-        }
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
             return _.find(dataList, function (obj) {
                 return obj.employeeId == selectedItem;
             })
         }
 
-        pegSetting(value) {
+        pegSetting(value: any) {
             let self = this;
             let selectedRowData = value;
             if (value.dataType == 1) {
@@ -503,7 +496,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
         */
 
-        getExpirationTime(value) {
+        getExpirationTime(value: number) {
             if (value == 0) {
                 return getText("Enum_ExpirationTime_THIS_MONTH");
             } else if (value == 1) {
@@ -664,6 +657,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
       remainDays: number;
       digestionId: string;
       startDate: string
+      expirationDate : number;
       endDate: string;
 
       //add to fill grid A4_2_5
@@ -680,7 +674,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
       usedDayText: string;
       expiredDateText: string;
 
-      constructor(params) {
+      constructor(params:any,startDateP: string, endDateP:string ) {
+        this.startDate = startDateP;
+        this.endDate = endDateP;
         this.id = params.occurrenceId;
         this.occurrenceId = params.occurrenceId;
         this.digestionId = params.digestionId;
@@ -758,13 +754,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
           this.dayLetf = "" + params.dayLetf;
         }
           
-        // if(params.deadLine === null) {
-        //     this.expiredDateText = '';
-        // } else if (new Date(params.deadLine).getMonth() === new Date(params.accrualDate).getMonth() && new Date(params.deadLine).getFullYear() === new Date(params.accrualDate).getFullYear()) {
-        //     this.expiredDateText = getText('KDM001_161', [params.deadLine]);
-        // } else {
-        //     this.expiredDateText = getText('KDM001_162', [params.deadLine]);
-        // }
+        
+          let expiredDateText = moment.utc(params.deadLine);
+          let startDate = moment.utc(this.startDate);
+          let endDate = moment.utc(this.endDate);
+          if(params.deadLine === null) {
+           this.expiredDateText === '';
+          } else if(startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
+            this.expiredDateText = getText('KDM001_161', [params.deadLine]);
+          } else if(startDate.isSameOrAfter(expiredDateText) && params.expirationDate > 0){
+            this.expiredDateText =  getText('KDM001_162', [params.deadLine]);
+          } else{
+            this.expiredDateText =  getText('KDM001_163', [params.deadLine]);
+          }
+         
     }
   }
 
