@@ -6,7 +6,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
-		GSCHE: '/screen/ksu/ksu002/getScheduleActualOfWorkInfo'
+		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
 	};
 
 	const memento: m.Options = {
@@ -19,17 +19,12 @@ module nts.uk.ui.at.ksu002.a {
 		}*/
 	};
 
-	const defaultBaseDate = (): c.DateRange => ({
-		begin: moment().startOf('month').toDate(),
-		finish: moment().endOf('month').toDate()
-	});
-
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		currentUser!: KnockoutComputed<string>;
 		showC: KnockoutObservable<boolean> = ko.observable(true);
 
-		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(defaultBaseDate());
+		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
 		schedules: m.MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
 
 		created() {
@@ -51,17 +46,39 @@ module nts.uk.ui.at.ksu002.a {
 			// call to api and get data
 			vm.baseDate
 				.subscribe((d: c.DateRange) => {
+					if (!d) {
+						return;
+					}
+
+					const { begin, finish } = d;
+
+					if (!begin || !finish) {
+						return;
+					}
+
+					const command = {
+						listSid: [vm.$user.employeeId],
+						startDate: moment(begin).toISOString(),
+						endDate: moment(finish).toISOString()
+					};
+
 					vm.$blockui('show')
-						.then(() => vm.$ajax('at', API.GSCHE, {
-							listSid: [vm.$user.employeeId],
-							startDate: moment(d.begin).toISOString(),
-							endDate: moment(d.finish).toISOString()
-						}))
-						.then((response: WorkSchedule<string>[]) => (response || [])
-							.map((m) => ({
-								...m,
-								date: moment(m.date, 'YYYY/MM/DD')
-							})))
+						.then(() => vm.$ajax('at', API.GSCHE, command))
+						.then((response: ResponseData) => {
+							if (response) {
+								const { listWorkScheduleWorkInfor } = response;
+
+								if (listWorkScheduleWorkInfor && listWorkScheduleWorkInfor.length) {
+									return (listWorkScheduleWorkInfor)
+										.map((m) => ({
+											...m,
+											date: moment(m.date, 'YYYY/MM/DD')
+										}));
+								}
+							}
+
+							return [];
+						})
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
 								const clones: c.DayData[] = ko.toJS(vm.schedules);
@@ -90,8 +107,6 @@ module nts.uk.ui.at.ksu002.a {
 
 		mounted() {
 			const vm = this;
-
-			vm.$nextTick(() => vm.schedules.reset());
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
@@ -141,6 +156,11 @@ module nts.uk.ui.at.ksu002.a {
 		}
 	}
 
+	interface ResponseData {
+		listWorkTypeInfo: WorkType[];
+		listWorkScheduleWorkInfor: WorkSchedule<string>[];
+	}
+
 	interface WorkSchedule<D = moment.Moment> {
 		achievements: boolean;
 		active: boolean;
@@ -164,5 +184,23 @@ module nts.uk.ui.at.ksu002.a {
 		workTypeCode: string;
 		workTypeEditStatus: null | string;
 		workTypeName: string;
+	}
+
+	interface WorkType {
+		workStyle: WorkTypeRequired;
+		workTimeSetting: number;
+		workTypeDto: WorkTypeData;
+	}
+
+	interface WorkTypeData {
+		memo: string;
+		name: string;
+		workTypeCode: string;
+	}
+
+	enum WorkTypeRequired {
+		REQUIRED = 1,
+		OPTIONAL = 2,
+		NON_REQUIRED = 2
 	}
 }
