@@ -13,6 +13,7 @@ import nts.arc.system.ServerSystemProperties;
 import nts.arc.web.session.HttpSubSessionFilter;
 import nts.uk.shr.infra.application.auth.WindowsAccountCatcher;
 import nts.uk.shr.infra.web.session.BatchRequestProcessor;
+import nts.uk.shr.infra.web.session.ScreenLoginSessionValidator;
 import nts.uk.shr.infra.web.session.SharingSessionFilter;
 import nts.uk.shr.infra.web.session.WebApiLoginSessionValidator;
 
@@ -37,11 +38,12 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ProgramIdDetector()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new RequestNavigateFilter()));
 			
+
 			if (ServerSystemProperties.isResponseTimeLogMode()) {
 				FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new ResponseTimeAggregateFilter()));
 			}
 			
-			//RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()),
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new ScreenLoginSessionValidator()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new WebApiLoginSessionValidator()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.LOGIN_SCREENS, new WindowsAccountCatcher()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_SCREENS, new StartPageLogWriter()));
