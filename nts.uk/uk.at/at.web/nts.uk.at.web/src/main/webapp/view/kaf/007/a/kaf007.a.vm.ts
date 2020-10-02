@@ -168,7 +168,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			let timeZone2 = null;
-			if(vm.appWorkChange.startTime2() !== null || vm.appWorkChange.endTime2() !== null) {
+			if(vm.appWorkChange.startTime2() !== null && vm.appWorkChange.endTime2() !== null && ko.toJS(vm.appWorkChange.startTime2) !== "" && ko.toJS(vm.appWorkChange.endTime2) !== "") {
 				timeZone2 = {
 					workNo: 2,
 					timeZone: {
