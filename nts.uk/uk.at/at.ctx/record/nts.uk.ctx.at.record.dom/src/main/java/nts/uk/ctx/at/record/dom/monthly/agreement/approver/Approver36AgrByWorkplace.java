@@ -18,7 +18,7 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 	/**
 	 * 職場ID
 	 */
-	private String workplaceId;
+	private final String workplaceId;
 
 	/**
 	 * 期間
@@ -36,9 +36,11 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 	private List<String> confirmerIds;
 
 	/**
+	 * [C-1] 新規作成
+	 *
 	 * 新しい職場別の承認者（36協定）を作る。
 	 */
-	public Approver36AgrByWorkplace(
+	public static Approver36AgrByWorkplace create(
 			String workplaceId,
 			DatePeriod period,
 			List<String> approverIds,
@@ -58,6 +60,15 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 		if (confirmerIds != null && confirmerIds.size() >= 6) {
 			throw new BusinessException("Msg_1792");
 		}
+
+		return new Approver36AgrByWorkplace(workplaceId, period, approverIds, confirmerIds);
+	}
+
+	private Approver36AgrByWorkplace(
+			String workplaceId,
+			DatePeriod period,
+			List<String> approverIds,
+			List<String> confirmerIds){
 
 		this.workplaceId = workplaceId;
 		this.period = period;

@@ -24,14 +24,14 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
 
     @Test
     public void test_01(){
-        val deleteItem = new Approver36AgrByWorkplace(
+        val deleteItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(GeneralDate.today().addDays(-5),GeneralDate.today()),
                 CreateDomain.createApproverList(5),
                 CreateDomain.createConfirmerList(5)
 
         );
-        val preVHistoryItem = new Approver36AgrByWorkplace(
+        val preVHistoryItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(deleteItem.getPeriod().start().addDays(-5),deleteItem.getPeriod().start().addDays(-1)),
                 CreateDomain.createApproverList(5),
@@ -51,7 +51,7 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
     }
     @Test
     public void test_02(){
-        val deleteItem = new Approver36AgrByWorkplace(
+        val deleteItem = Approver36AgrByWorkplace.create(
                 CreateDomain.workplaceId,
                 new DatePeriod(GeneralDate.today().addDays(-5),GeneralDate.today()),
                 CreateDomain.createApproverList(5),
