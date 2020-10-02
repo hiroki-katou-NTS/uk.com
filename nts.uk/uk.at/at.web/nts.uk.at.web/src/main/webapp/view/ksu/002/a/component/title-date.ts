@@ -141,20 +141,12 @@ module nts.uk.ui.at.ksu002.a {
 
 			const { mode, dateRange } = params;
 
-			if (!ko.unwrap(mode)) {
-				if (ko.isObservable(mode)) {
-					vm.params.mode(ACHIEVEMENT.HIDE);
-				} else {
-					vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
-				}
+			if (!ko.unwrap(mode) && !ko.isObservable(mode)) {
+				vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
 			}
 
-			if (!ko.unwrap(dateRange)) {
-				if (ko.isObservable(dateRange)) {
-					vm.params.dateRange({ begin, finish });
-				} else {
-					vm.params.dateRange = ko.observable({ begin, finish });
-				}
+			if (!ko.unwrap(dateRange) && !ko.isObservable(dateRange)) {
+				vm.params.dateRange = ko.observable({ begin, finish });
 			}
 		}
 
@@ -163,17 +155,19 @@ module nts.uk.ui.at.ksu002.a {
 			const proccesPeriod = (response: Period) => {
 				const MD_FORMAT = 'MM/DD';
 				const YMD_FORMAT = 'YYYY/MM/DD';
+				const oid = ko.unwrap(vm.selectedRangeIndex);
 
 				if (response) {
 					const { yearMonth, periodsClose } = response;
 
+					// vm.dateRanges([]);
 					vm.yearMonth(`${yearMonth}`);
 
 					if (periodsClose && periodsClose.length) {
 						vm.dateRanges(periodsClose
 							.map((m, id) => {
-								const mb = moment(m.startDate, YMD_FORMAT);
-								const me = moment(m.endDate, YMD_FORMAT);
+								const mb = moment.utc(m.startDate, YMD_FORMAT);
+								const me = moment.utc(m.endDate, YMD_FORMAT);
 
 								return {
 									id: id + 1,
@@ -182,6 +176,12 @@ module nts.uk.ui.at.ksu002.a {
 									finish: me.toDate()
 								};
 							}));
+
+						vm.$nextTick(() => {
+							if (ko.unwrap(vm.selectedRangeIndex) === oid) {
+								vm.selectedRangeIndex.valueHasMutated();
+							}
+						});
 					}
 				}
 			};
@@ -191,8 +191,6 @@ module nts.uk.ui.at.ksu002.a {
 			vm.yearMonth
 				.subscribe((ym: string) => {
 					const cmd = { yearMonth: Number(ym) };
-
-					vm.dateRanges([]);
 
 					vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 				});
@@ -215,7 +213,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface Params {
-		dateRange: KnockoutObservable<c.DateRange>;
+		dateRange: KnockoutObservable<c.DateRange | null>;
 		mode: KnockoutObservable<ACHIEVEMENT>;
 	}
 

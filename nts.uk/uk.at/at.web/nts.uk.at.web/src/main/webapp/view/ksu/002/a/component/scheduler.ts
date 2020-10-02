@@ -95,10 +95,13 @@ module nts.uk.ui.at.ksu002.a {
                     text-align: center !important;
                     font-size: 13px !important;
                     border-radius: 0 !important;
-                    border-color: transparent !important;
+                    border: 0 !important;
+                }
+                .scheduler .ntsControl:focus input {
+                    box-shadow: 0px 0px 0px 1px #0096f2 !important;
                 }
                 .scheduler .ntsControl.error input {
-                    box-shadow: 0 0 1px 1px #ff6666 !important;
+                    box-shadow: 0px 0px 0px 1px #ff6666 !important;
                 }
             </style>`
     })
@@ -161,8 +164,7 @@ module nts.uk.ui.at.ksu002.a {
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
                             click: function() { $component.showInput.apply($component, ['begin']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['begin'], evt) },
-                            keyup: function(evt) { $component.registerTab.apply($component, ['finish', evt]) },
+                            focus: function(evt) { $component.registerTab.apply($component, ['begin'], evt) }
                         },
                         attr: {
                             tabindex: $component.data.context.$tabindex
@@ -181,8 +183,7 @@ module nts.uk.ui.at.ksu002.a {
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
                             click: function() { $component.showInput.apply($component, ['finish']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['finish'], evt) },
-                            keyup: function(evt) { $component.registerTab.apply($component, ['finish', evt]) },
+                            focus: function(evt) { $component.registerTab.apply($component, ['finish'], evt) }
                         },
                         attr: {
                             tabindex: $component.data.context.$tabindex
@@ -247,26 +248,28 @@ module nts.uk.ui.at.ksu002.a {
                 }
 
                 model.begin
-                    .subscribe(c => {
-                        if (b !== c) {
+                    .subscribe((c: number) => {
+                        if (_.isNumber(c) && b !== c) {
                             b = c;
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.begin = c;
-
-                            context.$change.apply(context.$vm, [clone]);
+                            setTimeout(() => {
+                                context.$change.apply(context.$vm, [clone]);
+                            }, 100);
                         }
                     });
 
                 model.finish
                     .subscribe(c => {
-                        if (f !== c) {
+                        if (_.isNumber(c) && f !== c) {
                             f = c;
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.finish = c;
-
-                            context.$change.apply(context.$vm, [clone]);
+                            setTimeout(() => {
+                                context.$change.apply(context.$vm, [clone]);
+                            }, 100);
                         }
                     });
 
@@ -293,7 +296,7 @@ module nts.uk.ui.at.ksu002.a {
                 if ($current) {
                     if (moment($current.date).isSame(dayData.date)) {
                         context.$currenttab(null);
-                        
+
                         $(vm.$el).find(`.${$current.input}`).focus();
                     }
                 }
@@ -307,12 +310,12 @@ module nts.uk.ui.at.ksu002.a {
                 } else if (input === 'finish') {
                     vm.click.finish(0);
                 }
+
+                vm.data.context.$currenttab(null);
             }
 
             showInput(input: 'begin' | 'finish') {
                 const vm = this;
-
-                console.log(input);
 
                 if (input === 'begin') {
                     const i = vm.click.begin();

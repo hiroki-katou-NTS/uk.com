@@ -172,6 +172,12 @@ module nts.uk.ui.calendar {
 			    width: 14px;
 			    height: 14px;
             }
+            .calendar .calendar-container .month .week .day .status span+svg path {
+				fill: #808080;
+			}
+            .calendar .calendar-container .month .week .day.event .status span+svg path {
+				fill: #f00;
+			}
             .calendar .calendar-container .month .week .day .status+.status {
 				height: 18px;
 				font-size: 12px;
@@ -314,7 +320,7 @@ module nts.uk.ui.calendar {
 			} else {
 				const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-				p.setAttribute('style', 'fill: #333');
+				// p.setAttribute('style', 'fill: #333');
 				p.setAttributeNS(null, 'd', DAISY_FLOWER);
 
 				element.appendChild(p);
@@ -512,12 +518,8 @@ module nts.uk.ui.calendar {
 				}
 			}
 
-			if (!ko.unwrap(baseDate)) {
-				if (ko.isObservable(baseDate)) {
-					vm.data.baseDate(date);
-				} else {
-					vm.data.baseDate = ko.observable(date);
-				}
+			if (ko.unwrap(baseDate) && !ko.isObservable(baseDate)) {
+				vm.data.baseDate = ko.observable(date);
 			}
 
 			if (!ko.unwrap(schedules)) {
@@ -707,12 +709,6 @@ module nts.uk.ui.calendar {
 						}
 					}
 				});
-		}
-
-		mounted() {
-			const vm = this;
-
-			vm.data.baseDate.valueHasMutated();
 		}
 	}
 
