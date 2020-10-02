@@ -5,59 +5,81 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JMockit.class)
 public class GetWorkplaceApproveHistoryDomainServiceTest {
     @Injectable
     GetWorkplaceApproveHistoryDomainService.Require require;
+    private static String cid = "cid";
+    private static String workplaceId = "wid";
+    private static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
+    private static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
+    private static String employeeId = "eplId";
+    private static String codeAndName = "codeName";
+    private   static List<String> approverList =  Arrays.asList("abc","cba","efg");
+    private   static List<String> confirmerList =  Arrays.asList("abc","cba","efg");
+    private   static List<String> listWplId =  Arrays.asList("abc","cba","efg");
+    private static Approver36AgrByWorkplace domain =  Approver36AgrByWorkplace.create(
+            workplaceId,
+            period,
+            approverList,
+            confirmerList
+        );
+    private static Approver36AgrByWorkplace domainLast =  Approver36AgrByWorkplace.create(
+            workplaceId,
+            periodLast,
+            approverList,
+            confirmerList
+    );
 
+    private static SWkpHistRcImported sWkpHistRcImported =  new SWkpHistRcImported(period,employeeId,workplaceId,codeAndName,codeAndName,codeAndName);
     @Test
-    public void test_01_R_Q_30_empty() {
-        val employId = "eplId";
-        val baseDate = GeneralDate.today();
 
+    public void test_01() {
+        val baseDate = GeneralDate.today();
         new Expectations() {{
-            require.getYourWorkplace(CreateDomain.employeeId, baseDate);
+            require.getYourWorkplace(employeeId, baseDate);
             result = Optional.empty();
 
         }};
-
-        assertThat(GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId)).isEqualTo(Optional.empty());
+        assertThat(GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employeeId))
+                .isEqualTo(Optional.empty());
 
     }
 
     @Test
-    public void test_02_R_Q_30_not_empty_and_require_empty() {
-        val wplSWkpHistRcImported = CreateDomain.createSWkpHistRcImported();
-        val wplHistoryOfEmployees = CreateDomain.createApprover36AgrByWorkplace();
-        val employId = CreateDomain.employeeId;
+    public void test_02() {
+        val wplSWkpHistRcImported = sWkpHistRcImported;
+        val employId = employeeId;
         val baseDate = GeneralDate.today();
-        val approve = new ApproverItem(wplHistoryOfEmployees.getApproverIds(), wplHistoryOfEmployees.getConfirmerIds());
+        val approve = new ApproverItem(domain.getApproverIds(), domain.getConfirmerIds());
         new Expectations() {{
             require.getYourWorkplace(employId, baseDate);
             result = Optional.of(wplSWkpHistRcImported);
 
             require.getApproveHistoryItem(wplSWkpHistRcImported.getWorkplaceId()
                     , baseDate);
-            result = Optional.of(approve);
+            result = Optional.of(domain);
         }};
 
         val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
         val expected = Optional.of(approve);
-        assertThat(actual).isEqualTo(expected);
-
+        assertThat(actual.get().getApproverList()).isEqualTo(expected.get().getApproverList());
+        assertThat(actual.get().getConfirmerList()).isEqualTo(expected.get().getConfirmerList());
     }
     @Test
-    public void test_03_R_Q_30_not_empty_and_require_empty() {
-        val wplSWkpHistRcImported = CreateDomain.createSWkpHistRcImported();
-        val employId = CreateDomain.employeeId;
+    public void test_03() {
+        val wplSWkpHistRcImported = sWkpHistRcImported;
+        val employId = employeeId;
         val baseDate = GeneralDate.today();
-        List myList = new ArrayList();
         new Expectations() {{
             require.getYourWorkplace(employId, baseDate);
             result = Optional.of(wplSWkpHistRcImported);
@@ -67,7 +89,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = Optional.empty();
 
             require.getUpperWorkplace(wplSWkpHistRcImported.getWorkplaceId(), baseDate);
-            result = myList;
+            result = Collections.emptyList();
         }};
 
         val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
@@ -75,17 +97,10 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
         assertThat(actual).isEqualTo(expected);
     }
     @Test
-    public void test_04_R_Q_30_not_empty_and_require_not_empty() {
-        val wplSWkpHistRcImported = CreateDomain.createSWkpHistRcImported();
-        val employId = CreateDomain.employeeId;
+    public void test_04() {
+        val wplSWkpHistRcImported = sWkpHistRcImported;
+        val employId = employeeId;
         val baseDate = GeneralDate.today();
-        val myList = CreateDomain.createStringListWithSize("check",3);
-        val wplHistoryOfEmployees = CreateDomain.createApprover36AgrByWorkplace();
-        val approve = new ApproverItem(wplHistoryOfEmployees.getApproverIds(), wplHistoryOfEmployees.getConfirmerIds());
-
-        val approveList = new ArrayList<String>();
-        val confirmedList = new ArrayList<String>();
-        val expected = Optional.of(new ApproverItem(approveList,confirmedList));
         new Expectations() {{
             require.getYourWorkplace(employId, baseDate);
             result = Optional.of(wplSWkpHistRcImported);
@@ -94,44 +109,27 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
                     , baseDate);
             result = Optional.empty();
 
+
             require.getUpperWorkplace(wplSWkpHistRcImported.getWorkplaceId(), baseDate);
-            result = myList;
+            result = listWplId;
 
 
-            require.getApproveHistoryItem(myList.get(0),baseDate);
-            result = Optional.of(approve);
-            approveList.addAll(approve.getApproverList());
-            confirmedList.addAll(approve.getConfirmerList());
-
-            require.getApproveHistoryItem(myList.get(1),baseDate);
-            result = Optional.of(approve);
-            approveList.addAll(approve.getApproverList());
-            confirmedList.addAll(approve.getConfirmerList());
-
-            require.getApproveHistoryItem(myList.get(2),baseDate);
-            result = Optional.of(approve);
-            approveList.addAll(approve.getApproverList());
-            confirmedList.addAll(approve.getConfirmerList());
-
+            require.getApproveHistoryItem(listWplId.get(0),baseDate);
+            result = Optional.of(domain);
 
 
         }};
 
         val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
-
-        assertThat(actual.get().getConfirmerList()).isEqualTo(expected.get().getConfirmerList());
-        assertThat(actual.get().getApproverList()).isEqualTo(expected.get().getApproverList());
+        assertThat(actual.get().getConfirmerList()).isEqualTo(domain.getConfirmerIds());
+        assertThat(actual.get().getApproverList()).isEqualTo(domain.getApproverIds());
     }
     @Test
-    public void test_05_R_Q_30_not_empty_and_require_not_empty() {
-        val wplSWkpHistRcImported = CreateDomain.createSWkpHistRcImported();
-        val employId = CreateDomain.employeeId;
+    public void test_05() {
+        val wplSWkpHistRcImported = sWkpHistRcImported;
+        val employId = employeeId;
         val baseDate = GeneralDate.today();
-        val myList = CreateDomain.createStringListWithSize("check",3);
 
-        val approveList = new ArrayList<String>();
-        val confirmedList = new ArrayList<String>();
-        val expected = Optional.of(new ApproverItem(approveList,confirmedList));
         new Expectations() {{
             require.getYourWorkplace(employId, baseDate);
             result = Optional.of(wplSWkpHistRcImported);
@@ -141,17 +139,15 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = Optional.empty();
 
             require.getUpperWorkplace(wplSWkpHistRcImported.getWorkplaceId(), baseDate);
-            result = myList;
+            result = listWplId.get(0);
 
 
-            require.getApproveHistoryItem(myList.get(0),baseDate);
+            require.getApproveHistoryItem(listWplId.get(0),baseDate);
             result = Optional.empty();
         }};
 
-
         val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
-
-        assertThat(actual.get().getConfirmerList()).isEqualTo(approveList);
-        assertThat(actual.get().getApproverList()).isEqualTo(confirmedList);
+        val expected = Optional.empty();
+        assertThat(actual).isEqualTo(expected);
     }
 }
