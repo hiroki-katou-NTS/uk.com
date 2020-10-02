@@ -16,12 +16,19 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 public class UpperLimitBeforeRaising {
 
     /** 1ヶ月の上限*/
-    private OneMonthErrorAlarmTime oneMonthLimit;
+    private final OneMonthErrorAlarmTime oneMonthLimit;
 
     /** 1年間の上限*/
-    private OneYearErrorAlarmTime oneYearLimit;
+    private final OneYearErrorAlarmTime oneYearLimit;
 
     /** 平均限度時間*/
-    private AgreementOneMonthTime averageTimeLimit;
+    private final AgreementOneMonthTime averageTimeLimit;
+
+    /**
+     * 	[C-0] 引き上げる前の上限 (1ヶ月の上限,1年間の上限,平均限度時間)
+     */
+    public static UpperLimitBeforeRaising create(OneMonthErrorAlarmTime oneMonthLimit, OneYearErrorAlarmTime oneYearLimit,AgreementOneMonthTime averageTimeLimit) {
+        return new UpperLimitBeforeRaising(oneMonthLimit, oneYearLimit,averageTimeLimit);
+    }
 
 }

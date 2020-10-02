@@ -5,19 +5,12 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.CreateDomain;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.GetWorkplaceApproveHistoryDomainService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
-
 @RunWith(JMockit.class)
 public class GetWorkplaceApproveHistoryDomainServiceTest {
     @Injectable

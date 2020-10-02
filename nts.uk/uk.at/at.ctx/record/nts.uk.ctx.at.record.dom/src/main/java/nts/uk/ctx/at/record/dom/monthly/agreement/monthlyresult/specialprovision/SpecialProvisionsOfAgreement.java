@@ -73,17 +73,16 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
      */
     private ScreenDisplayInfo screenDisplayInfo;
 
-
     /**
      * [C-1] 新規申請作成
      */
     public static SpecialProvisionsOfAgreement create(String enteredPersonSID, String applicantsSID, ApplicationTime applicationTime, ReasonsForAgreement reasonsForAgreement,
                                                       List<String> listApproverSID, List<String> listConfirmSID, ScreenDisplayInfo screenDisplayInfo) {
 
-        ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.UNAPPROVED, Optional.empty(), Optional.empty(), Optional.empty());
+        ApprovalStatusDetails approvalStatusDetails = ApprovalStatusDetails.create(ApprovalStatus.UNAPPROVED, Optional.empty(), Optional.empty(), Optional.empty());
         List<ConfirmationStatusDetails> confirmationStatusDetails = new ArrayList<>();
         listConfirmSID.forEach(sid -> {
-            confirmationStatusDetails.add(new ConfirmationStatusDetails(ConfirmationStatus.UNCONFIRMED, sid, Optional.empty()));
+            confirmationStatusDetails.add(ConfirmationStatusDetails.create(sid));
         });
 
         return new SpecialProvisionsOfAgreement(

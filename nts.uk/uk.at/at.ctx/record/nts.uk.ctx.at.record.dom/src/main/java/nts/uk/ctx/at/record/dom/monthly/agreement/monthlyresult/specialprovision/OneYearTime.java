@@ -19,7 +19,7 @@ public class OneYearTime {
     private OneYearErrorAlarmTime errorTimeInYear;
 
     /**年度*/
-    private Year year;
+    private final Year year;
 
     /**
      * [C-0] 年間時間 (年度,1年間時間)

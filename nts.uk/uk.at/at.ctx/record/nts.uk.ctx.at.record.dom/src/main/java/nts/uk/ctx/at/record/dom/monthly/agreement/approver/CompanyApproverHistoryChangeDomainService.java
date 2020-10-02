@@ -25,7 +25,7 @@ public class CompanyApproverHistoryChangeDomainService {
 			Approver36AgrByCompany histToChange) {
 
 		return AtomTask.of(() -> {
-			require.changeHistory(histToChange);
+			require.changeHistory(histToChange,startDateBeforeChange);
 
 			val optPrevHist = require.getPrevHistory(startDateBeforeChange.addDays(-1));
 			if (optPrevHist.isPresent()) {
@@ -33,7 +33,7 @@ public class CompanyApproverHistoryChangeDomainService {
 				val newEndDate = histToChange.getPeriod().start().addDays(-1);
 				val periodWithNewEndDate = new DatePeriod(prevHist.getPeriod().start(), newEndDate);
 				prevHist.setPeriod(periodWithNewEndDate);
-				require.changeHistory(prevHist);
+				require.changeHistory(prevHist,periodWithNewEndDate.start());
 			}
 		});
 	}
@@ -49,6 +49,6 @@ public class CompanyApproverHistoryChangeDomainService {
 		 * [R-2] 履歴を変更する Change history
 		 * 会社別の承認者（36協定）Repository.Update(会社別の承認者（36協定）)
 		 */
-		void changeHistory(Approver36AgrByCompany hist);
+		void changeHistory(Approver36AgrByCompany hist,GeneralDate date);
 	}
 }

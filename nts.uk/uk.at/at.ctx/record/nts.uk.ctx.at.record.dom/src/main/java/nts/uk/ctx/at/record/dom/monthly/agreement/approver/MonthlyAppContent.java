@@ -8,6 +8,8 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import java.util.Optional;
+
 /**
  * 月間の申請内容
  * @author khai.dh
@@ -26,7 +28,7 @@ public class MonthlyAppContent extends ValueObject {
 
 	// アラーム時間
 	@Setter
-	private AgreementOneMonthTime alarmTime;
+	private Optional<AgreementOneMonthTime> alarmTime;
 
 	// 申請理由 : 36協定申請理由
 	private ReasonsForAgreement reason;

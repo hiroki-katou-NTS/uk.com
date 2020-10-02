@@ -6,10 +6,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,62 +37,48 @@ public class OneMonthAppCreate {
 			MonthlyAppContent appContent,
 			ScreenDisplayInfo displayInfo) {
 
+		// $エラー情報
+		val errorInfo = new ArrayList<ExcessErrorContent>();
+
 		// $承認者項目
 		val optApprItem = GettingApproverDomainService.getApprover(require, appContent.getApplicant());
 		if (!optApprItem.isPresent()) {
-			return new AppCreationResult(
-					appContent.getApplicant(),
-					ResultType.APPROVER_NOT_SET,
+			// $承認者エラー
+			val approverError = ExcessErrorContent.create(
+					ErrorClassification.APPROVER_NOT_SET,
 					Optional.empty(),
 					Optional.empty(),
-					Optional.empty()
-			);
+					Optional.empty());
+
+			errorInfo.add(approverError);
 		}
 
-		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				appContent.getApplicant(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
+		// $超過エラー
+		val excessError = CheckErrorApplicationMonthService.check(require, appContent);
+		errorInfo.addAll(excessError);
 
-		AgreementOneMonth agrOneMonth = setting.getOneMonth();
+		AtomTask atomTask = null;
+		if (errorInfo.isEmpty()) {
+			// $３６協定設定
+			val setting = AgreementDomainService.getBasicSet(require, cid, appContent.getApplicant(), GeneralDate.today());
 
-		// $エラー結果
-		val errResult = agrOneMonth.checkErrorTimeExceeded(appContent.getErrTime());
+			// 申請内容.アラーム時間
+			appContent.setAlarmTime(Optional.of(setting.getOneMonth().calculateAlarmTime(appContent.getAlarmTime().get())));
 
-		if (errResult.getKey()) {
-			return new AppCreationResult(
-					appContent.getApplicant(),
-					ResultType.MONTHLY_LIMIT_EXCEEDED,
-					Optional.empty(),
-					Optional.of(errResult.getValue()),
-					Optional.empty()
-			);
+			// $申請
+			SpecialProvisionsOfAgreement app = createOneMonthApp(
+					applicantId,
+					appContent,
+					optApprItem.get().getApproverList(),
+					optApprItem.get().getConfirmerList(),
+					displayInfo);
+
+			// $Atomtask
+			atomTask = AtomTask.of(() -> { require.addApp(app); });
 		}
 
-		// 申請内容
-		appContent.setAlarmTime(agrOneMonth.calculateAlarmTime(appContent.getAlarmTime()));
-		SpecialProvisionsOfAgreement app = createOneMonthApp(
-				applicantId,
-				appContent,
-				optApprItem.get().getApproverList(),
-				optApprItem.get().getConfirmerList(),
-				displayInfo);
-
-		// $Atomtask
-		AtomTask at = AtomTask.of(() -> {
-			require.addApp(app);
-		});
-
-		return new AppCreationResult(
-				appContent.getApplicant(),
-				ResultType.NO_ERROR,
-				Optional.of(at),
-				Optional.empty(),
-				Optional.empty()
-		);
+		// return 申請作成結果
+		return new AppCreationResult(appContent.getApplicant(), Optional.ofNullable(atomTask), errorInfo);
 	}
 
 	/**
@@ -113,7 +98,7 @@ public class OneMonthAppCreate {
 			List<String> confirmerList,
 			ScreenDisplayInfo displayInfo) {
 
-		val errorAlarm = OneMonthErrorAlarmTime.of(appContent.getErrTime(), appContent.getAlarmTime());
+		val errorAlarm = OneMonthErrorAlarmTime.of(appContent.getErrTime(), appContent.getAlarmTime().get());
 
 		// $1ヶ月時間
 		val oneMonthTime = new OneMonthTime(errorAlarm, appContent.getYm());
@@ -122,8 +107,7 @@ public class OneMonthAppCreate {
 		val appTime = new ApplicationTime(
 				TypeAgreementApplication.ONE_MONTH,
 				Optional.of(oneMonthTime),
-				Optional.empty()
-		);
+				Optional.empty());
 
 		//	return 36協定特別条項の適用申請
 		return SpecialProvisionsOfAgreement.create(
@@ -141,7 +125,11 @@ public class OneMonthAppCreate {
 	 * [R-1] 申請を追加する
 	 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
 	 */
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require
+			extends GettingApproverDomainService.Require,
+			AgreementDomainService.RequireM4,
+			CheckErrorApplicationMonthService.Require {
+
 		void addApp(SpecialProvisionsOfAgreement app);
 	}
 }
