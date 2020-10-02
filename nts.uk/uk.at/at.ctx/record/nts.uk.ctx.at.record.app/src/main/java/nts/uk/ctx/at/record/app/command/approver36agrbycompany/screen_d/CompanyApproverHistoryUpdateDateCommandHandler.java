@@ -6,6 +6,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
@@ -33,9 +34,10 @@ public class CompanyApproverHistoryUpdateDateCommandHandler extends CommandHandl
             cid = AppContexts.user().companyId();
         }
         RequireImpl require = new RequireImpl(repo,cid);
-        val domainOpt = repo.getByCompanyIdAndDate(cid,command.getStartDateBeforeChange());
+        val domainOpt = repo.getByCompanyIdAndDate(cid,GeneralDate.max());
         if(domainOpt.isPresent()){
-            val domain = new Approver36AgrByCompany(cid,command.getPeriod(),domainOpt.get().getApproverList()
+            val domain = new Approver36AgrByCompany(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+                    domainOpt.get().getApproverList()
                     ,domainOpt.get().getConfirmerList());
 
             AtomTask persist = CompanyApproverHistoryChangeDomainService.changeApproverHistory(require,command.getStartDateBeforeChange(),domain);
