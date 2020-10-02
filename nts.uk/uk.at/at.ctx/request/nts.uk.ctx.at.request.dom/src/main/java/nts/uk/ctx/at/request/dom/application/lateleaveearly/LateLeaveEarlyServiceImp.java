@@ -736,12 +736,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	@Override
 	public ProcessResult update(String companyId, Application application,
-			ArrivedLateLeaveEarly arrivedLateLeaveEarly) {
+			ArrivedLateLeaveEarly arrivedLateLeaveEarly, AppDispInfoStartupOutput infoStartupOutput) {
 		this.updateDomain(application, arrivedLateLeaveEarly);
 
 		// 4-2.詳細画面登録後の処理
 		ProcessResult result = this.afterUpdateService.processAfterDetailScreenRegistration(companyId,
-				application.getAppID());
+				application.getAppID(), infoStartupOutput);
 		return result;
 	}
 

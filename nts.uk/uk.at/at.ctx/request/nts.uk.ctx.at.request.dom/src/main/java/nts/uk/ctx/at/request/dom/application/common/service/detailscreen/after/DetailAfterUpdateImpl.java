@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +22,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 @Stateless
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
@@ -39,7 +40,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
-	public ProcessResult processAfterDetailScreenRegistration(String companyID, String appID) {
+	public ProcessResult processAfterDetailScreenRegistration(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		List<String> destinationList = new ArrayList<>();
 		ProcessResult processResult = new ProcessResult();
 		processResult.setProcessDone(true);
@@ -70,10 +71,13 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		
 		// 承認を行った承認者一覧に項目がある ( There is an item in the approver list that made approval )
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
-//		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value);
-//		if (appTypeDiscreteSettingOp.get().getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) {
-//			return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, application.getAppID(),"");
-//		}
+		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
+		boolean condition = appTypeSetting.isSendMailWhenRegister();
+		if(!condition) {
+			processResult.setAppID(application.getAppID());
+			return processResult;
+		}
 		processResult.setAutoSendMail(true);
 		// 「申請種類別設定」．新規登録時に自動でメールを送信するがtrue ( "Setting by application type". Automatically send mail when new registration is true )
 		// 承認を行った承認者一覧を先頭から最後までループする ( Loop from the top to the end of the approver list that gave approval )
