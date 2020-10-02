@@ -84,10 +84,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             { code: 0 , name: getText('KDR002_52') }, //年月日
             { code: 1 , name: getText('KDR002_53')  } //月日
         ]);
-        printAnnualLeaveDateSelect: KnockoutObservable<number> = ko.observable(0);
+        printAnnualLeaveDateSelect: KnockoutObservable<number> = ko.observable(1);
 
         // A7_2
-        doubleTrack: KnockoutObservable<boolean> = ko.observable(true);
+        doubleTrack: KnockoutObservable<boolean> = ko.observable(false);
 
 
         closureDate: KnockoutObservable<Closure> = ko.observable();
@@ -97,14 +97,14 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         referenceTypeA3_5: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KDR002_6") },
             { code: 1, name: nts.uk.resource.getText("KDR002_7") }
-        ]);;
+        ]);
 
         valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);
 
         dateValue: KnockoutObservable<any> = ko.observable('');
 
         // A5_7
-        isExtraction: KnockoutObservable<boolean> = ko.observable(true);
+        isExtraction: KnockoutObservable<boolean> = ko.observable(false);
         // A5_2
         inputExtraction: KnockoutObservable<String> = ko.observable('');
         numbereditor: any;
@@ -208,7 +208,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
+            block.invisible();
             //社員に対応する処理締めを取得する
             service.findClosureByEmpID().done(function(closure) {
                 if (closure) {
@@ -218,17 +218,17 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     //エラーメッセージ(#Msg_1134)を表示
                     alError({ messageId: 'Msg_1134' });
                 }
-                nts.uk.ui.block.clear();
+                block.clear();
                 dfd.resolve(self);
             }).fail(function(res) {
                 alError({ messageId: res.messageId });
             }).always(() => {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
             return dfd.promise();
         }
 
-        setDataWhenStart(closure) {
+        setDataWhenStart(closure: any) {
             let self = this;
             char.restore("screenInfo").done((screenInfo: IScreenInfo) => {
                 //ユーザー固有情報「年休管理表の出力条件」をチェックする
@@ -244,7 +244,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         //set screen Info
 
-        setScreenInfo(closure, screenInfo: IScreenInfo) {
+        setScreenInfo(closure: any, screenInfo: IScreenInfo) {
             let self = this;
             self.selectedDateType(screenInfo.selectedDateType);
             self.selectedReferenceType(screenInfo.selectedReferenceType);
@@ -270,6 +270,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
+            }
+
+            if (mode = PrintMode.EXCEL) {
+
+            } else {
+
             }
 
             //印刷前チェック処理
@@ -298,7 +304,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             });
         }
 
-        public doPrint(printQuery) {
+        public doPrint(printQuery: any) {
             block.invisible();
             service.exportExcel(printQuery).done((res) => {
                 block.clear();
@@ -452,6 +458,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             this.name = name;
         }
     }
+
+    export enum PrintMode {
+        EXCEL = 0, // EXCEL
+        PDF = 1, // PDF
+    };
 
 
 }
