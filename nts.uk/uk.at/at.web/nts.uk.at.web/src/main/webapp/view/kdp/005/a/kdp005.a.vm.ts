@@ -419,7 +419,7 @@ module nts.uk.at.view.kdp005.a {
                         audio.play();
                     }
 
-					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
 						self.openScreenC(button, layout, employeeIdRegister);
 					} else {
 						self.openScreenB(button, layout, employeeIdRegister);

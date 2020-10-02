@@ -198,6 +198,13 @@ module nts.uk.at.view.ksm005.b {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
+                let startYear = self.dateValue().startDate.toString().substring(0, 4);
+                let endYear = self.dateValue().endDate.toString().substring(0, 4);
+                if (startYear != endYear){
+                    $("#daterangepicker .ntsStartDatePicker").ntsError("set", { messageId: "Msg_149" });
+                    $("#daterangepicker .ntsEndDatePicker").ntsError("set", { messageId: "Msg_149" });
+                    return true;
+                }
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchNoneStatutoryHolidays())
@@ -308,8 +315,8 @@ module nts.uk.at.view.ksm005.b {
              */
             public getUserLogin(): UserInfoDto {
                 var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
+                    companyId: __viewContext.user.companyId,
+                    employeeId: __viewContext.user.employeeId
                 };
                 return userinfo;
             }

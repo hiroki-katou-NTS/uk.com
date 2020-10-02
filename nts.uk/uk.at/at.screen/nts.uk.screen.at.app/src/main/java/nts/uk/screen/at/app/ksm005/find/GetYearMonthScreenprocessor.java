@@ -34,8 +34,6 @@ public class GetYearMonthScreenprocessor {
         if (workMonthlySettings == null || workMonthlySettings.isEmpty()){
             return  new ArrayList<>();
         }
-        // Create period from yearmonth
-        DatePeriod datePeriod = new DatePeriod(workMonthlySettings.get(0).getYmdk(),workMonthlySettings.get(workMonthlySettings.size()-1).getYmdk());
-        return datePeriod.yearMonthsBetween().stream().map(i->i.month()).collect(Collectors.toList());
+        return  workMonthlySettings.stream().map(x -> x.getYmdk().yearMonth().month()).collect(Collectors.toList());
     }
 }
