@@ -32,7 +32,7 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
             val domainPrevUpdate = new Approver36AgrByWorkplace(domainPrevOpt.get().getWorkplaceId(),period,domainPrevOpt.get().getApproverIds(),domainPrevOpt.get().getConfirmerIds());
             repo.update(domainPrevUpdate,period.start());
         }
-        repo.insert(domain);
+        repo.update(domain,command.getStartDateBeforeChange());
 
     }
 }
