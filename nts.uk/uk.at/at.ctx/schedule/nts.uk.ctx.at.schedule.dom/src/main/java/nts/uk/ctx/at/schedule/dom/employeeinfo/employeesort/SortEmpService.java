@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
@@ -57,9 +56,9 @@ public class SortEmpService {
 			SortSetting sortSetting) {
 		List<String> result = new ArrayList<>();
 		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
-		if (sortPriorities.size() <= 0) {
+		if (sortPriorities.size() == 0)
 			return lstEmpId;
-		} else {
+		if (sortPriorities.size() > 0) {
 			long start = System.nanoTime();
 			result = sort(require, ymd, lstEmpId, sortSetting);
 			System.out.println("time run sortService  " + ((System.nanoTime() - start) / 1000000) + "ms");
@@ -88,7 +87,7 @@ public class SortEmpService {
 			case POSITION:
 				compare2  = Comparator.comparing(EmployeeInfo::getJobtitleCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
-			default : // CLASSIFY:
+			case CLASSIFY:
 				compare2  = Comparator.comparing(EmployeeInfo::getClassificationCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			}
@@ -151,7 +150,7 @@ public class SortEmpService {
 					listEmployeeRank1.sort(Comparator.comparing(v-> listRankCode.indexOf(v.getEmplRankCode())));
 					
 					listEmployeeRank1.forEach((EmployeeRankDto employeeRankDto) -> {
-							employeeRankDto.setPriority(listEmployeeRank1.indexOf(employeeRankDto));
+							employeeRankDto.setPriority(listRankCode.indexOf(employeeRankDto.emplRankCode));
 			        });
 					
 					listEmployeeRank2.forEach((EmployeeRankDto employeeRankDto) -> {
@@ -191,7 +190,7 @@ public class SortEmpService {
 					listEmployeePositionResult = listEmployeePosition;
 				}
 				break;
-			default: // CLASSIFY
+			case CLASSIFY:
 				listEmpClassifiImport =  require.get(ymd, empIDs);
 				listEmpClassifiImport.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				break;

@@ -145,7 +145,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
             if (vm.model) {
-                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication !== 0) {
+				let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
+				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
+                if (isCondition1 || isCondition2) {
                    // $('#workSelect').focus();
 					let el = document.getElementById('workSelect');
 	                if (el) {

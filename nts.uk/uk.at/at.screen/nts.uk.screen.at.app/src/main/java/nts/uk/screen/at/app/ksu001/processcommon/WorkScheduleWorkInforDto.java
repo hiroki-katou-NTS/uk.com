@@ -1,9 +1,10 @@
-package nts.uk.screen.at.app.ksu001.displayinworkinformation;
+package nts.uk.screen.at.app.ksu001.processcommon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.EditStateOfDailyAttdDto;
 
 /**
  * @author laitv
@@ -53,9 +54,9 @@ public class WorkScheduleWorkInforDto {
 	// 出勤休日区分
 	public Integer workHolidayCls;
 	
-	//để check điều kiện ※Abc1
+	//để check điều kiện ※Abc1 dùng cho màn ksu001
 	public boolean isEdit;
 	
-	//để check điều kiện ※Abc2
+	//để check điều kiện ※Abc2 dùng cho màn ksu001
 	public boolean isActive;
 }
