@@ -72,7 +72,7 @@ module nts.uk.at.view.kwr001.c {
                 { code: 0, name: nts.uk.resource.getText("KWR001_159") },
                 { code: -2, name: nts.uk.resource.getText("KWR001_160") },
             ]);
-            selectedProjectType: KnockoutObservable<number> = ko.observable(0);
+            selectedProjectType: KnockoutObservable<number>;
 
             // C7_13 label
             sizeClassificationLabel: KnockoutObservable<string>;
@@ -99,6 +99,7 @@ module nts.uk.at.view.kwr001.c {
                 self.roundingRules = ko.observableArray([]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
+                self.selectedProjectType = ko.observable(-1);
 
                 self.currentCodeListSwap.subscribe(function(value) {
                 })
@@ -288,7 +289,7 @@ module nts.uk.at.view.kwr001.c {
                         self.mapIdCodeAtd[value.id] = value.code;
                     })
 
-                    self.items(data.selectedItem.displayAttendanceItem);
+                    self.items(data.selectedItem.lstCanUsed);
                     self.employeeId = data.employeeId ? data.employeeId : undefined;
 
                     dfd.resolve();
@@ -487,6 +488,7 @@ module nts.uk.at.view.kwr001.c {
                 _.delay(() => {
                     nts.uk.ui.errors.clearAll();
                 }, 400);
+                self.items(self.outputItemPossibleLst());
             }
 
             private convertBoolToNum(value: boolean): number {
