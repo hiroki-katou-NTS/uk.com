@@ -44,22 +44,10 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
 		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
-			Krcmt36AgrApvWkp target = findResult.get();
-			target.endDate = domainData.endDate;
 
-			target.approverSid1 = domainData.approverSid1;
-			target.approverSid2 = domainData.approverSid2;
-			target.approverSid3 = domainData.approverSid3;
-			target.approverSid4 = domainData.approverSid4;
-			target.approverSid5 = domainData.approverSid5;
-
-			target.confirmerSid1 = domainData.confirmerSid1;
-			target.confirmerSid2 = domainData.confirmerSid2;
-			target.confirmerSid3 = domainData.confirmerSid3;
-			target.confirmerSid4 = domainData.confirmerSid4;
-			target.confirmerSid5 = domainData.confirmerSid5;
-
-			this.commandProxy().update(target);
+			this.commandProxy().remove(Krcmt36AgrApvWkp.class,pk);
+			this.getEntityManager().flush();
+			this.commandProxy().insert(domainData);
 		} else {
 			this.commandProxy().insert(domainData);
 		}
