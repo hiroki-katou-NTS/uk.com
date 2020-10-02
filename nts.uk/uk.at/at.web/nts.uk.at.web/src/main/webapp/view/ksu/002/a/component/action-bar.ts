@@ -50,16 +50,17 @@ module nts.uk.ui.at.ksu002.a {
 		<div>
 			<label data-bind="i18n: 'KSU002_12'"></label>
 	        <div data-bind="ntsComboBox: {
-					width: '250px',
+					width: '300px',
 					name: $component.$i18n('KSU002_12'),
-					value: ko.observable(''),
-					options: ko.observableArray([]),
-					optionsValue: 'id',
-					optionsText: 'title',
+					value: $component.selectedWorkTypeCode,
+					options: $component.workTypes,
+					optionsValue: 'workTypeCode',
 					editable: false,
 					selectFirstIfNull: true,
 					columns: [
-						{ prop: 'title', length: 10 },
+						{ prop: 'workTypeCode', length: 4 },
+						{ prop: 'name', length: 10 },
+						{ prop: 'memo', length: 10 },
 					]
 				},
 				attr: {
@@ -68,7 +69,21 @@ module nts.uk.ui.at.ksu002.a {
 		</div>
 		<div>
 			<label data-bind="i18n: 'KSU002_13'"></label>
-	        <div><working-hours params="input: ko.observable(), callback: function() {}"></working-hours></div>
+	        <div data-bind="component: {
+					name: 'working-hours',
+					params: {
+						input: {
+							workPlaceId: ko.observable(''),
+							displayFormat: '',
+							fillter: false,
+							showNone: true,
+							showDeferred: true,
+							selectMultiple: false,
+							initiallySelected: []
+						},
+						callback: function() { $component.workHourSelect.apply($component, [...arguments]) }
+					}
+				}"></div>
 		</div>
 	</div>
 	<style type="text/css" rel="stylesheet">
@@ -126,6 +141,10 @@ module nts.uk.ui.at.ksu002.a {
 
 	const COMPONENT_NAME = 'action-bar';
 
+	const API = {
+		WTYPE: '/screen/ksu/ksu002/getWorkType'
+	};
+
 	@handler({
 		bindingName: COMPONENT_NAME,
 		validatable: true,
@@ -157,6 +176,9 @@ module nts.uk.ui.at.ksu002.a {
 		template
 	})
 	export class ActionBarComponent extends ko.ViewModel {
+		workTypes: KnockoutObservableArray<WorkType> = ko.observableArray([]);
+		selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
+
 		constructor(private data: Parameter) {
 			super();
 
@@ -198,7 +220,12 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		created() {
+			const vm = this;
 
+			vm.$ajax('at', API.WTYPE)
+				.then((response: WorkType[]) => {
+					vm.workTypes(response.map((m) => ({ ...m, memo: vm.$i18n(m.memo) })));
+				});
 		}
 
 		mounted() {
@@ -210,6 +237,10 @@ module nts.uk.ui.at.ksu002.a {
 				$(vm.$el).find('working-hours [tabindex="0"]').attr('tabindex', vm.data.tabIndex);
 			}, 1000); */
 		}
+
+		workHourSelect(input: any[], source: any[]) {
+			console.log(arguments);
+		}
 	}
 
 	interface Parameter {
@@ -219,5 +250,11 @@ module nts.uk.ui.at.ksu002.a {
 			redo: KnockoutComputed<boolean>;
 		};
 		clickBtn: (btn: 'undo' | 'redo') => void;
+	}
+
+	interface WorkType {
+		memo: string;
+		name: string;
+		workTypeCode: string;
 	}
 }

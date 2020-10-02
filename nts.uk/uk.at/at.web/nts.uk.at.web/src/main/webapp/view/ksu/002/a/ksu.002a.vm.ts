@@ -6,7 +6,6 @@ module nts.uk.ui.at.ksu002.a {
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
-		WTYPE: '/screen/ksu/ksu002/getWorkType',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
 	};
 
@@ -26,7 +25,7 @@ module nts.uk.ui.at.ksu002.a {
 		showC: KnockoutObservable<boolean> = ko.observable(true);
 
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
-		schedules: m.MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
+		schedules: m.MementoObservableArray<c.DayData<ScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
 
 		created() {
 			const vm = this;
@@ -65,37 +64,40 @@ module nts.uk.ui.at.ksu002.a {
 
 					vm.$blockui('show')
 						.then(() => vm.$ajax('at', API.GSCHE, command))
-						.then((response: ResponseData) => {
-							if (response) {
-								const { listWorkScheduleWorkInfor } = response;
-
-								if (listWorkScheduleWorkInfor && listWorkScheduleWorkInfor.length) {
-									return (listWorkScheduleWorkInfor)
-										.map((m) => ({
-											...m,
-											date: moment(m.date, 'YYYY/MM/DD')
-										}));
-								}
-							}
-
-							return [];
-						})
+						.then((response: WorkSchedule<string>[]) => _.chain(response)
+							.orderBy(['date'])
+							.map(m => ({
+								...m,
+								date: moment(m.date, 'YYYY/MM/DD')
+							}))
+							.value()
+						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
-								const clones: c.DayData[] = ko.toJS(vm.schedules);
+								const clones: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
 
 								_.each(response, (d) => {
 									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
 
 									if (exits) {
 										exits.data = {
+											...exits.data,
 											wtype: d.workTypeName,
 											wtime: d.workTimeName,
 											value: {
 												begin: d.startTime,
 												finish: d.endTime
-											}
+											},
+											holiday: exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
+											event: exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
 										};
+
+										exits.className = [
+											...(exits.className || []),
+											exits.date.getDate() === 5 ? c.COLOR_CLASS.EVENT : '',
+											exits.date.getDate() === 6 ? c.COLOR_CLASS.HOLIDAY : '',
+											exits.date.getDate() === 9 ? c.COLOR_CLASS.HOLIDAY : ''
+										].filter(c => !!c)
 									}
 								});
 
@@ -163,14 +165,19 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface WorkSchedule<D = moment.Moment> {
+		// 実績か
 		achievements: boolean;
 		active: boolean;
+		// 確定済みか
 		confirmed: boolean;
+		// 年月日
 		date: D;
 		edit: boolean;
+		// 社員ID
 		employeeId: string;
 		endTime: null | number;
 		endTimeEditState: null | number;
+		// データがあるか
 		haveData: boolean;
 		isActive: boolean;
 		isEdit: boolean;

@@ -26,6 +26,7 @@ module nts.uk.ui.calendar {
 	}
 
 	export enum COLOR_CLASS {
+		EVENT = 'event',
 		CURRENT = 'current',
 		SPECIAL = 'special',
 		HOLIDAY = 'holiday',
@@ -33,7 +34,7 @@ module nts.uk.ui.calendar {
 		SATURDAY = 'saturday'
 	}
 
-	interface DataInfo {
+	export interface DataInfo {
 		holiday?: string;
 	}
 
@@ -195,12 +196,16 @@ module nts.uk.ui.calendar {
                 background-color: #FABF8F;
             }
             .calendar .calendar-container .month .week .day.special .status {
-                color: #f00;
                 background-color: rgb(255, 192, 203);
 			}
             .calendar .calendar-container .month .week .day.current .status {
-                color: #f00;
                 background-color: #ffff00;
+			}
+            .calendar .calendar-container .month .week .day.holiday .status,
+            .calendar .calendar-container .month .week .day.current .status,
+            .calendar .calendar-container .month .week .day.holiday .status span,
+            .calendar .calendar-container .month .week .day.current .status span {
+                color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
                 width: 100%;
@@ -288,7 +293,9 @@ module nts.uk.ui.calendar {
 				element.classList.add('same-month');
 
 				if (className && _.isArray(className)) {
-					className.forEach((c: string) => element.classList.add(c));
+					className
+						.filter((c: string) => !!c)
+						.forEach((c: string) => element.classList.add(c));
 				}
 			}
 
