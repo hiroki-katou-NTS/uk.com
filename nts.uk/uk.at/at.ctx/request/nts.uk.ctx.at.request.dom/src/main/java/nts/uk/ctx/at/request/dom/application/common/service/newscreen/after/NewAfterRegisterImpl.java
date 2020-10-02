@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
