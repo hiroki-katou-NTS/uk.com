@@ -70,7 +70,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         selectedReferenceType: KnockoutObservable<number> = ko.observable(0);
 
         //print Date
-        printDate: KnockoutObservable<number> = ko.observable(Number(moment().format("YYYYMM")));
+        printDate: KnockoutObservable<number> = ko.observable(Number(moment().subtract(1, 'months').format("YYYYMM")));
 
         // Page Break Type
         // A4_3
@@ -101,7 +101,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);
 
-        dateValue: KnockoutObservable<any> = ko.observable('');
+        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
 
         // A5_7
         isExtraction: KnockoutObservable<boolean> = ko.observable(false);
@@ -210,14 +210,30 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             //社員に対応する処理締めを取得する
-            service.findClosureByEmpID().done(function(closure) {
+            service.findClosureByEmpID().done(function(closure: any) {
                 if (closure) {
                     self.setDataWhenStart(closure);
                     self.closureDate(closure.closureMonth);
+
+                    // self.printDate(closure.closureMonth)
                 } else {
+                    //指定月 = null
+                    //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
+
                     //エラーメッセージ(#Msg_1134)を表示
                     alError({ messageId: 'Msg_1134' });
                 }
+
+                if (closure.closureMonth) {
+                    let endDateRange = moment().subtract(1, 'day').format("YYYYMMDD");
+                    let startDateRange = moment(endDateRange).subtract(1, 'year').add(1, 'day').format("YYYYMMDD");
+
+                    self.printDate(closure.closureMonth);
+                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
+                } else {
+                    self.printDate(Number(moment().subtract(1, 'months').format("YYYYMM")))
+                }
+
                 block.clear();
                 dfd.resolve(self);
             }).fail(function(res) {
@@ -235,10 +251,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 if (screenInfo) {
                     //データあり
                     self.setScreenInfo(closure, screenInfo);
-                } else {
-                    //データなし
-                    self.printDate(closure.closureMonth);
                 }
+                // else {
+                //     //データなし
+                //     self.printDate(closure.closureMonth);
+                // }
             });
         }
 
