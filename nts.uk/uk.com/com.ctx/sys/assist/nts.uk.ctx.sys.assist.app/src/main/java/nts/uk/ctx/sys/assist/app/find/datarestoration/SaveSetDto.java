@@ -23,4 +23,17 @@ public class SaveSetDto {
 	public static SaveSetDto fromDomain(DataRecoveryResult domain) {
 		return new SaveSetDto(domain.getPatternCode().v(), domain.getSaveName().v());
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof SaveSetDto) {
+			return ((SaveSetDto) obj).patternCode.equals(patternCode);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return patternCode.hashCode();
+	}
 }

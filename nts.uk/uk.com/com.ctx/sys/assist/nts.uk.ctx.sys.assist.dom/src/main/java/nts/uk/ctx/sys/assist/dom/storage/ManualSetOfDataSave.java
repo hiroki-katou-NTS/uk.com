@@ -66,12 +66,12 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	/**
 	 * 月次保存終了日
 	 */
-	private GeneralDate monthSaveEndDate;
+	private String monthSaveEndDate;
 
 	/**
 	 * 月次保存開始日
 	 */
-	private GeneralDate monthSaveStartDate;
+	private String monthSaveStartDate;
 
 	/**
 	 * 補足説明
@@ -108,7 +108,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
 			Integer endYear, Integer startYear, int presenceOfEmployee,
 			String practitioner, int saveType) {
 
@@ -135,7 +135,7 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
 			Integer endYear, Integer startYear, int presenceOfEmployee, String practitioner,
 			int saveType, List<TargetEmployees> employees, List<TargetCategory> category) {
 

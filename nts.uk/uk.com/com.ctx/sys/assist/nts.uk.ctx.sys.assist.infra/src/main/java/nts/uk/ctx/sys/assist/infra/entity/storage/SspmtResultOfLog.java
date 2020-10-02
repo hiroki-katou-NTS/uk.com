@@ -25,9 +25,6 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 排他バージョン
-	 */
 	@EmbeddedId
     public SspmtResultOfLogPK sspmtResultOfLogPK;
 	

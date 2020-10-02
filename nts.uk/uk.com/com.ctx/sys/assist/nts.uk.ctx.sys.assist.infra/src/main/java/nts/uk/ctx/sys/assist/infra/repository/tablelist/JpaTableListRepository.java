@@ -537,7 +537,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		entity.fieldAcqEmployeeId =		domain.getFieldAcqEmployeeId().orElse(null);
 		entity.fieldAcqEndDate = 		domain.getFieldAcqEndDate().orElse(null);
 		entity.fieldAcqStartDate = 		domain.getFieldAcqStartDate().orElse(null);
-		entity.saveSetCode	=	domain.getPatternCode();
+		entity.patternCode	=	domain.getPatternCode();
 		entity.saveSetName = 		domain.getSaveSetName();
 		entity.saveForm = domain.getSaveForm();
 		entity.saveDateFrom =		domain.getSaveDateFrom().orElse(null);

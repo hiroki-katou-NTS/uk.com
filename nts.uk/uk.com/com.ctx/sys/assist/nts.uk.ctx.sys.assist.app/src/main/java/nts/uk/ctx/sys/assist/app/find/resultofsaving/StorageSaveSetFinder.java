@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,9 @@ public class StorageSaveSetFinder {
 		return ros.stream().map(r -> {
 			ManualSetOfDataSave mal = manualSetOfDataSaveRepository.getManualSetOfDataSaveById(r.getStoreProcessingId()).get();
 			return new SaveSetDto(r.getPatternCode().v(), mal.getSaveSetName().v());
-		}).collect(Collectors.toList());
+		})
+				.sorted(Comparator.comparing(SaveSetDto::getPatternCode))
+				.distinct()
+				.collect(Collectors.toList());
 	}
 }

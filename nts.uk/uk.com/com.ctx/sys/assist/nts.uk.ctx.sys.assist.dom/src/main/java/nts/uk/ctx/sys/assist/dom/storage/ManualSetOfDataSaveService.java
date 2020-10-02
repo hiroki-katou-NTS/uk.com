@@ -141,7 +141,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			targetEmployees.sort(Comparator.comparing(TargetEmployees::getScd));
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
-			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
+			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName, patternCode);
 
 			if (resultState == ResultState.ABNORMAL_END) {
 				evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
@@ -183,7 +183,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState selectTargetTable(String storeProcessingId, ManualSetOfDataSave optManualSetting,
-			StringBuffer outCompressedFileName) {
+			StringBuffer outCompressedFileName, String patternCode) {
 		// Get list category from
 		List<TargetCategory> targetCategories = repoTargetCat.getTargetCategoryListById(storeProcessingId);
 		List<String> categoryIds = targetCategories.stream().map(x -> {
@@ -244,8 +244,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case MONTHLY:
-					saveDateFrom = optManualSetting.getMonthSaveStartDate().toString("yyyy/MM");
-					saveDateTo = optManualSetting.getMonthSaveEndDate().toString("yyyy/MM");
+					saveDateFrom = optManualSetting.getMonthSaveStartDate().replace('-', '/');
+					saveDateTo = optManualSetting.getMonthSaveEndDate().replace('-', '/');
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
@@ -268,7 +268,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
 					categoryFieldMt.getTableEnglishName(), categoryFieldMt.getFieldAcqCid(),
 					categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(),
-					categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(), null,
+					categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(), patternCode,
 					optManualSetting.getSaveSetName().toString(), "1", saveDateFrom, saveDateTo, storageRangeSaved,
 					retentionPeriodCls != null ? retentionPeriodCls.value : null, internalFileName, anotherComCls, null,
 					null, compressedFileName, categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(),

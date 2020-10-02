@@ -22,26 +22,27 @@ module nts.uk.com.view.cmf003.i {
     ];
     columnHeadersRes: any[] = [
       { headerText: '', key: 'rowNumber', width: '30px' },
-      { headerText: getText('CMF003_309'), key: 'deletedFiles', width: '75px', dataType: 'string', ntsControl: "Button" },
-      { headerText: getText('CMF003_310'), key: 'deletedFiles', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
+      { headerText: getText('CMF003_309'), key: 'deleteFile', width: '75px', dataType: 'string', ntsControl: "Button" },
+      { headerText: getText('CMF003_310'), key: 'downloadFile', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
       { headerText: getText('CMF003_311'), key: 'save', width: '75px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_312'), key: 'saveStartDateTime', width: '150px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_312'), key: 'saveStartDatetime', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_313'), key: 'practitioner', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_314'), key: 'saveName', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_315'), key: 'saveForm', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_316'), key: 'targetNumberPeople', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_317'), key: 'saveFileName', width: '250px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF003_318'), key: 'fileSize', width: '150px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF003_318'), key: 'fileSize', width: '100px', dataType: 'string', ntsControl: "Label" },
     ];
     states: State[] = [];
     dataGrid: any;
+    storageSize: KnockoutObservable<number> = ko.observable(0);
 
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
         vm.findSaveSet(value.startDate, value.endDate);
       });
-      // vm.loadDataGrid();
+      vm.loadDataGrid();
     }
 
     mounted() {
@@ -92,23 +93,24 @@ module nts.uk.com.view.cmf003.i {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      service.findData(arr).then((data: Array<DataDto>) => {
+      service.findData(arr).then((data: DataDto[]) => {
         const res: DataDto[] = [];
         if (data && data.length) {
           _.each(data, (x, i) => {
             x.rowNumber = i + 1;
             x.id = nts.uk.util.randomId();
-            x.restoreCount += "人";
-            x.saveCount += "人";
+            x.targetNumberPeople += "人";
+            x.fileSize += "KB";
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
+            x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD hh:mm:ss");
+            x.save = getText("CMF003_330");
+            x.saveForm = vm.getSaveForm(Number(x.saveForm));
+            x.deleteFile = x.deletedFiles === 0 ? "1" : null;
+            x.downloadFile = x.deletedFiles === 0 ? "1" : null;
             res.push(x);
-
-            if (x.executionResult === '異常終了') {
-              _.each(vm.columnHeadersRes, col => {
-                vm.states.push(new State(x.id, col.key, ["red-color"]));
-              })
-            }
           });
         }
+        console.log(res);
         vm.resultItems(res);
         vm.loadDataGrid();
       }).always(() => vm.$blockui("hide"));
@@ -121,11 +123,12 @@ module nts.uk.com.view.cmf003.i {
 
     public loadDataGrid() {
       const vm = this;
-      if ($("#J6_1").data("mGrid")) {
-        $("#J6_1").mGrid("destroy");
+      if ($("#I6_1").data("mGrid")) {
+        $("#I6_1").mGrid("destroy");
       }
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#I6_1")[0], {
         height: 800,
+        subHeight: 400,
         headerHeight: "40px",
         autoFitWindow: true,
         dataSource: vm.resultItems(),
@@ -139,6 +142,7 @@ module nts.uk.com.view.cmf003.i {
         useOptions: true,
         idGen: (id: any) => id + "_" + nts.uk.util.randomId(),
         columns: vm.columnHeadersRes,
+        virtualrecordsrender: (e: any, args: any) => vm.updateGridUI(),
         features: [
           {
             name: 'Paging',
@@ -156,24 +160,75 @@ module nts.uk.com.view.cmf003.i {
           {
             name: 'Resizing'
           },
-          {
-            name: 'CellStyles',
-            states: vm.states
-          },
         ],
         ntsControls: [
-          { name: 'Button', controlType: 'Button', text: getText('#CMF003_319'), enable: true, click: vm.deleteFile() },
-          { name: 'FlexImage', source: '../resource/102.png', click: vm.download(), controlType: 'FlexImage' },
+          { name: 'Button', controlType: 'Button', text: getText('CMF003_319'), enable: true, click: (i: any) => vm.deleteFile(i) },
+          { name: 'FlexImage', controlType: 'Button', source: 'download-icon', text: ' ', enable: true, click: (i: any) => vm.download(i) },
         ]
       }).create();
+
+      $("#I6_1").ready(function() {
+        vm.updateGridUI();
+      })
+
+      $("#I6_1 .mgrid-free").scroll(function() {
+        vm.updateGridUI();
+      })
     }
 
-    private download() {
-      
+    private updateGridUI() {
+      $("#I6_1 .mcell").addClass("halign-center");
+      $("#I6_1 .mcell:nth-child(2) button").addClass("download-icon");
     }
 
-    private deleteFile() {
-      
+    private download(value: any) {
+      const vm = this;
+      nts.uk.request.specials.donwloadFile(value.fileId);
+    }
+
+    private deleteFile(value: any) {
+      const vm = this;
+      /**
+       * 確認メッセージ（Msg_18）を表示する
+       */
+      vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: 'no' | 'yes' | 'cancel') => {
+        /**
+         * 「いいえ」（ID：Msg_36）をクリック
+         */
+        if (result === 'no') {
+          /**
+           * 終了状態：削除処理をキャンセル
+           */
+          return;
+        }
+        /**
+         * 「はい」（ID：Msg_35）をクリック
+         */
+        if (result === 'yes') {
+          if (value.fileId) {
+            vm.$blockui("grayout");
+            /**
+             * 終了状態：削除処理を実行
+             */
+            (nts.uk.request as any).file.remove(value.fileId);
+            service.deleteData(value.fileId).then(() => {
+              const item = _.find(vm.resultItems(), { fileId: value.fileId });
+              item.downloadFile = null;
+              item.deleteFile = null;
+              vm.resultItems.valueHasMutated();
+            }).always(() => {
+              vm.$blockui("clear");
+            });
+          }
+        }
+      });
+    }
+    
+    public getSaveForm(value: number): string {
+      switch (value) {
+        case 0: return getText('CMF003_460');
+        case 1: return getText('CMF003_461');
+      }
     }
   }
 
@@ -206,20 +261,24 @@ module nts.uk.com.view.cmf003.i {
   }
 
   export class DataDto {
+    rowNumber: number;
+    id: string;
     storeProcessingId: string;
     cid: string;
-    fileSize: number;
+    fileSize: string;
     saveSetCode: string;
     saveFileName: string;
     saveName: string;
-    saveForm: number;
+    saveForm: string;
     saveStartDatetime: string;
     saveEndDatetime: string;
     deletedFiles: number;
     practitioner: string;
-    targetNumberPeople: number;
+    targetNumberPeople: string;
     saveStatus: number;
     fileId: string;
-    save: string = getText('CMF003_330');
+    save: string;
+    downloadFile: string;
+    deleteFile: string;
   }
 }

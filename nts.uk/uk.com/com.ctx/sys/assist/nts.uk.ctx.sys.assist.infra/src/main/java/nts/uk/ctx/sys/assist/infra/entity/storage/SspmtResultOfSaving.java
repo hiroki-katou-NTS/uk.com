@@ -12,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -31,11 +30,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SSPMT_RESULT_OF_SAVING")
 public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	// column 排他バージョン
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
 
 	/**
 	 * データ保存処理ID
@@ -228,33 +222,5 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 				domain.getLoginInfo().getAccount(),
 				logs.stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
 			);
-	}
-
-	public SspmtResultOfSaving(String storeProcessingId, String cid, long fileSize, String saveSetCode,
-			String saveFileName, String saveName, int saveForm, GeneralDateTime saveEndDatetime,
-			GeneralDateTime saveStartDatetime, int deletedFiles, String compressedPassword, String practitioner,
-			int targetNumberPeople, int saveStatus, int saveForInvest, String fileId, String pcId, String pcName,
-			String pcAccount, List<SspmtResultOfLog> listResultOfLogs) {
-		super();
-		this.storeProcessingId = storeProcessingId;
-		this.cid = cid;
-		this.fileSize = fileSize;
-		this.patternCode = saveSetCode;
-		this.saveFileName = saveFileName;
-		this.saveName = saveName;
-		this.saveForm = saveForm;
-		this.saveEndDatetime = saveEndDatetime;
-		this.saveStartDatetime = saveStartDatetime;
-		this.deletedFiles = deletedFiles;
-		this.compressedPassword = compressedPassword;
-		this.practitioner = practitioner;
-		this.targetNumberPeople = targetNumberPeople;
-		this.saveStatus = saveStatus;
-		this.saveForInvest = saveForInvest;
-		this.fileId = fileId;
-		this.pcId = pcId;
-		this.pcName = pcName;
-		this.pcAccount = pcAccount;
-		this.listResultOfLogs = listResultOfLogs;
 	}
 }

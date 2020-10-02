@@ -25,8 +25,8 @@ public class ManualSettingDto {
 	private GeneralDateTime executionDateAndTime;
 	private GeneralDate daySaveEndDate;
 	private GeneralDate daySaveStartDate;
-	private GeneralDate monthSaveEndDate;
-	private GeneralDate monthSaveStartDate;
+	private String monthSaveEndDate;
+	private String monthSaveStartDate;
 	private String suppleExplanation;
 	private Integer endYear;
 	private Integer startYear;
@@ -65,8 +65,8 @@ public class ManualSettingDto {
 	 */
 	public ManualSettingDto(String cid, String storeProcessingId, int passwordAvailability, String saveSetName,
 			GeneralDate referenceDate, String compressedPassword, GeneralDateTime executionDateAndTime,
-			GeneralDate daySaveEndDate, GeneralDate daySaveStartDate, GeneralDate monthSaveEndDate,
-			GeneralDate monthSaveStartDate, String suppleExplanation, Integer endYear,
+			GeneralDate daySaveEndDate, GeneralDate daySaveStartDate, String monthSaveEndDate,
+			String monthSaveStartDate, String suppleExplanation, Integer endYear,
 			Integer startYear, int presenceOfEmployee, String practitioner) {
 		super();
 		this.cid = cid;

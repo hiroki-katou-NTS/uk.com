@@ -49,7 +49,8 @@ public class ManualSettingCommand {
 	public ManualSetOfDataSave toDomain(String cid, String storeProcessingId, String practitioner) {
 		return new ManualSetOfDataSave(cid, storeProcessingId, passwordAvailability, saveSetName,
 				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
-				monthSaveEndDate, monthSaveStartDate, suppleExplanation, endYear, startYear, presenceOfEmployee,
+				monthSaveEndDate.toString("yyyy-MM"), monthSaveStartDate.toString("yyyy-MM"), suppleExplanation,
+				endYear, startYear, presenceOfEmployee,
 				practitioner, StorageClassification.MANUAL.value, employees.stream().map(x -> {
 					return new TargetEmployees(storeProcessingId, x.getSid(), new BusinessName(x.getBusinessname()),
 							new EmployeeCode(x.getScd()));
