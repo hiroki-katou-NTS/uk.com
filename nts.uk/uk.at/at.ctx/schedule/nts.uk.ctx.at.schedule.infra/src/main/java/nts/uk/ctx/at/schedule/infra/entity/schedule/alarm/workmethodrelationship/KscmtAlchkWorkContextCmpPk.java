@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class KscmtAlchkWorkContextCmpPk {
 	
 	@Column(name = "CID")
