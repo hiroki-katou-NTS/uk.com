@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -55,22 +56,26 @@ public class AsposeGoReturnDirectly {
             Optional<GoBackDirectly> gobackDirectly = infoGoBackCommonDirectOutput.getGoBackDirectly();
             
             WorkTypeCode dataWorkTypeCD = null;
+            WorkTimeCode dataWorkTimeCD = null;
             String workTypeCD = "";
             String workTypeName = "";
             String workHourCD = "";
             String workHourName = "";
             if(gobackDirectly.isPresent()) {
                 Optional<WorkInformation> dataWork = gobackDirectly.get().getDataWork();
-                if(dataWork.isPresent()) {
+                if(dataWork.isPresent() && dataWork != null) {
                     dataWorkTypeCD = dataWork.get().getWorkTypeCode();
+                    dataWorkTimeCD = dataWork.get().getWorkTimeCode();
+                    workHourCD = dataWorkTimeCD.v();
+                    workTypeCD = dataWorkTypeCD.v();
                 }
                 
                 // Get List workTime
                 List<WorkTimeSetting> workTimeLst = infoGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(null);
-                if(workTimeLst != null) {
+                if(workTimeLst != null && dataWorkTimeCD != null) {
                     for(WorkTimeSetting wtSetting : workTimeLst) {
                         // Get workHour code + name from each workTime
-                        if(wtSetting.getWorktimeCode().equals(dataWork.get().getWorkTimeCode())) {
+                        if(wtSetting.getWorktimeCode().equals(dataWorkTimeCD)) {
                             workHourCD = wtSetting.getWorktimeCode().v();
                             workHourName = wtSetting.getWorkTimeDisplayName().getWorkTimeName() == null ? 
                                     workHourName : wtSetting.getWorkTimeDisplayName().getWorkTimeName().v();
@@ -124,7 +129,7 @@ public class AsposeGoReturnDirectly {
             }
             
             // Get text for value D9
-            if(workTypeCD.isEmpty()) {
+            if(workHourCD.isEmpty()) {
                 // Code = empty -> set cell empty
                 valueD9 = workHourCD;
             } else {
@@ -143,9 +148,9 @@ public class AsposeGoReturnDirectly {
             cellD11.setValue(valueD11);
             
             // Delete item A1_1 A1_2 and A2_1 A2_2 by condition
-            if(gobackDirectly.isPresent() && gobackDirectly.get().getIsChangedWork().isPresent()) {
-                if(!gobackDirectly.get().getIsChangedWork().get().equals(NotUseAtr.USE) 
-                        && !infoGoBackCommonDirectOutput.getGoBackReflect().getReflectApplication().equals(ApplicationStatus.DO_REFLECT)) {
+            if(gobackDirectly.isPresent()) {
+                if(!gobackDirectly.get().getIsChangedWork().isPresent() || (gobackDirectly.get().getIsChangedWork().isPresent() &&!gobackDirectly.get().getIsChangedWork().get().equals(NotUseAtr.USE) 
+                        && !infoGoBackCommonDirectOutput.getGoBackReflect().getReflectApplication().equals(ApplicationStatus.DO_REFLECT))) {
                     cells.deleteRow(8);
                     cells.deleteRow(7);
                     return 2;
