@@ -201,6 +201,15 @@ subprojects {
 		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+        
+        // OneLogin Java SAML Toolkit
+		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
+		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'
+		
+		// SAMLに使用
+		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+        
 	}
 }
 //=============com.file�==========================================
@@ -1033,6 +1042,9 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		
+		// OneLogin java-samlに必要
+		runtime group: 'joda-time', name: 'joda-time', version: '2.10.6'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
