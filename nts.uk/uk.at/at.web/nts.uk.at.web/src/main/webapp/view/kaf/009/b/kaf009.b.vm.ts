@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 model.checkbox2 ? 1 : 0,
             );
 			// is change can be null
-            if (!_.isNull(model.checkbox3)) {
+            if (!_.isNull(model.checkbox3) || vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
 
             }
