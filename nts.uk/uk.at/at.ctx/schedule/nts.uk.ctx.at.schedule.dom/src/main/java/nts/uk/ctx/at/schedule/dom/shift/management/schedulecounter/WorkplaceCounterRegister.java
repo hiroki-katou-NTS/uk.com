@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.arc.task.tran.AtomTask;
@@ -22,7 +22,7 @@ public class WorkplaceCounterRegister {
 	 */
 	public static WorkplaceCounterRegisterResult register(Require require, WorkplaceCounter target) {
 		
-		List<WorkplaceCounterCategory> notDetailSettingList = Collections.emptyList();
+		List<WorkplaceCounterCategory> notDetailSettingList = new ArrayList<>();
 		
 		if ( target.isUsed(WorkplaceCounterCategory.LABOR_COSTS_AND_TIME) && !require.existsLaborCostAndTime() ) {
 			notDetailSettingList.add(WorkplaceCounterCategory.LABOR_COSTS_AND_TIME);
