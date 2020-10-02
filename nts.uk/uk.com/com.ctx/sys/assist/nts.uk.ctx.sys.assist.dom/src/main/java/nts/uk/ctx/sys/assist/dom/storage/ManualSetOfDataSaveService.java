@@ -96,21 +96,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
-		ManualSetOfDataSave domain = (ManualSetOfDataSave) context.getQuery();
-		serverManualSaveProcessing(domain, context.getGeneratorContext());
+		ManualSetOfDataSaveHolder holder = (ManualSetOfDataSaveHolder) context.getQuery();
+		serverManualSaveProcessing(holder.getDomain(), holder.getPatternCode(), context.getGeneratorContext());
 	}
 
-	public void serverManualSaveProcessing(ManualSetOfDataSave manualSetting, FileGeneratorContext generatorContext) {
+	public void serverManualSaveProcessing(ManualSetOfDataSave manualSetting, String patternCode, FileGeneratorContext generatorContext) {
 		// ドメインモデル「データ保存の保存結果」へ書き出す
 		String storeProcessingId = manualSetting.getStoreProcessingId();
 		String practitioner = manualSetting.getPractitioner();
 		try {
 			String cid = manualSetting.getCid();
-			int systemType = manualSetting.getSystemType().value;
 			int saveForm = 0;
-			String saveSetCode = null;
 			String saveName = manualSetting.getSaveSetName().v();
-			int saveForInvest = manualSetting.getIdentOfSurveyPre().value;
 			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
 
 			long fileSize = 0;
@@ -134,9 +131,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String errorContent = "";
 			String contractCd = AppContexts.user().contractCode();
 			listResultLogSavings.add(ResultLogSaving.createFromJavatype(logNumber,contractCd,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent));
-			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
+			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, fileSize, patternCode,
 					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
-					compressedPassword, practitioner, listResultLogSavings, targetNumberPeople, saveStatus, saveForInvest, fileId,loginInfo);
+					compressedPassword, practitioner, listResultLogSavings, targetNumberPeople, saveStatus, 1, fileId,loginInfo);
 			repoResultSaving.add(data);
 
 			// 対象社員のカウント件数を取り保持する
@@ -219,7 +216,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String screenRetentionPeriod = null;
 			String saveDateFrom = null;
 			String saveDateTo = null;
-			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
 			if (category.isPresent()) {
@@ -317,7 +313,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getFieldParent4(), categoryFieldMt.getFieldParent5(),
 					categoryFieldMt.getFieldParent6(), categoryFieldMt.getFieldParent7(),
 					categoryFieldMt.getFieldParent8(), categoryFieldMt.getFieldParent9(),
-					categoryFieldMt.getFieldParent10(), surveyPreservation);
+					categoryFieldMt.getFieldParent10(), 1);
 
 			repoTableList.add(listtable);
 		}
@@ -337,14 +333,14 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			return resultState;
 		}
 
-		// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
-		if (optManualSetting.getIdentOfSurveyPre() == NotUseAtr.USE) {
-			repoTargetEmp.removeBusinessName(storeProcessingId);
-			targetEmployees = targetEmployees.stream().map(item -> {
-				item.setBusinessname(null);
-				return item;
-			}).collect(Collectors.toList());
-		}
+//		// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
+//		if (optManualSetting.getIdentOfSurveyPre() == NotUseAtr.USE) {
+//			repoTargetEmp.removeBusinessName(storeProcessingId);
+//			targetEmployees = targetEmployees.stream().map(item -> {
+//				item.setBusinessname(null);
+//				return item;
+//			}).collect(Collectors.toList());
+//		}
 
 		// 対象社員の内容をcsvファイルに暗号化して書き出す
 		resultState = generalEmployeesToCsv(generatorContext, targetEmployees);

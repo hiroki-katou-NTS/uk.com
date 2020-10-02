@@ -13,19 +13,19 @@
         <div id="B3_2" data-bind="ntsPanel: { width: '80%', height: '550px', direction: 'right', showIcon: true, visible: true }">
           <!-- B3_4 検索 -->
           <div data-bind="ntsSearchBox: {
-            targetKey: 'code',
+            targetKey: 'displayCode',
             mode: 'igGrid',
             options: patternList,
             selected: selectedPatternId,
             comId: 'B3_6',
-            selectedKey: 'code',
-            fields: ['code', 'name']
+            selectedKey: 'displayCode',
+            fields: ['displayCode', 'patternName']
           }" tabindex="1"></div>
           <!-- B3_6 パターン一覧 -->
           <table id="B3_6" data-bind="ntsGridList: {
             name: '#[CMF003_22]',
             options: patternList,
-            optionsValue: 'code',
+            optionsValue: 'displayCode',
             columns: patternColumns,
             multiple: false,
             value: selectedPatternId,
@@ -37,7 +37,7 @@
 				<div class="valign-center control-group">
 					<div id="B4_1"
 						data-bind="ntsFormLabel: {required: true, constraint: 'PatternName'}">#{i18n.getText('CMF003_632')}</div>
-					<label id="B4_2" data-bind="savedName"></label>
+					<label id="B4_2" data-bind="text: savedName"></label>
 				</div>
 				<div class="valign-center control-group">
 					<div id="B4_3" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF003_29')}</div>
@@ -48,7 +48,7 @@
 						data-bind="ntsGridList: {								
 						height: 400,
 						dataSource: categorys,
-						primaryKey: 'code',
+						primaryKey: 'categoryId',
 						columns: columnCategorys,
 						multiple: false,
 						value: currentCode,

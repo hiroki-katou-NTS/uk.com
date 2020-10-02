@@ -44,7 +44,7 @@ module nts.uk.com.view.cmf003.b {
       activeStep: KnockoutObservable<number>;
 
       //gridlist
-      categorys: KnockoutObservableArray<CategoryModel>;
+      categorys: KnockoutObservableArray<Category>;
       columnCategorys: KnockoutObservableArray<NtsGridListColumn>;
       columnEmployees: KnockoutObservableArray<NtsGridListColumn>;
       currentCode: KnockoutObservable<any>;
@@ -81,7 +81,6 @@ module nts.uk.com.view.cmf003.b {
       selectedTitleAtr: KnockoutObservable<number> = ko.observable();
 
       ccgcomponent: GroupOption;
-      systemTypes: KnockoutObservableArray<any>;
 
       // Options
       isQuickSearchTab: KnockoutObservable<boolean>;
@@ -159,37 +158,12 @@ module nts.uk.com.view.cmf003.b {
       maxDaysCumulationByEmp: KnockoutObservable<number>;
 
       //Screen B ver27
-      patternList: KnockoutObservableArray<Pattern> = ko.observableArray([
-        { code: '000001', name: 'name1' },
-        { code: '000002', name: 'name2' },
-        { code: '000003', name: 'name3' },
-        { code: '000004', name: 'name4' },
-        { code: '000005', name: 'name5' },
-        { code: '000011', name: 'name1' },
-        { code: '000012', name: 'name2' },
-        { code: '000013', name: 'name3' },
-        { code: '000014', name: 'name4' },
-        { code: '000015', name: 'name5' },
-        { code: '000021', name: 'name1' },
-        { code: '000022', name: 'name2' },
-        { code: '000023', name: 'name3' },
-        { code: '000024', name: 'name4' },
-        { code: '000025', name: 'name5' },
-        { code: '000031', name: 'name1' },
-        { code: '000032', name: 'name2' },
-        { code: '000033', name: 'name3' },
-        { code: '000034', name: 'name4' },
-        { code: '000035', name: 'name5' },
-        { code: '000041', name: 'name1' },
-        { code: '000042', name: 'name2' },
-        { code: '000043', name: 'name3' },
-        { code: '000044', name: 'name4' },
-        { code: '000045', name: 'name5' },
-      ]);
+      patternList: KnockoutObservableArray<Pattern> = ko.observableArray([]);
       patternColumns: KnockoutObservableArray<any> = ko.observableArray([
-        { headerText: getText('CMF003_23'), key: 'code', width: 75 },
-        { headerText: getText('CMF003_632'), key: 'name', width: 185 }
+        { headerText: getText('CMF003_23'), key: 'displayCode', width: 75 },
+        { headerText: getText('CMF003_632'), key: 'patternName', width: 185 }
       ]);
+      systemTypes: KnockoutObservableArray<number> = ko.observableArray([]);
       selectedPatternId: KnockoutObservable<string> = ko.observable('');
       savedName: KnockoutObservable<string> = ko.observable('');
       nextButtonText: KnockoutObservable<string> = ko.observable('');
@@ -229,9 +203,9 @@ module nts.uk.com.view.cmf003.b {
 
         this.columnCategorys = ko.observableArray([
           { headerText: '', key: 'categoryId', width: 100, hidden: true },
-          { headerText: getText('CMF003_30'), key: 'categoryName', width: 230 },
-          { headerText: getText('CMF003_31'), formatter: timeStore, key: 'timeStore', width: 100 },
-          { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storageRangeSaved', width: 120 }
+          { headerText: getText('CMF003_30'), key: 'displayName', width: 230 },
+          { headerText: getText('CMF003_31'), formatter: timeStore, key: 'periodDivision', width: 100 },
+          { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storeRange', width: 120 }
         ]);
 
         this.columnEmployees = ko.observableArray([
@@ -396,6 +370,13 @@ module nts.uk.com.view.cmf003.b {
           self.periodDate.valueHasMutated();
         });
 
+        self.isCompressPass.subscribe(value => {
+          if (!value) {
+            self.password('');
+            self.confirmPassword('');
+          }
+        })
+
         //KCP005
         self.lstPersonComponentOption = {
           isShowAlreadySet: false,
@@ -418,10 +399,13 @@ module nts.uk.com.view.cmf003.b {
           self.lstPersonComponentOption.disableSelection = value == 0 ? true : false;
           $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
           self.nextButtonText(value === 0 ? getText('CMF003_171') : getText('CMF003_53'));
-          console.log(value);
         });
         self.selectedTitleAtr(0);
         self.selectedTitleAtr.valueHasMutated();
+
+        self.selectedPatternId.subscribe(value => {
+          self.selectPattern(value);
+        });
 
       }//end constructor
 
@@ -603,7 +587,10 @@ module nts.uk.com.view.cmf003.b {
         const self = this;
         if (self.selectedTitleAtr() === 1) 
           $('#ex_accept_wizard').ntsWizard("next");
-        else self.nextFromDToE();
+        else {
+          self.initE();
+          self.gotoscreenF();
+        }
       }
       /**
        * function previous wizard by on click button 
@@ -647,16 +634,16 @@ module nts.uk.com.view.cmf003.b {
         self.monthRequired(false);
         self.yearRequired(false);
         for (var i = 0; i < self.categorys().length; i++) {
-          if (self.categorys()[i].timeStore == 1) {
+          if (self.categorys()[i].periodDivision == 1) {
             self.dayRequired(true);
           }
-          else if (self.categorys()[i].timeStore == 2) {
+          else if (self.categorys()[i].periodDivision == 2) {
             self.monthRequired(true);
           }
-          else if (self.categorys()[i].timeStore == 3) {
+          else if (self.categorys()[i].periodDivision == 3) {
             self.yearRequired(true);
           }
-          else if (self.categorys()[i].timeStore == 0) {
+          else if (self.categorys()[i].periodDivision == 0) {
             $('.form-B .ntsDatepicker').ntsError('clear');
           }
         }
@@ -667,6 +654,17 @@ module nts.uk.com.view.cmf003.b {
         block.grayout();
         service.screenDisplayProcess().done(res => {
           console.log(res);
+          _.forEach(res.patterns, x => {
+            let p = new Pattern();
+            p.code = x.patternCode;
+            p.patternName = x.patternName;
+            p.patternClassification = x.patternClassification;
+            p.displayCode = x.patternClassification + x.patternCode;
+            self.patternList.push(p);
+          });
+          self.systemTypes(res.systemTypes);
+        }).fail((err) => {
+          alertError({ messageId: 'Msg_1736' });
         }).always(() => {
           block.clear();
         });
@@ -761,11 +759,11 @@ module nts.uk.com.view.cmf003.b {
 
       private saveManualSetting(): void {
         let self = this;
-        let manualSetting = new ManualSettingModal(self.systemtypeFromC.code, Number(self.isCompressPass()), self.dataSaveSetName(),
-          moment.utc(self.referenceDate(), 'YYYY/MM/DD'), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD'),
-          moment.utc(self.dayValue().startDate, 'YYYY/MM/DD'), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD'),
-          moment.utc(self.monthValue().startDate, 'YYYY/MM/DD'), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
-          self.selectedTitleAtr(), Number(self.isSymbol()), self.targetEmployee(), self.categorys());
+        let manualSetting = new ManualSettingModal(Number(self.isCompressPass()), self.dataSaveSetName(),
+          moment.utc(self.referenceDate(), 'YYYY/MM/DD').toISOString(), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD').toISOString(),
+          moment.utc(self.dayValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD').toISOString(),
+          moment.utc(self.monthValue().startDate, 'YYYY/MM/DD').toISOString(), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
+          self.selectedTitleAtr(), self.targetEmployee(), self.categorys(), self.selectedPatternId().slice(1));
 
         service.addMalSet(manualSetting).done((res) => {
           if ((res != null) && (res != "")) {
@@ -786,10 +784,67 @@ module nts.uk.com.view.cmf003.b {
         }).fail((err) => {
         });
       }
+
+      private selectPattern(id: string) {
+        const self = this;
+        block.grayout();  
+        const pattern = _.find(self.patternList(), { 'displayCode': id });
+        let param = {
+          patternClassification: pattern.patternClassification,
+          patternCode: pattern.code,
+          systemType: self.systemTypes()
+        };
+        service.patternSettingSelect(param).done((res) => {
+          self.savedName(res.patternName);
+          self.dataSaveSetName(res.patternName);
+          self.isCompressPass(res.withoutPassword === 1);
+          self.password(res.patternCompressionPwd);
+          self.confirmPassword(res.patternCompressionPwd);
+          self.explanation(res.patternSuppleExplanation);
+
+          const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
+          self.categorys(_.map(res.selectCategories, (x: any) => {
+            const params: string[] = _.map(x.holder.params, (text: string) => getText(text));
+            const category: Category = {
+              categoryId: x.categoryId,
+              categoryName: x.categoryName,
+              displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
+              periodDivision: x.periodDivision,
+              separateCompClassification: x.separateCompClassification,
+              specifiedMethod: x.specifiedMethod,
+              storeRange: x.storeRange,
+              systemType: x.systemType
+            };
+            return category;
+          }));
+
+          if (res.dailyReferMonth && res.dailyReferYear) {
+            self.dayValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
+          } else {
+            self.dayValue().startDate = moment.utc().subtract(1, 'month').add(1, 'day').format('YYYY/MM/DD');
+          }
+          self.dayValue.valueHasMutated();
+          if (res.monthlyReferMonth && res.monthlyReferYear) {
+            self.monthValue().startDate = moment.utc().subtract(res.monthlyReferYear - 1, 'year').subtract(res.monthlyReferMonth - 1, 'month').format('YYYY/MM');
+          } else {
+            self.monthValue().startDate = moment.utc().format('YYYY/MM');
+          }
+          self.monthValue.valueHasMutated();
+          if (res.annualReferYear) {
+            self.yearValue().startDate = moment.utc().subtract(res.annualReferYear - 1, 'year').format('YYYY');
+          } else {
+            self.yearValue().startDate = moment.utc().format('YYYY');
+          }
+          self.yearValue.valueHasMutated();
+          self.setRangePickerRequire();
+          nts.uk.ui.errors.clearAll();
+        }).always(() => {
+          block.clear();
+        })
+      }
     }//end screemodule
 
     export class ManualSettingModal {
-      systemType: number;
       passwordAvailability: number;
       saveSetName: string;
       referenceDate: string;
@@ -803,15 +858,14 @@ module nts.uk.com.view.cmf003.b {
       endYear: number;
       startYear: number;
       presenceOfEmployee: number;
-      identOfSurveyPre: number;
       employees: Array<TargetEmployee>;
-      category: Array<CategoryModel>;
+      category: Array<Category>;
+      patternCode: string;
 
-      constructor(systemType: number, passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
+      constructor(passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
         executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string,
-        suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, identOfSurveyPre: number,
-        employees: Array<TargetEmployee>, category: Array<CategoryModel>) {
-        this.systemType = systemType;
+        suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, 
+        employees: Array<TargetEmployee>, category: Array<Category>, patternCode: string) {
         this.passwordAvailability = passwordAvailability;
         this.saveSetName = saveSetName;
         this.referenceDate = referenceDate;
@@ -825,15 +879,28 @@ module nts.uk.com.view.cmf003.b {
         this.endYear = endYear ? endYear : null;
         this.startYear = startYear ? startYear : null;
         this.presenceOfEmployee = presenceOfEmployee;
-        this.identOfSurveyPre = identOfSurveyPre;
         this.employees = employees;
         this.category = category;
+        this.patternCode = patternCode;
       }
     }
 
     export class Pattern {
       code: string;
-      name: string;
+      patternName: string;
+      patternClassification: number;
+      displayCode?: string;
+    }
+
+    export class Category {
+      categoryId: string;
+      categoryName: string;
+      periodDivision: number;
+      systemType: number;
+      separateCompClassification: number;
+      specifiedMethod: number;
+      storeRange: number;
+      displayName: string;
     }
 
     export class CategoryModel {
@@ -848,22 +915,6 @@ module nts.uk.com.view.cmf003.b {
       recoveryStorageRange: number;
       paymentAvailability: number;
       storageRangeSaved: number;
-
-      constructor(schelperSystem: number, categoryId: string, categoryName: string, possibilitySystem: number,
-        storedProcedureSpecified: number, timeStore: number, otherCompanyCls: number, attendanceSystem: number,
-        recoveryStorageRange: number, paymentAvailability: number, storageRangeSaved: number) {
-        this.schelperSystem = schelperSystem;
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.possibilitySystem = possibilitySystem;
-        this.storedProcedureSpecified = storedProcedureSpecified;
-        this.timeStore = timeStore;
-        this.otherCompanyCls = otherCompanyCls;
-        this.attendanceSystem = attendanceSystem;
-        this.recoveryStorageRange = recoveryStorageRange;
-        this.paymentAvailability = paymentAvailability;
-        this.storageRangeSaved = storageRangeSaved;
-      }
     }
 
     class ItemCombobox {

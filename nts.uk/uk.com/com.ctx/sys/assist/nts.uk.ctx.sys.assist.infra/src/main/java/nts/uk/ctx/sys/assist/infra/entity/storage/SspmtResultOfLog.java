@@ -28,6 +28,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	@EmbeddedId
     public SspmtResultOfLogPK sspmtResultOfLogPK;
 	
+	
 	// column 契約コード
 	@Basic(optional = false)
 	@Column(name = "CONTRACT_CD")

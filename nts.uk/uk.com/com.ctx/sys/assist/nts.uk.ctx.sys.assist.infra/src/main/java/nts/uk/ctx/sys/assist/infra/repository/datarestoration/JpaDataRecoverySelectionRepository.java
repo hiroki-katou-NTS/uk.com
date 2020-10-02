@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoverySelectionRepository
 @Stateless
 public class JpaDataRecoverySelectionRepository extends JpaRepository implements DataRecoverySelectionRepository {
 
-	private final String SELECT_FILE_RECOVERY_SELECTION_SAVE = "SELECT r.saveSetCode, r.saveName, m.suppleExplanation, r.saveStartDatetime, r.saveForm, "
+	private final String SELECT_FILE_RECOVERY_SELECTION_SAVE = "SELECT r.patternCode, r.saveName, m.suppleExplanation, r.saveStartDatetime, r.saveForm, "
 			+ "r.targetNumberPeople, r.saveFileName, r.fileId,  r.storeProcessingId FROM SspmtResultOfSaving  r "
 			+ "INNER JOIN SspmtManualSetOfDataSave m on r.storeProcessingId = m.storeProcessingId "
 			+ "where r.cid = :companyId and r.saveStartDatetime >= :startDate and r.saveStartDatetime <= :endDate and "

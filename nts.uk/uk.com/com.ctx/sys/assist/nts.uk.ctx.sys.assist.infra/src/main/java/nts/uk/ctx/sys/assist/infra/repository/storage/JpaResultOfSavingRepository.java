@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -14,9 +15,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfLog;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -37,7 +40,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 				+ " AND f.saveStartDatetime =:endDateOperator "
 				+ " AND f.practitioner IN :practitioner ";
 	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE f.saveSetCode IN :saveSetCodes";
+			+ " WHERE f.patternCode IN :saveSetCodes";
 
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
@@ -85,13 +88,15 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void update(ResultOfSaving data) {
-		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
-		SspmtResultOfSaving oldEntity = this.queryProxy().find(data.getStoreProcessingId(), SspmtResultOfSaving.class).get();
-		oldEntity.pcAccount = entity.pcAccount;
-		oldEntity.pcId = entity.pcId;
-		oldEntity.pcName = entity.pcName;
-		oldEntity.listResultOfLogs = entity.listResultOfLogs;
-		this.commandProxy().update(oldEntity);
+		Optional<SspmtResultOfSaving> op = this.queryProxy().find(data.getStoreProcessingId(), SspmtResultOfSaving.class);
+		op.ifPresent(oldEntity -> {
+			oldEntity.pcAccount = data.getLoginInfo().getAccount();
+			oldEntity.pcId = data.getLoginInfo().getIpAddress();
+			oldEntity.pcName = data.getLoginInfo().getPcName();
+			oldEntity.listResultOfLogs = data.getListResultLogSavings().stream()
+					.map(SspmtResultOfLog::toEntity).collect(Collectors.toList());
+			this.commandProxy().update(oldEntity);
+		});
 	}
 
 	@Override

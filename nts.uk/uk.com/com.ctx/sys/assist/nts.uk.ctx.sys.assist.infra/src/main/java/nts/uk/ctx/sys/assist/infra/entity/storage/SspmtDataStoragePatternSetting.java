@@ -147,13 +147,11 @@ public class SspmtDataStoragePatternSetting extends UkJpaEntity
 
 	@Override
 	public void setCategories(List<DataStorageSelectionCategory> categories) {
-		this.categories = categories.stream()
-				.map(domain -> {
-					SspmtDataStorageSelectionCategory entity = new SspmtDataStorageSelectionCategory();
-					domain.setMemento(entity);
-					return entity;
-				})
-				.collect(Collectors.toList());
+		this.categories = categories.stream().map(domain -> {
+			SspmtDataStorageSelectionCategory entity = new SspmtDataStorageSelectionCategory();
+			domain.setMemento(entity);
+			return entity;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -179,8 +177,7 @@ public class SspmtDataStoragePatternSetting extends UkJpaEntity
 
 	@Override
 	public List<DataStorageSelectionCategory> getCategories() {
-		return this.categories.stream()
-				.map(DataStorageSelectionCategory::createFromMemento)
+		return this.categories.stream().map(DataStorageSelectionCategory::createFromMemento)
 				.collect(Collectors.toList());
 	}
 }

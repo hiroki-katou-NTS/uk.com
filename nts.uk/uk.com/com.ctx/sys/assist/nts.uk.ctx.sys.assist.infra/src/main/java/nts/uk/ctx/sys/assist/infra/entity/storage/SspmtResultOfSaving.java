@@ -52,13 +52,6 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	public String cid;
 
 	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
-
-	/**
 	 * ファイル容量
 	 */
 	@Basic(optional = true)
@@ -70,7 +63,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_SET_CODE")
-	public String saveSetCode;
+	public String patternCode;
 
 	/**
 	 * 保存ファイル名
@@ -190,9 +183,8 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 			(
 				this.storeProcessingId, 
 				this.cid, 
-				this.systemType, 
 				this.fileSize, 
-				this.saveSetCode,
+				this.patternCode,
 				this.saveFileName, 
 				this.saveName, 
 				this.saveForm, 
@@ -216,9 +208,8 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 			(
 				domain.getStoreProcessingId(), 
 				domain.getCid(), 
-				domain.getSystemType().value,
 				domain.getFileSize().orElse(null),
-				domain.getSaveSetCode().map(i -> i.v()).orElse(null),
+				domain.getPatternCode().map(i -> i.v()).orElse(null),
 				domain.getSaveFileName().map(i -> i.v()).orElse(null), 
 				domain.getSaveName().v(),
 				domain.getSaveForm().value, 
@@ -238,7 +229,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 			);
 	}
 
-	public SspmtResultOfSaving(String storeProcessingId, String cid, int systemType, long fileSize, String saveSetCode,
+	public SspmtResultOfSaving(String storeProcessingId, String cid, long fileSize, String saveSetCode,
 			String saveFileName, String saveName, int saveForm, GeneralDateTime saveEndDatetime,
 			GeneralDateTime saveStartDatetime, int deletedFiles, String compressedPassword, String practitioner,
 			int targetNumberPeople, int saveStatus, int saveForInvest, String fileId, String pcId, String pcName,
@@ -246,9 +237,8 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 		super();
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
-		this.systemType = systemType;
 		this.fileSize = fileSize;
-		this.saveSetCode = saveSetCode;
+		this.patternCode = saveSetCode;
 		this.saveFileName = saveFileName;
 		this.saveName = saveName;
 		this.saveForm = saveForm;

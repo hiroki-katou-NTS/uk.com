@@ -27,11 +27,6 @@ public class ResultOfSavingDto {
 	private String cid;
 
 	/**
-	 * システム種類
-	 */
-	private int systemType;
-
-	/**
 	 * ファイル容量
 	 */
 	private long fileSize;
@@ -112,9 +107,8 @@ public class ResultOfSavingDto {
 			(
 				domain.getStoreProcessingId(), 
 				domain.getCid(), 
-				domain.getSystemType().value,
 				domain.getFileSize().orElse(null), 
-				domain.getSaveSetCode().map(i -> i.v()).orElse(null), 
+				domain.getPatternCode().map(i -> i.v()).orElse(null), 
 				domain.getSaveFileName().map(i -> i.v()).orElse(null),
 				domain.getSaveName().v(),
 				domain.getSaveForm().value,

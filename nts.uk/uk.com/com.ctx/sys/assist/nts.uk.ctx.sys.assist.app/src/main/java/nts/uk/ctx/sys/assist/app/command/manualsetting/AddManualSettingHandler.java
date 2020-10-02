@@ -18,6 +18,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
+import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveHolder;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
 import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
@@ -69,7 +70,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 		try {
 			List<TargetCategoryCommand> lstcategories = manualSetCmd.getCategory();
 			List<TargetCategory> targetCategory = lstcategories.stream().map(item -> {
-				return new TargetCategory(storeProcessingId, item.getCategoryId(), SystemType.ATTENDANCE_SYSTEM);
+				return new TargetCategory(storeProcessingId, item.getCategoryId(), item.getSystemType());
 			}).collect(Collectors.toList());
 			repoTargetCat.add(targetCategory);
 
@@ -95,7 +96,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 			listTargetEmp.sort(Comparator.comparing(TargetEmployees::getScd));
 			totalTargetEmployees = listTargetEmp.size();
 			targetEmployeesRepo.addAll(listTargetEmp);
-			manualSetOfDataSaveService.start(domain);
+			manualSetOfDataSaveService.start(new ManualSetOfDataSaveHolder(domain, manualSetCmd.getPatternCode()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			// ドメインモデル「データ保存動作管理」を更新する

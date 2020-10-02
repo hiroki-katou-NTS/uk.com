@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -39,9 +38,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	/**
 	 * データ保存処理ID
 	 */
-//	@Basic(optional = false)
-//	@Column(name = "DATA_STORAGE_PROCESS_ID")
-//	private String dataStorageProcessId;
+	@Basic(optional = false)
+	@Column(name = "DATA_STOPRO_ID")
+	private String dataStorageProcessId;
 
 	/**
 	 * 会社ID
@@ -54,8 +53,8 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	 * 保存セットコード
 	 */
 	@Basic(optional = true)
-	@Column(name = "SAVE_SET_CD")
-	public String saveSetCd;
+	@Column(name = "PATTERN_CD")
+	public String patternCode;
 
 	/**
 	 * 実行者
@@ -132,7 +131,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 		return new DataRecoveryResult(
 				this.dataRecoveryProcessId,
 				this.cid, 
-				StringUtil.isNullOrEmpty(this.saveSetCd, false) ? "" : this.saveSetCd, 
+				this.patternCode, 
 				this.practitioner,
 				this.executionResult, 
 				this.listResultLogRecovers.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
@@ -148,7 +147,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	public static SspmtDataRecoverResult toEntity(DataRecoveryResult domain) {
 		return new SspmtDataRecoverResult
 			(
-				domain.getDataRecoveryProcessId(), domain.getCid(),
+				domain.getDataRecoveryProcessId(), domain.getDataStorageProcessId(), domain.getCid(),
 				domain.getPatternCode().v(), domain.getPractitioner(),
 				domain.getExecutionResult(), domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 

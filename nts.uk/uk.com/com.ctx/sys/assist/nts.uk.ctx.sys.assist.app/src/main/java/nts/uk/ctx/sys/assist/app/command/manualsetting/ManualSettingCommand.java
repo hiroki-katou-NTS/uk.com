@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
 import nts.uk.ctx.sys.assist.dom.storage.EmployeeCode;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
@@ -27,7 +28,6 @@ public class ManualSettingCommand {
 
 	private String cid;
 	private String storeProcessingId;
-	private int systemType;
 	private int passwordAvailability;
 	private String saveSetName;
 	private GeneralDate referenceDate;
@@ -41,16 +41,16 @@ public class ManualSettingCommand {
 	private Integer endYear;
 	private Integer startYear;
 	private int presenceOfEmployee;
-	private int identOfSurveyPre;
 	private String practitioner;
 	private List<TargetEmployeesCommand> employees;
 	private List<TargetCategoryCommand> category;
+	private String patternCode;
 
 	public ManualSetOfDataSave toDomain(String cid, String storeProcessingId, String practitioner) {
-		return new ManualSetOfDataSave(cid, storeProcessingId, systemType, passwordAvailability, saveSetName,
+		return new ManualSetOfDataSave(cid, storeProcessingId, passwordAvailability, saveSetName,
 				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
 				monthSaveEndDate, monthSaveStartDate, suppleExplanation, endYear, startYear, presenceOfEmployee,
-				identOfSurveyPre, practitioner, employees.stream().map(x -> {
+				practitioner, StorageClassification.MANUAL.value, employees.stream().map(x -> {
 					return new TargetEmployees(storeProcessingId, x.getSid(), new BusinessName(x.getBusinessname()),
 							new EmployeeCode(x.getScd()));
 				}).collect(Collectors.toList()), category.stream().map(x1 -> {

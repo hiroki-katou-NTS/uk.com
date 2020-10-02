@@ -39,12 +39,6 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
      @Basic(optional = false)
      @Column(name = "STORE_PROCESSING_ID")
      public String storeProcessingId;
-    /**
-    * システム種類
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_TYPE")
-    public int systemType;
     
     /**
     * パスワード有無
@@ -136,13 +130,6 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     @Basic(optional = false)
     @Column(name = "PRESENCE_OF_EMPLOYEE")
     public int presenceOfEmployee;
-    
-    /**
-    * 調査用保存の識別
-    */
-    @Basic(optional = false)
-    @Column(name = "IDENT_OF_SURVEY_PRE")
-    public int identOfSurveyPre;
     
     /**
     * 実行者

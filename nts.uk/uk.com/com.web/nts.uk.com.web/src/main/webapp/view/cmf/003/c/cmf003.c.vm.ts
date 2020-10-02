@@ -277,6 +277,9 @@ module nts.uk.com.view.cmf003.c {
       vm.screenMode.subscribe(value => {
         if (Number(value) === ScreenMode.NEW) {
           vm.selectedPatternCode('');
+          $("#C7_2").focus();
+        } else {
+          $("#C7_4").focus();
         }
       });
 
@@ -439,7 +442,6 @@ module nts.uk.com.view.cmf003.c {
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
       service.selectPattern(param).then((res) => {
-        console.log(res);
         const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
         vm.codeValue(pattern.patternCode);

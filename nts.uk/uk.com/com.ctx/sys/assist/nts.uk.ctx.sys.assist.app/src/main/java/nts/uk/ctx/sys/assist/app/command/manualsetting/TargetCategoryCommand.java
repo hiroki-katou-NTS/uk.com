@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 
 /**
  * @author nam.lh
@@ -26,4 +27,9 @@ public class TargetCategoryCommand {
 	    * カテゴリID
 	    */
 	    private String categoryId;
+	    
+	    /**
+	     * システム種類
+	     */
+	    private SystemType systemType;
 }

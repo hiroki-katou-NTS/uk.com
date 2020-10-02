@@ -24,7 +24,7 @@ module nts.uk.com.view.cmf003.b {
         }
 
         export function patternSettingSelect(param: any): JQueryPromise<any> {
-          return ajax('com', paths.patternSettingSelect);
+          return ajax('com', paths.patternSettingSelect, param);
         }
     }
 }

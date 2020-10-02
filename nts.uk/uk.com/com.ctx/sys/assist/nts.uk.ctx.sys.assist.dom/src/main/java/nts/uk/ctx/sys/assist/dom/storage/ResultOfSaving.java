@@ -31,19 +31,14 @@ public class ResultOfSaving extends AggregateRoot
     private String cid;
     
     /**
-    * システム種類
-    */
-    private SystemType systemType;
-    
-    /**
     * ファイル容量
     */
     private Optional<Long> fileSize;
     
     /**
-    * 保存セットコード
+    * パターンコード
     */
-    private Optional<SaveSetCode> saveSetCode;
+    private Optional<PatternCode> patternCode;
     
     /**
     * 保存ファイル名
@@ -116,17 +111,16 @@ public class ResultOfSaving extends AggregateRoot
     //field ログイン情報
     private LoginInfo loginInfo;
 
-	public ResultOfSaving(String storeProcessingId, String cid, int systemType, Long fileSize,
-			String saveSetCode, String saveFileName, String saveName, int saveForm,
+	public ResultOfSaving(String storeProcessingId, String cid, Long fileSize,
+			String patternCode, String saveFileName, String saveName, int saveForm,
 			GeneralDateTime saveEndDatetime, GeneralDateTime saveStartDatetime, int deletedFiles,
 			String compressedPassword, String practitioner,List<ResultLogSaving> listResultLogSavings,
 			Integer targetNumberPeople, Integer saveStatus, int saveForInvest, String fileId, LoginInfo logInfo) {
 		super();
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.fileSize = Optional.ofNullable(fileSize);
-		this.saveSetCode = saveSetCode == null ? Optional.empty() : Optional.of(new SaveSetCode(saveSetCode));
+		this.patternCode = patternCode == null ? Optional.empty() : Optional.of(new PatternCode(patternCode));
 		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveName));
 		this.saveName = new SaveName(saveName);
 		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
