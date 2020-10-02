@@ -61,6 +61,30 @@ export module model {
         buttonValueType: number;
 
         usrArt: number;
+
+        buttonType: IButtonTypeDto
+    }
+
+    export interface IButtonTypeDto {
+
+        stampType: IStampTypeDto;
+    }
+
+    export interface IStampTypeDto {
+        /** 勤務種類を半休に変更する */
+        changeHalfDay: Boolean;
+
+        /** 外出区分 */
+        goOutArt: number;
+
+        /** 所定時刻セット区分 */
+        setPreClockArt: number;
+
+        /** 時刻変更区分 */
+        changeClockArt: number;
+
+        /** 計算区分変更対象 */
+        changeCalArt: number;
     }
 
     export interface IButtonDisSetDto {
