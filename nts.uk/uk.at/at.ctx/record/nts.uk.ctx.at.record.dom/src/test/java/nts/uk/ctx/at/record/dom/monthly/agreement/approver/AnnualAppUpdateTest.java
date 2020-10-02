@@ -96,7 +96,7 @@ public class AnnualAppUpdateTest {
 		};
 
 		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.YEARLY_LIMIT_EXCEEDED);
+		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ResultType.YEARLY_LIMIT_EXCEEDED);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class AnnualAppUpdateTest {
 		};
 
 		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
+		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ResultType.NO_ERROR);
 	}
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {
