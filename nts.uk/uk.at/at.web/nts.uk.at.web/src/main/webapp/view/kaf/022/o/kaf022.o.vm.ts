@@ -24,11 +24,13 @@ module nts.uk.at.view.kaf022.o.viewmodel {
 
         manualChange: boolean = false;
 
+        allChecked: KnockoutObservable<boolean>;
+
         constructor() {
             let self = this;
             self.flexWorkOptions = ko.observableArray([
-                new ItemModel(1, "フレックス勤務者"),
-                new ItemModel(0, "フレックス勤務者以外")
+                new ItemModel(0, "フレックス勤務者"),
+                new ItemModel(1, "フレックス勤務者以外")
             ]);
             self.selectedFlexWorkAtr = ko.observable(0);
 
@@ -60,6 +62,20 @@ module nts.uk.at.view.kaf022.o.viewmodel {
                     frame.checked(targetFrames.indexOf(frame.no) >= 0);
                 });
                 self.manualChange = false;
+            });
+
+            self.allChecked = ko.pureComputed({
+                read: function () {
+                    return self.overtimeWorkFrames().length > 0 && self.overtimeWorkFrames().filter(m => m.checked()).length == self.overtimeWorkFrames().length;
+                },
+                write: function (value) {
+                    if (value) {
+                        self.overtimeWorkFrames().forEach(m => m.checked(true));
+                    } else {
+                        self.overtimeWorkFrames().forEach(m => m.checked(false));
+                    }
+                },
+                owner: self
             });
         }
 

@@ -93,7 +93,7 @@ module nts.uk.at.view.kaf022.g.viewmodel {
             if (allData.holidayWorkApplicationSetting) {
                 self.calcStampMiss(allData.holidayWorkApplicationSetting.calcStampMiss);
                 self.useDirectBounceFunction(allData.holidayWorkApplicationSetting.useDirectBounceFunction);
-                self.overtimeLeaveAppCommonSetting(new OvertimeLeaveAppCommonSetting(allData.holidayWorkApplicationSetting.overtimeLeaveAppCommonSetting));
+                self.overtimeLeaveAppCommonSetting(new OvertimeLeaveAppCommonSetting(allData.holidayWorkApplicationSetting.overtimeLeaveAppCommonSet));
                 self.appDetailSetting(new AppDetailSetting(allData.holidayWorkApplicationSetting.applicationDetailSetting));
             }
         }
