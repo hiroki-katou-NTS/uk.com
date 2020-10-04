@@ -6,23 +6,40 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(JMockit.class)
 public class AddWorkplaceApproverHistoryDomainServiceTest {
     @Injectable
     AddWorkplaceApproverHistoryDomainService.Requeire requeire;
-
+    private static String workplaceId = "wid";
+    private   static List<String> approverList =  Arrays.asList("abc","cba","efg");
+    private   static List<String> confirmerList =  Arrays.asList("abc","cba","efg");
     @Test
     public void test_01() {
+        Approver36AgrByWorkplace itemToBeAdd = Approver36AgrByWorkplace.create(
+                workplaceId,
+                new DatePeriod(GeneralDate.today(),GeneralDate.max()),
+                approverList,
+                confirmerList
 
-        val itemToBeAdd =  CreateDomain.createApprover36AgrByWorkplace();
-        val itemUpdate = CreateDomain.createApprover36AgrByWorkplaceLast();
+        );
+        Approver36AgrByWorkplace itemUpdate = Approver36AgrByWorkplace.create(
+                workplaceId,
+                new DatePeriod(GeneralDate.today().addDays(-5),GeneralDate.max()),
+                approverList,
+                confirmerList
+
+        );
         new Expectations() {{
-            requeire.getLatestHistory(CreateDomain.workplaceId, GeneralDate.max());
+            requeire.getLatestHistory(workplaceId, GeneralDate.max());
             result = Optional.of(itemUpdate);
         }};
         NtsAssert.atomTask(
@@ -35,9 +52,15 @@ public class AddWorkplaceApproverHistoryDomainServiceTest {
     @Test
     public void test_02() {
 
-        val itemToBeAdd =  CreateDomain.createApprover36AgrByWorkplace();
+        Approver36AgrByWorkplace itemToBeAdd = Approver36AgrByWorkplace.create(
+                workplaceId,
+                new DatePeriod(GeneralDate.today(),GeneralDate.max()),
+                approverList,
+                confirmerList
+
+        );
         new Expectations() {{
-            requeire.getLatestHistory(CreateDomain.workplaceId, GeneralDate.max());
+            requeire.getLatestHistory(workplaceId, GeneralDate.max());
             result = Optional.empty();
         }};
 
