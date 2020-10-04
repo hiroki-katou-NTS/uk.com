@@ -489,7 +489,6 @@ module nts.uk.at.view.kwr001.c {
                 _.delay(() => {
                     nts.uk.ui.errors.clearAll();
                 }, 400);
-                self.items(self.outputItemPossibleLst());
             }
 
             private convertBoolToNum(value: boolean): number {

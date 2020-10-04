@@ -86,6 +86,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -252,13 +253,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	
 	@Inject
 	private EmploymentStatusPub empStatusPub;
-	
-	@Inject
-	private DivergenceReasonInputMethodRepository divergenceReasonInputMethodRepository;
-	
+
 	// for addition
 	@Inject
 	private BPSettingRepository bpSettingRepository;
+	
+	@Inject
+	private DivergenceReasonInputMethodRepository divergenceReasonInputMethodRepo;
 	
 	/** The Constant filename. */
 	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
@@ -352,9 +353,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant ATTENDANCE_ID_EMPLOYMENT. */
 	private static final int ATTENDANCE_ID_BUSSINESS_TYPE = 858;
 
-	/** ②勤怠項目ID（439, 444, 449, 454, 459, 802, 807, 812, 817, 822）：乖離理由  */
-	private static final int[] ATTENDANCE_ID_FOR_DIVERGENCE = { 439, 444, 449, 454, 459, 802, 807, 812, 817, 822 };
-	
+	private static final Integer[] DEVIATION_REASON = { 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 
+			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
+	private static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length - 1)
+																			   .boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
+
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
@@ -1087,11 +1090,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									}
 								// append 乖離理由
 								} else if (remark.getPrintItem() == RemarksContentChoice.DIVERGENCE_REASON) {
-									List<DivergenceReasonInputMethod> lstReasonMethod = this.divergenceReasonInputMethodRepository.getAllDivTime(companyId);
-									
-									lstReasonMethod.forEach(t -> {
-										
-									});
+									List<Integer> attendanceItem = attResultImport.getAttendanceItems().stream()
+											.map(t -> t.getItemId())
+											.collect(Collectors.toList());
+									List<String> lstStrReason = this.getDivergenceReasonSelected(companyId, attendanceItem);
+									lstRemarkContentStr.addAll(lstStrReason);
 								}  else {
 									// Get possible content based on remark choice
 									Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId // 社員ID
@@ -1340,14 +1343,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						}
-					// append 乖離理由
+					// Append 乖離理由
 					} else if (remark.getPrintItem() == RemarksContentChoice.DIVERGENCE_REASON) {
-						List<DivergenceReasonInputMethod> lstReasonMethod = this.divergenceReasonInputMethodRepository.getAllDivTime(companyId);
-						
-						lstReasonMethod.stream().forEach(reasonMethod -> {
-							
-						});
-						// TODO
+						List<Integer> attendanceItem = x.getAttendanceItems().stream()
+								.map(t -> t.getItemId())
+								.collect(Collectors.toList());
+						List<String> lstStrReason = this.getDivergenceReasonSelected(companyId, attendanceItem);
+						lstRemarkContentStr.addAll(lstStrReason);
 					} else {
 						// Get other possible content based on remark choice
 						Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId
@@ -3690,7 +3692,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			CodeName workplace = optWorkplace.get();
-			return workplace.getName();
+			// 勤務場所コード
+			return displayType == SwitchItemDisplay.DISPLAY_NAME ? workplace.getName() : workplace.getCode();
 		}
 		
 		
@@ -3703,11 +3706,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			WorkType workType = optWorkType.get();
-			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
-				return workType.getName().v();
-			}
+			String workTypeName = outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME
+									? workType.getName().v()
+									: workType.getAbbreviationName().v();
 
-			return workType.getAbbreviationName().v();
+			// 作業コード
+			return displayType == SwitchItemDisplay.DISPLAY_NAME ? workTypeName : workType.getWorkTypeCode().v();
 		}
 		
 		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
@@ -3813,17 +3817,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			return EnumAdaptor.valueOf(Integer.valueOf(code), ManageAtr.class).description;
 		}
 		
-		// for addition
+		// 加給コード
 		if (addtionItem.contains(attendanceId)) {
 			Optional<CodeName> oAddtion = lstAddition.stream()
 					.filter(add -> add.getCode().equalsIgnoreCase(code)).findFirst();
 			if (!oAddtion.isPresent()) {
 				return code + " " + MASTER_UNREGISTERED;
 			}
-
 			CodeName addition = oAddtion.get();
-			
-			// 
 			return displayType == SwitchItemDisplay.DISPLAY_NAME ? addition.getName() : addition.getCode();
 		}
 
@@ -3922,5 +3923,22 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		return returnList;
 	}
+    
+    private List<String> getDivergenceReasonSelected(String companyId, List<Integer> attendanceItem) {
+    	List<Integer> attItemId = Arrays.asList(DEVIATION_REASON);
+		List<Integer> divergenceNo = attendanceItem.stream().filter(x -> DEVIATION_REASON_MAP.containsKey(x))
+				.map(x -> DEVIATION_REASON_MAP.get(x)).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+		if (divergenceNo.isEmpty()) {
+			return new ArrayList<String>();
+		}
+		List<DivergenceReasonInputMethod> reasonMethods = this.divergenceReasonInputMethodRepo.getByCidAndLstTimeInfo(companyId
+				, divergenceNo
+				, DivergenceTimeUseSet.USE.value);
+		
+		return reasonMethods.stream()
+				.map(t -> t.getReasons().stream().map(reason -> reason.getReason().v()).collect(Collectors.toList()))
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+    }
 
 }
