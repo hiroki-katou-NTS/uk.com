@@ -3,6 +3,7 @@ import { component, Prop } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { vmOf } from 'vue/types/umd';
+import { KafS04BComponent } from '../b';
 
 @component({
     name: 'kafs04a',
@@ -16,6 +17,7 @@ import { vmOf } from 'vue/types/umd';
         'kaf-s00-b': KafS00BComponent,
         'kaf-s00-c': KafS00CComponent,
         'kaf-s00-shr': KafS00ShrComponent,
+        'kaf-s04-b': KafS04BComponent,
     },
     constraints: []
 })
@@ -27,10 +29,15 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public user !: any;
     public data !: IData;
     public appDispInfoStartupOutput: any;
+    public time: ITime = { attendanceTime: null, leaveTime: null };
+    public validAll: boolean = true;
+    public isValidateAll: Boolean = true;
+
 
     public created() {
         const vm = this;
         vm.fetchStart();
+        //khoi tao time
     }
 
     public fetchStart() {
@@ -73,7 +80,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public initComponetB() {
         const vm = this;
         let input = {
-            mode : 0,
+            mode: 0,
             appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
             newModeContent: {
                 appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
@@ -116,6 +123,28 @@ export class KafS04AComponent extends KafS00ShrComponent {
             input,
             output,
         };
+    }
+
+    public register() {
+        const vm = this;
+        vm.checkValidAll();
+    }
+
+    public checkValidAll() {
+        const vm = this;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                vm.validAll = false;
+            }
+        }
+        vm.isValidateAll = vm.validAll;
+        if (!vm.validAll) {
+            window.scrollTo(500, 0);
+
+            return;
+        }
+        alert('qua man tiep theo');
     }
 
 
@@ -388,5 +417,10 @@ interface IData {
     };
     cancelAtr: number | null;
     companyId: '';
+}
+
+interface ITime {
+    attendanceTime: number | null;
+    leaveTime: number | null;
 }
 
