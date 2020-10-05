@@ -1,0 +1,36 @@
+<template>
+<div class="kafs00c">
+    <div class="card card-label" v-if="dispReason">
+        <div class="card-header" style="align-items: center">
+            <v-label class="border-0" v-bind:constraint="validations.params.output.opAppReason">
+                {{'KAFS00_16' | i18n}}</v-label>
+            <span class="badge badge-warning" style="height: 30%">必須</span>
+        </div>
+        <div class="card-body">
+            <div v-if="displayFixedReason">
+                <div class="mb-1">
+                    <span class="small-header">{{'KAFS00_17' | i18n}}</span>
+                </div>
+                <div>
+                    <nts-dropdown v-model="params.output.opAppStandardReasonCD">
+                        <option v-for="(item, itemIndex) in dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
+                            {{item.reasonForFixedForm | i18n}}
+                        </option>
+                    </nts-dropdown>
+                </div>
+            </div>
+            <template v-else />
+            <div v-if="displayAppReason">
+                <div class="mb-1">
+                    <span class="small-header">{{'KAFS00_18' | i18n}}</span>
+                </div>
+                <div>
+                    <nts-text-area　v-model="params.output.opAppReason" />
+                </div>
+            </div>
+            <template v-else />
+        </div>
+    </div>
+    <template v-else />
+</div>
+</template>

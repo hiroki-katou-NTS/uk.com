@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
@@ -59,7 +59,7 @@ public interface IOvertimePreProcess {
 	 * @param recordWorkInfoImport 実績内容
 	 * @return
 	 */
-	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport);
+	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport);
 	
 	/**
 	 * 01-18-2_当日以外の実績場合
@@ -69,7 +69,7 @@ public interface IOvertimePreProcess {
 	 * @param recordWorkInfoImport 実績内容
 	 * @return
 	 */
-	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport);
+	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport);
 	
 	/**
 	 * @param employeeID

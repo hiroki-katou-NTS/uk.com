@@ -16,7 +16,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkType.
@@ -516,7 +515,26 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public void setDeprecate(DeprecateClassification deprecate) {
 		this.deprecate = deprecate;
 	}
-
+	
+	/** 時間消化休暇日数を取得する */
+	public double calcTimeConsumpVacationDays () {
+		
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			if (dailyWork.getOneDay() == WorkTypeClassification.TimeDigestVacation) {
+				return 1;
+			}
+		} else {
+			if (dailyWork.getMorning() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		
+			if (dailyWork.getAfternoon() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		}
+		
+		return 0;
+	}
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;

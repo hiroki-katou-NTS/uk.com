@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkBreakTimeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScheduleTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExport;
@@ -140,6 +141,54 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 
 	private ScheduleTimeSheetExport convertToScheduleTimeSheet(ScheduleTimeSheet st) {
 		return new ScheduleTimeSheetExport(st.getWorkNo().v(), st.getAttendance(), st.getLeaveWork());
+	}
+
+	@Override
+	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate) {
+		ScWorkScheduleExport_New record = new ScWorkScheduleExport_New();
+//		get 勤務予定
+		Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
+		workSchedule.ifPresent(x -> {
+			x.getOptSortTimeWork().ifPresent(y -> {
+				List<ShortWorkingTimeSheet> shortWorkingTimeSheet = y.getShortWorkingTimeSheets();
+				List<ShortWorkingTimeSheetExport> listExport = shortWorkingTimeSheet.stream().map(a ->{
+					return new ShortWorkingTimeSheetExport(
+							a.getShortWorkTimeFrameNo().v(),
+							a.getChildCareAttr().value,
+							a.getStartTime().v(),
+							a.getEndTime().v(),
+							a.getDeductionTime().v(),
+							a.getShortTime().v());
+				}).collect(Collectors.toList());
+				record.setListShortWorkingTimeSheetExport(listExport);							
+			});
+		});
+		
+//		get 勤務予定基本情報
+		Optional<BasicSchedule> basicSchedule = repository.find(employeeId, baseDate);
+		basicSchedule.ifPresent(x -> {
+			record.setEmployeeId(x.getEmployeeId());
+			record.setDate(x.getDate());
+			record.setWorkTypeCode(x.getWorkTypeCode());
+			record.setWorkTimeCode(Optional.ofNullable(x.getWorkTimeCode()));
+//			勤務予定基本情報.勤務予定時間帯
+			List<WorkScheduleTimeZone> workScheduleTimeZones = x.getWorkScheduleTimeZones();
+			Optional<WorkScheduleTimeZone> with1 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
+			Optional<WorkScheduleTimeZone> with2 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 2).findFirst();
+			with1.ifPresent(a -> {
+				record.setScheduleStartClock1(a.getScheduleStartClock());
+				record.setScheduleEndClock1(a.getScheduleEndClock());
+			});
+			with2.ifPresent(a -> {
+				record.setScheduleStartClock2(Optional.of(a.getScheduleStartClock()));
+				record.setScheduleEndClock2(Optional.of(a.getScheduleEndClock()));
+			});
+			x.getWorkScheduleTime().ifPresent(a -> {
+				record.setChildTime(a.getChildTime().v());
+			});
+			
+		});
+		return record;
 	}
 
 }

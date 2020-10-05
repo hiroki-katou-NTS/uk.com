@@ -60,6 +60,9 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 						self.selectedShiftMaster([]);
 						self.isWorkplaceAlreadySetting(data && data.length > 0);
 					});
+					setTimeout(function () {
+						$("#register-btn-d").attr("disabled", false);
+					}, 100);
 				}}
 				$('#cre-shift').focus();
 				nts.uk.ui.errors.clearAll();
@@ -192,10 +195,16 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 
 		register() {
 			let self = this;
+			setTimeout(function() {
+			if (nts.uk.ui.errors.hasError()) {
+				$("#register-btn-d").attr("disabled", true);
+			};
+            }, 100);
+
 			
 			if (nts.uk.util.isNullOrEmpty(self.shiftItems())) {
 				let KSM015_12 = nts.uk.resource.getText('KSM015_12');
-				$('#register-btn').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_12]), "MsgB_2");
+				$('#register-btn-d').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_12]), "MsgB_2");
 				return;
 			};
 
@@ -291,6 +300,9 @@ module nts.uk.at.view.ksm015.d.viewmodel {
 					currents = _.sortBy(currents, 'shiftMasterCode');
 					self.shiftItems(currents);
 					if(!nts.uk.util.isNullOrEmpty(self.shiftItems())){
+						setTimeout(function () {
+								$("#register-btn-d").attr("disabled", false);
+						}, 100);
 					nts.uk.ui.errors.clearAll();	
 					}
 					
