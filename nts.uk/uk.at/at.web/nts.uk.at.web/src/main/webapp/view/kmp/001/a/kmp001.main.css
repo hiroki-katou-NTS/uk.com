@@ -207,3 +207,7 @@
 	padding-bottom: 0px;
 	margin-bottom: 6px;
 }
+
+.caret-inline:after {
+	margin-left: -4px;
+}
