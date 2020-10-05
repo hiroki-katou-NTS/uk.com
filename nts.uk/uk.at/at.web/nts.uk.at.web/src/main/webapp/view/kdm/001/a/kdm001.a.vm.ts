@@ -15,6 +15,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             new ItemModel(0, getText("KDM001_4")),
             new ItemModel(1, getText("KDM001_152"))
         ]);
+        listEmployee: Array<EmployeeInfo>;
         selectedPeriodItem: KnockoutObservable<number> = ko.observable(0);
         dateValue: KnockoutObservable<any> = ko.observable({});
         startDateString: KnockoutObservable<string> = ko.observable("");
@@ -134,6 +135,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'startDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDateText', dataType: 'string', width: '120px', hidden: true },
+                    // A4_4_1 & A4_4_2
                     {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
                         key: 'accrualDate',
@@ -141,6 +143,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float: right;"> ${accrualDate} ${expiredDateText}</div>', 
                         dataType: 'string',
                     },
+                    // A4_2_2
                     {
                         headerText: getText('KDM001_9'),
                         key: 'occurrenceDay',
@@ -148,6 +151,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${occurrenceDay} ${occurredDaysText} </div>',
                         dataType: 'string',
                     },
+                    // A4_2_7
                     { 
                         headerText: getText('KDM001_14'), 
                         key: 'legalDistinction', 
@@ -155,6 +159,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         formatter: getLawAtr, 
                         dataType: 'string', 
                     },
+                    // A4_2_3
                     {
                         headerText: getText('KDM001_10'),
                         key: 'digestionDay',
@@ -162,6 +167,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${digestionDay} </div>', 
                         dataType: 'string',
                     },
+                    // A4_2_4
                     { 
                         headerText: getText('KDM001_11'), 
                         key: 'digestionDays', 
@@ -169,6 +175,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${digestionDays}${digestionDaysText} </div>', 
                         dataType: 'string', 
                     },
+                    // A4_2_5
                     { 
                         headerText: getText('KDM001_12'), 
                         key: 'dayLetf', 
@@ -176,6 +183,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${dayLetf}${dayLetfText} </div>', 
                         dataType: 'string', 
                     },
+                    // A4_2_6
                     { 
                         headerText: getText('KDM001_13'), 
                         key: 'usedDay', 
@@ -183,11 +191,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${usedDay}${usedDayText} </div>', 
                         dataType: 'string', 
                     },                  
-                    /** 
-                        * A4_2_8 紐付設定
-                        * { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    */
-                    // A4_2_9 削除        
+                    // A4_2_9        
                     { headerText: '', key: 'delete', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
@@ -211,7 +215,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
               vm.dateValue.valueHasMutated();
             });
             vm.selectedItem.subscribe(x => {
-              vm.updateDataList(false);
+              if(vm.listEmployee){
+                vm.selectedEmployeeObject= _.find(vm.listEmployee, item => { return item.employeeId === x; });
+              }
+              this.updateDataList(false);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
@@ -422,8 +429,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 screenBModel.convertEmployeeCcg01ToKcp009(dataList);
             } else {
                 let self = this;
+                self.listEmployee = [];
                 self.employeeInputList([]);
                 _.each(dataList, function (item) {
+                  self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, '', ''));
                     self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
                 });
                 $('#emp-componentA').ntsLoadListComponent(self.listComponentOption);
@@ -631,6 +640,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         workplaceId: string;
         workplaceName: string;
     }
+    export class EmployeeInfo {
+      employeeId: string;
+      employeeCode: string;
+      employeeName: string;
+      workplaceId: string;
+      workplaceName: string;
+      constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceName: string) {
+          this.employeeId = employeeId;
+          this.employeeCode = employeeCode;
+          this.employeeName = employeeName;
+          this.workplaceId = workplaceId;
+          this.workplaceName = workplaceName;
+      }
+  }
 
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日
@@ -758,7 +781,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
           let expiredDateText = moment.utc(params.deadLine);
           let startDate = moment.utc(this.startDate);
           let endDate = moment.utc(this.endDate);
-          if(params.deadLine === null) {
+          if(params.deadLine === '') {
            this.expiredDateText === '';
           } else if(startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
             this.expiredDateText = getText('KDM001_161', [params.deadLine]);
