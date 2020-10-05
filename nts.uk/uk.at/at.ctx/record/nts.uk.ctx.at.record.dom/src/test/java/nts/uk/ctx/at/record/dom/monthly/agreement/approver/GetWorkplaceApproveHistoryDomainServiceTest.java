@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GetWorkplaceApproveHistoryDomainServiceTest {
     @Injectable
     GetWorkplaceApproveHistoryDomainService.Require require;
-    private static String cid = "cid";
     private static String workplaceId = "wid";
     private static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
     private static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
