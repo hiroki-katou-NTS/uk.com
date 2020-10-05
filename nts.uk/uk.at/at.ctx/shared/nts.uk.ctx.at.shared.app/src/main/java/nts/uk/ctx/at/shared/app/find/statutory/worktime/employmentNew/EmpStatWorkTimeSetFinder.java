@@ -15,12 +15,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WorkingTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.employmentNew.EmpStatWorkTimeSetDto.EmpStatWorkTimeSetDtoBuilder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -67,17 +67,17 @@ public class EmpStatWorkTimeSetFinder {
 			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
 		}
 
-		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		val regularSet = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.REGULAR_LABOR, year);
 		if (!regularSet.isEmpty()) {
 			dtoBuilder.normalSetting(EmpNormalSettingDto.with(companyId, emplCode, year, regularSet));
 		}
 		
-		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
+		val flexSet = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.FLEX, year);
 		if (!flexSet.isEmpty()) {
 			dtoBuilder.flexSetting(EmpFlexSettingDto.with(companyId, emplCode, year, flexSet));
 		}
 
-		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		val deforSet = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.DEFOR_LABOR, year);
 		if (!deforSet.isEmpty()) {
 			dtoBuilder.deforLaborSetting(EmpDeforLaborSettingDto.with(year, companyId, emplCode, deforSet));
 		}

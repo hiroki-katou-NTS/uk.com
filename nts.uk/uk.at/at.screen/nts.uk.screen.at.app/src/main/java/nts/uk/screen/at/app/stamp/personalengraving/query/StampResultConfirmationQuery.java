@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.stamp.personalengraving.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +26,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -66,7 +67,7 @@ public class StampResultConfirmationQuery {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-		
+	
 	@Inject
 	private IGetDailyLock iGetDailyLock;
 	@Inject
@@ -82,7 +83,6 @@ public class StampResultConfirmationQuery {
 	public StampResultConfirmDto getStampResultConfirm(StampResultConfirmRequest param) {
 		String cid         = AppContexts.user().companyId();
 		String sid         = param.getEmployeeId();
-		String authorityId = AppContexts.user().roles().forAttendance();
 
 		// add more 28 29 31 34 info
 		boolean contain28 = param.isContain28();
@@ -116,16 +116,16 @@ public class StampResultConfirmationQuery {
 		List<ItemValue> itemValues = dailyResult != null ? dailyResult.getItems() : Collections.emptyList();
 		
 		// 6
-		List<String> itemIds = new ArrayList<>();
-		Optional<ItemValue> itemId = itemValues.stream().filter(i -> i.getItemId() == 28).findFirst();
-		itemIds.add(itemId.isPresent() ? itemId.get().value() : "");
-		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, itemIds);
+		
+		String itemId = itemValues.stream().filter(i -> i.getItemId() == 28).findFirst().map(x -> x.getValue())
+				.orElse("");
+		List<WorkType> workTypes = workTypeRepo.getPossibleWorkType(cid, Arrays.asList(itemId));
 		
 		// 7
-		itemIds.clear();
-		Optional<ItemValue> itemId2 = itemValues.stream().filter(i -> i.getItemId() == 29).findFirst();
-		itemIds.add(itemId2.isPresent() ? itemId2.get().value() : "");
-		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, itemIds);
+		
+		String itemId2 = itemValues.stream().filter(i -> i.getItemId() == 29).findFirst().map(x -> x.getValue())
+				.orElse("");
+		List<WorkTimeSetting> workTimes = workTimeRepo.getListWorkTimeSetByListCode(cid, Arrays.asList(itemId2));
 		
 		Optional<ItemValue> attendance = itemValues.stream().filter(i -> i.getItemId() == 31).findFirst();
 		Optional<ItemValue> leave = itemValues.stream().filter(i -> i.getItemId() == 34).findFirst();

@@ -8,7 +8,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * 予定管理状態に応じて日別実績を取得する	
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework
  */
 public class DailyResultAccordScheduleStatusService {
 	
-	
+
 	/**
 	 * 	[1] 取得する	
 	 * @param require
@@ -33,9 +33,15 @@ public class DailyResultAccordScheduleStatusService {
 		lstempID.stream().forEach( x ->{
 			/*return 社員IDリスト:																												
 			map [prv-1] 社員別に取得する( require, $, 期間 )																		
-			flatMap	*/			
+			flatMap	*/	
+			long startTime = System.nanoTime();
+			
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.getByEmp(require, x, datePeriod);
 			map.putAll(data);
+			
+			long endTime = System.nanoTime();
+			long duration = (endTime - startTime) / 1000000; // ms;
+			System.out.println("employee: " + duration + "ms");
 		});
 		return map;
 	}

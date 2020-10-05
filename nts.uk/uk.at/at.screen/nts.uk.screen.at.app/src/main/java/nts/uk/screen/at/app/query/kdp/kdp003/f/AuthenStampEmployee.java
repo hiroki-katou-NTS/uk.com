@@ -47,7 +47,7 @@ public class AuthenStampEmployee {
 	  ・エラーメッセージ 
 	 */
 	public TimeStampInputLoginDto authenticateStampedEmployees(String cid, Optional<String> scd, Optional<String> sid,
-			Optional<String> passWord, boolean passwordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreat,
+			Optional<String> passWord, boolean passwordInvalid, boolean isAdminMode, boolean runtimeEnvironmentCreate,
 			@Context HttpServletRequest request) {
 
 		TimeStampInputLoginDto result = null;
@@ -64,7 +64,7 @@ public class AuthenStampEmployee {
 			command.setPassword(passWord.isPresent() ? passWord.get() : null);
 			command.setPasswordInvalid(passwordInvalid);
 			command.setAdminMode(isAdminMode);
-			command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			command.setRuntimeEnvironmentCreate(runtimeEnvironmentCreate);
 			command.setRequest(request);
 
 			result = this.timeStampLoginCommandHandler.handle(command);
@@ -77,7 +77,7 @@ public class AuthenStampEmployee {
 			command.setPassword(passWord.isPresent() ? passWord.get() : null);
 			command.setPasswordInvalid(passwordInvalid);
 			command.setAdminMode(isAdminMode);
-			command.setRuntimeEnvironmentCreat(runtimeEnvironmentCreat);
+			command.setRuntimeEnvironmentCreate(runtimeEnvironmentCreate);
 			command.setRequest(request);
 
 			result = this.timeStampLoginCommandHandler.handle(command);

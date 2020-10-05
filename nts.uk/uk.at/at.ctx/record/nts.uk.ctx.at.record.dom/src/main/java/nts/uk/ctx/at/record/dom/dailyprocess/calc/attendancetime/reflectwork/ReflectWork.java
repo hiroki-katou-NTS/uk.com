@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ActualStampAtr;
@@ -8,8 +10,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectAttendanceClock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectStampOuput;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 
 /**
  * 出勤を反映する (new_2020)
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.St
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectWork {
 	@Inject
 	private CheckRangeReflectAttd checkRangeReflectAttd;
@@ -37,7 +40,7 @@ public class ReflectWork {
 					integrationOfDaily);
 
 			// 2回目勤務の出勤打刻反映範囲内 (出勤打刻反映範囲内 của worktype lần 2)
-		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.FIRST_TIME) {
+		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.SECOND_TIME) {
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP_REAL, 2,
 					integrationOfDaily);
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP, 2,

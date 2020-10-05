@@ -3,18 +3,16 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
-import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 
 @Data
 @NoArgsConstructor
@@ -22,13 +20,13 @@ import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 /** 月別実績の月の計算 */
 public class MonthlyCalculationDto implements ItemConst {
 
-	/** 36協定時間: 月別実績の36協定時間 */
-	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
-	private AgreementTimeOfMonthlyDto agreementTime;
-
-	/** 36協定上限時間: 月別実績の36協定上限時間 */
-	@AttendanceItemLayout(jpPropertyName = AGREEMENT + UPPER_LIMIT, layout = LAYOUT_B)
-	private AgreMaxTimeOfMonthlyDto agreMaxTime;
+//	/** 36協定時間: 月別実績の36協定時間 */
+//	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
+//	private AgreementTimeOfMonthlyDto agreementTime;
+//
+//	/** 36協定上限時間: 月別実績の36協定上限時間 */
+//	@AttendanceItemLayout(jpPropertyName = AGREEMENT + UPPER_LIMIT, layout = LAYOUT_B)
+//	private AgreMaxTimeOfMonthlyDto agreMaxTime;
 
 	/** フレックス時間: 月別実績のフレックス時間 */
 	@AttendanceItemLayout(jpPropertyName = FLEX, layout = LAYOUT_B)
@@ -62,22 +60,20 @@ public class MonthlyCalculationDto implements ItemConst {
 									new AttendanceTimeMonth(statutoryWorkingTime),
 									aggregateTime == null ? new AggregateTotalWorkingTime() : aggregateTime.toDomain(),
 									new AttendanceTimeMonth(totalWorkingTime),
-									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain(),
-									agreementTime == null ? new AgreementTimeOfMonthly() : agreementTime.toDomain(),
-									agreMaxTime == null ? new AgreMaxTimeOfMonthly() : agreMaxTime.toDomain());
+									totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : totalTimeSpentAtWork.toDomain());
 	}
 	
 	public static MonthlyCalculationDto from(MonthlyCalculation domain) {
 		MonthlyCalculationDto dto = new MonthlyCalculationDto();
 		if(domain != null) {
-			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime()));
+//			dto.setAgreementTime(AgreementTimeOfMonthlyDto.from(domain.getAgreementTime()));
 			dto.setFlexTime(FlexTimeOfMonthlyDto.from(domain.getFlexTime()));
 			dto.setActualWorkingTime(RegularAndIrregularTimeOfMonthlyDto.from(domain.getActualWorkingTime()));
 			dto.setAggregateTime(AggregateTotalWorkingTimeDto.from(domain.getAggregateTime()));
 			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalTimeSpentAtWork()));
 			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? null : domain.getTotalWorkingTime().valueAsMinutes());
 			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? null : domain.getStatutoryWorkingTime().valueAsMinutes());
-			dto.setAgreMaxTime(AgreMaxTimeOfMonthlyDto.from(domain.getAgreMaxTime()));
+//			dto.setAgreMaxTime(AgreMaxTimeOfMonthlyDto.from(domain.getAgreMaxTime()));
 		}
 		return dto;
 	}

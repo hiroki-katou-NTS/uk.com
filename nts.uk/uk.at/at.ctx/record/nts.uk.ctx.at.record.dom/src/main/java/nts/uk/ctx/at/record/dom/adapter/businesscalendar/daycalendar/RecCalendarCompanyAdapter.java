@@ -9,4 +9,6 @@ public interface RecCalendarCompanyAdapter {
 	
 	WorkingDayCategory getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date);
 
+	BasicWorkSettingImport getBasicWorkSetting(String companyID, String workplaceID, String classCD,
+			Integer workingDayAtr);
 }

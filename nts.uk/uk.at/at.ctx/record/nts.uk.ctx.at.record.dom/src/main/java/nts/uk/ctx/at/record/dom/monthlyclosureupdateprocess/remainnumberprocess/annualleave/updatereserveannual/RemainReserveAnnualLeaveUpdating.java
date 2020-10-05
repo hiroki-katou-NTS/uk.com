@@ -151,14 +151,14 @@ public class RemainReserveAnnualLeaveUpdating {
 		
 	}
 	
-	private static interface RequireM4 extends RequireM2, RequireM3 {
+	public static interface RequireM4 extends RequireM2, RequireM3 {
 		
 		void addOrUpdateReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainHistoryData domain, String cid);
 		
 		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
 	}
 	
-	private static interface RequireM3 {
+	public static interface RequireM3 {
 		
 		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, GeneralDate grantDate);
 		
@@ -167,12 +167,12 @@ public class RemainReserveAnnualLeaveUpdating {
 		void addReserveLeaveGrantRemainingData(ReserveLeaveGrantRemainingData data, String cId);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		void addOrUpdateReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantTimeRemainHistoryData domain, String cid);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		void deleteReserveLeaveGrantRemainingData(String employeeId, GeneralDate date);
 		

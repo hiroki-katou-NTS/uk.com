@@ -1,7 +1,7 @@
 /// <reference path="./viewcontext.d.ts" />
 
 const prefix = 'nts.uk.storage'
-	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
+	, OPENWD = 'OPEN_WINDOWS_DATA'
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
 	, $storeSession = function (name: string, params?: any) {
@@ -40,7 +40,7 @@ const prefix = 'nts.uk.storage'
 			return $.Deferred().resolve()
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
-					nts.uk.localStorage.removeItem(OPENWD);
+					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
 
 					return value;
 				});
@@ -48,7 +48,7 @@ const prefix = 'nts.uk.storage'
 	};
 
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(): any {
+function bean(dialogOption?: DialogOption): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			$storage().then(($params: any) => {
@@ -71,10 +71,10 @@ function bean(): any {
 					}
 				});
 
-				__viewContext.bind($viewModel);
+				__viewContext.bind($viewModel, dialogOption);
 			});
 		});
-	}
+	};
 }
 
 function component(options: { name: string; template: string; }): any {
@@ -127,7 +127,6 @@ function component(options: { name: string; template: string; }): any {
 }
 
 function handler(params: { virtual?: boolean; bindingName: string; validatable?: boolean; }) {
-
 	return function (constructor: { new(): KnockoutBindingHandler; }) {
 		ko.bindingHandlers[params.bindingName] = new constructor();
 		ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
@@ -136,7 +135,7 @@ function handler(params: { virtual?: boolean; bindingName: string; validatable?:
 		if (params.validatable) {
 			ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, { [params.bindingName]: false });
 		}
-	}
+	};
 }
 
 // create base viewmodel for all implement
@@ -181,6 +180,7 @@ BaseViewModel.prototype.$program = __viewContext['program'];
 
 const $date = {
 	diff: 0,
+	tick: -1,
 	now() {
 		return Date.now()
 	},
@@ -189,11 +189,16 @@ const $date = {
 	}
 };
 
-request.ajax('/server/time/now').then((time: string) => {
-	Object.defineProperty($date, 'diff', {
-		value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+const getTime = () => {
+	request.ajax('/server/time/now').then((time: string) => {
+		_.extend($date, {
+			diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+		});
 	});
-})
+};
+
+// get date time now
+getTime();
 
 BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	now: {
@@ -204,6 +209,15 @@ BaseViewModel.prototype.$date = Object.defineProperties($date, {
 	today: {
 		value: function $today() {
 			return moment($date.now()).startOf('day').toDate();
+		}
+	},
+	interval: {
+		value: function $interval(interval: number) {
+			// clear default intervale
+			clearInterval($date.tick);
+
+			// set new interface
+			$date.tick = setInterval(getTime, interval);
 		}
 	}
 });
@@ -416,7 +430,8 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
 						$storeSession(name, params);
 						// for old page
 						windows.setShared(name, params);
-					});
+					})
+					.then(() => $storeSession(name));
 			}
 		}
 	}
@@ -450,7 +465,8 @@ BaseViewModel.prototype.$errors = function $errors() {
 		// if action is clear, call validate clear action
 		if (args[0] === 'clear') {
 			return $.Deferred().resolve()
-				.then(() => $('.nts-input').ntsError('clear'));
+				.then(() => $('.nts-input').ntsError('clear'))
+				.then(() => !$('.nts-input').ntsError('hasError'));
 		} else {
 			const errors: {
 				[name: string]: any;

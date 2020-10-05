@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.worklocation;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 @Value
 @EqualsAndHashCode(callSuper= false)
@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Wo
  * @author hieult
  *
  */
-	/**勤務場所 **/
+	/**	勤務場所 **/
 public class WorkLocation extends AggregateRoot {
 	
 	/** Company ID */

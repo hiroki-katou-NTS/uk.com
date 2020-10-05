@@ -63,12 +63,11 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRep
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -1134,33 +1133,34 @@ public class MonthlyPerformanceCorrectionProcessor {
 								MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get()
 										.getMonthlyCalculation();
 								if (monthlyCalculation != null) {
-									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
-									if (agreementTime != null) {
-										switch (agreementTime.getStatus().value) {
-										// 限度アラーム時間超過
-										case 2:
-											// 特例限度アラーム時間超過
-										case 4:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
-											break;
-										// 限度エラー時間超過
-										case 1:
-											// 特例限度エラー時間超過
-										case 3:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
-											break;
-										// 正常（特例あり）
-										case 5:
-											// 限度アラーム時間超過（特例あり）
-										case 7:
-											// 限度エラー時間超過（特例あり）
-										case 6:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
-											break;
-										default:
-											break;
-										}
-									}
+									/** TODO: 36協定時間対応により、コメントアウトされた */
+//									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
+//									if (agreementTime != null) {
+//										switch (agreementTime.getStatus().value) {
+//										// 限度アラーム時間超過
+//										case 2:
+//											// 特例限度アラーム時間超過
+//										case 4:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
+//											break;
+//										// 限度エラー時間超過
+//										case 1:
+//											// 特例限度エラー時間超過
+//										case 3:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
+//											break;
+//										// 正常（特例あり）
+//										case 5:
+//											// 限度アラーム時間超過（特例あり）
+//										case 7:
+//											// 限度エラー時間超過（特例あり）
+//										case 6:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
+//											break;
+//										default:
+//											break;
+//										}
+//									}
 								}
 							}
 						}

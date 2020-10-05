@@ -5,7 +5,6 @@
 
 .sidebar-content-header ~ div {
 	padding: 20px;
-	float: left;
 }
 
 .view-kmp .nts-searchbbox-wrapper .form-label {
@@ -20,7 +19,7 @@
 	margin-left: 70px;
 }
 
-.view-kmp{
+.view-kmp {
 	float: left;
 }
 
@@ -28,8 +27,13 @@
 	margin-left: 50px;
 }
 
+.ntsSearchBox_Component {
+	margin-top: 4px;	
+}
+
 .view-kmp .model-component table.layout-grid td div {
 	padding-bottom: 15px;
+	float: left;
 }
 
 .view-kmp .model-component table td.label-column {
@@ -42,17 +46,31 @@
 
 .view-kmp .model-component table td.label-column-a-right {
 	width: 300px;
+	float: left;
+}
+
+#right_name {
+	margin-left: 15px;
 }
 
 .view-kmp .model-component table td.label-column-left {
 	width: 180px;
 }
 
+#func-notifier-errors {
+    top: 143px;
+    left: 120px;
+    position: fixed;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}
+
 .view-kmp .model-component table td.label-column-left ~ div {
 	font-size: 16px;
 }
 
-#info-employee  {
+#info-employee {
 	border: 2px #F2F2F2 solid;
 	padding: 10px;
 	padding-bottom: 60px;
@@ -72,7 +90,7 @@
 	float: left;
 }
 
-.view-kmp .layout-date{
+.view-kmp .layout-date {
 	margin-bottom: 10px;
 }
 
@@ -80,17 +98,47 @@
 	margin-bottom: 15px;
 }
 
+#ip-stamp-card {
+	width: 200px !important;
+}
+
 #top_bottom {
 	margin-left: 5px;
 }
 
-.search_label {
-	float: left;
-	width: 100vw;
-	padding-bottom: 0px;
-}
 .search_label .sub_title {
 	margin-right: 10px;
 }
 
+.list-card {
+	margin-top: 50px;
+}
 
+#stampcard-list_container {
+	margin-top: 15px;
+	margin-left: 45px;	
+}
+
+
+#stampcard-list_container .ui-icon.ui-icon-triangle-1-e {
+	display: none;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class,
+#stampcard-list_container .ui-iggrid-rowselector-header.ui-iggrid-header.ui-widget-header {
+	text-align: center;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal,
+#stampcard-list_container .ui-iggrid-rowselector-header .ui-igcheckbox-normal {
+	float: none !important;
+}
+
+#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on {
+	left: 0;
+	float: none !important;
+}
+
+.ui-iggrid-header ui-widget-header {
+    background-color: orange;
+}

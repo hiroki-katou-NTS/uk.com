@@ -20,9 +20,9 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkTimeInformationExport;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * 

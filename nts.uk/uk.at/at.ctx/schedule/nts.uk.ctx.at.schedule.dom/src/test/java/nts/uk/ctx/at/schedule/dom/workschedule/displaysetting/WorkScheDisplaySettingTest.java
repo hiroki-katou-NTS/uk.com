@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,78 +11,119 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import mockit.Mock;
+import mockit.MockUp;
 
 @RunWith(JMockit.class)
 public class WorkScheDisplaySettingTest {
 	
-	
-	@Test
-	public void calcuInitDisplayPeriod_plusMonth_onClosingDate() {
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.NEXT_MONTH, 
-				new OneMonth(DateInMonth.of(GeneralDate.today().day()))); // dummy
-		
-		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period.end().month() - 1, period.start().month());
-		assertEquals(period.end().day(), period.start().day() - 1);
-	}
-	
-	@Test
-	public void calcuInitDisplayPeriod_plusMonth_beforeClosingDate() {
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.NEXT_MONTH, 
-				new OneMonth(DateInMonth.of(GeneralDate.today().addDays(-1).day()))); // dummy
-		
-		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period.end().month() - 1, period.start().month());
-		assertEquals(period.end().day(), period.start().day() - 1);
-	}
-	
-	@Test
-	public void calcuInitDisplayPeriod_plusMonth() {
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.NEXT_MONTH, 
-				new OneMonth(DateInMonth.lastDay())); // dummy
-		
-		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period.end().month(), period.start().month());
+	// NOTE : today() = 2020/8/22
+	private void today_mock() {
+		new MockUp<GeneralDate>() {
+	        @Mock
+	        public GeneralDate today() {
+	            return GeneralDate.ymd(2020, 8, 22);
+	        }
+	    };
 	}
 
+	
+	//1. InitDispMonth.NEXT_MONTH, 締め日＝21 => 期待値：2020/9/22～2020/10/21
 	@Test
-	public void calcuInitDisplayPeriod_currentMonth() {
+	public void calcuInitDisplayPeriod_plusMonth_beforeClosingDate() {
+		//today() = 2020/8/22
+		this.today_mock();
+
 		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.CURRENT_MONTH, 
-				new OneMonth(DateInMonth.lastDay())); // dummy
+				"companyID",
+				InitDispMonth.NEXT_MONTH, 
+				new OneMonth(DateInMonth.of(21)));
 		
-		DatePeriod period2 = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period2.end().month(), GeneralDate.today().month());
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 9, 22));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 10, 21));
 	}
 	
+	//2. InitDispMonth.NEXT_MONTH, 締め日＝22 => 期待値：2020/8/23～2020/9/22
 	@Test
-	public void calcuInitDisplayPeriod_currentMonth_onClosingDate() {
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.CURRENT_MONTH, 
-				new OneMonth(DateInMonth.of(GeneralDate.today().day()))); // dummy
+	public void calcuInitDisplayPeriod_plusMonth_onClosingDate() {
+	    
+		this.today_mock();
 		
-		DatePeriod period2 = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period2.end().month(), GeneralDate.today().month());
-		assertEquals(period2.end().day(), period2.start().day() - 1);
+		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+				"companyID",
+				InitDispMonth.NEXT_MONTH, 
+				new OneMonth(DateInMonth.of(22)));
+
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 8, 23));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 9, 22));
 	}
 	
+	//3. InitDispMonth.NEXT_MONTH, 締め日＝末日 => 期待値：2020/9/1～2020/9/30
+	@Test
+	public void calcuInitDisplayPeriod_plusMonth() {
+		this.today_mock();
+		
+		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+				"companyID",
+				InitDispMonth.NEXT_MONTH, 
+				new OneMonth(DateInMonth.lastDay()));
+		
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 9, 1));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 9, 30));
+	}
+
+	//4. InitDispMonth.CURRENT_MONTH, 締め日＝21 => 期待値：2020/8/22～2020/9/21
 	@Test
 	public void calcuInitDisplayPeriod_currentMonth_beforeClosingDate() {
-		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
-				"companyID", // dummy
-				InitDispMonth.CURRENT_MONTH, 
-				new OneMonth(DateInMonth.of(GeneralDate.today().addDays(-1).day()))); // dummy
+		this.today_mock();
 		
-		DatePeriod period2 = displaySetting.calcuInitDisplayPeriod();
-		assertEquals(period2.end().month() - 1, period2.start().month());
+		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+				"companyID",
+				InitDispMonth.CURRENT_MONTH, 
+				new OneMonth(DateInMonth.of(21)));
+		
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 8, 22));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 9, 21));
+	}
+	
+	//5. InitDispMonth.CURRENT_MONTH, 締め日＝22 => 期待値：2020/7/23～2020/8/22
+	@Test
+	public void calcuInitDisplayPeriod_currentMonth_onClosingDate() {
+		this.today_mock();
+		
+		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+				"companyID",
+				InitDispMonth.CURRENT_MONTH, 
+				new OneMonth(DateInMonth.of(22)));
+		
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 7, 23));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 8, 22));
+	}	
+
+	//6. InitDispMonth.CURRENT_MONTH, 締め日＝末日 => 期待値：2020/8/1～2020/8/31
+	@Test
+	public void calcuInitDisplayPeriod_currentMonth() {
+		this.today_mock();
+		
+		WorkScheDisplaySetting displaySetting = new WorkScheDisplaySetting(
+				"companyID",
+				InitDispMonth.CURRENT_MONTH, 
+				new OneMonth(DateInMonth.lastDay()));
+		
+		DatePeriod period = displaySetting.calcuInitDisplayPeriod();
+		
+		assertThat (period.start()).isEqualTo(GeneralDate.ymd(2020, 8, 1));
+		assertThat (period.end()).isEqualTo(GeneralDate.ymd(2020, 8, 31));
 	}
 	
 	@Test

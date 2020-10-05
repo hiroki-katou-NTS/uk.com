@@ -63,9 +63,7 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 			}
 		};
 		List<String> listData = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, referenceDate, epmloyeeId, targetOrgIdenInfor);
-		assertThat(listData)
-		.extracting(d->d)
-		.containsExactly("emp3","emp1","emp6","emp8","emp9","emp10");
+		assertThat(listData).isEqualTo(listSortEmployee);
 	}
 	
 	/**
@@ -90,7 +88,6 @@ public class GetEmpCanReferBySpecOrganizationServiceTest {
 		};
 		List<String> listData = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, referenceDate, epmloyeeId, targetOrgIdenInfor);
 		assertThat( listData ).containsExactlyElementsOf( listEmpId );
-		assertThat( listData ).containsExactlyInAnyOrderElementsOf( listEmpId );
 
 	}
 

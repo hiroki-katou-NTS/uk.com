@@ -3,6 +3,7 @@ module cmm045.a  {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
+			$('#daterangepicker .ntsEndDatePicker').focus();
         });
     });
 
@@ -48,12 +49,12 @@ module cmm045.a  {
                 })
                 .trigger("selectstart", () => false)
                 .appendTo($headerWrapper);
-            
+
             setupHandleEvent($handle, $headerCol, $bodyCol, (newWidth, $hcol, $bcol) => {
                 applyResize(newWidth, $hcol, $bcol, $handles, $headerCols)
             });
         }
-        
+
         let $handles = $headerWrapper.children(".resize-handle");
 
         resetPositionHandles($handles, $headerCols);
@@ -69,7 +70,7 @@ module cmm045.a  {
 
             totalWidth += $col.width();
             let left = handleBasics.position.left + totalWidth - handleBasics.size.width / 2;
-            
+
             if (i === columnsCount - 1) {
                 left -= 1;
             }
@@ -89,10 +90,11 @@ module cmm045.a  {
             $handle.css("opacity", 0.5);
             $("body, table").addClass("resizing-now");
 
+            var appContWidth = $headerCol[0].classList.contains('appContent') ? 75 : handleBasics.minWidth;
             $(window).bind("mousemove.resize", e => {
                 let deltaX = e.screenX - startMouseX;
 
-                if (startColumnWidth + deltaX < handleBasics.minWidth) {
+                if (startColumnWidth + deltaX < appContWidth) {
                     return;
                 }
 
@@ -104,10 +106,10 @@ module cmm045.a  {
                 $(window).unbind("mouseup.resize");
                 $("body, table").removeClass("resizing-now");
                 $handle.css("opacity", 0.0);
-                
+
                 let deltaX = e.screenX - startMouseX;
-                let newWidth = Math.max(startColumnWidth + deltaX, handleBasics.minWidth);
-                
+                let newWidth = Math.max(startColumnWidth + deltaX, appContWidth);
+
                 applyer(newWidth, $headerCol, $bodyCol);
             });
 
@@ -151,39 +153,39 @@ module cmm045.a  {
             if(nts.uk.util.isNullOrUndefined(viewWidth)){
                 viewWidth = width;
             }
-            
+
             let $container = $("<div class='nts-fixed-table cf'/>");
             $originTable.after($container);
-            
-            
+
+
             let $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid nts-fixed-header'/>").css({"max-width": viewWidth});
-            let $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
+            let $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(viewWidth);
             let $headerTable = $("<table class='fixed-table'></table>");
-            
-            
+
+
             $headerTable.append($colgroup.clone()).append($thead);
             $headerTable.appendTo($headerWrapper);
             $headerContainer.append($headerWrapper);
-            
+
             let $header = $("<div>");
             $headerContainer.appendTo($header);
             $header.appendTo($container);
             $header.height($headerContainer.height());
-            
+
             $originTable.addClass("nts-fixed-body-table");
-            let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>"); 
+            let $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
             let $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
             let bodyHeight: any = "auto";
             if (setting.height !== "auto") {
-                $bodyContainer.css("max-width", viewWidth);
+                $bodyContainer.css("max-width", viewWidth + 16);
                 bodyHeight = Math.floor(Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight());
             }
-            
+
             $bodyContainer.scroll(function(evt, ui) {
                 $headerContainer.scrollLeft($bodyContainer.scrollLeft());
             });
 
-            $bodyWrapper.width(width).height(bodyHeight);
+            $bodyWrapper.width(viewWidth).height(bodyHeight);
             $bodyWrapper.append($originTable);
             $bodyContainer.append($bodyWrapper);
             $container.append($bodyContainer);
@@ -192,7 +194,7 @@ module cmm045.a  {
                     $bodyContainer.css("padding-right", "12px");
                 }else {
                     $bodyContainer.css("padding-right", "17px");
-                }   
+                }
             }
         }
     }

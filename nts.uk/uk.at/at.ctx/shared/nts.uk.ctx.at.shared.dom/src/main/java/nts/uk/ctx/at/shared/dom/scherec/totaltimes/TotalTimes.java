@@ -84,21 +84,6 @@ public class TotalTimes extends AggregateRoot {
 				&& CollectionUtil.isEmpty(this.summaryList.get().getWorkTimeCodes())) {
 			throw new BusinessException("Msg_216", "KMK009_9");
 		}
-		
-		
-//		if (CollectionUtil.isEmpty(this.totalSubjects)) {
-//			throw new BusinessException("Msg_216", "KMK009_8");
-//		} else {
-//			if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) &&  !this.totalSubjects.stream()
-//					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
-//				throw new BusinessException("Msg_10");
-//			}
-//
-//			if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) && !this.totalSubjects.stream()
-//					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
-//				throw new BusinessException("Msg_29");
-//			}
-//		}
 	}
 
 	/**

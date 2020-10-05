@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * シフトパレット
+ * シフトパレット- VO
  * 
  * @author phongtq
  *

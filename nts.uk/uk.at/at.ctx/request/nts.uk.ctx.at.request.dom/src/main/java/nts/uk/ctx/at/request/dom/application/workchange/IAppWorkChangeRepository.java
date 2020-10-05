@@ -9,13 +9,13 @@ import java.util.Optional;
 public interface IAppWorkChangeRepository
 {
 
-    List<AppWorkChange> getAllAppWorkChange();
+    List<AppWorkChange_Old> getAllAppWorkChange();
     
-    Optional<AppWorkChange> getAppworkChangeById(String cid, String appId);
+    Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId);
     
-    void add(AppWorkChange domain);
+    void add(AppWorkChange_Old domain);
 
-    void update(AppWorkChange domain);
+    void update(AppWorkChange_Old domain);
     
     void delete(String cid, String appId);
     /**
@@ -25,5 +25,5 @@ public interface IAppWorkChangeRepository
      * @param lstAppId
      * @return
      */
-    List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId);
+    List<AppWorkChange_Old> getListAppWorkChangeByID(String companyID, List<String> lstAppId);
 }

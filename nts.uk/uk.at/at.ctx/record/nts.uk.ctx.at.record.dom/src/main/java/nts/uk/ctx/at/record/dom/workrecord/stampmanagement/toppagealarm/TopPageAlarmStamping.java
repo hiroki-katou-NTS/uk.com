@@ -22,12 +22,12 @@ public class TopPageAlarmStamping implements DomainAggregate {
 	/**
 	 * 詳細
 	 */
-	public final List<TopPageAlarmDetail> lstTopPageDetail;
+	private final List<TopPageAlarmDetail> lstTopPageDetail;
 
 	/**
 	 * トップページアラーム
 	 */
-	public final TopPageAlarm pageAlarm;
+	private final TopPageAlarmMgrStamp pageAlarm;
 
 	/**
 	 * [C-1] web打刻時のエラー作成する
@@ -43,27 +43,25 @@ public class TopPageAlarmStamping implements DomainAggregate {
 		// if エラーリスト.isEmpty
 		if (lsterror.isEmpty()) {
 			// $トップページエラー無 = トップページアラーム#新規作成する(会社ID, エラーの有無.エラーなし, 管理者リスト)
-			TopPageAlarm arm = new TopPageAlarm(companyId, ExistenceError.NO_ERROR, lstEmployeeId);
+			TopPageAlarmMgrStamp arm = new TopPageAlarmMgrStamp(companyId, ExistenceError.NO_ERROR, lstEmployeeId);
 			this.pageAlarm = arm;
 			this.lstTopPageDetail = Collections.emptyList();
 		} else {
-
 			// $count = 0
 			// $詳細 = $エラーメッセージ in エラーリスト：
 			// トップページアラーム詳細#トップページアラーム詳細($エラーメッセージ, count++, 対象社員)
 
-			TopPageAlarm arm = new TopPageAlarm(companyId, ExistenceError.HAVE_ERROR, lstEmployeeId);
+			TopPageAlarmMgrStamp arm = new TopPageAlarmMgrStamp(companyId, ExistenceError.HAVE_ERROR, lstEmployeeId);
 
 			List<TopPageAlarmDetail> lstTopPageDetail = new ArrayList<>();
 
 			for (int i = 0; i < lsterror.size(); i++) {
 				lstTopPageDetail.add(new TopPageAlarmDetail(lsterror.get(i), i, employeeID));
 			}
-			
+
 			// return web打刻用トップページアラーム#web打刻用トップページアラーム($詳細, $トップページエラー有)
 			this.lstTopPageDetail = lstTopPageDetail;
 			this.pageAlarm = arm;
 		}
 	}
-
 }
