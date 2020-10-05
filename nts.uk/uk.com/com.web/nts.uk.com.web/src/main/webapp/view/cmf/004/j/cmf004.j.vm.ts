@@ -104,11 +104,12 @@ module nts.uk.com.view.cmf004.j {
             x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
             res.push(x);
 
-            if (x.executionResult === '異常終了') {
+            if (x.executionResult === 'Enum_SaveStatus_FAILURE') {
               _.each(vm.columnHeadersRes, col => {
                 vm.states.push(new State(x.id, col.key, ["red-color"]));
               })
             }
+            x.executionResult = nts.uk.resource.getText(x.executionResult);
           });
         }
         vm.resultItems(res);
@@ -203,8 +204,6 @@ module nts.uk.com.view.cmf004.j {
   export interface DataDto {
     rowNumber: number;
     id: string;
-    // dataRecoveryProcessId: string;
-    // dataSaveProcessId: string;
     startDatetime: string;
     practitioner: string;
     saveName: string;

@@ -116,6 +116,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	public void update(String fileId) {
 		Optional<SspmtResultOfSaving> op = this.queryProxy()
 												.query(SELECT_BY_FILE_ID, SspmtResultOfSaving.class)
+												.setParameter("fileId", fileId)
 												.getSingle();
 		op.ifPresent(data -> {
 			data.deletedFiles = NotUseAtr.USE.value;

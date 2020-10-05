@@ -1,6 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.com.view.cmf003.i {
+module nts.uk.com.view.cmf005.i {
   import getText = nts.uk.resource.getText;
 
   @bean()

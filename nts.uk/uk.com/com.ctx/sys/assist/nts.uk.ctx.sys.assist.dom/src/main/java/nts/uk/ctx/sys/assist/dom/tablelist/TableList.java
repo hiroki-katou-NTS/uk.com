@@ -949,8 +949,6 @@ public class TableList extends DomainObject {
 				Integer.parseInt(tableListSetting.get(113)));
 		tableListData.setCanNotBeOld(Optional.of(1));
 		tableListData.setSelectionTargetForRes(Optional.of(1));
-		
-		//FAKE DATA
 		tableListData.setSystemType(SystemType.ATTENDANCE_SYSTEM);
 		return tableListData;
 	}

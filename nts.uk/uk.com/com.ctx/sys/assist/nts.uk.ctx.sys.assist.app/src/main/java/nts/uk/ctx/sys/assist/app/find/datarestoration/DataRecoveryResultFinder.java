@@ -25,6 +25,7 @@ public class DataRecoveryResultFinder {
 		return dataRecoveryResultRepository.getDataRecoveryResultByStartDatetime(from, to)
 											.stream()
 											.map(SaveSetDto::fromDomain)
+											.distinct()
 											.collect(Collectors.toList());
 	}
 }

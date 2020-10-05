@@ -52,10 +52,11 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		repoDataRecoveryMng.add(dataRecoveryMng);
 
 		// ドメインモデル「データ復旧の結果」を登録する
+		String dataStorageProcessingId = performDataCommand.getStore_del_ProcessingId();
 		String cid                    = AppContexts.user().companyId();
 		String saveSetCode            = StringUtil.isNullOrEmpty(performDataCommand.getSaveSetCode(), true) ? "": performDataCommand.getSaveSetCode();
 		String practitioner           = AppContexts.user().employeeId();
-		String executionResult        = null;
+		int executionResult        = 0;
 		GeneralDateTime startDateTime = GeneralDateTime.now();
 		GeneralDateTime endDateTime   = null;
 		Integer saveForm              = performDataCommand.getSaveForm();
@@ -65,7 +66,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		String account                = AppContexts.windowsAccount().getUserName();
 		List<DataRecoveryLog> listDataRecoveryLogs = new ArrayList<DataRecoveryLog>();
 
-		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
+		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, dataStorageProcessingId, cid, saveSetCode,
 				practitioner, executionResult, listDataRecoveryLogs, startDateTime, endDateTime, saveForm, saveName, ipAddress,pcName,account);
 		repoDataRecoveryResult.add(dataRecoveryResult);
 

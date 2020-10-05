@@ -53,7 +53,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String SELECT_ALL_TABLE_LIST_QUERY_STRING = "SELECT f FROM SspmtTableList f";
 
-	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT DISTINCT t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId GROUP BY t.tableListPk.categoryId, t.categoryName, t.saveSetCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm";
+	private static final String SELECT_BY_RECOVERY_PROCESSING_ID_QUERY_STRING = "SELECT DISTINCT t.tableListPk.categoryId, t.categoryName, t.patternCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:dataRecoveryProcessId GROUP BY t.tableListPk.categoryId, t.categoryName, t.patternCode, t.saveSetName, t.saveDateFrom, t.saveDateTo, t.storageRangeSaved, t.retentionPeriodCls, t.anotherComCls, t.compressedFileName, t.canNotBeOld, t.supplementaryExplanation, t.saveForm";
 
 	private static final String SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID = "SELECT t FROM SspmtTarget t WHERE t.targetPk.dataRecoveryProcessId in :dataRecoveryProcessIds";
 
@@ -67,13 +67,20 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	
 	private static final String DELETE_TABLE_LIST = "DELETE FROM SspmtTableList  t where t.dataRecoveryProcessId =:dataRecoveryProcessId";
 	
-	private static final String SELECT_ALL = "";
+	private static final String SELECT_BY_STORAGE_PROCESS_ID = "SELECT t from SspmtPerformDataRecovery t "
+			+ "WHERE t.saveProcessId IN :storageProcessIds";
+	
+	private static final String SELECT_ALL_TARGET_BY_IDS = "SELECT t FROM SspmtTarget t "
+			+ "WHERE t.targetPk.dataRecoveryProcessId IN :dataRecoveryProcessIds";
+	
+	private static final String SELECT_ALL_RESTORE_TARGET_BY_IDS = "SELECT t FROM SspmtRestorationTarget t "
+			+ "WHERE t.restorationTargetPk.dataRecoveryProcessId IN :dataRecoveryProcessIds";
 	
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
-		List<SspmtTarget> targetData = getTargetByProcessIds(dataRecoveryProcessId);
-		List<SspmtRestorationTarget> restorationTarget = getRestorationTargetByProcessIds(dataRecoveryProcessId);
+		List<SspmtTarget> targetData = getTargetByProcessIds(Collections.singletonList(dataRecoveryProcessId));
+		List<SspmtRestorationTarget> restorationTarget = getRestorationTargetByProcessIds(Collections.singletonList(dataRecoveryProcessId));
 		return Optional.ofNullable(this.getEntityManager().find(SspmtPerformDataRecovery.class, dataRecoveryProcessId)
 				.toDomain(targetData, restorationTarget));
 	}
@@ -578,20 +585,18 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
-	public List<PerformDataRecovery> getPerformDataRecoverByIds(List<String> dataRecoveryProcessIds) {
-		List<SspmtTarget> targets = getTargetByProcessIds(dataRecoveryProcessIds.toArray(new String[0]));
-		List<SspmtRestorationTarget> restoreTargets = getRestorationTargetByProcessIds(dataRecoveryProcessIds.toArray(new String[0]));
-		return dataRecoveryProcessIds.stream()
-				.map(id -> Optional.ofNullable(this.getEntityManager()
-												.find(SspmtPerformDataRecovery.class, id)
-												.toDomain(targets.stream()
-																.filter(d -> d.targetPk.dataRecoveryProcessId.equals(id))
-																.collect(Collectors.toList()), 
-														restoreTargets.stream()
-																.filter(d -> d.restorationTargetPk.dataRecoveryProcessId.equals(id))
-																.collect(Collectors.toList())))
-												.get())
-				.collect(Collectors.toList());
+	public List<PerformDataRecovery> getPerformDataRecoverByIds(List<String> dataStorageProcessIds) {
+		List<SspmtPerformDataRecovery> master = this.queryProxy().query(SELECT_BY_STORAGE_PROCESS_ID, SspmtPerformDataRecovery.class)
+				.setParameter("storageProcessIds", dataStorageProcessIds)
+				.getList();
+		List<String> processIds = master.stream().map(SspmtPerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList());
+		List<SspmtTarget> targets = this.queryProxy().query(SELECT_ALL_TARGET_BY_IDS, SspmtTarget.class)
+				.setParameter("dataRecoveryProcessIds", processIds)
+				.getList();
+		List<SspmtRestorationTarget> restoreTargets = this.queryProxy().query(SELECT_ALL_RESTORE_TARGET_BY_IDS, SspmtRestorationTarget.class)
+				.setParameter("dataRecoveryProcessIds", processIds)
+				.getList();
+		return master.stream().map(entity -> entity.toDomain(targets, restoreTargets)).collect(Collectors.toList());
 	}
 	
 	@Override
@@ -599,17 +604,17 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		return null;
 	}
 	
-	private List<SspmtTarget> getTargetByProcessIds(String... dataRecoveryProcessIds) {
+	private List<SspmtTarget> getTargetByProcessIds(List<String> dataRecoveryProcessIds) {
 		return this.queryProxy()
 				.query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class)
-				.setParameter("dataRecoveryProcessIds", Arrays.asList(dataRecoveryProcessIds))
+				.setParameter("dataRecoveryProcessIds", dataRecoveryProcessIds)
 				.getList();
 	}
 	
-	private List<SspmtRestorationTarget> getRestorationTargetByProcessIds(String... dataRecoveryProcessIds) {
+	private List<SspmtRestorationTarget> getRestorationTargetByProcessIds(List<String> dataRecoveryProcessIds) {
 		return this.queryProxy()
 				.query(SELECT_RESTORATION_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtRestorationTarget.class)
-				.setParameter("dataRecoveryProcessIds", Arrays.asList(dataRecoveryProcessIds))
+				.setParameter("dataRecoveryProcessIds", dataRecoveryProcessIds)
 				.getList();
 	}
 }

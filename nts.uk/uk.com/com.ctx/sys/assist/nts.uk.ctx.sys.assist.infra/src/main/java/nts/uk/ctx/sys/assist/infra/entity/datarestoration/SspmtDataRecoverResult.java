@@ -69,7 +69,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	 */
 	@Basic(optional = true)
 	@Column(name = "EXECUTION_RESULT")
-	public String executionResult;
+	public int executionResult;
 
 	/**
 	 * 開始日時
@@ -131,6 +131,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	public DataRecoveryResult toDomain() {
 		return new DataRecoveryResult(
 				this.dataRecoveryProcessId,
+				this.dataStorageProcessId,
 				this.cid, 
 				this.patternCode, 
 				this.practitioner,
@@ -150,7 +151,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 			(
 				domain.getDataRecoveryProcessId(), domain.getDataStorageProcessId(), domain.getCid(),
 				domain.getPatternCode().v(), domain.getPractitioner(),
-				domain.getExecutionResult(), domain.getStartDateTime(),
+				domain.getExecutionResult().value, domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
 				domain.getSaveForm().value,
 				domain.getSaveName().v(),

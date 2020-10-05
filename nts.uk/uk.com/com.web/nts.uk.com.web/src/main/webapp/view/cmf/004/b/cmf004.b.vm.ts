@@ -410,10 +410,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let saveSetName = x.saveSetName;
             listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod,
               startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld, systemType, saveSetName));
+            console.log(x);
           });
           self.dataContentConfirm().dataContentcategoryList(listCategory);
           self.recoverySourceFile(data[0].compressedFileName + '.zip');
-          self.recoverySourceCode(data[0].saveSetCode);
+          self.recoverySourceCode(data[0].patternCode);
           self.recoverySourceName(data[0].saveSetName);
           self.saveForm(data[0].saveForm);
           self.supplementaryExplanation(data[0].supplementaryExplanation);
@@ -588,7 +589,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     nextToScreenE(): void {
       let self = this;
-      self.recoveryProcessingId = nts.uk.util.randomId();
       let paramObtainRecovery = {
         storeProcessingId: self.dataRecoverySelection().selectedRecoveryFile(),
         dataRecoveryProcessId: self.recoveryProcessingId
@@ -603,7 +603,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
           } else {
             const arr: string[] = res.message.split("/");
             console.log(arr);
-            if (arr.length > 0) {
+            if (arr.length > 1) {
               setShared("CMF004lParams", {
                 fileId: arr[0],
                 fileName: arr[1],
@@ -711,6 +711,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     restoreData_click(): void {
       let self = this;
+      console.log(self.recoveryProcessingId);
       setShared("CMF004IParams", {
         saveForm: self.saveForm(),
         employeeList: ko.toJS(self.employeeListScreenH),
@@ -734,9 +735,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
               yearValue: self.dateValue().yearRange()
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/004/k/index.xhtml").onClosed(() => {
-              nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml").onClosed(() => {
-                self.buton_I_enable(false);
-              });
+              const param = getShared("CMF004KParams");
+              if (param.isSuccess) {
+                nts.uk.ui.windows.sub.modal("/view/cmf/004/i/index.xhtml").onClosed(() => {
+                  self.buton_I_enable(false);
+                });
+              }
             });
           }
         })
@@ -785,12 +789,13 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         dateValue.monthRange(self.dateValue().monthRange);
         dateValue.yearRange(self.dateValue().yearRange);
       }
-      return new ManualSettingModal(self.dataContentConfirm().dataContentcategoryList().map(data => data.systemType()).pop(), Number(self.isCheckboxActive()),
+      console.log(self.dataRecoverySummary().recoveryCategoryList());
+      return new ManualSettingModal(Number(self.isCheckboxActive()),
         self.dataContentConfirm().dataContentcategoryList().map(data => data.saveSetName()).pop(), moment.utc().toISOString(), self.pwdCompressEdt.value(),
         moment.utc().toISOString(), moment.utc(dateValue.dateRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.dateRange().startDate, "YYYY/MM/DD").toISOString(),
         moment.utc(dateValue.monthRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.monthRange().startDate, "YYYY/MM/DD").toISOString(), self.supplementaryExplanation(),
-        Number(dateValue.yearRange().endDate), Number(dateValue.yearRange().startDate), self.dataContentConfirm().selectedRecoveryMethod(), null,
-        self.selectedEmployee(), self.dataRecoverySummary().recoveryCategoryList().map(data => new CategoryTableList(data.categoryId())));
+        Number(dateValue.yearRange().endDate), Number(dateValue.yearRange().startDate), self.dataContentConfirm().selectedRecoveryMethod(),
+        self.selectedEmployee(), self.dataRecoverySummary().recoveryCategoryList().map(data => new CategoryTableList(data.categoryId(), data.systemType())), self.recoverySourceCode());
     }
 
     backToPreviousScreen(): void {
@@ -935,10 +940,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
   export class CategoryTableList {
     categoryId: string;
+    systemType: number
 
-    constructor(categoryId: string) {
+    constructor(categoryId: string, systemType: number) {
       var self = this;
       self.categoryId = categoryId;
+      self.systemType = systemType;
     }
   }
 
@@ -986,7 +993,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
   }
 
   export class ManualSettingModal {
-    systemType: number;
     passwordAvailability: number;
     saveSetName: string;
     referenceDate: string;
@@ -1000,15 +1006,14 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     endYear: number;
     startYear: number;
     presenceOfEmployee: number;
-    identOfSurveyPre: number;
-    employees: Array<TargetEmployee>;
-    category: Array<CategoryTableList>;
+    employees: TargetEmployee[];
+    category: CategoryTableList[];
+    patternCode: string;
 
-    constructor(systemType: number, passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
+    constructor(passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
       executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string,
-      suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, identOfSurveyPre: number,
-      employees: Array<EmployeeSearchDto>, category: Array<CategoryTableList>) {
-      this.systemType = systemType;
+      suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, 
+      employees: EmployeeSearchDto[], category: CategoryTableList[], patternCode: string) {
       this.passwordAvailability = passwordAvailability;
       this.saveSetName = saveSetName;
       this.referenceDate = referenceDate;
@@ -1022,9 +1027,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       this.endYear = endYear ? endYear : null;
       this.startYear = startYear ? startYear : null;
       this.presenceOfEmployee = presenceOfEmployee;
-      this.identOfSurveyPre = identOfSurveyPre;
-      this.employees = employees.map(e => new TargetEmployee(e.employeeId, e.employeeCode, e.employeeName));
+      this.employees = _.map(employees, e => new TargetEmployee(e.employeeId, e.employeeCode, e.employeeName));
       this.category = category;
+      this.patternCode = patternCode;
     }
   }
 

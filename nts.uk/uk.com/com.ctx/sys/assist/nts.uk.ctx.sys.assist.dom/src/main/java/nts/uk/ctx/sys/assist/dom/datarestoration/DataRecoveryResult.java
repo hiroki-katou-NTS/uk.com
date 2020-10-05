@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
 import nts.uk.ctx.sys.assist.dom.storage.SaveName;
+import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
 /**
@@ -46,7 +47,7 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * 実行結果
 	 */
-	private String executionResult;
+	private SaveStatus executionResult;
 
 	/**
 	 * 実行結果
@@ -81,10 +82,11 @@ public class DataRecoveryResult extends AggregateRoot {
     
 	public DataRecoveryResult(
 			String dataRecoveryProcessId, 
+			String dataStorageProcessId,
 			String cid, 
 			String patternCode,
 			String practitioner, 
-			String executionResult,
+			int executionResult,
 			List<DataRecoveryLog> listDataRecoveryLogs,
 			GeneralDateTime startDateTime, 
 			GeneralDateTime endDateTime, 
@@ -94,10 +96,11 @@ public class DataRecoveryResult extends AggregateRoot {
 			String pcName, 
 			String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
+		this.dataStorageProcessId = dataStorageProcessId;
 		this.cid                   = cid;
 		this.patternCode           = new PatternCode(patternCode);
 		this.practitioner          = practitioner;
-		this.executionResult       = executionResult;
+		this.executionResult       = EnumAdaptor.valueOf(executionResult, SaveStatus.class);
 		this.listDataRecoveryLogs  = listDataRecoveryLogs;
 		this.startDateTime         = startDateTime;
 		this.endDateTime           = Optional.ofNullable(endDateTime);

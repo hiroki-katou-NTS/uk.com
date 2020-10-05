@@ -313,7 +313,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getFieldParent4(), categoryFieldMt.getFieldParent5(),
 					categoryFieldMt.getFieldParent6(), categoryFieldMt.getFieldParent7(),
 					categoryFieldMt.getFieldParent8(), categoryFieldMt.getFieldParent9(),
-					categoryFieldMt.getFieldParent10(), 1);
+					categoryFieldMt.getFieldParent10(), 0);
 
 			repoTableList.add(listtable);
 		}

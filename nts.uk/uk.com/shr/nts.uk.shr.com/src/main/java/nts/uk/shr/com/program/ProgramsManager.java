@@ -2207,10 +2207,12 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cmf/003/a/index.xhtml");
     public static final Program CMF003B = new Program(WebAppId.COM, ProgramIdConsts.CMF003B, "CMF003_2",
             "/view/cmf/003/b/index.xhtml");
-    public static final Program CMF003C = new Program(WebAppId.COM, ProgramIdConsts.CMF003C, "CMF003_3",
+    public static final Program CMF003C = new Program(WebAppId.COM, ProgramIdConsts.CMF003C, "CMF003_633",
             "/view/cmf/003/c/index.xhtml");
     public static final Program CMF003F = new Program(WebAppId.COM, ProgramIdConsts.CMF003F, "CMF003_6",
             "/view/cmf/003/f/index.xhtml");
+    public static final Program CMF003I = new Program(WebAppId.COM, ProgramIdConsts.CMF003I, "CMF003_9",
+    		"/view/cmf/003/i/index.xhtml");
 
     /**
      * CMF004
@@ -2223,6 +2225,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cmf/004/c/index.xhtml");
     public static final Program CMF004D = new Program(WebAppId.COM, ProgramIdConsts.CMF004D, "CMF004_4",
             "/view/cmf/004/d/index.xhtml");
+    public static final Program CMF004J = new Program(WebAppId.COM, ProgramIdConsts.CMF004J, "CMF004_5",
+            "/view/cmf/004/j/index.xhtml");
 
     public static final Program CMM048A = new Program(WebAppId.COM, ProgramIdConsts.CMM048A, "CMM048_1",
             "/view/cmm/048/a/index.xhtml");
@@ -2239,6 +2243,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cmm/053/a/index.xhtml");
     public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_1",
             "/view/cmm/053/b/index.xhtml");
+    
     /**
      * KRD001
      */
@@ -2385,6 +2390,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cmf/005/c/index.xhtml");
     public static final Program CMF005F = new Program(WebAppId.COM, ProgramIdConsts.CMF005F, "CMF005_6",
             "/view/cmf/005/f/index.xhtml");
+    public static final Program CMF005I = new Program(WebAppId.COM, ProgramIdConsts.CMF005I, "CMF005_9",
+    		"/view/cmf/003/i/index.xhtml");
 
     /**
      * KFP001

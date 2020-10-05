@@ -121,7 +121,7 @@ public class ResultOfSaving extends AggregateRoot
 		this.cid = cid;
 		this.fileSize = Optional.ofNullable(fileSize);
 		this.patternCode = new PatternCode(patternCode);
-		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveName));
+		this.saveFileName = saveFileName == null ? Optional.empty() : Optional.of(new SaveFileName(saveFileName));
 		this.saveName = new SaveName(saveName);
 		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
 		this.saveEndDatetime = Optional.ofNullable(saveEndDatetime);

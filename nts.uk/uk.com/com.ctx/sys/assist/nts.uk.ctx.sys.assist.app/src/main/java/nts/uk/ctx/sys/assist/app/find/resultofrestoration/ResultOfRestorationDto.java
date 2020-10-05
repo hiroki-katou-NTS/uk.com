@@ -83,7 +83,7 @@ public class ResultOfRestorationDto {
 			domain.getCid(),
 			domain.getPatternCode().v(),
 			domain.getPractitioner(),
-			domain.getExecutionResult(),
+			domain.getExecutionResult().nameId,
 			domain.getListDataRecoveryLogs(),
 			domain.getStartDateTime(),
 			domain.getEndDateTime().orElse(null),

@@ -8,30 +8,30 @@
     <!-- E:データ内容確認 -->
     <div class="contentE" data-bind="with: dataContentConfirm">
         <!--E3_1 保存設定読込ラベル-->
-        <div style="width: 650px;" class="label warning">#{i18n.getText('CMF004_80')}</div>
+        <div id="E3_1" style="width: 650px;" class="label warning">#{i18n.getText('CMF004_80')}</div>
         <div class="div-line">
             <!--E3_2 復旧元ファイルラベル-->
-            <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_81')}</div>
+            <div id="E3_2" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_81')}</div>
             <!--E3_3 復旧ファイル-->
-            <label data-bind="text: $vm.recoverySourceFile"/>
+            <label id="E3_3" data-bind="text: $vm.recoverySourceFile"/>
         </div>
         <div class="div-line">
             <!--E3_4 コード名称ラベル-->
-            <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_82')}</div>
+            <div id="E3_4" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_82')}</div>
             <!--E3_5 保存セットコード-->
-            <label  data-bind="text: $vm.recoverySourceCode"/>
+            <label id="E3_5"  data-bind="text: $vm.recoverySourceCode"/>
             <!--E3_6 保存セット名称-->
-            <label data-bind="text: $vm.recoverySourceName"/>
+            <label id="E3_6" data-bind="text: $vm.recoverySourceName"/>
         </div>
         <div class="div-line">
             <!--E3_7 補足説明ラベル-->
-            <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_83')}</div>
+            <div id="E3_7" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_83')}</div>
             <!--E3_8 補足説明-->
-            <label data-bind="text: $vm.supplementaryExplanation"/>
+            <label id="E3_8" data-bind="text: $vm.supplementaryExplanation"/>
         </div>
         <div class="div-line">
             <!--E3_9 復旧対象カテゴリ-->
-            <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_84')}</div>
+            <div id="E3_9" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_84')}</div>
         </div>
         <div class="div-line flex">
             <!--E4_1 カテゴリ一覧-->

@@ -72,6 +72,6 @@ public class DataHistoryDto {
 				domain2.getRecoveryFileName(), 
 				domain2.getNumPeopleSave(), 
 				domain1.getSaveStartDatetime().orElse(null), 
-				domain3.getExecutionResult());
+				domain3.getExecutionResult().nameId);
 	}
 }

@@ -813,8 +813,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public TableList toDomain() {
-		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId,
-				tableListPk.systemType, dataRecoveryProcessId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
+		return new TableList(tableListPk.categoryId, categoryName, dataRecoveryProcessId,
+				tableListPk.systemType, tableListPk.dataStorageProcessingId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
 				fieldAcqDateTime, fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, patternCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
 				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,

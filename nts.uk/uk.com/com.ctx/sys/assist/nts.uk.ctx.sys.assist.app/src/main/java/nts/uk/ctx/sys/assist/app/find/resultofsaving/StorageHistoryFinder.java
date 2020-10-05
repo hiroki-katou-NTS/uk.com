@@ -19,10 +19,11 @@ public class StorageHistoryFinder {
 	private ResultOfSavingRepository resultOfSavingRepository;
 	
 	public List<ResultOfSavingDto> findHistory(List<String> patternCodes) {
-		return resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
+		List<ResultOfSavingDto> list = resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
 				.stream()
 				.map(ResultOfSavingDto::fromDomain)
 				.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
 				.collect(Collectors.toList());
+		return list;
 	}
 }
