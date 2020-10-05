@@ -625,6 +625,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				String account = AppContexts.windowsAccount().getUserName();
 				LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 				result.setLoginInfo(loginInfo);
+				result.setCompressedPassword(result.getCompressedPassword()
+												.map(FileCompressionPassword::v)
+												.map(CommonKeyCrypt::decrypt)
+												.map(FileCompressionPassword::new));
 				repoResultSaving.update(result);
 			});
 		} catch (Exception e) {
@@ -654,6 +658,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 							String account = AppContexts.windowsAccount().getUserName();
 							LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 							result.setLoginInfo(loginInfo);
+							result.setCompressedPassword(result.getCompressedPassword()
+									.map(FileCompressionPassword::v)
+									.map(CommonKeyCrypt::decrypt)
+									.map(FileCompressionPassword::new));
 							repoResultSaving.update(result);
 						});
 			e.printStackTrace();
@@ -701,6 +709,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 			listResultLogSavings.add(resultLogSaving);
 			result.setListResultLogSavings(listResultLogSavings);
+			result.setCompressedPassword(result.getCompressedPassword()
+					.map(FileCompressionPassword::v)
+					.map(CommonKeyCrypt::decrypt)
+					.map(FileCompressionPassword::new));
 			repoResultSaving.update(result);
 		});
 		// ドメインモデル「データ保存動作管理」を更新する
@@ -746,6 +758,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
 			listResultLogSavings.add(resultLogSaving);
 			result.setListResultLogSavings(listResultLogSavings);
+			result.setCompressedPassword(result.getCompressedPassword()
+					.map(FileCompressionPassword::v)
+					.map(CommonKeyCrypt::decrypt)
+					.map(FileCompressionPassword::new));
 			repoResultSaving.update(result);
 		});
 		// ドメインモデル「データ保存動作管理」を更新する

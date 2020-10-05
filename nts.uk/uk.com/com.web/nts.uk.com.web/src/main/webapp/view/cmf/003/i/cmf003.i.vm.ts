@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf003.i {
             x.rowNumber = i + 1;
             x.id = nts.uk.util.randomId();
             x.targetNumberPeople += "人";
-            x.fileSize += "KB";
+            x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
             x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
             x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD hh:mm:ss");
             x.save = getText("CMF003_330");
