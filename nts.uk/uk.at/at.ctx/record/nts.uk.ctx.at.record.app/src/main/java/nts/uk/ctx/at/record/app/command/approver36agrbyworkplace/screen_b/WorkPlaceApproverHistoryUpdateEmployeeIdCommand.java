@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.approver36agrbycompany;
+package nts.uk.ctx.at.record.app.command.approver36agrbyworkplace.screen_b;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,33 +8,32 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class CompanyApproverHistoryUpdateDto {
+@NoArgsConstructor
+public class WorkPlaceApproverHistoryUpdateEmployeeIdCommand {
     /**
-     * 会社ID
+     * 職場ID
      */
-    private String companyId;
+    private String workPlaceId;
 
     /**
      * 期間
      */
 
-    private GeneralDate starDate;
-
-
-    private GeneralDate endDate;
+    private DatePeriod period;
 
     /**
      * 承認者リスト
      */
-    private List<String> approveList;
+    private List<String> approvedList;
     /**
      * 確認者リスト
      */
     private List<String> confirmedList;
-
+    /**
+     * 更新前の履歴開始日
+     */
     private GeneralDate startDateBeforeChange;
 }

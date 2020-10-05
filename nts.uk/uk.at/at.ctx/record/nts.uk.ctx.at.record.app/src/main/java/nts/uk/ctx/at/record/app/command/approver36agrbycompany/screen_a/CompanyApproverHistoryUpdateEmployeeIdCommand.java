@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.approver36agrbycompany;
+package nts.uk.ctx.at.record.app.command.approver36agrbycompany.screen_a;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyApproverHistoryUpdateCommand {
+public class CompanyApproverHistoryUpdateEmployeeIdCommand {
     /**
      * 会社ID
      */
