@@ -29,9 +29,21 @@ public class WwfstApprovalSetting extends UkJpaEntity implements Serializable {
 	public String companyId;
 
 	/** 本人による承認 */
-	@Column(name = "PRINCIPAL_APPROVAL_FLG")
-	public int principalApprovalFlg;
-
+	@Column(name = "SELF_APPROVAL_ATR")
+	public int selfApprovalAtr;
+	
+	// 会社単位
+	@Column(name = "CMP_UNIT_SET")
+	public int cmpUnitSet;
+	
+	// 職場単位
+	@Column(name = "WKP_UNIT_SET")
+	public int wkpUnitSet;
+	
+	// 社員単位
+	@Column(name = "SYA_UNIT_SET")
+	public int syaUnitSet;
+	
 	@Override
 	protected Object getKey() {
 		return companyId;

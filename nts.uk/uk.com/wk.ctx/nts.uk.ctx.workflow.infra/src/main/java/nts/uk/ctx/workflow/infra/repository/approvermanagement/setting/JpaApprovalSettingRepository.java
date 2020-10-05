@@ -22,13 +22,13 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId) {
 		return this.queryProxy().query(SQL_FIND, WwfstApprovalSetting.class)
 				.setParameter("companyId", companyId)
-				.getSingle(c-> EnumAdaptor.valueOf(c.principalApprovalFlg, PrincipalApprovalFlg.class));
+				.getSingle(c-> EnumAdaptor.valueOf(c.selfApprovalAtr, PrincipalApprovalFlg.class));
 	}
 	
 	private WwfstApprovalSetting toEntity(ApprovalSetting domain){
 		val entity = new WwfstApprovalSetting();
 		entity.companyId = domain.getCompanyId();
-		entity.principalApprovalFlg = BooleanUtils.toInteger(domain.getPrinFlg());
+		entity.selfApprovalAtr = BooleanUtils.toInteger(domain.getPrinFlg());
 		return entity;
 	}
 	/**
@@ -39,7 +39,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public void update(ApprovalSetting appro) {
 		WwfstApprovalSetting entity = toEntity(appro);
 		WwfstApprovalSetting oldEntity = this.queryProxy().find(entity.companyId, WwfstApprovalSetting.class).get();
-		oldEntity.principalApprovalFlg = entity.principalApprovalFlg;
+		oldEntity.selfApprovalAtr = entity.selfApprovalAtr;
 		this.commandProxy().update(oldEntity);
 	}
 	/**
@@ -49,7 +49,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	 * @author yennth
 	 */
 	private ApprovalSetting toDomainApproval(WwfstApprovalSetting entity){
-		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, BooleanUtils.toBoolean(entity.principalApprovalFlg));
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, BooleanUtils.toBoolean(entity.selfApprovalAtr));
 		return domain;
 	}
 	
