@@ -4,10 +4,12 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
 public class SettingUseUnitServiceImp implements SettingUseUnitService{
@@ -39,6 +41,17 @@ public class SettingUseUnitServiceImp implements SettingUseUnitService{
 		}
 		
 		return new SettingUseUnitOutput(mode, approvalSettingOp, hrApprovalOp);
+	}
+	@Override
+	public void checkBeforeRegister(UseClassification companyUnit, UseClassification workplaceUnit,
+			UseClassification employeeUnit) {
+		// INPUTの「会社単位、職場部門単位、個人単位」3つ単位をチェックする
+		if (companyUnit == UseClassification.DO_NOT_USE 
+			&& workplaceUnit ==  UseClassification.DO_NOT_USE
+			&& employeeUnit == UseClassification.DO_NOT_USE) { // 3つ単位は全て表示しないを設定する場合
+			throw new BusinessException("Msg_1590");
+		}
+		
 	}
 
 }
