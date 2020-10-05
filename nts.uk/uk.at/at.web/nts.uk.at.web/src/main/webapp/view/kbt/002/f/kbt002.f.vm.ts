@@ -155,7 +155,7 @@ module nts.uk.at.view.kbt002.f {
             {
               name: 'ButtonDetail',
               text: vm.$i18n('KBT002_144'),
-              click: (evt: ExecutionItemInfomationModel) => { console.log(evt); },
+              click: (evt: ExecutionItemInfomationModel) => vm.openDialogG(evt.execItemCd),
               controlType: 'Button'
             },
             {
@@ -176,9 +176,15 @@ module nts.uk.at.view.kbt002.f {
      */
     private openDialogG(execItemCd: string) {
       const vm = this;
-      const params = _.find(vm.dataSource(), (o) => o.execItemCd === execItemCd);
-      // TODO check param
-      if (params) {
+      const selectedDto = _.find(vm.dataSource(), (o) => o.execItemCd === execItemCd);
+      if (selectedDto) {
+        const params = {
+          taskLogList: selectedDto.updateProcessAutoExecLog ? selectedDto.updateProcessAutoExecLog.taskLogList : [], // 各処理の終了状態
+          overallStatus: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallError : null, // 全体の終了状態
+          overallError: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallError : null, // 全体のエラー詳細
+          execId: selectedDto.updateProcessAutoExecLog ? selectedDto.updateProcessAutoExecLog.execId : null, // 実行ID
+          execItemCd: selectedDto.execItemCd, // 更新処理自動実行項目コード
+        };
         // 画面G「前回終了状態詳細」を起動する
         vm.$blockui('grayout');
         vm.$window.modal('/view/kbt/002/g/index.xhtml', params)
