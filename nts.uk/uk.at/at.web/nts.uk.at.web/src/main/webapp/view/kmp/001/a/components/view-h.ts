@@ -19,7 +19,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="panel panel-frame panel-gray-bg">
 										<div class="title" data-bind= "text: $i18n('KMP001_1')"></div>
 									</div>
-									<div class="content" data-bind= "text: $i18n('KMP001_102')"></div>
+									<pre class="content" data-bind= "text: $i18n('KMP001_102')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
 											<button class="large" data-bind= "text: $i18n('KMP001_1'), click: view_A"></button>
@@ -32,7 +32,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="panel panel-frame panel-gray-bg">
 										<div class="title" data-bind= "text: $i18n('KMP001_2')"></div>
 									</div>
-									<div class="content" data-bind= "text: $i18n('KMP001_103')"></div>
+									<pre class="content" data-bind= "text: $i18n('KMP001_103')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
 											<button class="large" data-bind= "text: $i18n('KMP001_2'), click: view_B, enable: attendance"></button>
@@ -47,7 +47,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="panel panel-frame panel-gray-bg">
 										<div class="title" data-bind= "text: $i18n('KMP001_3')"></div>
 									</div>
-									<div class="content" data-bind= "text: $i18n('KMP001_104')"></div>
+									<pre class="content" data-bind= "text: $i18n('KMP001_104')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
 											<button class="large" data-bind= "text: $i18n('KMP001_3'), click: view_C, enable: attendance"></button>
@@ -60,7 +60,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="panel panel-frame panel-gray-bg">
 										<div class="title" data-bind= "text: $i18n('KMP001_70')"></div>
 									</div>
-									<div class="content" data-bind= "text: $i18n('KMP001_105')"></div>
+									<pre class="content" data-bind= "text: $i18n('KMP001_105')"></pre>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
 											<button class="large" data-bind= "text: $i18n('KMP001_70'), click: view_E, enable: attendance"></button>
