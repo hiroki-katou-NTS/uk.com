@@ -11,17 +11,22 @@
             nts.uk.ctx.pereg.dom.person.layout.LayoutCode
         </com:ValidatorScript>
         <script>var dialogSize = {width: 900, height: 700};</script>
-        <com:stylefile path="../j/ksm008.j.style.css"/>
-        <com:stylefile path="ksm008.i.style.css"/>
-        <com:scriptfile path="ksm008.vm.js"/>
+        <com:stylefile path="ksm008.k.style.css"/>
+        <com:stylefile path="../l/ksm008.l.style.css"/>
+        <com:scriptfile path="ksm008.k.vm.js"/>
         <com:scriptfile set="IGNITE"/>
     </ui:define>
     <ui:define name="sidebar" tabindex="1">
         <ul class="navigator">
-            <li><a data-id="0" href="#tabpanel-1" role="tab-navigator" data-bind="selectCom" class="active">#{i18n.getText('Com_Company')}
-            </a></li>
-            <li><a data-id="1" href="#tabpanel-2" role="tab-navigator" data-bind="selectOrg">#{i18n.getText('KSM008_184')}
-            </a></li>
+            <!--k1_1-->
+            <li>
+                <a data-id="0" href="#tabpanel-1" role="tab-navigator"
+                   class="active">#{i18n.getText('Com_Company')} </a>
+            </li>
+            <!--k1_2-->
+            <li>
+                <a data-id="1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KSM008_148')}</a>
+            </li>
         </ul>
     </ui:define>
     <ui:define name="sidebar-content">
@@ -29,81 +34,102 @@
             <div class="sidebar-content-header" style="padding-bottom: 10px;">
                 <div>
                     <span class="title">#{i18n.getText('Com_Company')}</span>
+                    <!--k2_1-->
                     <a class="goback" tabindex="2"
-                       data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
-                    <button tabindex="3">#{i18n.getText('KSM008_186')}</button>
-                    <button class="proceed" tabindex="4">#{i18n.getText('KSM008_187')}</button>
-                    <button class="danger" tabindex="5">#{i18n.getText('KSM008_188')}</button>
+                       data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_149')}</a>
+                    <!--k2_2-->
+                    <button tabindex="3" data-bind="click:kScreenClickNewButton">#{i18n.getText('KSM008_150')}</button>
+                    <!--k2_3-->
+                    <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_151')}</button>
+                    <!--k2_4-->
+                    <button class="danger" data-bind="click:kScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_152')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
-                    <div class="label" style="margin-bottom: 15px;"
-                         data-bind="text: scheduleAlarmCheckCond().code"><span
-                            data-bind="text: scheduleAlarmCheckCond().descriptions"></span></div>
+                    <!--k3_1-->
+                    <div class="label" data-bind="text: scheduleAlarmCheckCond().codeAndDescription"></div>
+                    <!--k4_1-->
                     <div class="label warning"
-                         style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
+                         style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_153')}</div>
+                    <!--k4_2-->
                     <div class="label warning" style="padding-top: 0;"
                          data-bind="text: scheduleAlarmCheckCond().descriptions"></div>
                 </div>
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
-                        <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}">
-                            <table id="single-list" data-bind="ntsGridList: {
-                                dataSource: items,
-                                primaryKey: 'code',
-                                columns: [ { headerText: '#{i18n.getText('KSM008_191')}', key: 'code', width: 100, formatter: _.escape },
-                                           { headerText: '#{i18n.getText('KSM008_192')}', key: 'name', width: 150, formatter: _.escape },
-                                           { headerText: '#{i18n.getText('KSM008_193')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
-                                          ],
-                                deleteOptions : {visible : false},
-                                multiple: false,
-                                rows: 20,
-                                value: currentCode
+                        <!--k5-->
+                        <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true},name:#{i18n.getText('KSM008_205')}"
+                             tabindex="2">
+                            <!--k5_1-->
+                            <table tabindex="6" id="single-list" data-bind="ntsGridList: {
+                            dataSource: kScreenGridListData,
+                            primaryKey: 'code',
+                            columns: [ { headerText: '#{i18n.getText('KSM008_155')}', key: 'code', width: 100, formatter: _.escape },
+                                       { headerText: '#{i18n.getText('KSM008_156')}', key: 'name', width: 150, formatter: _.escape },
+                                       { headerText: '#{i18n.getText('KSM008_157')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                      ],
+                            deleteOptions : {visible : false},
+                            multiple: false,
+                            rows: 20,
+                            value: currentCode
                         }"></table>
                         </div>
                     </div>
                     <div class="cell valign-top">
                         <div class="table">
-                            <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true }">#{i18n.getText('KSM008_194')}</div>
+                            <!-- k6_1 -->
+                            <div class="cell valign-center" style="width: 155px">
+                                <!--TODO 制約表示	K6_2, K6_3-->
+                                <div data-bind="
+                                ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true }
+                              ">#{i18n.getText('KSM008_158')}</div>
                             </div>
                             <div class="cell valign-center">
-                                <!-- I6_2 -->
-                                <input tabindex="7" class="input-lead"
-                                       data-bind="ntsTextEditor: {constraint: 'LayoutCode', value: simpleValue, required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px', background: '#f9efef'}"/>
+                                <!-- K6_2 -->
+                                <input tabindex="7" id="K6_2"
+                                       data-bind="
+                                         ntsTextEditor: {value: vm.kScreenWorkingHour.code, required: true, name: '#[KSM008_159]'},
+                                         style: { width: '25px', marginRight: '5px', 'background':'#f9efef'}
+                                "/>
                             </div>
                             <div class="cell valign-center">
-                                <!-- I6_3 -->
-                                <input tabindex="8"
-                                       data-bind="ntsTextEditor: {constraint: 'LayoutCode', value: simpleValue, required: true, name: '#[KSM008_196]'}"/>
-                            </div>
-                        </div>
-                        <div class="table">
-                            <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_197')}</div>
-                            </div>
-                            <div class="cell valign-center">
-                                <!-- I7_2 -->
-                                <button  tabindex="4" data-bind="click: openModal" style="margin-right: 5px">#{i18n.getText('KSM008_198')}</button>
-                            </div>
-                            <div class="cell valign-center">
-                                <!-- I7_3 -->
-                                <input data-bind="ntsTextEditor: {value: simpleValue, required: true, name: '#[KSM008_199]'}"/>
+                                <!-- K6_3  -->
+                                <input tabindex="8" id="K6_3"
+                                       data-bind="
+                                       ntsTextEditor: {value: vm.kScreenWorkingHour.name, required: true, name: '#[KSM008_160]'}
+                                      "/>
                             </div>
                         </div>
                         <div class="table">
-                            <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_200')}</div>
+                            <!-- K7_1 -->
+                            <div class="cell valign-center" style="width: 155px">
+                                <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_161')}</div>
                             </div>
+                            <!-- K7_2 -->
                             <div class="cell valign-center">
-                                <!-- I8_2 -->
-                                <input tabindex="10" class="input-lead"
-                                       data-bind="ntsTextEditor: {value: simpleValue, required: true, name: '#[KSM008_200]'}, style: { width: '25px', marginRight: '5px'}"/>
+                                <button tabindex="9" data-bind="click: openModal" id="K7_2"
+                                        style="margin-right: 5px">#{i18n.getText('KSM008_162')}</button>
                             </div>
+                            <!-- K7_3-->
                             <div class="cell valign-center">
-                                <!-- I8_3 -->
-                                <span style="margin-bottom: 15px;">#{i18n.getText('KSM008_201')}</span>
+                                <input id="K7_3" data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,name: '#[KSM008_163]'}"/>
+                            </div>
+                        </div>
+                        <div class="table" style="margin-top: 6px">
+                            <!-- K8_1 -->
+                            <div class="cell valign-center" style="width: 155px">
+                                <!--TODO 制約表示	K8_2-->
+                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_164')}</div>
+                            </div>
+                            <!-- K8_2 -->
+                            <div class="cell valign-center">
+                                <input tabindex="10" id="K8_2"
+                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '5px'}"/>
+                            </div>
+                            <!-- K8_3 -->
+                            <div class="cell valign-center">
+                                <span>#{i18n.getText('KSM008_166')}</span>
                             </div>
                         </div>
                     </div>
@@ -111,9 +137,10 @@
             </div>
         </div>
         <div id="tabpanel-2" role="tabpanel">
-            <ui:include src="../j/index.xhtml" />
+            <ui:include src="../l/index.xhtml"/>
         </div>
     </ui:define>
 </ui:composition>
 </body>
 </html>
+
