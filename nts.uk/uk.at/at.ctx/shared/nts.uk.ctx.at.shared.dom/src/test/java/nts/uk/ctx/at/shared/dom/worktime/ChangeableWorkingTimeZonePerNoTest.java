@@ -16,6 +16,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * Test for ChangeableWorkingTimeZonePerNo
@@ -25,13 +26,13 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAre
 @RunWith(JMockit.class)
 public class ChangeableWorkingTimeZonePerNoTest {
 
-	private TimeSpanForCalc DUMMY_TIMESPAN = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  5, 00,  22, 00 );
+	private TimeSpanForCalc DUMMY_TIMESPAN =
+			new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  5,  0 ), TimeWithDayAttr.hourMinute( 22,  0 ));
 
 	@Test
 	public void testGetters() {
-		val instance = ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-									new WorkNo(1)
-								,	ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  0, 00,  3, 00 )
+		val instance = ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1)
+								, new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  0,  0 ), TimeWithDayAttr.hourMinute(  3,  0 ))
 							);
 		NtsAssert.invokeGetters(instance);
 	}
@@ -46,8 +47,8 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 勤務NO
 		val workNo = new WorkNo(1);
 		// 時間帯
-		val forStart = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 06, 45, 10, 15 );
-		val forEnd = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 18, 30, 21, 30 );
+		val forStart = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  6, 45 ), TimeWithDayAttr.hourMinute( 10, 15 ));
+		val forEnd = new TimeSpanForCalc(TimeWithDayAttr.hourMinute( 18, 30 ), TimeWithDayAttr.hourMinute( 21, 30 ));
 
 		// Execute
 		val result = ChangeableWorkingTimeZonePerNo.create( workNo, forStart, forEnd );
@@ -67,7 +68,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 勤務NO
 		val workNo = new WorkNo(2);
 		// 時間帯
-		val timeSpan = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  8, 30, 17, 30 );
+		val timeSpan = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  8, 30 ), TimeWithDayAttr.hourMinute( 17, 30 ));
 
 		// Execute
 		val result = ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd( workNo, timeSpan );
@@ -88,7 +89,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// 勤務NO
 		val workNo = new WorkNo(1);
 		// 時間帯
-		val timeSpan = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  8, 30, 17, 30 );
+		val timeSpan = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  8, 30 ), TimeWithDayAttr.hourMinute( 17, 30 ));
 
 		// Execute
 		val result = ChangeableWorkingTimeZonePerNo.createAsUnchangeable( workNo, timeSpan );
@@ -137,9 +138,9 @@ public class ChangeableWorkingTimeZonePerNoTest {
 	public void testGetTimeSpan() {
 
 		// 開始側
-		val start = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  7, 00,  9, 30 );
+		val start = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  7,  0 ), TimeWithDayAttr.hourMinute(  9, 30 ));
 		// 終了側
-		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
+		val end = new TimeSpanForCalc(TimeWithDayAttr.hourMinute( 17, 45 ), TimeWithDayAttr.hourMinute( 19,  0 ));
 		// 勤務NOごとの変更可能な勤務時間帯
 		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
@@ -170,19 +171,16 @@ public class ChangeableWorkingTimeZonePerNoTest {
 	public void testContains_True() {
 
 		// 開始側
-		val start = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  7, 00,  9, 30 );
+		val start = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  7,  0 ), TimeWithDayAttr.hourMinute(  9, 30 ));
 		// 終了側
-		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
+		val end = new TimeSpanForCalc(TimeWithDayAttr.hourMinute( 17, 45 ), TimeWithDayAttr.hourMinute( 19,  0 ));
 		// 勤務NOごとの変更可能な勤務時間帯
 		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
 		// Target: 開始側
 		{
 			// Execute
-			val result = instance.contains(
-									ChangeableWorkingTimeZoneTestHelper.TimeWizDayAtr.from(  9, 30 )
-								,	ClockAreaAtr.START
-							);
+			val result = instance.contains(TimeWithDayAttr.hourMinute(  9, 30 ), ClockAreaAtr.START);
 
 			// Assertion
 			assertThat( result.isContains() ).isTrue();
@@ -192,10 +190,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// Target: 終了側
 		{
 			// Execute
-			val result = instance.contains(
-									ChangeableWorkingTimeZoneTestHelper.TimeWizDayAtr.from( 17, 45 )
-								,	ClockAreaAtr.END
-							);
+			val result = instance.contains(TimeWithDayAttr.hourMinute( 17, 45 ), ClockAreaAtr.END);
 
 			// Assertion
 			assertThat( result.isContains() ).isTrue();
@@ -212,19 +207,16 @@ public class ChangeableWorkingTimeZonePerNoTest {
 	public void testContains_False() {
 
 		// 開始側
-		val start = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from(  7, 00,  9, 30 );
+		val start = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  7,  0 ), TimeWithDayAttr.hourMinute(  9, 30 ));
 		// 終了側
-		val end = ChangeableWorkingTimeZoneTestHelper.TimeSpan.from( 17, 45, 19, 00 );
+		val end = new TimeSpanForCalc(TimeWithDayAttr.hourMinute( 17, 45 ), TimeWithDayAttr.hourMinute( 19,  0 ));
 		// 勤務NOごとの変更可能な勤務時間帯
 		val instance = new ChangeableWorkingTimeZonePerNo( new WorkNo(1), start, end );
 
 		// Target: 開始側
 		{
 			// Execute
-			val result = instance.contains(
-									ChangeableWorkingTimeZoneTestHelper.TimeWizDayAtr.from(  9, 31 )
-								,	ClockAreaAtr.START
-							);
+			val result = instance.contains(TimeWithDayAttr.hourMinute(  9, 31 ), ClockAreaAtr.START);
 
 			// Assertion
 			assertThat( result.isContains() ).isFalse();
@@ -234,10 +226,7 @@ public class ChangeableWorkingTimeZonePerNoTest {
 		// Target: 終了側
 		{
 			// Execute
-			val result = instance.contains(
-									ChangeableWorkingTimeZoneTestHelper.TimeWizDayAtr.from( 17, 44 )
-								,	ClockAreaAtr.END
-							);
+			val result = instance.contains(TimeWithDayAttr.hourMinute( 17, 44 ), ClockAreaAtr.END);
 
 			// Assertion
 			assertThat( result.isContains() ).isFalse();

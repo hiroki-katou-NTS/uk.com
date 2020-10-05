@@ -24,7 +24,7 @@ public class BreakTimeZoneTest {
 	@Test
 	public void testGetters() {
 		val instance = BreakTimeZone.createAsFixed(Arrays.asList(
-					new TimeSpanForCalc( Helper.toTime( 0, 0 ), Helper.toTime( 3, 0 ) )
+					new TimeSpanForCalc(TimeWithDayAttr.hourMinute(  0,  0 ), TimeWithDayAttr.hourMinute(  3,  0 ))
 				));
 		NtsAssert.invokeGetters(instance);
 	}
@@ -38,11 +38,11 @@ public class BreakTimeZoneTest {
 
 		// 休憩時間帯リスト
 		val breakTimes = Arrays.asList(
-						new TimeSpanForCalc( Helper.toTime(  6, 30 ), Helper.toTime(  8, 30 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 12,  0 ), Helper.toTime( 12, 45 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 15, 15 ), Helper.toTime( 15, 30 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 17,  0 ), Helper.toTime( 17, 30 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 20, 45 ), Helper.toTime( 21,  0 ) )
+						new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  6, 30 ), TimeWithDayAttr.hourMinute(  8, 30 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 12,  0 ), TimeWithDayAttr.hourMinute( 12, 45 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 15, 15 ), TimeWithDayAttr.hourMinute( 15, 30 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 17,  0 ), TimeWithDayAttr.hourMinute( 17, 30 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 20, 45 ), TimeWithDayAttr.hourMinute( 21,  0 ) )
 				);
 
 		// Execute
@@ -62,9 +62,9 @@ public class BreakTimeZoneTest {
 
 		// 休憩時間帯リスト
 		val breakTimes = Arrays.asList(
-						new TimeSpanForCalc( Helper.toTime( 0, 0 ), Helper.toTime(  1, 0 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 0, 0 ), Helper.toTime( 0, 30 ) )
-					,	new TimeSpanForCalc( Helper.toTime( 0, 0 ), Helper.toTime( 0, 45 ) )
+						new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  0,  0 ), TimeWithDayAttr.hourMinute(  1,  0 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  0,  0 ), TimeWithDayAttr.hourMinute(  0, 30 ) )
+					,	new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  0,  0 ), TimeWithDayAttr.hourMinute(  0, 45 ) )
 				);
 
 		// Execute
@@ -73,21 +73,6 @@ public class BreakTimeZoneTest {
 		// Assertion
 		assertThat( result.isFixed() ).isFalse();
 		assertThat( result.getBreakTimes() ).containsExactlyInAnyOrderElementsOf( breakTimes );
-
-	}
-
-
-	protected static class Helper {
-
-		/**
-		 * 時分から時刻(日区分付き)に変換する
-		 * @param hour 時
-		 * @param minute 分
-		 * @return 時刻(日区分付き)
-		 */
-		public static TimeWithDayAttr toTime( int hour, int minute ) {
-			return new TimeWithDayAttr( hour * 60 + minute );
-		}
 
 	}
 }
