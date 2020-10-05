@@ -37,7 +37,7 @@ public class CompanyApproverHistoryChangeDomainService {
 			require.changeHistory(histToChange, startDateBeforeChange);
 
 			if (optPrevHist.isPresent()) {
-				require.changeHistory(optPrevHist.get(),optPrevHist.get().getPeriod().start());
+				require.changeHistory(optPrevHist.get(), optPrevHist.get().getPeriod().start());
 			}
 		});
 	}

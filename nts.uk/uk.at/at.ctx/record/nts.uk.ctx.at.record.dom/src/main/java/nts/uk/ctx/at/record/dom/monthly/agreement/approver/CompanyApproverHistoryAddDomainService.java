@@ -22,6 +22,7 @@ public class CompanyApproverHistoryAddDomainService {
 	 */
 	public static AtomTask addApproverHistory(Require require, Approver36AgrByCompany histToAdd){
 
+		// 追加する履歴
 		val histToAddClone = Approver36AgrByCompany.create(
 				histToAdd.getCompanyId(),
 				histToAdd.getPeriod(),
@@ -29,11 +30,13 @@ public class CompanyApproverHistoryAddDomainService {
 				new ArrayList<>(histToAdd.getConfirmerList())
 		);
 
+		// $最新の履歴
 		val optLatestHist = require.getLatestHistory(GeneralDate.max());
 		if (optLatestHist.isPresent()){
-			val newEndDate = histToAddClone.getPeriod().start().addDays(-1);
-			val periodWithNewEndDate = new DatePeriod(optLatestHist.get().getPeriod().start(), newEndDate);
-			optLatestHist.get().setPeriod(periodWithNewEndDate);
+			optLatestHist.get().setPeriod(new DatePeriod(
+					optLatestHist.get().getPeriod().start(),
+					histToAddClone.getPeriod().start().addDays(-1)
+			));
 		}
 
 		return AtomTask.of(() -> {
@@ -60,6 +63,6 @@ public class CompanyApproverHistoryAddDomainService {
 		/**
 		 * [R-3] 最新の履歴を変更する Change the latest history
 		 */
-		void changeLatestHistory(Approver36AgrByCompany hist,GeneralDate date);
+		void changeLatestHistory(Approver36AgrByCompany hist, GeneralDate date);
 	}
 }
