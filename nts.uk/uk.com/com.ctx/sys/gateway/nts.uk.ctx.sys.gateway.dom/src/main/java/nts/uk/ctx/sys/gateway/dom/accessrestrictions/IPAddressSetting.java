@@ -26,7 +26,7 @@ public class IPAddressSetting extends DomainObject {
 	/** IPアドレス4 */
 	private IPAddress ip4;
 	
-	public boolean equals(IPAddressSetting ipAddressSetting) {
+	public boolean compareObject(IPAddressSetting ipAddressSetting) {
 		if (this.ip1.equals(ipAddressSetting.ip1)
 				&& this.ip2.equals(ipAddressSetting.ip2)
 				&& this.ip3.equals(ipAddressSetting.ip3)

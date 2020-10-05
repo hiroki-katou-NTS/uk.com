@@ -1,13 +1,13 @@
-package nts.uk.ctx.sys.gateway.ws.accessrestrictions;
+package nts.uk.ctx.sys.gateway.ws.cmm002;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AccessRestrictionsCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AllowedIPAddressCommand;
-import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AllowedIPAddressUpdateCommand;
+import nts.uk.ctx.sys.gateway.app.command.cmm002.AccessRestrictionsCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.cmm002.AllowedIPAddressCommand;
+import nts.uk.ctx.sys.gateway.app.command.cmm002.AllowedIPAddressUpdateCommand;
 
 @Path("com/ctx/sys/gateway/accessrestrictions")
 @Produces("application/json")
