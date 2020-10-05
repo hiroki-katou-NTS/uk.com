@@ -130,11 +130,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		
 		if (entity.isPresent()) {
 			KmkmtAgreementMonthSet data = entity.get();
-			
-			/** TODO: 36協定時間対応により、コメントアウトされた */
-//			data.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().valueAsMinutes());
-//			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
-			
+			data.alarmOneMonth = agreementMonthSetting.getOneMonthTime().getAlarm().valueAsMinutes();
+			data.errorOneMonth = agreementMonthSetting.getOneMonthTime().getError().valueAsMinutes();
 			this.commandProxy().update(data);
 		}
 
@@ -161,12 +158,26 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
 	}
 
+	@Override
+	public List<AgreementMonthSetting> getByEmployeeId(String employeeId) {
+		return this.queryProxy()
+				.query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", employeeId).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth) {
+		return this.queryProxy()
+				.query(FIND_BY_KEY, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth).getSingle(x -> toDomain(x));
+	}
+
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {
-		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(
+		return AgreementMonthSetting.createFromJavaType(
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.yearmonthValue,
-				kmkmtAgreementMonthSet.errorOneMonth.intValue(), kmkmtAgreementMonthSet.alarmOneMonth.intValue());
-		return agreementMonthSetting;
+				kmkmtAgreementMonthSet.errorOneMonth, kmkmtAgreementMonthSet.alarmOneMonth);
 	}
 
 	private KmkmtAgreementMonthSet toEntity(AgreementMonthSetting agreementMonthSetting) {
@@ -175,10 +186,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		entity.kmkmtAgreementMonthSetPK = new KmkmtAgreementMonthSetPK();
 		entity.kmkmtAgreementMonthSetPK.employeeId = agreementMonthSetting.getEmployeeId();
 		entity.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
-		/** TODO: 36協定時間対応により、コメントアウトされた */
-//		entity.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().v());
-//		entity.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().v());
-
+		entity.alarmOneMonth = agreementMonthSetting.getOneMonthTime().getAlarm().valueAsMinutes();
+		entity.errorOneMonth = agreementMonthSetting.getOneMonthTime().getError().valueAsMinutes();
 		return entity;
 	}
 }

@@ -27,5 +27,17 @@ public interface AgreementMonthSettingRepository {
 	
 	// fix bug 100605
 	void updateById(AgreementMonthSetting agreementMonthSetting, Integer yearMonthValueOld);
+
+	/**
+	 * [4] get
+	 * 指定社員の全ての３６協定年月設定を取得する
+	 */
+	List<AgreementMonthSetting> getByEmployeeId(String employeeId);
+
+	/**
+	 * [5] get
+	 * 指定社員の全ての３６協定年月設定を取得する
+	 */
+	Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth);
 	
 }
