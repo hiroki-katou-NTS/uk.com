@@ -15,6 +15,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             new ItemModel(0, getText("KDM001_4")),
             new ItemModel(1, getText("KDM001_152"))
         ]);
+        listEmployee: Array<EmployeeInfo>;
         selectedPeriodItem: KnockoutObservable<number> = ko.observable(0);
         dateValue: KnockoutObservable<any> = ko.observable({});
         startDateString: KnockoutObservable<string> = ko.observable("");
@@ -211,7 +212,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
               vm.dateValue.valueHasMutated();
             });
             vm.selectedItem.subscribe(x => {
-              vm.updateDataList(false);
+              if(vm.listEmployee){
+                vm.selectedEmployeeObject= _.find(vm.listEmployee, item => { return item.employeeId === x; });
+              }
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
@@ -422,8 +425,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 screenBModel.convertEmployeeCcg01ToKcp009(dataList);
             } else {
                 let self = this;
+                self.listEmployee = [];
                 self.employeeInputList([]);
                 _.each(dataList, function (item) {
+                  self.listEmployee.push(new EmployeeInfo(item.employeeId, item.employeeCode, item.employeeName, '', ''));
                     self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
                 });
                 $('#emp-componentA').ntsLoadListComponent(self.listComponentOption);
@@ -631,6 +636,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         workplaceId: string;
         workplaceName: string;
     }
+    export class EmployeeInfo {
+      employeeId: string;
+      employeeCode: string;
+      employeeName: string;
+      workplaceId: string;
+      workplaceName: string;
+      constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceName: string) {
+          this.employeeId = employeeId;
+          this.employeeCode = employeeCode;
+          this.employeeName = employeeName;
+          this.workplaceId = workplaceId;
+          this.workplaceName = workplaceName;
+      }
+  }
 
     export interface Ccg001ReturnedData {
         baseDate: string; // 基準日
