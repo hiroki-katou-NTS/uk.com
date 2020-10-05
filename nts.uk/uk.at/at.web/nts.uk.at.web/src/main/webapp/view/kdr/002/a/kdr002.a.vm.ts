@@ -110,8 +110,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         numbereditor: any;
         // A5_3
         optionExtraction: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0 , name: getText('KDR002_47') }, //なし
-            { code: 1 , name: getText('KDR002_48')  } //職場
+            { code: 0 , name: getText('KDR002_47') }, //以下
+            { code: 1 , name: getText('KDR002_48')  } //以上
         ]);
         optionExtractionValue: KnockoutObservable<number> = ko.observable(0);
 
