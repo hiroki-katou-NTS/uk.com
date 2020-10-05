@@ -20,10 +20,10 @@ module nts.uk.at.view.kmp001.e {
 						<label class="ntsRadioBox">
 							<input type="radio" data-bind="value: value, checked: $component.paddingType"  />
 							<span class="box"></span>
-							<span class="label" data-bind="i18n: label"></span>
+							<pre class="label" data-bind="i18n: label"></pre>
 						</label>
 						<div class="panel panel-frame">
-							<div class="label" data-bind= "i18n: content"></div>
+							<pre class="label" data-bind= "i18n: content"></pre>
 						</div>
 					</div>
 					<div class="view-e-bg-button" >

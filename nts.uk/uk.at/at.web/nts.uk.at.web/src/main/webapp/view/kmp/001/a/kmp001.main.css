@@ -175,7 +175,7 @@
 }
 
 .view-kmp .view-e-content {
-	width: 500px;
+	width: 700px;
 	margin-top: 10px;
 }
 
@@ -185,7 +185,7 @@
 }
 
 .view-kmp .view-e-content .view-e-bg-button {
-	width: 500px;
+	width: 700px;
 	text-align: right;
     margin-top: 25px;
 }
@@ -197,4 +197,13 @@
 
 .view-kmp .view-h-title {
 	width: 720px;
+}
+
+.panel.panel-gray-bg {
+	background-color: gray;
+}
+
+.view-kmp .search_label {
+	padding-bottom: 0px;
+	margin-bottom: 6px;
 }

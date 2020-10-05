@@ -8,7 +8,7 @@ module nts.uk.at.view.kmp001.b {
 			<button class="danger" data-bind= "text: $i18n('KMP001_6'), click: deleteStamCard"></button>
 		</div>
 		<div class="view-kmp">
-			<div class="search_label" style="padding-bottom: 0px">
+			<div class="search_label">
 				<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
 				<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
 				<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),

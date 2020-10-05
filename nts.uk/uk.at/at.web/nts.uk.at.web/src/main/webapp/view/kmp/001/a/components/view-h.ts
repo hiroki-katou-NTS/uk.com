@@ -3,12 +3,12 @@
 module nts.uk.at.view.kmp001.h {
 	const template = `
 		<div id="functions-area">
-			<button data-bind= "text: $i18n('KMP001_100'), click: print"></button>
+			<button data-bind= "text: $i18n('KMP001_107'), click: print"></button>
 			<button data-bind= "text: $i18n('KMP001_7'), click: showDiaLog"></button>
 		</div>
 		<div class="view-kmp">
 			<div class="panel panel-frame view-h-title">
-				<div data-bind= "text: $i18n('KMP001_101')"></div>
+				<pre data-bind= "text: $i18n('KMP001_101')"></pre>
 			</div>
 			<div class="list-panel">
 				<table>
@@ -22,7 +22,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="content" data-bind= "text: $i18n('KMP001_102')"></div>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_1'), click: view_A, enable: attendance"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_1'), click: view_A"></button>
 										</span>
 									</div>
 								</div>
@@ -35,7 +35,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="content" data-bind= "text: $i18n('KMP001_103')"></div>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_2'), click: view_B"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_2'), click: view_B, enable: attendance"></button>
 										</span>
 									</div>
 								</div>
@@ -50,7 +50,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="content" data-bind= "text: $i18n('KMP001_104')"></div>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_3'), click: view_C"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_3'), click: view_C, enable: attendance"></button>
 										</span>
 									</div>
 									</div>
@@ -63,7 +63,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="content" data-bind= "text: $i18n('KMP001_105')"></div>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_70'), click: view_E"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_70'), click: view_E, enable: attendance"></button>
 										</span>
 									</div>
 								</div>
