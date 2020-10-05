@@ -39,14 +39,14 @@
 						</td>
 						<td style="text-align: center;"><span
 							data-bind="text: fixConWorkRecordNo"></span></td>
-						<com:ko-if bind="division()=='Error'">
+						<com:ko-if bind="eralarmAtr()==0">
 							<td style="background-color: red;">ER</td>
 						</com:ko-if>
-						<com:ko-if bind="division()=='Alarm'">
+						<com:ko-if bind="eralarmAtr()==1">
 							<td style="background-color: yellow;">AL</td>
 						</com:ko-if>
 						<com:ko-if
-							bind="division()!='Error' &amp;&amp; division()!='Alarm'">
+							bind="eralarmAtr()!=0 &amp;&amp; eralarmAtr()!=1">
 							<td></td>
 						</com:ko-if>
 						<td><span data-bind="text: checkName"></span></td>

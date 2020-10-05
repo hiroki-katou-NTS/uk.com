@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlarmAtr;
 
 @Data
 @NoArgsConstructor
@@ -18,13 +19,13 @@ public class FixedConditionDataDto {
 	/** メッセージ */
 	private String message;
 	/** 区分*/
-	private String division;
-	public FixedConditionDataDto(int fixConWorkRecordNo, String fixConWorkRecordName, String message, String division) {
+	private Integer eralarmAtr;
+	public FixedConditionDataDto(int fixConWorkRecordNo, String fixConWorkRecordName, String message, Integer eralarmAtr) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
-		this.division = division;
+		this.eralarmAtr = eralarmAtr;
 	}
 	
 	public FixedConditionData toDto() {
@@ -32,7 +33,7 @@ public class FixedConditionDataDto {
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixConWorkRecordName(this.fixConWorkRecordName),
 				new FixedConditionWorkRecordName(this.message),
-				this.division
+				this.eralarmAtr!=null?ErAlarmAtr.values()[this.eralarmAtr]:ErAlarmAtr.OTHER
 				);
 	}
 	
@@ -41,7 +42,7 @@ public class FixedConditionDataDto {
 				domain.getFixConWorkRecordNo().value,
 				domain.getFixConWorkRecordName().v(),
 				domain.getMessage().v(),
-				domain.getDivision()
+				domain.getEralarmAtr()!=null?domain.getEralarmAtr().value:2
 				);
 	}
 }

@@ -200,7 +200,7 @@ public class AlarmCheckConditionByCategoryFinder {
 				if (listFixedConditionWorkRecord != null && !listFixedConditionWorkRecord.isEmpty()) {
 					for (FixedConWorkRecordAdapterDto e : listFixedConditionWorkRecord) {
 						if (e.getFixConWorkRecordNo() == i.getFixConWorkRecordNo()) {
-							FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(), i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr());
+							FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(), i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr(), i.getEralarmAtr());
 							listFixedConditionWkRecord.add(dto);
 							check = false;
 							break;
@@ -208,7 +208,7 @@ public class AlarmCheckConditionByCategoryFinder {
 					}
 				}
 				if (check) {
-					FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), i.getMessage(), false);
+					FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), i.getMessage(), false, i.getEralarmAtr());
 					listFixedConditionWkRecord.add(dto);
 				}
 			}

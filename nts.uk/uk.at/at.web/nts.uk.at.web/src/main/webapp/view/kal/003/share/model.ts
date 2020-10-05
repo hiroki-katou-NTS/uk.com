@@ -2315,7 +2315,7 @@ module nts.uk.at.view.kal003.share.model {
         fixConWorkRecordNo: number;
         message: string;
         useAtr: boolean;
-		division: string;
+		eralarmAtr: number;
     }
 
 
@@ -2327,14 +2327,14 @@ module nts.uk.at.view.kal003.share.model {
         checkName: string;
         message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
-		division: KnockoutObservable<string>;
+		eralarmAtr: KnockoutObservable<number>;
         constructor(data: IFixedConditionWorkRecord) {
             this.dailyAlarmConID = data.dailyAlarmConID;
             this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
             this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
-			this.division = ko.observable(data.division);
+			this.eralarmAtr = ko.observable(data.eralarmAtr);
         }
     }
 
