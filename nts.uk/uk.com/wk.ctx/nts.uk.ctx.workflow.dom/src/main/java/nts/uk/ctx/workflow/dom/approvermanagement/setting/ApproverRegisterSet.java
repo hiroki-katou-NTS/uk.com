@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.setting;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 /**
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
  * @author hoangnd
  *
  */
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApproverRegisterSet {
