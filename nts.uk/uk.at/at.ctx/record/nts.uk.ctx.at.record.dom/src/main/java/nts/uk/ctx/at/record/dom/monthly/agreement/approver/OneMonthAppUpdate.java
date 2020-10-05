@@ -4,14 +4,16 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ExcessErrorContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -41,65 +43,63 @@ public class OneMonthAppUpdate {
 			AgreementOneMonthTime oneMonthTime,
 			ReasonsForAgreement reason) {
 
-		// $36協定申請
+		// エラー情報
+		val errorInfo = new ArrayList<ExcessErrorContent>();
+
+		// $36協定申請 (Optional)
 		val optApp = require.getApp(applicantId); // R1
-		if (!optApp.isPresent()){
+		if (!optApp.isPresent()) {
 			throw new BusinessException("Msg_1262");
 		}
 
+		// $36協定申請
 		val app = optApp.get();
 
-		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
+		// $申請内容
+		val monthlyAppContent = new MonthlyAppContent(
 				app.getApplicantsSID(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
+				app.getApplicationTime().getOneMonthTime().get().getYearMonth(),
+				oneMonthTime,
+				Optional.empty(),
+				reason
+		);
 
-		val oneMonth = setting.getOneMonth();
+		// 超過エラー
+		val excessError = CheckErrorApplicationMonthService.check(require, monthlyAppContent);
+		errorInfo.addAll(excessError);
 
-		// $エラー結果
-		val errResult =  oneMonth.checkErrorTimeExceeded(oneMonthTime);
+		AtomTask atomTask = null;
+		if (errorInfo.isEmpty()) {
+			// $３６協定設定
+			val setting = AgreementDomainService.getBasicSet(require, cid, app.getApplicantsSID(), GeneralDate.today());
 
-		if (errResult.getKey()) {
-			return new AppCreationResult(
-					app.getApplicantsSID(),
-					ResultType.MONTHLY_LIMIT_EXCEEDED,
-					Optional.empty(),
-					Optional.of(errResult.getValue()),
-					Optional.empty()
-			);
+			// $1ヶ月のアラーム
+			val oneMonthAlarm = setting.getOneMonth().calculateAlarmTime(oneMonthTime);
+
+			// $エラーアラーム
+			val errorAlarm = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthAlarm);
+
+			// $36協定申請.1ヶ月の申請時間を変更する
+			app.changeApplicationOneMonth(errorAlarm, reason);
+
+			//$Atomtask
+			atomTask = AtomTask.of(() -> { require.updateApp(app); }); // R2
 		}
 
-		// $1ヶ月のアラーム
-		val oneMonthArlarm = oneMonth.calculateAlarmTime(oneMonthTime);
-
-		// $エラーアラーム
-		val errorArlarmTime = OneMonthErrorAlarmTime.of(oneMonthTime, oneMonthArlarm);
-
-		// $36協定申請.1ヶ月の申請時間を変更する
-		app.changeApplicationOneMonth(errorArlarmTime,reason);
-
-		val at = AtomTask.of(() -> {
-			require.updateApp(app);
-		});
-
-		return new AppCreationResult(
-				app.getApplicantsSID(),
-				ResultType.NO_ERROR,
-				Optional.of(at),
-				Optional.empty(),
-				Optional.empty()
-		);
+		// return 申請作成結果
+		return new AppCreationResult(app.getApplicantsSID(), Optional.ofNullable(atomTask), errorInfo);
 	}
 
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require extends
+			GettingApproverDomainService.Require,
+			AgreementDomainService.RequireM4,
+			CheckErrorApplicationMonthService.Require {
 		/**
 		 * [R-1] 申請を取得する
 		 * 36協定特別条項の適用申請Repository.get(申請ID)
 		 */
 		Optional<SpecialProvisionsOfAgreement> getApp(String applicantId);
+
 
 		/**
 		 * [R-2] 申請を更新する

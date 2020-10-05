@@ -40,8 +40,6 @@ public class AnnualAppUpdateTest {
 
 	/**
 	 * R1 returns empty
-	 * <p>
-	 * Expected: BusinessException with Msg_1262
 	 */
 	@Test
 	public void test01() {
@@ -50,14 +48,17 @@ public class AnnualAppUpdateTest {
 		AgreementOneYearTime oneYearTime = new AgreementOneYearTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 
+		new Expectations() {{
+			require.getApp(aplId);
+			result = Optional.empty();
+		}};
+
 		NtsAssert.businessException("Msg_1262", () -> AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason));
 	}
 
 	/**
 	 * R1 returns normal result
 	 * checkErrorTimeExceeded returns true
-	 * <p>
-	 * Expected: result with type ResultType YEARLY_LIMIT_EXCEEDED should be returned.
 	 */
 	@Test
 	public void test02() {
@@ -96,14 +97,14 @@ public class AnnualAppUpdateTest {
 		};
 
 		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.YEARLY_LIMIT_EXCEEDED);
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getAtomTask()).isNotPresent();
+		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR);
 	}
 
 	/**
 	 * R1 returns normal result
 	 * checkErrorTimeExceeded returns false
-	 * <p>
-	 * Expected: result with type ResultType NO_ERROR should be returned.
 	 */
 	@Test
 	public void test03() {
@@ -142,7 +143,13 @@ public class AnnualAppUpdateTest {
 		};
 
 		val actual = AnnualAppUpdate.update(require, cid, aplId, oneYearTime, reason);
-		assertThat(actual.getResultType()).isEqualTo(ResultType.NO_ERROR);
+
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		NtsAssert.atomTask(
+				() -> actual.getAtomTask().get(),
+				any-> require.updateApp(any.get())
+		);
+		assertThat(actual.getErrorInfo()).isEmpty();
 	}
 
 	private static SpecialProvisionsOfAgreement createDummyApp() {

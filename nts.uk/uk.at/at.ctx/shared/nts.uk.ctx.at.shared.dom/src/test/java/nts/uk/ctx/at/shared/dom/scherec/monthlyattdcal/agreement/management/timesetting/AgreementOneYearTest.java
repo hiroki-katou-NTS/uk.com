@@ -17,6 +17,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(JMockit.class)
 public class AgreementOneYearTest {
     @Test
@@ -38,8 +40,8 @@ public class AgreementOneYearTest {
         );
         Pair<Boolean, AgreementOneYearTime> result =  agreementOneYear.checkErrorTimeExceeded(new AgreementOneYearTime(60));
 
-        Assert.assertEquals(true,result.getLeft());
-        Assert.assertEquals(new AgreementOneYearTime(20).v(),result.getRight().v());
+        assertThat(true).isEqualTo(result.getLeft());
+        assertThat(new AgreementOneYearTime(20).v()).isEqualTo(result.getRight().v());
     }
 
     @Test
@@ -52,7 +54,7 @@ public class AgreementOneYearTest {
         );
         AgreementOneYearTime result =  agreementOneYear.calculateAlarmTime(agreementOneYear.getBasic().getAlarm());
 
-        Assert.assertEquals(new AgreementOneYearTime(20).v(),result.v());
+        assertThat(new AgreementOneYearTime(20).v()).isEqualTo(result.v());
     }
     @Test
     public void check_01() {
@@ -67,7 +69,7 @@ public class AgreementOneYearTest {
                 result = rs;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+        assertThat(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
     @Test
@@ -84,7 +86,7 @@ public class AgreementOneYearTest {
                 result = rs;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
+        assertThat(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
     @Test
@@ -101,7 +103,7 @@ public class AgreementOneYearTest {
                 result = rs;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
+        assertThat(AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
     @Test
@@ -121,7 +123,7 @@ public class AgreementOneYearTest {
                 result = null;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
+        assertThat(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
     @Test
@@ -141,14 +143,14 @@ public class AgreementOneYearTest {
                 result = null;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.NORMAL,
+        assertThat(AgreementTimeStatusOfMonthly.NORMAL).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
     @Test
     public void check_06() {
 
         AgreementOneYear agreementOneYear = new AgreementOneYear(
-                OneYearErrorAlarmTime.of(new AgreementOneYearTime(22),new AgreementOneYearTime(15)),
+                OneYearErrorAlarmTime.of(new AgreementOneYearTime(18),new AgreementOneYearTime(15)),
                 OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
@@ -161,7 +163,7 @@ public class AgreementOneYearTest {
                 result = null;
             }
         };
-        Assert.assertEquals(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
+        assertThat(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM).isEqualTo(
                 agreementOneYear.check(agreementTarget,legalLimitTarget));
     }
 }

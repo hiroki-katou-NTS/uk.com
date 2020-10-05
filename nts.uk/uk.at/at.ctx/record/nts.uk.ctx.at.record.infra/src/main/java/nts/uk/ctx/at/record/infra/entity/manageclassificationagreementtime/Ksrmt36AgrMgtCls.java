@@ -39,12 +39,6 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
     public Ksrmt36AgrMgtClsPk ksrmt36AgrMgtClsPk;
 
     /**
-     * 排他バージョン
-     */
-    @Column(name = "EXCLUS_VER")
-    @Version
-    private int exclusVer;
-    /**
      * 契約コード
      */
     @Column(name = "CONTRACT_CD")
@@ -151,7 +145,6 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
         return new Ksrmt36AgrMgtCls(
                 new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v(),domain.getLaborSystemAtr().value),
 
-                1,
                 //contractCD
                 contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
