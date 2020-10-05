@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import java.util.Optional;
 

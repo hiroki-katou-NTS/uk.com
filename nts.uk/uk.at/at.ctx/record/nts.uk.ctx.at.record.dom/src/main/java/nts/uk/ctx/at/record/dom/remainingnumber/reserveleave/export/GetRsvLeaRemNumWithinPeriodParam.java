@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.arc.time.calendar.period.DatePeriod;
 

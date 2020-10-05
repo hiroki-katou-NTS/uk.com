@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export;
 
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
 
 /**
  * 処理単位分割日　（積立年休用）

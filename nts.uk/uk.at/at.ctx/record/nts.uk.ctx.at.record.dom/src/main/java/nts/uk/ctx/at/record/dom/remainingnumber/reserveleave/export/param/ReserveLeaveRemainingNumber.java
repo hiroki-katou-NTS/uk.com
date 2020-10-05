@@ -1,10 +1,9 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 
 /**
@@ -17,7 +16,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/** 積立年休（マイナスなし） */
 	private ReserveLeave reserveLeaveNoMinus;
 	/** 積立年休（マイナスあり） */
-	private RealReserveLeave reserveLeaveWithMinus;
+	private ReserveLeave reserveLeaveWithMinus;
 	
 	/**
 	 * コンストラクタ
@@ -25,7 +24,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public ReserveLeaveRemainingNumber(){
 		
 		this.reserveLeaveNoMinus = new ReserveLeave();
-		this.reserveLeaveWithMinus = new RealReserveLeave();
+		this.reserveLeaveWithMinus = new ReserveLeave();
 	}
 	
 	/**
@@ -36,7 +35,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	 */
 	public static ReserveLeaveRemainingNumber of(
 			ReserveLeave reserveLeaveNoMinus,
-			RealReserveLeave reserveLeaveWithMinus){
+			ReserveLeave reserveLeaveWithMinus){
 		
 		ReserveLeaveRemainingNumber domain = new ReserveLeaveRemainingNumber();
 		domain.reserveLeaveNoMinus = reserveLeaveNoMinus;

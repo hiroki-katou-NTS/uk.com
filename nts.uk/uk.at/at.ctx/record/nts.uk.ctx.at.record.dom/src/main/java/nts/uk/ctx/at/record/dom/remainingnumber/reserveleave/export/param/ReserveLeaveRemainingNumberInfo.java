@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 
 /**
  * 積立年休情報残数
