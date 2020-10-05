@@ -30,6 +30,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.DateInfoDuringThePeriodDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.GetDateInfoDuringThePeriodInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,16 +62,12 @@ public class GetDateInfoDuringThePeriod {
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
 
-	// private final DateHistoryCache<FooHistoryItem> historyCache = new
-	// DateHistoryCache<>();
-
-	public List<DateInformation> get(GetDateInfoDuringThePeriodInput param) {
+	public List<DateInfoDuringThePeriodDto> get(GetDateInfoDuringThePeriodInput param) {
 
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		
 		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
-
 		List<GeneralDate> dates = period.datesBetween();
+		List<DateInfoDuringThePeriodDto> result = new ArrayList<>();
 		
 		RequireImpl require = new RequireImpl(workplaceSpecificDateRepo, companySpecificDateRepo, workplaceEventRepo,
 				companyEventRepo, publicHolidayRepo, specificDateItemRepo);
@@ -107,7 +104,19 @@ public class GetDateInfoDuringThePeriod {
 			listDateInfo.addAll(list);
 		}
 
-		return listDateInfo;
+		result = listDateInfo.stream().map(m -> {
+			DateInfoDuringThePeriodDto dto = new DateInfoDuringThePeriodDto();
+			dto.setHoliday(m.isHoliday());
+			dto.setListSpecDayNameCompany(m.getListSpecDayNameCompany().stream().map(c -> c.v()).collect(Collectors.toList()));
+			dto.setListSpecDayNameWorkplace(m.getListSpecDayNameWorkplace().stream().map(c -> c.v()).collect(Collectors.toList()));
+			dto.setOptCompanyEventName(m.getOptCompanyEventName().map(c -> c.v()).orElse(null));
+			dto.setOptWorkplaceEventName(m.getOptWorkplaceEventName().map(c -> c.v()).orElse(null));
+			dto.setSpecificDay(m.isSpecificDay());
+			
+			return dto;
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 
 	@AllArgsConstructor
