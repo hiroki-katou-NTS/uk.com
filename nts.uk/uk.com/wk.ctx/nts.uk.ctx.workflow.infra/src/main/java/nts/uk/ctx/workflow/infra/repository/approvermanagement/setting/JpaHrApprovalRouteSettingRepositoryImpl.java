@@ -33,4 +33,16 @@ public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository imple
 		return HrApprovalRouteSetting.createFromJavaType(entity.comMode == 1 ? true : false, entity.cid, entity.devMode == 1 ? true : false, entity.empMode == 1 ? true : false);
 	}
 
+	@Override
+	public void insert(HrApprovalRouteSetting hrApprovalRouteSetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(HrApprovalRouteSetting hrApprovalRouteSetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
