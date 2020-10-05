@@ -15,6 +15,7 @@ import java.util.Optional;
  */
 public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
     private static String FIND_BY_CID;
+    private static String FIND_BY_CID_AND_CLS_CD;
 
 
 
@@ -22,8 +23,15 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         StringBuilder builderString  = new StringBuilder();
         builderString.append("SELECT");
         builderString.append("FROM Ksrmt36AgrMgtCls a");
-        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
+        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
         FIND_BY_CID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a");
+        builderString.append("FROM Ksrmt36AgrMgtCls a");
+        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        builderString.append("AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
+        FIND_BY_CID_AND_CLS_CD = builderString.toString();
     }
     @Override
     public void insert(AgreementTimeOfClassification domain) {
@@ -53,7 +61,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
 
     @Override
     public Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode) {
-        return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class)
+        return this.queryProxy().query(FIND_BY_CID_AND_CLS_CD,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
                 .getSingle(Ksrmt36AgrMgtCls::toDomain);

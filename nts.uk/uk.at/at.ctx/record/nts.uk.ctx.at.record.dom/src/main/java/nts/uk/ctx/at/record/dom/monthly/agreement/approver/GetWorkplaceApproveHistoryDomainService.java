@@ -4,6 +4,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
+
 import javax.ejb.Stateless;
 
 import java.util.ArrayList;
@@ -26,24 +27,24 @@ public class GetWorkplaceApproveHistoryDomainService {
         val baseDate = GeneralDate.today();
         // RQ -30`
         val wkpHistoryEmployees = require.getYourWorkplace(employeeId, baseDate);
-        if(!wkpHistoryEmployees.isPresent()){
+        if (!wkpHistoryEmployees.isPresent()) {
             return Optional.empty();
         }
         // [R-2] 承認者の履歴項目を取得する
         val approveOpt = require.getApproveHistoryItem(wkpHistoryEmployees.get().getWorkplaceId(),
                 baseDate);
-        if(approveOpt.isPresent()){
+        if (approveOpt.isPresent()) {
             return Optional.of(new ApproverItem(approveOpt.get().getApproverIds(),
-                    approveOpt.get().getConfirmerIds())) ;
+                    approveOpt.get().getConfirmerIds()));
         }
         val wplId = wkpHistoryEmployees.get().getWorkplaceId();
         //	[R-3] 上位職場を取得する [No.569]
-        val listWplId = require.getUpperWorkplace(wplId,baseDate);
-        if (listWplId.isEmpty()){
+        val listWplId = require.getUpperWorkplace(wplId, baseDate);
+        if (listWplId.isEmpty()) {
             return Optional.empty();
         }
-        for (String item : listWplId){
-           val  optApprove36AerByWorkplace = require.getApproveHistoryItem(item, baseDate);
+        for (String item : listWplId) {
+            val optApprove36AerByWorkplace = require.getApproveHistoryItem(item, baseDate);
             if (optApprove36AerByWorkplace.isPresent()) {
                 val rs = new ApproverItem(optApprove36AerByWorkplace.get().getApproverIds(),
                         optApprove36AerByWorkplace.get().getConfirmerIds());
@@ -63,6 +64,6 @@ public class GetWorkplaceApproveHistoryDomainService {
         Optional<Approver36AgrByWorkplace> getApproveHistoryItem(String workplaceId, GeneralDate baseDate);
 
         //	[R-3] 上位職場を取得する 	アルゴリズム.[No.569]職場の上位職場を取得する(会社ID,職場ID,基準日)会社ID Infused from the APP layer
-        List<String> getUpperWorkplace( String workplaceID, GeneralDate date);
+        List<String> getUpperWorkplace(String workplaceID, GeneralDate date);
     }
 }
