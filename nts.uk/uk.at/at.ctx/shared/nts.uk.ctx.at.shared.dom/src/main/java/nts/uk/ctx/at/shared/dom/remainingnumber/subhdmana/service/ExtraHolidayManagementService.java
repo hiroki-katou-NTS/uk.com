@@ -157,13 +157,16 @@ public class ExtraHolidayManagementService {
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;
 		
+		if (employeeId == null || employeeId.isEmpty()) {
+			employeeId = AppContexts.user().employeeId();
+		}
 		// 代休管理データを管理するかチェック Check xem có quản lý dữ liệu quản lý nghỉ bù không
 		EmploymentManageDistinctDto manageDistinct = this.checkManageSubstituteHolidayManagementData(employeeId);
 		
 		// 取得した管理区分をチェック Check phân loại quản lý đã nhận
 		if (manageDistinct.getIsManage().equals(ManageDistinct.NO)) { // 「管理しない」の場合 Trường hợp không quản lý
 			// エラーメッセージ「Msg_1731」を表示 hiển thị error msg
-			throw new BusinessException("Msg_1731");
+			throw new BusinessException("Msg_1731", "Com_CompensationHoliday");
 		}
 		
 		// Input．設定期間区分をチェック Check Input.Phân loại thời gian setting
@@ -172,7 +175,7 @@ public class ExtraHolidayManagementService {
 			listLeaveData = leaveManaDataRepository.getBySidAndStateAtr(cid, employeeId, DigestionAtr.UNUSED);
 			
 			// ドメイン「代休管理データ」を取得する (lấy data chị định dựa vào domain 「代休管理データ」'data quản lý ngày nghỉ thay thế')
-			listCompensatoryData = comDayOffManaDataRepository.getBySid(cid, employeeId);
+			listCompensatoryData = comDayOffManaDataRepository.getByReDay(cid, employeeId);
 		}
 		
 		if (searchMode == 1) { // 「全ての状況」の場合
@@ -298,16 +301,14 @@ public class ExtraHolidayManagementService {
 			// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 			empSetting = compensLeaveEmSetRepository.find(cid, empHistShrImp.getEmploymentCode());
 			
-			if (empSetting != null) { // 取得結果＝0件
+			if (empSetting != null && empSetting.getIsManaged() != ManageDistinct.NO) { // 取得結果＝0件
 				// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 				compLeavCom = compensLeaveComSetRepository.find(cid);
-			} else
-				continue;
-			
+			}
 			// 管理するかないかチェック Check Setting quản lý nghỉ bù hay ko
-			if (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES)) {
+			if (compLeavCom!= null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {
 				emplData.setIsManage(ManageDistinct.YES);
-	
+
 				if (empHistShrImp.getPeriod().start().beforeOrEquals(baseDate) && empHistShrImp.getPeriod().end().afterOrEquals(baseDate)) {
 					emplData.setEmploymentCode(empHistShrImp.getEmploymentCode());
 					return emplData;

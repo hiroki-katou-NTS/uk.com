@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -137,7 +136,8 @@ public class PayoutManagementDataService {
 			}
 			if (pause && pickUp) {
 				//	作成したList<振休管理データ＞
-				List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = Arrays.asList(subMana);
+				List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = new ArrayList<SubstitutionOfHDManagementData>();
+				substitutionOfHDManagementDatas.add(subMana);
 				if (checkedSplit) {
 					substitutionOfHDManagementDatas.add(splitMana);
 				}

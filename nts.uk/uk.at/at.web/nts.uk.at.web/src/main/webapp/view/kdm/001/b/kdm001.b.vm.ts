@@ -38,6 +38,8 @@
         tabindex: number = -1;
         /** A4_3  凡例 */        
         legendOptions: any;
+        startDate: string = '';
+        endDate: string = '';
 
         constructor() {
             let self = this;
@@ -208,14 +210,16 @@
                     }
                     self.totalRemainingNumber = result.totalRemainingNumber;
                 }).fail(function(result) {
+                    self.subData = [];
+                    self.updateSubstituteDataList();
                     dialog.alertError(result.errorMessage);
                 });
             }
         }
 
         getSearchCondition() {
-            let self = this, searchCondition = null;
-            searchCondition = null;
+            let self = this;
+            let searchCondition = null;
             if (self.selectedPeriodItem() == 1) {
                 searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
             } else {
@@ -254,6 +258,18 @@
                     this.expiredDateText = getText('KDM001_162', [data.expiredDate]);
                 }
 
+                let substituedexpiredDate = '';
+                if (data.deadLine === '') {
+                    substituedexpiredDate = '';
+                } else if (moment.utc(self.startDate).isSameOrBefore(moment.utc(data.deadLine))
+                    && moment.utc(self.endDate).isSameOrAfter(moment.utc(data.deadLine))) {
+                    substituedexpiredDate = getText('KDM001_161', [data.deadLine]);
+                } else if (moment.utc(self.startDate).isSameOrAfter(moment.utc(data.deadLine)) && data.usedDay > 0) {
+                    substituedexpiredDate = getText('KDM001_162', [data.deadLine])
+                } else {
+                    substituedexpiredDate = getText('KDM001_163', [data.deadLine])
+                }
+
                 listData.push(new SubstitutedData(
                     data.occurrenceId !== '' ? data.occurrenceId : data.digestionId,
                     data.occurrenceId,
@@ -261,10 +277,7 @@
                     (data.occurrenceId !== '' || data.occurrenceId !== 0) && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
-                    new Date(data.deadLine).getMonth() === new Date(data.accrualDate).getMonth()
-                    && new Date(data.deadLine).getFullYear() === new Date(data.accrualDate).getFullYear()
-                    ? getText('KDM001_161', [data.deadLine])
-                    : getText('KDM001_162', [data.deadLine]), //B4_4_2
+                    substituedexpiredDate, //B4_4_2
                     (data.digestionId !== '' || data.digestionId !== 0) && data.digestionDay === null ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
@@ -353,7 +366,8 @@
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
-                searchCondition = { searchMode: self.selectedPeriodItem() };
+                const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
+                searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
                     console.log("Data: ",result);
                     if (result.closureEmploy && result.sempHistoryImport) {
@@ -375,6 +389,8 @@
                         }
                         self.initKCP009();
                         self.disableLinkedData();
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                     }else{
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -384,6 +400,8 @@
                     }
                     dfd.resolve();
                 }).fail(function(result) {
+                    self.subData = [];
+                    self.updateSubstituteDataList();
                     dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });
                     dfd.reject();
                 });
