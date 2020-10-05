@@ -11,7 +11,7 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT");
         builderString.append("FROM Ksrmt36AgrMgtCmp a");
-        builderString.append("WHERE a.Ksrmt36AgrMgtCmp.companyID = :cid ");
+        builderString.append("WHERE a.ksrmt36AgrMgtCmpPk.companyID = :cid ");
         FIND_BY_CID = builderString.toString();
     }
     @Override

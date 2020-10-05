@@ -26,7 +26,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         builderString.append("SELECT a");
         builderString.append("FROM Ksrmt36AgrMgtEmp a");
         builderString.append("WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
-        builderString.append("AND a.ksrmt36AgrMgtEmpPk.employmentCode:cd ");
+        builderString.append("AND a.ksrmt36AgrMgtEmpPk.employmentCode = :cd ");
         FIND_BY_CID_AND_CD = builderString.toString();
 
          builderString = new StringBuilder();
@@ -39,7 +39,6 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     @Override
     public void insert(AgreementTimeOfEmployment domain) {
         this.commandProxy().insert(Ksrmt36AgrMgtEmp.toEntity(domain));
-        this.getEntityManager().flush();
     }
 
     @Override
