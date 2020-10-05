@@ -7,6 +7,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
@@ -38,23 +39,33 @@ public class AgreementOneYearTest {
                  OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
-        Pair<Boolean, AgreementOneYearTime> result =  agreementOneYear.checkErrorTimeExceeded(new AgreementOneYearTime(60));
+        val agreementOneYearTime = new AgreementOneYearTime(60);
+        val expect = Pair.of(true, agreementOneYearTime);
+        new Expectations(AgreementOneYear.class){{
+            agreementOneYear.checkErrorTimeExceeded(agreementOneYearTime);
+            result = expect;
+        }};
+        Pair<Boolean, AgreementOneYearTime> rs =  agreementOneYear.checkErrorTimeExceeded(new AgreementOneYearTime(60));
 
-        assertThat(true).isEqualTo(result.getLeft());
-        assertThat(new AgreementOneYearTime(20).v()).isEqualTo(result.getRight().v());
+        assertThat(rs.getLeft().booleanValue()).isEqualTo(expect.getLeft().booleanValue());
+        assertThat(rs.getRight().v()).isEqualTo(expect.getRight().v());
     }
 
     @Test
     public void calculateAlarmTimeTest() {
-
         AgreementOneYear agreementOneYear = new AgreementOneYear(
                  OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20)),
                  OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );
-        AgreementOneYearTime result =  agreementOneYear.calculateAlarmTime(agreementOneYear.getBasic().getAlarm());
-
-        assertThat(new AgreementOneYearTime(20).v()).isEqualTo(result.v());
+        val agreementOneYearTime = new AgreementOneYearTime(20);
+        val expect = new AgreementOneYearTime(20);
+        new Expectations(AgreementOneYear.class){{
+            agreementOneYear.calculateAlarmTime(agreementOneYearTime);
+            result = expect;
+        }};
+        AgreementOneYearTime result =  agreementOneYear.calculateAlarmTime(agreementOneYearTime);
+        assertThat(expect.v()).isEqualTo(result.v());
     }
     @Test
     public void check_01() {
