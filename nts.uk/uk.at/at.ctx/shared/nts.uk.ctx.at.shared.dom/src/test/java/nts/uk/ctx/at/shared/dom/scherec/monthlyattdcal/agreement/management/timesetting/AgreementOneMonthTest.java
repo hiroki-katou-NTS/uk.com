@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.tim
 
 import lombok.val;
 import mockit.Expectations;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -35,17 +36,16 @@ public class AgreementOneMonthTest {
                 OneMonthTime.of( OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(20), new AgreementOneMonthTime(20))
                         , new AgreementOneMonthTime(20))
         );
-        AgreementOneMonthTime agreementOneMonthTime = new AgreementOneMonthTime(20);
-        Pair<Boolean, AgreementOneMonthTime> result = agreementsOneYear.checkErrorTimeExceeded(agreementOneMonthTime);
-
-        val expect = Pair.of(false,agreementOneMonthTime);
+        AgreementOneMonthTime agreementOneMonthTime = new AgreementOneMonthTime(30);
+        val expect = Pair.of(true, agreementOneMonthTime);
         new Expectations(AgreementOneMonth.class){{
             agreementsOneYear.checkErrorTimeExceeded(agreementOneMonthTime);
             result = expect;
-
         }};
-        assertThat(result.getLeft()).isEqualTo(expect.getLeft());
-        assertThat(result.getRight()).isEqualTo(expect.getRight());
+        Pair<Boolean, AgreementOneMonthTime> rs = agreementsOneYear.checkErrorTimeExceeded(agreementOneMonthTime);
+
+        assertThat(rs.getLeft().booleanValue()).isEqualTo(expect.getLeft().booleanValue());
+        assertThat(rs.getRight().v()).isEqualTo(expect.getRight().v());
     }
     @Test
     public void calculateAlarmTimeTest() {
@@ -53,9 +53,14 @@ public class AgreementOneMonthTest {
 
         AgreementOneMonthTime agreementOneMonthTime = new AgreementOneMonthTime(20);
 
-        AgreementOneMonthTime result = agreementsOneMonth.calculateAlarmTime(agreementOneMonthTime);
+        val expect = new AgreementOneMonthTime(20).v();
+        new Expectations(AgreementOneMonth.class){{
+            agreementsOneMonth.calculateAlarmTime(agreementOneMonthTime);
+            result = expect;
+        }};
 
-        assertThat(new AgreementOneMonthTime(20).v()).isEqualTo(result.v());
+        AgreementOneMonthTime result = agreementsOneMonth.calculateAlarmTime(agreementOneMonthTime);
+        assertThat(expect).isEqualTo(result.v());
     }
     @Test
     public void check_01() {
