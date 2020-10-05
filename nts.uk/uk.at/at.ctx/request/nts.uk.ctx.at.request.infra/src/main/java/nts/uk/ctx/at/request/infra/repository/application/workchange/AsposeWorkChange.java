@@ -90,7 +90,7 @@ public class AsposeWorkChange {
             if(dataWorkTimeCD.isPresent()) {
                 workHourCD = dataWorkTimeCD.get().v();
                 for(WorkTimeSetting workTime : workTimeLst) {
-                    if(workTime.getWorktimeCode().equals(dataWorkTimeCD)) {
+                    if(workTime.getWorktimeCode().equals(dataWorkTimeCD.get())) {
                         workHourCD = workTime.getWorktimeCode().v();
                         workHourName = workTime.getWorkTimeDisplayName().getWorkTimeName().v();
                         break;

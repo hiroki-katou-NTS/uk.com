@@ -93,6 +93,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                 predetemineTimeSetting: ko.observable(appWorkChangeDispInfo.predetemineTimeSetting),
                 appWorkChangeSet: appWorkChangeDispInfo.appWorkChangeSet
             });
+
+            if(params.reflectWorkChangeAppDto) {
+                vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
+                vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
+            }
             vm.getWorkDispName(appWorkChangeDispInfo.workTypeLst,
                 appWorkChangeParam.opWorkTypeCD,
                 appWorkChangeParam.opWorkTimeCD,
@@ -265,6 +270,16 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             const vm = this;
 
         }
+        // conditionA14() {
+		// 	const vm = this;
+
+		// 	return ko.computed(() => {
+		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
+		// 			return true;
+		// 		};
+		// 		return false;
+		// 	}, vm);
+		// }
     }
 
     const API = {

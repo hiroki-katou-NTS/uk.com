@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 </div>
             </div>
             <div class="table" style="margin-top: 5px;"
-                data-bind="visible: reflectWorkChange.whetherReflectAttendance == 1">
+                data-bind="visible: reflectWorkChange.whetherReflectAttendance() == 1">
                 <div class="cell col-1">
                     <!-- A7 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:true}, text: $i18n('KAF007_13')"></div>
@@ -59,7 +59,8 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     enable: true, 
                                                     readonly: false,
                                                     required: true,
-                                                    name: $i18n('KAF007_62') }, enable: $vm.conditionA14" />
+                                                    name: $i18n('KAF007_62'),
+                                                    enable: (model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
                 <!-- A7_2 -->
                 <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
@@ -71,7 +72,8 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     enable: true, 
                                                     readonly: false,
                                                     required: true,
-                                                    name: $i18n('KAF007_63') }, enable: $vm.conditionA14" />
+                                                    name: $i18n('KAF007_63'),
+                                                    enable: (model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                     <!-- A7_6	 -->
                     <span class="label comment2" data-bind="text: $vm.comment2"></span>
                 </div>
@@ -89,7 +91,8 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     enable: true, 
                                                     readonly: false,
                                                     required: false,
-                                                    name: $i18n('KAF007_64') }, enable: $vm.conditionA14" />
+                                                    name: $i18n('KAF007_64'),
+                                                    enable: (model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
                 <!-- A8_2 -->
                 <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
@@ -101,9 +104,10 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     enable: true, 
                                                     readonly: false,
                                                     required: false,
-                                                    name: $i18n('KAF007_65') }, enable: $vm.conditionA14" />
+                                                    name: $i18n('KAF007_65'),
+                                                    enable: (model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                     <!-- A8_6	 -->
-                    <span class="label comment2" data-bind="text: $vm.comment2, visible: reflectWorkChange.whetherReflectAttendance == 1"></span>
+                    <span class="label comment2" data-bind="text: $vm.comment2, visible: reflectWorkChange.whetherReflectAttendance() == 1"></span>
         
                 </div>
             </div>
@@ -182,9 +186,31 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                             vm.appWorkChange.endTime2(null)
                         }
                     }
-                });
-            });
+                }).then(() => {
+                    return vm.$ajax(API.getByWorkType + "/" + vm.model().workTypeCD())
+                }).done((res) => {
+                    if(res !== null || res !== undefined) {
+                        vm.model().setupType(res);
+                    }
+                }).fail(fail => console.log(fail))
+                
+            }).always(() => {$('#kaf000-a-component4-singleDate').focus(); $('.ntsStartDatePicker').focus()});;
         }
+
+        // public conditionA14() {
+		// 	const vm = this;
+
+		// 	return ko.computed(() => {
+		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
+		// 			return true;
+		// 		};
+		// 		return false;
+		// 	}, vm);
+		// }
+    }
+
+    const API = {
+        getByWorkType: "at/schedule/basicschedule/isWorkTimeSettingNeeded"
     }
 
     export class AppWorkChange {
@@ -210,11 +236,11 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
     export class ReflectWorkChangeApp {
         companyId: string;
-        whetherReflectAttendance: number;
+        whetherReflectAttendance: KnockoutObservable<number>;
 
         constructor(companyID: string, whetherReflectAttendance: number) {
             this.companyId = companyID;
-            this.whetherReflectAttendance = whetherReflectAttendance;
+            this.whetherReflectAttendance = ko.observable(whetherReflectAttendance);
         }
     }
 
@@ -236,4 +262,5 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
         appWorkChangeSet: any;
     }
+    
 }
