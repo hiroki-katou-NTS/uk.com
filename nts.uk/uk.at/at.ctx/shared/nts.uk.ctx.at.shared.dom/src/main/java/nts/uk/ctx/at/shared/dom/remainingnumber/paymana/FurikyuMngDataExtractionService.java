@@ -65,7 +65,7 @@ public class FurikyuMngDataExtractionService {
 		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
 		// Step 取得した管理区分をチェック
 		if (emplManage.getIsManage() == ManageDistinct.NO) {
-			throw new BusinessException("Msg_1731",  "Com_SubstituteHoliday");
+			throw new BusinessException("Msg_1731", "Com_SubstituteHoliday");
 		} else {
 			// Step Input．設定期間区分をチェック
 			// select 全ての状況

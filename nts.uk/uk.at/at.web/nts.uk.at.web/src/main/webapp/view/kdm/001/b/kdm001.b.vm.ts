@@ -5,6 +5,7 @@
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
+
     export class ScreenModel {
         periodOptionItem: KnockoutObservableArray<ItemModel>;
         selectedPeriodItem: KnockoutObservable<number>;
@@ -123,12 +124,12 @@
             self.selectedPeriodItem.subscribe(x => {
                 if (x == 0){
                     self.startPage()
-                    nts.uk.ui.block.clear();
+                    block.clear();
                     nts.uk.ui.errors.clearAll();
                 }
                 else if (x == 1){
                     self.getSubstituteDataList(self.getSearchCondition());
-                    nts.uk.ui.block.clear();
+                    block.clear();
                     nts.uk.ui.errors.clearAll();
                 }    
             });
@@ -210,9 +211,12 @@
                     }
                     self.totalRemainingNumber = result.totalRemainingNumber;
                 }).fail(function(result) {
+                    if (result.messageId && result.messageId === 'Msg_1731') {
+                        self.isHaveError(true);
+                    }
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError(result.errorMessage);
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage })
                 });
             }
         }
@@ -410,11 +414,14 @@
                 }).fail(function(result) {
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });
+                    if (result.messageId && result.messageId === 'Msg_1731') {
+                        self.isHaveError(true);
+                    }
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage }).then(function() { block.clear(); });
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage }).then(function() { block.clear(); });
                 dfd.reject();
             });
             return dfd.promise();
@@ -459,7 +466,7 @@
             })
         }
         
-        pegSetting(value) {
+        pegSetting(value: any) {
             let self = this, rowDataInfo;
             if (value.dataType == 0) {
                 rowDataInfo = _.find(self.listExtractData, x => {
@@ -689,4 +696,3 @@
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 }
-
