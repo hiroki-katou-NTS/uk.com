@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -180,30 +180,6 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 
 	/**
-	 * 変更可能な勤務時間帯を取得する
-	 * @param require Require
-	 * @return 変更可能な時間帯
-	 */
-	@Override
-	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(Require require) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	/**
-	 * 休憩時間帯を取得する
-	 * @param isWorkingOnDayOff 休出か
-	 * @param amPmAtr 午前午後区分
-	 * @return 休憩時間
-	 */
-	@Override
-	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	
-	/**
  	 * create this Instance
  	 * TODO 必要に応じてcloneする変数を増やす。
 	 * @return new Instance
@@ -227,7 +203,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 平日勤務時間帯.勤務時間帯.残業時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 残業時間帯
@@ -237,7 +213,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		lstOTTimezone.sort((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()));
 		return lstOTTimezone;
 	}
-	
+
 	/**
 	 * 平日勤務時間帯.勤務時間帯.休出時間帯を取得する(就業時間帯NOの昇順）
 	 * @return 休出時間帯
@@ -247,7 +223,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.sorted((f,s) -> f.getWorktimeNo().compareTo(s.getWorktimeNo()))
 				.collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * 勤務種類から流動勤務の休憩時間帯を取得する
 	 * @param workType
@@ -259,7 +235,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 		return this.halfDayWorkTimezone.getRestTimezone();
 	}
-	
+
 	/**
 	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
 	 * @return Map<就業時間帯No, 法定内の残業枠No>
@@ -268,5 +244,33 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return this.getHalfDayWorkTimezoneLstOTTimezone().stream()
 				//就業時間帯の残業枠はOvertimeWorkFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
 				.collect(Collectors.toMap(k->new EmTimezoneNo(k.getWorktimeNo()), v->new OverTimeFrameNo(v.getInLegalOTFrameNo().v().intValue())));
+	}
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+
+	public static interface Require {
 	}
 }

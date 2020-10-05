@@ -17,13 +17,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
@@ -191,13 +190,50 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	}
 
 
+	public List<EmTimeZoneSet> getEmTimeZoneSet(WorkType workType) {
+		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
+				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstWorkingTimezone()
+				:Collections.emptyList();
+	}
+
+	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
+		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
+				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
+				:Collections.emptyList();
+	}
+
+	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AttendanceHolidayAttr attendanceHolidayAttr) {
+		switch(attendanceHolidayAttr) {
+		case FULL_TIME:	return getFlexHalfDayWorkTime(AmPmAtr.ONE_DAY);
+		case MORNING:		return getFlexHalfDayWorkTime(AmPmAtr.AM);
+		case AFTERNOON:	return getFlexHalfDayWorkTime(AmPmAtr.PM);
+		case HOLIDAY:		return Optional.empty();
+		default:			throw new RuntimeException("Unknown AttendanceHolidayAttr");
+		}
+	}
+
+	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AmPmAtr amPmAtr){
+		return lstHalfDayWorkTimezone.stream().filter(timeZone -> timeZone.getAmpmAtr().equals(amPmAtr)).findFirst();
+	}
+
+	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
+		if(workType.getDailyWork().isHolidayWork()) {
+			return this.offdayWorkTime.getRestTimezone();
+		}
+		if(this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()) {
+			return this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getRestTimezone();
+		}
+		throw new RuntimeException("Not get FlexHalfDayWorkTime");
+	}
+
+
 	/**
 	 * 変更可能な勤務時間帯を取得する
 	 * @param require Require
 	 * @return 変更可能な時間帯
 	 */
 	@Override
-	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(Require require) {
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
@@ -214,40 +250,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		return null;
 	}
 
-	
-	public List<EmTimeZoneSet> getEmTimeZoneSet(WorkType workType) {
-		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
-				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstWorkingTimezone()
-				:Collections.emptyList();
-	}
-	
-	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
-		return getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()
-				?getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
-				:Collections.emptyList();
-	}
-	
-	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AttendanceHolidayAttr attendanceHolidayAttr) {
-		switch(attendanceHolidayAttr) {
-		case FULL_TIME:	return getFlexHalfDayWorkTime(AmPmAtr.ONE_DAY);
-		case MORNING:		return getFlexHalfDayWorkTime(AmPmAtr.AM);
-		case AFTERNOON:	return getFlexHalfDayWorkTime(AmPmAtr.PM);
-		case HOLIDAY:		return Optional.empty();
-		default:			throw new RuntimeException("Unknown AttendanceHolidayAttr");
-		}
-	}
-	
-	private Optional<FlexHalfDayWorkTime> getFlexHalfDayWorkTime(AmPmAtr amPmAtr){
-		return lstHalfDayWorkTimezone.stream().filter(timeZone -> timeZone.getAmpmAtr().equals(amPmAtr)).findFirst();
-	}
-	
-	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
-		if(workType.getDailyWork().isHolidayWork()) {
-			return this.offdayWorkTime.getRestTimezone();
-		}
-		if(this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()) {
-			return this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getRestTimezone();
-		}
-		throw new RuntimeException("Not get FlexHalfDayWorkTime");
+
+	public static interface Require {
 	}
 }
