@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -26,7 +28,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	private WwfstApprovalSetting toEntity(ApprovalSetting domain){
 		val entity = new WwfstApprovalSetting();
 		entity.companyId = domain.getCompanyId();
-		entity.principalApprovalFlg = domain.getPrinFlg().value;
+		entity.principalApprovalFlg = BooleanUtils.toInteger(domain.getPrinFlg());
 		return entity;
 	}
 	/**
@@ -47,7 +49,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	 * @author yennth
 	 */
 	private ApprovalSetting toDomainApproval(WwfstApprovalSetting entity){
-		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, entity.principalApprovalFlg);
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, BooleanUtils.toBoolean(entity.principalApprovalFlg));
 		return domain;
 	}
 	

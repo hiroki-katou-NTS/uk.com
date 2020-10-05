@@ -11,12 +11,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ApproverRegisterSet {
-	// type 利用区分 in EA , it is not reference
-	
 	// 会社単位 
-	private Boolean companyUnit;
+	private UseClassification companyUnit;
 	// 職場単位
-	private Boolean workplaceUnit;
+	private UseClassification workplaceUnit;
 	// 社員単位
-	private Boolean employeeUnit;	
+	private UseClassification employeeUnit;	
 }

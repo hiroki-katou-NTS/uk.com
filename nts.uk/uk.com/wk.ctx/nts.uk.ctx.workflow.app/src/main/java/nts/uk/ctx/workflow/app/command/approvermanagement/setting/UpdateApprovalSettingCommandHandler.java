@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
@@ -26,7 +28,7 @@ public class UpdateApprovalSettingCommandHandler extends CommandHandler<Approval
 	protected void handle(CommandHandlerContext<ApprovalSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		ApprovalSettingCommand data = context.getCommand();		
-		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, data.getPrinFlg());
+		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, BooleanUtils.toBoolean(data.getPrinFlg()));
 		appro.validate();
 		
 		Optional<ApprovalSetting> approOld = appRep.getApprovalByComId(companyId);
