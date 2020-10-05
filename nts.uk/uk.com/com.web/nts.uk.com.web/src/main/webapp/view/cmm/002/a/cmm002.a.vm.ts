@@ -46,7 +46,7 @@ module nts.uk.com.view.cmm002.a {
 			let self = this;            
             let dfd = $.Deferred<any>();
 			block.invisible();
-            service.getData().done((data: any) => {
+            service.getData().done((data: AccessRestrictions) => {
                 self.accessLimitUseAtr(data.accessLimitUseAtr);
 				let tg = [];
 				_.forEach(data.allowedIPaddress, (item) => {
@@ -138,10 +138,21 @@ module nts.uk.com.view.cmm002.a {
 		}
     }
 
+	interface AccessRestrictions{
+		/** アクセス制限機能管理区分  */
+		accessLimitUseAtr: number;
+		/** 許可IPアドレス  */
+		allowedIPaddress: Array<AllowedIPAddressDto>;
+	}
+
 	class AllowedIPAddressDto {
-        startAddress: any;
+		/** 開始アドレス */        
+		startAddress: any;
+		/** IPアドレスの登録形式 */
 		ipInputType: number;
+		/** 終了アドレス */
 		endAddress: any;
+		/** 備考 */
 		comment: string;
 		id: string;
         constructor(param : any) {
@@ -165,9 +176,13 @@ module nts.uk.com.view.cmm002.a {
     }
 
     class AllowedIPAddress {
-		ipInputType = ko.observable(0);        
+		/** IPアドレスの登録形式 */
+		ipInputType = ko.observable(0);      
+		/** 開始アドレス */     
 		startAddress = new IPAddressSetting();	
+		/** 終了アドレス */
 		endAddress = new IPAddressSetting();
+		/** 備考 */
 		comment = ko.observable('');
         constructor() {
 			let self = this;
@@ -189,10 +204,15 @@ module nts.uk.com.view.cmm002.a {
     }
 
     class IPAddressSetting {
+		/** IPアドレス1 */
         ip1 = ko.observable('');
-        ip2 = ko.observable('');
+		/** IPアドレス2 */        
+		ip2 = ko.observable('');
+		/** IPアドレス3 */
 		ip3 = ko.observable('');
+		/** IPアドレス4 */
 		ip4 = ko.observable('');
+		
     	constructor() {}
 		update(data? : any) :void {
 			let self = this;
