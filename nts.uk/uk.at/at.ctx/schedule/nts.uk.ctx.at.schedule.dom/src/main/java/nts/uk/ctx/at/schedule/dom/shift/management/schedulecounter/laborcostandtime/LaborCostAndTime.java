@@ -57,7 +57,7 @@ public class LaborCostAndTime implements DomainValue{
     			laborCost == NotUseAtr.NOT_USE &&
     			budget == NotUseAtr.NOT_USE
     			) {
-        		throw new BusinessException("");
+        		throw new BusinessException("Msg_1953");
         	}
     	
     	return new LaborCostAndTime(useClassification, time, laborCost, Optional.of(budget));
@@ -80,7 +80,7 @@ public class LaborCostAndTime implements DomainValue{
     			time == NotUseAtr.NOT_USE && 
     			laborCost == NotUseAtr.NOT_USE
     			) {
-        		throw new BusinessException("");
+        		throw new BusinessException("Msg_1953");
         	}
     	
     	return new LaborCostAndTime(useClassification, time, laborCost, Optional.empty());

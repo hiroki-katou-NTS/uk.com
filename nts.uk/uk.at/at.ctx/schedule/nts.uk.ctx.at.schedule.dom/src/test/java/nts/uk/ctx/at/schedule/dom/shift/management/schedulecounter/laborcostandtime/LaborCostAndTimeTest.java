@@ -14,7 +14,7 @@ public class LaborCostAndTimeTest {
 	@Test
 	public void test_createTotal_with_Error() {
 		
-		NtsAssert.businessException("", () -> {
+		NtsAssert.businessException("Msg_1953", () -> {
 			
 			LaborCostAndTime.createTotal(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		}); 
@@ -36,7 +36,7 @@ public class LaborCostAndTimeTest {
 	@Test
 	public void test_create_with_Error() {
 		
-		NtsAssert.businessException("", () -> {
+		NtsAssert.businessException("Msg_1953", () -> {
 			
 			LaborCostAndTime.create(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		}); 
