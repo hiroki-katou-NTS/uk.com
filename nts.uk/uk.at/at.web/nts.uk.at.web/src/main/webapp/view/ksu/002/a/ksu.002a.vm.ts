@@ -125,10 +125,11 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		clickDayCell(type: string, data: c.DayData) {
+		clickDayCell(type: c.CLICK_CELL, data: c.DayData<ScheduleData>) {
 			const vm = this;
+			const mode = ko.unwrap(vm.mode);
 
-			const wrap: c.DayData[] = ko.toJS(vm.schedules);
+			const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
 
 			const exist = _.find(wrap, f => moment(f.date).isSame(data.date, 'date'));
 
@@ -138,11 +139,14 @@ module nts.uk.ui.at.ksu002.a {
 				exist.data = { ...data, holiday: 'Holiday' };
 
 				exist.className = [...(className || []), c.COLOR_CLASS.HOLIDAY];
+
+				exist.data.value.begin = 720;
+				exist.data.value.finish = 1440;
 			}
 
-			console.log(type);
-
-			// vm.schedules.memento(wrap);
+			if (type === 'info' && mode === 'copy') {
+				vm.schedules.memento(wrap);
+			}
 		}
 
 		changeDayCell(dayData: c.DayData) {

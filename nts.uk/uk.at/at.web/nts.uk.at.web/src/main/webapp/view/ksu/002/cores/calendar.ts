@@ -3,6 +3,8 @@
 module nts.uk.ui.calendar {
 	type BindingKey = 'date' | 'daisy' | 'holiday' | 'dataInfo';
 
+	export type CLICK_CELL = 'event' | 'holiday' | 'info';
+
 	export interface DayData<T = DataInfo> {
 		date: Date;
 		inRange: boolean;
@@ -22,7 +24,7 @@ module nts.uk.ui.calendar {
 		width: KnockoutObservable<number>;
 		baseDate: KnockoutObservable<Date | DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
-		clickCell: (target: 'title' | 'event' | 'holiday' | 'body', day: DayData) => void;
+		clickCell: (target: CLICK_CELL, day: DayData) => void;
 	}
 
 	export enum COLOR_CLASS {
