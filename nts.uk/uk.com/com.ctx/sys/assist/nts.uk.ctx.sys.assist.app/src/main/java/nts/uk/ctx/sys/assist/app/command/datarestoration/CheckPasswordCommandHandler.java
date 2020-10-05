@@ -30,9 +30,10 @@ public class CheckPasswordCommandHandler extends CommandHandlerWithResult<CheckP
 		 */
 		Optional<ResultOfSaving> resOptional = resultOfSavingRepository.getResultOfSavingById(context.getCommand().getStoreProcessingId());
 		if (resOptional.isPresent()) {
-			String password = resOptional.get().getCompressedPassword().get().v();
-			String hashedPassword = CommonKeyCrypt.encrypt(context.getCommand().getPassword());
-			return hashedPassword.equals(password);
+			String decodedPassword = resOptional.get().getCompressedPassword()
+					.map(i -> CommonKeyCrypt.decrypt(i.v()))
+					.orElse(null); 
+			return decodedPassword != null && decodedPassword.equals(context.getCommand().getPassword());
 		} 
 		return false;
 	}
