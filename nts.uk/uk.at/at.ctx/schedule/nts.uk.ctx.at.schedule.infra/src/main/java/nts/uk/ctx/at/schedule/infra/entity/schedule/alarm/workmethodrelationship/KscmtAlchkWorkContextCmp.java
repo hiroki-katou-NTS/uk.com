@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.RelationshipSpecifiedMethod;
@@ -25,6 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KSCMT_ALCHK_WORK_CONTEXT_CMP")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 	
 	public static final Function<NtsResultRecord, KscmtAlchkWorkContextCmp> mapper = 
