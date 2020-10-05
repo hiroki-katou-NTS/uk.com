@@ -24,6 +24,7 @@ module nts.uk.ui.at.ksu002.a {
         init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             const name = COMPONENT_NAME;
             const schedules = valueAccessor();
+            const mode = allBindingsAccessor.get('mode');
             const width = allBindingsAccessor.get('width');
             const baseDate = allBindingsAccessor.get('baseDate');
             const clickCell = allBindingsAccessor.get('click-cell');
@@ -40,7 +41,12 @@ module nts.uk.ui.at.ksu002.a {
                 .extend({
                     $change: changeCell,
                     $currenttab: ko.observable(null),
-                    $tabindex: tabIndex
+                    $tabindex: tabIndex,
+                    $editable: ko.computed({
+                        read: () => {
+                            return ko.unwrap(mode) === 'edit';
+                        }
+                    })
                 });
 
             _.extend(window, { binding });
@@ -60,7 +66,7 @@ module nts.uk.ui.at.ksu002.a {
                 tabindex: $component.data.tabIndex,
                 click-cell: $component.data.clickCell
             "></div>
-            <div class="calendar cf">
+            <div class="calendar cf" data-bind="if: !!ko.unwrap($component.data.schedules).length">
                 <div class="filter cf">&nbsp;</div>
                 <div class="calendar-container">
                     <div class="month title">
@@ -319,7 +325,7 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
-                            readonly: ko.unwrap($component.readonly).begin
+                            enable: ko.unwrap($editable)
                         }" />
                 </div>
                 <div class="leave">
@@ -338,7 +344,7 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
-                            readonly: ko.unwrap($component.readonly).finish
+                            enable: ko.unwrap($editable)
                         }" />
                 </div>
             </div>
@@ -350,11 +356,13 @@ module nts.uk.ui.at.ksu002.a {
                 finish: ko.observable(null)
             };
 
+            // old design (not use)
             click: WorkTimeRange<number> = {
                 begin: ko.observable(0),
                 finish: ko.observable(0)
             };
 
+            // old design (not use)
             readonly!: KnockoutComputed<{ begin: boolean; finish: boolean; }>;
 
             text: {
@@ -497,6 +505,7 @@ module nts.uk.ui.at.ksu002.a {
                 date: Date;
                 input: 'begin' | 'finish';
             }>;
+            $editable: KnockoutReadonlyComputed<boolean>;
         }
     }
 }

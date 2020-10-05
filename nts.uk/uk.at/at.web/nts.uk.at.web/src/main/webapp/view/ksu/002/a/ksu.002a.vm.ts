@@ -24,6 +24,7 @@ module nts.uk.ui.at.ksu002.a {
 		currentUser!: KnockoutComputed<string>;
 		showC: KnockoutObservable<boolean> = ko.observable(true);
 
+		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
 		schedules: m.MementoObservableArray<c.DayData<ScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
 
@@ -138,6 +139,8 @@ module nts.uk.ui.at.ksu002.a {
 
 				exist.className = [...(className || []), c.COLOR_CLASS.HOLIDAY];
 			}
+
+			console.log(type);
 
 			// vm.schedules.memento(wrap);
 		}

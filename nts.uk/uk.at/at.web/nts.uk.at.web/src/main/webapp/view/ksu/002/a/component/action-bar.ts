@@ -6,17 +6,25 @@ module nts.uk.ui.at.ksu002.a {
 		<div class="cf">
 			<button class="small btn-copy" data-bind="
 					i18n: 'KSU002_10',
+					css: {
+						active: ko.unwrap($component.data.mode) === 'copy'
+					},
 					timeClick: -1,
 					attr: {
 						tabindex: $component.data.tabIndex
-					}
+					},
+					click: function() { $component.data.mode('copy'); }
 				"></button>
 			<button class="small btn-edit" data-bind="
 					i18n: 'KSU002_11',
+					css: {
+						active: ko.unwrap($component.data.mode) === 'edit'
+					},
 					timeClick: -1,
 					attr: {
 						tabindex: $component.data.tabIndex
-					}
+					},
+					click: function() { $component.data.mode('edit'); }
 				"></button>
 		</div>
 		<div class="cf">
@@ -55,6 +63,7 @@ module nts.uk.ui.at.ksu002.a {
 					value: $component.selectedWorkTypeCode,
 					options: $component.workTypes,
 					optionsValue: 'workTypeCode',
+					enable: ko.unwrap($component.data.mode) === 'copy',
 					editable: false,
 					selectFirstIfNull: true,
 					columns: [
@@ -137,6 +146,15 @@ module nts.uk.ui.at.ksu002.a {
 			display: block;
 			float: left;
 		}
+		.action-bar .btn-action .btn-copy.active,
+		.action-bar .btn-action .btn-edit.active {
+			color: #fff;
+			background-color: #007fff;
+		}
+		.action-bar .btn-action .btn-copy.active:focus,
+		.action-bar .btn-action .btn-edit.active:focus {
+			box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+		}
 	</style>`;
 
 	const COMPONENT_NAME = 'action-bar';
@@ -155,10 +173,11 @@ module nts.uk.ui.at.ksu002.a {
 			const name = COMPONENT_NAME;
 
 			const tabIndex = element.getAttribute('tabindex') || '1';
+			const mode = allBindingsAccessor.get('mode');
 			const clickable = allBindingsAccessor.get('clickable');
 			const clickBtn = allBindingsAccessor.get('click-btn');
 
-			const params = { clickable, clickBtn, tabIndex };
+			const params = { clickable, clickBtn, tabIndex, mode };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -191,11 +210,16 @@ module nts.uk.ui.at.ksu002.a {
 					clickable: {
 						redo: ko.computed(() => true),
 						undo: ko.computed(() => true)
-					}
+					},
+					mode: ko.observable('copy')
 				};
 			}
 
-			const { clickable, clickBtn } = vm.data;
+			const { clickable, clickBtn, mode } = vm.data;
+
+			if (!mode) {
+				vm.data.mode = ko.observable('edit');
+			}
 
 			if (!clickBtn) {
 				vm.data.clickBtn = () => { };
@@ -243,7 +267,10 @@ module nts.uk.ui.at.ksu002.a {
 		}
 	}
 
+	export type EDIT_MODE = 'edit' | 'copy';
+
 	interface Parameter {
+		mode: KnockoutObservable<EDIT_MODE>;
 		tabIndex: string;
 		clickable: {
 			undo: KnockoutComputed<boolean>;
