@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.setting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 /**
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ApproverRegisterSet {
 	// 会社単位 
 	private UseClassification companyUnit;

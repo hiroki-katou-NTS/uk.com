@@ -26,7 +26,7 @@ public class ApprovalSetting extends AggregateRoot {
 	 */
 	private Boolean prinFlg;
 	
-	public static ApprovalSetting createFromJavaType(String companyId, Boolean prinFlg){
+	public static ApprovalSetting createFromJavaType(String companyId,ApproverRegisterSet approverRegsterSet,  Boolean prinFlg){
 		return new ApprovalSetting(companyId, null, prinFlg);
 	}
 }

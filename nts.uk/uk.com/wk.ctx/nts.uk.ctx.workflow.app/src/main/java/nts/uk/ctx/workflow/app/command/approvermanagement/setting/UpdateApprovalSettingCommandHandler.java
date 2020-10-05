@@ -12,6 +12,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -27,8 +29,9 @@ public class UpdateApprovalSettingCommandHandler extends CommandHandler<Approval
 	@Override
 	protected void handle(CommandHandlerContext<ApprovalSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		ApprovalSettingCommand data = context.getCommand();		
-		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, BooleanUtils.toBoolean(data.getPrinFlg()));
+		ApprovalSettingCommand data = context.getCommand();
+		ApproverRegisterSet approverRegsterSet = new ApproverRegisterSet(UseClassification.DO_USE, UseClassification.DO_USE, UseClassification.DO_USE);
+		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, approverRegsterSet, BooleanUtils.toBoolean(data.getPrinFlg()));
 		appro.validate();
 		
 		Optional<ApprovalSetting> approOld = appRep.getApprovalByComId(companyId);

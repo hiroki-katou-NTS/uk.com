@@ -11,7 +11,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfstApprovalSetting;
 
 @Stateless
@@ -49,7 +51,10 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	 * @author yennth
 	 */
 	private ApprovalSetting toDomainApproval(WwfstApprovalSetting entity){
-		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, BooleanUtils.toBoolean(entity.selfApprovalAtr));
+		ApproverRegisterSet approverRegsterSet = new ApproverRegisterSet(EnumAdaptor.valueOf(entity.cmpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.wkpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.syaUnitSet, UseClassification.class));
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, approverRegsterSet, BooleanUtils.toBoolean(entity.selfApprovalAtr));
 		return domain;
 	}
 	
