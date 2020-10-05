@@ -11,6 +11,7 @@ import java.util.Optional;
 
 /**
  * DomainService :職場の承認者履歴を変更する
+ *
  * @author chinh.hm
  */
 @Stateless
@@ -35,7 +36,7 @@ public class ChangeWorkplaceApproverHistoryDomainService {
         }
         return AtomTask.of(() -> {
             // Update history item
-            require.changeHistory(changeHistory,startDateBeforeChange);
+            require.changeHistory(changeHistory, startDateBeforeChange);
             // Update pre history
             optPrevHist.ifPresent(approver36AgrByWorkplace -> require.changeHistory(approver36AgrByWorkplace,
                     approver36AgrByWorkplace.getPeriod().start()));
@@ -53,7 +54,7 @@ public class ChangeWorkplaceApproverHistoryDomainService {
          * [R-2] 履歴を変更する
          * 職場別の承認者（36協定）Repository.Update(職場別の承認者（36協定）)
          */
-        void changeHistory(Approver36AgrByWorkplace domain,GeneralDate date);
+        void changeHistory(Approver36AgrByWorkplace domain, GeneralDate date);
     }
 
 }
