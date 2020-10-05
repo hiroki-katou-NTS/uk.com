@@ -64,8 +64,8 @@ public class FurikyuMngDataExtractionService {
 		// Step 振休管理データを管理するかチェック
 		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
 		// Step 取得した管理区分をチェック
-		if (emplManage.getIsManage().value == ManageDistinct.NO.value) {
-			throw new BusinessException("Msg_1731",  "Com_CompensationHoliday");
+		if (emplManage.getIsManage() == ManageDistinct.NO) {
+			throw new BusinessException("Msg_1731",  "Com_SubstituteHoliday");
 		} else {
 			// Step Input．設定期間区分をチェック
 			// select 全ての状況
@@ -157,7 +157,7 @@ public class FurikyuMngDataExtractionService {
 				// Step 管理区分設定を取得する
 				ComSubstVacation comSubstVaca = getClassifiedManagementSetup(compId, empHist.getEmploymentCode());
 				// Step 取得した「振休管理設定」．管理区分をチェック
-				if (comSubstVaca.isManaged()) {
+				if (comSubstVaca != null && comSubstVaca.isManaged()) {
 					// Step 管理区分 ＝ 管理する
 					emplManage.setIsManage(ManageDistinct.YES);
 
@@ -166,6 +166,8 @@ public class FurikyuMngDataExtractionService {
 						emplManage.setEmploymentCode(empHist.getEmploymentCode());
 						return emplManage;
 					}
+					
+					emplManage.setIsManage(ManageDistinct.NO);
 				}
 			}
 		}
@@ -175,18 +177,15 @@ public class FurikyuMngDataExtractionService {
 	
 	// Step 管理区分設定を取得する
 	public ComSubstVacation getClassifiedManagementSetup(String compId, String empCode) {
+		Optional<ComSubstVacation> optComSubData = Optional.empty();
 		// Step ドメインモデル「雇用振休管理設定」を取得
-		Optional<ComSubstVacation> optComSubData = comSubstVacationRepository.findById(compId);
+		Optional<EmpSubstVacation> optEmpSubData = empSubstVacationRepository.findById(compId, empCode);
 		// Step 取得した「振休管理設定」をチェック
-		if (!optComSubData.isPresent()) {
+		if (!optEmpSubData.isPresent() || optEmpSubData.get().getSetting().getIsManage() == ManageDistinct.YES) {
 			// Step ドメインモデル「振休管理設定」を取得
-			Optional<EmpSubstVacation> optEmpSubData = empSubstVacationRepository.findById(compId, empCode);
-			// Step ドメインモデル「雇用振休管理設定」を返す
-			return new ComSubstVacation(optEmpSubData.get().getCompanyId(), optEmpSubData.get().getSetting());
-		} else {
-			// Step 取得したドメインモデル「振休管理設定」を返す
-			return optComSubData.get();
+			optComSubData = comSubstVacationRepository.findById(compId);
 		}
+		return optComSubData.orElse(null);
 	}	
 	
 	// Step 月初の振休残数を取得

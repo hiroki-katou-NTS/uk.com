@@ -366,6 +366,14 @@
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
+                if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                        loginerInfo.employeeCode, loginerInfo.employeeName, '', ''));
+                }
+                self.initKCP009();
+
+                self.selectedEmployee = new EmployeeInfo(self.selectedItem(), '', '', '', '', '');
+
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
@@ -486,48 +494,48 @@
         }
 
         // B4_2_9 削除
-        deleteHolidaySetting(value): void {
+        deleteHolidaySetting(value: any): void {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-            let self = this, rowDataInfo
-            if (value.dataType == 0) {
-                rowDataInfo = _.find(self.listExtractData, x => {
-                    return x.id === value.id;
-                });
-            }
-            else {
-                rowDataInfo = _.find(self.listExtractData, x => {
-                    return x.comDayOffID === value.id;
-                });
-            }
-            let command = {
-                    leaveId: value.occurrenceId,
-                    comDayOffID: value.digestionId
-            };
-            service.deleteHolidaySetting(command).done(() => {
-                //情報メッセージ　Msg-16を表示する
-                dialog.info({ messageId: "Msg_16" }).then(() => {
-                    self.closeDialog();
-                    nts.uk.ui.block.clear();
-                });
-            }).fail(error => {
-                dialog.alertError(error);
-            }).always(function() {
-            self.startPage()
-            self.getSubstituteDataList(self.getSearchCondition());
-            block.clear();
-        });
-    }).then(() => {
-        block.clear();
-    });
-}
-         /**
-    * closeDialog
-    */
-   public closeDialog(): void {
-    nts.uk.ui.windows.close();
-}
+                let self = this, rowDataInfo
+                if (value.dataType == 0) {
+                    rowDataInfo = _.find(self.listExtractData, x => {
+                        return x.id === value.id;
+                    });
+                } else {
+                    rowDataInfo = _.find(self.listExtractData, x => {
+                        return x.comDayOffID === value.id;
+                    });
+                }
+                let command = {
+                        leaveId: value.occurrenceId,
+                        comDayOffID: value.digestionId
+                };
+                service.deleteHolidaySetting(command)
+                    .done(() => 
+                        //情報メッセージ　Msg-16を表示する
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.closeDialog();
+                            block.clear();
+                        })
+                    )
+                    .fail(error => dialog.alertError(error))
+                    .always(() => {
+                        self.startPage()
+                        self.getSubstituteDataList(self.getSearchCondition());
+                        block.clear();
+                    });
+            })
+            .then(() => block.clear());
+        }
+
+        /**
+        * closeDialog
+        */
+        public closeDialog(): void {
+            nts.uk.ui.windows.close();
+        }
     }
 
 
