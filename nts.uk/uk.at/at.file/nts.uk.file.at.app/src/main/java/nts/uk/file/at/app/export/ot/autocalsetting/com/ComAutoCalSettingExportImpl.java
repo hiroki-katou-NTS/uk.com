@@ -1,8 +1,8 @@
 package nts.uk.file.at.app.export.ot.autocalsetting.com;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.file.at.app.export.ot.autocalsetting.job.JobAutoCalSettingRepository;
 import nts.uk.file.at.app.export.ot.autocalsetting.wkp.WkpAutoCalSettingRepository;
 import nts.uk.file.at.app.export.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
