@@ -1,7 +1,9 @@
 package nts.uk.ctx.workflow.dom.service;
 
-import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
+import javax.ejb.Stateless;
 
+import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
+@Stateless
 public interface SettingUseUnitRegisterService {
 	
 	/**

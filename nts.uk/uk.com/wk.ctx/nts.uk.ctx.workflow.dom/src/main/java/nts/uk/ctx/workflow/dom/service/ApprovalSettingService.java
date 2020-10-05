@@ -1,7 +1,9 @@
 package nts.uk.ctx.workflow.dom.service;
 
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+import javax.ejb.Stateless;
 
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+@Stateless
 public interface ApprovalSettingService {
 	/**
 	 * Refactor5
