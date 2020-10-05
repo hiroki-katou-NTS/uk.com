@@ -150,7 +150,7 @@ public class AgreementOneYearTest {
     public void check_06() {
 
         AgreementOneYear agreementOneYear = new AgreementOneYear(
-                OneYearErrorAlarmTime.of(new AgreementOneYearTime(22),new AgreementOneYearTime(15)),
+                OneYearErrorAlarmTime.of(new AgreementOneYearTime(18),new AgreementOneYearTime(15)),
                 OneYearTime.of( OneYearErrorAlarmTime.of(new AgreementOneYearTime(20),new AgreementOneYearTime(20))
                         ,new AgreementOneYearTime(20))
         );

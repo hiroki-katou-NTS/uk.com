@@ -30,7 +30,7 @@ public class WorkPlaceApproverHistoryUpdateDateCommandHandler extends CommandHan
         RequireImpl require = new RequireImpl(repo);
         val domainOpt = repo.getByWorkplaceIdAndDate(command.getWorkPlaceId(),command.getStartDateBeforeChange());
         if(domainOpt.isPresent()){
-            val domain = new Approver36AgrByWorkplace(command.getWorkPlaceId(),command.getPeriod()
+            val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),command.getPeriod()
                     ,domainOpt.get().getApproverIds(),domainOpt.get().getConfirmerIds());
             AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(require,command.getStartDateBeforeChange()
                     ,domain);

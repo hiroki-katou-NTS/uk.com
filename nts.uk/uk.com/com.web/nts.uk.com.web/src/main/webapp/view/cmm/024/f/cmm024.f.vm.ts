@@ -104,7 +104,10 @@ module nts.uk.com.view.cmm024.f {
 
 			let vm = this,
 				employees: Array<EmployeeDto> = [],
-				params = { workplaceId: wpId, baseDate: vm.baseDate };
+				params = {
+					workplaceId: wpId, //職場ID
+					baseDate: vm.baseDate //基準日期間
+				};
 
 			if (!nts.uk.util.isNullOrEmpty(wpId)) {
 

@@ -16,19 +16,22 @@ import java.util.Optional;
 public class CompanyApproverHistoryDeleteDomainService {
 
 	/**
+	 * [1] 削除する
+	 *
 	 * 会社別の承認者（36協定）の履歴を削除して、直前の履歴の終了日を変更する
 	 */
 	public static AtomTask deleteApproverHistory(Require require, Approver36AgrByCompany histToDel){
+		val prevEndDate = histToDel.getPeriod().start().addDays(-1);
+		val optPrevHist = require.getPrevHistory(prevEndDate);
+		if (optPrevHist.isPresent()) {
+			optPrevHist.get().setPeriod(new DatePeriod(optPrevHist.get().getPeriod().start(), GeneralDate.max()));
+		}
 
 		return AtomTask.of(() -> {
 			require.deleteHistory(histToDel);
 
-			val prevEndDate = histToDel.getPeriod().start().addDays(-1);
-			val optPrevHist = require.getPrevHistory(prevEndDate);
 			if (optPrevHist.isPresent()) {
-				val prevHist = optPrevHist.get();
-				prevHist.setPeriod(new DatePeriod(prevHist.getPeriod().start(), GeneralDate.max()));
-				require.changeHistory(prevHist,prevHist.getPeriod().start());
+				require.changeHistory(optPrevHist.get(), optPrevHist.get().getPeriod().start());
 			}
 		});
 	}

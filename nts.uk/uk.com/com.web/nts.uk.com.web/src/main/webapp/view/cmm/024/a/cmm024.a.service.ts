@@ -137,7 +137,7 @@ module nts.uk.com.view.cmm024.a {
 		 * @companyId string : ログイン会社ID				 
 		 * @startDate date : 期間
 		 * @endDate date : 期間
-		 * @approveList string[]: 36承認者一覧リンクラベル
+		 * @approvedList string[]: 36承認者一覧リンクラベル
 		 * @confirmedList string[]: 従業員代表指定リンクラベル
 		 * }
 		 */
@@ -151,7 +151,7 @@ module nts.uk.com.view.cmm024.a {
 		 * @companyId string : ログイン会社ID				 
 		 * @startDate date : 期間
 		 * @endDate date : 期間
-		 * @approveList string[]: 36承認者一覧リンクラベル
+		 * @approvedList string[]: 36承認者一覧リンクラベル
 		 * @confirmedList string[]: 従業員代表指定リンクラベル
 		 * @startDateBeforeChange : 期間
 		 * }
@@ -180,7 +180,7 @@ module nts.uk.com.view.cmm024.a {
 		 * @workPlaceId string : 職場ID	 
 		 * @startDate date : 期間
 		 * @endDate date : 期間
-		 * @approveList string[]: 36承認者一覧リンクラベル
+		 * @approvedList string[]: 36承認者一覧リンクラベル
 		 * @confirmedList string[]: 従業員代表指定リンクラベル
 		 * }
 		 */
@@ -194,7 +194,7 @@ module nts.uk.com.view.cmm024.a {
 		 * @workPlaceId string : 職場ID	 
 		 * @startDate date : 期間
 		 * @endDate date : 期間
-		 * @approveList string[]: 36承認者一覧リンクラベル
+		 * @approvedList string[]: 36承認者一覧リンクラベル
 		 * @confirmedList string[]: 従業員代表指定リンクラベル
 		 * @startDateBeforeChange : 期間
 		 * }

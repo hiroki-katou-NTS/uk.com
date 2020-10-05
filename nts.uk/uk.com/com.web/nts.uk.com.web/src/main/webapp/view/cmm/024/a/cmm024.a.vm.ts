@@ -127,13 +127,17 @@ module nts.uk.com.view.cmm024.a {
 				value = (value === null) ? scheduleHistory[0].code : value;
 				isAllowSetting = scheduleHistory[0].code === value;
 				vm.resetSettingsScreenA(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
-				//highlight history that has selected
-				scheduleHistory = vm.companyScheduleHistoryList();
+				//highlight history that has selected	
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
 					vm.companyScheduleHistoryObjSelected(objFind); //send to screen B, D
 				}
+
+				//vm.modelA().workPlaceCompanyId = vm.company().id;
+				vm.modelA().startDate(moment.utc(objFind.startDate, 'YYYY/MM/DD').toDate());
+				vm.modelA().endDate(moment.utc(objFind.endDate, 'YYYY/MM/DD').toDate());
+
 				//36承認者パネル
 				vm.createEmployeesPanelList('A', 1, objFind.personalInfoApprove);
 				//従業員代表パネル
@@ -189,13 +193,13 @@ module nts.uk.com.view.cmm024.a {
 				companyId: vm.company().id, //ログイン会社ID				
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
-				approveList: [], //36承認者一覧リンクラベル
+				approvedList: [], //36承認者一覧リンクラベル
 				confirmedList: []// 従業員代表指定リンクラベル
 			};
 
 			currentScheduleItem.approverPanel().map((item) => {
 				if (item.employeeCode != '-1' && item.employeeCode != null)
-					params.approveList.push(item.employeeId);
+					params.approvedList.push(item.employeeId);
 			})
 
 			currentScheduleItem.employeesRepresentative().map((item) => {
@@ -225,19 +229,18 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-
 			let params = {
 				companyId: vm.company().id, //ログイン会社ID								 
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
-				approveList: [], //36承認者一覧リンクラベル
+				approvedList: [], //36承認者一覧リンクラベル
 				confirmedList: [], // 従業員代表指定リンクラベル
 				startDateBeforeChange: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD')//期間
 			};
 
 			currentScheduleItem.approverPanel().map((item) => {
 				if (item.employeeCode != '-1' && item.employeeCode != null)
-					params.approveList.push(item.employeeId);
+					params.approvedList.push(item.employeeId);
 			})
 
 			currentScheduleItem.employeesRepresentative().map((item) => {
@@ -414,7 +417,6 @@ module nts.uk.com.view.cmm024.a {
 			}
 
 			if (isAllowSetting) {
-
 				vm.$window.storage("workPlaceCodeList", {
 					workplaceId: (screen === 'A') ? null : vm.selectedWkpId(),
 					codeList: employeesList
@@ -497,7 +499,6 @@ module nts.uk.com.view.cmm024.a {
 							vm.modelB().employeesRepresentative([]);
 							vm.dispplayInfoOnScreenA(null);
 						}
-
 					}
 
 					vm.$blockui('hide');
@@ -639,6 +640,9 @@ module nts.uk.com.view.cmm024.a {
 					vm.workplaceScheduleHistoryObjSelected(objFind); //send to screen B, D
 				}
 
+				vm.modelB().workPlaceCompanyId = vm.selectedWkpId();
+				vm.modelB().startDate(moment.utc(objFind.startDate, 'YYYY/MM/DD').toDate());
+				vm.modelB().endDate(moment.utc(objFind.endDate, 'YYYY/MM/DD').toDate());
 				//36承認者パネル
 				vm.createEmployeesPanelList('B', 1, objFind.personalInfoApprove);
 				//従業員代表パネル
@@ -824,14 +828,14 @@ module nts.uk.com.view.cmm024.a {
 				workPlaceId: vm.selectedWkpId(), //最新履歴の職場ID			
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
-				approveList: [], //36承認者一覧リンクラベル
+				approvedList: [], //36承認者一覧リンクラベル
 				confirmedList: [], // 従業員代表指定リンクラベル
 				startDateBeforeChange: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD')//期間
 			};
 
 			currentScheduleItem.approverPanel().map((item) => {
 				if (item.employeeCode != '-1' && item.employeeCode != null)
-					params.approveList.push(item.employeeId);
+					params.approvedList.push(item.employeeId);
 			})
 
 			currentScheduleItem.employeesRepresentative().map((item) => {
@@ -863,13 +867,13 @@ module nts.uk.com.view.cmm024.a {
 				workPlaceId: vm.selectedWkpId(), //最新履歴の職場ID
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
-				approveList: [], //36承認者一覧リンクラベル
+				approvedList: [], //36承認者一覧リンクラベル
 				confirmedList: []// 従業員代表指定リンクラベル
 			};
 
 			currentScheduleItem.approverPanel().map((item) => {
 				if (item.employeeCode != '-1' && item.employeeCode != null)
-					params.approveList.push(item.employeeId);
+					params.approvedList.push(item.employeeId);
 			})
 
 			currentScheduleItem.employeesRepresentative().map((item) => {
