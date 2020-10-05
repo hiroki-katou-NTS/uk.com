@@ -3,8 +3,10 @@
 module nts.uk.at.view.kmp001.h {
 	const template = `
 		<div id="functions-area">
-			<button data-bind= "text: $i18n('KMP001_107'), click: print"></button>
-			<button data-bind= "text: $i18n('KMP001_7'), click: showDiaLog"></button>
+			<!-- ko if: attendance -->
+				<button data-bind= "text: $i18n('KMP001_107'), click: print"></button>
+				<button data-bind= "text: $i18n('KMP001_7'), click: showDiaLog"></button>
+			<!-- /ko -->
 		</div>
 		<div class="view-kmp">
 			<div class="panel panel-frame view-h-title">
