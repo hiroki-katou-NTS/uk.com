@@ -40,7 +40,7 @@ public class WorkPlaceApproverHistoryWebService extends WebService {
     public void register(WorkPlaceApproveHistoryAddEmployeeIdDto dto) {
         val command = new WorkPlaceApproverHistoryAddEmployeeIdCommand(dto.getWorkPlaceId(),
                 new DatePeriod(dto.getStartDate(), dto.getEndDate())
-                , dto.getApproveList(), dto.getConfirmedList());
+                , dto.getApprovedList(), dto.getConfirmedList());
         this.addEmployeeIdCommandHandler.handle(command);
     }
 
