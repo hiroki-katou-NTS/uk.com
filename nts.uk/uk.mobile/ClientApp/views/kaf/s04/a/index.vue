@@ -33,6 +33,7 @@
     <!-- A3_3 -->
     <nts-checkbox
       v-model="cbCancelLate"
+      v-if="condition1"
       v-bind:value="'1'">{{'KAFS04_5' | i18n}}
     </nts-checkbox>
     <!-- A3_4 -->
@@ -44,38 +45,44 @@
     <!-- A3_6 -->
     <nts-checkbox
       v-model="cbCancelEarlyLeave"
+      v-if="condition1"
       v-bind:value="'2'">{{'KAFS04_7' | i18n}}
     </nts-checkbox>
     <!-- A4 -->
-    <div class="card card-label py-3">
-      <div class="card-header uk-bg-accordion">
-        <span>{{ "KAFS04_8" | i18n }}</span>
-        <span class="badge badge-info">任意</span>
+    <div class="position-relative" v-if="conditionLateEarlyLeave2Show">
+      <div class="card card-label py-3">
+        <div class="card-header uk-bg-accordion">
+          <span>{{ "KAFS04_8" | i18n }}</span>
+          <span class="badge badge-info">任意</span>
+        </div>
       </div>
+      <span class="position-absolute right">{{-240 | timewd}}</span>
+      <!-- A4_1 -->
+      <nts-time-editor
+        class="border-left-0"
+        v-model="time.attendanceTime2"
+        :name="'KAFS04_9'"
+        time-input-type="time-with-day"
+      />
+      <!-- A4_3 -->
+      <nts-checkbox
+        v-model="cbCancelLate"
+        v-if="condition1"
+        v-bind:value="'3'">{{'KAFS04_10' | i18n}}
+      </nts-checkbox>
+      <!-- A4_4 -->
+      <nts-time-editor
+        v-model="time.leaveTime2"
+        :name="'KAFS04_11'"
+        time-input-type="time-with-day"
+      />
+      <!-- A4_6 -->
+      <nts-checkbox
+        v-model="cbCancelEarlyLeave"
+        v-if="condition1"
+        v-bind:value="'4'">{{'KAFS04_12' | i18n}}
+      </nts-checkbox>
     </div>
-    <!-- A4_1 -->
-    <nts-time-editor
-      class="border-left-0"
-      v-model="time.attendanceTime2"
-      :name="'KAFS04_9'"
-      time-input-type="time-with-day"
-    />
-    <!-- A4_3 -->
-    <nts-checkbox
-      v-model="cbCancelLate"
-      v-bind:value="'3'">{{'KAFS04_10' | i18n}}
-    </nts-checkbox>
-    <!-- A4_4 -->
-    <nts-time-editor
-      v-model="time.leaveTime2"
-      :name="'KAFS04_11'"
-      time-input-type="time-with-day"
-    />
-    <!-- A4_6 -->
-    <nts-checkbox
-      v-model="cbCancelEarlyLeave"
-      v-bind:value="'4'">{{'KAFS04_12' | i18n}}
-    </nts-checkbox>
     <kaf-s00-c class="py-3"
     v-if="kafS00CParams" 
     v-bind:params="kafS00CParams" />

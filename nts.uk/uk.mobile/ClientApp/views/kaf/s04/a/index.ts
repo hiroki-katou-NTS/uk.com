@@ -35,15 +35,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
-    //public validAll: boolean = true;
-    public isValidateAll: Boolean = true;
-
+    public conditionLateEarlyLeave2Show: boolean = true;
+    public condition1: boolean = true;
+    public exampleDate: Date = new Date();
 
     public created() {
         const vm = this;
-
+        
         vm.fetchStart();
-        //khoi tao time
     }
 
     public fetchStart() {
@@ -67,6 +66,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.initComponentA();
                     vm.initComponetB();
                     vm.initComponentC();
+
+                    if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
+                        vm.conditionLateEarlyLeave2Show = false ;
+                    } else {
+                        vm.conditionLateEarlyLeave2Show = true;
+                    }
                 });
             }
         });
@@ -160,7 +165,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             });
     }
 
-
     get validAll() {
         const vm = this;
 
@@ -181,7 +185,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
 const API = {
     startKAFS04: 'at/request/application/lateorleaveearly/initPage',
     changeAppDate: 'at/request/application/lateorleaveearly/changeAppDate',
-    register: 'at/request/application/lateorleaveearly/register'
+    register: 'at/request/application/lateorleaveearly/register',
+    getMsgList: 'at/request/application/lateorleaveearly/getMsgList'
 };
 
 
