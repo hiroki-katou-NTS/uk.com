@@ -2,9 +2,6 @@
 
 module nts.uk.at.view.kbt002.j {
 
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
-
   const API = {
     findAll: "at/function/resultsperiod/findAll",
     createAggrPeriod: "at/function/resultsperiod/save",

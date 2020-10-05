@@ -19,17 +19,10 @@
 			<div id="contents-area">
 				<div class="contents-container">
 					<div class="action-container">
-						<button id="F4_1" tabindex="2" data-bind="click: updateInfo">#{i18n.getText('KBT002_263')}</button>
-						<button id="F4_2" tabindex="3" data-bind="click: logOutput">#{i18n.getText('KBT002_264')}</button>
+						<button id="F4_1" tabindex="2" data-bind="click: updateLastestInfo">#{i18n.getText('KBT002_263')}</button>
+						<button id="F4_2" tabindex="3" data-bind="click: exportHistoryLog">#{i18n.getText('KBT002_264')}</button>
 					</div>
-					<div id="F2_1" data-bind="ntsGridList: {
-						name: '#[KBT002_126]',
-						width: 1390,
-						height: 415,
-						dataSource: dataSource,
-						optionsValue: 'execItemCd',
-						columns: gridListColumns,
-						value: selectedExecCd}" />
+					<table id="F2_1"></table>
 				</div>
 			</div>
 		</ui:define>

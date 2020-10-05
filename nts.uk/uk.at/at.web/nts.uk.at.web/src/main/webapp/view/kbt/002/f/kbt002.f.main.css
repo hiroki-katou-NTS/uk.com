@@ -5,3 +5,42 @@
 .action-container {
 	margin-bottom: 10px;
 }
+
+.btn-borderless {
+	box-shadow: none;
+	border: none;
+	margin: 3px 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.cell-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.icon-warning {
+	margin-right: 3px;
+	background-image: url(images/icon_warning.png);
+	background-size: 20px;
+  width: 20px;
+	height: 20px;
+}
+
+.icon-start {
+	margin-right: 3px;
+	background-image: url(images/icon_start.png);
+	background-size: 20px;
+  width: 20px;
+	height: 20px;
+}
+
+.icon-stop {
+	margin-right: 3px;
+	background-image: url(images/icon_stop.png);
+	background-size: 20px;
+	width: 20px;
+	height: 20px;
+}

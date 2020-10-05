@@ -72,7 +72,7 @@ public class ProcessExecutionLogManageDto {
 				domain.getCompanyId(),
 				domain.getOverallError() == null ? null : domain.getOverallError().value,
 				domain.getOverallStatus().map(o -> o.value).orElse(null),
-				domain.getLastEndExecDateTime(),
+				domain.getLastExecDateTime(),
 				domain.getCurrentStatus().value,
 				domain.getLastExecDateTimeEx(),
 				domain.getLastEndExecDateTime(),

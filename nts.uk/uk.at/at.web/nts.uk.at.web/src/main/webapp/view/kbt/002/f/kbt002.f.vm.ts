@@ -11,33 +11,12 @@ module nts.uk.at.view.kbt002.f {
     $grid!: JQuery;
 
     dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
-    gridListColumns: KnockoutObservableArray<any> = ko.observableArray([]);
+    dataSourceModel: KnockoutObservableArray<ExecutionItemInfomationModel> = ko.observableArray([]);
     selectedExecCd: KnockoutObservable<string> = ko.observable('');
-
-    constructor(params: any) {
-      super();
-      const vm = this;
-      vm.gridListColumns([
-        { headerText: vm.$i18n("KBT002_201"), key: 'execItemCd', width: 150 },
-        { headerText: '', key: 'currentStatusCd', width: 50 },
-        { headerText: vm.$i18n("KBT002_121"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_257"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_258"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_131"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_259"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_260"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_261"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_204"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_143"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_206"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_207"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_144"), key: 'execItemName', width: 100, formatter: _.escape },
-        { headerText: vm.$i18n("KBT002_147"), key: 'execItemName', width: 100, formatter: _.escape },
-      ]);
-    }
 
     mounted() {
       const vm = this;
+      vm.$grid = $("#F2_1");
       vm.getExecItemInfoList();
     }
 
@@ -51,8 +30,145 @@ module nts.uk.at.view.kbt002.f {
         .then((response) => {
           vm.$blockui('clear');
           vm.dataSource(response);
+          const dataSourceModel = _.map(response, (item) => new ExecutionItemInfomationModel(vm, item));
+          vm.dataSourceModel(dataSourceModel);
+          // Render grid list
+          vm.initGridList();
         })
         .always(() => vm.$blockui('clear'));
+    }
+
+    private initGridList() {
+      const vm = this;
+      if (vm.$grid.data("igGrid")) {
+        vm.$grid.ntsGrid("destroy");
+      }
+      vm.$nextTick(() => {
+        vm.$grid.ntsGrid({
+          name: '#[KBT002_126]',
+          width: "1200px",
+          height: "415px",
+          dataSource: vm.dataSourceModel(),
+          primaryKey: 'execItemCd',
+          columns: [
+            { headerText: '', key: 'execItemCd', hidden: true },
+            { headerText: vm.$i18n("KBT002_201"), key: 'execItem', width: 150, formatter: _.escape },
+            {
+              headerText: "",
+              key: 'showWarningIcon',
+              width: 30,
+              formatter: (value: number) => {
+                if (value === 0) {
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_314")}"></i></div>`;
+                } else if (value === 1) {
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_315")}"></i></div>`;
+                } else {
+                  return '';
+                }
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_121"),
+              key: 'execStatus',
+              width: 80,
+              formatter: (value: number) => {
+                if (value === 0) {
+                  // 現在の実行状態 = 実行中
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_265')}</div>`;
+                } else if (value === 1) {
+                  // 現在の実行状態 = 待機中
+                  return `<div class="color-daily-extra-holiday">${vm.$i18n('KBT002_266')}</div>`;
+                } else if (value === 2) {
+                  // 現在の実行状態 = 無効
+                  return `<div class="color-weekdays">${vm.$i18n('KBT002_124')}</div>`;
+                } else {
+                  // 現在の実行状態 = empty
+                  return "";
+                }
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_257"),
+              key: 'execItemCd',
+              width: 80,
+              template: `<div class="cell-center"><button class="btn-borderless"><i class="img-icon icon-start"></i>${vm.$i18n('KBT002_262')}</button></div>`
+            },
+            {
+              headerText: vm.$i18n("KBT002_258"),
+              key: 'execItemCd',
+              width: 80,
+              template: `<div class="cell-center"><button class="btn-borderless"><i class="img-icon icon-stop"></i>${vm.$i18n('KBT002_133')}</button></div>`
+            },
+            { headerText: vm.$i18n("KBT002_131"), key: 'nextExecDate', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_259"), key: 'isTaskExecution', width: 100, ntsControl: 'Switch' },
+            { headerText: vm.$i18n("KBT002_260"), key: 'lastStartDateTime', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_261"), key: 'lastEndDateTime', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_204"), key: 'processingTime', width: 80, formatter: _.escape },
+            {
+              headerText: vm.$i18n("KBT002_143"),
+              key: 'overallStatus',
+              width: 80,
+              formatter: (value: number) => {
+                if (value === 0) {
+                  // 全体の終了状態 = 未実施
+                  return `<div class="color-daily-extra-holiday">${vm.$i18n('KBT002_267')}</div>`;
+                } else if (value === 1) {
+                  // 全体の終了状態 = 完了
+                  return `<div class="color-working-schedule">${vm.$i18n('KBT002_268')}</div>`;
+                } else if (value === 2) {
+                  // 全体の終了状態 =強制終了
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_258')}</div>`;
+                } else if (value === 3) {
+                  // 全体の終了状態 = 終了中
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_269')}</div>`;
+                } else {
+                  // 全体の終了状態 = empty
+                  return "";
+                }
+              }
+            },
+            { headerText: vm.$i18n("KBT002_206"), key: 'systemError', width: 80, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_207"), key: 'businessError', width: 80, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_144"), key: 'btnDetail', width: 80, ntsControl: 'ButtonDetail' },
+            { headerText: vm.$i18n("KBT002_147"), key: 'btnHistory', width: 80, ntsControl: 'ButtonHistory' },
+          ],
+          features: [
+            {
+              name: "Selection",
+              mode: "row",
+              multipleSelection: false,
+              activation: false,
+              rowSelectionChanged: (event: any, ui: any) => vm.selectedExecCd(ui.row.id),
+            },
+          ],
+          ntsControls: [
+            {
+              name: 'Switch',
+              options: [
+                { value: true, text: vm.$i18n('KBT002_123') },
+                { value: false, text: vm.$i18n('KBT002_124') }
+              ],
+              optionsValue: 'value',
+              optionsText: 'text',
+              controlType: 'SwitchButtons'
+            },
+            {
+              name: 'ButtonDetail',
+              text: vm.$i18n('KBT002_144'),
+              click: (evt: ExecutionItemInfomationModel) => { console.log(evt); },
+              controlType: 'Button'
+            },
+            {
+              name: 'ButtonHistory',
+              text: vm.$i18n('KBT002_147'),
+              click: (evt: ExecutionItemInfomationModel) => { console.log(evt); },
+              controlType: 'Button'
+            },
+          ],
+          virtualization: true,
+          virtualizationMode: 'continuous',
+        });
+      });
     }
 
     /**
@@ -96,13 +212,6 @@ module nts.uk.at.view.kbt002.f {
     }
 
     /**
-     * 最新の情報に更新する
-     */
-    private updateLastestInfo() {
-      // TODO
-    }
-
-    /**
      * 実行中の更新処理を終了する
      */
     private stopRunningUpdateProcess() {
@@ -117,9 +226,16 @@ module nts.uk.at.view.kbt002.f {
     }
 
     /**
+     * 最新の情報に更新する
+     */
+    public updateLastestInfo() {
+      // TODO
+    }
+
+    /**
      * 実行履歴ログを出力する
      */
-    private exportHistoryLog() {
+    public exportHistoryLog() {
       // TODO
     }
 
@@ -426,5 +542,73 @@ module nts.uk.at.view.kbt002.f {
   //   fieldName: string;
   //   localizedName: string;
   // }
+
+  export class ExecutionItemInfomationModel {
+    execItemCd: string;
+    execItem: string;
+    showWarningIcon: number;
+    execStatus: number;
+    nextExecDate: string;
+    isTaskExecution: boolean;
+    lastStartDateTime: string;
+    lastEndDateTime: string;
+    processingTime: string;
+    overallStatus: number;
+    systemError: string;
+    businessError: string;
+
+    constructor(vm: ComponentViewModel, dto: any) {
+      // PK
+      this.execItemCd = dto.execItemCd;
+      // 警告アイコン
+      if (dto.isOverAverageExecTime) {
+        this.showWarningIcon = 0;
+      } else {
+        if (dto.isPastNextExecDate) {
+          this.showWarningIcon = 1;
+        }
+      }
+
+      if (dto.updateProcessAutoExec) {
+        // 実行項目
+        this.execItem = dto.execItemCd + ' ' + dto.updateProcessAutoExec.execItemName;
+      }
+      if (dto.updateProcessAutoExecManage) {
+        // 実行状態
+        this.execStatus = dto.updateProcessAutoExecManage.currentStatus;
+        // 終了状態
+        this.overallStatus = dto.updateProcessAutoExecManage.overallStatus;
+        // 前回開始日時
+        this.lastStartDateTime = dto.updateProcessAutoExecManage.lastExecDateTime
+          ? moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime).format('YYYY/MM/DD HH:mm:ss')
+          : "";
+        // 前回終了日時
+        this.lastEndDateTime = dto.updateProcessAutoExecManage.lastEndExecDateTime
+          ? moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime).format('YYYY/MM/DD HH:mm:ss')
+          : "";
+        // 処理時間
+        if (dto.updateProcessAutoExecManage.lastExecDateTime && dto.updateProcessAutoExecManage.lastEndExecDateTime) {
+          const end = moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime);
+          const start = moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime);
+          this.processingTime = moment.utc(moment.duration(end.diff(start)).as('milliseconds')).format("HH:mm:ss");
+        }
+      }
+      // タスク実行
+      this.isTaskExecution = (dto.executionTaskSetting) ? dto.executionTaskSetting.enabledSetting : false;
+      // 次回実行日時
+      this.nextExecDate = dto.nextExecDate
+        ? moment.utc(dto.nextExecDate).format('YYYY/MM/DD HH:mm:ss')
+        : vm.$i18n('KBT002_165');
+      // ｼｽﾃﾑｴﾗｰ
+      this.systemError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorSystem)
+        ? vm.$i18n('KBT002_61')
+        : vm.$i18n('KBT002_62');
+      // 業務エラー
+      this.businessError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorBusiness)
+        ? vm.$i18n('KBT002_61')
+        : vm.$i18n('KBT002_62');
+    }
+
+  }
 
 }

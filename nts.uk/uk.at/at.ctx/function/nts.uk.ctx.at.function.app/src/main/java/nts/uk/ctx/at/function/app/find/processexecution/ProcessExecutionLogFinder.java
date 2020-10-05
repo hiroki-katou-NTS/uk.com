@@ -130,7 +130,7 @@ public class ProcessExecutionLogFinder {
 						
 						// 取得した「次回実行日時」とシステム日時を比較する					
 						// 次回実行日時 < システム日時
-						if (nextExecDateTime.before(GeneralDateTime.now())) {
+						if (nextExecDateTime != null && nextExecDateTime.before(GeneralDateTime.now())) {
 							// 「実行項目情報」を更新する
 							dto.setIsPastNextExecDate(true);
 						}

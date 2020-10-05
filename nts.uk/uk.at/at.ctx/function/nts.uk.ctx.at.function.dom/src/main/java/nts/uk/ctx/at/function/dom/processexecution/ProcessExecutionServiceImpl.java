@@ -20,6 +20,10 @@ import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless
 public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 	
+	private static final BigDecimal BIG_DECIMAL_100 = new BigDecimal(100);
+	
+	private static final BigDecimal BIG_DECIMAL_120 = new BigDecimal(120);
+	
 	@Inject
 	private ProcessExecutionLogHistRepository processExecLogHistoryRepo;
 	
@@ -103,7 +107,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		
 		// 【比較方法】 システム日時 - INPUT．「実行開始日時」> 取得した「実行平均時間」*120%
 		// 【OUTPUT】 boolean（true：超過している/false：超過してない）
-		return currentRunTime.compareTo(averageRunTime.multiply(new BigDecimal(120)).divide(new BigDecimal(100))) > 0;
+		return currentRunTime.compareTo(averageRunTime.multiply(BIG_DECIMAL_120).divide(BIG_DECIMAL_100)) > 0;
 	}
 
 	@Override
