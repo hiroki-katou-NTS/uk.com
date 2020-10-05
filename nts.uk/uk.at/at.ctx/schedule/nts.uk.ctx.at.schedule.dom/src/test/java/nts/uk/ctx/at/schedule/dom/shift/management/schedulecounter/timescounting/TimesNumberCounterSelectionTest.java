@@ -51,12 +51,12 @@ public class TimesNumberCounterSelectionTest {
 	@Test
 	public void create_successfully() {
 		
-		TimesNumberCounterSelection result = TimesNumberCounterSelection.create(TimesNumberCounterType.PERSON_1, Arrays.asList(1, 2, 3));
+		TimesNumberCounterSelection result = TimesNumberCounterSelection.create(TimesNumberCounterType.PERSON_1, Arrays.asList(1, 3, 2));
 		
 		assertThat(result.getType()).isEqualTo(TimesNumberCounterType.PERSON_1);
 		assertThat(result.getSelectedNoList())
 						.hasSize(3)
-						.containsExactly(1, 2, 3);
+						.containsExactly(1, 3, 2);
 	}
 
 }
