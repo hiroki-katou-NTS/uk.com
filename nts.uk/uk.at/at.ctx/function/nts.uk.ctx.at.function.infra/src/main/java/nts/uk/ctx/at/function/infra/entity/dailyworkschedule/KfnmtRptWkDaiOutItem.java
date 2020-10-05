@@ -127,7 +127,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			entity.setAtdDisplay(new BigDecimal(obj.getAttendanceDisplay()));
 			entity.setCid(this.cid);
 			entity.setContractCd(this.contractCd);
-			entity.setExclusVer(this.exclusVer);
+			entity.setExclusVer(1);
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -142,7 +142,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			entity.setId(key);
 			entity.setCid(this.cid);
 			entity.setContractCd(this.contractCd);
-			entity.setExclusVer(this.exclusVer);
+			entity.setExclusVer(1);
 			entity.setUseCls(obj.isUsedClassification() ? BigDecimal.ONE : BigDecimal.ZERO);
 			return entity;
 		}).collect(Collectors.toList());

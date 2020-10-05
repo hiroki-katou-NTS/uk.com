@@ -1286,7 +1286,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						outSche.getLstDisplayedAttendance().stream()
 						.map(AttendanceItemsDisplay::getAttendanceDisplay)
 						.collect(Collectors.toList()))
-				.stream().filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.stream().filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
 				.map(t -> t.getTimeId()).collect(Collectors.toList());
 		
 		lstAttendanceResultImport.stream()
@@ -3925,7 +3925,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
     
     private List<String> getDivergenceReasonSelected(String companyId, List<Integer> attendanceItem) {
-    	List<Integer> attItemId = Arrays.asList(DEVIATION_REASON);
+//    	List<Integer> attItemId = Arrays.asList(DEVIATION_REASON);
 		List<Integer> divergenceNo = attendanceItem.stream().filter(x -> DEVIATION_REASON_MAP.containsKey(x))
 				.map(x -> DEVIATION_REASON_MAP.get(x)).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 		if (divergenceNo.isEmpty()) {
