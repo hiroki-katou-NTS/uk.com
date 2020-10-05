@@ -36,6 +36,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         baseDate: KnockoutObservable<string> = ko.observable('');
         dataDate:KnockoutObservable<number> = ko.observable(0);
         linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
+        isDisableOpenKDL035: KnockoutObservable<boolean> = ko.observable(true);
         checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -62,10 +63,20 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 if(v){
                   self.baseDate = self.dayOff
                 }
+                if(!v && self.pause()) {
+                  self.isDisableOpenKDL035(false);
+                }else {
+                  self.isDisableOpenKDL035(true)
+                }
             });
             self.pause.subscribe((v) => {
                 self.setSplit();
                 self.calRemainDays();
+                if(v && !self.pickUp()) {
+                  self.isDisableOpenKDL035(false);
+                }else {
+                  self.isDisableOpenKDL035(true);
+                }
             });
             self.checkedSplit.subscribe((v) => {
                 self.calRemainDays();
@@ -75,7 +86,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             
             self.remainDays(null);
         }
-        
+
         public oldRemainDays() {
             let self = this;
             if ((!self.pickUp() && !self.pause()) ||  (!self.occurredDays() && !self.subDays())) {
@@ -221,7 +232,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 return true;
             return false;
         }
-        
+
         public createData(){
             nts.uk.ui.errors.clearAll();
             if (this.pickUp()){
