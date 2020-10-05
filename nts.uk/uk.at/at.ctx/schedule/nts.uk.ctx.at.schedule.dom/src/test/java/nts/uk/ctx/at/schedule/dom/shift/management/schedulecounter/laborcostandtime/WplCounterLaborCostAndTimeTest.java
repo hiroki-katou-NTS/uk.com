@@ -64,5 +64,28 @@ public class WplCounterLaborCostAndTimeTest {
 		assertThat(resultMap.get(LaborCostAndTimeType.OVERTIME).getUseClassification()).isEqualTo(NotUseAtr.USE);
 		
 	}
+	
+	@Test
+	public void getters() {
+		
+		Map<LaborCostAndTimeType, LaborCostAndTime> list = new HashMap<>();
+		list.put(LaborCostAndTimeType.TOTAL, LaborCostAndTime.createTotal(
+				NotUseAtr.USE,
+				NotUseAtr.USE,
+				NotUseAtr.NOT_USE,
+				NotUseAtr.NOT_USE));
+		list.put(LaborCostAndTimeType.WORKING_HOURS, LaborCostAndTime.create(
+				NotUseAtr.NOT_USE,
+				NotUseAtr.NOT_USE,
+				NotUseAtr.NOT_USE));
+		list.put(LaborCostAndTimeType.OVERTIME, LaborCostAndTime.create(
+				NotUseAtr.USE,
+				NotUseAtr.USE,
+				NotUseAtr.NOT_USE));
+		
+		WplCounterLaborCostAndTime target = WplCounterLaborCostAndTime.create(list);
+		
+		NtsAssert.invokeGetters(target);
+	}
 
 }

@@ -53,5 +53,12 @@ public class LaborCostAndTimeTest {
 		assertThat(result.getTime()).isEqualTo(NotUseAtr.NOT_USE);
 		assertThat(result.getLaborCost()).isEqualTo(NotUseAtr.USE);
 	}
+	
+	@Test
+	public void getters() {
+		
+		val target = LaborCostAndTime.create(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
+		NtsAssert.invokeGetters(target);  
+	}
 
 }

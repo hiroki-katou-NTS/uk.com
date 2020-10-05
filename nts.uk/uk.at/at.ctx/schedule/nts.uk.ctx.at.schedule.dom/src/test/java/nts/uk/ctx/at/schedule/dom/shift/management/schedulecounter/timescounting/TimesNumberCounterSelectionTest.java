@@ -58,5 +58,12 @@ public class TimesNumberCounterSelectionTest {
 						.hasSize(3)
 						.containsExactly(1, 3, 2);
 	}
+	
+	@Test
+	public void getters() {
+		
+		TimesNumberCounterSelection target = TimesNumberCounterSelection.create(TimesNumberCounterType.PERSON_1, Arrays.asList(1, 3, 2));
+		NtsAssert.invokeGetters(target);  
+	}
 
 }

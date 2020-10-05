@@ -77,5 +77,18 @@ public class WplCounterTimeZonePeopleNumberTest {
 											.extracting( element -> element.v() )
 											.contains( 0, 1, 2);
 	}
+	
+	@Test
+	public void getters() {
+		
+		List<WplCounterStartTime> timeZoneList = Arrays.asList(
+				new WplCounterStartTime(0),
+				new WplCounterStartTime(1),
+				new WplCounterStartTime(2)
+				);
+		
+		WplCounterTimeZonePeopleNumber target = WplCounterTimeZonePeopleNumber.create(timeZoneList);
+		NtsAssert.invokeGetters(target);  
+	}
 
 }
