@@ -42,7 +42,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "ALARM_LIST_ATR,"
 			+ "YEARLY_WORK_TABLE_ATR "
 			+ "FROM "
-			+ "KMKMT_AGREEMENT_OPE_SET "
+			+ "KSRMT_36AGR_OPERATION "
 			+ "WHERE CID = ?1";
 	
 	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "

@@ -11,19 +11,20 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ScreenDisplayInfo extends ValueObject {
 
     /** 時間外時間*/
-    private final Overtime overtime;
+    private Overtime overtime;
 
     /** 時間外時間（法定休出を含む）*/
-    private final OvertimeIncludingHoliday overtimeIncludingHoliday;
+    private OvertimeIncludingHoliday overtimeIncludingHoliday;
 
     /** 超過月数 */
-    private final int exceededMonth;
+    private int exceededMonth;
 
     /** 上限マスタ内容*/
-    private final UpperLimitBeforeRaising upperContents;
+    private UpperLimitBeforeRaising upperContents;
 
     /**
      * [C-0] 画面表示情報 (時間外時間,時間外時間（法定休出を含む）,超過月数,上限マスタ内容)
@@ -33,6 +34,5 @@ public class ScreenDisplayInfo extends ValueObject {
 
         return new ScreenDisplayInfo(overtime, overtimeIncludingHoliday,exceededMonth,upperContents);
     }
-
 
 }

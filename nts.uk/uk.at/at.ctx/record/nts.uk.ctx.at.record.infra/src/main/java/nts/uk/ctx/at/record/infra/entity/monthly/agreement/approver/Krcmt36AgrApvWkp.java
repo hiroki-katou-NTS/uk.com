@@ -6,7 +6,6 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -105,7 +104,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid4, true)) confirmerIds.add(this.confirmerSid4);
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
-		return new Approver36AgrByWorkplace(
+		return Approver36AgrByWorkplace.create(
 				this.pk.workplaceID,
 				new DatePeriod(this.pk.startDate, this.endDate),
 				approverIds,

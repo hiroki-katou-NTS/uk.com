@@ -38,7 +38,7 @@ public class TimeStartCanChangeHistoryTest {
 
 	@Test
 	public void checkChange_2(){
-		Approver36AgrByCompany agrByCompany = new Approver36AgrByCompany(
+		Approver36AgrByCompany agrByCompany = Approver36AgrByCompany.create(
 				"cid",new DatePeriod(GeneralDate.today(),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
 		// Mock up
 		new Expectations() {{
@@ -64,8 +64,8 @@ public class TimeStartCanChangeHistoryTest {
 
 	@Test
 	public void checkChange_4(){
-		Approver36AgrByWorkplace agrByWorkplace = new Approver36AgrByWorkplace(
-				"cid","workplaceId",new DatePeriod(GeneralDate.today(),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
+		Approver36AgrByWorkplace agrByWorkplace = Approver36AgrByWorkplace.create(
+				"workplaceId",new DatePeriod(GeneralDate.today(),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
 		// Mock up
 		new Expectations() {{
 			require.getByWorkplaceIdAndEndDate("workplaceId",GeneralDate.ymd(2020,9,9));
