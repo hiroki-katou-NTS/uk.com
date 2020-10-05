@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
+import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 
 import java.util.List;
@@ -15,17 +16,10 @@ import java.util.Optional;
 public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
     private static String FIND_BY_CID;
 
-    private static String FIND_BY_CID_AND_CD;
+
 
     static {
-        StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT");
-        builderString.append("FROM Ksrmt36AgrMgtCls a");
-        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
-        builderString.append("AND a.ksrmt36AgrMgtClsPk.employmentCode:cd ");
-        FIND_BY_CID_AND_CD = builderString.toString();
-
-        builderString = new StringBuilder();
+        StringBuilder builderString  = new StringBuilder();
         builderString.append("SELECT");
         builderString.append("FROM Ksrmt36AgrMgtCls a");
         builderString.append("WHERE a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
@@ -44,12 +38,12 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
 
     @Override
     public void delete(AgreementTimeOfClassification domain) {
-//        val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
-//                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
-//        if(entity.isPresent()){
-//            this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
-//                    ,domain.getLaborSystemAtr().value));
-//        }
+        val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v()
+                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
+        if(entity.isPresent()){
+            this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v()
+                    ,domain.getLaborSystemAtr().value));
+        }
     }
 
     @Override

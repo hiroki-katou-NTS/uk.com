@@ -35,9 +35,6 @@ public class OneMonthAppCreateTest {
 
 	/**
 	 * 承認者を取得する#取得する returns empty result
-	 * <p>
-	 * Expected: AppCreationResult with error type APPROVER_NOT_SET should be returned
-	 * R2 should not be called.
 	 */
 	@Test
 	public void test01() {
@@ -66,10 +63,6 @@ public class OneMonthAppCreateTest {
 	/**
 	 * 承認者を取得する#取得する returns empty result
 	 1ヶ月申請の超過エラーをチェックする returns empty
-	 * <p>
-	 * Expected:
-	 * result with error info should be returned.
-	 * should be returned
 	 */
 	@Test
 	public void test02() {
@@ -120,10 +113,6 @@ public class OneMonthAppCreateTest {
 	/**
 	 * 承認者を取得する#取得する returns empty result
 	 * 1ヶ月申請の超過エラーをチェックする returns error
-	 *
-	 * <p>
-	 * Expected: AppCreationResult with Applicant Id 'dummyApplicantId' and ResultType NO_ERROR
-	 * should be returned
 	 */
 	@Test
 	public void test03() {

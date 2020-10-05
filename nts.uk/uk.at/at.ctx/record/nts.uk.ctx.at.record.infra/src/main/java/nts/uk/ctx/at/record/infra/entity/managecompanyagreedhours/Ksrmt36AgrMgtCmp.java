@@ -42,11 +42,7 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
     @EmbeddedId
     public Ksrmt36AgrMgtCmpPk ksrmt36AgrMgtCmpPk;
 
-    /**
-     * 排他バージョン
-     */
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
+
     /**
      * 契約コード
      */
@@ -153,8 +149,6 @@ public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
 
         return new Ksrmt36AgrMgtCmp(
                 new Ksrmt36AgrMgtCmpPk(domain.getCompanyId(), domain.getLaborSystemAtr().value),
-
-                1,
                 //contractCD
                 contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
