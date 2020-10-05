@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.approvermanagement.setting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 /**
  * Refactor5
