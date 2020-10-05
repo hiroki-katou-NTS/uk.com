@@ -212,26 +212,33 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             //社員に対応する処理締めを取得する
             service.findClosureByEmpID().done(function(closure: any) {
                 if (closure) {
+                    //  取得した「締め.当月」の前月を指定年月へ移送
+                    //社員範囲選択の締め日(締めID)の「当月」を使用する。
+                    //また、全締めの場合は、登録されている先頭の締め日の「当月」を使用する。
+                    let currentMonth = moment(closure.closureMonth.toString()).format('YYYYMM');
+                    let closureDay = closure.closureHistories[0].closureDate.closureDay;
+                    let startDateRange = moment(currentMonth).subtract(closureDay, 'day').format("YYYYMMDD");
+                    let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+
+                    self.printDate(closure.closureMonth);
+                    //取得した「締め.当月」より期間へ移送
+                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
+
                     self.setDataWhenStart(closure);
                     self.closureDate(closure.closureMonth);
-
-                    // self.printDate(closure.closureMonth)
                 } else {
                     //指定月 = null
                     //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
+                    self.printDate(Number(moment().subtract(1, 'months').format("YYYYMM")))
+                    let startDateRange = moment().subtract(1, 'day').format("YYYYMMDD");
+                    let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+
+                    self.printDate(closure.closureMonth);
+                    //取得した「締め.当月」より期間へ移送
+                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
 
                     //エラーメッセージ(#Msg_1134)を表示
                     alError({ messageId: 'Msg_1134' });
-                }
-
-                if (closure.closureMonth) {
-                    let endDateRange = moment().subtract(1, 'day').format("YYYYMMDD");
-                    let startDateRange = moment(endDateRange).subtract(1, 'year').add(1, 'day').format("YYYYMMDD");
-
-                    self.printDate(closure.closureMonth);
-                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
-                } else {
-                    self.printDate(Number(moment().subtract(1, 'months').format("YYYYMM")))
                 }
 
                 block.clear();
