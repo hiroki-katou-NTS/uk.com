@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -13,7 +14,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
-
+@Stateless
 public class ApprovalSettingServiceImp implements ApprovalSettingService {
 	
 	@Inject

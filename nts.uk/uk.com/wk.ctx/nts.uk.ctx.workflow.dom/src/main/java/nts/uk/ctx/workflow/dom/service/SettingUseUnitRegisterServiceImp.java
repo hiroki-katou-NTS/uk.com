@@ -10,6 +10,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
+
 public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterService {
 	
 	@Inject

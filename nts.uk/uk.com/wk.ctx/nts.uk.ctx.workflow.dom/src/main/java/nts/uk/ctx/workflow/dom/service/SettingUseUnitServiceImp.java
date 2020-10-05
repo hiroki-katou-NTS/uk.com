@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -12,6 +13,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
+@Stateless
 public class SettingUseUnitServiceImp implements SettingUseUnitService{
 	public static Integer EMPLOYMENT = 0;  // 就業の場合
 	public static Integer HUMAN_RESOURCE = 0; // 人事の場合
