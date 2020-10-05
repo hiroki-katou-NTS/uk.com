@@ -206,7 +206,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 		// từ xử lý ユーザ固有情報「年休管理表の出力条件」を更新する trở về trước được thực hiện dưới
 		// client
-		Integer selectedDateType = query.getSelectedDateType();
+		Integer selectedDateType = query.getSelectedDateType().value;
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「使用基準日判定処理」を実行する
 		GeneralDate baseDate = dateDetermination(query.getClosureData(), selectedDateType, query.getPrintDate());
@@ -683,7 +683,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	private String genDateText(OutputYearHolidayManagementQuery query) {
 		String result = "";
-		if (EnumAdaptor.valueOf(query.getSelectedDateType(), PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
+//		if (EnumAdaptor.valueOf(query.getSelectedDateType(), PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
+		if(query.getSelectedDateType().equals(PeriodToOutput.PAST)) {
 			String dateString = query.getPrintDate().toString();
 			result = TextResource.localize("KDR002_8") + "：" + dateString.substring(0, 4) + '/'
 					+ dateString.substring(4, 6);

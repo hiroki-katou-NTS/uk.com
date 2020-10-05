@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.yearholidaymanagement;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,22 +26,18 @@ public class OutputYearHolidayManagementQuery {
 	private PeriodToOutput selectedDateType;
 	// 年休取得日の印字方法
 	private AnnualLeaveAcquisitionDate printAnnualLeaveDate;
-	// 抽出条件_設定
+	// 抽出条件
 	private boolean extCondition;
-	
-	// 期間
-	private GeneralDate period ;
 	// 改ページ区分
 	private int pageBreakClassification;
-	
+	// 抽出条件_設定
+	private Optional<ExtractionConditionSetting> extractionCondtionSetting;
 	// 指定年月
+	private GeneralDate designatedDate;
+	// 期間
+	private GeneralDate period ;
 	
 	GeneralDateTime exportTime;
-	
-	
-	
-	// 抽出条件
-	
 	// old
 	// 指定月
 	Integer printDate;
