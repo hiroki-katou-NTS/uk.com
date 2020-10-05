@@ -29,7 +29,7 @@ public class CompanyApproveHistoryAddEmployeeIdDto {
     /**
      * 承認者リスト
      */
-    private List<String> approveList;
+    private List<String> approvedList;
     /**
      * 確認者リスト
      */
