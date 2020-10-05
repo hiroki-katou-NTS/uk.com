@@ -50,7 +50,7 @@ module nts.uk.ui.at.ksu002.a {
 		<div>
 			<label data-bind="i18n: 'KSU002_12'"></label>
 	        <div data-bind="ntsComboBox: {
-					width: '300px',
+					width: '500px',
 					name: $component.$i18n('KSU002_12'),
 					value: $component.selectedWorkTypeCode,
 					options: $component.workTypes,

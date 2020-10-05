@@ -32,6 +32,7 @@ module nts.uk.ui.at.ksu002.a {
             const params = { width, baseDate, schedules, clickCell, tabIndex };
             const component = { name, params };
 
+            element.classList.add('cf');
             element.classList.add('scheduler');
             element.removeAttribute('tabindex');
 
@@ -59,7 +60,40 @@ module nts.uk.ui.at.ksu002.a {
                 tabindex: $component.data.tabIndex,
                 click-cell: $component.data.clickCell
             "></div>
-            <div data-bind=""></div>
+            <div class="calendar cf">
+                <div class="filter cf">&nbsp;</div>
+                <div class="calendar-container">
+                    <div class="month title">
+                        <div class="week cf">
+                            <div class="day">
+                                <div class="status" data-bind="i18n: 'KSU002_24'"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="month" data-bind="foreach: [1,2,3,4,5,6]">
+                        <div class="week cf">
+                            <div class="day">
+                                <div class="status">
+                                    <span data-bind="if: $index()">&nbsp;</span>
+                                    <span data-bind="if: !$index()">
+                                        <span data-bind="i18n: 'KSU002_25'"></span>
+                                    </span>
+                                </div>
+                                <div class="data-info">&nbsp;</div>
+                            </div>
+                            <div class="day">
+                                <div class="status">
+                                    <span data-bind="if: $index()">&nbsp;</span>
+                                    <span data-bind="if: !$index()">
+                                        <span data-bind="i18n: 'KSU002_26'"></span>
+                                    </span>
+                                </div>
+                                <div class="data-info">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div data-bind="popper: true"></div>
             <style type="text/css" rel="stylesheet">
                 .scheduler .data-info {
@@ -122,8 +156,41 @@ module nts.uk.ui.at.ksu002.a {
                     max-height: 400px;
                     overflow: hidden;
                 }
+                
+                .scheduler .event-popper:before {
+                    content: '',
+                    display: block;
+                    width: 15px;
+                    height: 15px;
+                    position: absolute;
+                }
                 .scheduler .event-popper.show {
                     visibility: visible;
+                }
+                .scheduler .calendar {
+                    float: left;
+                    display: block;
+                }
+                .scheduler .calendar+.calendar {
+                    width: 201px;
+                }
+                .scheduler .calendar+.calendar .calendar-container{
+                    border-left: 0;
+                }
+                .scheduler .calendar+.calendar .filter {
+                    line-height: 35px;
+                }
+                .scheduler .calendar+.calendar .month.title .day {
+                    width: 100% !important;
+                }
+                .scheduler .calendar+.calendar .month+.month .day {
+                    height: 86px !important;
+                }
+                .scheduler .calendar+.calendar .month+.month .day .status {
+                    height: 38px;
+                    background: #ccc;
+                    box-sizing: border-box;
+                    border-bottom: 1px solid #808080;
                 }
             </style>`
     })
