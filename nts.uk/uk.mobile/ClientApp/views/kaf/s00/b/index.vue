@@ -47,12 +47,12 @@
                 <div style="width: 100%" id="prePostSelect">
                     <nts-switchbox v-for="(option, optionIndex) in prePostResource" v-bind:key="optionIndex"
                         v-bind:disabled="!enablePrePost"
-                        v-model="params.output.prePostAtr"
+                        v-model="prePostAtr"
                         v-bind:value="option.code">
                             {{option.text | i18n}}
                     </nts-switchbox>
                 </div>
-                <v-errors v-model="$errors.params.output.prePostAtr" class="d-block mt-n2 mb-3" />
+                <v-errors v-model="$errors.prePostAtr" class="d-block mt-n2 mb-3" />
             </div>
         </div>    
         <div class="card card-label">

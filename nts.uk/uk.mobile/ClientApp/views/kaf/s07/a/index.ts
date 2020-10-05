@@ -1080,10 +1080,23 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
 
 
-
-
     }
 
+    public kaf000BChangeDate(objectDate) {
+        console.log('emit' + objectDate);
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        console.log('emit' + prePostAtr);
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        console.log('emit' + opAppStandardReasonCD);
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        console.log('emit' + opAppReason);
+    }
 }
 export class Work {
     public code: String = '';
