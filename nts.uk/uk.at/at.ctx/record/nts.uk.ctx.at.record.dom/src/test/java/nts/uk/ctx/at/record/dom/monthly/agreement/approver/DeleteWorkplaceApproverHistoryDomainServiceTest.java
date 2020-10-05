@@ -52,6 +52,8 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
                 any -> require.deleteHistory(any.get()),
                 any -> require.changeLatestHistory(any.get(),preVHistoryItem.getPeriod().start())
         );
+        assertThat(preVHistoryItem.getPeriod().end()).isEqualTo(GeneralDate.max() );
+
     }
     @Test
     public void test_02(){
@@ -70,32 +72,5 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
                 () -> DeleteWorkplaceApproverHistoryDomainService.changeHistory(require, deleteItem),
                 any -> require.deleteHistory(any.get())
         );
-    }
-    @Test
-    public void test_03(){
-        val deleteItem = Approver36AgrByWorkplace.create(
-                workplaceId,
-                new DatePeriod(GeneralDate.today(),GeneralDate.max()),
-                approverList,
-                confirmerList
-
-        );
-        val preVHistoryItem = Approver36AgrByWorkplace.create(
-                workplaceId,
-                new DatePeriod(deleteItem.getPeriod().start().addDays(-5),deleteItem.getPeriod().start().addDays(-1)),
-                approverList,
-                confirmerList
-
-        );
-        new Expectations(){{
-            require.getLastHistory(workplaceId,deleteItem.getPeriod().start().addDays(-1));
-            result = Optional.of(preVHistoryItem);
-        }};
-
-        NtsAssert.atomTask(
-                () -> DeleteWorkplaceApproverHistoryDomainService.changeHistory(require, deleteItem),
-                any -> require.deleteHistory(any.get())
-        );
-        assertThat(preVHistoryItem.getPeriod().end()).isEqualTo(GeneralDate.max() );
     }
 }
