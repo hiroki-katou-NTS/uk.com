@@ -24,7 +24,7 @@ module nts.uk.at.view.kdm001.a.service {
     }
 
     /* A4_2_9 削除 */
-    export function removePayout(command): JQueryPromise<any>{
+    export function removePayout(command: any): JQueryPromise<any>{
         return ajax(paths.removePayout, command);
     }
 }

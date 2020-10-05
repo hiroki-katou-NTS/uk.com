@@ -342,7 +342,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                       //     workplaceId: "", workplaceCode: "", workplaceName: ""
                       // };
                 }).fail(function (res: any) {
-                    dialog.alertError({ messageId: res.messageId });
+                  dialog.alertError({messageId: res.messageId, messageParams: res.errorMessage})
+                    if(res.messageId === 'Msg_1731'){
+                      self.newDataDisable(true);
+                    }
                     console.log(res);
                 });
 
@@ -395,11 +398,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         dfd.resolve();
                     }
                 }).fail(function (result) {
-                    dialog.alertError(result.errorMessage).then(function () { nts.uk.ui.block.clear(); });;
+                    dialog.alertError({messageId: result.messageId, messageParams: result.errorMessage}).then(function () { nts.uk.ui.block.clear(); });;
                     dfd.reject();
                 });
             }).fail(function (result) {
-                dialog.alertError(result.errorMessage).then(function () { nts.uk.ui.block.clear(); });;
+                dialog.alertError({messageId: result.messageId, messageParams: result.errorMessage}).then(function () { nts.uk.ui.block.clear(); });;
                 dfd.reject();
             });
 
