@@ -20,7 +20,7 @@ public class WorkplaceCounterRegisterTest {
 	@Test
 	public void test_insert () {
 		
-		WorkplaceCounter target = WorkplaceCounterRegisterHelper.createObject_all_notUse();
+		WorkplaceCounter target = ScheduleCounterHelper.createWorkplaceCounter_all_notUse();
 		
 		new Expectations() {
 			{
@@ -38,7 +38,7 @@ public class WorkplaceCounterRegisterTest {
 	@Test
 	public void test_update () {
 		
-		WorkplaceCounter target = WorkplaceCounterRegisterHelper.createObject_all_notUse();
+		WorkplaceCounter target = ScheduleCounterHelper.createWorkplaceCounter_all_notUse();
 		
 		new Expectations() {
 			{
@@ -56,7 +56,7 @@ public class WorkplaceCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty() {
 		
-		WorkplaceCounter target = WorkplaceCounterRegisterHelper.createObject_all_notUse();
+		WorkplaceCounter target = ScheduleCounterHelper.createWorkplaceCounter_all_notUse();
 		
 		WorkplaceCounterRegisterResult result = WorkplaceCounterRegister.register(require, target);
 		
@@ -66,7 +66,7 @@ public class WorkplaceCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_2() {
 		
-		WorkplaceCounter target = WorkplaceCounterRegisterHelper.createObject_allUse();
+		WorkplaceCounter target = ScheduleCounterHelper.createWorkplaceCounter_allUse();
 		
 		new Expectations() {
 			{
@@ -89,7 +89,7 @@ public class WorkplaceCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_3() {
 		
-		WorkplaceCounter target = WorkplaceCounterRegisterHelper.createObject_allUse();
+		WorkplaceCounter target = ScheduleCounterHelper.createWorkplaceCounter_allUse();
 		
 		new Expectations() {
 			{

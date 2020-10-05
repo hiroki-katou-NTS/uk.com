@@ -20,7 +20,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_insert () {
 		
-		OnePersonCounter target = OnePersonCounterRegisterHelper.createObject_timeCounting_allNot();
+		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
 		new Expectations() {
 			{
@@ -38,7 +38,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_update () {
 		
-		OnePersonCounter target = OnePersonCounterRegisterHelper.createObject_timeCounting_allNot();
+		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
 		new Expectations() {
 			{
@@ -56,7 +56,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty() {
 		
-		OnePersonCounter target = OnePersonCounterRegisterHelper.createObject_timeCounting_allNot();
+		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
 		OnePersonCounterRegisterResult result = OnePersonCounterRegister.register(require, target);
 		
@@ -66,7 +66,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_2() {
 		
-		OnePersonCounter target = OnePersonCounterRegisterHelper.createObject_timeCounting_allUse();
+		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
 		
 		new Expectations() {
 			{
@@ -83,7 +83,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_3() {
 		
-		OnePersonCounter target = OnePersonCounterRegisterHelper.createObject_timeCounting_allUse();
+		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
 		
 		new Expectations() {
 			{
