@@ -23,14 +23,19 @@ public class OneMonthTime {
 		this.upperLimit = new AgreementOneMonthTime(0);
 	}
 	
-	public OneMonthTime(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
-		super();
+	private OneMonthTime(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
+		this.erAlTime = erAlTime;
+		this.upperLimit = upperLimit;
+	}
+	
+	public static OneMonthTime of(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
+
 		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
 		if (upperLimit.lessThan(erAlTime.getError())) {
 			throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
 		}
-		this.erAlTime = erAlTime;
-		this.upperLimit = upperLimit;
+
+		return new OneMonthTime(erAlTime, upperLimit);
 	}
 	
 	/** エラーチェック */

@@ -59,8 +59,8 @@
 	margin: 5px 0px 10px 0px;
 	width: 750px;
 	border:none;
-	display: block;
-	height: 0.1px;
+	/* display: block; */
+	height: 1px;
 	background:#9A9A9A
 	
 }

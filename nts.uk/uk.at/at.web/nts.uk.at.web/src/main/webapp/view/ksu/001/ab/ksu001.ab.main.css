@@ -1,4 +1,4 @@
-#oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
+#oViewModel #label, #oViewModel  #listWorkType, #oViewModel  #group-button,
 	#oViewModel  #set-work-type, #oViewModel #set-work-time {
 	float: left;
 }

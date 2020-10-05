@@ -286,5 +286,24 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 }    
             });
         }
+
+		public static showMailResult(mailResult: Array<any>, vm: any): JQueryPromise<any> {
+			let dfd = jQuery.Deferred();
+			if(_.isEmpty(mailResult)) {
+				dfd.resolve();
+				return dfd.promise();
+			}
+			let msg = mailResult[0].value,
+				type = mailResult[0].type;
+			if(type=='info') {
+				return vm.$dialog.info(msg).then(() => {
+	           		return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);	
+	        	});	
+			} else {
+				return vm.$dialog.error(msg).then(() => {
+	            	return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);
+	        	});	
+			}
+		}
     }
 }

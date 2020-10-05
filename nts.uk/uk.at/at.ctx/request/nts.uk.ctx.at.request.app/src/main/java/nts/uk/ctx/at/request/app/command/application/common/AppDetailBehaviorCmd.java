@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfAppTypesCmd;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
 /**
@@ -18,5 +21,7 @@ public class AppDetailBehaviorCmd {
 	private String memo;
 	
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
+	
+//	private List<ListOfAppTypesCmd> listOfAppTypes;
 	
 }

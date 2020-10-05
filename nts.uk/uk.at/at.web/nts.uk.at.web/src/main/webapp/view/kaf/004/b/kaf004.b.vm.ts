@@ -525,7 +525,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.$ajax(API.updateInfo,
                 {
                     application: params,
-                    arrivedLateLeaveEarlyDto: vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly
+                    arrivedLateLeaveEarlyDto: vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly,
+					appDispInfoStartupDto: vm.appDispInfoStartupOutput()
                 }).done((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" });
