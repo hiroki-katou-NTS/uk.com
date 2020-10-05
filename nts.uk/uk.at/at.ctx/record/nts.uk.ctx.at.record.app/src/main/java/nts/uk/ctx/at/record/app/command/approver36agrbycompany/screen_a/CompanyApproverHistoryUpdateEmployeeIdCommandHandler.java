@@ -34,14 +34,14 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        val domainUpdate = new Approver36AgrByCompany(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+        val domainUpdate = Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
                 command.getApprovedList(),
                 command.getConfirmedList());
         val domainPrevOpt = repo.getByCompanyIdAndEndDate(cid,command.getStartDateBeforeChange().addDays(-1));
         if(domainPrevOpt.isPresent()){
             val domainPrev = domainPrevOpt.get();
             DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
-            val domain = new Approver36AgrByCompany(domainPrev.getCompanyId(),period,domainPrev.getApproverList()
+            val domain =  Approver36AgrByCompany.create(domainPrev.getCompanyId(),period,domainPrev.getApproverList()
                     ,domainPrev.getConfirmerList() );
             repo.update(domain,period.start());
         }

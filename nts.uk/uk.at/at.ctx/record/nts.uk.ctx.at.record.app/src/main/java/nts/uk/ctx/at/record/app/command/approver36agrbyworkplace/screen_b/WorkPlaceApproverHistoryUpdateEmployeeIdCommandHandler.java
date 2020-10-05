@@ -24,12 +24,12 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         val domainPrevOpt = repo.getByWorkplaceIdAndEndDate(command.getWorkPlaceId(),command.getStartDateBeforeChange().addDays(-1));
-        val domain = new Approver36AgrByWorkplace(command.getWorkPlaceId(),new DatePeriod(command.getPeriod().start(), GeneralDate.max()),
+        val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),new DatePeriod(command.getPeriod().start(), GeneralDate.max()),
                 command.getApprovedList()
                 ,command.getConfirmedList());
         if(domainPrevOpt.isPresent()){
             DatePeriod period = new DatePeriod(domainPrevOpt.get().getPeriod().start(),command.getPeriod().start().addDays(-1));
-            val domainPrevUpdate = new Approver36AgrByWorkplace(domainPrevOpt.get().getWorkplaceId(),period,domainPrevOpt.get().getApproverIds(),domainPrevOpt.get().getConfirmerIds());
+            val domainPrevUpdate =  Approver36AgrByWorkplace.create(domainPrevOpt.get().getWorkplaceId(),period,domainPrevOpt.get().getApproverIds(),domainPrevOpt.get().getConfirmerIds());
             repo.update(domainPrevUpdate,period.start());
         }
         repo.update(domain,command.getStartDateBeforeChange());

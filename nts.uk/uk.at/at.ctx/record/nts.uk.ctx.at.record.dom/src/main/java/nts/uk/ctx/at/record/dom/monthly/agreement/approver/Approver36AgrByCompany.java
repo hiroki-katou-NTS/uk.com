@@ -20,7 +20,7 @@ public class Approver36AgrByCompany extends AggregateRoot {
 	/**
 	 * 会社ID
 	 */
-	private String companyId;
+	private final String companyId;
 
 	/**
 	 * 期間
@@ -38,9 +38,11 @@ public class Approver36AgrByCompany extends AggregateRoot {
 	private List<String> confirmerList;
 
 	/**
+	 * [C-1] 新規作成
+	 *
 	 * 新しい会社別の承認者（36協定）を作る。
 	 */
-	public Approver36AgrByCompany(
+	public static Approver36AgrByCompany create(
 			String cid,
 			DatePeriod period,
 			List<String> approverList,
@@ -61,6 +63,14 @@ public class Approver36AgrByCompany extends AggregateRoot {
 			throw new BusinessException("Msg_1792");
 		}
 
+		return new Approver36AgrByCompany(cid, period, approverList,confirmerList);
+	}
+
+	private Approver36AgrByCompany(
+			String cid,
+			DatePeriod period,
+			List<String> approverList,
+			List<String> confirmerList){
 		this.companyId = cid;
 		this.period = period;
 		this.approverList = approverList;

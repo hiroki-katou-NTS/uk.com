@@ -6,10 +6,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +32,7 @@ public class AnnualAppCreate {
 	 * @param require           @Require
 	 * @param cid               会社ID
 	 * @param empId             申請者
-	 * @param annualAppContent  年間の 申請内容
+	 * @param appContent  		年間の 申請内容
 	 * @param screenDisplayInfo 画面表示情報
 	 * @return 申請作成結果
 	 */
@@ -37,65 +40,61 @@ public class AnnualAppCreate {
 			Require require,
 			String cid,
 			String empId,
-			AnnualAppContent annualAppContent,
+			AnnualAppContent appContent,
 			ScreenDisplayInfo screenDisplayInfo) {
 
+		// $エラー情報
+		val errorInfo = new ArrayList<ExcessErrorContent>();
+
 		// $承認者項目
-		val optApproverItem = GettingApproverDomainService.getApprover(require, annualAppContent.getApplicant());
+		val optApproverItem = GettingApproverDomainService.getApprover(require, appContent.getApplicant());
+
 		if (!optApproverItem.isPresent()) {
-			return new AppCreationResult(annualAppContent.getApplicant(),
-					ResultType.APPROVER_NOT_SET,
+			// $承認者エラー
+			val approverError = ExcessErrorContent.create(
+					ErrorClassification.APPROVER_NOT_SET,
 					Optional.empty(),
 					Optional.empty(),
-					Optional.empty()
-			);
+					Optional.empty());
+
+			errorInfo.add(approverError);
 		}
 
 		// $３６協定設定
-		val setting = AgreementDomainService.getBasicSet(
-				require,
-				cid,
-				annualAppContent.getApplicant(),
-				GeneralDate.today(),
-				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số #32628
-
-		val oneYear = setting.getOneYear();
+		val setting = AgreementDomainService.getBasicSet(require, cid, appContent.getApplicant(), GeneralDate.today());
 
 		// $エラー結果
-		val errResult = oneYear.checkErrorTimeExceeded(annualAppContent.getErrTime());
+		val errorResult = setting.getOneYear().checkErrorTimeExceeded(appContent.getErrTime());
 
-		if (errResult.getKey()) {
-			return new AppCreationResult(
-					annualAppContent.getApplicant(),
-					ResultType.YEARLY_LIMIT_EXCEEDED,
+		if (errorResult.getKey()) {
+			// $上限エラー
+			val limitError = ExcessErrorContent.create(
+					ErrorClassification.OVERTIME_LIMIT_ONE_YEAR,
 					Optional.empty(),
-					Optional.empty(),
-					Optional.of(errResult.getValue())
-			);
+					Optional.of(errorResult.getValue()),
+					Optional.empty());
+
+			errorInfo.add(limitError);
 		}
 
-		// 申請内容.アラーム時間
-		annualAppContent.setAlarmTime(oneYear.getBasic().calcAlarmTime(annualAppContent.getErrTime()));
+		AtomTask atomTask = null;
+		if (errorInfo.isEmpty()){
+			// set 申請内容.アラーム時間
+			appContent.setAlarmTime(setting.getOneYear().calculateAlarmTime(appContent.getErrTime()));
 
-		// $申請
-		val app = createAnnualApp(
-				empId,
-				annualAppContent,
-				optApproverItem.get().getApproverList(),
-				optApproverItem.get().getConfirmerList(),
-				screenDisplayInfo);
+			// $申請
+			val app = createAnnualApp(
+					empId,
+					appContent,
+					optApproverItem.get().getApproverList(),
+					optApproverItem.get().getConfirmerList(),
+					screenDisplayInfo);
 
-		AtomTask at = AtomTask.of(() -> {
-			require.addApp(app);
-		});
+			// $Atomtask
+			atomTask = AtomTask.of(() -> { require.addApp(app); });
+		}
 
-		return new AppCreationResult(
-				annualAppContent.getApplicant(),
-				ResultType.NO_ERROR,
-				Optional.of(at),
-				Optional.empty(),
-				Optional.empty()
-		);
+		return new AppCreationResult(appContent.getApplicant(), Optional.ofNullable(atomTask), errorInfo);
 	}
 
 	/**
@@ -117,16 +116,13 @@ public class AnnualAppCreate {
 			ScreenDisplayInfo screenDisplayInfo) {
 
 		// $エラーアラーム
-		val errorArlarmTime = OneYearErrorAlarmTime.of(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
+		val errorAlarmTime = OneYearErrorAlarmTime.of(annualAppContent.getErrTime(), annualAppContent.getAlarmTime());
 
 		// $１年間時間
-		val oneYearTime = new OneYearTime(errorArlarmTime, annualAppContent.getYear());
+		val oneYearTime = new OneYearTime(errorAlarmTime, annualAppContent.getYear());
 
 		// $申請時間
-		val appTime = new ApplicationTime(
-				TypeAgreementApplication.ONE_YEAR,
-				Optional.empty(),
-				Optional.of(oneYearTime)
+		val appTime = new ApplicationTime(TypeAgreementApplication.ONE_YEAR, Optional.empty(), Optional.of(oneYearTime)
 		);
 
 		// return 36協定申請作成結果
@@ -141,7 +137,7 @@ public class AnnualAppCreate {
 		);
 	}
 
-	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM4 {
 		/**
 		 * [R-1] 申請を追加する
 		 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Agre
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 職場３６協定時間Repository
@@ -22,15 +23,15 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT");
+        builderString.append("SELECT a");
         builderString.append("FROM Ksrmt36AgrMgtWkp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.companyID IN :listWorkplaceId ");
+        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.workplaceId IN :listWorkplaceId ");
         FIND_BY_LIST_WKP = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("SELECT");
+        builderString.append("SELECT a");
         builderString.append("FROM Ksrmt36AgrMgtWkp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.companyID = :workplaceId ");
+        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
         FIND_BY_WKP = builderString.toString();
     }
 
@@ -57,8 +58,8 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
 
     @Override
     public List<AgreementTimeOfWorkPlace> getByListWorkplaceId(List<String> listWorkplaceId) {
-
         return this.queryProxy().query(FIND_BY_LIST_WKP, Ksrmt36AgrMgtWkp.class)
+                .setParameter("listWorkplaceId", listWorkplaceId)
                 .getList(Ksrmt36AgrMgtWkp::toDomain);
     }
 

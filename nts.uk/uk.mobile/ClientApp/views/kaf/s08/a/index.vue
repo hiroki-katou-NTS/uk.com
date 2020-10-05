@@ -16,7 +16,6 @@
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree"
-    @changeTime="handlerChangeTime" 
     v-bind:derpartureTime="derpartureTime" 
     v-bind:returnTime="returnTime"  
     v-bind:comment="comment"

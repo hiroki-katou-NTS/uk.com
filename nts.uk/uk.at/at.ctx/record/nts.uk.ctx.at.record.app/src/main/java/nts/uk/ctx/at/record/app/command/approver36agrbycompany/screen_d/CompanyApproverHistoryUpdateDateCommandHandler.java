@@ -36,7 +36,7 @@ public class CompanyApproverHistoryUpdateDateCommandHandler extends CommandHandl
         RequireImpl require = new RequireImpl(repo,cid);
         val domainOpt = repo.getByCompanyIdAndDate(cid,GeneralDate.max());
         if(domainOpt.isPresent()){
-            val domain = new Approver36AgrByCompany(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+            val domain =  Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
                     domainOpt.get().getApproverList()
                     ,domainOpt.get().getConfirmerList());
 

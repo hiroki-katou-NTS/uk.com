@@ -100,7 +100,7 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid4, true)) confirmerIds.add(this.confirmerSid4);
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
-		return new Approver36AgrByCompany(
+		return Approver36AgrByCompany.create(
 				this.pk.companyId,
 				new DatePeriod(this.pk.startDate, this.endDate),
 				approverIds,

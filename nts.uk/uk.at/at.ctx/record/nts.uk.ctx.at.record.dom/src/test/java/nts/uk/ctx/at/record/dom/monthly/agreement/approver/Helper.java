@@ -20,7 +20,7 @@ public class Helper {
 	public static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
 
 	public static Approver36AgrByCompany createApprover36AgrByCompany() {
-		return new Approver36AgrByCompany(
+		return Approver36AgrByCompany.create(
 				cid,
 				period,
 				createApproverList(5),
@@ -35,12 +35,21 @@ public class Helper {
 		);
 	}
 
+	public static Approver36AgrByCompany createApprover36AgrByCompanyLast() {
+		return Approver36AgrByCompany.create(
+				cid,
+				periodLast,
+				createApproverList(5),
+				createConfirmerList(5)
+		);
+	}
+
 	public static Approver36AgrByCompany createApprover36AgrByCompanyWithPeriod(String start, String end) {
 		val periodFromParam = new DatePeriod(
 				GeneralDate.fromString(start, DATE_FORMAT_YYYYMMDD),
 				GeneralDate.fromString(end, DATE_FORMAT_YYYYMMDD)
 		);
-		return new Approver36AgrByCompany(
+		return Approver36AgrByCompany.create(
 				cid,
 				periodFromParam,
 				createApproverList(5),
@@ -49,7 +58,7 @@ public class Helper {
 	}
 
 	public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
-		return new Approver36AgrByWorkplace(
+		return Approver36AgrByWorkplace.create(
 				workplaceId,
 				period,
 				createApproverList(5),
@@ -71,5 +80,9 @@ public class Helper {
 			stringList.add(sample + i);
 		}
 		return stringList;
+	}
+
+	public static GeneralDate createDate(String strDate){
+		return GeneralDate.fromString(strDate, "yyyy/MM/dd");
 	}
 }
