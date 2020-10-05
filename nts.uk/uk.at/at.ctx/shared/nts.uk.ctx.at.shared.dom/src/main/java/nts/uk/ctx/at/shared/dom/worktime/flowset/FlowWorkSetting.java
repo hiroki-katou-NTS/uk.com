@@ -70,6 +70,12 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	// 流動設定
 	private FlowWorkDedicateSetting flowSetting;
 
+	/** 就業時間帯コード */
+	@Override
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workingCode;
+	}
+
 	/**
 	 * Instantiates a new flow work setting.
 	 *
