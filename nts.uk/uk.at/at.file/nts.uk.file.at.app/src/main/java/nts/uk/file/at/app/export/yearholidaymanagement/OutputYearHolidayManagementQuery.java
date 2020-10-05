@@ -49,4 +49,6 @@ public class OutputYearHolidayManagementQuery {
 	List<ClosurePrintDto> closureData;
 	
 	String programName;
+	
+	private int mode;
 }

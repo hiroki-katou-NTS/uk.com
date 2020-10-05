@@ -70,7 +70,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         selectedReferenceType: KnockoutObservable<number> = ko.observable(0);
 
         //print Date
-        printDate: KnockoutObservable<number> = ko.observable(Number(moment().subtract(1, 'months').format("YYYYMM")));
+        printDate: KnockoutObservable<number> = ko.observable(Number(moment().format("YYYYMM")));
 
         // Page Break Type
         // A4_3
@@ -101,7 +101,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);
 
-        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
+        period: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
 
         // A5_7
         isExtraction: KnockoutObservable<boolean> = ko.observable(false);
@@ -222,7 +222,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
                     self.printDate(closure.closureMonth);
                     //取得した「締め.当月」より期間へ移送
-                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
+                    self.period({ startDate: startDateRange, endDate: endDateRange });
 
                     self.setDataWhenStart(closure);
                     self.closureDate(closure.closureMonth);
@@ -235,7 +235,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
                     self.printDate(closure.closureMonth);
                     //取得した「締め.当月」より期間へ移送
-                    self.dateValue({ startDate: startDateRange, endDate: endDateRange });
+                    self.period({ startDate: startDateRange, endDate: endDateRange });
 
                     //エラーメッセージ(#Msg_1134)を表示
                     alError({ messageId: 'Msg_1134' });
@@ -259,10 +259,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     //データあり
                     self.setScreenInfo(closure, screenInfo);
                 }
-                // else {
-                //     //データなし
-                //     self.printDate(closure.closureMonth);
-                // }
+                else {
+                    //データなし
+                    self.printDate(closure.closureMonth);
+                }
             });
         }
 
@@ -290,8 +290,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.pageBreakSelected(screenInfo.pageBreakSelected);
         }
 
-
-        private exportExcel() {
+        exportExcel() {
             let self = this;
 
             $('.nts-input').trigger("validate");
@@ -441,11 +440,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // 抽出条件
         extCondition: boolean;
 
-        //抽出条件_設定．日数 - Extraction condition_setting. Days - A5_2
-        extConditionSettingDay: any;
-
-        //抽出条件_設定．比較条件 - Extraction condition_setting. Comparison conditions - A5_3
-        extConditionSettingCoparison: any;
+        //抽出条件_設定
+        extractionCondtionSetting: ExtractionConditionSetting;
 
         //ダブルトラック時の期間拡張 - Extended period for double track - A7_2
         doubleTrack: boolean;
@@ -459,15 +455,21 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
             self.programName = (program[1] != null ? program[1] : "");
             self.exportTime = moment().format();
+            // 対象期間
             self.selectedDateType = screen.selectedDateType();
+            // 参照区分
             self.selectedReferenceType = screen.selectedReferenceType();
+            // 改ページ区分
             self.pageBreakSelected = screen.pageBreakSelected();
             self.selectedEmployees = _.filter(screen.employeeList(), (e) => { return _.indexOf(screen.selectedEmployeeCode(), e.code) != -1; });
             self.closureData = screen.closureData();
+            // 抽出条件
             self.extCondition = screen.isExtraction();
-            self.extConditionSettingDay = screen.inputExtraction();
-            self.extConditionSettingCoparison = screen.optionExtractionValue();
+            // 抽出条件_設定
+            self.extractionCondtionSetting = new ExtractionConditionSetting(screen.inputExtraction(), screen.optionExtractionValue());
+            // ダブルトラック時の期間拡張
             self.doubleTrack = screen.doubleTrack();
+            // 年休取得日の印字方法
             self.printAnnualLeaveDate = screen.printAnnualLeaveDateSelect();
         }
 
@@ -479,8 +481,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 // printDate: self.printDate,
                 pageBreakSelected: self.pageBreakSelected,
                 extCondition: self.extCondition,
-                extConditionSettingDay: self.extConditionSettingDay,
-                extConditionSettingCoparison: self.extConditionSettingCoparison,
+                extractionCondtionSetting: self.extractionCondtionSetting,
                 doubleTrack: self.doubleTrack,
                 printAnnualLeaveDate: self.printAnnualLeaveDate
             }
@@ -549,6 +550,19 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    // 抽出条件_設定
+    export class ExtractionConditionSetting {
+        // 日数
+        days: number;
+        // 比較条件
+        comparisonConditions: number;
+
+        constructor(days: number, comparisonConditions: number) {
+            this.days = days;
+            this.comparisonConditions = comparisonConditions;
         }
     }
 

@@ -80,7 +80,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final String COMPANY_ERROR = "Company is not found!!!!";
 
 	private static final String TEMPLATE_FILE = "report/KDR002.xlsx";
-	private static final String REPORT_FILE_EXTENSION = ".xlsx";
+	/** The Constant PDF_EXT. */
+	private static final String EXCEL_EXT = ".xlsx";
+	/** The Constant PDF_EXT. */
+	private static final String PDF_EXT = ".pdf";
 	private static final int HEADER_ROW = 1;
 	private static final int DES_ROW = 0;
 	private static final int WP_COL = 0;
@@ -128,6 +131,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			String programName = query.getProgramName();
+			String printExt = query.getMode() == 1 ? EXCEL_EXT : PDF_EXT;
 			// lấy dữ liệu để in
 			List<EmployeeHolidayInformationExport> data = getData(query);
 
@@ -147,7 +151,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN)) + REPORT_FILE_EXTENSION));
+					programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN)) + printExt));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
