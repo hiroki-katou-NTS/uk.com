@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.accessrestrictions;
+package nts.uk.ctx.sys.gateway.app.command.cmm002;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.accessrestrictions;
+package nts.uk.ctx.sys.gateway.app.command.cmm002;
 
 import java.util.List;
 import java.util.stream.Collectors;
