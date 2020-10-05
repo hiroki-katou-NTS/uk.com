@@ -293,26 +293,27 @@ public class ExtraHolidayManagementService {
 			throw new BusinessException("Msg_1306");
 		}
 		
-		CompensatoryLeaveEmSetting empSetting = null;
-		CompensatoryLeaveComSetting compLeavCom = null;
 		// 取得した社員の雇用履歴をループする Lặp lại lịch sử tuyển dụng của nhân viên đã lấy
-		for(EmploymentHistShareImport empHistShrImp : empHistShrImpList) {
+		for (EmploymentHistShareImport empHistShrImp : empHistShrImpList) {
+			CompensatoryLeaveComSetting compLeavCom = null;
 			// 代休管理設定の取得
 			// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
-			empSetting = compensLeaveEmSetRepository.find(cid, empHistShrImp.getEmploymentCode());
+			CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, empHistShrImp.getEmploymentCode());
 			
-			if (empSetting != null && empSetting.getIsManaged() != ManageDistinct.NO) { // 取得結果＝0件
+			if (empSetting == null || empSetting.getIsManaged() == ManageDistinct.YES) { // 取得結果＝0件
 				// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 				compLeavCom = compensLeaveComSetRepository.find(cid);
 			}
 			// 管理するかないかチェック Check Setting quản lý nghỉ bù hay ko
-			if (compLeavCom!= null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {
+			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {
 				emplData.setIsManage(ManageDistinct.YES);
 
 				if (empHistShrImp.getPeriod().start().beforeOrEquals(baseDate) && empHistShrImp.getPeriod().end().afterOrEquals(baseDate)) {
 					emplData.setEmploymentCode(empHistShrImp.getEmploymentCode());
 					return emplData;
 				}
+				
+				emplData.setIsManage(ManageDistinct.NO);
 			}
 		}
 		
