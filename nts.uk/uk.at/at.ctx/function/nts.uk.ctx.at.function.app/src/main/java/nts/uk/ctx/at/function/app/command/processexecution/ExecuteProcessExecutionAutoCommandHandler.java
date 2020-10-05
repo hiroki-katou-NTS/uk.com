@@ -54,9 +54,15 @@ import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.Ag
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionImport;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetAdapter;
 import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetImport;
+import nts.uk.ctx.at.function.dom.indexreconstruction.FragmentationRate;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexName;
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
+import nts.uk.ctx.at.function.dom.indexreconstruction.TableName;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CaculateFragRate;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
@@ -314,6 +320,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private AggrPeriodExcutionAdapter aggrPeriodExcutionAdapter;
+	
+	@Inject
+	private ProcExecIndexRepository proExecIndexRepository;
 	
 	@Override
 	public boolean keepsTrack(){
@@ -619,6 +628,13 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if (this.monthlyAggregation(execId, procExec, procExecLog, companyId, context)) {
 			return true;
 		} 
+		// Step 任意期間の集計
+		if (this.aggregationOfArbitraryPeriod(execId, companyId, procExec, procExecLog, context)) {
+			return true;
+		}
+		// 外部出力
+		
+		// アラーム抽出
 		if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
 			return true;
 		}
@@ -796,6 +812,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //				}
 //			}
 		}
+		// インデックス再構成
+		this.indexReconstruction(execId, companyId, procExec, procExecLog);
 		return false;
 	}
 
@@ -3457,6 +3475,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	 */
 	private void indexReconstruction(String execId, String companyId, ProcessExecution procExec,
 		ProcessExecutionLog procExecLog) {
+		String errorMessage = "";
+		boolean isHasException = false;
 		// Step 1: ドメインモデル「更新処理自動実行ログ」を更新する - Update the domain model "update process automatic execution log"
 		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
 		for (int i = 0; i < taskLogLists.size(); i++) {
@@ -3489,32 +3509,65 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			List<BigDecimal> categoryList = procExec.getExecSetting().getIndexReconstruction().getCategoryNo().stream()
 					.map(i -> new BigDecimal(i.v()))
 					.collect(Collectors.toList());
-			List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository.findAllByCategoryIds(categoryList);
-			//TODO
-			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
-			if (!listIndexReorgTable.isEmpty()) {
-				// Step 4: 「インデックス再構成結果履歴」を作成する - Create "Index Reconstruction Result History"
-				ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.EMPTY_LIST);
-				//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
-				listIndexReorgTable.forEach(indexReorgTable -> {
-					// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
-					//TODO
-					
-				});
+			try {
+				List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository.findAllByCategoryIds(categoryList);
+				// Step 4: 「インデックス再構成結果履歴」を作成する
+				ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.emptyList());
+				// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
+				if (!listIndexReorgTable.isEmpty()) {
+					//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
+					List<ProcExecIndexResult> indexReconstructionResult = new ArrayList<ProcExecIndexResult>();
+					listIndexReorgTable.forEach(indexReorgTable -> {
+						// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
+						// Step 6: 「インデックス再構成結果」を作成する
+						List<ProcExecIndexResult> resultCaculateFragRates = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v())
+								.stream()
+								.filter(item -> item.getIndexId() > 0) // Check condition 実行したSQLの結果の「index_id」> 0
+								.map(item -> ProcExecIndexResult.builder()
+										.indexName(new IndexName(item.getIndexName()))
+										.fragmentationRate(new FragmentationRate(item.getFragmentationRate()))
+										.tablePhysicalName(new TableName(item.getTablePhysicalName()))
+										.build())
+								.collect(Collectors.toList());
+						// Step 7 テーブルのインデックス再構成する
+						this.indexReorgTableRepository.reconfiguresIndex(indexReorgTable.getTablePhysName().v());
+						// INPUT「更新処理自動実行．実行設定．インデックス再構成．統計情報を更新する」を判定する
+						// if USE
+						if (procExec.getExecSetting().getIndexReconstruction().getUpdateStats() == NotUseAtr.USE) {
+							// Step 8 統計情報を更新する - Update stats
+							this.indexReorgTableRepository.updateStatis(indexReorgTable.getTablePhysName().v());
+						}
+						// Step 9 インデックス再構成後の断片化率を計算する
+						List<CaculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v());
+						resultCaculateFragRatesAfter.removeIf(item -> item.getIndexId() > 0);
+						for (int j = 0; j < resultCaculateFragRatesAfter.size(); j++) {
+							resultCaculateFragRates.get(j)
+								.setFragmentationRateAfterProcessing(new FragmentationRate(resultCaculateFragRatesAfter.get(j).getFragmentationRate()));
+						}
+						indexReconstructionResult.addAll(resultCaculateFragRates);
+					});
+					// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
+					proExecIndex.setIndexReconstructionResult(indexReconstructionResult);
+				}
+				// Step 11: 作成した「インデックス再構成結果履歴」を登録する
+				this.proExecIndexRepository.update(proExecIndex);
+			} catch(Exception e) {
+				isHasException = true;
+				errorMessage = "Msg_1339";
 			}
 		}
-		
-		
-		// Step 6: 「インデックス再構成結果」を作成する
-		// Step 7: テーブルのインデックス再構成する
-		// Check true/ false, if true -> step 8. else step 9
-		// Step 8: 統計情報を更新する
-		// Step 9: インデックス再構成後の断片化率を計算する
-		// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
-		// Check return step 4 or continous
-		// Step 11: 作成した「インデックス再構成結果履歴」を登録する
 		// Step 12: 各処理の後のログ更新処理
+		this.updateLogAfterProcess.updateLogAfterProcess(
+				ProcessExecutionTask.INDEX_RECUNSTRUCTION, 
+				companyId, 
+				execId, 
+				procExec, 
+				procExecLog, 
+				isHasException, 
+				false,
+				errorMessage);
 	}
+	
 
 	/**
 	 *	任意期間の集計
@@ -3589,7 +3642,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// 	TRUE（する）の場合
 		boolean isHasException = false;
 		try {
-			String aggrFrameCode = procExec.getExecSetting().getAggregationOfArbitraryPeriod().getCode().get().v();
+			String aggrFrameCode = procExec.getExecSetting().getAggregationOfArbitraryPeriod().getCode()
+					.map(item -> item.v())
+					.orElse(null);
 			// 	Step ドメインモデル「任意集計期間」を取得する
 			Optional<OptionalAggrPeriodImport> anyAggrPeriod = this.optionalAggrPeriodAdapter.find(companyId, aggrFrameCode);
 			// 	「任意集計期間」取得できたかチェック - check if could get AnyAggrPeriod

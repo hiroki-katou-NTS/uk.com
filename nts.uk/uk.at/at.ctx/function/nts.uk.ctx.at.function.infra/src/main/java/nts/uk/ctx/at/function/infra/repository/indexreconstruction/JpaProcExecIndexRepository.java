@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfndtProcExecIndex;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaProcExecIndexRepository extends JpaRepository implements ProcExecIndexRepository {
@@ -89,5 +90,18 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 				.executionId(new ExecutionCode(execId))
 				.indexReconstructionResult(listResult)
 				.build());
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	@Override
+	public void update(ProcExecIndex domain) {
+		// Convert data to entity
+		List<KfndtProcExecIndex> listEntity = JpaProcExecIndexRepository.toEntity(domain);
+		// Insert entity
+		this.commandProxy().updateAll(listEntity);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
  *  UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class ProcExecIndex extends AggregateRoot {
