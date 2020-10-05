@@ -29,14 +29,10 @@ public class WplCounterLaborCostAndTime implements DomainAggregate{
 	 */
 	public static WplCounterLaborCostAndTime create(Map<LaborCostAndTimeType, LaborCostAndTime> list) {
 		
-		LaborCostAndTime total = list.get(LaborCostAndTimeType.TOTAL);
-		LaborCostAndTime workingHours = list.get(LaborCostAndTimeType.WORKING_HOURS);
-		LaborCostAndTime overtime = list.get(LaborCostAndTimeType.OVERTIME);
+		boolean allNotUse = list.values().stream()
+				.allMatch(e -> e.getUseClassification() == NotUseAtr.NOT_USE);
 		
-		boolean valid = total.getUseClassification() == NotUseAtr.USE ||
-				workingHours.getUseClassification() == NotUseAtr.USE ||
-				overtime.getUseClassification() == NotUseAtr.USE;
-		if ( !valid ) {
+		if ( allNotUse ) {
 			throw new BusinessException( "Msg_1836" );
 		}
 		
