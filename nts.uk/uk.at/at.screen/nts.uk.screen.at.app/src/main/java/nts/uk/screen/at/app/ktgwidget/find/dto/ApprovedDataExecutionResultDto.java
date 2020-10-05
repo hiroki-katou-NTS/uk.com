@@ -1,9 +1,10 @@
-package nts.uk.ctx.sys.portal.app.find.toppagepart.standardwidget;
+package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 
@@ -17,7 +18,12 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDet
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApprovedDataExecutionResultDto {
+	
+	//勤怠担当者である
+	private Boolean haveParticipant;
+	
 	// 名称
 	private String topPagePartName;
 
@@ -34,8 +40,9 @@ public class ApprovedDataExecutionResultDto {
 	private Boolean agrDisplayAtr;
 	
 	//承認すべき申請状況の詳細設定
-	private ApprovedAppStatusDetailedSetting approvedAppStatusDetailedSetting;
+	private List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettings;
 	
 	//締めID, 現在の締め期間
-	private List<Integer> list;
+	private List<ClosureIdPresentClosingPeriod> closingPeriods;
 }
+

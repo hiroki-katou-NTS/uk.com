@@ -8,39 +8,39 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
  */
 public enum StandardWidgetType {
 	/**
-	 * 1 - 申請状況
+	 * 0001 - 申請状況
 	 */
-	APPLICATION_STATUS(1),
+	APPLICATION_STATUS(0001),
 
 	/**
-	 * 2 - 承認すべき状況
+	 * 0002 - 承認すべき状況
 	 */
-	APPROVE_STATUS(2),
+	APPROVE_STATUS(0002),
 
 	/**
-	 * 3 - 勤務状況
+	 * 0003 - 勤務状況
 	 */
-	WORK_STATUS(3),
+	WORK_STATUS(0003),
 
 	/**
-	 * 4 - 上長用の時間外労働時間
+	 * 0004 - 上長用の時間外労働時間
 	 */
-	OVERTIME_FOR_SUPERIOR(4),
+	OVERTIME_FOR_SUPERIOR(0004),
 
 	/**
-	 * 5 - 打刻入力
+	 * 0005 - 打刻入力
 	 */
-	STAMPT_INPUT(5),
+	STAMPT_INPUT(0005),
 
 	/**
-	 * 6 - トップぺージアラーム
+	 * 0006 - トップぺージアラーム
 	 */
-	TOP_PAGE_ALARM(6),
+	TOP_PAGE_ALARM(0006),
 
 	/**
-	 * 7 - 従業員用の時間外勤務時間
+	 * 0007 - 従業員用の時間外勤務時間
 	 */
-	OVERTIME_FOR_EMPLOYEE(7);
+	OVERTIME_FOR_EMPLOYEE(0007);
 
 	StandardWidgetType(int type) {
 		this.value = type;

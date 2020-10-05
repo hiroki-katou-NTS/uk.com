@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -8,10 +11,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author tutt
  *
  */
+@AllArgsConstructor
+@Getter
+@Setter
 public class ApprovedAppStatusDetailedSetting {
 	// 表示区分
 	NotUseAtr displayType;
 
 	// 項目
-	WorkStatusItem item;
+	ApprovedApplicationStatusItem item;
 }

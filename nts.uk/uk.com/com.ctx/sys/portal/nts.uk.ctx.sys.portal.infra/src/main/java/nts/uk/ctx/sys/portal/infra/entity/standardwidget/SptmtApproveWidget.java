@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.infra.entity.standardwidget;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,14 +13,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+
+/**
+ * 
+ * @author tutt
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "SPTMT_APPROVE_WIDGET")
+@Table(name = "SPTMT_WIDGET_APPROVE")
 public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -63,5 +77,26 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 	@Override
 	protected Object getKey() {
 		return this.companyId;
+	}
+	
+	public StandardWidget toDomain() {
+		
+		StandardWidget standardWidget = (StandardWidget) new TopPagePart(companyId, null, null, null, null, null);
+		
+		List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettings = new ArrayList<>();
+		
+		ApprovedAppStatusDetailedSetting appDisplaySetting = new ApprovedAppStatusDetailedSetting(EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class), ApprovedApplicationStatusItem.APPLICATION_DATA);
+		ApprovedAppStatusDetailedSetting dayDisplaySetting = new ApprovedAppStatusDetailedSetting(EnumAdaptor.valueOf(this.dayDisplayAtr, NotUseAtr.class), ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA);
+		ApprovedAppStatusDetailedSetting monDisplaySetting = new ApprovedAppStatusDetailedSetting(EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class), ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA);
+		ApprovedAppStatusDetailedSetting agrDisplaySetting = new ApprovedAppStatusDetailedSetting(EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class), ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA);
+		
+		approvedAppStatusDetailedSettings.add(appDisplaySetting);
+		approvedAppStatusDetailedSettings.add(dayDisplaySetting);
+		approvedAppStatusDetailedSettings.add(monDisplaySetting);
+		approvedAppStatusDetailedSettings.add(agrDisplaySetting);
+		
+		standardWidget.setName(this.getTopPagePartName());
+		standardWidget.setApprovedAppStatusDetailedSettingList(approvedAppStatusDetailedSettings);
+		return standardWidget;
 	}
 }

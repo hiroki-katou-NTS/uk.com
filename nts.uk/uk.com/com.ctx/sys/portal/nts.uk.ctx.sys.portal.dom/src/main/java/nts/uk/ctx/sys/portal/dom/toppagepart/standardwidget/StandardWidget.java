@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
@@ -17,6 +19,8 @@ public class StandardWidget extends TopPagePart {
 	// 勤務状況の詳細設定
 	List<DetailedWorkStatusSetting> detailedWorkStatusSettingList;
 
+	@Setter
+	@Getter
 	// 承認すべき申請状況の詳細設定
 	List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList;
 

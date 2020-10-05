@@ -13,5 +13,5 @@ public class DetailedWorkStatusSetting {
 	NotUseAtr displayType;
 
 	// 項目
-	ApprovedApplicationStatusItem item;
+	WorkStatusItem item;
 }
