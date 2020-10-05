@@ -11,7 +11,12 @@ import { KafS04BComponent } from '../b';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
+    validations: {
+        time: {
+            attendanceTime: { required: true },
+            leaveTime: { required: true },
+        }
+    },
     components: {
         'kaf-s00-a': KafS00AComponent,
         'kaf-s00-b': KafS00BComponent,
@@ -28,20 +33,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public kafS00CParams: IParamS00C = null;
     public user !: any;
     public data !: IData;
-    public appDispInfoStartupOutput: any;
-    public time: ITime = { attendanceTime: null, leaveTime: null };
-    public validAll: boolean = true;
+    public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+    public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
+    //public validAll: boolean = true;
     public isValidateAll: Boolean = true;
 
 
     public created() {
         const vm = this;
+
         vm.fetchStart();
         //khoi tao time
     }
 
     public fetchStart() {
         const vm = this;
+
         vm.$mask('show');
         vm.$auth.user.then((usr: any) => {
             vm.user = usr;
@@ -67,6 +74,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public initComponentA() {
         const vm = this;
+
         vm.kafS00AParams = {
             companyID: vm.user.companyId,
             employeeID: vm.user.employeeId,
@@ -79,6 +87,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public initComponetB() {
         const vm = this;
+
         let input = {
             mode: 0,
             appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
@@ -108,6 +117,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public initComponentC() {
         const vm = this;
+
         let input = {
             displayFixedReason: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason,
             displayAppReason: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason,
@@ -127,29 +137,44 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public register() {
         const vm = this;
+
         vm.checkValidAll();
     }
 
     public checkValidAll() {
         const vm = this;
-        for (let child of vm.$children) {
-            child.$validate();
-            if (!child.$valid) {
-                vm.validAll = false;
-            }
-        }
-        vm.isValidateAll = vm.validAll;
-        if (!vm.validAll) {
-            window.scrollTo(500, 0);
 
-            return;
+        Promise
+            .resolve(true)
+            .then(() => {
+                vm.$validate('time.attendanceTime');
+                vm.$validate('time.leaveTime');
+            })
+            .then(() => vm.$children.forEach((v) => v.$validate()))
+            .then(() => {
+                if (vm.validAll) {
+                    alert('qua man tiep theo');
+                } else {
+                    window.scrollTo(500, 0);
+                }
+            });
+    }
+
+
+    get validAll() {
+        const vm = this;
+
+        if (!vm.$valid) {
+            vm.$modal.error('Msg_1681');
         }
-        alert('qua man tiep theo');
+
+        return vm.$valid && !vm.$children.some((m) => !m.$valid);
     }
 
 
     public mounted() {
         const vm = this;
+
     }
 }
 
@@ -422,5 +447,6 @@ interface IData {
 interface ITime {
     attendanceTime: number | null;
     leaveTime: number | null;
+    attendanceTime2: number | null;
+    leaveTime2: number | null;
 }
-
