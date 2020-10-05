@@ -192,19 +192,30 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode(
-			ItemSelectionEnum itemSelectionEnum, String companyId, String itemCode, String employeeId) {
+	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum
+			, String companyId
+			, String itemCode
+			, String employeeId) {
+
+		// 定型選択の場合
 		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
 			return this.queryProxy().query(FIND_BY_SELECTION_CID_CODE, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum)
-					.setParameter("itemCode", itemCode).getSingle(entity -> this.toDomain(entity));
-		}
-		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
-			return this.queryProxy().query(FIND_BY_SELECTION_CID_CODE_SID, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
-					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum)
+					.setParameter("companyID", companyId)
+					.setParameter("itemType", itemSelectionEnum.value)
+					.setParameter("itemCode", itemCode)
 					.getSingle(entity -> this.toDomain(entity));
 		}
+
+		// 自由設定の場合
+		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
+			return this.queryProxy().query(FIND_BY_SELECTION_CID_CODE_SID, KfnmtRptWkMonOut.class)
+					.setParameter("companyID", companyId)
+					.setParameter("employeeID", employeeId)
+					.setParameter("itemCode", itemCode)
+					.setParameter("itemType", itemSelectionEnum.value)
+					.getSingle(entity -> this.toDomain(entity));
+		}
+
 		return Optional.empty();
 	}
 

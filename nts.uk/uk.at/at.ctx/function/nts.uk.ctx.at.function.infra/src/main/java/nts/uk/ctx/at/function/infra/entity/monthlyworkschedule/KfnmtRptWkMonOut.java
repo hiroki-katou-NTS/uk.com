@@ -163,22 +163,19 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
 		List<MonthlyAttendanceItemsDisplay> monthlyAttendanceItemsDisplays = new ArrayList<>();
-		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream().map(item ->{
-			MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
-			monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());
-			monthlyAttendanceItemsDisplay.setOrderNo(item.getPk().getOrderNo());
-			return monthlyAttendanceItemsDisplay;
-		}).collect(Collectors.toList());
+		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream()
+				.map(item -> {
+					MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
+					monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());
+					monthlyAttendanceItemsDisplay.setOrderNo(item.getPk().getOrderNo());
+					return monthlyAttendanceItemsDisplay;
+				}).collect(Collectors.toList());
 		return monthlyAttendanceItemsDisplays;
 	}
 
 	@Override
 	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		if (this.isRemarkPrinted==true) {
-			return PrintSettingRemarksColumn.valueOf(1);
-		}else {
-			return PrintSettingRemarksColumn.valueOf(0);
-		}
+		return this.isRemarkPrinted ? PrintSettingRemarksColumn.valueOf(1) : PrintSettingRemarksColumn.valueOf(0);
 	}
 
 	@Override

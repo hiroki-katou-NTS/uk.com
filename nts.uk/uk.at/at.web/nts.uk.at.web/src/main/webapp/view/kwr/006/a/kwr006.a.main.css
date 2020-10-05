@@ -124,7 +124,7 @@ hr {
 }
 
 #output-setting-content {
-	height: 457px
+	height: 578px;
 }
 
 #btnSetErrorAlarmCd {
@@ -162,4 +162,7 @@ html {
 }
 button.nts-switch-button {
 	width: 80px;
+}
+.mt-15 {
+	margin-top: 15px !important;
 }

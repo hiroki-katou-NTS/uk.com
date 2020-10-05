@@ -218,7 +218,7 @@ module nts.uk.at.view.kwr006.a {
                     isShowSelectAllButton: self.isShowSelectAllButton(),
                     isSelectAllAfterReload: true,
                     tabindex: 5,
-                    maxRows: 15
+                    maxRows: 20
                 };
                 // start set variable for CCG001
                 self.ccg001ComponentOption = {

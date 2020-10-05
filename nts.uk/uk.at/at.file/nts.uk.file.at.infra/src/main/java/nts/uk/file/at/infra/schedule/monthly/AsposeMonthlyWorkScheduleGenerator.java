@@ -238,7 +238,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		} else {
 			reportContext = this.createContext(TEMPLATE_DATE);
 		}
-		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCode());
+		// ドメインモデル「月別勤務表の出力項目」を取得する
+		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo
+				.findBySelectionAndCidAndSidAndCode(condition.getItemSettingType()
+						, AppContexts.user().companyId()
+						, query.getCode()
+						, AppContexts.user().employeeId());
 		if (!optOutputItemMonthlyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
