@@ -31,7 +31,7 @@ public class AccessRestrictions extends AggregateRoot{
 	/** [1] 許可IPアドレスを追加する */
 	public void addIPAddress(AllowedIPAddress e) {
 		for (AllowedIPAddress ip : this.allowedIPaddress) {
-			if(ip.getStartAddress().equals(e.getStartAddress())) {
+			if(ip.getStartAddress().compareObject(e.getStartAddress())) {
 				throw new BusinessException("Msg_1835");
 			}
 		}
@@ -40,14 +40,14 @@ public class AccessRestrictions extends AggregateRoot{
 	
 	/** [2] 許可IPアドレスを更新する */
 	public void updateIPAddress(AllowedIPAddress oldIp, AllowedIPAddress newIp) {
-		this.allowedIPaddress.removeIf(c-> (c.getStartAddress().equals(oldIp.getStartAddress())));
+		this.allowedIPaddress.removeIf(c-> (c.getStartAddress().compareObject(oldIp.getStartAddress())));
 		this.addIPAddress(newIp);
 		this.allowedIPaddress.sort((AllowedIPAddress x, AllowedIPAddress y) -> x.getStartAddress().toString().compareTo(y.getStartAddress().toString()));
 	}
 	
 	/** [3] 許可IPアドレスを削除する */
 	public void deleteIPAddress(IPAddressSetting e) {
-		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(e));
+		this.allowedIPaddress.removeIf(c->c.getStartAddress().compareObject(e));
 		if(this.allowedIPaddress.isEmpty()) {
 			this.accessLimitUseAtr = NotUseAtr.NOT_USE;
 		}
