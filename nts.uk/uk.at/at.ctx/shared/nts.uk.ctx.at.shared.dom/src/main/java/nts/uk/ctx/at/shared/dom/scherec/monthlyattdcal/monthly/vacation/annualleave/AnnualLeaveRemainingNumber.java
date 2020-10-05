@@ -89,7 +89,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		this.totalRemainingDays = new AnnualLeaveRemainingDayNumber(0.0);
 		this.totalRemainingTime = Optional.of( new AnnualLeaveRemainingTime(0));
 		
-		// 「年休付与残数データ」を取得  ooooo 順序を考慮する
+		// 「年休付与残数データ」を取得 
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		
 		for (val remainingData : remainingDataList){

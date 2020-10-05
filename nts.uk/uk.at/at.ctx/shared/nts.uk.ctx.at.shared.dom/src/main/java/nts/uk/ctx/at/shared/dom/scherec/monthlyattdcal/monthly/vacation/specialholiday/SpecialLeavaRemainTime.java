@@ -28,4 +28,17 @@ public class SpecialLeavaRemainTime extends TimeDurationPrimitiveValue<SpecialLe
 		if (rawValue < 0) rawValue = 0;
 		return super.reviseRawValue(rawValue);
 	}
+	
+
+	@Override
+	public SpecialLeavaRemainTime clone() {
+		SpecialLeavaRemainTime cloned;
+		try {
+			cloned = new SpecialLeavaRemainTime(this.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("SpecialLeaveUseTimes clone error.");
+		}
+		return cloned;
+	}
 }

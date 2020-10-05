@@ -202,7 +202,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @param require
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param aggregatePeriodWork 処理中の年休集計期間WORK
+	 * @param aggregatePeriodWork 年休集計期間WORK
 	 * @param tempAnnualLeaveMngs 暫定年休管理データリスト
 	 * @param isGetNextMonthData 翌月管理データ取得フラグ
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
@@ -216,8 +216,6 @@ public class AnnualLeaveInfo implements Cloneable {
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
 			List<TmpAnnualLeaveMngWork> tempAnnualLeaveMngs,
-			boolean isGetNextMonthData,
-			boolean isCalcAttendanceRate,
 			AggrResultOfAnnualLeave aggrResult,
 			AnnualPaidLeaveSetting annualPaidLeaveSet){
 		
@@ -244,7 +242,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		
 		// 付与処理
 		aggrResult = this.grantProcess(companyId, employeeId,
-				aggregatePeriodWork, isCalcAttendanceRate, aggrResult);
+				aggregatePeriodWork, aggrResult);
 		
 		
 		// 期間終了日翌日時点の期間かチェック
@@ -262,15 +260,19 @@ public class AnnualLeaveInfo implements Cloneable {
 			return aggrResult;
 		}
 
-		// 期間終了日時点の年休情報を消化後に退避するかチェック
-		if (isGetNextMonthData){
+		// 処理中の「年休集計期間WORK．終了日の期間かどうか」=true
+		if ( aggregatePeriodWork.isDayBeforePeriodEnd()){
 			
 			// 「年休の集計結果．年休情報（期間終了日時点）」　←　処理中の「年休情報」
 			aggrResult.setAsOfPeriodEnd(this.clone());
 		}
 		
-		// 「年休の集計結果．年休情報（期間終了日の翌日開始時点）」　←　処理中の「年休情報」
-		aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
+		// 処理中の「年休集計期間WORK．終了日の翌日の期間かどうか」= true
+		if ( aggregatePeriodWork.isNextDayAfterPeriodEnd()){
+			
+			// 「年休の集計結果．年休情報（期間終了日の翌日開始時点）」　←　処理中の「年休情報」
+			aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
+		}
 		
 		// 「年休の集計結果」を返す
 		return aggrResult;
@@ -359,7 +361,6 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param aggregatePeriodWork 処理中の年休集計期間WORK
-	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 年休の集計結果
 	 * @return 年休の集計結果
 	 */
@@ -367,7 +368,6 @@ public class AnnualLeaveInfo implements Cloneable {
 			String companyId,
 			String employeeId,
 			AggregatePeriodWork aggregatePeriodWork,
-			boolean isCalcAttendanceRate,
 			AggrResultOfAnnualLeave aggrResult){
 		
 		// 「付与フラグ」をチェック

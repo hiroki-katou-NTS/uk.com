@@ -7,12 +7,15 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
@@ -83,13 +86,23 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休積立年休の集計結果
 	 */
-	public static AggrResultOfAnnAndRsvLeave algorithm(RequireM2 require, CacheCarrier cacheCarrier, String companyId, 
-			String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate, 
-			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
+	public static AggrResultOfAnnAndRsvLeave algorithm(
+			RequireM4 require, 
+			CacheCarrier cacheCarrier, 
+			String companyId, 
+			String employeeId, 
+			DatePeriod aggrPeriod, 
+			InterimRemainMngMode mode, 
+			GeneralDate criteriaDate, 
+			boolean isGetNextMonthData,
+			boolean isCalcAttendanceRate, 
+			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
-			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
-			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			Optional<Boolean> isOutputForShortage, 
+			Optional<Boolean> noCheckStartDate,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, 
+			Optional<AggrResultOfReserveLeave> prevReserveLeave,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
@@ -171,14 +184,13 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		// 期間中の年休残数を取得
 		Boolean isNoCheckStartDate = false;
 		if (noCheckStartDate.isPresent()) isNoCheckStartDate = noCheckStartDate.get();
-		AggrResultOfAnnualLeave aggrResultOfAnnual = GetAnnLeaRemNumWithinPeriodProc.algorithm(
+		
+		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt 
+			= GetAnnLeaRemNumWithinPeriodProc.algorithm(
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
-				mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
-				tempAnnDataforOverWriteList, prevAnnualLeave, isNoCheckStartDate,
-				companySets, employeeSets, monthlyCalcDailys);
-
-		Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt
-			= Optional.ofNullable(aggrResultOfAnnual);
+				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
+				tempAnnDataforOverWriteList, prevAnnualLeave,
+				Optional.empty(), Optional.empty());
 		
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 		aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);
@@ -194,7 +206,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 				companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
 				isOutputForShortage, noCheckStartDate, prevReserveLeave);
-		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(require, cacheCarrier,
+		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(
+				require, cacheCarrier,
 				rsvParam, companySets, monthlyCalcDailys);
 		
 		// 「年休積立年休の集計結果．積休」　←　受け取った「積立年休の集計結果」
@@ -277,13 +290,15 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			// 期間中の年休残数を取得
 			Boolean isNoCheckStartDate = false;
 			if (noCheckStartDate.isPresent()) isNoCheckStartDate = noCheckStartDate.get();
+			
 			Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualOpt 
 				= GetAnnLeaRemNumWithinPeriodProc.algorithm(
-					require, cacheCarrier,
+					require, 
+					cacheCarrier,
 					cID, sID, aggrPeriod,
-					mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
-					tempAnnDataforOverWriteList, prevAnnualLeave, isNoCheckStartDate,
-					companySets, employeeSets, monthlyCalcDailys);
+					mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
+					tempAnnDataforOverWriteList, prevAnnualLeave,
+					Optional.empty(), Optional.empty());
 			
 			// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 			aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);

@@ -73,8 +73,10 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 */
 	
 	/** 期間中の積立年休残数を取得する　（月別集計用） */
-	public static Optional<AggrResultOfReserveLeave> algorithm(RequireM4 require, CacheCarrier cacheCarrier,
-			GetRsvLeaRemNumWithinPeriodParam param, Optional<MonAggrCompanySettings> companySets,
+	public static Optional<AggrResultOfReserveLeave> algorithm(
+			RequireM4 require, CacheCarrier cacheCarrier,
+			GetRsvLeaRemNumWithinPeriodParam param, 
+			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
 		String companyId = param.getCompanyId();
