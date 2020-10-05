@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +27,7 @@ public class AgreementOneMonthTest {
     }
 
     @Test
-    public void checkErrorTimeExceededTest() {
+    public void checkErrorTest() {
 
         AgreementOneMonth agreementsOneYear = new AgreementOneMonth(
                 OneMonthTime.of( OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(20), new AgreementOneMonthTime(20))
@@ -39,10 +38,15 @@ public class AgreementOneMonthTest {
         AgreementOneMonthTime agreementOneMonthTime = new AgreementOneMonthTime(20);
         Pair<Boolean, AgreementOneMonthTime> result = agreementsOneYear.checkErrorTimeExceeded(agreementOneMonthTime);
 
-        assertThat(false).isEqualTo(result.getLeft());
-        assertThat(new AgreementOneMonthTime(20).v()).isEqualTo(result.getRight().v());
-    }
+        val expect = Pair.of(false,agreementOneMonthTime);
+        new Expectations(AgreementOneMonth.class){{
+            agreementsOneYear.checkErrorTimeExceeded(agreementOneMonthTime);
+            result = expect;
 
+        }};
+        assertThat(result.getLeft()).isEqualTo(expect.getLeft());
+        assertThat(result.getRight()).isEqualTo(expect.getRight());
+    }
     @Test
     public void calculateAlarmTimeTest() {
         AgreementOneMonth agreementsOneMonth = new AgreementOneMonth();
