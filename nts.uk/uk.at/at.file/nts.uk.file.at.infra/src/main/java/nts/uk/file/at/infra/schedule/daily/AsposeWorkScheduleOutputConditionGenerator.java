@@ -819,7 +819,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// get all addition of attendance item when PrimitiveValueOfAttendanceItem == 68
 		List<String> itemDtos = this.companyDailyItemService.findByAttendanceItems(companyId, itemsId).stream()
-				.filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
 				.map(t -> t.getTimeId().toString())
 				.collect(Collectors.toList());
 		List<CodeName> lstAddtition = this.bpSettingRepository.findByCompanyAndCode(companyId, itemDtos).stream()
@@ -1019,7 +1019,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						outSche.getLstDisplayedAttendance().stream()
 						.map(AttendanceItemsDisplay::getAttendanceDisplay)
 						.collect(Collectors.toList()))
-				.stream().filter(t -> t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
+				.stream().filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
 				.map(t -> t.getTimeId()).collect(Collectors.toList());
 		
 		Map<GeneralDate, WorkplaceDailyReportData> workplaceDailyReportDataMap = reportData.getDailyReportData().getLstDailyReportData().stream().collect(Collectors.toMap(WorkplaceDailyReportData::getDate, Function.identity()));

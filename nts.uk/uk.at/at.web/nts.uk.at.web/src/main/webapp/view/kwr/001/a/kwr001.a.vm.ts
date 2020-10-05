@@ -36,7 +36,7 @@ module nts.uk.at.view.kwr001.a {
                 { code: 0, name: nts.uk.resource.getText("KWR001_149") },
                 { code: 1, name: nts.uk.resource.getText("KWR001_150") }
             ]);
-            selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(0);
+            selectedDataZeroDisplayType: KnockoutObservable<number> = ko.observable(1);
 
             // switch button A11_2
             dataDisplayItemType: KnockoutObservableArray<any> = ko.observableArray([
@@ -266,7 +266,7 @@ module nts.uk.at.view.kwr001.a {
                     new ItemModel('2', nts.uk.resource.getText('KWR001_163'))
                 ]);
                 
-                self.selectedCodeA9_2 = ko.observable(1);
+                self.selectedCodeA9_2 = ko.observable(0);
                 
                 self.selectedCodeA7_3 = ko.observable(''); 
                 self.selectedCodeA7_8 = ko.observable(''); 
