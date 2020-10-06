@@ -200,7 +200,7 @@
 }
 
 .panel.panel-gray-bg {
-	background-color: gray;
+	background-color: #A5A5A5;
 }
 
 .view-kmp .search_label {
@@ -209,5 +209,5 @@
 }
 
 .caret-inline:after {
-	margin-left: -4px;
+	margin-left: -2px;
 }

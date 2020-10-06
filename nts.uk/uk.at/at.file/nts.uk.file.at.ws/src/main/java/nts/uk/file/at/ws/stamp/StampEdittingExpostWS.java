@@ -28,5 +28,4 @@ public class StampEdittingExpostWS extends WebService {
 	public ExportServiceResult generate(StampEdittingExportDatasource input) {
 		return this.stampEdittingExport.start(input);
 	}
-	
 }

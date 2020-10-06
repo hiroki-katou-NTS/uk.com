@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.Cells;
 import com.aspose.cells.Workbook;
@@ -12,8 +13,10 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.file.at.app.export.statement.stamp.StampEdittingExport;
 import nts.uk.file.at.app.export.statement.stamp.StampEdittingExportDatasource;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -26,6 +29,9 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implements StampEdittingExport {
 
+	@Inject
+	private CompanyRepository companyRepository;
+	
 	private static final String TEMPLATE_FILE = "report/KMP001.xlsx";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 
@@ -50,6 +56,8 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 
 	private void printContent(Worksheet worksheet, StampEdittingExportDatasource dataSource) throws Exception {
 		Cells cells = worksheet.getCells();
+		String companyId = AppContexts.user().companyId();
+		String companyName = companyRepository.find(companyId).get().getCompanyName().v();
 
 		switch (dataSource.getStampMethod()) {
 		case 1:
@@ -68,6 +76,8 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			break;
 		}
 
+		cells.get(3, 1).setValue(companyName);
 		cells.get(12, 1).setValue(dataSource.getDigitsNumber());
+		cells.get(5, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a", Locale.JAPAN)));
 	}
 }
