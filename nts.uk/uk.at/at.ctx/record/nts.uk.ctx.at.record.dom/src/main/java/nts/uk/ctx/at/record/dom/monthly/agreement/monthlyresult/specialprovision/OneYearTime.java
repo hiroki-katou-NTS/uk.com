@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
  * 年間時間
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 @Getter
 @Setter
 @AllArgsConstructor
-public class OneYearTime {
+public class OneYearTime extends ValueObject{
 
     /**1年間時間*/
     private OneYearErrorAlarmTime errorTimeInYear;
