@@ -40,7 +40,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			Workbook workbook = reportContext.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
-			Worksheet worksheet = worksheets.get("KMP001");
+			Worksheet worksheet = worksheets.get(0);
 
 			this.printContent(worksheet, input);
 			reportContext.getDesigner().setWorkbook(workbook);

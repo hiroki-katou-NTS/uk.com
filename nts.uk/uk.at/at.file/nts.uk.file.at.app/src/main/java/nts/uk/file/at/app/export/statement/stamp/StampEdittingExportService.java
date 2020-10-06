@@ -6,6 +6,12 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 
+/**
+ * 
+ * @author chungnt
+ *
+ */
+
 @Stateless
 public class StampEdittingExportService extends ExportService<StampEdittingExportDatasource> {
 	
