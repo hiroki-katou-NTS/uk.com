@@ -39,6 +39,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
@@ -161,13 +162,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	/**
 	 * xác định base date
 	 * 
-	 * @param closureData
-	 * @param selectedDateType
-	 * @param printDate
+	 * @param closureData 就業締め日 = 社員範囲選択で選択した締め日
+	 * @param selectedDateType 対象期間 = ユーザ固有情報「年休管理表の出力条件.対象期間」
+	 * @param printDate 指定年月 = ユーザ固有情報「年休管理表の出力条件.指定年月」
+	 * @param period 期間 = ユーザ固有情報「年休管理表の出力条件.期間」
 	 * @return baseDate được xác định
 	 */
 	private GeneralDate dateDetermination(List<ClosurePrintDto> closureData, Integer selectedDateType,
-			Integer printDate) {
+			Integer printDate, DatePeriod period) {
 
 		GeneralDate returnDate = null;
 		PresentClosingPeriodImport closure;
@@ -186,17 +188,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
 			// 過去
 			// 所属情報取得用の基準日 ← INPUT.指定月 +取得した 「現在締め期間.終了年月日」の日
-
+			// １年以上前（過去）(quá khứ)
 			returnDate = GeneralDate.fromString(
 					printDate.toString()
 							+ StringUtils.leftPad(String.valueOf(closure.getClosureEndDate().day()), 2, '0'),
 					"yyyyMMdd");
+		}
+		if(EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
+			// １年経過時点
+			// 所属情報取得用の基準日を返す - Returns the reference date for acquiring affiliation information
+			returnDate = period.end().addYears(-1);
 		}
 		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.CURRENT)) {
 			// 現在
 			// 所属情報取得用の基準日 ← 取得した「現在締め期間.終了年月日」
 			returnDate = closure.getClosureEndDate();
 		}
+		
 		return returnDate;
 	}
 
@@ -213,7 +221,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		Integer selectedDateType = query.getSelectedDateType().value;
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「使用基準日判定処理」を実行する
-		GeneralDate baseDate = dateDetermination(query.getClosureData(), selectedDateType, query.getPrintDate());
+		GeneralDate baseDate = dateDetermination(query.getClosureData(), selectedDateType, query.getPrintDate(), query.getPeriod());
 		List<String> empIds = query.getSelectedEmployees().stream().map(x -> {
 			return x.getEmployeeId();
 		}).collect(Collectors.toList());
@@ -276,7 +284,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			List<AnnualHolidayGrantDetail> HolidayDetails = Collections.emptyList();
 			boolean isSelectCurrent = EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class)
 					.equals(PeriodToOutput.CURRENT);
-			if (isSelectCurrent) {
+			if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
 				// 社員に対応する処理締めを取得する
 				Closure closure = ClosureService.getClosureDataByEmployee(
 						ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
@@ -293,7 +301,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 				}
 			}
-			if (!isSelectCurrent) {
+			if (query.getSelectedDateType() == PeriodToOutput.PAST) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する
 				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
@@ -301,6 +309,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 
 			}
+			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
+				
+			}
+			
 			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
 			employee.setHolidayInfo(holidayInfo);

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.sys.auth.dom.user.User;
 
@@ -35,7 +36,7 @@ public class OutputYearHolidayManagementQuery {
 	// 指定年月
 	private GeneralDate designatedDate;
 	// 期間
-	private GeneralDate period ;
+	private DatePeriod period ;
 	
 	GeneralDateTime exportTime;
 	// old
