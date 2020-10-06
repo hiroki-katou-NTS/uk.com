@@ -52,6 +52,12 @@ public class OneMonthAppUpdateTest {
 		AgreementOneMonthTime oneMonthTime = new AgreementOneMonthTime(0);
 		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
 
+		// R1
+		new Expectations() {{
+			require.getApp(aplId);
+			result = Optional.empty();
+		}};
+
 		NtsAssert.businessException("Msg_1262", () -> OneMonthAppUpdate.update(require, cid, aplId, oneMonthTime, reason));
 	}
 

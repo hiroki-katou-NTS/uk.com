@@ -5,19 +5,21 @@ import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRep
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class JpaCompany36AgreedHoursRepository extends JpaRepository implements Company36AgreedHoursRepository {
     private static String FIND_BY_CID;
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT");
         builderString.append("FROM Ksrmt36AgrMgtCmp a");
-        builderString.append("WHERE a.Ksrmt36AgrMgtCmp.companyID = :cid ");
+        builderString.append("WHERE a.ksrmt36AgrMgtCmpPk.companyID = :cid ");
         FIND_BY_CID = builderString.toString();
     }
     @Override
     public void insert(AgreementTimeOfCompany domain) {
         this.commandProxy().insert(Ksrmt36AgrMgtCmp.toEntity(domain));
-        this.getEntityManager().flush();
     }
 
     @Override

@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -20,31 +21,37 @@ public class CompanyApproverHistoryAddDomainService {
 	 * 会社別の承認者（36協定）の履歴を追加して、直前の履歴の終了日を変更する
 	 */
 	public static AtomTask addApproverHistory(Require require, Approver36AgrByCompany histToAdd){
+
+		// 追加する履歴
 		val histToAddClone = Approver36AgrByCompany.create(
 				histToAdd.getCompanyId(),
 				histToAdd.getPeriod(),
-				histToAdd.getApproverList(),
-				histToAdd.getConfirmerList()
+				new ArrayList<>(histToAdd.getApproverList()),
+				new ArrayList<>(histToAdd.getConfirmerList())
 		);
+
+		// $最新の履歴
+		val optLatestHist = require.getLatestHistory(GeneralDate.max());
+		if (optLatestHist.isPresent()){
+			optLatestHist.get().setPeriod(new DatePeriod(
+					optLatestHist.get().getPeriod().start(),
+					histToAddClone.getPeriod().start().addDays(-1)
+			));
+		}
 
 		return AtomTask.of(() -> {
 			require.addHistory(histToAddClone);
 
-			val optLatestHist = require.getLatestHistory(GeneralDate.max());
 			if (optLatestHist.isPresent()){
-				val latestHist = optLatestHist.get();
-				val newEndDate = histToAddClone.getPeriod().start().addDays(-1);
-				val periodWithNewEndDate = new DatePeriod(latestHist.getPeriod().start(), newEndDate);
-				latestHist.setPeriod(periodWithNewEndDate);
-				require.changeLatestHistory(latestHist,latestHist.getPeriod().start());
+				require.changeLatestHistory(optLatestHist.get(), optLatestHist.get().getPeriod().start());
 			}
 		});
 	}
 
-	public static interface Require {
+	public interface Require {
+
 		/**
 		 * [R-1] 最新の履歴を取得する Get latest history
-		 *
  		 */
 		Optional<Approver36AgrByCompany> getLatestHistory(GeneralDate baseDate);
 
@@ -56,6 +63,6 @@ public class CompanyApproverHistoryAddDomainService {
 		/**
 		 * [R-3] 最新の履歴を変更する Change the latest history
 		 */
-		void changeLatestHistory(Approver36AgrByCompany hist,GeneralDate date);
+		void changeLatestHistory(Approver36AgrByCompany hist, GeneralDate date);
 	}
 }

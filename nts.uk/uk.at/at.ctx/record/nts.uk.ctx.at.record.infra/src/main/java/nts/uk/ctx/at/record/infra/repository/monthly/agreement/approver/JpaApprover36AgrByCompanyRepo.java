@@ -94,7 +94,10 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 
 		val wherePredicate = new ArrayList<Predicate>(){{
 			add(cb.equal(root.get(Krcmt36AgrApvCmp.Meta_.pk).get(Krcmt36AgrApvCmpPK.Meta_.companyId), companyId));
-			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvCmp.Meta_.pk).get(Krcmt36AgrApvCmpPK.Meta_.startDate), date));
+			add(cb.greaterThanOrEqualTo(
+					root.get(Krcmt36AgrApvCmp.Meta_.pk).get(Krcmt36AgrApvCmpPK.Meta_.startDate),
+					date
+			));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 

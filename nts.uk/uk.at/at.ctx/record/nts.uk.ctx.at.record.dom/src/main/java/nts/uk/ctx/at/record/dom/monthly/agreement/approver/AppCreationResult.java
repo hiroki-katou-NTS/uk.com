@@ -14,15 +14,14 @@ import java.util.Optional;
  * @author khai.dh
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class AppCreationResult {
 	//社員ID
-	private String empId;
+	private final String empId;
 
 	// 永続化処理
 	private final Optional<AtomTask> atomTask;
 
 	// List<超過エラー内容>
-	private List<ExcessErrorContent> errorInfo;
+	private final List<ExcessErrorContent> errorInfo;
 }
