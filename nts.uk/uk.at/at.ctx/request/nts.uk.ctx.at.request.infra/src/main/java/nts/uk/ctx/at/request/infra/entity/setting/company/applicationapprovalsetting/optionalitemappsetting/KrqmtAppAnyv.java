@@ -152,6 +152,16 @@ public class KrqmtAppAnyv extends ContractUkJpaEntity {
         anyItemName = domain.getName().v();
         useAtr = BooleanUtils.toInteger(domain.isUseAtr());
         note = domain.getDescription().map(PrimitiveValue::v).orElse(null);
+        anyItemNo1 = null;
+        anyItemNo2 = null;
+        anyItemNo3 = null;
+        anyItemNo4 = null;
+        anyItemNo5 = null;
+        anyItemNo6 = null;
+        anyItemNo7 = null;
+        anyItemNo8 = null;
+        anyItemNo9 = null;
+        anyItemNo10 = null;
         domain.getSettingItems().stream().sorted(Comparator.comparing(ApplicationSettingItem::getDisplayOrder)).forEach(item -> {
             if (item.getDisplayOrder() == 1) {
                 anyItemNo1 = item.getOptionalItemNo().v();

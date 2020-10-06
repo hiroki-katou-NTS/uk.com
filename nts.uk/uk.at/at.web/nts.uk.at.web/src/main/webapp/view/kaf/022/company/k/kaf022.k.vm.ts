@@ -101,9 +101,9 @@ module nts.uk.at.view.kaf022.k.viewmodel {
                 self.simultaneousApplyRequired(data.simultaneousApplyRequired || 0);
                 // self.allowanceForAbsence(data.allowanceForAbsence || 0);
 
-                self.texteditorD9(data.subHolidayComment || "");
-                self.valueD10(data.subHolidayColor);
-                self.enableD11(data.subHolidayBold);
+                self.texteditorD12(data.subHolidayComment || "");
+                self.valueD10_1(data.subHolidayColor);
+                self.enableD11_1(data.subHolidayBold);
 
                 self.texteditorD9(data.subWorkComment || "");
                 self.valueD10(data.subWorkColor);

@@ -4,8 +4,8 @@ module nts.uk.at.view.kaf022.n.viewmodel {
 
     export class ScreenModelN {
         columns = ko.observableArray([
-            {headerText: getText("KAF022_681"), key: 'code', width: 30, columnCssClass: "grid-col-text-right", formatter: _.escape},
-            {headerText: getText("KAF022_629"), key: 'name', width: 200, formatter: _.escape},
+            {headerText: getText("KAF022_681"), key: 'code', width: 50, columnCssClass: "grid-col-text-right", formatter: _.escape},
+            {headerText: getText("KAF022_629"), key: 'name', width: 180, formatter: _.escape},
             {headerText: getText("KAF022_99"), key: 'useAtr', width: 70, formatter: makeIcon}
         ]);
         settings: KnockoutObservableArray<IOptionalItemAppSet>;
@@ -20,7 +20,7 @@ module nts.uk.at.view.kaf022.n.viewmodel {
         initData(allData: any): void {
             const self = this;
             const listData = allData.optionalItemApplicationSettings || [];
-            self.settings(_.sortBy(listData, [function(o) { return parseInt(o.code); }]));
+            self.settings(_.sortBy(listData, ['code']));
         }
 
         openScreenP(): void {
