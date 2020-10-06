@@ -647,8 +647,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             appWorkChangeDispInfo: self.data.appWorkChangeDispInfo
         };
         self.$http.post('at', API.updateAppWorkChange, params)
-            .then((res: any) => {
-                self.$mask('hide');
+            .then((res: any) => { 
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
@@ -662,13 +661,18 @@ export class KafS07AComponent extends KafS00ShrComponent {
                         }
                     });
                     if (recordDate == 0) {
+                        self.$mask('hide');
+
                         return false;
                     }
+                    self.$mask('hide');
 
                     return true;
                 }
             
                 if (_.isNull(opErrorFlag)) {
+                    self.$mask('hide');
+
                     return true;    
                 }
                 switch (opErrorFlag) {
@@ -685,6 +689,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                         break;
                 }
                 if (_.isEmpty(msgID)) { 
+                    self.$mask('hide');
+
                     return true;
                 }
                 self.$modal.error({ messageId: msgID }).then(() => {
@@ -692,7 +698,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                         self.$goto('ccg008a');    
                     }    
                 });
-
+                self.$mask('hide');
+                
                 return false;
                 
             })
@@ -1080,10 +1087,23 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
 
 
-
-
     }
 
+    public kaf000BChangeDate(objectDate) {
+        console.log('emit' + objectDate);
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        console.log('emit' + prePostAtr);
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        console.log('emit' + opAppStandardReasonCD);
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        console.log('emit' + opAppReason);
+    }
 }
 export class Work {
     public code: String = '';

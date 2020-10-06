@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
         setupType: number;
         workTypeLst: any[];
+        isEdit: KnockoutObservable<boolean> = ko.observable(true);
 
         created(
             params: {
@@ -48,11 +49,6 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.approvalReason = params.approvalReason;
             vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
             vm.setupType = null;
-
-            params.printContentOfEachAppDto.opPrintContentOfWorkChange = {
-                appWorkChangeDispInfo: null,
-                appWorkChange: null
-            };
 
             vm.createParamKAF007();
 
@@ -77,7 +73,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     console.log(res);
                     if (res) {
                         vm.fetchData(res);
-                        vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = res;
+                        vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
                     }
                 }).fail(err => {
                     vm.handleError(err);
@@ -98,6 +94,13 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                 predetemineTimeSetting: ko.observable(appWorkChangeDispInfo.predetemineTimeSetting),
                 appWorkChangeSet: appWorkChangeDispInfo.appWorkChangeSet
             });
+
+            vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
+
+            if(params.reflectWorkChangeAppDto) {
+                vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
+                vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
+            }
             vm.getWorkDispName(appWorkChangeDispInfo.workTypeLst,
                 appWorkChangeParam.opWorkTypeCD,
                 appWorkChangeParam.opWorkTimeCD,
@@ -226,18 +229,15 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 })
                 .fail( err => {
-                    let param;
-                    if (err.message && err.messageId) {
-                        param = {messageId: err.messageId, messageParams: err.parameterIds};
-                    } else {
-
-                        if (err.message) {
-                            param = {message: err.message, messageParams: err.parameterIds};
-                        } else {
-                            param = {messageId: err.messageId, messageParams: err.parameterIds};
-                        }
-                    }
-                    vm.$dialog.error(param);
+                    let messageId, messageParams;
+					if(err.errors) {
+						let errors = err.errors;
+						messageId = errors[0].messageId;
+					} else {
+						messageId = err.messageId;
+						messageParams = [err.parameterIds.join('、')];
+					}
+					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
                 })
                 .always(() => vm.$blockui("hide"));
         }
@@ -270,6 +270,16 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             const vm = this;
 
         }
+        // conditionA14() {
+		// 	const vm = this;
+
+		// 	return ko.computed(() => {
+		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
+		// 			return true;
+		// 		};
+		// 		return false;
+		// 	}, vm);
+		// }
     }
 
     const API = {
