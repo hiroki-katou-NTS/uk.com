@@ -6,10 +6,7 @@
 	margin-bottom: 10px;
 }
 
-.btn-borderless {
-	box-shadow: none;
-	border: none;
-	margin: 3px 0;
+.btn-center {
 	display: flex;
 	justify-content: center;
 	align-items: center;
