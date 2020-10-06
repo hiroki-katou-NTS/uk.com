@@ -4,12 +4,8 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -78,7 +74,7 @@ public class AnnualAppCreate {
 		}
 
 		AtomTask atomTask = null;
-		if (errorInfo.isEmpty()){
+		if (errorInfo.isEmpty()) {
 			// set 申請内容.アラーム時間
 			appContent.setAlarmTime(setting.getOneYear().calculateAlarmTime(appContent.getErrTime()));
 
@@ -91,7 +87,9 @@ public class AnnualAppCreate {
 					screenDisplayInfo);
 
 			// $Atomtask
-			atomTask = AtomTask.of(() -> { require.addApp(app); });
+			atomTask = AtomTask.of(() -> {
+				require.addApp(app);
+			});
 		}
 
 		return new AppCreationResult(appContent.getApplicant(), Optional.ofNullable(atomTask), errorInfo);
@@ -122,8 +120,10 @@ public class AnnualAppCreate {
 		val oneYearTime = new OneYearTime(errorAlarmTime, annualAppContent.getYear());
 
 		// $申請時間
-		val appTime = new ApplicationTime(TypeAgreementApplication.ONE_YEAR, Optional.empty(), Optional.of(oneYearTime)
-		);
+		val appTime = new ApplicationTime(
+				TypeAgreementApplication.ONE_YEAR,
+				Optional.empty(),
+				Optional.of(oneYearTime));
 
 		// return 36協定申請作成結果
 		return SpecialProvisionsOfAgreement.create(
