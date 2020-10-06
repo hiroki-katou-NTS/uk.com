@@ -55,6 +55,7 @@ public class OneMonthAppCreateTest {
 
 		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getAtomTask()).isEmpty();
 		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.APPROVER_NOT_SET);
 	}
 
@@ -174,6 +175,7 @@ public class OneMonthAppCreateTest {
 
 		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getAtomTask()).isEmpty();
 		assertThat(actual.getErrorInfo())
 				.extracting(
 						d -> d.getErrorClassification(),
