@@ -59,6 +59,28 @@ module nts.uk.at.view.ktg027.a.viewmodel {
       return (data / 60) * 2 + "px";
     }
 
+    // get text color of 対象時間
+    public genTextColor(state: number) {
+      if (state === 2 || state === 4) {
+        return '#ff0000';
+      } else if (state === 1 || state === 3) {
+        return '#ffffff';
+      }
+      return '';
+    }
+
+    // get background color of 対象時間
+    public genBackgroundColor(state: number) {
+      if (state === 1 || state ===  3) {
+        return '#FD4D4D';
+      } else if (state === 6 || state === 7) {
+        return '#eb9152';
+      } else if (state === 2 || state === 4) {
+        return '#F6F636';
+      }
+      return '';
+    }
+
     // event when select item
     public selectItem(item: any) {
       const vm = this;
