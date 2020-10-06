@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param;
+package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
 import java.util.Optional;
 
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.LimitTimeAndDays;
 
 /**
  * 特別休暇の利用情報
@@ -15,8 +16,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-@GetterSpecialLeaveNumberInfoService
-public class  {
+@Getter
+public class SpecialLeaveNumberInfoService {
 	/**	残数 */
 	private double remainDays;
 	/**	使用数 */

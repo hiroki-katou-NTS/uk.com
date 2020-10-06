@@ -14,10 +14,9 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Setter
 @Getter
-//@AllArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class SpecialLeaveUnDigestion extends DomainObject{
-	
 	/**
 	 * 日数
 	 */
@@ -26,15 +25,4 @@ public class SpecialLeaveUnDigestion extends DomainObject{
 	 * 時間
 	 */
 	private Optional<SpecialLeavaRemainTime> times;
-	
-//	/**
-//	 * コンストラクタ
-//	 * @param days_in
-//	 * @param times_in
-//	 */
-//	public SpecialLeaveUnDigestion(
-//			SpecialLeaveRemainDay days_in, Optional<SpecialLeavaRemainTime> times_in){
-//		days = days_in;
-//		times = times_in;
-//	}
 }

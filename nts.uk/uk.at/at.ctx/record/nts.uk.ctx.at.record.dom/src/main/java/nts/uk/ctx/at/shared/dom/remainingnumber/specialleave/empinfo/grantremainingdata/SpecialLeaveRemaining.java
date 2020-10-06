@@ -1,16 +1,16 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param;
+package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;

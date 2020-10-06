@@ -47,7 +47,8 @@ public class SpecialLeaveUsedNumber extends LeaveUsedNumber{
 				: Optional.empty();
 	}
 
-	public static AnnualLeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
+	public static SpecialLeaveUsedNumber createFromJavaType(
+			double days, Integer minutes, Double stowageDays) {
 		return new AnnualLeaveUsedNumber(days, minutes, stowageDays);
 	}
 

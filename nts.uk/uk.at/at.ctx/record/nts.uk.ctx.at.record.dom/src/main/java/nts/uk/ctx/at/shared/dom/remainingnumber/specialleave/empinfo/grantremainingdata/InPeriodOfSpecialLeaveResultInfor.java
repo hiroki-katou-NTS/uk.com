@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param;
+package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
 import java.util.ArrayList;
 import java.util.List;

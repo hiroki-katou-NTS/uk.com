@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
