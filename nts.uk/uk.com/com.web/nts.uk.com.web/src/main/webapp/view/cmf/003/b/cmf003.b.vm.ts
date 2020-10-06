@@ -653,7 +653,6 @@ module nts.uk.com.view.cmf003.b {
         const self = this;
         block.grayout();
         service.screenDisplayProcess().done(res => {
-          console.log(res);
           _.forEach(res.patterns, x => {
             let p = new Pattern();
             p.code = x.patternCode;
@@ -663,6 +662,8 @@ module nts.uk.com.view.cmf003.b {
             self.patternList.push(p);
           });
           self.systemTypes(res.systemTypes);
+          self.selectedPatternId(self.patternList()[0].displayCode);
+          self.selectPattern(self.patternList()[0].displayCode);
         }).fail((err) => {
           alertError({ messageId: 'Msg_1736' });
         }).always(() => {
@@ -764,7 +765,7 @@ module nts.uk.com.view.cmf003.b {
           moment.utc(self.referenceDate(), 'YYYY/MM/DD').toISOString(), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD').toISOString(),
           moment.utc(self.dayValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD').toISOString(),
           moment.utc(self.monthValue().startDate, 'YYYY/MM/DD').toISOString(), self.explanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate),
-          self.selectedTitleAtr(), self.targetEmployee(), self.categorys(), self.selectedPatternId().slice(1));
+          self.selectedTitleAtr(), self.employeeList(), self.categorys(), self.selectedPatternId().slice(1));
 
         service.addMalSet(manualSetting).done((res) => {
           if ((res != null) && (res != "")) {
@@ -787,10 +788,10 @@ module nts.uk.com.view.cmf003.b {
         });
       }
 
-      private selectPattern(id: string) {
+      private selectPattern(displayCode: string) {
         const self = this;
         block.grayout();  
-        const pattern = _.find(self.patternList(), { 'displayCode': id });
+        const pattern = _.find(self.patternList(), { 'displayCode': displayCode });
         let param = {
           patternClassification: pattern.patternClassification,
           patternCode: pattern.code,

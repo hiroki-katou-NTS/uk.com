@@ -228,7 +228,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       });
 
       self.checkboxChk.subscribe(value => {
-        console.log(value);
         if (value) {
           self.pwdConstraint('FileCompressionPassword');
           self.pwdConstraint.valueHasMutated();
@@ -271,13 +270,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
           });
         } else {
           let passwordInfo = getShared("CMF004_D_PARAMS");
-          console.log(passwordInfo);
           if (passwordInfo.continuteProcessing) {
             self.initScreenE();
             $('#data-recovery-wizard').ntsWizard("next");
             $('#E4_1').focus();
           } else {
-            console.log(passwordInfo.message);
             if (passwordInfo.message) {
               dialog.alertError({ messageId: passwordInfo.message });
             }
@@ -410,7 +407,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             let saveSetName = x.saveSetName;
             listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod,
               startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld, systemType, saveSetName));
-            console.log(x);
           });
           self.dataContentConfirm().dataContentcategoryList(listCategory);
           self.recoverySourceFile(data[0].compressedFileName + '.zip');
@@ -602,7 +598,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             $('#E4_1').focus();
           } else {
             const arr: string[] = res.message.split("/");
-            console.log(arr);
             if (arr.length > 1) {
               setShared("CMF004lParams", {
                 fileId: arr[0],
@@ -711,7 +706,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     restoreData_click(): void {
       let self = this;
-      console.log(self.recoveryProcessingId);
       setShared("CMF004IParams", {
         saveForm: self.saveForm(),
         employeeList: ko.toJS(self.employeeListScreenH),
@@ -789,7 +783,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         dateValue.monthRange(self.dateValue().monthRange);
         dateValue.yearRange(self.dateValue().yearRange);
       }
-      console.log(self.dataRecoverySummary().recoveryCategoryList());
       return new ManualSettingModal(Number(self.isCheckboxActive()),
         self.dataContentConfirm().dataContentcategoryList().map(data => data.saveSetName()).pop(), moment.utc().toISOString(), self.pwdCompressEdt.value(),
         moment.utc().toISOString(), moment.utc(dateValue.dateRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.dateRange().startDate, "YYYY/MM/DD").toISOString(),
@@ -799,8 +792,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     }
 
     backToPreviousScreen(): void {
+      const self = this;
       $('#data-recovery-wizard').ntsWizard("prev");
       nts.uk.ui.errors.clearAll();
+      if ($("#data-recovery-wizard").ntsWizard("getCurrentStep") === 0) {
+        self.recoveryProcessingId = nts.uk.util.randomId();
+      }
     }
 
     start(): JQueryPromise<any> {

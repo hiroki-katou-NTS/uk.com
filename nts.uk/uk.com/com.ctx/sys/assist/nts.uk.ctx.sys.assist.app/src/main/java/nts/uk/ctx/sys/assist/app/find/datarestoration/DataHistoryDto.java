@@ -61,17 +61,22 @@ public class DataHistoryDto {
 	 */
 	private String executionResult;
 	
-	public static DataHistoryDto fromDomains(ResultOfSaving domain1, PerformDataRecovery domain2, DataRecoveryResult domain3) {
-		return new DataHistoryDto(
-				domain3.getDataRecoveryProcessId(), 
-				domain3.getDataStorageProcessId(), 
-				domain3.getStartDateTime(), 
-				domain3.getPractitioner(), 
-				domain3.getSaveName().v(), 
-				domain2.getNumPeopleBeRestore(), 
-				domain2.getRecoveryFileName(), 
-				domain2.getNumPeopleSave(), 
-				domain1.getSaveStartDatetime().orElse(null), 
-				domain3.getExecutionResult().nameId);
+	public static DataHistoryDto fromDomains(ResultOfSaving resultOfSaving, 
+											 PerformDataRecovery performDataRecovery, 
+											 DataRecoveryResult dataRecoveryResult) {
+		if (resultOfSaving != null && dataRecoveryResult != null) {
+			return new DataHistoryDto(
+					dataRecoveryResult.getDataRecoveryProcessId(), 
+					dataRecoveryResult.getDataStorageProcessId(), 
+					dataRecoveryResult.getStartDateTime(), 
+					dataRecoveryResult.getPractitioner(), 
+					dataRecoveryResult.getSaveName().v(), 
+					performDataRecovery.getNumPeopleBeRestore(), 
+					performDataRecovery.getRecoveryFileName(), 
+					performDataRecovery.getNumPeopleSave(), 
+					resultOfSaving.getSaveStartDatetime().orElse(null), 
+					dataRecoveryResult.getExecutionResult().nameId);
+		}
+		return null;
 	}
 }

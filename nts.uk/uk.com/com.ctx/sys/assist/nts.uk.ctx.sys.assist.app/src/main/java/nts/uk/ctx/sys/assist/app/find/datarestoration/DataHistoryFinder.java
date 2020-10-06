@@ -93,12 +93,13 @@ public class DataHistoryFinder {
 										rosList.stream()
 												.filter(ros -> ros.getStoreProcessingId()
 														.equals(pdr.getSaveProcessId().get()))
-												.findFirst().get(),
+												.findFirst().orElse(null),
 										pdr,
 										drrList.stream()
 												.filter(drr -> drr.getDataRecoveryProcessId()
 														.equals(pdr.getDataRecoveryProcessId()))
-												.findFirst().get()))
+												.findFirst().orElse(null)))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 }
