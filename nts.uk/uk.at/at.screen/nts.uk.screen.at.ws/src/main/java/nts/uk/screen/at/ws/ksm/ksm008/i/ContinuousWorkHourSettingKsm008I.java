@@ -1,7 +1,5 @@
 package nts.uk.screen.at.ws.ksm.ksm008.i;
 
-import nts.uk.screen.at.app.ksm008.ConsecutiveWorkCmp.ConsecutiveWorkCmpDto;
-import nts.uk.screen.at.app.ksm008.ConsecutiveWorkCmp.StartupInfoCmpScreenQuery;
 import nts.uk.screen.at.app.ksm008.command.i.KsmIDeleteContinuousWorkingHoursCommand;
 import nts.uk.screen.at.app.ksm008.command.i.KsmIDeleteContinuousWorkingHoursCommandHandler;
 import nts.uk.screen.at.app.ksm008.query.i.WorkingHourListDto;
@@ -17,18 +15,15 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 public class ContinuousWorkHourSettingKsm008I {
     @Inject
-    private StartupInfoCmpScreenQuery startupInfoCmpScreenQuery;
-
-    @Inject
     private WorkingHourListScreenQuery workingHourListScreenQuery;
 
     private KsmIDeleteContinuousWorkingHoursCommandHandler KsmIDeleteContinuousWorkingHoursCommandHandler;
 
-    @POST
+   /*  @POST
     @Path("getStartupInfoCmp")
     public ConsecutiveWorkCmpDto getStartupInfoCmp() {
         return this.startupInfoCmpScreenQuery.get();
-    }
+    }*/
 
     @POST
     @Path("getWorkingHourList")
