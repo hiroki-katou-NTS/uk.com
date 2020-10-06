@@ -349,11 +349,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.appGoBackDirect.straightDistinction = self.model.straight == 2 ? 0 : 1;
         self.appGoBackDirect.straightLine = self.model.bounce == 2 ? 0 : 1;
         self.appGoBackDirect.isChangedWork = self.model.changeWork == 2 ? 0 : 1;
-        if (self.model.changeWork == 1) {
-            self.appGoBackDirect.dataWork = {
-                workType: self.model.workType.code,
-                workTime: self.model.workTime.code
-            };
+        if (self.C1) {
+            if (self.model.changeWork == 1) {
+                self.appGoBackDirect.dataWork = {
+                    workType: self.model.workType.code,
+                    workTime: self.model.workTime.code
+                };
+            }
         }
         if (!self.mode) {
             self.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;

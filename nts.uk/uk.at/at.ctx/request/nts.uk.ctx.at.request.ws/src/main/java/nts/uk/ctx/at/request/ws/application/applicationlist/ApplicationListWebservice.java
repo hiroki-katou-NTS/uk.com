@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.applicationlist;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -183,9 +184,9 @@ public class ApplicationListWebservice extends WebService{
 	
 	@POST
 	@Path("approverAfterConfirm")
-	public AppListApproveResult approverAfterConfirm(AppListApproveCommand command) {
-		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
-		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
-		return appListApproveCommandHandler.approverAfterConfirm(listOfApplicationCmds, listOfAppTypes);
+	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds) {
+//		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
+//		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		return appListApproveCommandHandler.approverAfterConfirm(listOfApplicationCmds, Collections.emptyList());
 	}
 }

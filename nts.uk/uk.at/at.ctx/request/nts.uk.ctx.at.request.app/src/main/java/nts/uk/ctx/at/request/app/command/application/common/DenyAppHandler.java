@@ -50,32 +50,32 @@ public class DenyAppHandler extends CommandHandlerWithResult<AppDetailBehaviorCm
 		if(!processResult.isProcessDone()) {
 			return processResult;
 		}
-		// IF文を参照
-		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
-				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
-		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
-		if(condition) {
-			processResult.setAutoSendMail(true);
-			// メニューの表示名を取得する
-			List<ListOfAppTypes> listOfAppTypes =  cmd.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
-			String appName = listOfAppTypes.stream().filter(x -> {
-				boolean conditionFilter = x.getAppType().value==application.getAppType().value;
-				if(application.getAppType()==ApplicationType.STAMP_APPLICATION) {
-					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ADDITIONAL) {
-						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL;
-					}
-					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
-						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
-					}
-				}
-				return condition;
-			}).findAny().map(x -> x.getAppName()).orElse("");
-			// 申請者本人にメール送信する(gửi mail cho người viết đơn)
-			MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application, appName); 
-			processResult.setAutoSuccessMail(mailResult.getSuccessList());
-			processResult.setAutoFailMail(mailResult.getFailList());
-			processResult.setAutoFailServer(mailResult.getFailServerList());
-		}
+//		// IF文を参照
+//		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+//				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
+//		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
+//		if(condition) {
+//			processResult.setAutoSendMail(true);
+//			// メニューの表示名を取得する
+//			List<ListOfAppTypes> listOfAppTypes =  cmd.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
+//			String appName = listOfAppTypes.stream().filter(x -> {
+//				boolean conditionFilter = x.getAppType().value==application.getAppType().value;
+//				if(application.getAppType()==ApplicationType.STAMP_APPLICATION) {
+//					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ADDITIONAL) {
+//						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL;
+//					}
+//					if(application.getOpStampRequestMode().get()==StampRequestMode.STAMP_ONLINE_RECORD) {
+//						conditionFilter = conditionFilter && x.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ONLINE_RECORD;
+//					}
+//				}
+//				return condition;
+//			}).findAny().map(x -> x.getAppName()).orElse("");
+//			// 申請者本人にメール送信する(gửi mail cho người viết đơn)
+//			MailResult mailResult = otherCommonAlgorithm.sendMailApplicantDeny(application, appName); 
+//			processResult.setAutoSuccessMail(mailResult.getSuccessList());
+//			processResult.setAutoFailMail(mailResult.getFailList());
+//			processResult.setAutoFailServer(mailResult.getFailServerList());
+//		}
 		return processResult;
 	}
 

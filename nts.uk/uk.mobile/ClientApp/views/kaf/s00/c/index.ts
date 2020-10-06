@@ -13,7 +13,10 @@ import { component, Prop, Watch } from '@app/core/component';
                     constraint: 'AppReason'
                 }         
             }
-        }
+        },
+        opAppReason: {
+            constraint: 'AppReason'
+        } 
     },
     constraints: [
         'nts.uk.ctx.at.request.dom.application.AppReason'  
@@ -45,7 +48,8 @@ export class KafS00CComponent extends Vue {
         }
     };
     public dropdownList: Array<any> = [];
-    public currentAppReasonCD: any = 0;
+    public opAppStandardReasonCD: any = '';
+    public opAppReason: string = '';
 
     public created() {
         const self = this;
@@ -67,40 +71,54 @@ export class KafS00CComponent extends Vue {
 
         // self.dropdownList = _.concat(dropdownList, self.$input.reasonTypeItemLst);
         if (self.$input.opAppStandardReasonCD) {
-            self.$output.opAppStandardReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => {
+            // self.$output.opAppStandardReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => {
+            //                                         return o.appStandardReasonCD == self.$input.opAppStandardReasonCD;
+            //                                     }).appStandardReasonCD;
+            self.opAppStandardReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => {
                                                     return o.appStandardReasonCD == self.$input.opAppStandardReasonCD;
                                                 }).appStandardReasonCD;
         } else {
             let defaultReasonCD = _.find(self.dropdownList, (o: ReasonTypeItemDto) => o.defaultValue);
             if (defaultReasonCD) {
-                self.$output.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;  
+                // self.$output.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;
+                self.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;  
             } else {
-                self.$output.opAppStandardReasonCD = _.head(self.dropdownList).appStandardReasonCD;
+                // self.$output.opAppStandardReasonCD = _.head(self.dropdownList).appStandardReasonCD;
+                self.opAppStandardReasonCD = _.head(self.dropdownList).appStandardReasonCD;
             }
         }
         if (self.$input.opAppReason) {
-            self.$output.opAppReason = self.$input.opAppReason;
+            // self.$output.opAppReason = self.$input.opAppReason;
+            self.opAppReason = self.$input.opAppReason;
         }
 
         if (self.displayFixedReason) {
             if (self.$input.appLimitSetting.standardReasonRequired) {
-                self.$updateValidator('params.output.opAppStandardReasonCD', { required: true });    
+                // self.$updateValidator('params.output.opAppStandardReasonCD', { required: true });
+                self.$updateValidator('opAppStandardReasonCD', { required: true });    
             } else {
-                self.$updateValidator('params.output.opAppStandardReasonCD', { required: false });
+                // self.$updateValidator('params.output.opAppStandardReasonCD', { required: false });
+                self.$updateValidator('opAppStandardReasonCD', { required: false });
             }
-            self.$updateValidator('params.output.opAppStandardReasonCD', { validate: true });
+            // self.$updateValidator('params.output.opAppStandardReasonCD', { validate: true });
+            self.$updateValidator('opAppStandardReasonCD', { validate: true });
         } else {
-            self.$updateValidator('params.output.opAppStandardReasonCD', { validate: false });
+            // self.$updateValidator('params.output.opAppStandardReasonCD', { validate: false });
+            self.$updateValidator('opAppStandardReasonCD', { validate: false });
         }
         if (self.displayAppReason) {
             if (self.$input.appLimitSetting.requiredAppReason) {
-                self.$updateValidator('params.output.opAppReason', { required: true });
+                // self.$updateValidator('params.output.opAppReason', { required: true });
+                self.$updateValidator('opAppReason', { required: true });
             } else {
-                self.$updateValidator('params.output.opAppReason', { required: false });
+                // self.$updateValidator('params.output.opAppReason', { required: false });
+                self.$updateValidator('opAppReason', { required: false });
             }
-            self.$updateValidator('params.output.opAppReason', { validate: true });
+            // self.$updateValidator('params.output.opAppReason', { validate: true });
+            self.$updateValidator('opAppReason', { validate: true });
         } else {
-            self.$updateValidator('params.output.opAppReason', { validate: false });
+            // self.$updateValidator('params.output.opAppReason', { validate: false });
+            self.$updateValidator('opAppReason', { validate: false });
         }
     }
 
@@ -132,6 +150,20 @@ export class KafS00CComponent extends Vue {
         const self = this;
 
         return self.displayFixedReason || self.displayAppReason;
+    }
+
+    @Watch('opAppStandardReasonCD')
+    public opAppStandardReasonCDWatcher(value) {
+        const self = this;
+        self.$output.opAppStandardReasonCD = value;
+        self.$emit('kaf000CChangeReasonCD', value);
+    }
+
+    @Watch('opAppReason')
+    public opAppReasonWatcher(value) {
+        const self = this;
+        self.$output.opAppReason = value;
+        self.$emit('kaf000CChangeAppReason', value);
     }
 
 }
