@@ -3,8 +3,9 @@
 module nts.uk.at.view.kmp001.e {
 	const template = `
 		<div data-bind="component: { 
-					name: 'ccg001', 
-					params: { employees: employees, baseDate: baseDate, employeeIds: employeeIds}}">
+				name: 'ccg001', 
+				params: { employees: employees, baseDate: baseDate }
+			}">
 		</div>
 		<div id="functions-area">
 			<a class="goback" data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' }"></a>
@@ -51,7 +52,6 @@ module nts.uk.at.view.kmp001.e {
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
-		public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
 		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
 
@@ -68,28 +68,33 @@ module nts.uk.at.view.kmp001.e {
 
 		created(params: Params) {
 			const vm = this;
+			const { NO_SELECT, SELECT_FIRST_ITEM } = SelectType;
+
+			vm.employees
+				.subscribe((emps) => {
+					$('#list-employee')
+						.ntsListComponent({
+							isShowAlreadySet: false, //設定済表示
+							isMultiSelect: true,
+							listType: 4,
+							employeeInputList: vm.employees,
+							selectType: emps.length ? SELECT_FIRST_ITEM : NO_SELECT,
+							selectedCode: vm.selectedCode,
+							isShowNoSelectRow: false, //未選択表示
+							isShowWorkPlaceName: true,  //職場表示
+							isShowSelectAllButton: false,  //全選択表示
+							isSelectAllAfterReload: true,
+							disableSelection: false,
+							maxRows: 15,
+							maxWidth: 400
+						} as any);
+				});
 		}
 
 		mounted() {
 			const vm = this;
 
-			$('#list-employee').ntsListComponent(
-				{
-					isShowAlreadySet: false, //設定済表示
-					isMultiSelect: true,
-					listType: 4,
-					employeeInputList: vm.employees,
-					selectType: 4,
-					selectedCode: vm.selectedCode,
-					isShowNoSelectRow: false, //未選択表示
-					isShowWorkPlaceName: true,  //職場表示
-					isShowSelectAllButton: false,  //全選択表示
-					isSelectAllAfterReload: true,
-					disableSelection: false,
-					maxRows: 15,
-					maxWidth: 400
-				} as any
-			);
+			vm.employees.valueHasMutated();
 		}
 
 		addStampCard() {
@@ -117,6 +122,13 @@ interface IGenerateCard {
 	employeeCd: string;
 	cardNumber: string;
 	duplicateCard: string;
+}
+
+enum SelectType {
+	SELECT_BY_SELECTED_CODE = 1,
+	SELECT_ALL = 2,
+	SELECT_FIRST_ITEM = 3,
+	NO_SELECT = 4
 }
 
 class GenerateCard {

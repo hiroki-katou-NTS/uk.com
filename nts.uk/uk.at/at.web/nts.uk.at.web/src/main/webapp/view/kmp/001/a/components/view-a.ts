@@ -5,7 +5,7 @@ module nts.uk.at.view.kmp001.a {
 	const template = `
 		<div data-bind="component: { 
 					name: 'ccg001', 
-					params: { employees: employees, baseDate: baseDate, employeeIds: employeeIds}}">
+					params: { employees: employees, baseDate: baseDate }}">
 		</div>
 		<div id="functions-area">
 			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' },text: $i18n('KMP001_100')"></a>
@@ -43,7 +43,6 @@ module nts.uk.at.view.kmp001.a {
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public model: share.Model = new share.Model();
 		public settings: KnockoutObservableArray<ISetting> = ko.observableArray([]);
-		public employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public currentCodes: KnockoutObservableArray<string> = ko.observableArray([]);
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
@@ -81,7 +80,7 @@ module nts.uk.at.view.kmp001.a {
 								})
 							});
 					}
-					$(document).ready(function() {
+					$(document).ready(function () {
 						$('.ip-stamp-card').focus();
 					});
 				});
@@ -98,7 +97,7 @@ module nts.uk.at.view.kmp001.a {
 							break;
 						}
 					}
-					
+
 					if (checkModeDelete) {
 						vm.mode('update');
 					} else {
@@ -110,11 +109,10 @@ module nts.uk.at.view.kmp001.a {
 				.subscribe(() => {
 					vm.reloadData(0);
 					vm.model.code.valueHasMutated();
-					$(document).ready(function() {
+					$(document).ready(function () {
 						$('.ip-stamp-card').focus();
 					});
-				})
-
+				});
 		}
 
 		mounted() {
@@ -137,7 +135,7 @@ module nts.uk.at.view.kmp001.a {
 					isShowSelectAllButton: false,  //全選択表示
 					isSelectAllAfterReload: true,
 					disableSelection: false,
-					maxRows: 20,
+					maxRows: 21,
 					maxWidth: 450
 				} as any
 			);
@@ -174,7 +172,7 @@ module nts.uk.at.view.kmp001.a {
 					})
 
 			}
-			$(document).ready(function() {
+			$(document).ready(function () {
 				$('.ip-stamp-card').focus();
 			});
 		}
@@ -237,22 +235,24 @@ module nts.uk.at.view.kmp001.a {
 									.then(() => vm.reloadData(index))
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {
-										nts.uk.ui.dialog.error({ messageId: err.messageId });
+										vm.$dialog.error({ messageId: err.messageId });
 									})
 									.always(() => vm.$blockui("clear"));
 							}
 						});
 				}
 			}
-			$(document).ready(function() {
+			$(document).ready(function () {
 				$('.ip-stamp-card').focus();
 			});
 		}
 
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
+			const empids = ko.unwrap(vm.employees).map(m => m.employeeId);
+
 			vm.$blockui("invisible")
-			vm.$ajax(KMP001A_API.GET_STATUS_SETTING, ko.toJS(vm.employeeIds))
+				.then(() => vm.$ajax(KMP001A_API.GET_STATUS_SETTING, empids))
 				.then((data: IEmployeeId[]) => {
 					vm.settings([]);
 					const employees: IModel[] = ko.toJS(vm.employees);

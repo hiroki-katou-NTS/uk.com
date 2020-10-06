@@ -11,7 +11,6 @@ module nts.uk.at.view.kmp001 {
 	interface Params {
 		employees: KnockoutObservableArray<IModel>;
 		baseDate: KnockoutObservable<string>;
-		employeeIds: KnockoutObservableArray<string>;
 	}
 
 	@component({
@@ -76,12 +75,8 @@ module nts.uk.at.view.kmp001 {
 
 						vm.params.employees([]);
 
-						for (var i = 0; i < data.listEmployee.length; i++) {
-							vm.params.employeeIds.push(data.listEmployee[i].employeeId);
-						}
-
 						const employees = data.listEmployee
-							.map(m => ({
+							.map((m: any) => ({
 								affiliationId: m.affiliationId,
 								affiliationName: m.affiliationName,
 								code: m.employeeCode,
