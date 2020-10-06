@@ -76,8 +76,8 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			break;
 		}
 
-		cells.get(3, 1).setValue(companyName);
+		cells.get(2, 1).setValue(companyName);
 		cells.get(12, 1).setValue(dataSource.getDigitsNumber());
-		cells.get(5, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a", Locale.JAPAN)));
+		cells.get(3, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a", Locale.JAPAN)));
 	}
 }

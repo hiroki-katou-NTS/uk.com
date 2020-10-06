@@ -79,7 +79,7 @@ module nts.uk.at.view.kmp001.e {
 					isMultiSelect: true,
 					listType: 4,
 					employeeInputList: vm.employees,
-					selectType: 3,
+					selectType: 4,
 					selectedCode: vm.selectedCode,
 					isShowNoSelectRow: false, //未選択表示
 					isShowWorkPlaceName: true,  //職場表示
