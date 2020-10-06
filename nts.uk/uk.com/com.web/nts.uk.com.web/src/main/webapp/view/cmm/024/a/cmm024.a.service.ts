@@ -119,6 +119,14 @@ module nts.uk.com.view.cmm024.a {
 			workplaceName: string;
 		}
 
+		export interface PeriodHistory {
+			companyId: string;
+			workPlaceId: string;
+			startDate: string;
+			endDate: string;
+			approvedList: Array<string>;
+			confirmedList: Array<string>;
+		}
 		/*
 		* Functions on Screen A
 		* */
