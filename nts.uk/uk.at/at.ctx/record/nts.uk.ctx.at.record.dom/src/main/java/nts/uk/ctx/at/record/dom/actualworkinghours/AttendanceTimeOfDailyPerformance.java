@@ -11,34 +11,34 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
@@ -147,7 +147,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		
 		//連続勤務の時は予定は計算を行い、実績は計算不要なため
 		//2019.3.11時点
-		if(recordReGetClass.getWorkType().isPresent() && recordReGetClass.getWorkType().get().getDailyWork().isContinueWork()) {
+		if(scheduleReGetClass.getIntegrationOfWorkTime().isPresent() && !recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			calcResult = Optional.of(calcTimeResultForContinusWork(recordReGetClass, 
 																   workType, 
 																   vacation, 
@@ -407,7 +407,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, DeductLeaveEarly scheleaveLateSet, 
 			Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode){
 		
-		val workScheduleTime = calcWorkSheduleTime(recordReGetClass.getCalculationRangeOfOneDay(), workType, 
+		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 												   vacation, 
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												   eachCompanyTimeSet, scheduleReGetClass,conditionItem,
@@ -447,7 +447,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,DeductLeaveEarly leaveLateSet,DeductLeaveEarly scheleaveLateSet, Optional<PredetermineTimeSetForCalc> schePred, Optional<WorkTimeCode> recordWorkTimeCode) {
 		
 		/*日別実績の勤務予定時間の計算*/
-		val workScheduleTime = calcWorkSheduleTime(recordReGetClass.getCalculationRangeOfOneDay(), workType, 
+		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 													vacation, 
 												   flexCalcMethod, bonusPayAutoCalcSet, 
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
@@ -560,7 +560,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @param statutoryFrameNoList 
 	 * @return
 	 */
-	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(CalculationRangeOfOneDay recordOneDay, 
+	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(ManageReGetClass recordReGetClass,
 															   WorkType workType, 
 															   VacationClass vacationClass, 
 															   Optional<SettingOfFlexWork> flexCalcMethod,
@@ -576,13 +576,13 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		AttendanceTime scheExcessTotalTime = new AttendanceTime(0);
 		AttendanceTime scheWithinTotalTime = new AttendanceTime(0);
 		//実績所定労働時間の計算
-		val actualPredWorkTime = ( recordOneDay == null
+		val actualPredWorkTime = ( recordReGetClass.getCalculationRangeOfOneDay() == null
 									|| !recordWorkTimeCode.isPresent()
 									|| workType.getDailyWork().isHolidayWork()
-									|| recordOneDay.getPredetermineTimeSetForCalc() == null)
+									|| recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc() == null)
 									?new AttendanceTime(0)
 //									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
-									:recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
+									:recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
 		//予定勤務種類が設定されてなかったら、実績の所定労働のみ埋めて返す
 		if(!scheRegetManage.getWorkType().isPresent()) return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime),new AttendanceTime(0),actualPredWorkTime);
 		
@@ -590,7 +590,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.createAllZEROInstance();
 		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
 		AttendanceTime shedulePreWorkTime = new AttendanceTime(0);
-		if(scheRegetManage.getCalculatable()) {
+		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
 																   vacationClass, 
 																   scheRegetManage.getWorkType().get(), 

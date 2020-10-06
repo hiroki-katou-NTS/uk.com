@@ -1023,7 +1023,6 @@ module nts.uk.ui.exTable {
                                         $.data(cell, "hide", cell.innerText);
                                         cell.innerText = "";
                                     }
-                                    return false;
                                 }
                             }
                         });
@@ -3644,7 +3643,9 @@ module nts.uk.ui.exTable {
          */
         export function on($grid: HTMLElement, updateMode: any) {
             if (updateMode === COPY_PASTE) {
-                new Printer().hook($grid);
+                let printer = new Printer();
+                $.data($grid, internal.PRINTER_INST, printer);
+                printer.hook($grid);
             }
         }
         
@@ -3965,7 +3966,11 @@ module nts.uk.ui.exTable {
                 || minute > MINUTE_MAX) return false;
             let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
             if (!targetTime) return false;
-            if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0) return false;
+            let compareMax = compare(targetTime, maxTime);
+            let compareMin = compare(targetTime, minTime);
+            if (compareMax > 0 || compareMin < 0) return false;
+            if ((targetTime.negative && maxTime.negative && compareMax === 0)
+                || (targetTime.negative && minTime.negative && compareMin === 0)) return false;
             return true; 
         }
         
@@ -5274,13 +5279,15 @@ module nts.uk.ui.exTable {
             }
             
             let div = agencies[index];
-            div.style.left = left + "px";
-            div.style.height = height + "px";
-            
-            if (vertSumHidden) {
-                helper.addClass(div, STAY_CLS);
-            } else {
-                helper.removeClass(div, STAY_CLS);
+            if (!_.isNil(div)) {
+                div.style.left = left + "px";
+                div.style.height = height + "px";
+                
+                if (vertSumHidden) {
+                    helper.addClass(div, STAY_CLS);
+                } else {
+                    helper.removeClass(div, STAY_CLS);
+                }
             }
         }
         
@@ -5319,7 +5326,11 @@ module nts.uk.ui.exTable {
         export function setHeight($container: HTMLElement, height: any) {
             selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function(e) {
                 if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)) return;
-                e.style.height = height + "px";
+                if (e.classList.contains(BODY_PRF + LEFTMOST)) {
+                    e.style.height = `${height - helper.getScrollWidth()}px`;
+                } else {
+                    e.style.height = height + "px";
+                }
             });
             
             let cHeight = 0, showCount = 0;
@@ -5913,15 +5924,24 @@ module nts.uk.ui.exTable {
                 if (!exTable) return;
                 let ui: any = evt.detail;
                 if ((util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                    let $grid = helper.getMainTable($exTable);
+                    let gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                    let view = (gen.options || {}).view;
+                    if (!_.isFunction(view)) return;
+                    let fields = view(exTable.viewMode);
                     if (ui.value.constructor === Array) {
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                        for (let i = 0; i < fields.length; i++) {
+                            pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[i], i));
+                        }
                     } else {
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                        for (let i = 0; i < fields.length; i++) {
+                            pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, i));
+                        }
                     }
+                    
                     return;
                 }
+                
                 pushChange(exTable, ui.rowIndex, ui); 
             });
             
@@ -6436,7 +6456,7 @@ module nts.uk.ui.exTable {
             let self = this;
             switch(name) {
                 case "setHeight":
-                    resize.setHeight(self, params[0]); 
+                    resize.setHeight(self[0], params[0]); 
                     break;
                 case "gridHeightMode":
                     changeGridHeightMode(self, params[0]);
@@ -6492,6 +6512,12 @@ module nts.uk.ui.exTable {
                     break;
                 case "stickRedo":
                     redoStick(self);
+                    break;
+                case "copyUndo":
+                    undoCopy(self);
+                    break;
+                case "copyRedo":
+                    redoCopy(self);
                     break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
@@ -7164,6 +7190,30 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Undo copy.
+         */
+        function undoCopy($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== COPY_PASTE) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let printer = $grid.data(internal.PRINTER_INST);
+            if (!printer) return;
+            printer.undo();
+        }
+        
+        /**
+         * Redo copy.
+         */
+        function redoCopy($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== COPY_PASTE) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let printer = $grid.data(internal.PRINTER_INST);
+            if (!printer) return;
+            printer.redo();
+        }
+        
+        /**
          * Clear histories.
          */
         function clearHistories($container: JQuery, type: string) {
@@ -7556,6 +7606,7 @@ module nts.uk.ui.exTable {
         export let INPUT_SELECTING: string = "input-selecting";
         export let ERR_MSG: string = "error-msg";
         export let ERR_POPUP: string = "error-popup";
+        export let PRINTER_INST: string = "printer-inst";
         
         /**
          * Get gem.
@@ -7590,7 +7641,10 @@ module nts.uk.ui.exTable {
                     return false;
                 }
             });
-            exTable.modifications[cell.rowIndex].splice(index, 1);
+            
+            if (index !== -1) {
+                exTable.modifications[cell.rowIndex].splice(index, 1);
+            }
         }
         
         /**

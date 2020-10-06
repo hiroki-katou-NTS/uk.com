@@ -1,5 +1,5 @@
 import { $, obj, auth } from '@app/utils';
-import { Vue, VueConstructor } from '@app/provider';
+import { moment, Vue, VueConstructor } from '@app/provider';
 
 import { $dialog } from '@app/plugins/dialog';
 
@@ -34,11 +34,11 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
-                    let env: { API_URL?: string } = process.env,
+                    let env: { API_URL?: string } = { API_URL: 'http://localhost:8080/' },
                         hostName: string = window.location.origin;
 
                     $.extend(opt, {
-                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8080')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8180')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 
@@ -180,8 +180,8 @@ const WEB_APP_NAME = {
                                     {
                                         message: xhr.response
                                     }, {
-                                        title: 'Business exception'
-                                    })
+                                    title: 'Business exception'
+                                })
                                     .then(() => {
                                         reject(xhr);
                                     });
@@ -195,6 +195,8 @@ const WEB_APP_NAME = {
                 xhr.send(opt.data);
             });
         };
+
+        Object.defineProperty(vue, 'fetch', { value: fetch });
 
         vue.mixin({
             beforeCreate() {

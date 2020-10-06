@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 
 public interface AgreementYearSettingRepository {
 	

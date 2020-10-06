@@ -24,15 +24,15 @@ public class ReadStatusManagementEmployee extends ValueObject {
 	/**
 	 * 	社員ID
 	 */
-	private String employeeId;
+	private String sid_mgr;
 	
 	/**
 	 * 	[C-1] 未読を作成する
 	 * @param employeeId
 	 */
-	public ReadStatusManagementEmployee(String employeeId) {
+	public ReadStatusManagementEmployee(String sid_mgr) {
 		super();
-		this.employeeId = employeeId;
+		this.sid_mgr = sid_mgr;
 		this.rogerFlag = RogerFlag.UNREAD;
 	}
 }

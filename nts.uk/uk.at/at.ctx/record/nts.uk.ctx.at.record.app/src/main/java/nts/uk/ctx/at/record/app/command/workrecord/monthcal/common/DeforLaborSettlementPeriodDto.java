@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborSettlementPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforLaborSettlementPeriod;
 
 /**
  * The Class DeforLaborSettlementPeriod.
@@ -29,11 +29,14 @@ public class DeforLaborSettlementPeriodDto {
 	private Integer period;
 
 	/** The repeat atr. */
-	private Boolean repeatAtr;
+	private boolean repeatAtr;
 	
 	public DeforLaborSettlementPeriod domain() {
 		
-		return new DeforLaborSettlementPeriod(new Month(startMonth), new Month(period), repeatAtr);
+		return new DeforLaborSettlementPeriod(
+				new Month(startMonth == null ? 1 : startMonth), 
+				new Month(period == null ? 1 : period), 
+				repeatAtr);
 	}
 
 }

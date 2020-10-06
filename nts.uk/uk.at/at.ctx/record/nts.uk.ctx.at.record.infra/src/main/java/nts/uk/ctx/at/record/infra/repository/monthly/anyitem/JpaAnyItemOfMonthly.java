@@ -26,8 +26,8 @@ import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 

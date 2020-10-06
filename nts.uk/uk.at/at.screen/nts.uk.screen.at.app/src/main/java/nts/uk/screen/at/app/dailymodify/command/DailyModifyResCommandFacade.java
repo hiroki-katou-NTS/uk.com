@@ -56,21 +56,21 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.ErrorType;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -862,7 +862,7 @@ public class DailyModifyResCommandFacade {
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
-					.filter(x -> x.getEmployeeId().equals(emp)).map(x -> x.toDomain(x.getAffiliationInfo().employeeId(), x.getAffiliationInfo().getBaseDate()))
+					.filter(x -> x.getEmployeeId().equals(emp)).map(x -> x.toDomain(x.employeeId(), x.getDate()))
 					.collect(Collectors.toList());
 			domainDailyEditAll = unionDomain(domainDailyEditAll, domainDailyNew);
 			// Acquire closing date corresponding to employee

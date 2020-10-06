@@ -3,11 +3,13 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 
 /**
  * 計算区分に反映する
@@ -15,11 +17,12 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditState
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectCalCategory {
 	@Inject
 	private ReflectStampCalCategory reflectStampCalCategory;
 	
-	public void reflect(ChangeCalArt changeCalArt,CalAttrOfDailyAttd calAttr,List<EditStateOfDailyAttd> editState) {
+	public List<EditStateOfDailyAttd> reflect(ChangeCalArt changeCalArt,CalAttrOfDailyAttd calAttr,List<EditStateOfDailyAttd> editState) {
 		//打刻.計算区分変更対象を確認する
 		switch (changeCalArt) {
 		case EARLY_APPEARANCE:// 早出
@@ -41,6 +44,7 @@ public class ReflectCalCategory {
 			break;
 		
 		}
+		return editState;
 	}
 
 }

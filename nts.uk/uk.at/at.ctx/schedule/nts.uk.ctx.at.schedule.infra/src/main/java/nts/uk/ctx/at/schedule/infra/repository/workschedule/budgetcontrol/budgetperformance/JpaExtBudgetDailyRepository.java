@@ -79,6 +79,8 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 
 	@Override
 	public void insert(ExtBudgetDaily extBudgetDaily) {
+		if(extBudgetDaily.getActualValue() == null)
+			return;
 		this.commandProxy().insert(toEntity(extBudgetDaily));
 	}
 

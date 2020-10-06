@@ -27,6 +27,7 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
@@ -65,8 +66,6 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreMaxTimeMonthOut;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
@@ -74,15 +73,12 @@ import nts.uk.ctx.at.record.dom.workrecord.export.dto.AffiliationStatus;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.PeriodInformation;
 import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.GetAgreementPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -322,8 +318,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		//ドメインモデル「36協定運用設定」を取得する
 		Optional<AgreementOperationSetting> agreementOperationSetting = agreementOperationSettingRepository.find(cid);
 		//年度を指定して36協定期間を取得 - get RequestList554
-		Optional<DatePeriod> period = GetAgreementPeriod.byYear(requireService.createRequire(),
-				new CacheCarrier(), cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		Optional<DatePeriod> period = Optional.empty();//GetAgreementPeriod.byYear(requireService.createRequire(),
+//				new CacheCarrier(), cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear);
 		if(!period.isPresent()) {
 			throw new BusinessException("Msg_1513");
 		}
@@ -389,9 +386,10 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		
 		// RequestList453
         // 36協定時間を取得する
-        Map<String, List<AgreementTimeByEmpImport>> agreementTimeAll =
-                agreementTimeByPeriodAdapter.algorithmImprove(cid, employeeIds, criteria, startMonth, fiscalYear, periodAtrs, employees)
-                        .stream().collect(Collectors.groupingBy(AgreementTimeByEmpImport::getEmployeeId));
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+        Map<String, List<AgreementTimeByEmpImport>> agreementTimeAll = new HashMap<>();
+//                agreementTimeByPeriodAdapter.algorithmImprove(cid, employeeIds, criteria, startMonth, fiscalYear, periodAtrs, employees)
+//                        .stream().collect(Collectors.groupingBy(AgreementTimeByEmpImport::getEmployeeId));
 		
 		for (String empId : employeeIds) {
 			EmployeeData empData = exportData.getEmployees().get(empId);
@@ -483,17 +481,18 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		
 		List<AgreementTimeByPeriodImport> listAgreementTimeByMonth = new ArrayList<>();
 		//requestList 548 
-		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = GetAgreTimeByPeriod.maxTime(requireService.createRequire(),
-				cid, employeeId, yearMonthPeriodRQL554);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = GetAgreTimeByPeriod.maxTime(requireService.createRequire(),
+//				cid, employeeId, yearMonthPeriodRQL554);
 		int sum = 0;
-		for (AgreMaxTimeMonthOut agreMax : agreMaxTimeMonthOut) {
-			AgreementTimeByPeriodImport oneMonth = new AgreementTimeByPeriodImport(agreMax.getYearMonth(), null, 
-					new AttendanceTimeYear(agreMax.getMaxTime().getAgreementTime().v()),
-					"", "", "", "", 
-					agreMax.getMaxTime().getStatus()==AgreMaxTimeStatusOfMonthly.NORMAL?AgreementTimeStatusOfMonthly.NORMAL:AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
-			listAgreementTimeByMonth.add(oneMonth);
-			sum += agreMax.getMaxTime().getAgreementTime().v(); 
-		}
+//		for (AgreMaxTimeMonthOut agreMax : agreMaxTimeMonthOut) {
+//			AgreementTimeByPeriodImport oneMonth = new AgreementTimeByPeriodImport(agreMax.getYearMonth(), null, 
+//					new AttendanceTimeYear(agreMax.getMaxTime().getAgreementTime().v()),
+//					"", "", "", "", 
+//					agreMax.getMaxTime().getStatus()==AgreMaxTimeStatusOfMonthly.NORMAL?AgreementTimeStatusOfMonthly.NORMAL:AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
+//			listAgreementTimeByMonth.add(oneMonth);
+//			sum += agreMax.getMaxTime().getAgreementTime().v(); 
+//		}
 		List<AgreementTimeByPeriodImport> listAgreementTimeByYear = new ArrayList<>();
 		AgreementTimeByPeriodImport byYear = null;
 		if(sum > 0) {
@@ -532,11 +531,12 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * */
 	private List<AgreMaxAverageTime> createMonthlyAverage(String companyId, String employeeId, GeneralDate criteria, nts.arc.time.YearMonth yearMonth) {
 		//get requestList547
-		Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti = GetAgreTimeByPeriod.maxAverageTimeMulti(
-				requireService.createRequire(), companyId, employeeId, criteria, yearMonth);
-		if(agreMaxAverageTimeMulti.isPresent()) {
-			return agreMaxAverageTimeMulti.get().getAverageTimeList();
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti = GetAgreTimeByPeriod.maxAverageTimeMulti(
+//				requireService.createRequire(), companyId, employeeId, criteria, yearMonth);
+//		if(agreMaxAverageTimeMulti.isPresent()) {
+//			return agreMaxAverageTimeMulti.get().getAverageTimeList();
+//		}
 		return new ArrayList<>();
 	}
 	
@@ -702,7 +702,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		// 基準日 = 「年度から集計期間を取得する」のOutputのenddate
 		GeneralDate criteria = datePeriod.get().end();
 		// 指定期間36協定時間の取得
-		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, periodAtr);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return new ArrayList<>();
+//		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, periodAtr);
 	}
 
 	/**

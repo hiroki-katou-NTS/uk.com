@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 

@@ -16,25 +16,23 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -65,7 +63,9 @@ public class WorkScheduleReflected {
 					new ErrMessageResource("006"), new ErrMessageContent(TextResource.localize("Msg_431"))));
 			return listErrorMessageInfo;
 		}
-		WorkInformation wi = new WorkInformation(scheduleWorkInfor.get().getWorkTime() ==null?null: new WorkTimeCode(scheduleWorkInfor.get().getWorkTime()), new WorkTypeCode(scheduleWorkInfor.get().getWorkTyle())); 
+		
+		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkTyle(), m.getWorkTime())).orElse(null);
+		
 		//勤務情報をコピーする (Copy thông tin 勤務)
 		workInformation.setRecordInfo(wi);
 		workInformation.setScheduleInfo(wi);
@@ -100,18 +100,18 @@ public class WorkScheduleReflected {
 					new ErrMessageResource("016"), new ErrMessageContent(TextResource.localize("Msg_591"))));
 			return listErrorMessageInfo;
 		}
-		// 予定時間帯をコピーする(Copy 予定時間帯)
+		// 予定時間帯をコピーする(Copy 予定時間帯) (lấy từ Stamp chứ kp actualStamp, do bên schedule k có actualStamp)
 		List<ScheduleTimeSheet> listScheduleTimeSheet = new ArrayList<>();
 		for (TimeLeavingWorkImport timeLeavingWorkImport : scheduleWorkInfor.get().getTimeLeavingOfDailyAttd().get()
 				.getTimeLeavingWorks()) {
 			listScheduleTimeSheet.add(
 				new ScheduleTimeSheet(
 					timeLeavingWorkImport.getWorkNo(),
-					timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().isPresent() 
-					?timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+					timeLeavingWorkImport.getAttendanceStamp().get().getStamp().isPresent() 
+					?timeLeavingWorkImport.getAttendanceStamp().get().getStamp().get().getTimeDay()
 							.getTimeWithDay():0,
-					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().isPresent()?
-					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay():0
+					timeLeavingWorkImport.getLeaveStamp().get().getStamp().isPresent()?
+					timeLeavingWorkImport.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay():0
 				)
 			);
 		}

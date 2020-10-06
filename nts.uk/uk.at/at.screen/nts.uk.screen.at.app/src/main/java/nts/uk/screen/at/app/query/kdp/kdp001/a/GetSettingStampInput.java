@@ -157,7 +157,7 @@ public class GetSettingStampInput {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return this.stampRecordRepo.get(stampNumbers, date);
+			return this.stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override
@@ -210,7 +210,7 @@ public class GetSettingStampInput {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return this.stampRecordRepo.get(stampNumbers, date);
+			return this.stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override

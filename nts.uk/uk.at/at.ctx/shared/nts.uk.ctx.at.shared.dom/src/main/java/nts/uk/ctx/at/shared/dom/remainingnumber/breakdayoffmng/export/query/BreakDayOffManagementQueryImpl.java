@@ -301,11 +301,14 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			//確定代休に紐付いた暫定休出代休紐付け管理を抽出する
 			List<InterimBreakDayOffMng> breakDayMng = breakDayOffRepo.getBreakDayOffMng(a.getComDayOffID(), false, DataManagementAtr.CONFIRM);
 			double useDay = 0;
+			double useHour = 0;
 			for (InterimBreakDayOffMng typingInterimData : breakDayMng) {
 				useDay += typingInterimData.getUseDays().v();
+				useHour += typingInterimData.getUseTimes().v();
 			}
 			//振休履歴.未相殺日数：代休管理データ.未相殺日数－暫定代休使用日数
 			dayOffData.setUnOffsetDays(dayOffData.getUnOffsetDays() - useDay);
+			dayOffData.setUnOffsetHours(dayOffData.getUnOffsetHours() - useHour);
 			outPutData.add(dayOffData);
 		});
 		
@@ -402,22 +405,24 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	}
 	@Override
 	public AsbRemainTotalInfor totalInfor(List<BreakHistoryData> lstBreakHis, List<DayOffHistoryData> lstDayOffHis) {
-		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0);
-		//実績使用日数を算出する
+		AsbRemainTotalInfor outputData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0D, 0D, 0D, 0D, 0D);
+		//	実績使用日数を算出する
 		List<DayOffHistoryData> dayOffHisRecord = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.RECORD)
 				.collect(Collectors.toList());
 		dayOffHisRecord.stream().forEach(y -> {
 			outputData.setRecordUseDays(outputData.getRecordUseDays() + y.getRequeiredDays());
+			outputData.setActualNumberOfHourUsed(outputData.getActualNumberOfHourUsed() + y.getRequiredHours());
 		});
-		//実績発生日数を算出する
+		//	実績発生日数を算出する
 		List<BreakHistoryData> breakHisRecord = lstBreakHis.stream()
 				.filter(x -> x.getMngAtr() == MngHistDataAtr.RECORD)
 				.collect(Collectors.toList());
 		breakHisRecord.stream().forEach(y -> {
 			outputData.setRecordOccurrenceDays(outputData.getRecordOccurrenceDays() + y.getOccurrenceDays());
+			outputData.setScheHours(outputData.getScheHours() + y.getOccurrenceHours());
 		});
-		//予定使用日数を算出する
+		//	予定使用日数を算出する
 		List<DayOffHistoryData> dayOffHisSche = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.SCHEDULE
 							|| x.getCreateAtr() == MngHistDataAtr.NOTREFLECT 
@@ -425,31 +430,39 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 				.collect(Collectors.toList());
 		dayOffHisSche.stream().forEach(y -> {
 			outputData.setScheUseDays(outputData.getScheUseDays() + y.getRequeiredDays());
+			outputData.setScheUseHours(outputData.getScheUseHours() + y.getRequiredHours());
 		});
-		//予定発生日数を算出する
+		//	予定発生日数を算出する
 		List<BreakHistoryData> breakHisSche = lstBreakHis.stream()
 				.filter(x -> x.getMngAtr() == MngHistDataAtr.SCHEDULE
 						|| x.getMngAtr() == MngHistDataAtr.NOTREFLECT)
 				.collect(Collectors.toList());
 		breakHisSche.stream().forEach(y -> {
 			outputData.setScheOccurrenceDays(outputData.getScheOccurrenceDays() + y.getOccurrenceDays());
+			outputData.setScheHours(outputData.getScheHours() + y.getOccurrenceHours());
 		});
-		//繰越数を算出する
+		//	繰越数を算出する
+		//	確定済の休出履歴を抽出する
 		List<BreakHistoryData> breakHisCarry = lstBreakHis.stream()
 				.filter(x -> x.getMngAtr() == MngHistDataAtr.CONFIRMED)
 				.collect(Collectors.toList());
 		double carryDays = 0;
+		double carryHours = 0;
 		for (BreakHistoryData breakHistoryData : breakHisCarry) {
 			carryDays += breakHistoryData.getUnUseDays();
+			carryHours += breakHistoryData.getUnUseHours();
 		}
 		List<DayOffHistoryData> dayOffHisCarry = lstDayOffHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.CONFIRMED)
 				.collect(Collectors.toList());
 		double carryDayOff = 0;
+		double carryHourOff = 0;
 		for (DayOffHistoryData dayOffHistoryData : dayOffHisCarry) {
 			carryDayOff += dayOffHistoryData.getUnOffsetDays();
+			carryHourOff += dayOffHistoryData.getUnOffsetHours();
 		}
 		outputData.setCarryForwardDays(carryDays - carryDayOff);
+		outputData.setCarryForwardHours(carryHours - carryHourOff);
 		return outputData;
 	}
 	@Override

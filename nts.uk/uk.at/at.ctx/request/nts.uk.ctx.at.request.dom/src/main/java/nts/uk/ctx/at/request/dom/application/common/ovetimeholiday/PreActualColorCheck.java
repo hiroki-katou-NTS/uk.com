@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 
 public interface PreActualColorCheck {
@@ -32,7 +32,7 @@ public interface PreActualColorCheck {
 	 */
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
+			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
 	/**
 	 * 07-01_事前申請状態チェック
@@ -137,7 +137,7 @@ public interface PreActualColorCheck {
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param opAppBefore 事前申請
 	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック

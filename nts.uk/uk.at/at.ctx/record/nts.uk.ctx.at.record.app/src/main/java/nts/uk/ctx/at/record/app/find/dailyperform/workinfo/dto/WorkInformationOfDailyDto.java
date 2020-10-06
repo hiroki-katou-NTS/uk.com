@@ -11,15 +11,15 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 /** 日別実績の勤務情報 */
 @Data
@@ -82,6 +82,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	public static WorkInformationOfDailyDto getDto(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
 		if (workInfo != null) {
+			result.setVersion(workInfo.getVer());
 			result.setEmployeeId(employeeId);
 			result.setDate(ymd);
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
@@ -92,6 +93,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
+			result.setVersion(workInfo.getVer());
 			result.exsistData();
 		}
 		return result;
@@ -106,8 +108,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
-		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
-						workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
+		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(), workInfo.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
-		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
 
 	@Override

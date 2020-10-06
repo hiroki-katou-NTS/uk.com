@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -158,7 +158,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		bentoDetails.put(reserv.getBentoFrame(), new BentoReservationCount(Integer.parseInt(reserv.getQuantity())));
 		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
 				new ReservationDate(reserv.getDateTime().toDate(), ReservationClosingTimeFrame.FRAME1),
-				reserv.getDateTime(), bentoDetails);
+				reserv.getDateTime(), bentoDetails, Optional.empty());
 	}
 
 	public static class EmpInfoTerminalBuilder {

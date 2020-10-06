@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -68,6 +68,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
 			wi.changeCalcState(CalculationState.Calculated);
 			IntegrationOfDaily daily = new IntegrationOfDaily(
+					empId,
+					ymd,
 					wi.getWorkInformation(), //workInformation
 					null, //calAttr
 					null, //affiliationInfor
@@ -84,8 +86,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
 					new ArrayList<>());//remarks
-			daily.setEmployeeId(empId);
-			daily.setYmd(ymd);
 			addAndUpdate(daily);
 		});
 	}

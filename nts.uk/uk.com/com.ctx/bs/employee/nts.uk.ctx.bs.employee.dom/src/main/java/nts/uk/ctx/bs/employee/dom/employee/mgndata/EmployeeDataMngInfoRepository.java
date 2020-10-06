@@ -183,5 +183,7 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findBySidDel(List<String> sid);
 	
 	Map<String, String> getAllSidAndScdBySids(List<String> sids);
+
+	Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId);
 	
 }

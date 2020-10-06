@@ -39,19 +39,19 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	
@@ -187,7 +187,6 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
 		fullDto.getErrors().stream().forEach(c -> this.errors.setRecords(c));
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
-		this.businessType.setRecords(fullDto.getBusinessType().orElse(null));
 		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.attendanceTimeByWork.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));

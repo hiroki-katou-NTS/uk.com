@@ -24,50 +24,51 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RecordRemarks;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.HolidayWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayMidnightWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkMidNightTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -90,7 +91,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private RecordDomRequireService requireService;
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyInfo) {
-		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		WorkInformation workInfor = new WorkInformation(para.getWorkTypeCode(), para.getWorkTimeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			if(para.isWorkChange()) {
@@ -413,10 +414,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInfoOfDailyAttendance workInformation = dailyPerfor.getWorkInformation();
 		if(scheUpdate) {
 			lstItem.add(1);
-			dailyPerfor.getWorkInformation().setScheduleInfo(new WorkInformation(workInformation.getScheduleInfo().getWorkTimeCode() == null ? null : workInformation.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			WorkInformation sched = workInformation.getScheduleInfo().clone();
+			sched.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+			
+			dailyPerfor.getWorkInformation().setScheduleInfo(sched);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.getWorkInformation().setRecordInfo(new WorkInformation(workInformation.getRecordInfo().getWorkTimeCode() == null ? null : workInformation.getRecordInfo().getWorkTimeCode().v(), workTypeCode));			
+			WorkInformation record = workInformation.getRecordInfo().clone();
+			record.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+			
+			dailyPerfor.getWorkInformation().setRecordInfo(record);			
 		}
 		//日別実績の編集状態
 		this.editStateOfDailyPerformance(employeeId, dateData, dailyPerfor.getEditState(), lstItem);
@@ -679,7 +686,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate,
 			IntegrationOfDaily dailyData) {		
 		WorkInfoOfDailyAttendance dailyPerfor = dailyData.getWorkInformation();
-		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		WorkInformation workInfor = new WorkInformation(para.getWorkTypeCode(), para.getWorkTimeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyPerfor);
@@ -788,13 +795,18 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInfoOfDailyAttendance workInformation = dailyPerfor.getWorkInformation();
 		if(scheUpdate) {
 			lstItem.add(2);
-			dailyPerfor.getWorkInformation().setScheduleInfo(new WorkInformation(workTimeCode, workInformation.getScheduleInfo().getWorkTypeCode() == null 
-					? null : workInformation.getScheduleInfo().getWorkTypeCode().v()));
+			WorkInformation sched = workInformation.getScheduleInfo().clone();
+			
+			sched.setWorkTimeCode(workTimeCode);
+			
+			dailyPerfor.getWorkInformation().setScheduleInfo(sched);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(29);
-			dailyPerfor.getWorkInformation().setRecordInfo(new WorkInformation(workTimeCode, workInformation.getRecordInfo().getWorkTypeCode() == null 
-					? null : workInformation.getRecordInfo().getWorkTypeCode().v()));
+			WorkInformation record = workInformation.getRecordInfo();
+			record.setWorkTimeCode(workTimeCode);
+			
+			dailyPerfor.getWorkInformation().setRecordInfo(record);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態

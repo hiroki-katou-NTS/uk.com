@@ -53,9 +53,11 @@
           </com:ko-if> -->
           <!-- G7 -->
           <div id="table-grid">
-              <div class="" data-bind="foreach: dataShare.listRequired"> 
+              <div style="
+                  display: flex;flex-flow: wrap;" class="" data-bind="foreach: dataShare.listRequired"> 
                 <button
                   class="proceed btn-name btn_1"
+                  style="white-space: pre-wrap; margin-left: 5px;"
                   data-bind="text: buttonName, click: $parent.jumpScreen.bind($data, $data, $parent), css: {class: 'btn_' + $index}"
                   id="button1"
                 ></button>

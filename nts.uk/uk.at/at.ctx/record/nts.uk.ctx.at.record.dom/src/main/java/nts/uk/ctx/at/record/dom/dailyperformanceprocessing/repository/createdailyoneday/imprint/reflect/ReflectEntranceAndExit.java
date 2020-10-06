@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -10,7 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectone.ReflectOneEntranceAndExit;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * 反映する (new_2020) for : 入退門反映する
@@ -19,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Wo
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectEntranceAndExit {
 	@Inject
 	private ReflectOneEntranceAndExit reflectOneEntranceAndExit;

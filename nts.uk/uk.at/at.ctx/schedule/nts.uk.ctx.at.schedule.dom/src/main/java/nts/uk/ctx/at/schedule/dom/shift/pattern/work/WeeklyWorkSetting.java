@@ -7,10 +7,12 @@ package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WeeklyWorkSetting.
+ * The Class WeeklyWorkDay.
  */
 // 週間勤務設定
 @Getter
@@ -27,6 +29,9 @@ public class WeeklyWorkSetting extends AggregateRoot {
 	/** The workday division. */
 	// 稼働日区分
 	private WorkdayDivision workdayDivision;
+
+	/** The contract code. */
+	private String contractCode;
 	
 	
 	/**
@@ -38,6 +43,7 @@ public class WeeklyWorkSetting extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.dayOfWeek = memento.getDayOfWeek();
 		this.workdayDivision = memento.getWorkdayDivision();
+		this.contractCode = memento.getContractCode();
 	}
 	
 	
@@ -50,6 +56,7 @@ public class WeeklyWorkSetting extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setDayOfWeek(this.dayOfWeek);
 		memento.setWorkdayDivision(this.workdayDivision);
+		memento.setContractCode(AppContexts.user().contractCode());
 	}
 
 }

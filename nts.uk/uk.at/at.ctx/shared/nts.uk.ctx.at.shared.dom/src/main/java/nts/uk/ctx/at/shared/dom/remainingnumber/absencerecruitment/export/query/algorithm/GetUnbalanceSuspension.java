@@ -33,8 +33,9 @@ public class GetUnbalanceSuspension {
 
 		List<AccumulationAbsenceDetail> result = new ArrayList<>();
 		// アルゴリズム「確定振休から未相殺の振休を取得する」を実行する
-		List<SubstitutionOfHDManagementData> lstSub = unbalanceHolConfirme(require, cid, employeeId, ymd);
-
+		List<SubstitutionOfHDManagementData> lstSubTem = unbalanceHolConfirme(require, cid, employeeId, ymd);
+		List<SubstitutionOfHDManagementData> lstSub = new ArrayList<SubstitutionOfHDManagementData>();
+		lstSub.addAll(lstSubTem);
 		//追加用確定管理データをリストに追加する
 		addDataFixManaMonth(fixManaDataMonth, lstSub);
 		

@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight.MidnightTimeSheetRepo;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
@@ -33,9 +32,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
@@ -46,45 +43,12 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.TimeSheetAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethod;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfEachPremiumHalfWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfHalfWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.HolidayTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
@@ -94,13 +58,49 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfEachPremiumHalfWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.TimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -370,7 +370,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				integrationOfWorkTime,
 				schedule);
 
-		if (!record.isPresent() || !schedule.isPresent()) {
+		if ((!record.isPresent() || !schedule.isPresent())
+				|| (!integrationOfWorkTime.isPresent() && !schedule.get().getIntegrationOfWorkTime().isPresent())) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		
@@ -378,8 +379,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				schedule.get().getCalculationRangeOfOneDay(),
 				companyCommonSetting,
 				personCommonSetting,
-				workType,
-				integrationOfWorkTime.get(),
+				schedule.get().getWorkType(),
+				schedule.get().getIntegrationOfWorkTime(),
 				integrationOfDaily);
 		
 		ManageReGetClass recordManageReGetClass = new ManageReGetClass(
@@ -387,7 +388,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				companyCommonSetting,
 				personCommonSetting,
 				workType,
-				integrationOfWorkTime.get(),
+				integrationOfWorkTime,
 				integrationOfDaily);
 
 		// 実際の計算処理
@@ -474,6 +475,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					integrationOfWorkTime.get().getFlexWorkSetting().get().getRestSetting().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
 					integrationOfWorkTime.get().getFlexWorkSetting().get().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting()
 							.changeCalcMethodToSchedule();
+
 				}
 	
 				/* 大塚モード */
@@ -594,7 +596,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	private Optional<WorkTimeCode> decisionWorkTimeCode(WorkInfoOfDailyAttendance workInfo,
 			ManagePerPersonDailySet personCommonSetting, Optional<WorkType> workType) {
-
+		if(!workType.isPresent() || workType.get().isNoneWorkTimeType())
+			return Optional.empty();
+		
 		if (workInfo == null || workInfo.getRecordInfo() == null
 				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
 				return personCommonSetting.getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode();

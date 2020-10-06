@@ -7,16 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayUsedNumberDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.RealReserveLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.ReserveLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 
 @Data
 /** 積立年休 */

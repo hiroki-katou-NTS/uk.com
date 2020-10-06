@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeEr
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsg;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
 /**
  * The Class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento.
