@@ -233,7 +233,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
             vm.$blockui("show");
             let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.approve, command)
@@ -250,7 +250,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
             vm.$blockui("show");
             let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.deny, command)
@@ -327,7 +327,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+					let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+		            	command = { appDispInfoStartupOutput };
+                    return vm.$ajax(API.deleteapp, command);
                 }
             }).done((successData: any) => {
 				if(successData) {
