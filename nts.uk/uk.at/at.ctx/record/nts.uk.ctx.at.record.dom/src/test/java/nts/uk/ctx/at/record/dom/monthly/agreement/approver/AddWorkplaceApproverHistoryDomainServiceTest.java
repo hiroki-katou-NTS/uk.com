@@ -1,19 +1,17 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JMockit.class)
 public class AddWorkplaceApproverHistoryDomainServiceTest {
@@ -49,6 +47,7 @@ public class AddWorkplaceApproverHistoryDomainServiceTest {
                 any -> requeire.addHistory(any.get()),
                 any -> requeire.changeLatestHistory(any.get(),itemUpdate.getPeriod().start())
         );
+        assertThat(itemUpdate.getPeriod().end()).isEqualTo(itemToBeAdd.getPeriod().start().addDays(-1));
 
     }
     @Test

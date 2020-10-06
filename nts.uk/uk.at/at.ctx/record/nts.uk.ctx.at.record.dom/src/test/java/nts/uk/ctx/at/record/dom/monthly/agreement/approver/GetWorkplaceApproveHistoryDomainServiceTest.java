@@ -31,7 +31,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             period,
             approverList,
             confirmerList
-        );
+    );
 
     private static SWkpHistRcImported sWkpHistRcImported =  new SWkpHistRcImported(period,employeeId,workplaceId,codeAndName,codeAndName,codeAndName);
     @Test

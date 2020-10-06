@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import lombok.val;
+
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +13,9 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author chinh.hm
  */
@@ -33,7 +33,7 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
         GeneralDate referenceDate = GeneralDate.today();
         Approver36AgrByWorkplace historyItem = Approver36AgrByWorkplace.create(
                 workplaceId,
-                new DatePeriod(referenceDate,GeneralDate.max()),
+                new DatePeriod(referenceDate.addDays(2),GeneralDate.max()),
                 approverList,
                 confirmerList
 
@@ -45,18 +45,17 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
                 confirmerList
 
         );
-
         new Expectations() {{
             requeire.getPrevHistory(workplaceId, referenceDate.addDays(-1) );
             result = Optional.of(preVHistoryItem);
         }};
 
-        AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
-        new Verifications() {{
-            requeire.changeHistory((Approver36AgrByWorkplace)any,GeneralDate.today());
-            times = 0;
-        }};
-        persist.run();
+        NtsAssert.atomTask(()->
+                ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem),
+                any->requeire.changeHistory(historyItem,referenceDate),
+                any->requeire.changeHistory(preVHistoryItem,referenceDate.addDays(-5))
+        );
+        assertThat(preVHistoryItem.getPeriod().end()).isEqualTo(historyItem.getPeriod().start().addDays(-1));
     }
     @Test
     public void test_02(){
