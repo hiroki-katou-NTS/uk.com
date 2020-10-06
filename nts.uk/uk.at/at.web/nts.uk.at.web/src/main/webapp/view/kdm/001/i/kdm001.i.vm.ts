@@ -38,6 +38,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
         dataDate: KnockoutObservable<number> = ko.observable(0);
+        isDisableOpenKDL036: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -58,8 +59,13 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I6_3").ntsError('clear');
                     $("#I8_1").ntsError('clear');
                 } else {
-                  self.baseDate = self.dateHoliday;
+                  self.baseDate(self.dateHoliday());
                     _.defer(() => { $("#I6_3").ntsError('clear'); });
+                }
+                if(!v && self.checkedSubHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true)
                 }
             });
             self.checkedSubHoliday.subscribe((v) => {
@@ -78,6 +84,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I11_3").ntsError('clear');
                 } else {
                     $("#I11_3").ntsError('clear');
+                }
+                if(v && !self.checkedHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true);
                 }
             });
             self.checkedSplit.subscribe((v) => {
