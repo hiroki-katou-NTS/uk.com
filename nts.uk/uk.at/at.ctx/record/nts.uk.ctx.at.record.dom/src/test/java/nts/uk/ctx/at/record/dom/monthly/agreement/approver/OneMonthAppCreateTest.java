@@ -56,7 +56,20 @@ public class OneMonthAppCreateTest {
 		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
 		assertThat(actual.getAtomTask()).isEmpty();
-		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.APPROVER_NOT_SET);
+		assertThat(actual.getErrorInfo())
+				.extracting(
+						d -> d.getErrorClassification(),
+						d -> d.getMaximumTimeMonth(),
+						d -> d.getMaximumTimeYear(),
+						d -> d.getExceedUpperLimit())
+				.containsExactly(
+						tuple(
+								ErrorClassification.APPROVER_NOT_SET,
+								Optional.empty(),
+								Optional.empty(),
+								Optional.empty()
+						)
+				);
 	}
 
 	/**
