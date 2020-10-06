@@ -46,7 +46,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					"KMP001_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
+					"KMP001_" + "カードNOの登録" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
 							+ REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
@@ -76,8 +76,8 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			break;
 		}
 
-		cells.get(2, 1).setValue(companyName);
+		cells.get(2, 1).setValue(AppContexts.user().companyCode() + " " + companyName);
 		cells.get(12, 1).setValue(dataSource.getDigitsNumber());
-		cells.get(3, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a", Locale.JAPAN)));
+		cells.get(4, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a")));
 	}
 }
