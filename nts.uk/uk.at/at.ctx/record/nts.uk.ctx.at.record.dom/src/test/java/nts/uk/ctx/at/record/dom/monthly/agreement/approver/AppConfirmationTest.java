@@ -60,7 +60,7 @@ public class AppConfirmationTest {
 		String aplId = "dummyApplicantId";
 		String cfId = "cfm02";
 		val cfSts = ConfirmationStatus.RECOGNITION;
-		SpecialProvisionsOfAgreement dummyApp = SpecialProvisionsOfAgreement.create(
+		val dummyApp = SpecialProvisionsOfAgreement.create(
 				"enteredSID",
 				"dummyApplicantId",
 				new ApplicationTime(
