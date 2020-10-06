@@ -661,10 +661,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             self.$goto('ccg008a');   
                         }
                     });
-                   
+                    if (recordDate == 0) {
+                        return false;
+                    }
+
+                    return true;
                 }
             
-               
+                if (_.isNull(opErrorFlag)) {
+                    return true;    
+                }
                 switch (opErrorFlag) {
                     case 1:
                         msgID = 'Msg_324';
@@ -678,13 +684,16 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     default: 
                         break;
                 }
-               
+                if (_.isEmpty(msgID)) { 
+                    return true;
+                }
                 self.$modal.error({ messageId: msgID }).then(() => {
                     if (recordDate == 0) {
                         self.$goto('ccg008a');    
                     }    
                 });
 
+                return false;
                 
             })
             .catch((res: any) => {
