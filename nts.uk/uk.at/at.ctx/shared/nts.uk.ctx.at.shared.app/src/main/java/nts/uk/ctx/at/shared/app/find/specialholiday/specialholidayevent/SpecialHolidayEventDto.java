@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;

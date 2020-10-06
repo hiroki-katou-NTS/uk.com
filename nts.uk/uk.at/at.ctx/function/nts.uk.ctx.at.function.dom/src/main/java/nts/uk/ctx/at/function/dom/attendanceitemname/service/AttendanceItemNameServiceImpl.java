@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.DivergenceTimeAdapter;
@@ -25,20 +26,22 @@ import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapter;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
+import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuAdaptor;
+import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -100,6 +103,9 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+	
+	@Inject
+	private BentoMenuAdaptor bentoMenuAdaptor;
 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
@@ -201,6 +207,10 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		// 特定日 10
 		Map<Integer, SpecificDateImport> specificDates = this.specificDateAdapter.getSpecificDate(companyId, frameNos)
 				.stream().collect(Collectors.toMap(SpecificDateImport::getSpecificDateItemNo, x -> x));
+		
+		/** 弁当メニュー */
+		Map<Integer, BentoMenuImport> bentos = this.bentoMenuAdaptor.getBentoMenu(companyId, GeneralDate.today())
+																	.stream().collect(Collectors.toMap(b -> b.getFrameNo(), b -> b));
 
 		// 超過時間 : 時間外超過設定 11
 		List<OvertimeDto> overtimesSetting;
@@ -237,75 +247,68 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
 		attendanceItems = mapAttendanceItems.values().stream().collect(Collectors.toList());
 		for (AttItemName item : attendanceItems) {
-			int attId = item.getAttendanceItemId();
 			String attName = item.getAttendanceItemName();
-			AttendanceItemLinking itemLink;
 			if (item.getFrameCategory() == null) {
 				continue;
 			}
+			
 			FrameCategory frCtg = EnumAdaptor.valueOf(item.getFrameCategory(), FrameCategory.class);
+			AttendanceItemLinking itemLink = mapItemLinking.get(item.getAttendanceItemId());
+			Integer frameNo = itemLink.getFrameNo().v();
+			
 			switch (frCtg) {
 			case OverTime:
-				itemLink = mapItemLinking.get(attId);
-				if (overTimes.containsKey(itemLink.getFrameNo().v())) {
+				if (overTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							overTimes.get(itemLink.getFrameNo().v()).getOvertimeWorkFrName()));
+							overTimes.get(frameNo).getOvertimeWorkFrName()));
 				}
 				break;
 			case OverTimeTranfer:
-				itemLink = mapItemLinking.get(attId);
-				if (overTimes.containsKey(itemLink.getFrameNo().v())) {
+				if (overTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							overTimes.get(itemLink.getFrameNo().v()).getTransferFrName()));
+							overTimes.get(frameNo).getTransferFrName()));
 				}
 				break;
 			case Rest:
-				itemLink = mapItemLinking.get(attId);
-				if (leave.containsKey(itemLink.getFrameNo().v())) {
+				if (leave.containsKey(frameNo)) {
 					item.setAttendanceItemName(
-							MessageFormat.format(attName, leave.get(itemLink.getFrameNo().v()).getWorkdayoffFrName()));
+							MessageFormat.format(attName, leave.get(frameNo).getWorkdayoffFrName()));
 				}
 				break;
 			case RestTranfer:
-				itemLink = mapItemLinking.get(attId);
-				if (leave.containsKey(itemLink.getFrameNo().v())) {
+				if (leave.containsKey(frameNo)) {
 					item.setAttendanceItemName(
-							MessageFormat.format(attName, leave.get(itemLink.getFrameNo().v()).getTransferFrName()));
+							MessageFormat.format(attName, leave.get(frameNo).getTransferFrName()));
 				}
 				break;
 			case ExtraItem:
-				itemLink = mapItemLinking.get(attId);
-				if (premiumItemnames.containsKey(itemLink.getFrameNo().v())) {
+				if (premiumItemnames.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							premiumItemnames.get(itemLink.getFrameNo().v()).getPremiumItemname()));
+							premiumItemnames.get(frameNo).getPremiumItemname()));
 				}
 				break;
 			case AddtionTimeItem:
-				itemLink = mapItemLinking.get(attId);
-				if (bonusPayTimeItems.containsKey(itemLink.getFrameNo().v())) {
+				if (bonusPayTimeItems.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							bonusPayTimeItems.get(itemLink.getFrameNo().v()).getTimeItemName().v()));
+							bonusPayTimeItems.get(frameNo).getTimeItemName().v()));
 				}
 				break;
 			case SpecificAddtionTimeItem:
-				itemLink = mapItemLinking.get(attId);
-				if (specialBonusPayTimeItem.containsKey(itemLink.getFrameNo().v())) {
+				if (specialBonusPayTimeItem.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							specialBonusPayTimeItem.get(itemLink.getFrameNo().v()).getTimeItemName().v()));
+							specialBonusPayTimeItem.get(frameNo).getTimeItemName().v()));
 				}
 				break;
 			case DivergenceTimeItem:
-				itemLink = mapItemLinking.get(attId);
-				if (divergenceTimes.containsKey(itemLink.getFrameNo().v())) {
+				if (divergenceTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							divergenceTimes.get(itemLink.getFrameNo().v()).getDivTimeName()));
+							divergenceTimes.get(frameNo).getDivTimeName()));
 				}
 				break;
 			case AnyItem:
-				itemLink = mapItemLinking.get(attId);
-				if (optionalItems.containsKey(itemLink.getFrameNo().v())) {
+				if (optionalItems.containsKey(frameNo)) {
 					// get value
-					OptionalItemImport optItem = optionalItems.get(itemLink.getFrameNo().v());
+					OptionalItemImport optItem = optionalItems.get(frameNo);
 					String unit = StringUtil.isNullOrEmpty(optItem.getOptionalItemUnit(), true) ? ""
 							: "（" + optItem.getOptionalItemUnit() + "）";
 					// set value
@@ -315,22 +318,20 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			case GoOut:
 				break;
 			case SpecificDate:
-				itemLink = mapItemLinking.get(attId);
-				if (specificDates.containsKey(itemLink.getFrameNo().v())) {
+				if (specificDates.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							specificDates.get(itemLink.getFrameNo().v()).getSpecificName()));
+							specificDates.get(frameNo).getSpecificName()));
 				}
 				break;
 			case ExcessTime:
 				String overTimeName = "";
 				String outsideOTBRDItemName = "";
-				itemLink = mapItemLinking.get(attId);
 				// fixbug 101557
-				Optional<OvertimeDto> optOvertimeDto = overtimesSetting.stream().filter(x -> x.getOvertimeNo() == itemLink.getFrameNo().v()).findFirst();
+				Optional<OvertimeDto> optOvertimeDto = overtimesSetting.stream().filter(x -> x.getOvertimeNo() == frameNo).findFirst();
 				if(optOvertimeDto.isPresent()){
 					overTimeName = optOvertimeDto.get().getName();
 				} else {
-					overTimeName = TextResource.localize("KDW003_125", itemLink.getFrameNo().v().toString());
+					overTimeName = TextResource.localize("KDW003_125", frameNo.toString());
 				}
 				
 				if (itemLink.getPreliminaryFrameNO() != null && itemLink.getPreliminaryFrameNO().isPresent()){
@@ -344,37 +345,51 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				
 				item.setAttendanceItemName(MessageFormat.format(attName, overTimeName, outsideOTBRDItemName));
 				break;
+			case Week_ExcessTime: {
+				String outsiteName = outsideOTBRDItem
+											.stream().filter(x-> x.getBreakdownItemNo() == frameNo)
+											.findFirst()
+											.map(os -> os.getName())
+											.orElseGet(() -> TextResource.localize("KDW003_126", frameNo.toString()));
+				
+				item.setAttendanceItemName(MessageFormat.format(attName, outsiteName));
+				break;
+			}
 			case Absence:
-				itemLink = mapItemLinking.get(attId);
-				if (absenceFrame.containsKey(itemLink.getFrameNo().v())) {
+				if (absenceFrame.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							absenceFrame.get(itemLink.getFrameNo().v()).getAbsenceFrameName().v()));
+							absenceFrame.get(frameNo).getAbsenceFrameName().v()));
 				}
 				break;
 			case SpecialHolidayFrame:
-				itemLink = mapItemLinking.get(attId);
-				if (specialHolidayFrame.containsKey(itemLink.getFrameNo().v())) {
+				if (specialHolidayFrame.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							specialHolidayFrame.get(itemLink.getFrameNo().v()).getSpecialHdFrameName().v()));
+							specialHolidayFrame.get(frameNo).getSpecialHdFrameName().v()));
 				}
 				break;
 			case TotalCount:
-				itemLink = mapItemLinking.get(attId);
-				if (totalTimes.containsKey(itemLink.getFrameNo().v())) {
+				if (totalTimes.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							totalTimes.get(itemLink.getFrameNo().v()).getTotalTimesName().v()));
+							totalTimes.get(frameNo).getTotalTimesName().v()));
 				}
 				break;
 			case SpecialHoliday:
-				itemLink = mapItemLinking.get(attId);
-				if (specialHoliday.containsKey(itemLink.getFrameNo().v())) {
+				if (specialHoliday.containsKey(frameNo)) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
-							specialHoliday.get(itemLink.getFrameNo().v()).getSpecialHolidayName().v()));
+							specialHoliday.get(frameNo).getSpecialHolidayName().v()));
 				} else {
-					String sphdName = MessageFormat.format("特別休暇{0}", itemLink.getFrameNo().v());
+					String sphdName = MessageFormat.format("特別休暇{0}", frameNo);
 					item.setAttendanceItemName(MessageFormat.format(attName, sphdName));
 				}
 				break;
+			case Reservation: 
+				if (bentos.containsKey(frameNo)) {
+					item.setAttendanceItemName(MessageFormat.format(attName, bentos.get(frameNo).getName()));
+				} else {
+					item.setAttendanceItemName(MessageFormat.format(attName, "弁当メニュー枠番" + frameNo));
+				}
+				break;
+			default: break;
 			}
 		}
 		return attendanceItems;

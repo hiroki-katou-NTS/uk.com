@@ -751,6 +751,8 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<TempAbsenceHistory> getHistoryByListEmp(String companyId, List<String> lstEmpId) {
 		List<TempAbsenceHistory> data = new ArrayList<>();
+		if(lstEmpId.isEmpty())
+			return data;
 		List<BsymtTempAbsHistory> data1 = this.queryProxy().query(GET_DATA32, BsymtTempAbsHistory.class)
 							.setParameter("companyId", companyId)
 							.setParameter("lstEmpId", lstEmpId)

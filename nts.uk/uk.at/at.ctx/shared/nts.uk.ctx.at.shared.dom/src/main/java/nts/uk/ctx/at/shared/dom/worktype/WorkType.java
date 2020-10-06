@@ -515,7 +515,26 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public void setDeprecate(DeprecateClassification deprecate) {
 		this.deprecate = deprecate;
 	}
-
+	
+	/** 時間消化休暇日数を取得する */
+	public double calcTimeConsumpVacationDays () {
+		
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			if (dailyWork.getOneDay() == WorkTypeClassification.TimeDigestVacation) {
+				return 1;
+			}
+		} else {
+			if (dailyWork.getMorning() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		
+			if (dailyWork.getAfternoon() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		}
+		
+		return 0;
+	}
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;

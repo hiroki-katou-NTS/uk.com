@@ -13,6 +13,7 @@ import nts.uk.ctx.at.schedule.app.command.shiftmanagement.shiftwork.shiftpalet.D
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgFinder.PageDto;
+import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgFinder.ShiftPalletsOrgDtoJB;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.Param;
 
 @Path("at/schedule/shift/management/shiftpalletorg")
@@ -27,13 +28,13 @@ public class ShiftPalletsOrgWebservice extends WebService {
 	
 	@POST
 	@Path("getbyWorkplaceId")
-	public List<ShiftPalletsOrgDto> getListShijtPalletsOrg(String workplaceId) {
-		return shiftPalletsOrgFinder.getbyWorkPlaceId(workplaceId);
+	public ShiftPalletsOrgDtoJB getListShijtPalletsOrg(String workplaceId) {
+		return shiftPalletsOrgFinder.getbyWorkPlaceIdJb(workplaceId);
 	}
 	
 	@POST
 	@Path("getbyWorkplaceGrId")
-	public List<ShiftPalletsOrgDto> getListShijtPalletsOrgGr(String workplaceGrId) {
+	public ShiftPalletsOrgDtoJB getListShijtPalletsOrgGr(String workplaceGrId) {
 		return shiftPalletsOrgFinder.getbyWorkPlaceGrId(workplaceGrId);
 	}
 
