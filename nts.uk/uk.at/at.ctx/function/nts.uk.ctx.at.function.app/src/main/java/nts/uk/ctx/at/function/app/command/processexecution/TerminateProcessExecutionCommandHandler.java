@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -24,7 +23,8 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcution;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodExcutionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 
@@ -47,6 +47,9 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 	
 	@Inject
 	private AppUpdateSuspension appUpdateSuspension;
+	
+	@Inject 
+	private AggrPeriodExcutionRepository aggrPeriodExcutionRepo;
 
 	//終了ボタン押下時処理
 	@Override
@@ -237,11 +240,15 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 					appUpdateSuspension.updateSuspension(execId, false); //if monthly
 					statusStop = task.getProcExecTask();
 				}
-			}else{
-//				if(execType == 1){ 
-//					dataSetter.setData("interupt", "true");
-//				}
-			} 
+			} else if (task.getProcExecTask().equals(ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD)) {
+				// 任意期間の集計の処理が完了しているか確認する
+				if (statusStop == null) {
+					// NULLの場合
+					// 任意期間の集計中断処理
+					this.aggregationSuspensionProcessing(companyId, execId);
+					statusStop = task.getProcExecTask();
+				}
+			}
 		}
 		/*
 		 * ドメインモデル「就業計算と集計実行ログ」を更新する
@@ -271,6 +278,29 @@ public class TerminateProcessExecutionCommandHandler extends CommandHandler<Term
 		}
 		
 		this.processExecutionLogHistRepo.update(processExecutionLogHistory);;
+	}
+	
+	/**
+	 * 任意期間の集計中断処理
+	 * @param companyId
+	 * @param execId
+	 */
+	private void aggregationSuspensionProcessing (String companyId, String execId) {
+		// ドメインモデル「任意期間集計実行ログ」を更新する
+		List<AggrPeriodExcution> listDomain = this.aggrPeriodExcutionRepo.findAggrCode(companyId, execId);
+		listDomain = listDomain.stream()
+				// 任意期間集計実行ログ．実行状況 = 中断開始
+				.map(domain -> AggrPeriodExcution.createFromJavaType(
+						companyId, 
+						execId, 
+						domain.getAggrFrameCode().v(), 
+						domain.getAggrId(), 
+						domain.getStartDateTime(), 
+						domain.getEndDateTime(),
+						domain.getExecutionAtr().value, 
+						ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD.value, 
+						domain.getPresenceOfError().value))
+				.collect(Collectors.toList());
 	}
 	
 	/**
