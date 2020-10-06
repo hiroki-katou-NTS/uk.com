@@ -282,7 +282,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			String empId = employee.getEmployeeId();
 			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
 			Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
-			List<AnnualHolidayGrantDetail> HolidayDetails = Collections.emptyList();
+			List<AnnualHolidayGrantDetail> holidayDetails = Collections.emptyList();
 			boolean isSelectCurrent = EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class)
 					.equals(PeriodToOutput.CURRENT);
 			if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
@@ -296,8 +296,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// RQ550
 					holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, yearMonthInput,
 							baseDate);
+					// 抽出対象社員かチェックする
+					// TODO
 					// アルゴリズム「年休明細情報を取得」を実行する II
-					HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
 							baseDate);
 
 				}
@@ -306,14 +308,20 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する I
 				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				// 抽出対象社員かチェックする
+				// TODO
 				// アルゴリズム「年休明細情報を取得」を実行する II
-				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
+				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する I
 				// 抽出対象社員かチェックする
+				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				// TODO
 				// アルゴリズム「年休明細情報を取得」を実行する II
+				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 				
 			}
 			// ❻入社退職の考慮
@@ -321,10 +329,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
 			
 
-			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
+			holidayDetails = holidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
 			employee.setHolidayInfo(holidayInfo);
-			employee.setHolidayDetails(HolidayDetails);
+			employee.setHolidayDetails(holidayDetails);
 		});
 
 		employeeExports = itemValuesSyncs;
