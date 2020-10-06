@@ -40,6 +40,8 @@ public class OneMonthAppCreate {
 		// $エラー情報
 		val errorInfo = new ArrayList<ExcessErrorContent>();
 
+		AtomTask atomTask = null;
+
 		// $承認者項目
 		val optApprItem = GettingApproverDomainService.getApprover(require, appContent.getApplicant());
 		if (!optApprItem.isPresent()) {
@@ -51,30 +53,31 @@ public class OneMonthAppCreate {
 					Optional.empty());
 
 			errorInfo.add(approverError);
-		}
+		} else {
+			// $超過エラー
+			val excessError = CheckErrorApplicationMonthService.check(require, appContent);
+			errorInfo.addAll(excessError);
 
-		// $超過エラー
-		val excessError = CheckErrorApplicationMonthService.check(require, appContent);
-		errorInfo.addAll(excessError);
+			if (errorInfo.isEmpty()) {
+				// $３６協定設定
+				val setting = AgreementDomainService.getBasicSet(require, cid, appContent.getApplicant(), GeneralDate.today());
 
-		AtomTask atomTask = null;
-		if (errorInfo.isEmpty()) {
-			// $３６協定設定
-			val setting = AgreementDomainService.getBasicSet(require, cid, appContent.getApplicant(), GeneralDate.today());
+				// 申請内容.アラーム時間
+				appContent.setAlarmTime(Optional.of(setting.getOneMonth().calculateAlarmTime(appContent.getAlarmTime().get())));
 
-			// 申請内容.アラーム時間
-			appContent.setAlarmTime(Optional.of(setting.getOneMonth().calculateAlarmTime(appContent.getAlarmTime().get())));
+				// $申請
+				SpecialProvisionsOfAgreement app = createOneMonthApp(
+						applicantId,
+						appContent,
+						optApprItem.get().getApproverList(),
+						optApprItem.get().getConfirmerList(),
+						displayInfo);
 
-			// $申請
-			SpecialProvisionsOfAgreement app = createOneMonthApp(
-					applicantId,
-					appContent,
-					optApprItem.get().getApproverList(),
-					optApprItem.get().getConfirmerList(),
-					displayInfo);
-
-			// $Atomtask
-			atomTask = AtomTask.of(() -> { require.addApp(app); });
+				// $Atomtask
+				atomTask = AtomTask.of(() -> {
+					require.addApp(app);
+				});
+			}
 		}
 
 		// return 申請作成結果

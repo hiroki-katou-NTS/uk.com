@@ -5,6 +5,7 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 /**
  * @author khai.dh
@@ -34,7 +36,7 @@ public class OneMonthAppCreateTest {
 	private OneMonthAppCreate.Require require;
 
 	/**
-	 * 承認者を取得する#取得する returns empty result
+	 * GettingApproverDomainService#getApprover returns empty result
 	 */
 	@Test
 	public void test01() {
@@ -44,14 +46,10 @@ public class OneMonthAppCreateTest {
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
 				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
-		List<ExcessErrorContent> emptyErrorInfo = new ArrayList<>();
-		new MockUp<CheckErrorApplicationMonthService>() {
+		new MockUp<GettingApproverDomainService>() {
 			@Mock
-			public List<ExcessErrorContent> check(
-					CheckErrorApplicationMonthService.Require require,
-					MonthlyAppContent monthlyAppContent){
-
-				return emptyErrorInfo;
+			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
+				return Optional.empty();
 			}
 		};
 
@@ -61,8 +59,8 @@ public class OneMonthAppCreateTest {
 	}
 
 	/**
-	 * 承認者を取得する#取得する returns empty result
-	 1ヶ月申請の超過エラーをチェックする returns empty
+	 * GettingApproverDomainService#getApprover returns normal result
+	 * CheckErrorApplicationMonthService#check returns empty result
 	 */
 	@Test
 	public void test02() {
@@ -107,12 +105,16 @@ public class OneMonthAppCreateTest {
 
 		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		NtsAssert.atomTask(
+				()-> actual.getAtomTask().get(),
+				any -> require.addApp(any.get())
+		);
 		assertThat(actual.getErrorInfo()).isEmpty();
 	}
 
 	/**
-	 * 承認者を取得する#取得する returns empty result
-	 * 1ヶ月申請の超過エラーをチェックする returns error
+	 * GettingApproverDomainService#getApprover returns normal result
+	 * CheckErrorApplicationMonthService#check returns error
 	 */
 	@Test
 	public void test03() {
@@ -145,13 +147,20 @@ public class OneMonthAppCreateTest {
 		};
 
 		List<ExcessErrorContent> errorInfo = new ArrayList<>();
-		ExcessErrorContent error = ExcessErrorContent.create(
+		ExcessErrorContent error1 = ExcessErrorContent.create(
 				ErrorClassification.ONE_MONTH_MAX_TIME,
 				Optional.of(new AgreementOneMonthTime(1)),
-				Optional.of(new AgreementOneYearTime(1)),
-				Optional.of(AgreementOverMaxTimes.TWELVE_TIMES)
+				Optional.of(new AgreementOneYearTime(2)),
+				Optional.of(AgreementOverMaxTimes.ONCE)
 		);
-		errorInfo.add(error);
+		ExcessErrorContent error2 = ExcessErrorContent.create(
+				ErrorClassification.TWO_MONTH_MAX_TIME,
+				Optional.of(new AgreementOneMonthTime(3)),
+				Optional.of(new AgreementOneYearTime(4)),
+				Optional.of(AgreementOverMaxTimes.TWICE)
+		);
+		errorInfo.add(error1);
+		errorInfo.add(error2);
 
 		new MockUp<CheckErrorApplicationMonthService>() {
 			@Mock
@@ -165,7 +174,27 @@ public class OneMonthAppCreateTest {
 
 		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
 		assertThat(actual.getEmpId()).isEqualTo(aplId);
-		assertThat(actual.getErrorInfo().get(0).getErrorClassification()).isEqualTo(ErrorClassification.ONE_MONTH_MAX_TIME);
+		assertThat(actual.getErrorInfo())
+				.extracting(
+						d -> d.getErrorClassification(),
+						d -> d.getMaximumTimeMonth(),
+						d -> d.getMaximumTimeYear(),
+						d -> d.getExceedUpperLimit())
+				.containsExactly(
+						tuple(
+								ErrorClassification.ONE_MONTH_MAX_TIME,
+								Optional.of(new AgreementOneMonthTime(1)),
+								Optional.of(new AgreementOneYearTime(2)),
+								Optional.of(AgreementOverMaxTimes.ONCE)
+						),
+						tuple(
+								ErrorClassification.TWO_MONTH_MAX_TIME,
+								Optional.of(new AgreementOneMonthTime(3)),
+								Optional.of(new AgreementOneYearTime(4)),
+								Optional.of(AgreementOverMaxTimes.TWICE)
+
+						)
+				);
 	}
 
 }
