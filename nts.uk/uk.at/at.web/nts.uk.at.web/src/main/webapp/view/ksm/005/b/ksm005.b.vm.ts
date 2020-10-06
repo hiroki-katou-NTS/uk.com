@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm005.b {
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
     import WeeklyWork = service.model.WeeklyWork;
     import getText = nts.uk.resource.getText;
+    import getMessage = nts.uk.resource.getMessage;
 
     export module viewmodel {
 
@@ -201,8 +202,7 @@ module nts.uk.at.view.ksm005.b {
                 let startYear = self.dateValue().startDate.toString().substring(0, 4);
                 let endYear = self.dateValue().endDate.toString().substring(0, 4);
                 if (startYear != endYear){
-                    $("#daterangepicker .ntsStartDatePicker").ntsError("set", { messageId: "Msg_149" });
-                    $("#daterangepicker .ntsEndDatePicker").ntsError("set", { messageId: "Msg_149" });
+                    $("#daterangepicker .ntsStartDatePicker").ntsError("set", getMessage("MsgB_23", [getText("KSM005_27")]), "MsgB_23");
                     return true;
                 }
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
