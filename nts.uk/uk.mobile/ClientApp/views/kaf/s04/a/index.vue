@@ -24,7 +24,11 @@
             <span class="badge badge-warning">必須</span>
           </div>
         </div>
-      <span class="position-absolute right ab1">{{-120 | timewd}}</span>
+      <span class="position-absolute right ab1">
+        <i class="far fa-clock" aria-hidden="true" ></i>
+        {{-120 | timewd}}
+
+      </span>
       <!-- A3_1 -->
       <nts-time-editor
         class="border-left-0"
@@ -40,7 +44,9 @@
         </nts-checkbox>
       <template v-else />
       <div class="position-relative">
-        <span class="position-absolute right ab2">{{-120 | timewd}}</span>
+        <span class="position-absolute right ab2">
+          <i class="far fa-clock" aria-hidden="true" ></i>
+          {{-120 | timewd}}</span>
         <!-- A3_4 -->
         <nts-time-editor
           v-model="time.leaveTime"
@@ -64,7 +70,9 @@
           <span class="badge badge-info">任意</span>
         </div>
       </div>
-      <span class="position-absolute right ab3">{{-240 | timewd}}</span>
+      <span class="position-absolute right ab3">
+        <i class="far fa-clock" aria-hidden="true" ></i>
+        {{-240 | timewd}}</span>
       <!-- A4_1 -->
       <nts-time-editor
         class="border-left-0"
@@ -80,7 +88,9 @@
       </nts-checkbox>
       <template v-else />
       <div class="position-relative">
-        <span class="position-absolute right ab4 ">{{-120 | timewd}}</span>
+        <span class="position-absolute right ab4 ">
+          <i class="far fa-clock" aria-hidden="true" ></i>
+          {{-120 | timewd}}</span>
         <!-- A4_4 -->
         <nts-time-editor
           v-model="time.leaveTime2"

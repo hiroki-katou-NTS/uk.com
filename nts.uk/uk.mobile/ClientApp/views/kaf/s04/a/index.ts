@@ -37,6 +37,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
     public condition1: boolean = true;
+    public application!: IApplication ;
 
 
     public created() {
@@ -468,4 +469,22 @@ interface ITime {
     leaveTime: number | null;
     attendanceTime2: number | null;
     leaveTime2: number | null;
+}
+
+interface IApplication {
+    appDate: string;
+    appId: null;
+    appType: number | null;
+    employeeID: string;
+    enteredPerson: null;
+    inputDate: null;
+    opAppEndDate: string;
+    opAppReason: string;
+    opAppStandardReasonCD: number | null;
+    opAppStartDate: string;
+    opReversionReason: null;
+    opStampRequestMode: null;
+    prePostAtr: 0 | 1;
+    reflectionStatus: null;
+    version: null;
 }
