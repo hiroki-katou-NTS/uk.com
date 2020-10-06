@@ -199,12 +199,7 @@ module nts.uk.at.view.ksm005.b {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
-                let startYear = self.dateValue().startDate.toString().substring(0, 4);
-                let endYear = self.dateValue().endDate.toString().substring(0, 4);
-                if (startYear != endYear){
-                    $("#daterangepicker .ntsStartDatePicker").ntsError("set", getMessage("MsgB_23", [getText("KSM005_27")]), "MsgB_23");
-                    return true;
-                }
+       
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchNoneStatutoryHolidays())
