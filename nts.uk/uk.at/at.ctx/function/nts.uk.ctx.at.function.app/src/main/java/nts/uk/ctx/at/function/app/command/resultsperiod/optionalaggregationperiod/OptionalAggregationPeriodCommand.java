@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode;
@@ -11,12 +9,7 @@ import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitiv
  * The Class OptionalAggregationPeriodCommand.
  */
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class OptionalAggregationPeriodCommand {
-
-	/** 会社ID */
-	private String companyId;
 
 	/** 任意集計枠コード */
 	private String aggrFrameCode;
@@ -25,14 +18,11 @@ public class OptionalAggregationPeriodCommand {
 	private String optionalAggrName;
 
 	/** 対象期間 */
-	private String startDate;
+	private GeneralDate startDate;
 
 	/** 対象期間 */
-	private String endDate;
+	private GeneralDate endDate;
 
-	public String getCompanyId() {
-		return companyId;
-	}
 	public AggrFrameCode getAggrFrameCode() {
 		return new AggrFrameCode(aggrFrameCode);
 	}
@@ -40,10 +30,10 @@ public class OptionalAggregationPeriodCommand {
 		return new OptionalAggrName(optionalAggrName);
 	}
 	public GeneralDate getStartDate() {
-		return GeneralDate.fromString(startDate, "yyyy/MM/dd");
+		return this.startDate;
 	}
 	public GeneralDate getEndDate() {
-		return GeneralDate.fromString(endDate, "yyyy/MM/dd");
+		return this.endDate;
 	}
 
 }

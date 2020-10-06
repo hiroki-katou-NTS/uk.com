@@ -2,7 +2,10 @@ package nts.uk.ctx.at.function.dom.indexreconstruction;
 
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -11,6 +14,9 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class ProcExecIndexResult extends DomainObject {
 
 	/** 

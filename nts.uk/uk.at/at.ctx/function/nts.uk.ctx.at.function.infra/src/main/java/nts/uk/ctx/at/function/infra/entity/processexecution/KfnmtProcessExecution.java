@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,9 @@ import nts.uk.ctx.at.function.dom.processexecution.DeleteData;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalAcceptance;
+import nts.uk.ctx.at.function.dom.processexecution.ExternalOutput;
+import nts.uk.ctx.at.function.dom.processexecution.IndexReconstruction;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
@@ -148,26 +152,23 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 						EnumAdaptor.valueOf(this.execSetting.dataStorageArt, NotUseAtr.class), 
 						Optional.of(new AuxiliaryPatternCode(this.execSetting.dataStorageCode))
 					),
-				null, //TODO
-//				new ExternalAcceptance(
-//						EnumAdaptor.valueOf(this.execSetting.extAcceptanceArt, NotUseAtr.class), 
-//						Optional<List<ExternalAcceptanceConditionCode>> listConditions
-//					),
-//				new ExternalOutput(
-//						EnumAdaptor.valueOf(this.execSetting.extOutputArt, NotUseAtr.class), 
-//						Optional<List<ExternalAcceptanceConditionCode>> listConditions
-//					),
-				null, //TODO
+				new ExternalAcceptance(
+						EnumAdaptor.valueOf(this.execSetting.extAcceptanceArt, NotUseAtr.class), 
+						Optional.empty()
+					),
+				new ExternalOutput(
+						EnumAdaptor.valueOf(this.execSetting.extOutputArt, NotUseAtr.class), 
+						Optional.empty() //Optional<List<ExternalAcceptanceConditionCode>> listConditions
+					),
 				new AggregationOfArbitraryPeriod(
 						EnumAdaptor.valueOf(this.execSetting.aggAnyPeriodArt, NotUseAtr.class), 
 						Optional.of(new AggrFrameCode(this.execSetting.aggAnyPeriodCode))
 					),
-//				new IndexReconstruction(
-//						EnumAdaptor.valueOf(this.execSetting.updStatisticsArt, NotUseAtr.class),
-//						EnumAdaptor.valueOf(this.execSetting.indexReorgArt, NotUseAtr.class),
-//						Optional<List<IndexReconstructionCategoryNO>> categoryNo
-//					)
-				null //TODO
+				new IndexReconstruction(
+						EnumAdaptor.valueOf(this.execSetting.updStatisticsArt, NotUseAtr.class),
+						EnumAdaptor.valueOf(this.execSetting.indexReorgArt, NotUseAtr.class),
+						Collections.emptyList() //Optional<List<IndexReconstructionCategoryNO>> categoryNo
+					)
 				);
 
 		return new ProcessExecution(

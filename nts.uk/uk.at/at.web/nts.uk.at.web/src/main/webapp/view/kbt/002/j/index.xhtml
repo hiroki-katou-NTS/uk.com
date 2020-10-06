@@ -21,7 +21,6 @@
 				</com:ValidatorScript> -->
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="kbt002.j.style.css" />
-      <com:scriptfile path="kbt002.j.service.js" />
       <com:scriptfile path="kbt002.j.vm.js" />
     </ui:define>
 
@@ -39,7 +38,7 @@
       <div id="contents-area">
         <div id="left-content" style="float: left; width: 290px;">
           <div id="left-content-top" class="caret-right caret-background bg-green">
-            <table id="single-list" tabindex="5" 
+            <table id="single-list" tabindex="5"
                 data-bind="ntsGridList: {
                   height: 350,
                   width: 240,
@@ -96,10 +95,10 @@
               <!-- J5_3 -->
               <div
                 id="J5_3"
-                tabindex="8" 
+                tabindex="8"
                 data-bind="ntsDatePicker: {
                   name: '#[KBT002_152]',
-                  value: startDate, 
+                  value: startDate,
                   required: true,
                   enable: isNewMode,
                   dateFormat: 'YYYY/MM/DD'
@@ -112,7 +111,7 @@
                 tabindex="9"
                 data-bind="ntsDatePicker: {
                   name: '#[KBT002_153]',
-                  value: endDate, 
+                  value: endDate,
                   required: true,
                   enable: isNewMode,
                   dateFormat: 'YYYY/MM/DD'

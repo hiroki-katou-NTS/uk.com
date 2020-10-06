@@ -1,15 +1,22 @@
 #contents-area{
-    border-bottom: 1px solid black;
-    width: 100%;
+  border-bottom: 1px solid black;
+  width: 100%;
 }
 .reponsive{
-    padding: 20px 0px 10px 5px;
+  padding: 20px 0px 10px 5px;
 }
 
 .radio-group-emp-name > .ntsRadioBox {
-    min-width: 120px;
+  min-width: 120px;
 }
 
 .radio-group-emp-name > .ntsRadioBox:focus {
-    border: none;
+  border: none;
+}
+.alignment_ui{
+  padding : 40px 0px 0px 30px;
+}
+.padding-table {
+  padding-bottom: 20px;
+  float: left;
 }

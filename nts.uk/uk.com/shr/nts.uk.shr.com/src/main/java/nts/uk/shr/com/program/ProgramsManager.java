@@ -595,6 +595,12 @@ public class ProgramsManager {
             "/view/kbt/002/l/index.xhtml");
 
     /**
+     * KBT002J
+     */
+    public static final Program KBT002J = new Program(WebAppId.AT, ProgramIdConsts.KBT002J, "KBT002_273",
+    		"/view/kbt/002/j/index.xhtml");
+    
+    /**
      * KDW001A
      */
     public static final Program KDW001A = new Program(WebAppId.AT, ProgramIdConsts.KDW001A, "KDW001_105",

@@ -41,6 +41,10 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	private static final String SELECT_ALL_BY_CID_START_DATE_END_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate ORDER BY pelh.prevExecDateTime DESC";
+	private static final String SELECT_ALL_BY_CID_AND_EXECCD = SELECT_ALL
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd ORDER BY pelh.prevExecDateTime DESC";
+	
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String companyId, String execItemCd, String execId) {
 		return this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
@@ -203,5 +207,14 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
+	}
+
+
+	@Override
+	public List<ProcessExecutionLogHistory> getByCompanyIdAndExecItemCd(String companyId, String execItemCd) {
+		return this.queryProxy().query(SELECT_ALL_BY_CID_AND_EXECCD, KfnmtProcessExecutionLogHistory.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCd", execItemCd)
+				.getList(KfnmtProcessExecutionLogHistory::toDomain);
 	}
 }

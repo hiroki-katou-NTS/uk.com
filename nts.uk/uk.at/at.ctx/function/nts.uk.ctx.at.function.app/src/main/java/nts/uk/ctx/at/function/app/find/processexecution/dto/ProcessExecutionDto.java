@@ -6,13 +6,27 @@ import java.util.stream.Collectors;
 //import javax.persistence.Column;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationTarget;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 //import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class ProcessExecutionDto {
 	
@@ -42,9 +56,6 @@ public class ProcessExecutionDto {
 	
 	/* 勤務種別変更者を再作成 */
 	private boolean recreateWorkType;
-	
-//	/* 手修正を保護する */
-//	private boolean manualCorrection;
 	
 	/* 新入社員を作成する */
 	private boolean createEmployee;
@@ -114,44 +125,100 @@ public class ProcessExecutionDto {
 	public ProcessExecutionDto() {
 		super();
 	}
+	
 	public static ProcessExecutionDto fromDomain(ProcessExecution domain) {
-		List<String> workplaceList =
-				domain.getExecScope().getWorkplaceIdList()
-							.stream()
-								.map(x -> x.getWkpId()).collect(Collectors.toList());
-		return new ProcessExecutionDto(domain.getCompanyId(),
-				domain.getExecItemCd().v(), 
-				domain.getExecItemName().v(),
-				domain.getExecSetting().getPerSchedule().isPerSchedule(),
-				domain.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value,
-				domain.getExecSetting().getPerSchedule().getPeriod().getTargetDate().v(),
-				domain.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v(),
-				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType(),
-//				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection(),
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee(),
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer(),
-				domain.getExecSetting().getDailyPerf().isDailyPerfCls(),
-				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee(),
-				domain.getExecSetting().isReflectResultCls(),
-				domain.getExecSetting().isMonthlyAggCls(),
-				domain.getExecScope().getExecScopeCls().value,
-				domain.getExecScope().getRefDate(),
-				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer(),
-				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value==1?true:false,
-				!domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent()?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value==1?true:false,
-				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false,
-				domain.getProcessExecType().value,
-				domain.getExecSetting().getAlarmExtraction().isAlarmAtr(),
-				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get().booleanValue(),
-				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue(),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()?null:domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get()),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get()),
-				domain.getCloudCreationFlag()
-				);
+		List<String> workplaceList = domain.getExecScope().getWorkplaceIdList().stream()
+				.map(ProcessExecutionScopeItem::getWkpId)
+				.collect(Collectors.toList());
+		ProcessExecutionDtoBuilder builder = ProcessExecutionDto.builder()
+				.companyId(domain.getCompanyId())
+				.execItemCd(domain.getExecItemCd().v())
+				.execItemName(domain.getExecItemName().v())
+				.workplaceList(workplaceList)
+				.processExecType(domain.getProcessExecType().value)
+				.cloudCreationFlag(domain.getCloudCreationFlag());
+		ProcessExecutionSetting execSetting = domain.getExecSetting();
+		if (execSetting != null) {
+			builder = builder
+					.reflectResultCls(execSetting.isReflectResultCls())
+					.monthlyAggCls(execSetting.isMonthlyAggCls())
+					.appRouteUpdateMonthly(execSetting.getAppRouteUpdateMonthly().equals(NotUseAtr.USE));
+			PersonalScheduleCreation perSchedule = execSetting.getPerSchedule();
+			if (perSchedule != null) {
+				builder = builder
+						.perScheduleCls(perSchedule.isPerSchedule());
+				PersonalScheduleCreationPeriod period = perSchedule.getPeriod();
+				if (period != null) {
+					builder = builder
+							.targetMonth(period.getTargetMonth().value)
+							.targetDate(period.getTargetDate().v())
+							.creationPeriod(period.getCreationPeriod().v())
+							.designatedYear(period.getDesignatedYear()
+									.map(o -> o.value)
+									.orElse(null))
+							.startMonthDay(period.getStartMonthDay()
+									.map(o -> ProcessExecutionDto.getValueMonthDay(o))
+									.orElse(null))
+							.endMonthDay(period.getEndMonthDay()
+									.map(o -> ProcessExecutionDto.getValueMonthDay(o))
+									.orElse(null));
+				}
+				PersonalScheduleCreationTarget target = perSchedule.getTarget();
+				if (target != null) {
+					TargetClassification targetClassification = target.getCreationTarget();
+					if (targetClassification != null) {
+						builder = builder
+								.creationTarget(targetClassification.value);
+					}
+					TargetSetting targetSetting = target.getTargetSetting();
+					if (targetSetting != null) {
+						builder = builder
+								.recreateWorkType(targetSetting.isRecreateWorkType())
+								.createEmployee(targetSetting.isCreateEmployee())
+								.recreateTransfer(targetSetting.isRecreateTransfer());
+					}
+				}
+			}
+			DailyPerformanceCreation dailyPerf = execSetting.getDailyPerf();
+			if (dailyPerf != null) {
+				builder = builder
+						.dailyPerfCls(dailyPerf.isDailyPerfCls())
+						.dailyPerfItem(dailyPerf.getDailyPerfItem().value)
+						.midJoinEmployee(dailyPerf.getTargetGroupClassification().isMidJoinEmployee())
+						.recreateTypeChangePerson(dailyPerf.getTargetGroupClassification().isRecreateTypeChangePerson())
+						.recreateTransfers(dailyPerf.getTargetGroupClassification().isRecreateTransfer());
+			}
+			AppRouteUpdateDaily appRouteUpdateDaily = execSetting.getAppRouteUpdateDaily();
+			if (appRouteUpdateDaily != null) {
+				builder = builder
+						.appRouteUpdateAtr(appRouteUpdateDaily.getAppRouteUpdateAtr().equals(NotUseAtr.USE))
+						.createNewEmp(appRouteUpdateDaily.getCreateNewEmp()
+								.map(o -> o.equals(NotUseAtr.USE))
+								.orElse(null));
+			}
+			AlarmExtraction alarmExtraction = execSetting.getAlarmExtraction();
+			if (alarmExtraction != null) {
+				builder = builder
+						.alarmAtr(alarmExtraction.isAlarmAtr())
+						.alarmCode(alarmExtraction.getAlarmCode()
+								.map(o -> o.v())
+								.orElse(null))
+						.mailPrincipal(alarmExtraction.getMailPrincipal()
+								.map(o -> o.booleanValue())
+								.orElse(null))
+						.mailAdministrator(alarmExtraction.getMailAdministrator()
+								.map(o -> o.booleanValue())
+								.orElse(null));
+			}
+		}
+		ProcessExecutionScope execScope = domain.getExecScope();
+		if (execScope != null) {
+			builder = builder
+					.execScopeCls(execScope.getExecScopeCls().value)
+					.refDate(execScope.getRefDate());
+		}
+		
+		return builder.build();
 	}
 	
 	private static Integer getValueMonthDay(MonthDay monthDay) {
