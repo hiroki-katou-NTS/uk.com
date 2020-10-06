@@ -25,7 +25,7 @@ module nts.uk.at.view.kbt002.l {
       ]);
 
       if (params) {
-        vm.execId = params.executionId;
+        vm.execId(params.executionId);
         vm.getProExecIndex(vm.execId());
       }
     }
@@ -33,12 +33,14 @@ module nts.uk.at.view.kbt002.l {
     getProExecIndex(execId: string) {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax(API.getExecItemInfoList, execId).then((data: ProExecIndexAndNumberTargetDto) => {
-        if (data.indexReconstructionResult) {
-          vm.items(data.indexReconstructionResult);
-        }
-        vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable + '']))
-      }).always(() => vm.$blockui("clear"));
+      vm.$ajax(API.getExecItemInfoList, execId)
+        .then((data: ProExecIndexAndNumberTargetDto) => {
+          if (data.indexReconstructionResult) {
+            vm.items(data.indexReconstructionResult);
+          }
+          vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable + '']))
+      })
+      .always(() => vm.$blockui("clear"));
     }
 
     closeDialog() {
