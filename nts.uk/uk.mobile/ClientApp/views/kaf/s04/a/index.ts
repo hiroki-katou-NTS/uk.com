@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { vmOf } from 'vue/types/umd';
@@ -37,11 +37,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
     public condition1: boolean = true;
-    public exampleDate: Date = new Date();
+
 
     public created() {
         const vm = this;
-        
+
         vm.fetchStart();
     }
 
@@ -52,8 +52,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
         vm.$auth.user.then((usr: any) => {
             vm.user = usr;
         }).then(() => {
+            vm.$mask('show');
+
             return vm.loadCommonSetting(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
         }).then((response: any) => {
+            vm.$mask('hide');
             if (response) {
                 //thuc hien goi api start KAFS04
                 vm.$mask('hide');
@@ -61,20 +64,30 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     appDates: [],
                     appDispInfoStartupDto: vm.appDispInfoStartupOutput,
                 };
+                vm.$mask('show');
                 vm.$http.post('at', API.startKAFS04, params).then((res: any) => {
                     vm.data = res.data;
                     vm.initComponentA();
                     vm.initComponetB();
                     vm.initComponentC();
+                    vm.$mask('hide');
 
                     if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
-                        vm.conditionLateEarlyLeave2Show = false ;
+                        vm.conditionLateEarlyLeave2Show = false;
                     } else {
                         vm.conditionLateEarlyLeave2Show = true;
                     }
                 });
             }
         });
+    }
+
+    get showCheckBox() {
+        const vm = this;
+
+        if (vm.kafS00BParams != null) {
+            return vm.kafS00BParams.output.prePostAtr === 1;
+        }
     }
 
     public initComponentA() {
@@ -107,7 +120,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
             },
             detailModeContent: null
         };
-        let output = {
+
+        let output: IOutput = {
             prePostAtr: 0,
             startDate: null,
             endDate: null
@@ -223,7 +237,7 @@ interface IParamS00B {
 }
 
 interface IOutput {
-    prePostAtr: number | null;
+    prePostAtr: 1 | 0;
     startDate: null;
     endDate: null;
 }
@@ -417,7 +431,7 @@ interface IAppDispInfoStartupOutput {
         approvalFunctionSet: {
             appUseSetLst: IAppUseSetLst[]
         },
-        prePostAtr: number | null,
+        prePostAtr: 0 | 1,
         baseDate: string,
         empHistImport: IEmpHistImport,
         appDeadlineUseCategory: number | null,
