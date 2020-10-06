@@ -34,6 +34,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -289,13 +290,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				Closure closure = ClosureService.getClosureDataByEmployee(
 						ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 						new CacheCarrier(), empId, baseDate);
-				// アルゴリズム「年休付与情報を取得」を実行する
+				// アルゴリズム「年休付与情報を取得」を実行する I
 				if (closure != null && closure.getClosureMonth() != null) {
 					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
 					// RQ550
 					holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, yearMonthInput,
 							baseDate);
-					// アルゴリズム「年休明細情報を取得」を実行する
+					// アルゴリズム「年休明細情報を取得」を実行する II
 					HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
 							baseDate);
 
@@ -303,16 +304,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.PAST) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
-				// アルゴリズム「年休付与情報を取得」を実行する
+				// アルゴリズム「年休付与情報を取得」を実行する I
 				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
-				// アルゴリズム「年休明細情報を取得」を実行する
+				// アルゴリズム「年休明細情報を取得」を実行する II
 				HolidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
 
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
+				// アルゴリズム「年休付与情報を取得」を実行する I
+				// 抽出対象社員かチェックする
+				// アルゴリズム「年休明細情報を取得」を実行する II
 				
 			}
+			// ❻入社退職の考慮
+			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
+			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
 			
+
 			HolidayDetails = HolidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
 			employee.setHolidayInfo(holidayInfo);
@@ -320,7 +328,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		});
 
 		employeeExports = itemValuesSyncs;
-
+		
+		// 印刷件数を確認する
+		if(employeeExports.isEmpty()) {
+			//０件
+			//エラーメッセージ(Msg_37)を表示する
+			throw new BusinessException("Msg_37");
+		}
 		Map<WorkplaceHolidayExport, List<EmployeeHolidayInformationExport>> resultmap = employeeExports.stream()
 				.collect(Collectors.groupingBy(o -> o.getWorkplace()));
 
