@@ -9,8 +9,8 @@
         <ui:define name="htmlHead">
           <script>
               var dialogSize = {
-                  width : 450,
-                  height : 300
+                  width : 425,
+                  height : 350
               };
           </script>
           <com:stylefile path="kbt002.k.main.css" />
@@ -32,8 +32,7 @@
                 <div>
                   <div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true,name: '#[KBT002_152]'}"></div> 
                   <span> ~ </span>
-                  <div tabindex="10" id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD',
-                  required: true,name: '#[KBT002_153]'}"></div>
+                  <div tabindex="2" id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD',required: true,name: '#[KBT002_153]'}"></div>
                 </div>
               </td>
             </tr>
@@ -45,7 +44,7 @@
               </td>
               <td>
                 <!-- K2_2 -->
-                <div class="radio-group-emp-name" data-bind="ntsRadioBoxGroup: {
+                <div tabindex="3" class="radio-group-emp-name" data-bind="ntsRadioBoxGroup: {
                   name: '#[KBT002_274]',
                   required: true,
                   options: empNames,
@@ -58,8 +57,10 @@
           </table>
         </div>
         <div id="functions-area-bottom">
-          <button tabindex="12" class="proceed large" data-bind="click: getDataExportCsv">#{i18n.getText('KBT002_277')}</button>
-          <button tabindex="13" data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
+          <div class="padding-bottom">
+            <button tabindex="4" class="proceed large" data-bind="click: getDataExportCsv">#{i18n.getText('KBT002_277')}</button>
+            <button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
+          </div>
         </div>
       </ui:define>
     </ui:composition>  
