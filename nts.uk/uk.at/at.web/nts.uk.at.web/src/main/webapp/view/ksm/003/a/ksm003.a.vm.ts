@@ -293,13 +293,17 @@ module nts.uk.at.view.ksm003.a {
             let dailyPatternVals = vm.mainModel().dailyPatternVals();
             let totalItems: number = dailyPatternVals.length > 0 ? dailyPatternVals.length + 1 : 1;
 
-            if (totalItems > vm.maxWorkingTimeItems) {
+            if (totalItems >= vm.maxWorkingTimeItems) {
+                vm.lessThan99Items(false);
+            } else
+                vm.lessThan99Items(true);
+
+            /* if (totalItems > vm.maxWorkingTimeItems) {
                 vm.$dialog.info({ messageId: "Msg_1688" }).then(() => {
                     vm.lessThan99Items(false);
                 });
-
                 return;
-            }
+            } */
 
             nts.uk.ui.errors.clearAll();
 
@@ -346,7 +350,7 @@ module nts.uk.at.view.ksm003.a {
             if (dailyPatternValModel.length <= 0) vm.selectedCheckAll(false);
             vm.enableRemoveItem(false);
 
-	        nts.uk.ui.errors.clearAll();
+            nts.uk.ui.errors.clearAll();
         }
 
         /*
@@ -440,16 +444,15 @@ module nts.uk.at.view.ksm003.a {
 
             //get first, last item and set to default
             let newSelectedItem: DailyPatternItemDto = null;
+            let totalRecord = dataHistory.length;
 
             dataHistory && dataHistory.some((item, i) => {
                 if (item.code == vm.selectedCode()) {
-                    if (dataHistory.length == 1) {
-
+                    if (totalRecord == 1) {
                         vm.itemLst([]);
                         vm.switchNewMode()
                         return;
-
-                    } else if (i == 0) {
+                    } else if (i < totalRecord - 1) {
                         newSelectedItem = dataHistory[i + 1];
                     } else {
                         newSelectedItem = dataHistory[i - 1];
@@ -739,15 +742,16 @@ module nts.uk.at.view.ksm003.a {
                 currentRow: DailyPatternValModel = data;
 
             self.$window.storage("parentCodes", {
-	              selectedWorkTypeCode: currentRow.typeCode(),
-	              selectedWorkTimeCode: currentRow.timeCode()
+                selectedWorkTypeCode: currentRow.typeCode(),
+                selectedWorkTimeCode: currentRow.timeCode()
             });
 
+            self.$window.storage("childData", undefined); //clear old data
             self.$window
                 .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
                 .then(function (result) {
                     self.$window.storage("childData").then((resultData) => {
-                        if (resultData) {
+                        if (!nts.uk.util.isNullOrUndefined(resultData)) {
                             currentRow.typeCode(resultData.selectedWorkTypeCode);
                             currentRow.timeCode(resultData.selectedWorkTimeCode);
                             currentRow.setWorkTypeName(resultData.selectedWorkTypeName);
