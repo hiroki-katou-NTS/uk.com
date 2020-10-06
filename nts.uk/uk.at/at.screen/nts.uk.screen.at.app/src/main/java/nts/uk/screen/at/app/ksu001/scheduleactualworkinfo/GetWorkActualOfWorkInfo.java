@@ -141,7 +141,7 @@ public class GetWorkActualOfWorkInfo {
 					String workTypeName = null;
 					Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 					if (workTypeInfor.isPresent()) {
-						workTypeName = workTypeInfor.get().getName();
+						workTypeName = workTypeInfor.get().getAbbreviationName();
 					}
 					String workTimeCode = workInformation.getWorkTimeCode() == null ? null: workInformation.getWorkTimeCode().toString();
 					Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
