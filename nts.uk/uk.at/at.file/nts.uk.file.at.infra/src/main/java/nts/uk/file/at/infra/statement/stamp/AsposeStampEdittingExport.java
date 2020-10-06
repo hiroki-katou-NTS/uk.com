@@ -46,7 +46,7 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					"KMP001_" + "カードNOの登録" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
+					"KMP001_" + "カードNOの登録" + "_" +  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN))
 							+ REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
