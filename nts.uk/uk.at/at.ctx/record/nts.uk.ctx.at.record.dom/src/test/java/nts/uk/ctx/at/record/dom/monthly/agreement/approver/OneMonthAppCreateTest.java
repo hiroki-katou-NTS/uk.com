@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,7 +111,7 @@ public class OneMonthAppCreateTest {
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
 				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
-		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
+		val approverItem = new ApproverItem(Arrays.asList("approver01"), Arrays.asList("confirmer01"));
 		new MockUp<GettingApproverDomainService>() {
 			@Mock
 			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
@@ -164,7 +165,7 @@ public class OneMonthAppCreateTest {
 		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
 				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
 
-		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
+		val approverItem = new ApproverItem(Arrays.asList("approver01"), Arrays.asList("confirmer01"));
 		new MockUp<GettingApproverDomainService>() {
 			@Mock
 			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
