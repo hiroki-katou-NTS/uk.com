@@ -505,6 +505,9 @@ module nts.uk.at.view.kwr001.a {
                                     } else {
                                         self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));
                                     }
+                                } else {
+                                    self.itemListCodeTemplate([]);
+                                    self.selectedCodeA7_3('');
                                 }
                             } else {
                                 if (dataService.freeSetting) {
@@ -514,6 +517,9 @@ module nts.uk.at.view.kwr001.a {
                                     } else {
                                         self.selectedCodeA7_8(nts.uk.ui.windows.getShared('KWR001_C'));
                                     }
+                                } else {
+                                    self.outputItemDailyWorkSchedules([]);
+                                    self.selectedCodeA7_8('');
                                 }
                             }
                         }).fail(function(error) {
