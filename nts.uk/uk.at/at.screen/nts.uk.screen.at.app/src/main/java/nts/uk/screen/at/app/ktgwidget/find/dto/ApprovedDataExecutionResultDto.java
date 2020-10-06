@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDet
 @NoArgsConstructor
 public class ApprovedDataExecutionResultDto {
 	
-	//勤怠担当者である
+	// 勤怠担当者である
 	private Boolean haveParticipant;
 	
 	// 名称
