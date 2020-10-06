@@ -898,7 +898,7 @@ module nts.uk.com.view.cmm024.a {
 		addEmptySetting() {
 			let vm = this,
 				employeesList: Array<EmployeeDto> = [];
-			let newEmployee = new EmployeeDto('-1', '未設定');
+			let newEmployee = new EmployeeDto('-1', vm.$i18n('CMM024_80'));
 			employeesList.push(newEmployee);
 
 			return employeesList;
