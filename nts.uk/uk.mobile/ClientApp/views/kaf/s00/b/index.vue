@@ -2,8 +2,8 @@
 <div class="kafs00b">
     <div v-if="$input.mode==ScreenMode.DETAIL">
         <div class="card card-label">
-            <div class="card-header" style="align-items: center">
-                <v-label class="border-0 pl-0">
+            <div class="card-header uk-bg-accordion" style="align-items: center">
+                <v-label class="border-0 pl-0 my-n2">
                     {{'KAFS00_7' | i18n}}</v-label>
             </div>
             <div class="card-body mb-2">
@@ -11,8 +11,8 @@
             </div>
         </div>   
         <div class="card card-label" v-if="displayPrePost">
-            <div class="card-header" style="align-items: center">
-                <v-label class="border-0 pl-0">
+            <div class="card-header uk-bg-accordion" style="align-items: center">
+                <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS00_8' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
@@ -21,8 +21,8 @@
             </div>
         </div>
         <div class="card card-label">
-            <div class="card-header" style="align-items: center">
-                <v-label class="border-0 pl-0">
+            <div class="card-header uk-bg-accordion" style="align-items: center">
+                <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS00_9' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
@@ -38,8 +38,8 @@
     </div>
     <div v-if="$input.mode==ScreenMode.NEW">
         <div class="card card-label" v-if="displayPrePost">
-            <div class="card-header" style="align-items: center">
-                <v-label class="border-0 pl-0">
+            <div class="card-header uk-bg-accordion" style="align-items: center">
+                <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS00_8' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
@@ -56,8 +56,8 @@
             </div>
         </div>    
         <div class="card card-label">
-            <div class="card-header" style="align-items: center">
-                <v-label class="border-0 pl-0">
+            <div class="card-header uk-bg-accordion" style="align-items: center">
+                <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS00_9' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
