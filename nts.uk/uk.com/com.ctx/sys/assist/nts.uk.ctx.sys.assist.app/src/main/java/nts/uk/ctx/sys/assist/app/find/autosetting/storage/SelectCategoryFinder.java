@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import java.util.Comparator;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.assist.app.command.autosetting.SelectCategoryCommand;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.SelectCategoryCommand;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;

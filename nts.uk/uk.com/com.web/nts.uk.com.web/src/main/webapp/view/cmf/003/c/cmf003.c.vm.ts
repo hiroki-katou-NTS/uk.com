@@ -167,7 +167,7 @@ module nts.uk.com.view.cmf003.c {
 
   @bean()
   export class ViewModel extends ko.ViewModel {
-    screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.NEW);
+    screenMode: KnockoutObservable<number> = ko.observable();
     isNewMode: KnockoutObservable<boolean> = ko.computed(() => {
       const vm = this;
       return vm.screenMode() === ScreenMode.NEW;
@@ -209,6 +209,7 @@ module nts.uk.com.view.cmf003.c {
 
     //Auto execution
     saveFormatChecked: KnockoutObservable<boolean> = ko.observable(false);
+    saveFormatEnabled: KnockoutObservable<boolean> = ko.observable(true);
     usePasswordChecked: KnockoutObservable<boolean> = ko.observable(false);
     targetYearDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel(0, '参照年'),
@@ -288,6 +289,7 @@ module nts.uk.com.view.cmf003.c {
 
     private initDisplay() {
       const vm = this;
+      vm.screenMode(ScreenMode.NEW);
       vm.$blockui("grayout");
       service.initDisplay().then((res) => {
         vm.checkInCharge(res.pic);
@@ -369,7 +371,7 @@ module nts.uk.com.view.cmf003.c {
             vm.patternList.valueHasMutated();
           }
         }).fail((err) => {
-          vm.$errors("#C7_2 input", err);
+          vm.$dialog.error({ messageId: 'Msg_3' });
         })
           .always(() => {
             vm.$blockui("clear");
@@ -461,6 +463,7 @@ module nts.uk.com.view.cmf003.c {
           vm.currentCateSelected.push(category);
         });
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
+        vm.saveFormatEnabled(pattern.patternClassification === 0);
         vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
         vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
         vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferYear));

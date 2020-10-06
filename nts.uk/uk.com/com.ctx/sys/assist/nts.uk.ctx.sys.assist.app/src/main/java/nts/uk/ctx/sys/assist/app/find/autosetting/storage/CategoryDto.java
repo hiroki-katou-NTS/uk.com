@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

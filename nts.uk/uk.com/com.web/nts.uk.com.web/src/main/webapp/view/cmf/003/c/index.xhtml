@@ -77,13 +77,13 @@
         <!-- C5_1 新規ボタン -->
         <button class="large functional-button" data-bind="click: refreshNew" tabindex="1">#{i18n.getText('CMF003_201')}</button>
         <!-- C5_2 登録ボタン -->
-        <button class="large functional-button proceed" data-bind="click: register" tabindex="2">#{i18n.getText('CMF003_202')}</button>
+        <button class="large functional-button proceed" data-bind="click: register, enable: saveFormatEnabled" tabindex="2">#{i18n.getText('CMF003_202')}</button>
 
         <com:ko tag="ifnot" bind="isNewMode">
            <!-- C5_3 複製ボタン -->
           <button class="large functional-button" data-bind="click: duplicate" tabindex="3">#{i18n.getText('CMF003_203')}</button>
           <!-- C5_4 削除ボタン -->
-          <button class="large functional-button danger" data-bind="click: deletePattern" tabindex="4">#{i18n.getText('CMF003_204')}</button>
+          <button class="large functional-button danger" data-bind="click: deletePattern, enable: saveFormatEnabled" tabindex="4">#{i18n.getText('CMF003_204')}</button>
         </com:ko>
         <com:ko tag="if" bind="isNewMode">
            <!-- C5_3 複製ボタン -->
@@ -129,28 +129,28 @@
                 data-bind="ntsFormLabel: { required: true, constraint: 'PatternCode' }">#{i18n.getText('CMF003_23')}
               </div>
               <!-- C7_2 パターンコード -->
-              <div id="C7_2" class="control-group div-column-2">
-                <input data-bind="ntsTextEditor: {         
+              <div class="control-group div-column-2">
+                <input id="C7_2" data-bind="ntsTextEditor: {         
                   name: '#[CMF003_23]',         
                   value: codeValue,         
                   constraint: 'PatternCode',         
                   required: true,         
-                  enable: isNewMode}" />
+                  enable: isNewMode}" tabindex="7" />
               </div>
               <!-- C7_3 パターン名称 -->
               <div id="C7_3" class="div-column-3"
                 data-bind="ntsFormLabel: { required: true, constraint: 'PatternName' }">#{i18n.getText('CMF003_24')}
               </div>
               <!-- C7_4 パターン名 -->
-              <div id="C7_4" class="control-group valign-center div-column-4">
-                <input data-bind="ntsTextEditor: {
+              <div class="control-group valign-center div-column-4">
+                <input id="C7_4" data-bind="ntsTextEditor: {
                   name: '#[CMF003_24]',
                   value: nameValue,
                   constraint: 'PatternName',
                   required: true,
                   enable: true,
                   option: options
-                }" />
+                }" tabindex="8" />
               </div>
             </div>
             <div class="div-line flex">
@@ -166,7 +166,7 @@
                 value: selectedSystemType,
                 visibleItemsCount: 5,
                 editable: false,
-              }">
+              }" tabindex="10">
               </div>
               <!-- C1_4 保存するカテゴリ -->
               <div id="C1_4" class="div-column-2" data-bind="ntsFormLabel: { required: true }">
@@ -187,7 +187,8 @@
 								draggable: true,
 								multipleDrag: { left: true, right: false },
 								innerDrag: { left: false, right: true },
-								outerDrag: { left: true, right: true } 
+                outerDrag: { left: true, right: true },
+                disableMoveButton: saveFormatEnabled
               }">
               </div>
             </div>
@@ -196,7 +197,7 @@
               <div id="C3_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_637')}</div>
               <!-- C3_2 調査用保存可否 -->
               <div id="C3_2" class="div-column-2"
-                data-bind="ntsCheckBox: { checked: saveFormatChecked, enable: true }" tabindex="13">
+                data-bind="ntsCheckBox: { checked: saveFormatChecked, enable: saveFormatEnabled }" tabindex="13">
                 #{i18n.getText('CMF003_50')}</div>
             </div>
             <div class="div-line flex">

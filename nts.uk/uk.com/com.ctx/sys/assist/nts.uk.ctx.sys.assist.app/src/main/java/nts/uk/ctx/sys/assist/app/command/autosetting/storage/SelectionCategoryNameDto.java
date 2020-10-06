@@ -1,7 +1,7 @@
-package nts.uk.ctx.sys.assist.app.command.autosetting;
+package nts.uk.ctx.sys.assist.app.command.autosetting.storage;
 
 import lombok.Data;
-import nts.uk.ctx.sys.assist.app.find.autosetting.DataStoragePatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
 
 /**
  * 選択カテゴリ名称DTO

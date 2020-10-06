@@ -105,6 +105,7 @@ module nts.uk.com.view.cmf004.k {
         //データ保存監視処理: 
         self.interval = setInterval(self.confirmProcess, 1000, self);
 
+        $("#K3_1").focus();
         dfd.resolve();
         return dfd.promise();
       }

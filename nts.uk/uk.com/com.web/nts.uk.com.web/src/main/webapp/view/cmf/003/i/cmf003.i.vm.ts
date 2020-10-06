@@ -53,6 +53,7 @@ module nts.uk.com.view.cmf003.i {
         startDate: previousDateText,
         endDate: currentDateText
       });
+      $("#I2_4 .ntsStartDate input").focus();
     }
 
     private findSaveSet(from: string, to: string) {

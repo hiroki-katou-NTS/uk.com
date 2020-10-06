@@ -5,15 +5,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.assist.app.command.autosetting.AddPatternCommand;
-import nts.uk.ctx.sys.assist.app.command.autosetting.AddPatternCommandHandler;
-import nts.uk.ctx.sys.assist.app.command.autosetting.DeletePatternCommand;
-import nts.uk.ctx.sys.assist.app.command.autosetting.DeletePatternCommandHandler;
-import nts.uk.ctx.sys.assist.app.command.autosetting.FindSelectedPatternCommand;
-import nts.uk.ctx.sys.assist.app.find.autosetting.CategoryInitDisplayFinder;
-import nts.uk.ctx.sys.assist.app.find.autosetting.SelectedPatternFinder;
-import nts.uk.ctx.sys.assist.app.find.autosetting.SelectedPatternParameterDto;
-import nts.uk.ctx.sys.assist.app.find.autosetting.StartupParameterDto;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.AddPatternCommand;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.AddPatternCommandHandler;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.DeletePatternCommand;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.DeletePatternCommandHandler;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.FindSelectedPatternCommand;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.CategoryInitDisplayFinder;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectedPatternFinder;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectedPatternParameterDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.StartupParameterDto;
 
 @Path("ctx/sys/assist/autosetting")
 @Produces("application/json")

@@ -1,12 +1,17 @@
 package nts.uk.ctx.sys.assist.infra.entity.storage;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.NonNull;
 
 @Embeddable
-public class SspmtDataStorageSelectionCategoryPk {
+public class SspmtDataStorageSelectionCategoryPk implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 契約コード
 	 */

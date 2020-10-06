@@ -343,6 +343,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         }
       }).always(() => {
         block.clear();
+        $("#B3_1").focus();
       });
     }
 
