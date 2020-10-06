@@ -66,8 +66,8 @@ public class AsposeGoReturnDirectly {
                 if(dataWork.isPresent() && dataWork != null) {
                     dataWorkTypeCD = dataWork.get().getWorkTypeCode();
                     dataWorkTimeCD = dataWork.get().getWorkTimeCode();
-                    workHourCD = dataWorkTimeCD.v();
-                    workTypeCD = dataWorkTypeCD.v();
+                    workHourCD = dataWorkTimeCD != null ? dataWorkTimeCD.v() : workHourCD;
+                    workTypeCD = dataWorkTypeCD != null ? dataWorkTypeCD.v() : workTypeCD;
                 }
                 
                 // Get List workTime
