@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -117,6 +118,7 @@ public class SspmtDataStoragePatternSetting extends UkJpaEntity
 	 * データ保存の選択カテゴリ
 	 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "patternSetting", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "SSPMT_DATASTO_SELECT_CATE")
 	public List<SspmtDataStorageSelectionCategory> categories;
 
 	@Override
