@@ -103,6 +103,11 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 
 	@Override
+	public void delete(AgreementYearSetting agreementYearSetting) {
+		this.commandProxy().remove(toEntity(agreementYearSetting));
+	}
+
+	@Override
 	public void add(AgreementYearSetting agreementYearSetting) {
 		this.commandProxy().insert(toEntity(agreementYearSetting));
 	}
