@@ -21,23 +21,23 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 @Getter
 public class ExecItemEnumDto {
 
-	private List<EnumConstant> targetMonth;
+	private List<EnumConstant> targetMonthList;
 
-	private List<EnumConstant> dailyPerfItems;
+	private List<EnumConstant> dailyPerfItemList;
 	
-	private List<EnumConstant> repeatContentItems;
+	private List<EnumConstant> repeatContentItemList;
 	
-	private List<EnumConstant> monthDays;
+	private List<EnumConstant> monthDayList;
 	
-	private List<EnumConstant> designatedYear;
+	private List<EnumConstant> designatedYearList;
 	
 	public static ExecItemEnumDto init(I18NResourcesForUK i18n) {
 		ExecItemEnumDto dto = new ExecItemEnumDto();
-		dto.setTargetMonth(EnumAdaptor.convertToValueNameList(TargetMonth.class, i18n));
-		dto.setDailyPerfItems(EnumAdaptor.convertToValueNameList(DailyPerformanceItem.class, i18n));
-		dto.setRepeatContentItems(EnumAdaptor.convertToValueNameList(RepeatContentItem.class, i18n));
-		dto.setMonthDays(EnumAdaptor.convertToValueNameList(RepeatMonthDaysSelect.class, i18n));
-		dto.setDesignatedYear(EnumAdaptor.convertToValueNameList(CreateScheduleYear.class, i18n));
+		dto.setTargetMonthList(EnumAdaptor.convertToValueNameList(TargetMonth.class, i18n));
+		dto.setDailyPerfItemList(EnumAdaptor.convertToValueNameList(DailyPerformanceItem.class, i18n));
+		dto.setRepeatContentItemList(EnumAdaptor.convertToValueNameList(RepeatContentItem.class, i18n));
+		dto.setMonthDayList(EnumAdaptor.convertToValueNameList(RepeatMonthDaysSelect.class, i18n));
+		dto.setDesignatedYearList(EnumAdaptor.convertToValueNameList(CreateScheduleYear.class, i18n));
 		return dto;
 	}
 }
