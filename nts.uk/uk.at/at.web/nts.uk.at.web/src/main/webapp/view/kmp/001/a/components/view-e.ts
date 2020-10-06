@@ -40,7 +40,8 @@ module nts.uk.at.view.kmp001.e {
 	}
 
 	const KMP001E_API = {
-		GENERATE_STAMP_CARD: 'screen/pointCardNumber/getStampCardGenerated'
+		GENERATE_STAMP_CARD: 'screen/pointCardNumber/getStampCardGenerated',
+		ADD_STAMP_CARD: 'at/record/register-stamp-card/view-g/registerCardGenarate'
 	};
 
 	@component({
@@ -54,6 +55,7 @@ module nts.uk.at.view.kmp001.e {
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
 		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
+		public cardGeneration: KnockoutObservableArray<IGenerateCard> = ko.observableArray([]);
 
 		paddingTypes: PaddingType[] = [
 			{
@@ -85,7 +87,7 @@ module nts.uk.at.view.kmp001.e {
 							isShowSelectAllButton: false,  //全選択表示
 							isSelectAllAfterReload: true,
 							disableSelection: false,
-							maxRows: 15,
+							maxRows: 12,
 							maxWidth: 400
 						} as any);
 				});
@@ -99,23 +101,42 @@ module nts.uk.at.view.kmp001.e {
 
 		addStampCard() {
 			const vm = this;
+			const paddingType = ko.unwrap(vm.paddingType);
+			const codes = ko.unwrap(vm.selectedCode);
+			const targetPerson = ko.unwrap(vm.employees)
+				.filter(f => codes.indexOf(f.code) > -1)
+				.map(({ code, employeeId }) => ({
+					employeeCd: code,
+					sid: employeeId
+				}));
 
-			console.log(ko.toJS(vm.paddingType));
+			const param = { loginEmployee: vm.$user.employeeId, makeEmbossedCard: paddingType, targetPerson: targetPerson }
+
+			vm.$ajax(KMP001E_API.GENERATE_STAMP_CARD, param)
+				.then((data: IGenerateCard[]) => {
+					vm.cardGeneration(data);
+					console.log(data);
+				})
+				.then(() => {
+					const param = {sid: targetPerson.map(m => m.sid), cardGeneration: ko.unwrap(vm.cardGeneration)};
+					vm.$ajax(KMP001E_API.ADD_STAMP_CARD, param);
+				});
+				
 		}
 	}
+}
 
-	enum StampCardEditMethod {
+enum StampCardEditMethod {
 
-		EMPLOYEE_CODE = 0,
+	EMPLOYEE_CODE = 0,
 
-		COMPANY_CODE_AND_EMPLOYEE_CODE = 1,
-	}
+	COMPANY_CODE_AND_EMPLOYEE_CODE = 1,
+}
 
-	interface PaddingType {
-		value: StampCardEditMethod;
-		label: 'KMP001_73' | 'KMP001_74';
-		content: 'KMP001_75' | 'KMP001_76';
-	}
+interface PaddingType {
+	value: StampCardEditMethod;
+	label: 'KMP001_73' | 'KMP001_74';
+	content: 'KMP001_75' | 'KMP001_76';
 }
 
 interface IGenerateCard {

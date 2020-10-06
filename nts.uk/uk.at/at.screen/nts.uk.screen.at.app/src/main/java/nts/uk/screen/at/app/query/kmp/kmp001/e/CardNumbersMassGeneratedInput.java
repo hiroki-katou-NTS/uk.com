@@ -19,11 +19,11 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.TargetPerson;
 public class CardNumbersMassGeneratedInput {
 
 	// ログイン社員
-	private String loginEmployee;
+	public String loginEmployee;
 	
 	// 打刻カード作成方法
-	private int makeEmbossedCard;
+	public int makeEmbossedCard;
 	
 	// 対象者リスト
-	private List<TargetPerson> targetPerson;
+	public List<TargetPerson> targetPerson;
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stamcardedit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
