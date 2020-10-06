@@ -113,7 +113,11 @@ module nts.uk.at.view.ksm003.a {
                         $("#inpPattern").focus();
                     }
                 }
-            );
+            ).fail((error) => {
+                vm.$dialog.info({ messageId: error.messageId }).then(() => {
+                    return;
+                });
+            });
         }
 
         public switchNewMode(): void {
@@ -536,7 +540,7 @@ module nts.uk.at.view.ksm003.a {
 
 
             let detailDto = vm.mainModel().toDto();
-            console.log(detailDto);
+
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
                 let selectedName = vm.selectedName();
@@ -561,7 +565,7 @@ module nts.uk.at.view.ksm003.a {
             } else {
                 detailDto.workCycleName = detailDto.name; //vm.selectedName();
             }
-            console.log(detailDto);
+
             this.saveDailyPattern(detailDto).done(function (res) {
                 let MsgId = '';
                 let infosData = detailDto.infos;
@@ -638,6 +642,10 @@ module nts.uk.at.view.ksm003.a {
             $('#inpCode').ntsEditor('validate');
             $('#inpPattern').ntsEditor('validate');
 
+            if (nts.uk.ui.errors.hasError()) {
+                return true;
+            }
+
             if (nts.uk.util.isNullOrEmpty(self.mainModel().dailyPatternVals())) {
                 $('.fixed-table').ntsError('set', { messageId: "Msg_31" });
             }
@@ -653,7 +661,6 @@ module nts.uk.at.view.ksm003.a {
 
                 if (!hasRowIsNull && (nts.uk.text.isNullOrEmpty(item.days()) || item.days() <= 0)) {
                     $('#days' + item.dispOrder).ntsEditor('validate');
-                    //$('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
                     hasRowIsNull = true;
                 }
             });
@@ -745,6 +752,7 @@ module nts.uk.at.view.ksm003.a {
                 selectedWorkTimeCode: currentRow.timeCode()
             });
 
+            //self.$window.storage("childData", undefined).then(() => {
             self.$window
                 .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
                 .then(function () {
@@ -771,6 +779,7 @@ module nts.uk.at.view.ksm003.a {
                         }
                     });
                 });
+            //});
         }
 
         displayWorkingInfo(patternCode: string) {
