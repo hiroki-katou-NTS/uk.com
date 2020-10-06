@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
-import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
-
 import java.util.Optional;
+
+import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 
 /**
  * The Interface ProcExecIndexRepository.
@@ -34,4 +34,11 @@ public interface ProcExecIndexRepository {
 
 
 	Optional<ProcExecIndex> findByExecId(String execId);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	void update(ProcExecIndex domain);
 }

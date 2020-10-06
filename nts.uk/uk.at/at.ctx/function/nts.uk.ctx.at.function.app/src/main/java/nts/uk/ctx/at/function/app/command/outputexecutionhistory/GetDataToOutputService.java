@@ -232,11 +232,11 @@ public class GetDataToOutputService extends ExportService<Object> {
                             case APP_ROUTE_U_MON:
                                 execLogDetail.setAppDataInfoMonthlies(this.appDataInfoMonthlyRepo.getAppDataInfoMonthlyByExeID(execIdByLogHistory));
                                 break;
-                            // Case 6 ドメインモデル「外部受入エラーログ」を取得する
+                            // Case 6 ドメインモデル「外部受入エラーログ」のデータを取得する
                             case EXTERNAL_ACCEPTANCE:
 //                                execLogDetail.setExacErrorLogImports(this.exacErrorLogAdapter.getExacErrorLogByProcessId(execIdByLogHistory));
                                 break;
-                            // Case 7 ドメインモデル「外部出力結果ログ」を取得する
+                            // Case 7 ドメインモデル「外部出力結果ログ」のデータを取得する
                             case EXTERNAL_OUTPUT:
 //                                execLogDetail.setExternalOutLogImports(this.externalOutLogAdapter.getExternalOutLogById(companyId,execIdByLogHistory,0));
                                 break;
@@ -337,10 +337,18 @@ public class GetDataToOutputService extends ExportService<Object> {
                 empBasicInfo.setGender(person.getGender());
                 empBasicInfo.setBirthDay(person.getBirthDay());
                 empBasicInfo.setBusinessName(person.getBusinessName());
-                empBasicInfo.setEmployeeCode(fnImport.get().getEmployeeCode());
-                empBasicInfo.setEmployeeId(fnImport.get().getEmployeeId());
-                empBasicInfo.setEntryDate(fnImport.get().getEntryDate());
-                empBasicInfo.setRetiredDate(fnImport.get().getRetiredDate());
+                empBasicInfo.setEmployeeCode(fnImport
+                		.map(item -> item.getEmployeeCode())
+                		.orElse(null));
+                empBasicInfo.setEmployeeId(fnImport
+                		.map(item -> item.getEmployeeId())
+                		.orElse(null));
+                empBasicInfo.setEntryDate(fnImport
+                		.map(item -> item.getEntryDate())
+                		.orElse(null));
+                empBasicInfo.setRetiredDate(fnImport
+                		.map(item -> item.getRetiredDate())
+                		.orElse(null));
                 result.add(empBasicInfo);
             });
         }
@@ -425,10 +433,16 @@ public class GetDataToOutputService extends ExportService<Object> {
                     rowCSV2.put(headerCSV2.get(4), taskLog.getLastExecDateTime().toString("yyyy-MM-dd HH:mm:ss"));
                     rowCSV2.put(headerCSV2.get(5), taskLog.getLastEndExecDateTime().toString("yyyy-MM-dd HH:mm:ss"));
                     rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(proHis.getLastExecDateTime(),proHis.getLastEndExecDateTime()));
-                    rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus().get().name);
-                    rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem().equals(null) ? null : true ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                    rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus()
+                    		.map(item -> item.name)
+                    		.orElse(null));
+                    rowCSV2.put(headerCSV2.get(8), proHis.getErrorSystem() == null 
+                    		? null 
+                    		: proHis.getErrorSystem() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
                     rowCSV2.put(headerCSV2.get(9), taskLog.getSystemErrorDetails());
-                    rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness().equals(null) ? null : true ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
+                    rowCSV2.put(headerCSV2.get(10), proHis.getErrorBusiness() == null 
+                    		? null 
+                    		: proHis.getErrorBusiness() ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291"));
                     csv.writeALine(rowCSV2);
                 });
             }
@@ -502,6 +516,8 @@ public class GetDataToOutputService extends ExportService<Object> {
                             case APP_ROUTE_U_MON:
                                 rowCSV3.put(headerCSV3.get(7), appMonthly.getErrorMessage());
                                 break;
+						default:
+							break;
                         }
                         csv.writeALine(rowCSV3);
                         j++;

@@ -24,29 +24,27 @@ module nts.uk.at.view.kbt002.l {
         { headerText: getTextResource('KBT002_331'), key: 'fragmentationRateAfterProcessing', width:150}
       ]);
       
-    
       this.currentCode = ko.observable();
       this.currentCodeList = ko.observableArray([]);
 
       const sharedData = getShared('inputDialogL');
-      if(sharedData){
+      if (sharedData) {
         vm.execId = sharedData.executionId;
+        vm.getProExecIndex(vm.execId());
       }
-      vm.getProExecIndex();
     }
 
-    getProExecIndex(){
-    const vm = this;
-    vm.$blockui('grayout');
-    service.indexResconstruction(vm.execId()).then((data : ProExecIndexAndNumberTargetDto) => {
-      vm.$blockui('clear');
-      if(data.indexReconstructionResult){
-        vm.items(data.indexReconstructionResult);
-      }
-      vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable+'']))
-      })
-      .always(() => vm.$blockui("clear"));
-   }
+    getProExecIndex(execId: string) {
+      const vm = this;
+      vm.$blockui('grayout');
+      service.indexResconstruction(execId).then((data : ProExecIndexAndNumberTargetDto) => {
+        if(data.indexReconstructionResult) {
+          vm.items(data.indexReconstructionResult);
+        }
+        vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable+'']))
+        })
+        .always(() => vm.$blockui("clear"));
+    }
 
     closeDialog(){
       const vm = this;

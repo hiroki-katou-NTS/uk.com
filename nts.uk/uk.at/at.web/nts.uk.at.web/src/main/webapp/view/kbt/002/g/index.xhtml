@@ -17,7 +17,6 @@
 				<com:stylefile path="kbt002.g.main.css" />
 				<com:scriptfile path="kbt002.g.service.js" />
 				<com:scriptfile path="kbt002.g.vm.js" />
-				<com:scriptfile path="kbt002.g.start.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -89,7 +88,7 @@
 								<com:ko-if bind="taskId !== 5">
 									<td style="text-align: center;">
 										<button tabindex="1" class="setting small"
-											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: errorBusiness == true"
+											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: (errorBusiness == true && taskId !== 13) || (errorBusiness !== true && taskId === 13)"
 											data-code="${taskId}" style="width: 100px;">#{i18n.getText('KBT002_146')}</button>
 									</td>
 								</com:ko-if>
