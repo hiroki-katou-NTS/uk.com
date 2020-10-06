@@ -148,7 +148,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
@@ -939,9 +939,9 @@ public class ScheduleCreatorExecutionTransaction {
 							if (y.getWorkNo() == 2) {
 								i = 1;
 							}
-							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
+							integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
 									.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
-									.collect(Collectors.toList());
+									.collect(Collectors.toList()));
 							if(i == 0 || (i == 1 && integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1)) {
 							TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
 									.get(i);
@@ -964,6 +964,10 @@ public class ScheduleCreatorExecutionTransaction {
 							x.setCanceledLate(false);
 							x.setCanceledEarlyLeave(false);
 							}
+						}
+						if(integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1 
+								&& prepareWorkOutput.getScheduleTimeZone().size() < 2) {
+							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().remove(1);
 						}
 					}
 					;

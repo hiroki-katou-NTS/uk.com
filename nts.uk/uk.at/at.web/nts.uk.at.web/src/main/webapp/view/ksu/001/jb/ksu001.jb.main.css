@@ -16,7 +16,7 @@ hr {
 
 #group-link-button-ja {
 	height: 30px;
-	width: 560px;
+	width: 660px;
 	margin-top: 10px;
 	margin-left: 50px;
 	white-space: nowrap;
@@ -25,7 +25,7 @@ hr {
 #group-link-button-ja a {
 	font-size: 13px;
 	margin-top: 5px;
-	margin-left: 10px;
+	margin-left: 5px;
 	display: inline-block;
 }
 
@@ -107,21 +107,31 @@ hr {
 	margin-top: 10px;
 }
 
-#contents-area{
-    overflow-y: hidden !important;
+#contents-area {
+	overflow-y: hidden !important;
 }
 
 .color-gray {
 	cursor: default;
 	text-decoration: none;
 }
-.valign-center.control-group{
+
+.valign-center.control-group {
 	margin-left: 50px;
 }
-.nts-switch-button.unselectable{
+
+.nts-switch-button.unselectable {
 	width: 100px;
 }
-#test2 button{
+
+#test2 button {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+a.hyperlink {
+	width: 57px;
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }

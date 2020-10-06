@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 @Getter
 public class OutingTimeOfDailyAttd {
 	//時間帯
+	@Setter
 	private List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 
 	public OutingTimeOfDailyAttd(List<OutingTimeSheet> outingTimeSheets) {

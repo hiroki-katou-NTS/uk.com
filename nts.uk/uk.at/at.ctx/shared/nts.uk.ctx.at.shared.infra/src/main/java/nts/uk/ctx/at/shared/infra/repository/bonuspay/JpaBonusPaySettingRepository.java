@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 

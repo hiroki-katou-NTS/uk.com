@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 
 /**
  * 期間ごとのマスタ一覧
