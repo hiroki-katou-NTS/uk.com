@@ -99,7 +99,7 @@ public class ExtraHolidayManagementService {
 			
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId);
-		} else if (searchMode == 1){
+		} else if (searchMode == 1) {
 			
 			listLeaveData = leaveManaDataRepository.getAllData();
 			listCompensatoryData = comDayOffManaDataRepository.getAllData();
@@ -180,7 +180,7 @@ public class ExtraHolidayManagementService {
 		
 		if (searchMode == 1) { // 「全ての状況」の場合
 			listLeaveData = leaveManaDataRepository.getBySid(cid, employeeId);
-			listCompensatoryData = comDayOffManaDataRepository.getBySIdAndRemainDays(cid, employeeId);
+			listCompensatoryData = comDayOffManaDataRepository.getBySid(cid, employeeId);
 		}
 		
 		// 取得したデータをチェック
@@ -208,8 +208,9 @@ public class ExtraHolidayManagementService {
 		
 		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId,
 				GeneralDate.today());
-		if (sEmpHistoryImport.isPresent())
+		if (sEmpHistoryImport.isPresent()) {
 			empHistoryImport = sEmpHistoryImport.get();
+		}
 		
 		listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListOccDigestDate(employeeId, lstOccDate, lstDigestDate));
 		
@@ -330,8 +331,10 @@ public class ExtraHolidayManagementService {
 	 * @param listLeaveComDayOffManagement List＜休出代休紐付け管理＞
 	 * @return List<残数データ情報＞
 	 */
-	public List<RemainInfoData> getRemainInfoData(String sid, List<LeaveManagementData> listLeaveData,
-			List<CompensatoryDayOffManaData> listCompensatoryData, List<LeaveComDayOffManagement> listLeaveComDayOffManagement) {
+	public List<RemainInfoData> getRemainInfoData(String sid
+												, List<LeaveManagementData> listLeaveData
+												, List<CompensatoryDayOffManaData> listCompensatoryData
+												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement) {
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
 		String cid = AppContexts.user().companyId();
 		// Input．List＜休出管理データ＞をループする
@@ -456,10 +459,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.of(item.getID()))
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(0d)
-						.remainingHours(Optional.of(0))
-						.usedDay(0d)
-						.usedTime(0)
+						.dayLetf(item.getExpiredDate().afterOrEquals(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0))
+						.usedDay(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
+						.usedTime(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0)
 						.build();
 				
 				// List＜残数データ情報＞に作成した残数データ情報を追加 Bổ sung thông tin dữ liệu số dư đã tạo vào List＜残数データ情報＞
@@ -513,7 +516,7 @@ public class ExtraHolidayManagementService {
 			unUseDays += leaveData.getUnUsedDays().v();
 		}
 		//ドメインモデル「代休管理データ」を取得
-		List<CompensatoryDayOffManaData> lstLeaveDayOffData = comDayOffManaDataRepository.getBySIdAndRemainDays(cid, sid);
+		List<CompensatoryDayOffManaData> lstLeaveDayOffData = comDayOffManaDataRepository.getByReDay(cid, sid);
 		Double unOffSet = (double) 0;
 		//取得した「代休管理データ」の未相殺日数を合計
 		for (CompensatoryDayOffManaData leaveDayOffData : lstLeaveDayOffData) {			

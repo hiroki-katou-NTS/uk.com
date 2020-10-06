@@ -94,14 +94,6 @@ public interface ComDayOffManaDataRepository {
 	List<CompensatoryDayOffManaData> getAllData();
 	
 	/**
-	 * 
-	 * @param cid
-	 * @param sid
-	 * @return
-	 */
-	List<CompensatoryDayOffManaData> getBySIdAndRemainDays(String cid, String sid);
-	
-	/**
 	 * Get data by list dayoff date
 	 * @param cid
 	 * @param lstDate
