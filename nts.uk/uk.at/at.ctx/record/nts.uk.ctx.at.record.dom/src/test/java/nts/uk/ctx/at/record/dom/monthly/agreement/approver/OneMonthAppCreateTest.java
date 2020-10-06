@@ -37,6 +37,7 @@ public class OneMonthAppCreateTest {
 
 	/**
 	 * GettingApproverDomainService#getApprover returns empty result
+	 * CheckErrorApplicationMonthService#check returns empty result
 	 */
 	@Test
 	public void test01() {
@@ -50,6 +51,31 @@ public class OneMonthAppCreateTest {
 			@Mock
 			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
 				return Optional.empty();
+			}
+		};
+
+		val setting = new BasicAgreementSetting(new AgreementOneMonth(), null, null, null);
+		new MockUp<AgreementDomainService>() {
+			@Mock
+			public BasicAgreementSetting getBasicSet(
+					AgreementDomainService.RequireM3 require,
+					String companyId,
+					String employeeId,
+					GeneralDate criteriaDate,
+					WorkingSystem workingSystem) {
+
+				return setting;
+			}
+		};
+
+		List<ExcessErrorContent> emptyErrorInfo = new ArrayList<>();
+		new MockUp<CheckErrorApplicationMonthService>() {
+			@Mock
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
+
+				return emptyErrorInfo;
 			}
 		};
 
@@ -207,6 +233,85 @@ public class OneMonthAppCreateTest {
 								Optional.of(new AgreementOneMonthTime(3)),
 								Optional.of(new AgreementOneYearTime(4)),
 								Optional.of(AgreementOverMaxTimes.TWICE)
+
+						)
+				);
+	}
+
+	/**
+	 * GettingApproverDomainService#getApprover returns empty result
+	 * CheckErrorApplicationMonthService#check returns error
+	 */
+	@Test
+	public void test04() {
+		String cid = "dummyCid";
+		String aplId = "dummyApplicantId";
+		ReasonsForAgreement reason = new ReasonsForAgreement("reason");
+		MonthlyAppContent appContent = new MonthlyAppContent("dummyApplicantId", new YearMonth(202009),
+				new AgreementOneMonthTime(2), Optional.of(new AgreementOneMonthTime(1)), reason);
+
+		new MockUp<GettingApproverDomainService>() {
+			@Mock
+			public Optional<ApproverItem> getApprover(GettingApproverDomainService.Require require, String employeeId) {
+				return Optional.empty();
+			}
+		};
+
+		val setting = new BasicAgreementSetting(new AgreementOneMonth(), null, null, null);
+		new MockUp<AgreementDomainService>() {
+			@Mock
+			public BasicAgreementSetting getBasicSet(
+					AgreementDomainService.RequireM3 require,
+					String companyId,
+					String employeeId,
+					GeneralDate criteriaDate,
+					WorkingSystem workingSystem) {
+
+				return setting;
+			}
+		};
+
+		List<ExcessErrorContent> errorInfo = new ArrayList<>();
+		ExcessErrorContent error1 = ExcessErrorContent.create(
+				ErrorClassification.ONE_MONTH_MAX_TIME,
+				Optional.of(new AgreementOneMonthTime(1)),
+				Optional.of(new AgreementOneYearTime(2)),
+				Optional.of(AgreementOverMaxTimes.ONCE)
+		);
+
+		errorInfo.add(error1);
+
+		new MockUp<CheckErrorApplicationMonthService>() {
+			@Mock
+			public List<ExcessErrorContent> check(
+					CheckErrorApplicationMonthService.Require require,
+					MonthlyAppContent monthlyAppContent){
+
+				return errorInfo;
+			}
+		};
+
+		AppCreationResult actual = OneMonthAppCreate.create(require, cid, aplId, appContent, new ScreenDisplayInfo());
+		assertThat(actual.getEmpId()).isEqualTo(aplId);
+		assertThat(actual.getAtomTask()).isEmpty();
+		assertThat(actual.getErrorInfo())
+				.extracting(
+						d -> d.getErrorClassification(),
+						d -> d.getMaximumTimeMonth(),
+						d -> d.getMaximumTimeYear(),
+						d -> d.getExceedUpperLimit())
+				.containsExactly(
+						tuple(
+								ErrorClassification.APPROVER_NOT_SET,
+								Optional.empty(),
+								Optional.empty(),
+								Optional.empty()
+						),
+						tuple(
+								ErrorClassification.ONE_MONTH_MAX_TIME,
+								Optional.of(new AgreementOneMonthTime(1)),
+								Optional.of(new AgreementOneYearTime(2)),
+								Optional.of(AgreementOverMaxTimes.ONCE)
 
 						)
 				);
