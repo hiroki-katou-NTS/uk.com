@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.ConsecutiveWorkCmp;
+package nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceCom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsecutiveWorkCmpDto {
+public class ConsecutiveAttendanceComDto {
 
     /**
      * 勤務予定のアラームチェック条件.コード
