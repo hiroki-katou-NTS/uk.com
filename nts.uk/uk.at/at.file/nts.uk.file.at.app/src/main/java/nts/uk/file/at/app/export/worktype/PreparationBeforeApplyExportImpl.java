@@ -7,7 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
@@ -16,6 +19,9 @@ import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.UnregisterableCheckAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.*;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;
@@ -24,34 +30,81 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUse;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.ApplicationSettingItem;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationTypeDisplayName;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BreakOrRestTime;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
+import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplace;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
@@ -59,6 +112,8 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingDt
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.JobAssignSettingDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.JobAssignSettingFinder;
+import nts.uk.screen.at.app.worktype.WorkTypeDto;
+import nts.uk.screen.at.app.worktype.WorkTypeQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -83,24 +138,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     private static final int ROW_SIZE_A5 = 3;
     private static final int ROW_SIZE_A9 = 4;
     private static final int MAIN_COL_SIZE = 6;
-    private static final int REASON_COL_SIZE = 5;
+    private static final int REASON_COL_SIZE = 4;
     private static final int PRESENT_APP_COL_SIZE = 3;
     private static final int OVERTIME_COL_SIZE = 4;
+    private static final int EMPLOYMENT_COL_SIZE = 7;
+    private static final int WORKPLACE_COL_SIZE = 5;
 
-    @Inject
-    private PreparationBeforeApplyRepository preparationBeforeApplyRepository;
-
-    @Inject
-    private PreparationBeforeApplyExport preparationBeforeApply;
-
-    @Inject
-    private ApprovalFunctionConfigExport approvalFunctionConfigExport;
-
-    @Inject
-    private ApprovalFunctionConfigRepository approvalRepository;
-
-    @Inject
-    private EmploymentApprovalSettingExport employmentApprovalSettingExport;
 
     @Inject
     private ClosureHistoryFinder closureHistoryFinder;
@@ -182,6 +225,31 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
 
     @Inject
     private AppReasonStandardRepository appReasonStandardRepo;
+
+    @Inject
+    private OvertimeWorkFrameRepository otWorkFrameRepo;
+
+    @Inject
+    private OptionalItemRepository optionalItemRepo;
+
+    @Inject
+    private AppEmploymentSetRepository appEmploymentSetRepo;
+
+    @Inject
+    private EmploymentRepository empRepo;
+
+    @Inject
+    private WorkTypeQueryRepository workTypeQueryRepository;
+
+    @Inject
+    private RequestByCompanyRepository requestByCompanyRepo;
+
+    @Inject
+    private RequestByWorkplaceRepository requestByWorkplaceRepo;
+
+    @Inject
+    private WorkplaceInformationRepository wkpInforRepo;
+
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
@@ -642,97 +710,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         return m > 9 ? String.format("%02d:%02d", m, s) : String.format("%2d:%02d", m, s);
     }
 
-    public List<MasterHeaderColumn> getHeaderColumns(Sheet sheet) {
-        List<MasterHeaderColumn> columns = new ArrayList<>();
-        switch (sheet) {
-            case JOB:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsJob());
-                break;
-            case REASON:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsReaSon());
-                break;
-            case OVER_TIME:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsOverTime());
-                break;
-            case HOLIDAY_APP:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsCommon());
-                break;
-            case WORK_CHANGE:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsCommon());
-                break;
-            case COMMON_APP:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsCommon());
-                break;
-            case OVER_TIME2:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsOverTime());
-                break;
-            case PAYOUT_APP:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsCommon());
-                break;
-            case APPROVAL_LIST:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsCommon());
-                break;
-            case REFLECT_APP:
-                columns.addAll(preparationBeforeApply.getHeaderColumnsReflectApp());
-                break;
-            case EMP_APPROVE:
-                columns.addAll(employmentApprovalSettingExport.getHeaderColumnsEmpApprove());
-                break;
-            case APPROVAL_CONFIG:
-                columns.addAll(approvalFunctionConfigExport.getHeaderColumnsApproveConfig());
-                break;
-        }
-        return columns;
-    }
-
-    private List<MasterData> getData(Sheet sheet, List<Object[]> extraData) {
-        String companyId = AppContexts.user().companyId();
-        String baseDate = "9999-12-31";
-        List<MasterData> datas = new ArrayList<>();
-        switch (sheet) {
-            case REASON:
-                datas.addAll(preparationBeforeApply.getDataReaSon(extraData));
-                break;
-            case JOB:
-                List<Object[]> preparationBefore = preparationBeforeApplyRepository.getJob(companyId, baseDate);
-                datas.addAll(preparationBeforeApply.getDataJob(preparationBefore));
-                break;
-            case OVER_TIME:
-                datas.addAll(preparationBeforeApply.getDataOverTime(extraData));
-                break;
-            case HOLIDAY_APP:
-                datas.addAll(preparationBeforeApply.getDataHoliDayApp(extraData));
-                break;
-            case WORK_CHANGE:
-                datas.addAll(preparationBeforeApply.getDataWorkChange(extraData));
-                break;
-            case COMMON_APP:
-                datas.addAll(preparationBeforeApply.getDataCommon(extraData));
-                break;
-            case OVER_TIME2:
-                datas.addAll(preparationBeforeApply.getDataOverTime2(extraData));
-                break;
-            case PAYOUT_APP:
-                datas.addAll(preparationBeforeApply.getDataPayout(extraData));
-                break;
-            case APPROVAL_LIST:
-                datas.addAll(preparationBeforeApply.getDataApprove(extraData));
-                break;
-            case REFLECT_APP:
-                datas.addAll(preparationBeforeApply.getDataReflectApp(extraData));
-                break;
-            case EMP_APPROVE:
-                List<Object[]> empApproval = approvalRepository.getAllEmploymentApprovalSetting(companyId);
-                datas.addAll(empApproval.stream().map(e -> employmentApprovalSettingExport.getDataEmploymentApprovalSetting(e)).collect(Collectors.toList()));
-                break;
-            case APPROVAL_CONFIG:
-                List<Object[]> approvalCongif = approvalRepository.getAllApprovalFunctionConfig(companyId, baseDate);
-                datas.addAll(approvalCongif.stream().map(i -> approvalFunctionConfigExport.getDataApprovalConfig(i)).collect(Collectors.toList()));
-                break;
-        }
-        return datas;
-    }
-
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         String companyId = AppContexts.user().companyId();
@@ -783,6 +760,96 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 .sheetName(TextResource.localize("KAF022_519"))
                 .mode(this.mainSheetMode())
                 .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getOtQuotaMasterData())
+                .mainDataColumns(this.getOtQuotaHeaderColumns())
+                .sheetName(TextResource.localize("KAF022_758"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getVacationMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(3))
+                .sheetName(TextResource.localize("KAF022_537"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getWorkChangeMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(4))
+                .sheetName(TextResource.localize("KAF022_564"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getBusinessTripMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(4))
+                .sheetName(TextResource.localize("KAF022_751"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getDirectGoBackMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(3))
+                .sheetName(TextResource.localize("KAF022_571"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getHolidayWorkMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(4))
+                .sheetName(TextResource.localize("KAF022_575"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getTimeLeaveMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(3))
+                .sheetName(TextResource.localize("KAF022_757"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getLateEarlyMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(3))
+                .sheetName(TextResource.localize("KAF022_756"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getStampMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(4))
+                .sheetName(TextResource.localize("KAF022_760"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getSubstituteMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(4))
+                .sheetName(TextResource.localize("KAF022_581"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getOptionalItemMasterData())
+                .mainDataColumns(this.getOptionalItemHeaderColumns())
+                .sheetName(TextResource.localize("KAF022_759"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getApprovalDispMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(3))
+                .sheetName(TextResource.localize("KAF022_586"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getMailMasterData())
+                .mainDataColumns(this.getCommonHeaderColumns(5))
+                .sheetName(TextResource.localize("KAF022_761"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getEmploymentMasterData())
+                .mainDataColumns(this.getEmploymentHeaderColumns())
+                .sheetName(TextResource.localize("KAF022_627"))
+                .mode(this.mainSheetMode())
+                .build());
+        sheetData.add(SheetData.builder()
+                .mainData(this.getWorkplaceMasterData())
+                .mainDataColumns(this.getWorkplaceHeaderColumns())
+                .sheetName(TextResource.localize("KAF022_634"))
+                .mode(this.mainSheetMode())
+                .build());
         return sheetData;
     }
 
@@ -791,44 +858,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         return TextResource.localize("KAF022_453");
     }
 
-    private String getSheetName(Sheet sheet) {
-        switch (sheet) {
-            case JOB:
-                return TextResource.localize("KAF022_515");
-            case REASON:
-                return TextResource.localize("KAF022_511");
-            case OVER_TIME:
-                return TextResource.localize("KAF022_519");
-            case HOLIDAY_APP:
-                return TextResource.localize("KAF022_537");
-            case WORK_CHANGE:
-                return TextResource.localize("KAF022_564");
-            case COMMON_APP:
-                return TextResource.localize("KAF022_571");
-            case OVER_TIME2:
-                return TextResource.localize("KAF022_575");
-            case PAYOUT_APP:
-                return TextResource.localize("KAF022_581");
-            case APPROVAL_LIST:
-                return TextResource.localize("KAF022_586");
-            case REFLECT_APP:
-                return TextResource.localize("KAF022_601");
-            case EMP_APPROVE:
-                return TextResource.localize("KAF022_627");
-            case APPROVAL_CONFIG:
-                return TextResource.localize("KAF022_634");
-        }
-        return "";
-    }
-
     private List<MasterHeaderColumn> getReasonHeaderColumns() {
         List<MasterHeaderColumn> columns = new ArrayList<>();
         for (int i = 0; i < REASON_COL_SIZE; i++) {
             String columnText;
             if (i == 0) columnText = TextResource.localize("KAF022_512");
-            else if (i == 1) columnText = "";
-            else if (i == 2) columnText = TextResource.localize("KAF022_513");
-            else if (i == 3) columnText = TextResource.localize("KAF022_694");
+            else if (i == 1) columnText = TextResource.localize("KAF022_513");
+            else if (i == 2) columnText = TextResource.localize("KAF022_694");
             else columnText = TextResource.localize("KAF022_514");
             columns.add(
                     new MasterHeaderColumn(
@@ -847,31 +883,93 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         String companyId = AppContexts.user().companyId();
         List<MasterData> data = new ArrayList<>();
         List<AppReasonStandard> reasons = appReasonStandardRepo.findByCompanyId(companyId);
-        reasons.sort(Comparator.comparing(AppReasonStandard::getApplicationType));
-        for (AppReasonStandard reason : reasons) {
-            reason.getReasonTypeItemLst().sort(Comparator.comparing(ReasonTypeItem::getDisplayOrder));
-            for (int row = 0; row < reason.getReasonTypeItemLst().size(); row++) {
-                ReasonTypeItem item = reason.getReasonTypeItemLst().get(row);
-                Map<String, MasterCellData> rowData = new HashMap<>();
-                for (int col = 0; col < REASON_COL_SIZE; col++) {
-                    String value;
-                    if (row == 0 && col == 0) value = reason.getApplicationType().name;
-                    else if (col == 1 && row == 0 && reason.getApplicationType() == ApplicationType.ABSENCE_APPLICATION) value = reason.getOpHolidayAppType().get().name;
-                    else if (col == 2) value = item.isDefaultValue() ? CHECK : NOT_CHECK;
-                    else if (col == 3) value = item.getAppStandardReasonCD().v().toString();
-                    else if (col == 4) value = item.getReasonForFixedForm().v();
-                    else value = "";
-                    rowData.put(
-                            COLUMN_NO_HEADER + col,
-                            MasterCellData.builder()
-                                    .columnId(COLUMN_NO_HEADER + col)
-                                    .value(value)
-                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                                    .build());
+
+        EnumSet.allOf(ApplicationType.class).forEach(appType -> {
+            if (appType != ApplicationType.ABSENCE_APPLICATION) {
+                AppReasonStandard reason = reasons.stream().filter(r -> r.getApplicationType() == appType).findFirst().orElse(null);
+                if (reason != null && !reason.getReasonTypeItemLst().isEmpty()) {
+                    reason.getReasonTypeItemLst().sort(Comparator.comparing(ReasonTypeItem::getDisplayOrder));
+                    for (int row = 0; row < reason.getReasonTypeItemLst().size(); row++) {
+                        ReasonTypeItem item = reason.getReasonTypeItemLst().get(row);
+                        Map<String, MasterCellData> rowData = new HashMap<>();
+                        for (int col = 0; col < REASON_COL_SIZE; col++) {
+                            String value;
+                            if (row == 0 && col == 0) value = reason.getApplicationType().name;
+                            else if (col == 1) value = item.isDefaultValue() ? CHECK : NOT_CHECK;
+                            else if (col == 2) value = item.getAppStandardReasonCD().v().toString();
+                            else if (col == 3) value = item.getReasonForFixedForm().v();
+                            else value = "";
+                            rowData.put(
+                                    COLUMN_NO_HEADER + col,
+                                    MasterCellData.builder()
+                                            .columnId(COLUMN_NO_HEADER + col)
+                                            .value(value)
+                                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                            .build());
+                        }
+                        data.add(MasterData.builder().rowData(rowData).build());
+                    }
+                } else {
+                    Map<String, MasterCellData> rowData = new HashMap<>();
+                    for (int col = 0; col < REASON_COL_SIZE; col++) {
+                        String value;
+                        if (col == 0) value = appType.name;
+                        else value = "";
+                        rowData.put(
+                                COLUMN_NO_HEADER + col,
+                                MasterCellData.builder()
+                                        .columnId(COLUMN_NO_HEADER + col)
+                                        .value(value)
+                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                        .build());
+                    }
+                    data.add(MasterData.builder().rowData(rowData).build());
                 }
-                data.add(MasterData.builder().rowData(rowData).build());
+            } else {
+                List<AppReasonStandard> hdReasons = reasons.stream().filter(r -> r.getApplicationType() == appType).collect(Collectors.toList());
+                EnumSet.allOf(HolidayAppType.class).forEach(hdAppType -> {
+                    AppReasonStandard hdReason = hdReasons.stream().filter(hdr -> hdr.getOpHolidayAppType().get() == hdAppType).findFirst().orElse(null);
+                    if (hdReason != null && !hdReason.getReasonTypeItemLst().isEmpty()) {
+                        hdReason.getReasonTypeItemLst().sort(Comparator.comparing(ReasonTypeItem::getDisplayOrder));
+                        for (int row = 0; row < hdReason.getReasonTypeItemLst().size(); row++) {
+                            ReasonTypeItem item = hdReason.getReasonTypeItemLst().get(row);
+                            Map<String, MasterCellData> rowData = new HashMap<>();
+                            for (int col = 0; col < REASON_COL_SIZE; col++) {
+                                String value;
+                                if (row == 0 && col == 0) value = hdReason.getApplicationType().name + " - 【" + hdReason.getOpHolidayAppType().get().name + "】";
+                                else if (col == 1) value = item.isDefaultValue() ? CHECK : NOT_CHECK;
+                                else if (col == 2) value = item.getAppStandardReasonCD().v().toString();
+                                else if (col == 3) value = item.getReasonForFixedForm().v();
+                                else value = "";
+                                rowData.put(
+                                        COLUMN_NO_HEADER + col,
+                                        MasterCellData.builder()
+                                                .columnId(COLUMN_NO_HEADER + col)
+                                                .value(value)
+                                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                                .build());
+                            }
+                            data.add(MasterData.builder().rowData(rowData).build());
+                        }
+                    } else {
+                        Map<String, MasterCellData> rowData = new HashMap<>();
+                        for (int col = 0; col < REASON_COL_SIZE; col++) {
+                            String value;
+                            if (col == 0) value = appType.name + " - 【" + hdAppType.name + "】";
+                            else value = "";
+                            rowData.put(
+                                    COLUMN_NO_HEADER + col,
+                                    MasterCellData.builder()
+                                            .columnId(COLUMN_NO_HEADER + col)
+                                            .value(value)
+                                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                            .build());
+                        }
+                        data.add(MasterData.builder().rowData(rowData).build());
+                    }
+                });
             }
-        }
+        });
         return data;
     }
 
@@ -1071,6 +1169,1258 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             }
             data.add(MasterData.builder().rowData(rowData).build());
         }
+        return data;
+    }
+
+    private List<MasterHeaderColumn> getOtQuotaHeaderColumns() {
+        return Arrays.asList(
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 0,
+                        TextResource.localize("KAF022_689"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 1,
+                        TextResource.localize("KAF022_691"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 2,
+                        TextResource.localize("KAF022_690"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                )
+        );
+    }
+
+    private List<MasterData> getOtQuotaMasterData() {
+        String companyId = AppContexts.user().companyId();
+        List<MasterData> data = new ArrayList<>();
+        List<OvertimeQuotaSetUse> settings = overtimeAppSetRepo.getOvertimeQuotaSetting(companyId);
+        List<OvertimeWorkFrame> frames = otWorkFrameRepo.getAllOvertimeWorkFrame(companyId);
+        EnumSet.allOf(FlexWorkAtr.class).forEach(flex -> {
+            EnumSet.allOf(OvertimeAppAtr.class).forEach(ot -> {
+                OvertimeQuotaSetUse setting = settings.stream().filter(i -> i.getFlexWorkAtr() == flex && i.getOvertimeAppAtr() == ot).findFirst().orElse(null);
+                if (setting != null && !setting.getTargetOvertimeLimit().isEmpty()) {
+                    setting.getTargetOvertimeLimit().sort(Comparator.comparing(OverTimeFrameNo::v));
+                    for (int row = 0; row < setting.getTargetOvertimeLimit().size(); row++) {
+                        OverTimeFrameNo target = setting.getTargetOvertimeLimit().get(row);
+                        OvertimeWorkFrame frame = frames.stream().filter(f -> f.getOvertimeWorkFrNo().v().intValue() == target.v()).findFirst().orElse(null);
+                        Map<String, MasterCellData> rowData = new HashMap<>();
+                        for (int col = 0; col < 3; col++) {
+                            String value;
+                            if (col == 0 && row == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
+                            else if (col == 1 && row == 0) value = ot.name;
+                            else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
+                            else value = "";
+                            rowData.put(
+                                    COLUMN_NO_HEADER + col,
+                                    MasterCellData.builder()
+                                            .columnId(COLUMN_NO_HEADER + col)
+                                            .value(value)
+                                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                            .build());
+                        }
+                        data.add(MasterData.builder().rowData(rowData).build());
+                    }
+                } else {
+                    Map<String, MasterCellData> rowData = new HashMap<>();
+                    for (int col = 0; col < 3; col++) {
+                        String value;
+                        if (col == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
+                        else if (col == 1) value = ot.name;
+                        else value = "";
+                        rowData.put(
+                                COLUMN_NO_HEADER + col,
+                                MasterCellData.builder()
+                                        .columnId(COLUMN_NO_HEADER + col)
+                                        .value(value)
+                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                        .build());
+                    }
+                    data.add(MasterData.builder().rowData(rowData).build());
+                }
+            });
+        });
+        return data;
+    }
+
+    private List<MasterData> getVacationMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<HolidayApplicationSetting> applySetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId);
+        Optional<VacationApplicationReflect> reflectSetting = holidayApplicationReflectRepo.findReflectByCompanyId(companyId);
+        if (!applySetting.isPresent() || !reflectSetting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        applySetting.get().getHolidayApplicationTypeDisplayName().sort(Comparator.comparing(HolidayApplicationTypeDisplayName::getHolidayApplicationType));
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 17; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 3; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_148");
+                else if (col == 0 && row == 8) value = TextResource.localize("KAF022_143");
+                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_144");
+                else if (col == 0 && row == 16) value = TextResource.localize("KAF022_693");
+                else if (col == 1) {
+                    if (row == 0) value = TextResource.localize("KAF022_149");
+                    else if (row == 1) value = TextResource.localize("KAF022_168");
+                    else if (row == 2) value = TextResource.localize("KAF022_158");
+                    else if (row == 3) value = TextResource.localize("KAF022_159");
+                    else if (row == 4) value = TextResource.localize("KAF022_160");
+                    else if (row == 5) value = TextResource.localize("KAF022_726");
+                    else if (row == 6) value = TextResource.localize("KAF022_727");
+                    else if (row == 7) value = TextResource.localize("KAF022_676");
+                    else if (row == 8) value = TextResource.localize("KAF022_154");
+                    else if (row == 9) value = TextResource.localize("KAF022_161");
+                    else if (row == 10) value = TextResource.localize("KAF022_162");
+                    else if (row == 11) value = TextResource.localize("KAF022_163");
+                    else if (row == 12) value = TextResource.localize("KAF022_164");
+                    else if (row == 13) value = TextResource.localize("KAF022_165");
+                    else if (row == 14) value = TextResource.localize("KAF022_166");
+                    else if (row == 15) value = TextResource.localize("KAF022_167");
+                    else value = TextResource.localize("KAF022_728");
+                } else if (col == 2) {
+                    if (row == 0) value = reflectSetting.get().getWorkAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.NOT_REFLECT
+                            ? TextResource.localize("KAF022_101")
+                            : (reflectSetting.get().getWorkAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.REFLECT
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_171"));
+                    else if (row == 1) value = reflectSetting.get().getWorkAttendanceReflect().getReflectAttendance() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
+                    else if (row == 2) value = reflectSetting.get().getTimeLeaveReflect().getAnnualVacationTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 3) value = reflectSetting.get().getTimeLeaveReflect().getSuperHoliday60H() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 4) value = reflectSetting.get().getTimeLeaveReflect().getSubstituteLeaveTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 5) value = reflectSetting.get().getTimeLeaveReflect().getNursing() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 6) value = reflectSetting.get().getTimeLeaveReflect().getChildNursing() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 7) value = reflectSetting.get().getTimeLeaveReflect().getSpecialVacationTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                    else if (row == 8) value = applySetting.get().getHalfDayAnnualLeaveUsageLimitCheck() == UnregisterableCheckAtr.CHECKED
+                            ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                    else if (row == 9) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(0).getDisplayName().v();
+                    else if (row == 10) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(1).getDisplayName().v();
+                    else if (row == 11) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(2).getDisplayName().v();
+                    else if (row == 12) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(3).getDisplayName().v();
+                    else if (row == 13) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(4).getDisplayName().v();
+                    else if (row == 14) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(5).getDisplayName().v();
+                    else if (row == 15) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(6).getDisplayName().v();
+                    else value = reflectSetting.get().getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance() == NotUseAtr.USE
+                                ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                }
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getWorkChangeMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<AppWorkChangeSet> applySetting = appWorkChangeSetRepo.findByCompanyId(companyId);
+        Optional<ReflectWorkChangeApp> reflectSetting = appWorkChangeSetRepo.findByCompanyIdReflect(companyId);
+        if (!applySetting.isPresent() || !reflectSetting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 8; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 4; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_520");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_565");
+                else if (col == 1 && row == 1) value = TextResource.localize("KAF022_540");
+                else if (col == 1 && row == 2) value = TextResource.localize("KAF022_567");
+                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_570");
+                else if (col == 2 && row == 3) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 4) value = TextResource.localize("KAF022_569");
+                else if (col == 2 && row == 6) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 7) value = TextResource.localize("KAF022_569");
+                else if (col == 3) {
+                    if (row == 0) value = applySetting.get().getInitDisplayWorktimeAtr() == InitDisplayWorktimeAtr.FIXEDTIME
+                            ? TextResource.localize("KAF022_391") : TextResource.localize("KAF022_392");
+                    else if (row == 1) value = reflectSetting.get().getWhetherReflectAttendance() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
+                    else if (row == 2) value = applySetting.get().getComment1().getComment().v();
+                    else if (row == 3) value = applySetting.get().getComment1().getColorCode().v();
+                    else if (row == 4) value = applySetting.get().getComment1().isBold() ? CHECK : NOT_CHECK;
+                    else if (row == 5) value = applySetting.get().getComment2().getComment().v();
+                    else if (row == 6) value = applySetting.get().getComment2().getColorCode().v();
+                    else value = applySetting.get().getComment2().isBold() ? CHECK : NOT_CHECK;
+                }
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build()
+                                        .horizontalAlign(ColumnTextAlign.LEFT)
+                                        .backgroundColor(col == 3 && (row == 3 || row == 6) ? value : "#ffffff"))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getBusinessTripMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<AppTripRequestSet> setting = appTripRequestSetRepo.findById(companyId);
+        if (!setting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 3; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 4; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_189");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_567");
+                else if (col == 2 && row == 1) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 2) value = TextResource.localize("KAF022_569");
+                else if (col == 3) {
+                    if (row == 0) value = setting.get().getComment().getComment().v();
+                    else if (row == 1) value = setting.get().getComment().getColorCode().v();
+                    else value = setting.get().getComment().isBold() ? CHECK : NOT_CHECK;
+                }
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build()
+                                        .horizontalAlign(ColumnTextAlign.LEFT)
+                                        .backgroundColor(col == 3 && row == 1 ? value : "#ffffff"))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getDirectGoBackMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<GoBackReflect> setting = goBackReflectRepo.findByCompany(companyId);
+        if (!setting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        Map<String, MasterCellData> rowData = new HashMap<>();
+        for (int col = 0; col < 3; col++) {
+            String value;
+            if (col == 0) value = TextResource.localize("KAF022_520");
+            else if (col == 1) value = TextResource.localize("KAF022_573");
+            else {
+                if (setting.get().getReflectApplication() == ApplicationStatus.DO_REFLECT_1)
+                    value = TextResource.localize("KAF022_198");
+                else if (setting.get().getReflectApplication() == ApplicationStatus.DO_NOT_REFLECT_1)
+                    value = TextResource.localize("KAF022_199");
+                else if (setting.get().getReflectApplication() == ApplicationStatus.DO_REFLECT)
+                    value = TextResource.localize("KAF022_200");
+                else value = TextResource.localize("KAF022_201");
+            };
+            rowData.put(
+                    COLUMN_NO_HEADER + col,
+                    MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER + col)
+                            .value(value)
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+        }
+        data.add(MasterData.builder().rowData(rowData).build());
+        return data;
+    }
+
+    private List<MasterData> getHolidayWorkMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<HolidayWorkAppSet> applySetting = holidayWorkAppSetRepo.findSettingByCompany(companyId);
+        Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
+        if (!applySetting.isPresent() || !optionalAppReflectOtHdWork.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        HdWorkAppReflect reflectSetting = optionalAppReflectOtHdWork.get().getHolidayWorkAppReflect();
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 20; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 4; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_520");
+                else if (col == 0 && row == 1) value = TextResource.localize("KAF022_526");
+                else if (col == 0 && row == 2) value = TextResource.localize("KAF022_531");
+                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_284");
+                else if (col == 0 && row == 15) value = TextResource.localize("KAF022_417");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_724");
+                else if (col == 1 && row == 1) value = TextResource.localize("KAF022_530");
+                else if (col == 1 && row == 2) value = TextResource.localize("KAF022_580");
+                else if (col == 1 && row == 3) value = TextResource.localize("KAF022_532");
+                else if (col == 1 && row == 4) value = TextResource.localize("KAF022_533");
+                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_534");
+                else if (col == 1 && row == 6) value = TextResource.localize("KAF022_535");
+                else if (col == 1 && row == 7) value = TextResource.localize("KAF022_711");
+                else if (col == 1 && row == 8) value = TextResource.localize("KAF022_713");
+                else if (col == 1 && row == 9) value = TextResource.localize("KAF022_641");
+                else if (col == 1 && row == 10) value = TextResource.localize("KAF022_714");
+                else if (col == 1 && row == 11) value = TextResource.localize("KAF022_715");
+                else if (col == 1 && row == 12) value = TextResource.localize("KAF022_308");
+                else if (col == 1 && row == 13) value = TextResource.localize("KAF022_290");
+                else if (col == 1 && row == 14) value = TextResource.localize("KAF022_716");
+                else if (col == 1 && row == 15) value = TextResource.localize("KAF022_622");
+                else if (col == 1 && row == 16) value = TextResource.localize("KAF022_611");
+                else if (col == 2 && row == 15) value = TextResource.localize("KAF022_725");
+                else if (col == 2 && row == 16) value = TextResource.localize("KAF022_720");
+                else if (col == 2 && row == 17) value = TextResource.localize("KAF022_719");
+                else if (col == 2 && row == 18) value = TextResource.localize("KAF022_721");
+                else if (col == 2 && row == 19) value = TextResource.localize("KAF022_773");
+//                else if (col == 2 && row == 20) value = TextResource.localize("KAF022_723");
+                else if (col == 3 && row == 0) value = applySetting.get().isUseDirectBounceFunction()
+                        ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                else if (col == 3 && row == 1) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                else if (col == 3 && row == 2) value = applySetting.get().getCalcStampMiss() == CalcStampMiss.CAN_NOT_REGIS
+                        ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                else if (col == 3 && row == 3) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                else if (col == 3 && row == 4) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr() == AppDateContradictionAtr.NOTCHECK
+                        ? TextResource.localize("KAF022_173")
+                        : applySetting.get().getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr() == AppDateContradictionAtr.CHECKREGISTER
+                                ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_175");
+                else if (col == 3 && row == 5) value = applySetting.get().getOvertimeLeaveAppCommonSet().getOverrideSet() == OverrideSet.SYSTEM_TIME_PRIORITY
+                        ? TextResource.localize("KAF022_709") : TextResource.localize("KAF022_710");
+                else if (col == 3 && row == 6) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() == Time36AgreeCheckRegister.NOT_CHECK
+                        ? TextResource.localize("KAF022_173")
+                        : applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() == Time36AgreeCheckRegister.CHECK
+                                ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_651");
+                else if (col == 3 && row == 7) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckOvertimeInstructionRegister() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                else if (col == 3 && row == 8) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckDeviationRegister() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                else if (col == 3 && row == 9) value = applySetting.get().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                else if (col == 3 && row == 10) {
+                    if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.NOTDISPLAY)
+                        value = TextResource.localize("KAF022_37");
+                    else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.DISPLAY)
+                        value = TextResource.localize("KAF022_301");
+                    else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.AT_START_WORK_OFF_PERFORMANCE)
+                        value = TextResource.localize("KAF022_302");
+                    else value = TextResource.localize("KAF022_303");
+                }
+                else if (col == 3 && row == 11) value = applySetting.get().getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 3 && row == 12) value = applySetting.get().getApplicationDetailSetting().getTimeInputUse() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 3 && row == 13) value = applySetting.get().getApplicationDetailSetting().getRequiredInstruction()
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 3 && row == 14) value = applySetting.get().getApplicationDetailSetting().getPreRequireSet() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 3 && row == 15) value = reflectSetting.getBefore().getReflectActualHolidayWorkAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                else if (col == 3 && row == 16) value = reflectSetting.getAfter().getWorkReflect() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                else if (col == 3 && row == 17) value = reflectSetting.getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                else if (col == 3 && row == 18) value = reflectSetting.getAfter().getOthersReflect().getReflectDivergentReasonAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                else if (col == 3 && row == 19) value = reflectSetting.getAfter().getOthersReflect().getReflectPaytimeAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+//                else if (col == 3 && row == 20) value = TextResource.localize("KAF022_723");
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getTimeLeaveMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<TimeLeaveApplicationReflect> setting = timeLeaveAppReflectRepo.findByCompany(companyId);
+        if (!setting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 13; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 3; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_228");
+                else if (col == 0 && row == 6) value = TextResource.localize("KAF022_753");
+                else if (col == 0 && row == 12) value = TextResource.localize("KAF022_766");
+                else if (col == 1) {
+                    if (row == 0) value = TextResource.localize("KAF022_81");
+                    else if (row == 1) value = TextResource.localize("KAF022_233");
+                    else if (row == 2) value = TextResource.localize("KAF022_231");
+                    else if (row == 3) value = TextResource.localize("KAF022_674");
+                    else if (row == 4) value = TextResource.localize("KAF022_675");
+                    else if (row == 5) value = TextResource.localize("KAF022_676");
+                    else if (row == 6) value = TextResource.localize("KAF022_234");
+                    else if (row == 7) value = TextResource.localize("KAF022_235");
+                    else if (row == 8) value = TextResource.localize("KAF022_236");
+                    else if (row == 9) value = TextResource.localize("KAF022_237");
+                    else if (row == 10) value = TextResource.localize("KAF022_677");
+                    else if (row == 11) value = TextResource.localize("KAF022_678");
+                    else value = TextResource.localize("KAF022_767");
+                } else if (col == 2) {
+                    if (row == 0) value = setting.get().getCondition().getSuperHoliday60H() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 1) value = setting.get().getCondition().getSubstituteLeaveTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 2) value = setting.get().getCondition().getAnnualVacationTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 3) value = setting.get().getCondition().getChildNursing() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 4) value = setting.get().getCondition().getNursing() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 5) value = setting.get().getCondition().getSpecialVacationTime() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 6) value = setting.get().getDestination().getFirstBeforeWork() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 7) value = setting.get().getDestination().getFirstAfterWork() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 8) value = setting.get().getDestination().getSecondBeforeWork() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 9) value = setting.get().getDestination().getSecondAfterWork() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 10) value = setting.get().getDestination().getPrivateGoingOut() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 11) value = setting.get().getDestination().getUnionGoingOut() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else value = setting.get().getReflectActualTimeZone() == NotUseAtr.USE
+                                ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                }
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getLateEarlyMasterData() {
+        String companyId = AppContexts.user().companyId();
+        LateEarlyCancelAppSet applySetting = lateEarlyCancelRepo.getByCId(companyId);
+        LateEarlyCancelReflect reflectSetting = lateEarlyCancelReflectRepo.getByCompanyId(companyId);
+        if (applySetting == null || reflectSetting == null)
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 2; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 3; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_520");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_669");
+                else if (col == 1) value = TextResource.localize("KAF022_670");
+                else if (col == 2 && row == 0) value = reflectSetting.isClearLateReportWarning()
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 2 && applySetting.getCancelAtr() == CancelAtr.NOT_USE) value =  TextResource.localize("KAF022_671");
+                else if (col == 2 && applySetting.getCancelAtr() == CancelAtr.USE_NOT_CHECK) value = TextResource.localize("KAF022_672");
+                else if (col == 2) value = TextResource.localize("KAF022_673");
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getStampMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<AppStampSetting> applySetting = appStampSettingRepo.findSettingByCompanyId(companyId);
+        Optional<StampAppReflect> reflectSetting = stampAppReflectRepo.findReflectByCompanyId(companyId);
+        if (!applySetting.isPresent() || !reflectSetting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        String[] typeNames = {
+                TextResource.localize("KAF022_246"),
+                TextResource.localize("KAF022_247"),
+                TextResource.localize("KAF022_698"),
+                TextResource.localize("KAF022_700"),
+                TextResource.localize("KAF022_699"),
+                TextResource.localize("KAF022_697"),
+                TextResource.localize("KAF022_701")
+        };
+        List<MasterData> data = new ArrayList<>();
+        Map<String, MasterCellData> rowData1 = new HashMap<>();
+        for (int col = 0; col < 4; col++) {
+            String value;
+            if (col == 0) value = TextResource.localize("KAF022_242");
+            else if (col == 1) value = TextResource.localize("KAF022_695");
+            else if (col == 3) value = applySetting.get().getUseCancelFunction() == UseDivision.TO_USE
+                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+            else value = "";
+            rowData1.put(
+                    COLUMN_NO_HEADER + col,
+                    MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER + col)
+                            .value(value)
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+        }
+        data.add(MasterData.builder().rowData(rowData1).build());
+        EnumSet.allOf(StampAtr.class).forEach(stamp -> {
+            SettingForEachType settingForEachType = applySetting.get().getSettingForEachTypeLst().stream().filter(i -> i.getStampAtr() == stamp).findFirst().orElse(null);
+            int rowSize;
+            if (stamp == StampAtr.ATTENDANCE_RETIREMENT || stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) rowSize = 8;
+            else if (stamp == StampAtr.GOING_OUT_RETURNING) rowSize = 11;
+            else if (stamp == StampAtr.RECORDER_IMAGE) rowSize = 6;
+            else rowSize = 7;
+            for (int row = 0; row < rowSize; row++) {
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < 4; col++) {
+                    String value;
+                    if (col == 0 && row == 0) value = typeNames[stamp.value];
+                    else if (col == 1 && row == rowSize - 6) value = TextResource.localize("KAF022_256");
+                    else if (col == 1 && row == rowSize - 3) value = TextResource.localize("KAF022_257");
+                    else if (col == 1) {
+                        if (stamp == StampAtr.ATTENDANCE_RETIREMENT) {
+                            if (row == 0) value = TextResource.localize("KAF022_703");
+                            else if (row == 1) value = TextResource.localize("KAF022_702");
+                            else value = "";
+                        } else if (stamp == StampAtr.GOING_OUT_RETURNING) {
+                            if (row == 0) value = TextResource.localize("KAF022_696");
+                            else if (row == 1) value = TextResource.localize("KAF022_251");
+                            else value = "";
+                        } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
+                            if (row == 0) value = TextResource.localize("KAF022_696");
+                            else if (row == 1) value = TextResource.localize("KAF022_243");
+                            else value = "";
+                        } else if (row == 0) value = TextResource.localize("KAF022_696");
+                        else value = "";
+                    }
+
+                    else if (col == 2 && row == rowSize - 5) value = TextResource.localize("KAF022_568");
+                    else if (col == 2 && row == rowSize - 4) value = TextResource.localize("KAF022_569");
+                    else if (col == 2 && row == rowSize - 2) value = TextResource.localize("KAF022_568");
+                    else if (col == 2 && row == rowSize - 1) value = TextResource.localize("KAF022_569");
+                    else if (col == 2 && stamp == StampAtr.GOING_OUT_RETURNING) {
+                        if (row == 1) value = TextResource.localize("KAF022_252");
+                        else if (row == 2) value = TextResource.localize("KAF022_253");
+                        else if (row == 3) value = TextResource.localize("KAF022_254");
+                        else if (row == 4) value = TextResource.localize("KAF022_255");
+                        else value = "";
+                    }
+
+                    else if (col == 3 && row == rowSize - 6) value = settingForEachType.getTopComment().getComment().v();
+                    else if (col == 3 && row == rowSize - 5) value = settingForEachType.getTopComment().getColorCode().v();
+                    else if (col == 3 && row == rowSize - 4) value = settingForEachType.getTopComment().isBold() ? CHECK : NOT_CHECK;
+                    else if (col == 3 && row == rowSize - 3) value = settingForEachType.getBottomComment().getComment().v();
+                    else if (col == 3 && row == rowSize - 2) value = settingForEachType.getBottomComment().getColorCode().v();
+                    else if (col == 3 && row == rowSize - 1) value = settingForEachType.getBottomComment().isBold() ? CHECK : NOT_CHECK;
+                    else if (col == 3) {
+                        if (stamp == StampAtr.ATTENDANCE_RETIREMENT) {
+                            if (row == 0) value = reflectSetting.get().getWorkReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else if (row == 1) value = reflectSetting.get().getExtraWorkReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else value = "";
+                        } else if (stamp == StampAtr.GOING_OUT_RETURNING) {
+                            if (row == 0) value = reflectSetting.get().getGoOutReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else if (row == 1) value = applySetting.get().getGoOutTypeDispControl().get(0).getDisplay() == DisplayAtr.DISPLAY
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else if (row == 2) value = applySetting.get().getGoOutTypeDispControl().get(1).getDisplay() == DisplayAtr.DISPLAY
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else if (row == 3) value = applySetting.get().getGoOutTypeDispControl().get(2).getDisplay() == DisplayAtr.DISPLAY
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else if (row == 4) value = applySetting.get().getGoOutTypeDispControl().get(3).getDisplay() == DisplayAtr.DISPLAY
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else value = "";
+                        } else if (stamp == StampAtr.CHILDCARE_OUT_RETURN) {
+                            if (row == 0) value = reflectSetting.get().getChildCareReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else value = "";
+                        } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
+                            if (row == 0) value = reflectSetting.get().getSupportReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            if (row == 0) value = applySetting.get().getSupportFrameDispNO().v() + TextResource.localize("KAF022_755");
+                            else value = "";
+                        } else if (stamp == StampAtr.OUT_OF_CARE_RETURN_OF_CARE) {
+                            if (row == 0) value = reflectSetting.get().getCareReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else value = "";
+                        } else if (stamp == StampAtr.BREAK) {
+                            if (row == 0) value = reflectSetting.get().getBreakReflectAtr() == NotUseAtr.USE
+                                    ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                            else value = "";
+                        } else value = "";
+                    }
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build()
+                                            .horizontalAlign(ColumnTextAlign.LEFT)
+                                            .backgroundColor(col == 3 && (row == (rowSize - 5) || (row == rowSize - 2)) ? value : "#ffffff")
+                                    )
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            }
+        });
+        return data;
+    }
+
+    private List<MasterData> getSubstituteMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<SubstituteHdWorkAppSet> applySetting = substituteHdWorkAppSetRepo.findSettingByCompany(companyId);
+        Optional<SubstituteLeaveAppReflect> subLeaveReflectSetting = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId);
+        Optional<SubstituteWorkAppReflect> subWorkReflectSetting = substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyId);
+        if (!applySetting.isPresent() || !subLeaveReflectSetting.isPresent() || !subWorkReflectSetting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 11; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 4; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_752");
+                else if (col == 0 && row == 4) value = TextResource.localize("KAF022_692");
+                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_531");
+                else if (col == 0 && row == 10) value = TextResource.localize("KAF022_693");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_540");
+                else if (col == 1 && row == 1) value = TextResource.localize("KAF022_583");
+                else if (col == 1 && row == 4) value = TextResource.localize("KAF022_538");
+                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_540");
+                else if (col == 1 && row == 6) value = TextResource.localize("KAF022_582");
+                else if (col == 1 && row == 9) value = TextResource.localize("KAF022_584");
+//                else if (col == 1 && row == 10) value = TextResource.localize("KAF022_585");
+                else if (col == 1 && row == 10) value = TextResource.localize("KAF022_728");
+                else if (col == 2 && row == 2) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 3) value = TextResource.localize("KAF022_569");
+                else if (col == 2 && row == 7) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 8) value = TextResource.localize("KAF022_569");
+                else if (col == 3 && row == 0) value = subWorkReflectSetting.get().getReflectAttendanceAtr() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
+                else if (col == 3 && row == 1) value = applySetting.get().getSubstituteWorkSetting().getComment().getComment().v();
+                else if (col == 3 && row == 2) value = applySetting.get().getSubstituteWorkSetting().getComment().getColorCode().v();
+                else if (col == 3 && row == 3) value = applySetting.get().getSubstituteWorkSetting().getComment().isBold() ? CHECK : NOT_CHECK;
+                else if (col == 3 && row == 4) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.NOT_REFLECT
+                        ? TextResource.localize("KAF022_101")
+                        : subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.REFLECT
+                                ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_171");
+                else if (col == 3 && row == 5) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectAttendance() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
+                else if (col == 3 && row == 6) value = applySetting.get().getSubstituteHolidaySetting().getComment().getComment().v();
+                else if (col == 3 && row == 7) value = applySetting.get().getSubstituteHolidaySetting().getComment().getColorCode().v();
+                else if (col == 3 && row == 8) value = applySetting.get().getSubstituteHolidaySetting().getComment().isBold() ? CHECK : NOT_CHECK;
+                else if (col == 3 && row == 9) value = applySetting.get().getSimultaneousSetting().isSimultaneousApplyRequired()
+                        ? TextResource.localize("KAF022_292") : TextResource.localize("KAF022_291");
+                else if (col == 3 && row == 10) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
+//                else if (col == 3 && row == 11) value = TextResource.localize("KAF022_569");
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(col == 3 && (row == 2 || row == 7) ? value : "#ffffff"))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterHeaderColumn> getOptionalItemHeaderColumns() {
+        return Arrays.asList(
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 0,
+                        TextResource.localize("KAF022_681"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 1,
+                        TextResource.localize("KAF022_629"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 2,
+                        TextResource.localize("KAF022_99"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 3,
+                        TextResource.localize("KAF022_685"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                ),
+                new MasterHeaderColumn(
+                        COLUMN_NO_HEADER + 4,
+                        TextResource.localize("KAF022_754"),
+                        ColumnTextAlign.LEFT,
+                        "",
+                        true
+                )
+        );
+    }
+
+    private List<MasterData> getOptionalItemMasterData() {
+        String companyId = AppContexts.user().companyId();
+        List<OptionalItem> optionalItems = optionalItemRepo.findAll(companyId);
+        List<OptionalItemApplicationSetting> settings = optionalItemAppSetRepo.findByCompany(companyId);
+        settings.sort(Comparator.comparing(OptionalItemApplicationSetting::getCode));
+        List<MasterData> data = new ArrayList<>();
+        settings.forEach(setting -> {
+            for (int row = 0; row < setting.getSettingItems().size(); row++) {
+                ApplicationSettingItem item = setting.getSettingItems().get(row);
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < 5; col++) {
+                    String value;
+                    if (col == 0 && row == 0) value = setting.getCode().v();
+                    else if (col == 1 && row == 0) value = setting.getName().v();
+                    else if (col == 2 && row == 0) value = setting.isUseAtr() ? CHECK : NOT_CHECK;
+                    else if (col == 3 && row == 0) value = setting.getDescription().map(PrimitiveValue::v).orElse("");
+                    else if (col == 4) value = item.getOptionalItemNo().v().toString()
+                            + "  "
+                            + optionalItems.stream().filter(i -> i.getOptionalItemNo().v() == item.getOptionalItemNo().v()).findFirst().map(i -> i.getOptionalItemName().v()).orElse("");
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            }
+        });
+        return data;
+    }
+
+    private List<MasterData> getApprovalDispMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<ApprovalListDisplaySetting> setting = approvalListDispSetRepo.findByCID(companyId);
+        if (!setting.isPresent()) throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        for (int row = 0; row < 5; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 3; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_587");
+                else if (col == 0 && row == 2) value = TextResource.localize("KAF022_589");
+                else if (col == 1 && row == 0) value = TextResource.localize("KAF022_588");
+                else if (col == 1 && row == 1) value = TextResource.localize("KAF022_590");
+                else if (col == 1 && row == 2) value = TextResource.localize("KAF022_591");
+                else if (col == 1 && row == 3) value = TextResource.localize("KAF022_595");
+                else if (col == 1 && row == 4) value = TextResource.localize("KAF022_599");
+                else if (col == 2 && row == 0) value = setting.get().getDisplayWorkPlaceName() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                else if (col == 2 && row == 1) value = setting.get().getAppReasonDisAtr() == DisplayAtr.DISPLAY
+                        ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                else if (col == 2 && row == 2) value = setting.get().getWarningDateDisAtr().toString() + TextResource.localize("KAF022_600");
+                else if (col == 2 && row == 3) value = setting.get().getAdvanceExcessMessDisAtr() == DisplayAtr.DISPLAY
+                        ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                else if (col == 2 && row == 4) value = setting.get().getActualExcessMessDisAtr() == DisplayAtr.DISPLAY
+                        ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterData> getMailMasterData() {
+        String companyId = AppContexts.user().companyId();
+        Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
+        AppEmailSet setting = appEmailSetRepo.findByCID(companyId);
+        if (setting == null || !applicationSetting.isPresent())
+            throw new BusinessException("Setting Data Not Found!");
+        List<AppTypeSetting> appTypeSettings = applicationSetting.get().getAppTypeSettings();
+        appTypeSettings.sort(Comparator.comparing(AppTypeSetting::getAppType));
+        List<MasterData> data = new ArrayList<>();
+        for (int i = 0; i < appTypeSettings.size(); i++) {
+            for (int row = 0; row < 2; row++) {
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < 5; col++) {
+                    String value;
+                    if (col == 0 && row == 0 && i == 0) value = TextResource.localize("KAF022_464");
+
+                    else if (col == 1 && row == 0) value = appTypeSettings.get(i).getAppType().name;
+
+                    else if (col == 2 && row == 0) value = TextResource.localize("KAF022_71");
+                    else if (col == 2) value = TextResource.localize("KAF022_72");
+
+                    else if (col == 3) value = TextResource.localize("KAF022_481");
+
+                    else if (col == 4 && row == 0) value = appTypeSettings.get(i).isSendMailWhenRegister()
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (col == 4) value = appTypeSettings.get(i).isSendMailWhenApproval()
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            }
+        }
+
+        for (int row = 0; row < 9; row++) {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < 5; col++) {
+                String value;
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_110");
+
+                else if (col == 1) {
+                    if (row == 0) value = TextResource.localize("KAF022_494");
+                    else if (row == 1) value = TextResource.localize("KAF022_370");
+                    else if (row == 2) value = TextResource.localize("KAF022_111");
+                    else if (row == 3) value = TextResource.localize("KAF022_112");
+                    else if (row == 4) value = TextResource.localize("KAF022_113");
+                    else if (row == 5) value = TextResource.localize("KAF022_114");
+                    else if (row == 6) value = TextResource.localize("KAF022_116");
+                    else if (row == 7) value = TextResource.localize("KAF022_368");
+                    else value = TextResource.localize("KAF022_369");
+                }
+
+                else if (col == 4) {
+                    if (row == 0) value = applicationSetting.get().getAppDisplaySetting().getManualSendMailAtr() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_75") : TextResource.localize("82");
+                    else if (row == 1) value = setting.getUrlReason() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("101");
+                    else if (row == 2) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.HOLIDAY_WORK_INSTRUCTION).findFirst()
+                            .map(i -> i.getOpEmailSubject().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else if (row == 3) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.HOLIDAY_WORK_INSTRUCTION).findFirst()
+                            .map(i -> i.getOpEmailText().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else if (row == 4) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.OVERTIME_INSTRUCTION).findFirst()
+                            .map(i -> i.getOpEmailSubject().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else if (row == 5) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.OVERTIME_INSTRUCTION).findFirst()
+                            .map(i -> i.getOpEmailText().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else if (row == 6) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.APPLICATION_APPROVAL).findFirst()
+                            .map(i -> i.getOpEmailText().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else if (row == 7) value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.REMAND).findFirst()
+                            .map(i -> i.getOpEmailSubject().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                    else value = setting.getEmailContentLst().stream().filter(i -> i.getDivision() == Division.REMAND).findFirst()
+                                .map(i -> i.getOpEmailText().map(PrimitiveValueBase::v).orElse("")).orElse("");
+                }
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        }
+        return data;
+    }
+
+    private List<MasterHeaderColumn> getEmploymentHeaderColumns() {
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+        for (int i = 0; i < EMPLOYMENT_COL_SIZE; i++) {
+            String columnText;
+            if (i == 0) columnText = TextResource.localize("KAF022_628");
+            else if (i == 1) columnText = TextResource.localize("KAF022_629");
+            else if (i == 2) columnText = TextResource.localize("KAF022_454");
+            else if (i == 6) columnText = TextResource.localize("KAF022_455");
+            else columnText = "";
+            columns.add(new MasterHeaderColumn(
+                    COLUMN_NO_HEADER + i,
+                    columnText,
+                    ColumnTextAlign.LEFT,
+                    "",
+                    true
+            ));
+        }
+        return columns;
+    }
+
+    private List<MasterData> getEmploymentMasterData() {
+        String companyId = AppContexts.user().companyId();
+        List<Employment> employments = empRepo.findAll(companyId);
+        List<WorkTypeDto> workTypes = workTypeQueryRepository.findAllWorkType(companyId);
+        List<AppEmploymentSet> settings = appEmploymentSetRepo.findByCompanyID(companyId);
+        settings.sort(Comparator.comparing(AppEmploymentSet::getEmploymentCD));
+        List<MasterData> data = new ArrayList<>();
+        settings.forEach(setting -> {
+            EnumSet.allOf(HolidayAppType.class).forEach(hdAppType -> {
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < EMPLOYMENT_COL_SIZE; col++) {
+                    String value;
+                    if (col == 0 && hdAppType == HolidayAppType.ANNUAL_PAID_LEAVE) value = setting.getEmploymentCD();
+                    else if (col == 1 && hdAppType == HolidayAppType.ANNUAL_PAID_LEAVE)
+                        value = employments.stream()
+                                .filter(i -> i.getEmploymentCode().v().equals(setting.getEmploymentCD()))
+                                .findFirst()
+                                .map(i -> i.getEmploymentName().v()).orElse("");
+                    else if (col == 2 && hdAppType == HolidayAppType.ANNUAL_PAID_LEAVE) value = TextResource.localize("KAF022_729");
+                    else if (col == 3) value = "【" + hdAppType.name + "】";
+                    else if (col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == hdAppType).findFirst()
+                            .map(i -> i.getOpHolidayTypeUse().get() ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101"))
+                            .orElse("");
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            });
+            for (int row = 0; row < 30; row++) {
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < EMPLOYMENT_COL_SIZE; col++) {
+                    String value;
+                    if (row == 0 && col == 2) value = TextResource.localize("KAF022_630");
+
+                    else if (row == 0 && col == 3) value = ApplicationType.OVER_TIME_APPLICATION.name;
+                    else if (row == 0 && col == 4) value = TextResource.localize("KAF022_468");
+                    else if (row == 0 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 1 && col == 4) value = TextResource.localize("KAF022_739");
+                    else if (row == 1 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                                .filter(i -> i.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findFirst()
+                                .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                    WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                    return j + (wt != null ? wt.getName() : "");
+                                }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 2 && col == 3) value = ApplicationType.ABSENCE_APPLICATION.name;
+                    else if (row == 2 && col == 4) value = "【" + HolidayAppType.ANNUAL_PAID_LEAVE.name + "】";
+                    else if (row == 2 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 2 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.ANNUAL_PAID_LEAVE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 3 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 3 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.ANNUAL_PAID_LEAVE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 4 && col == 4) value = "【" + HolidayAppType.SUBSTITUTE_HOLIDAY.name + "】";
+                    else if (row == 4 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 4 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.SUBSTITUTE_HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 5 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 5 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.SUBSTITUTE_HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 6 && col == 4) value = "【" + HolidayAppType.ABSENCE.name + "】";
+                    else if (row == 6 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 6 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.ABSENCE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 7 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 7 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.ABSENCE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 8 && col == 4) value = "【" + HolidayAppType.SPECIAL_HOLIDAY.name + "】";
+                    else if (row == 8 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 8 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.SPECIAL_HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 9 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 9 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.SPECIAL_HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 10 && col == 4) value = "【" + HolidayAppType.YEARLY_RESERVE.name + "】";
+                    else if (row == 10 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 10 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.YEARLY_RESERVE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 11 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 11 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.YEARLY_RESERVE)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 12 && col == 4) value = "【" + HolidayAppType.HOLIDAY.name + "】";
+                    else if (row == 12 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 12 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 13 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 13 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.HOLIDAY)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 14 && col == 4) value = "【" + HolidayAppType.DIGESTION_TIME.name + "】";
+                    else if (row == 14 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 14 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.DIGESTION_TIME)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 15 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 15 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.ABSENCE_APPLICATION && i.getOpHolidayAppType().isPresent() && i.getOpHolidayAppType().get() == HolidayAppType.DIGESTION_TIME)
+                            .findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 16 && col == 3) value = ApplicationType.WORK_CHANGE_APPLICATION.name;
+                    else if (row == 16 && col == 4) value = TextResource.localize("KAF022_468");
+                    else if (row == 16 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 17 && col == 4) value = TextResource.localize("KAF022_739");
+                    else if (row == 17 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 18 && col == 3) value = ApplicationType.BUSINESS_TRIP_APPLICATION.name;
+                    else if (row == 18 && col == 4) value = TextResource.localize("KAF022_737");
+                    else if (row == 18 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 18 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get() == BusinessTripAppWorkType.WORK_DAY).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 19 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 19 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get() == BusinessTripAppWorkType.WORK_DAY).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 20 && col == 4) value = TextResource.localize("KAF022_738");
+                    else if (row == 20 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 20 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get() == BusinessTripAppWorkType.HOLIDAY).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 21 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 21 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get() == BusinessTripAppWorkType.HOLIDAY).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 22 && col == 3) value = ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.name;
+                    else if (row == 22 && col == 4) value = TextResource.localize("KAF022_468");
+                    else if (row == 22 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 23 && col == 4) value = TextResource.localize("KAF022_739");
+                    else if (row == 23 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 24 && col == 3) value = ApplicationType.HOLIDAY_WORK_APPLICATION.name;
+                    else if (row == 24 && col == 4) value = TextResource.localize("KAF022_468");
+                    else if (row == 24 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 25 && col == 4) value = TextResource.localize("KAF022_739");
+                    else if (row == 25 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 26 && col == 3) value = ApplicationType.COMPLEMENT_LEAVE_APPLICATION.name;
+                    else if (row == 26 && col == 4) value = TextResource.localize("KAF022_279");
+                    else if (row == 26 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 26 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && i.getOpBreakOrRestTime().isPresent() && i.getOpBreakOrRestTime().get() == BreakOrRestTime.BREAKTIME).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 27 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 27 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && i.getOpBreakOrRestTime().isPresent() && i.getOpBreakOrRestTime().get() == BreakOrRestTime.BREAKTIME).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else if (row == 28 && col == 4) value = TextResource.localize("KAF022_553");
+                    else if (row == 28 && col == 5) value = TextResource.localize("KAF022_468");
+                    else if (row == 28 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && i.getOpBreakOrRestTime().isPresent() && i.getOpBreakOrRestTime().get() == BreakOrRestTime.RESTTIME).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? CHECK : NOT_CHECK).orElse("");
+                    else if (row == 29 && col == 5) value = TextResource.localize("KAF022_739");
+                    else if (row == 29 && col == 6) value = setting.getTargetWorkTypeByAppLst().stream()
+                            .filter(i -> i.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && i.getOpBreakOrRestTime().isPresent() && i.getOpBreakOrRestTime().get() == BreakOrRestTime.RESTTIME).findFirst()
+                            .map(i -> i.isDisplayWorkType() ? String.join(",", i.getWorkTypeLst().stream().map(j -> {
+                                WorkTypeDto wt = workTypes.stream().filter(k -> k.getWorkTypeCode().equals(j)).findFirst().orElse(null);
+                                return j + (wt != null ? wt.getName() : "");
+                            }).collect(Collectors.toList())) : "").orElse("");
+
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            }
+        });
+        return data;
+    }
+
+    private List<MasterHeaderColumn> getWorkplaceHeaderColumns() {
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+        for (int i = 0; i < WORKPLACE_COL_SIZE; i++) {
+            String columnText;
+            if (i == 0) columnText = TextResource.localize("KAF022_635");
+            else if (i == 1) columnText = TextResource.localize("KAF022_636");
+            else if (i == 2) columnText = TextResource.localize("KAF022_637");
+            else if (i == 3) columnText = TextResource.localize("KAF022_638");
+            else columnText = TextResource.localize("KAF022_649");
+            columns.add(new MasterHeaderColumn(
+                    COLUMN_NO_HEADER + i,
+                    columnText,
+                    ColumnTextAlign.LEFT,
+                    "",
+                    true
+            ));
+        }
+        return columns;
+    }
+
+    private List<MasterData> getWorkplaceMasterData() {
+        String companyId = AppContexts.user().companyId();
+        List<WorkplaceInformation> workplaces = wkpInforRepo.findByCompany(companyId);
+        Optional<RequestByCompany> companySetting = requestByCompanyRepo.findByCompanyId(companyId);
+        List<RequestByWorkplace> workplaceSettings = requestByWorkplaceRepo.findByCompany(companyId);
+        if (!companySetting.isPresent()) throw new BusinessException("Setting Data Not Found!");
+        List<MasterData> data = new ArrayList<>();
+        companySetting.get().getApprovalFunctionSet().getAppUseSetLst().sort(Comparator.comparing(ApplicationUseSetting::getAppType));
+        companySetting.get().getApprovalFunctionSet().getAppUseSetLst().forEach(setting -> {
+            Map<String, MasterCellData> rowData = new HashMap<>();
+            for (int col = 0; col < WORKPLACE_COL_SIZE; col++) {
+                String value;
+                if (col == 1 && setting.getAppType() == ApplicationType.OVER_TIME_APPLICATION) value = TextResource.localize("Com_Company");
+                else if (col == 2) value = setting.getAppType().name;
+                else if (col == 3) value = setting.getUseDivision() == UseDivision.TO_USE
+                        ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                else if (col == 4) value = setting.getMemo().v();
+                else value = "";
+                rowData.put(
+                        COLUMN_NO_HEADER + col,
+                        MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER + col)
+                                .value(value)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+            }
+            data.add(MasterData.builder().rowData(rowData).build());
+        });
+        workplaceSettings.forEach(wkSetting -> {
+            wkSetting.getApprovalFunctionSet().getAppUseSetLst().sort(Comparator.comparing(ApplicationUseSetting::getAppType));
+            wkSetting.getApprovalFunctionSet().getAppUseSetLst().forEach(setting -> {
+                Map<String, MasterCellData> rowData = new HashMap<>();
+                for (int col = 0; col < WORKPLACE_COL_SIZE; col++) {
+                    String value;
+                    if (col == 0 && setting.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
+                        value = workplaces.stream().filter(i -> i.getWorkplaceId().equals(wkSetting.getWorkplaceID())).findFirst()
+                                .map(i -> i.getWorkplaceCode().v()).orElse("");
+                    else if (col == 1 && setting.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
+                        value = workplaces.stream().filter(i -> i.getWorkplaceId().equals(wkSetting.getWorkplaceID())).findFirst()
+                                .map(i -> i.getWorkplaceName().v()).orElse("");
+                    else if (col == 2) value = setting.getAppType().name;
+                    else if (col == 3) value = setting.getUseDivision() == UseDivision.TO_USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (col == 4) value = setting.getMemo().v();
+                    else value = "";
+                    rowData.put(
+                            COLUMN_NO_HEADER + col,
+                            MasterCellData.builder()
+                                    .columnId(COLUMN_NO_HEADER + col)
+                                    .value(value)
+                                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                    .build());
+                }
+                data.add(MasterData.builder().rowData(rowData).build());
+            });
+        });
         return data;
     }
 
