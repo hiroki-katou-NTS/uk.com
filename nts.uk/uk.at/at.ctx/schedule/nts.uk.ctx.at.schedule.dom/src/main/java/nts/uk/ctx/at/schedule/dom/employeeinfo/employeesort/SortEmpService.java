@@ -37,7 +37,6 @@ public class SortEmpService {
 
 	// [2] 並び順を指定して社員を並び替える
 	public static List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId, SortSetting sortSetting) {
-		
 	
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
 		return rearranges(require, ymd, lstEmpId, sortSetting);
@@ -85,7 +84,7 @@ public class SortEmpService {
 				compare2  = Comparator.comparing(EmployeeInfo::getOptLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case POSITION:
-				compare2  = Comparator.comparing(EmployeeInfo::getJobtitleCode, Comparator.nullsLast(Comparator.naturalOrder()));
+				compare2  = Comparator.comparing(EmployeeInfo::getJobtitlePriority, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case CLASSIFY:
 				compare2  = Comparator.comparing(EmployeeInfo::getClassificationCode, Comparator.nullsLast(Comparator.naturalOrder()));
@@ -114,7 +113,7 @@ public class SortEmpService {
 		List<BelongScheduleTeam> listBelongScheduleTeam = new ArrayList<>();
 		List<EmployeeRankDto> listEmployeeRankResult = new ArrayList<>();
 		List<EmpLicenseClassification> listEmpLicenseCls = new ArrayList<>();
-		List<EmployeePosition> listEmployeePositionResult = new ArrayList<>();
+		List<EmployeePositionDto> listEmployeePositionResult = new ArrayList<>();
 		List<EmpClassifiImport> listEmpClassifiImport = new ArrayList<>();
 		
 		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
@@ -167,27 +166,41 @@ public class SortEmpService {
 				listEmpLicenseCls.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				break;
 			case POSITION:
-				List<EmployeePosition> listEmployeePosition = new ArrayList<>();
-				listEmployeePosition =  require.getPositionEmp(ymd, empIDs);
+				List<EmployeePositionDto> listEmployeePositionDto = new ArrayList<>();
+				
+				List<EmployeePosition> listEmployeePosition =  require.getPositionEmp(ymd, empIDs);
 				listEmployeePosition.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
+				
+				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
+					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode().toString(),0);
+				}).collect(Collectors.toList());
 				
 				List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);
 				if (!listPositionImport.isEmpty()) {
 					List<String> listjobCodePriority = listPositionImport.stream().map(x -> x.getJobCd()).collect(Collectors.toList());
-					listEmployeePosition.forEach((EmployeePosition employeePosition) -> {
+					listEmployeePositionDto.forEach((EmployeePositionDto employeePosition) -> {
 						if (!listjobCodePriority.contains(employeePosition.getJobtitleCode())) {
 							employeePosition.setJobtitleCode(null);
 						} 
 			        });
 					
-					List<EmployeePosition> listEmployeePosition1 = listEmployeePosition.stream().filter(i -> i.getJobtitleCode() != null).collect(Collectors.toList());
-					List<EmployeePosition> listEmployeePosition2 = listEmployeePosition.stream().filter(i -> i.getJobtitleCode() == null).collect(Collectors.toList());
+					List<EmployeePositionDto> listEmployeePosition1 = listEmployeePositionDto.stream().filter(i -> i.getJobtitleCode() != null).collect(Collectors.toList());
+					List<EmployeePositionDto> listEmployeePosition2 = listEmployeePositionDto.stream().filter(i -> i.getJobtitleCode() == null).collect(Collectors.toList());
 					
 					listEmployeePosition1.sort(Comparator.comparing(v-> listjobCodePriority.indexOf(v.getJobtitleCode())));
+					
+					listEmployeePosition1.forEach((EmployeePositionDto employeePosition) -> {
+						employeePosition.setPriority(listjobCodePriority.indexOf(employeePosition.getJobtitleCode()));
+					});
+				
+					listEmployeePosition2.forEach((EmployeePositionDto employeePosition) -> {
+						employeePosition.setPriority(null);
+					});
+					
 					listEmployeePositionResult.addAll(listEmployeePosition1);
 					listEmployeePositionResult.addAll(listEmployeePosition2);
 				} else {
-					listEmployeePositionResult = listEmployeePosition;
+					listEmployeePositionResult = listEmployeePositionDto;
 				}
 				break;
 			case CLASSIFY:
@@ -201,7 +214,7 @@ public class SortEmpService {
 			Optional<BelongScheduleTeam> team = listBelongScheduleTeam.stream().filter(i -> i.getEmployeeID().equals(sid)).findFirst();
 			Optional<EmployeeRankDto> rank = listEmployeeRankResult.stream().filter(i -> i.getSID().equals(sid)).findFirst();
 			Optional<EmpLicenseClassification> empLicenseCls = listEmpLicenseCls.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
-			Optional<EmployeePosition> employeePosition = listEmployeePositionResult.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
+			Optional<EmployeePositionDto> employeePosition = listEmployeePositionResult.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
 			Optional<EmpClassifiImport> empClassifiImport = listEmpClassifiImport.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
 			
 			EmployeeInfo employeeInfo = EmployeeInfo.builder()
@@ -209,7 +222,7 @@ public class SortEmpService {
 					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : null)
 					.emplRankPriority(rank.isPresent() ? (rank.get().priority == null ? null : rank.get().priority) : null)
 					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : null)
-					.jobtitleCode(employeePosition.isPresent() ? employeePosition.get().getJobtitleCode() : null)
+					.jobtitlePriority(employeePosition.isPresent() ? (employeePosition.get().priority == null ? null : employeePosition.get().priority) : null)
 					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : null)
 					.build();
 			result.add(employeeInfo);
@@ -266,7 +279,7 @@ public class SortEmpService {
 		/**
 		 * [R-6] 会社の職位を取得する //Lấy "job title" của company
 		 * <Adapter>社員の職位.取得する(年月日) QA
-		 * --------------------------------http://192.168.50.4:3000/issues/110607
+		 * http://192.168.50.4:3000/issues/110607
 		 *
 		 * 
 		 */

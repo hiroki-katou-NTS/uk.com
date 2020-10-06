@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
