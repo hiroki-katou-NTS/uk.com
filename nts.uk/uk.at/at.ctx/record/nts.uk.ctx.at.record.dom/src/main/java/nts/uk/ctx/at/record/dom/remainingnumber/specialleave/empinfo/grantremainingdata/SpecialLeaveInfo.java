@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
+package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
@@ -165,8 +166,13 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * 特休付与残数を更新
 	 */
 	public void updateRemainingNumber(boolean afterGrant){
-		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, afterGrant);
+		this.remainingNumber.updateRemainingNumber(
+				this.getGrantRemainingNumberList(), afterGrant);
 	}
+	
+//	List<SpecialLeaveGrantRemaining> remainingDataList, 
+//	boolean afterGrantAtr){
+	
 	
 	/**
 	 * 特休の消滅・付与・消化
@@ -253,7 +259,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		} else {
 			// 「特別休暇の集計結果．特別休暇エラー情報」に受け取った特別休暇エラーを全て追加
 			// ※既に「特別休暇エラー情報」に存在する特別休暇エラーは追加不要。
-			// ooooo ???
+			// ooooo要修正！！
 			
 			// 年月日を更新　←　終了日
 			this.ymd = specialLeaveAggregatePeriodWork.getPeriod().end();
@@ -444,7 +450,7 @@ public class SpecialLeaveInfo implements Cloneable {
 					leaveRemainingNumber.add(c.getDetails().getRemainingNumber());
 				});
 				
-				// 残数合計と上限日数の差分を求める  ooooo 時間要対応
+				// 残数合計と上限日数の差分を求める
 				double diff = leaveRemainingNumber.getDays().v() - limitCarryoverDays;
 				
 				// 差分を残数から引き、上限超過消滅日数に加算

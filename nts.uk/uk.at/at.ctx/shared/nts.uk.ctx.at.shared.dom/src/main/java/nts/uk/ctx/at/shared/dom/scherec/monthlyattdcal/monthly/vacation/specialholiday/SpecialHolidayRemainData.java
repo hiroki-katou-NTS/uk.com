@@ -132,7 +132,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 				new SpecialLeaveRemainDay(actualUseDays));
 		
 		// 実特別休暇
-		domain.actualSpecial = new ActualSpecialLeave(
+		domain.actualSpecial = new SpecialLeave(
 				(actualRemainAfter != null ? actualRemainAfter : actualRemainBefore),
 				actualRemainBefore,
 				new SpecialLeaveUseNumber(
@@ -174,8 +174,12 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		SpecialLeaveUsedInfo specialLeaveUsedInfo
 			= SpecialLeaveUsedInfo.of(
 					new SpecialLeaveUseNumber(
-							specialUseNumberDays,
-							Optional.empty()), usedNumberBeforeGrant, specialLeaveUsedTimes, specialLeaveUsedDayTimes, usedNumberAfterGrantOpt)
+						specialUseNumberDays,
+						Optional.empty()), 
+						usedNumberBeforeGrant, 
+						specialLeaveUsedTimes, 
+						specialLeaveUsedDayTimes, 
+						usedNumberAfterGrantOpt)
 		
 		domain.specialLeave = new SpecialLeave(
 				(specialRemainAfter != null ? specialRemainAfter : specialRemainBefore),

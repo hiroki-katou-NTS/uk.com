@@ -5,14 +5,9 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 
 /**
  * 次回特休付与
