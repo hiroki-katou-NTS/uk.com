@@ -536,6 +536,7 @@ module nts.uk.at.view.ksm003.a {
 
 
             let detailDto = vm.mainModel().toDto();
+            console.log(detailDto);
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
                 let selectedName = vm.selectedName();
@@ -558,9 +559,9 @@ module nts.uk.at.view.ksm003.a {
                     detailDto = new DailyPatternDetailDto(selectedCode, selectedName, lstVal);
                 }
             } else {
-                detailDto.workCycleName = vm.selectedName();
+                detailDto.workCycleName = detailDto.name; //vm.selectedName();
             }
-
+            console.log(detailDto);
             this.saveDailyPattern(detailDto).done(function (res) {
                 let MsgId = '';
                 let infosData = detailDto.infos;
@@ -591,9 +592,7 @@ module nts.uk.at.view.ksm003.a {
                         }
 
                         if (!nts.uk.util.isNullOrEmpty(MsgId)) {
-                            let mgsError = vm.$i18n.message(MsgId);
-                            mgsError = (i + 1) + '行目: ' + mgsError;
-                            $('#btnVal' + infosData[i].dispOrder).ntsError('set', { messageId: MsgId, message: mgsError });
+                            $('#btnVal' + infosData[i].dispOrder).ntsError('set', { messageId: MsgId });
                         }
                     })
 
@@ -648,13 +647,13 @@ module nts.uk.at.view.ksm003.a {
             self.mainModel().dailyPatternVals().map((item, index) => {
                 //day > 0 & workingCode null
                 if (nts.uk.text.isNullOrEmpty(item.typeCode())) {
-                    $('#days' + item.dispOrder).ntsEditor('validate');
-                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
+                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_1690", messageParams: [self.$i18n('KSM003_23')] });
                     hasRowIsNull = true;
                 }
-                //day null & workingCode !null
-                if (nts.uk.text.isNullOrEmpty(item.days()) || item.days() <= 0) {
-                    $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
+
+                if (!hasRowIsNull && (nts.uk.text.isNullOrEmpty(item.days()) || item.days() <= 0)) {
+                    $('#days' + item.dispOrder).ntsEditor('validate');
+                    //$('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
                     hasRowIsNull = true;
                 }
             });
@@ -746,12 +745,11 @@ module nts.uk.at.view.ksm003.a {
                 selectedWorkTimeCode: currentRow.timeCode()
             });
 
-            self.$window.storage("childData", undefined); //clear old data
             self.$window
                 .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
-                .then(function (result) {
+                .then(function () {
                     self.$window.storage("childData").then((resultData) => {
-                        if (!nts.uk.util.isNullOrUndefined(resultData)) {
+                        if (resultData) {
                             currentRow.typeCode(resultData.selectedWorkTypeCode);
                             currentRow.timeCode(resultData.selectedWorkTimeCode);
                             currentRow.setWorkTypeName(resultData.selectedWorkTypeName);
@@ -917,7 +915,7 @@ module nts.uk.at.view.ksm003.a {
             this.code = code;
             this.name = name;
             this.infos = infos;
-
+            //send to server
             this.workCycleCode = code;
             this.workCycleName = name;
             this.workInformations = infos;
@@ -972,15 +970,4 @@ module nts.uk.at.view.ksm003.a {
             this.name(data && data.name || null);
         }
     }
-
-    // cos ver van de nam o day
-    // Trong knockoutjs,
-    // vaf trong javascript, doi tuong la bat cu kieu gi, vis duj khoi tao tu class, khoi tao nhu moojt anonymus object.
-
-    // Viết lại định nghĩa đối tượng sẽ bind vào danh sách và bind vào trong gridlist/
-
-    // Interface là giao diện nhìn của một đối tượng nào đó
-    // tức là khi ta chỉ định một đối tượng nào đó có kiểu như thế nào, ta sẽ chỉ định interface cho nó.
-    // vì igGrid là control của jquery, nó không phải là một observable, nên ta chỉ cần các đối tượng js đơn giản (chỉ chứa các primitive value)
-    // là được, (dùng interface để định nghĩa cấu trúc cho data thôi), không cần tạo class.
 }
