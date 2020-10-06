@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
         setupType: number;
         workTypeLst: any[];
+        isEdit: KnockoutObservable<boolean> = ko.observable(true);
 
         created(
             params: {
@@ -93,6 +94,8 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                 predetemineTimeSetting: ko.observable(appWorkChangeDispInfo.predetemineTimeSetting),
                 appWorkChangeSet: appWorkChangeDispInfo.appWorkChangeSet
             });
+
+            vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
 
             if(params.reflectWorkChangeAppDto) {
                 vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
@@ -226,18 +229,15 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 })
                 .fail( err => {
-                    let param;
-                    if (err.message && err.messageId) {
-                        param = {messageId: err.messageId, messageParams: err.parameterIds};
-                    } else {
-
-                        if (err.message) {
-                            param = {message: err.message, messageParams: err.parameterIds};
-                        } else {
-                            param = {messageId: err.messageId, messageParams: err.parameterIds};
-                        }
-                    }
-                    vm.$dialog.error(param);
+                    let messageId, messageParams;
+					if(err.errors) {
+						let errors = err.errors;
+						messageId = errors[0].messageId;
+					} else {
+						messageId = err.messageId;
+						messageParams = [err.parameterIds.join('、')];
+					}
+					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
                 })
                 .always(() => vm.$blockui("hide"));
         }
