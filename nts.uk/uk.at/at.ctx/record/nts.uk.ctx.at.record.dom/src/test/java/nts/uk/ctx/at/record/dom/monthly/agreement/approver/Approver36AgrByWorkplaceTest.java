@@ -4,6 +4,9 @@ import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -28,8 +31,8 @@ public class Approver36AgrByWorkplaceTest {
 	@Test
 	public void test01(){
 
-		val approverList = Helper.createApproverList(5);
-		val confirmerList = Helper.createConfirmerList(5);
+		val approverList = Arrays.asList("appr01", "appr02", "appr03", "appr04", "appr05");
+		val confirmerList = Arrays.asList("cfm01", "cfm02", "cfm03", "cfm04", "cfm05");
 		val domain = Approver36AgrByWorkplace.create(
 				Helper.workplaceId,
 				Helper.period,
@@ -48,8 +51,8 @@ public class Approver36AgrByWorkplaceTest {
 		NtsAssert.businessException("Msg_1790", () -> Approver36AgrByWorkplace.create(
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverList(0),
-				Helper.createConfirmerList(1)
+				Collections.emptyList(),
+				Arrays.asList("cfm01")
 		));
 	}
 
@@ -58,8 +61,8 @@ public class Approver36AgrByWorkplaceTest {
 		NtsAssert.businessException("Msg_1791", () -> Approver36AgrByWorkplace.create(
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverList(6),
-				Helper.createConfirmerList(1)
+				Arrays.asList("appr01", "appr02", "appr03", "appr04", "appr05", "appr06"),
+				Arrays.asList("cfm01")
 		));
 	}
 
@@ -68,18 +71,8 @@ public class Approver36AgrByWorkplaceTest {
 		NtsAssert.businessException("Msg_1792", () -> Approver36AgrByWorkplace.create(
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverList(1),
-				Helper.createConfirmerList(6)
-		));
-	}
-
-	@Test
-	public void test05(){
-		assertThat(Approver36AgrByWorkplace.create(
-				null,
-				null,
-				Helper.createApproverList(1),
-				Helper.createConfirmerList(1)
+				Arrays.asList("appr01"),
+				Arrays.asList("cfm01", "cfm02", "cfm03", "cfm04", "cfm05", "cfm06")
 		));
 	}
 }
