@@ -37,8 +37,8 @@
             <div class="collapse">
             <div class="card-body">
                 <!-- コンテンツ -->
-                <span v-if="displayPreAppPeriod">{{ preAppPeriod | i18n }}</span>
-                <span v-if="displayPostAppPeriod">{{ postAppPeriod | i18n }}</span>
+                <div v-if="displayPreAppPeriod">{{ preAppPeriod | i18n }}</div>
+                <div v-if="displayPostAppPeriod">{{ postAppPeriod | i18n }}</div>
             </div>
             </div>
         </div>
