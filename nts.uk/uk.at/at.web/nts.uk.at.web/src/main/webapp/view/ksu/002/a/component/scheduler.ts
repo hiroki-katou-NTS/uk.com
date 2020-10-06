@@ -9,8 +9,7 @@ module nts.uk.ui.at.ksu002.a {
         value: {
             begin: number | null;
             finish: number | null;
-        },
-        event?: string;
+        }
     }
 
     const COMPONENT_NAME = 'scheduler';
@@ -100,7 +99,6 @@ module nts.uk.ui.at.ksu002.a {
                     </div>
                 </div>
             </div>
-            <div data-bind="popper: true"></div>
             <style type="text/css" rel="stylesheet">
                 .scheduler .data-info {
                     min-height: 48px !important;
@@ -138,40 +136,21 @@ module nts.uk.ui.at.ksu002.a {
                     font-size: 13px !important;
                     border-radius: 0 !important;
                     border: 0 !important;
+                    cursor: pointer;
                 }
-                .scheduler .ntsControl input:focus {
-                    box-shadow: 0px 0px 0px 1px #0096f2 !important;
-                    background-color: rgba(0, 150, 242, 0.1) !important;
+                .scheduler .ntsControl input.state-1:focus {
+                    color: #fff;
+                    box-shadow: 0px 0px 0px 1px #000 !important;
+                    background-color: #007fff !important;
+                }
+                .scheduler .ntsControl input.state-2:focus {
+                    color: #000;
+                    box-shadow: 0px 0px 0px 1px #000 !important;
+                    background-color: #fff !important;
                 }
                 .scheduler .ntsControl.error input {
                     box-shadow: 0px 0px 0px 1px #ff6666 !important;
                     background-color: rgba(255, 102, 102, 0.1) !important;
-                }
-                .scheduler .event-popper {
-                    top: -999px;
-                    left: -999px;
-                    position: absolute;
-                    visibility: hidden;
-                    border: 2px solid #ddd;
-                    background-color: #ccc;
-                    border-radius: 5px;
-                    padding: 5px;
-                    min-width: 220px;
-                    max-width: 400px;
-                    min-height: 220px;
-                    max-height: 400px;
-                    overflow: hidden;
-                }
-                
-                .scheduler .event-popper:before {
-                    content: '',
-                    display: block;
-                    width: 15px;
-                    height: 15px;
-                    position: absolute;
-                }
-                .scheduler .event-popper.show {
-                    visibility: visible;
                 }
                 .scheduler .calendar {
                     float: left;
@@ -230,60 +209,6 @@ module nts.uk.ui.at.ksu002.a {
         const COMPONENT_NAME = 'scheduler-data-info';
 
         @handler({
-            bindingName: 'popper'
-        })
-        export class SChedulerRefBindingHandler implements KnockoutBindingHandler {
-            init($$popper: HTMLElement, _valueAccessor: () => c.DayData<ScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                $$popper.classList.add('event-popper');
-                _.extend(bindingContext, { $$popper });
-            }
-        }
-
-        @handler({
-            bindingName: 'scheduler-event'
-        })
-        export class SChedulerEventBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext & { $$popper: HTMLElement }): void | { controlsDescendantBindings: boolean; } {
-                const dayData = valueAccessor();
-                const { $$popper } = bindingContext;
-                const boundind = element.getBoundingClientRect();
-
-                const { data } = dayData;
-
-                if (data && data.event) {
-                    $(element)
-                        .on('mouseover', () => {
-                            const { width, x, y } = boundind;
-
-                            $$popper.innerHTML = _.escape(data.event).replace(/\n/g, '<br />').replace(/\s/g, '&nbsp;');
-
-                            const pbound = $$popper.getBoundingClientRect();
-
-                            const top1 = y - 150;
-                            const top2 = window.innerHeight - pbound.height - 150 - 30;
-
-                            const left1 = x + width + 2;
-                            const left2 = window.innerWidth - pbound.width - 30;
-
-                            $$popper.style.top = `${Math.min(top1, top2)}px`;
-                            $$popper.style.left = `${Math.min(left1, left2)}px`;
-
-                            $$popper.classList.add('show');
-                        })
-                        .on('mouseleave', () => {
-                            $$popper.innerHTML = '';
-
-                            $$popper.style.top = '-999px';
-                            $$popper.style.left = '-999px';
-                            $$popper.classList.remove('show');
-                        });
-                }
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-
-        @handler({
             bindingName: COMPONENT_NAME,
             validatable: true,
             virtual: false
@@ -311,10 +236,15 @@ module nts.uk.ui.at.ksu002.a {
             <div class="work-time cf">
                 <div class="join">
                     <input class="begin" data-bind="
+                        css: {
+                            'state-0': ko.unwrap($component.click.begin) === 0,
+                            'state-1': ko.unwrap($component.click.begin) === 1,
+                            'state-2': ko.unwrap($component.click.begin) === 2,
+                        },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
                             click: function() { $component.showInput.apply($component, ['begin']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['begin'], evt) }
+                            focus: function(evt) { $component.registerTab.apply($component, ['begin', evt]) }
                         },
                         attr: {
                             tabindex: $component.data.context.$tabindex
@@ -325,15 +255,21 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
+                            readonly: ko.unwrap($component.readonly).begin,
                             enable: ko.unwrap($editable)
                         }" />
                 </div>
                 <div class="leave">
                     <input class="finish" data-bind="
+                        css: {
+                            'state-0': ko.unwrap($component.click.finish) === 0,
+                            'state-1': ko.unwrap($component.click.finish) === 1,
+                            'state-2': ko.unwrap($component.click.finish) === 2,
+                        },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
                             click: function() { $component.showInput.apply($component, ['finish']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['finish'], evt) }
+                            focus: function(evt) { $component.registerTab.apply($component, ['finish', evt]) }
                         },
                         attr: {
                             tabindex: $component.data.context.$tabindex
@@ -344,6 +280,7 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
+                            readonly: ko.unwrap($component.readonly).finish,
                             enable: ko.unwrap($editable)
                         }" />
                 </div>
@@ -431,8 +368,8 @@ module nts.uk.ui.at.ksu002.a {
                         const finish = ko.unwrap(vm.click.finish);
 
                         return {
-                            begin: false && begin < 2,
-                            finish: false && finish < 2
+                            begin: begin < 2,
+                            finish: finish < 2
                         }
                     },
                     owner: vm
@@ -452,6 +389,8 @@ module nts.uk.ui.at.ksu002.a {
                         $(vm.$el).find(`.${$current.input}`).focus();
                     }
                 }
+
+                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
 
             hideInput(input: 'begin' | 'finish') {
