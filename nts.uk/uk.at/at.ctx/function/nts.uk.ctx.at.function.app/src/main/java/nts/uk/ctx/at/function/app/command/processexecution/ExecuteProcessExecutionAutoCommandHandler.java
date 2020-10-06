@@ -3471,24 +3471,25 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	 * @param execId the exec id
 	 * @param companyId the company id
 	 * @param procExec the proc exec 更新処理自動実行
-	 * @param procExecLog the proc exec log
+	 * @param procExecLog the proc exec log	更新処理自動実行ログ
 	 */
 	private void indexReconstruction(String execId, String companyId, ProcessExecution procExec,
 		ProcessExecutionLog procExecLog) {
 		String errorMessage = "";
 		boolean isHasException = false;
-		// Step 1: ドメインモデル「更新処理自動実行ログ」を更新する - Update the domain model "update process automatic execution log"
+		// Step 1: ドメインモデル「更新処理自動実行ログ」を更新する - Update the domain model 更新処理自動実行ログ
 		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
 		for (int i = 0; i < taskLogLists.size(); i++) {
-			ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
 			// Check 各処理の終了状態.更新処理　＝　インデックス再構成
-			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
+			if (taskLogLists.get(i).getProcExecTask() == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
 				// Set 各処理の終了状態　＝　[インデックス再構成、NULL]
-				executionTaskLog.setStatus(Optional.empty());
+				taskLogLists.get(i).setStatus(Optional.empty());
 				// Set 開始日時　＝　[インデックス再構成、システム日時]
-				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				taskLogLists.get(i).setLastExecDateTime(GeneralDateTime.now());
 			}
 		}
+		procExecLog.setTaskLogList(taskLogLists);
+		this.procExecLogRepo.update(procExecLog);
 		// Step 2: INPUT「更新処理自動実行．実行設定．インデックス再構成．使用区分」を判定する - INPUT "Automatic execution of update process. Execution setting. Index reconstruction. Usage classification" is judged.
 		if (procExec.getExecSetting().getIndexReconstruction().getClassificationOfUse() == NotUseAtr.NOT_USE) {
 			// Step 3: if False: ドメインモデル「更新処理自動実行ログ」を更新する -> return
@@ -3502,59 +3503,60 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					executionTaskLog.setLastExecDateTime(null);
 				}
 			}
+			procExecLog.setTaskLogList(taskLogLists);
+			this.procExecLogRepo.update(procExecLog);
 			return;
-		} else {
+		}
+		// カテゴリNO in INPUT「更新処理自動実行．実行設定．インデックス再作成．カテゴリリスト」
+		List<BigDecimal> categoryList = procExec.getExecSetting().getIndexReconstruction().getCategoryNo().stream()
+				.map(i -> new BigDecimal(i.v()))
+				.collect(Collectors.toList());
+		try {
 			// Step 3: if True: ドメインモデル「インデックス再構成テーブル」を取得する - Get the domain model "index reconstruction table"
-			// カテゴリNO in INPUT「更新処理自動実行．実行設定．インデックス再作成．カテゴリリスト」
-			List<BigDecimal> categoryList = procExec.getExecSetting().getIndexReconstruction().getCategoryNo().stream()
-					.map(i -> new BigDecimal(i.v()))
-					.collect(Collectors.toList());
-			try {
-				List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository.findAllByCategoryIds(categoryList);
-				// Step 4: 「インデックス再構成結果履歴」を作成する
-				ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.emptyList());
-				// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
-				if (!listIndexReorgTable.isEmpty()) {
-					//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
-					List<ProcExecIndexResult> indexReconstructionResult = new ArrayList<ProcExecIndexResult>();
-					listIndexReorgTable.forEach(indexReorgTable -> {
-						// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
-						// Step 6: 「インデックス再構成結果」を作成する
-						List<ProcExecIndexResult> resultCaculateFragRates = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v())
-								.stream()
-								.filter(item -> item.getIndexId() > 0) // Check condition 実行したSQLの結果の「index_id」> 0
-								.map(item -> ProcExecIndexResult.builder()
-										.indexName(new IndexName(item.getIndexName()))
-										.fragmentationRate(new FragmentationRate(item.getFragmentationRate()))
-										.tablePhysicalName(new TableName(item.getTablePhysicalName()))
-										.build())
-								.collect(Collectors.toList());
-						// Step 7 テーブルのインデックス再構成する
-						this.indexReorgTableRepository.reconfiguresIndex(indexReorgTable.getTablePhysName().v());
-						// INPUT「更新処理自動実行．実行設定．インデックス再構成．統計情報を更新する」を判定する
-						// if USE
-						if (procExec.getExecSetting().getIndexReconstruction().getUpdateStats() == NotUseAtr.USE) {
-							// Step 8 統計情報を更新する - Update stats
-							this.indexReorgTableRepository.updateStatis(indexReorgTable.getTablePhysName().v());
-						}
-						// Step 9 インデックス再構成後の断片化率を計算する
-						List<CaculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v());
-						resultCaculateFragRatesAfter.removeIf(item -> item.getIndexId() > 0);
-						for (int j = 0; j < resultCaculateFragRatesAfter.size(); j++) {
-							resultCaculateFragRates.get(j)
-								.setFragmentationRateAfterProcessing(new FragmentationRate(resultCaculateFragRatesAfter.get(j).getFragmentationRate()));
-						}
-						indexReconstructionResult.addAll(resultCaculateFragRates);
-					});
-					// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
-					proExecIndex.setIndexReconstructionResult(indexReconstructionResult);
-				}
-				// Step 11: 作成した「インデックス再構成結果履歴」を登録する
-				this.proExecIndexRepository.update(proExecIndex);
-			} catch(Exception e) {
-				isHasException = true;
-				errorMessage = "Msg_1339";
+			List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository.findAllByCategoryIds(categoryList);
+			// Step 4: 「インデックス再構成結果履歴」を作成する
+			ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.emptyList());
+			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction table"
+			if (!listIndexReorgTable.isEmpty()) {
+				//	取得した「インデックス再構成テーブル」をループする - Loop the acquired "index reconstruction table"
+				List<ProcExecIndexResult> indexReconstructionResult = new ArrayList<ProcExecIndexResult>();
+				listIndexReorgTable.forEach(indexReorgTable -> {
+					// Step 5: インデックス再構成前の断片化率を計算する - Calculate the fragmentation rate before index reconstruction
+					// Step 6: 「インデックス再構成結果」を作成する
+					List<ProcExecIndexResult> resultCaculateFragRates = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v())
+							.stream()
+							.filter(item -> item.getIndexId() > 0) // Check condition 実行したSQLの結果の「index_id」> 0
+							.map(item -> ProcExecIndexResult.builder()
+									.indexName(new IndexName(item.getIndexName()))
+									.fragmentationRate(new FragmentationRate(item.getFragmentationRate()))
+									.tablePhysicalName(new TableName(item.getTablePhysicalName()))
+									.build())
+							.collect(Collectors.toList());
+					// Step 7 テーブルのインデックス再構成する
+					this.indexReorgTableRepository.reconfiguresIndex(indexReorgTable.getTablePhysName().v());
+					// INPUT「更新処理自動実行．実行設定．インデックス再構成．統計情報を更新する」を判定する
+					// if USE
+					if (procExec.getExecSetting().getIndexReconstruction().getUpdateStats() == NotUseAtr.USE) {
+						// Step 8 統計情報を更新する - Update stats
+						this.indexReorgTableRepository.updateStatis(indexReorgTable.getTablePhysName().v());
+					}
+					// Step 9 インデックス再構成後の断片化率を計算する
+					List<CaculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository.calculateFragRate(indexReorgTable.getTablePhysName().v());
+					resultCaculateFragRatesAfter.removeIf(item -> item.getIndexId() > 0);
+					for (int j = 0; j < resultCaculateFragRatesAfter.size(); j++) {
+						resultCaculateFragRates.get(j)
+							.setFragmentationRateAfterProcessing(new FragmentationRate(resultCaculateFragRatesAfter.get(j).getFragmentationRate()));
+					}
+					indexReconstructionResult.addAll(resultCaculateFragRates);
+				});
+				// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
+				proExecIndex.setIndexReconstructionResult(indexReconstructionResult);
 			}
+			// Step 11: 作成した「インデックス再構成結果履歴」を登録する
+			this.proExecIndexRepository.update(proExecIndex);
+		} catch(Exception e) {
+			isHasException = true;
+			errorMessage = "Msg_1339";
 		}
 		// Step 12: 各処理の後のログ更新処理
 		this.updateLogAfterProcess.updateLogAfterProcess(
@@ -3592,13 +3594,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		boolean checkStopExec = false;
 		String errorMessage = "";
 		for (int i = 0; i < size; i++) {
-			ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
 			// Check 各処理の終了状態.更新処理　＝　任意期間の集計
-			if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD) {
+			if (taskLogLists.get(i).getProcExecTask() == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD) {
 				// Set 各処理の終了状態　＝　[任意期間の集計、NULL]
-				executionTaskLog.setStatus(null);
+				taskLogLists.get(i).setStatus(null);
 				// Set 開始日時　＝　[任意期間の集計、システム日時]
-				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				taskLogLists.get(i).setLastExecDateTime(GeneralDateTime.now());
 				existExecutionTaskLog = true;
 				break;
 			}
@@ -3660,6 +3661,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						executionTaskLog.setLastExecDateTime(null);
 					}
 				}
+				procExecLog.setTaskLogList(taskLogLists);
+				this.procExecLogRepo.update(procExecLog);
 				return false;
 			} else {
 				// Step 更新処理自動実行の実行対象社員リストを取得する - Get the list of employees to be automatically executed in the update process
@@ -3701,6 +3704,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				});
 				if (targetLists.isEmpty()) {
 					isHasException = true;
+					errorMessage = "Msg_1339";
 					checkStopExec = true;
 				}
 				this.aggrPeriodTargetAdapter.addTarget(targetLists);
@@ -3718,7 +3722,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			errorMessage = "Msg_1552";
 			checkStopExec = true;
 		}
-		
+		// 各処理の後のログ更新処理
 		this.updateLogAfterProcess.updateLogAfterProcess(
 				ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, 
 				companyId, 
@@ -3730,4 +3734,5 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				errorMessage);
 		return false;
 	}
+	
 }
