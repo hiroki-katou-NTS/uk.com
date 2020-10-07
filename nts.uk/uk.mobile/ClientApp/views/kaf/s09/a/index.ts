@@ -472,13 +472,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                    self.dataOutput = res;
-                    // self.bindCommon(self.data);
-                    self.mode = false;
-                    self.fetchStart();
-                    self.$forceUpdate();
-                });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -491,13 +492,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                    self.dataOutput = res;
-                    // self.bindCommon(self.data);
-                    self.mode = false;
-                    self.fetchStart();
-                    self.$forceUpdate();
-                });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -707,6 +709,22 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 }
             }
         });
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        console.log('emit' + objectDate);
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        console.log('emit' + prePostAtr);
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        console.log('emit' + opAppStandardReasonCD);
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        console.log('emit' + opAppReason);
     }
 
 }
