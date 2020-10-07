@@ -204,6 +204,11 @@ module nts.uk.ui.exTable {
             }
         }
         
+        getChartRuler() {
+            let self = this;
+            return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+        }
+        
         /**
          * Create.
          */
@@ -2701,6 +2706,9 @@ module nts.uk.ui.exTable {
                         }).fail(function(res) {
                             let $target = selection.cellAt($grid, editor.rowIdx, editor.columnKey);
                             if ($target !== intan.NULL) {
+                                 let $parent = $editor.parentElement;
+                                helper.removeClass($parent, EDIT_CELL_CLS);
+                                triggerStopEdit($exTable, $parent, land, value);
                                 errors.add($exTable, $target, editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                             }
                             if (_.isFunction(columnDf.ajaxValidate.onFailed)) {
@@ -2900,8 +2908,11 @@ module nts.uk.ui.exTable {
                     }).fail(function(res) {
                         let $target = selection.cellAt($grid, editor.rowIdx, editor.columnKey);
                         if ($target !== intan.NULL) {
+                            mo(helper.call(columnDf.ajaxValidate.onFailed, 
+                                { rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res));
                             errors.add($exTable, $target, editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                         }
+                        
                         if (_.isFunction(columnDf.ajaxValidate.onFailed)) {
                             columnDf.ajaxValidate.onFailed({ rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res);
                         }
@@ -3347,6 +3358,13 @@ module nts.uk.ui.exTable {
                             if (!helper.isEqual(src[key], obj[key], fieldArr)
                                 && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
                                 objValCloned[tField] = srcVal[tField];
+                                if (tField.slice(-4) === "Name") {
+                                    let codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                                    if (_.has(objValCloned, codeFieldName)) {
+                                        objValCloned[codeFieldName] = srcVal[codeFieldName];
+                                    }
+                                }
+                                
                                 changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                 origData[key] = objValCloned;
                                 return objValCloned;
@@ -9129,7 +9147,8 @@ module nts.uk.ui.exTable {
          * Remove class.
          */
         export function removeClass1n(node, clazz) {
-            if (node && node.constructor !== HTMLCollection) {
+            if (!node || !clazz) return;
+            if (node.constructor !== HTMLCollection) {
                 let children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
                 if (children.length > 0) removeClass(children, clazz);
                 else removeClass(node, clazz);
@@ -9163,7 +9182,8 @@ module nts.uk.ui.exTable {
          * Remove class.
          */
         export function removeClass(node, clazz) {
-            if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+            if (!node || !clazz) return;
+            if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                 node.classList.remove(clazz);
                 return;
             }
