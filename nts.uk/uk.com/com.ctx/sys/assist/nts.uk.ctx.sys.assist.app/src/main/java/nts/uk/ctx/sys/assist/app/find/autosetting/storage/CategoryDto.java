@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.category.Category;
-import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategory;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 
 /**
  * カテゴリDTO
@@ -51,20 +49,12 @@ public class CategoryDto implements DataStorageSelectionCategory.MementoGetter {
 	 */
 	private String retentionPeriod;
 	
-	public static CategoryDto fromDomain(Category domain) {
+	public static CategoryDto fromDomain(Category domain, int systemType) {
 		CategoryDto dto = new CategoryDto();
 		dto.setCategoryId(domain.getCategoryId().v());
 		dto.setCategoryName(domain.getCategoryName().v());
 		dto.setRetentionPeriod(domain.getTimeStore().nameId);
-		if (domain.getAttendanceSystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.ATTENDANCE_SYSTEM.value);
-		} else if (domain.getPaymentAvailability().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.PAYROLL_SYSTEM.value);
-		} else if (domain.getPossibilitySystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.PERSON_SYSTEM.value);
-		} else if (domain.getSchelperSystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.OFFICE_HELPER.value); 
-		}
+		dto.setSystemType(systemType);
 		return dto;
 	}
 }

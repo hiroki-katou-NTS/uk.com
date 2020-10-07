@@ -202,6 +202,7 @@ module nts.uk.com.view.cmf003.b {
         self.referenceDate(moment.utc().format("YYYY/MM/DD"));
 
         this.columnCategorys = ko.observableArray([
+          { headerText: '', key: 'id', hidden: true },
           { headerText: '', key: 'categoryId', width: 100, hidden: true },
           { headerText: getText('CMF003_30'), key: 'displayName', width: 230 },
           { headerText: getText('CMF003_31'), formatter: timeStore, key: 'periodDivision', width: 100 },
@@ -905,6 +906,7 @@ module nts.uk.com.view.cmf003.b {
       specifiedMethod: number;
       storeRange: number;
       displayName: string;
+      id?: string = nts.uk.util.randomId();
     }
 
     export class CategoryModel {

@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
-import nts.uk.ctx.sys.assist.dom.categoryfordelete.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 
 @Data
 @AllArgsConstructor
@@ -48,20 +46,12 @@ public class DeleteCategoryDto implements DataDeletionSelectionCategory.MementoG
 	 */
 	private String retentionPeriod;
 	
-	public static DeleteCategoryDto fromDomain(CategoryForDelete domain) {
+	public static DeleteCategoryDto fromDomain(CategoryForDelete domain, int systemType) {
 		DeleteCategoryDto dto = new DeleteCategoryDto();
 		dto.categoryId = domain.getCategoryId().v();
 		dto.categoryName = domain.getCategoryName().v();
-		if (domain.getAttendanceSystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.ATTENDANCE_SYSTEM.value);
-		} else if (domain.getPaymentAvailability().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.PAYROLL_SYSTEM.value);
-		} else if (domain.getPossibilitySystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.PERSON_SYSTEM.value);
-		} else if (domain.getSchelperSystem().equals(SystemUsability.AVAILABLE)) {
-			dto.setSystemType(SystemType.OFFICE_HELPER.value); 
-		}
 		dto.retentionPeriod = domain.getTimeStore().nameId;
+		dto.systemType = systemType;
 		return dto;
 	}
 }

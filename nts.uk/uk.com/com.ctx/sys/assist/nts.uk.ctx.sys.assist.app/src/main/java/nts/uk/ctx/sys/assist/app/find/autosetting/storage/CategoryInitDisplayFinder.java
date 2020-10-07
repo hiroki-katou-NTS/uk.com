@@ -71,10 +71,13 @@ public class CategoryInitDisplayFinder {
 	
 	private List<CategoryDto> getCategoryList(LoginPersonInCharge pic) {
 		List<SystemType> systemTypes = picService.getSystemTypes(pic);
-		return systemTypes.stream()
-						.map(type -> categoryService.categoriesBySystemType(type.value))
+		List<CategoryDto> list = systemTypes.stream()
+						.map(type -> categoryService.categoriesBySystemType(type.value)
+													.stream()
+													.map(domain -> CategoryDto.fromDomain(domain, type.value))
+													.collect(Collectors.toList()))
 						.flatMap(List::stream)
-						.map(CategoryDto::fromDomain)
 						.collect(Collectors.toList());
+		return list;
 	}
 }
