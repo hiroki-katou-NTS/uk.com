@@ -29,10 +29,10 @@ module nts.uk.at.view.kaf022.o.viewmodel {
         constructor() {
             let self = this;
             self.flexWorkOptions = ko.observableArray([
-                new ItemModel(0, "フレックス勤務者"),
-                new ItemModel(1, "フレックス勤務者以外")
+                new ItemModel(1, "フレックス勤務者"),
+                new ItemModel(0, "フレックス勤務者以外")
             ]);
-            self.selectedFlexWorkAtr = ko.observable(0);
+            self.selectedFlexWorkAtr = ko.observable(1);
 
             self.overtimeAppOptions = ko.observableArray([
                 new ItemModel(0, "早出残業"),

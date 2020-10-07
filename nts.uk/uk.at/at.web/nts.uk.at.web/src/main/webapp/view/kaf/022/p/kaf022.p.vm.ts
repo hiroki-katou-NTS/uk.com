@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
         constructor() {
             let self = this;
             self.columns = ko.observableArray([
-                {headerText: getText("KAF022_681"), key: 'code', width: 50, columnCssClass: "grid-col-text-right", formatter: _.escape},
+                {headerText: getText("KAF022_681"), key: 'code', width: 50, formatter: _.escape},
                 {headerText: getText("KAF022_629"), key: 'name', width: 180, formatter: _.escape},
                 {headerText: getText("KAF022_99"), key: 'useAtr', width: 70, formatter: makeIcon}
             ]);
