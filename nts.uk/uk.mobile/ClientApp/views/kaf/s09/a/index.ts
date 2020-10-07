@@ -201,53 +201,53 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.kaf000_B_Params = paramb;
         if (self.mode) {
             self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(startDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                //     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
+                // }
 
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
+                // if (!_.isNull(endDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
 
-                }
-                self.changeDate(listDate);
+                // }
+                // self.changeDate(listDate);
             });
 
             self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
 
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
+                //     return;
+                // }
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(endDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!_.isNull(startDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
+                // }
 
-                self.changeDate(listDate);
+                // self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
                 console.log(newV + ':' + oldV);
@@ -378,25 +378,25 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.application.employeeID = self.user.employeeId;
         }
 
-        if (self.kaf000_B_Params) {
-            if (self.mode) {
-                self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-                } else {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                }
-            }
+        // if (self.kaf000_B_Params) {
+        //     if (self.mode) {
+        //         self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+        //         } else {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         }
+        //     }
 
-            self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+        //     self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
 
-        }
+        // }
 
-        if (self.kaf000_C_Params.output) {
-            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        }
+        // if (self.kaf000_C_Params.output) {
+        //     self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
+        //     self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
+        // }
         self.application.enteredPerson = self.user.employeeId;
 
 
@@ -733,19 +733,38 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
 
     public kaf000BChangeDate(objectDate) {
+        const self = this;
         console.log('emit' + objectDate);
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
     }
     
     public kaf000BChangePrePost(prePostAtr) {
+        const self = this;
         console.log('emit' + prePostAtr);
+        self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const self = this;
         console.log('emit' + opAppStandardReasonCD);
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+        
     }
 
     public kaf000CChangeAppReason(opAppReason) {
+        const self = this;
         console.log('emit' + opAppReason);
+        self.application.opAppReason = opAppReason;
     }
 
 }
