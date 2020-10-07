@@ -46,32 +46,35 @@
           </button>
         </div>
         <!-- A1_2-->
-        <hr />
         <div id="content-area" class="kwr-003">
           <!-- A3_1-->
-          <div id="ccgcomponent"></div>
+          <div id="CCG001"></div>
           <div class="pull-left fixed-flex-layout-left">
-            <!-- A2_1, A2_2, A2_3 -->
-            <div class="panel panel-frame date-time-picker">
-              <div class="label" data-bind="ntsFormLabel: {}">
-                #{i18n.getText('KWR003_103')}
+            <div class="employees-list">
+              <!-- A2_1, A2_2, A2_3 -->
+              <div class="panel panel-frame date-time-picker">
+                <div class="date-time-picker-label" data-bind="ntsFormLabel: {}">
+                  #{i18n.getText('KWR003_103')}
+                </div>
+                <!-- YearMonth Picker -->
+                <div
+                  tabindex="3"
+                  data-bind="ntsDatePicker: { 
+                  value: yearMonth, 
+                  dateFormat: 'yearmonth', 
+                  valueFormat: 'YYYYMM', 
+                  cssRanger: {}, 
+                  defaultClass: 'round-orange',
+                  name: 'ntsDatePicker',
+                  fiscalMonthsMode: true,
+                  showJumpButtons: true }"
+                  ></div>
               </div>
-              <!-- YearMonth Picker -->
-              <div
-                tabindex="3"
-                data-bind="ntsDatePicker: { 
-                value: yearMonth, 
-                dateFormat: 'yearmonth', 
-                valueFormat: 'YYYYMM', 
-                cssRanger: {}, 
-                defaultClass: 'round-orange',
-                name: 'ntsDatePicker',
-                fiscalMonthsMode: true,
-                showJumpButtons: true }"
-              ></div>
+              <!-- A3_2-->
+              <div tabindex="4" id="kcp005" class="panel panel-frame">
+                22
+              </div>
             </div>
-            <!-- A3_2-->
-            <div tabindex="4" id="list-employee" class="panel panel-frame">22</div>
           </div>
           <div class="pull-left fixed-flex-layout-right">
             <!-- A4_1-->
@@ -128,9 +131,11 @@
                       ></div>
                       <!-- A5_3_3-->
                       <button
-                        tabindex="7"                     
+                        tabindex="7"
                         data-bind="enable: isEnableSelectedCode()"
-                      >#{i18n.getText('KWR003_112')}</button>
+                      >
+                        #{i18n.getText('KWR003_112')}
+                      </button>
                     </div>
                     <div class="item item-2">
                       <!-- A5_3_2 - KWR003_105-->
@@ -158,9 +163,11 @@
                       ></div>
                       <!-- A5_3_3-->
                       <button
-                        tabindex="9"                     
+                        tabindex="9"
                         data-bind="enable: !isEnableSelectedCode()"
-                      >#{i18n.getText('KWR003_112')}</button>
+                      >
+                        #{i18n.getText('KWR003_112')}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -174,7 +181,10 @@
                 </div>
                 <div class="row-right row-switch-button">
                   <!-- A6_2 -->
-                  <div tabindex="10" class="cf" data-bind="ntsSwitchButton: {
+                  <div
+                    tabindex="10"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
                     name: '#{i18n.getText('KWR003_107')}',
                     options: [
                       { code: 0, name: '#{i18n.getText('KWR003_108')}'},
@@ -184,7 +194,8 @@
                     optionsText: 'name',
                     value: zeroDisplayClassification,
                     required: false,
-                    enable: true }"></div>
+                    enable: true }"
+                  ></div>
                 </div>
               </div>
               <div class="panel-row">
@@ -196,7 +207,10 @@
                 </div>
                 <div class="row-right row-switch-button">
                   <!-- A7_2 -->
-                  <div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+                  <div
+                    tabindex="11"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
                     name: '#{i18n.getText('KWR003_110')}',
                     options: [
                       { code: 0, name: '#{i18n.getText('KWR003_111')}'},
@@ -206,7 +220,8 @@
                     optionsText: 'name',
                     value: specifyingPageBreaks,
                     required: false,
-                    enable: true }"></div>
+                    enable: true }"
+                  ></div>
                 </div>
               </div>
             </div>

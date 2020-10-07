@@ -1,16 +1,30 @@
+.kwr-003 {
+  margin-top: 10px;
+}
 .kwr-003 .fixed-flex-layout-left {
   margin-right: 10px;
-  margin-left: 50px;
+  margin-left: 80px;
 }
-
+.kwr-003 .fixed-flex-layout-left .employees-list {
+  width: 400px;
+}
+.kwr-003 .employees-list .date-time-picker {
+  margin-bottom: 10px;
+}
+.kwr-003 .employees-list .date-time-picker-label {
+  width: 30%;
+}
 .kwr-003 .fixed-flex-layout-right {
   width: 600px;
 }
 
 .kwr-003 .panel .panel-row {
   display: flex;
+  margin-bottom: 10px;
 }
-
+.kwr-003 .panel .panel-row:not(:first-child) {
+  margin-bottom: 35px;
+}
 .kwr-003 .panel .panel-row .row-left {
   flex: 1;
 }
