@@ -1215,7 +1215,7 @@ module nts.uk.at.view.ksu001.u {
             } else if(parseInt(basePubDateSplit[0]) > parseInt(prevMonthPublicDateSplit[0])){
                 self.isMonthFuture(false);
                 self.isMonthPast(true);                 
-                if(self.newEditDate() != self.editDate()){
+                if(self.newEditDate() != self.editDate() && self.newEditDate() != ""){
                     size = self.daysDifference(self.newEditDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
                 } else {
                     size = self.daysDifference(self.publicDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
