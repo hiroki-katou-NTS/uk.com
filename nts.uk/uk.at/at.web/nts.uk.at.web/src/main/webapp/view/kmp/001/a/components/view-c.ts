@@ -56,7 +56,7 @@ module nts.uk.at.view.kmp001.c {
 					<div>
 						<table id="card-list" 
 							data-bind="ntsGridList: {
-								height: 300,
+								height: 310,
 								dataSource: items,
 								optionsValue: 'stampNumber',
 								columns: [

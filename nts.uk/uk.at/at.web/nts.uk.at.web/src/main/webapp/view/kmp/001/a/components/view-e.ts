@@ -54,7 +54,7 @@ module nts.uk.at.view.kmp001.e {
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
-		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(0);
+		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
 		public cardGeneration: KnockoutObservableArray<IGenerateCard> = ko.observableArray([]);
 
 		paddingTypes: PaddingType[] = [
@@ -113,15 +113,17 @@ module nts.uk.at.view.kmp001.e {
 			const param = { loginEmployee: vm.$user.employeeId, makeEmbossedCard: paddingType, targetPerson: targetPerson }
 
 			vm.$ajax(KMP001E_API.GENERATE_STAMP_CARD, param)
+				.fail((err: any) => {
+					vm.$dialog.error({ messageId: err.messageId });
+				})
 				.then((data: IGenerateCard[]) => {
 					vm.cardGeneration(data);
-					console.log(data);
 				})
 				.then(() => {
-					const param = {sid: targetPerson.map(m => m.sid), cardGeneration: ko.unwrap(vm.cardGeneration)};
+					const param = { sid: targetPerson.map(m => m.sid), cardGeneration: ko.unwrap(vm.cardGeneration) };
 					vm.$ajax(KMP001E_API.ADD_STAMP_CARD, param);
 				});
-				
+
 		}
 	}
 }

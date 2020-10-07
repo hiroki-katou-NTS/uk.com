@@ -21,7 +21,7 @@ module nts.uk.at.view.kmp001.b {
 				<div class="caret-right caret-background bg-green" style="padding: 10px;">
 					<table id="card-list" 
 						data-bind="ntsGridList: {
-							height: 300,
+							height: 310,
 							optionsValue: 'stampNumber',
 							columns: [
 					            { headerText: $i18n('KMP001_22'), prop: 'stampNumber', width: 180 },

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stamcardedit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,21 +30,31 @@ public class GenerateStampCardForEmployees {
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons, String companyId, String sid ) {
 		
-
-		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
+		List<String> stampCards = new ArrayList<>();
+		
+		for (TargetPerson targetPerson : targetPersons) {
 			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
-					m.getEmployeeCd(), companyId);
+					targetPerson.getEmployeeCd(), companyId);
 			
-			return s;
-		}).collect(Collectors.toList());
+			if (s.isPresent()){
+				stampCards.add(s.get());
+			}
+		}
+
+//		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
+//			Optional<String> s = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
+//					m.getEmployeeCd(), companyId);
+//			
+//			return s;
+//		}).collect(Collectors.toList());
 		
 		if (stampCards.isEmpty()) {
 			throw new BusinessException("Msg_1756");
 		}
 		
 		List<ImprintedCardGenerationResult> results = stampCards.stream().map(m -> {
-			StampCard card = new StampCard(companyCd,m.get(), sid);
-			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
+			StampCard card = new StampCard(companyCd,m, sid);
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m, contractCd);
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
 
 			
