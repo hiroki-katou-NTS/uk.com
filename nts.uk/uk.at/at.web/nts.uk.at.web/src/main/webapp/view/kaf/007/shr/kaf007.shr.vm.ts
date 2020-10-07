@@ -2,21 +2,154 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
     @component({
         name: 'kaf007-share',
-        template: '/nts.uk.at.web/view/kaf/007/shr/index.html'
+        template: `
+        <div id="kaf007-share">
+            <div class="table" style="margin-bottom: 5px;">
+                <div class="cell" style="position: absolute; margin-left: 120px; margin-top: 4px;">
+                    <!--A6_5 勤務就業選択-->
+                    <button style="height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
+                                click: openKDL003Click, 
+                                enable: isEdit">
+                    </button>
+                </div>
+                <div class="cell valign-center">
+                    <div class="table" style="margin-bottom: 5px;">
+                        <div class="cell col-1">
+                            <!--A6_1 勤務種類-->
+                            <div class="cell valign-center" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
+                            </div>
+                        </div>
+                        <div class="cell col-2" style="margin-bottom: 5px;">
+                            <!--A6_2 勤務種類名-->
+                            <div class="cell valign-center">
+                                <span data-bind="text: appWorkChange.workTypeCode"></span>
+                                <span data-bind="text: ' '"></span>
+                                <span data-bind="text: appWorkChange.workTypeName"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table" style="margin-top: 5px;">
+                        <div class="cell col-1">
+                            <!--A6_3 就業時間帯-->
+                            <div class="cell valign-center" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
+                            </div>
+                        </div>
+                        <div class="cell col-2" style="margin-top: 5px;">
+                            <!--A6_4 就業時間帯名-->
+                            <div class="cell valign-center">
+                                <span data-bind="text: appWorkChange.workTimeCode"></span>
+                                <span data-bind="text: ' '"></span>
+                                <span data-bind="text: appWorkChange.workTimeName"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table" style="margin-top: 5px;"
+                data-bind="visible: reflectWorkChange.whetherReflectAttendance() == 1">
+                <div class="cell col-1">
+                    <!-- A7 -->
+                    <div class="cell valign-center" data-bind="ntsFormLabel: {required:true}, text: $i18n('KAF007_13')"></div>
+                </div>
+                <div class="cell valign-center col-3">
+                    <!-- A7_1 -->
+                    <input id="time1Start" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: appWorkChange.startTime1,
+                                                    readonly: false,
+                                                    required: true,
+                                                    name: $i18n('KAF007_62'),
+                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                </div>
+                <!-- A7_2 -->
+                <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
+                <div class="cell valign-center">
+                    <!-- A7_3 -->
+                    <input id="time1End" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: appWorkChange.endTime1,
+                                                    readonly: false,
+                                                    required: true,
+                                                    name: $i18n('KAF007_63'),
+                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                    <!-- A7_6	 -->
+                    <span class="label comment2" data-bind="text: $vm.comment2"></span>
+                </div>
+            </div>
+            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles">
+                <div class="cell col-1">
+                    <!-- A8 -->
+                    <div class="cell valign-center" data-bind="ntsFormLabel: {required:false}, text: $i18n('KAF007_20')"></div>
+                </div>
+                <div class="cell valign-center col-3">
+                    <!-- A8_1 -->
+                    <input id="time2Start" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: appWorkChange.startTime2,
+                                                    readonly: false,
+                                                    required: false,
+                                                    name: $i18n('KAF007_64'),
+                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                </div>
+                <!-- A8_2 -->
+                <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
+                <div class="cell valign-center">
+                    <!-- A8_3 -->
+                    <input id="time2End" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
+                                                    constraint:'TimeWithDayAttr',
+                                                    value: appWorkChange.endTime2,
+                                                    readonly: false,
+                                                    required: false,
+                                                    name: $i18n('KAF007_65'),
+                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                    <!-- A8_6	 -->
+                    <span class="label comment2" data-bind="text: $vm.comment2, visible: reflectWorkChange.whetherReflectAttendance() == 1"></span>
+        
+                </div>
+            </div>
+            <div class="table" style="margin-top: 5px;">
+                <div class="cell col-1"></div>
+                <!-- A8_4 -->
+                <div class="cell valign-center col-3" style="display: block;" data-bind="ntsCheckBox: {
+                    text: $i18n('KAF007_16'),
+                    checked: isStraightGo, 
+                    enable: (model() !== null && model().setupType() === 0 && isEdit)
+                }"></div>
+                <div class="cell" style="padding-right: 5px;"></div>
+                <!-- A8_5 -->
+                <div class="cell valign-center" data-bind="ntsCheckBox: {
+                    text: $i18n('KAF007_18'),
+                    checked: isStraightBack, 
+                    enable: (model() !== null && model().setupType() === 0 && isEdit)
+                }"></div>
+            </div>
+        </div>`
     })
     class Kaf007ShareViewModel extends ko.ViewModel {
         model: KnockoutObservable<ModelDto>;
         mode: number;
         appWorkChange: AppWorkChange;
+        reflectWorkChange: ReflectWorkChangeApp;
+        isStraightGo: KnockoutObservable<boolean>;
+        isStraightBack: KnockoutObservable<boolean>;
+        isEdit: KnockoutObservable<boolean> = ko.observable(true);
         created(params: any) {
             const vm = this;
 
             vm.model = params.model;
             vm.mode = params.mode;
             vm.appWorkChange = params.appWorkChange;
+            vm.reflectWorkChange = params.reflectWorkChange;
+            vm.isStraightBack = params.isStraightBack;
+            vm.isStraightGo = params.isStraightGo;
+
+            if(params.isEdit) {
+                vm.isEdit(ko.toJS(params.isEdit));
+            }
         }
 
         mounted() {
+            const vm = this;
 
         }
 
@@ -36,13 +169,59 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
                         vm.appWorkChange.workTypeCode(childData.selectedWorkTypeCode);
+                        vm.model().workTypeCD(childData.selectedWorkTypeCode);
                         vm.appWorkChange.workTypeName(childData.selectedWorkTypeName);
                         vm.appWorkChange.workTimeCode(childData.selectedWorkTimeCode);
+                        vm.model().workTimeCD(childData.selectedWorkTimeCode);
                         vm.appWorkChange.workTimeName(childData.selectedWorkTimeName);
+
+                        if(childData.first) {
+                            vm.appWorkChange.startTime1(childData.first.start);
+                            vm.appWorkChange.endTime1(childData.first.end)
+                        } else {
+                            vm.appWorkChange.startTime1(null);
+                            vm.appWorkChange.endTime1(null)
+                        }
+                        if(childData.second) {
+                            vm.appWorkChange.startTime2(childData.second.start);
+                            vm.appWorkChange.endTime2(childData.second.end)
+                        } else {
+                            vm.appWorkChange.startTime2(null);
+                            vm.appWorkChange.endTime2(null)
+                        }
                     }
-                });
-            });
+                }).then(() => {
+                    return vm.$ajax(API.getByWorkType + "/" + vm.model().workTypeCD())
+                }).done((res) => {
+                    if(res !== null || res !== undefined) {
+                        vm.model().setupType(res);
+                    }
+                }).fail(fail => console.log(fail))
+                
+            }).always(() => {
+                if(vm.mode === 0) {
+                    $('#kaf000-a-component4-singleDate').focus(); $('.ntsStartDatePicker').focus();
+                } else {
+                    $('#time1Start').focus();
+                }
+
+            });;
         }
+
+        // public conditionA14() {
+		// 	const vm = this;
+
+		// 	return ko.computed(() => {
+		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
+		// 			return true;
+		// 		};
+		// 		return false;
+		// 	}, vm);
+		// }
+    }
+
+    const API = {
+        getByWorkType: "at/schedule/basicschedule/isWorkTimeSettingNeeded"
     }
 
     export class AppWorkChange {
@@ -68,23 +247,23 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
     export class ReflectWorkChangeApp {
         companyId: string;
-        whetherReflectAttendance: number;
+        whetherReflectAttendance: KnockoutObservable<number>;
 
         constructor(companyID: string, whetherReflectAttendance: number) {
             this.companyId = companyID;
-            this.whetherReflectAttendance = whetherReflectAttendance;
+            this.whetherReflectAttendance = ko.observable(whetherReflectAttendance);
         }
     }
 
     export class ModelDto {
 
-        workTypeCode: KnockoutObservable<string>;
+        workTypeCD: KnockoutObservable<string>;
 
-        workTimeCode: KnockoutObservable<string>;
+        workTimeCD: KnockoutObservable<string>;
 
         appDispInfoStartupOutput: KnockoutObservable<any>;
 
-        reflectWorkChange: KnockoutObservable<ReflectWorkChangeApp> = ko.observable(null);
+        reflectWorkChangeAppDto: KnockoutObservable<ReflectWorkChangeApp> = ko.observable(null);
 
         workTypeLst: any;
 
@@ -94,4 +273,5 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
         appWorkChangeSet: any;
     }
+    
 }
