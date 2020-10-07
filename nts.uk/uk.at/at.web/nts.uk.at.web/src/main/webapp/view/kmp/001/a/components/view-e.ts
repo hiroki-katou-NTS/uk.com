@@ -115,6 +115,7 @@ module nts.uk.at.view.kmp001.e {
 			vm.$ajax(KMP001E_API.GENERATE_STAMP_CARD, param)
 				.fail((err: any) => {
 					vm.$dialog.error({ messageId: err.messageId });
+					// nts.uk.ui.dialog.error({ messageId: err.messageId });
 				})
 				.then((data: IGenerateCard[]) => {
 					vm.cardGeneration(data);
