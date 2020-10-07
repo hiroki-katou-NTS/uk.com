@@ -240,13 +240,16 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
-				vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
-			}
+			// if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+			// 	vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
+			// }
 			
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
 					if (isValid) {
+						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+							return vm.$validate('.nts-input');
+						} 
 						return true;
 					}
 				})
