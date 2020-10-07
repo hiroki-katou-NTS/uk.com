@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author chungnt
- * UKDesign.UniversalK.就業.KDP_打刻.KMP001_IDカードの登録.KMP001_カードNOの登録_追加機能版.G：処理確認ダイアログ.メニュー別OCD.一括作成した打刻カード番号を登録する
+ *         UKDesign.UniversalK.就業.KDP_打刻.KMP001_IDカードの登録.KMP001_カードNOの登録_追加機能版.G：処理確認ダイアログ.メニュー別OCD.一括作成した打刻カード番号を登録する
  *
  */
 @Stateless
@@ -29,15 +29,16 @@ public class RegisterStampedCardNumberCommandHandler {
 		if (!param.sid.isEmpty()) {
 
 			for (int i = 0; i < param.cardGeneration.size(); i++) {
-				Optional<StampCard> stampCard = this.stampCardRepo.getStampCardByEmployeeCardNumber(param.sid.get(i), param.cardGeneration.get(0).getCardNumber());
-				
-				if (!stampCard.isPresent()){
-					StampCard card = new StampCard(AppContexts.user().contractCode(),
-							param.cardGeneration.get(i).getCardNumber(), 
-							param.sid.get(i));
-					
-					this.stampCardRepo.add(card);
+				Optional<StampCard> stampCard = this.stampCardRepo.getStampCardByEmployeeCardNumber(param.sid.get(i),
+						param.cardGeneration.get(i).getCardNumber());
+
+				if (stampCard.isPresent()) {
+					continue;
 				}
+				StampCard card = new StampCard(AppContexts.user().contractCode(),
+						param.cardGeneration.get(i).getCardNumber(), param.sid.get(i));
+
+				this.stampCardRepo.add(card);
 			}
 		}
 	}

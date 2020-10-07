@@ -134,7 +134,10 @@ module nts.uk.at.view.kmp001.h {
 			const vm = this;
 
 			vm.$window
-				.modal('/view/kmp/001/d/index.xhtml');
+				.modal('/view/kmp/001/d/index.xhtml')
+				.then((data: IStampCardEdit) => {
+					vm.stampCardEdit.update(data);
+				});
 		}
 
 		print() {

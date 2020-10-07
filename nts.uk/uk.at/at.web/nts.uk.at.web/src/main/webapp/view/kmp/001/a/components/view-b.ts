@@ -188,16 +188,16 @@ module nts.uk.at.view.kmp001.b {
 							stampInput = stampInput + "0";
 						}
 						break;
-					case 3:
-						for (var i = 0; i < s; i++) {
-							stampInput = " " + stampInput;
-						}
-						break;
-					case 4:
-						for (var i = 0; i < s; i++) {
-							stampInput = stampInput + " ";
-						}
-						break;
+					// case 3:
+					// 	for (var i = 0; i < s; i++) {
+					// 		stampInput = " " + stampInput;
+					// 	}
+					// 	break;
+					// case 4:
+					// 	for (var i = 0; i < s; i++) {
+					// 		stampInput = stampInput + " ";
+					// 	}
+					// 	break;
 				}
 
 				vm.stampCardBackSelect = stampInput;
@@ -278,22 +278,23 @@ module nts.uk.at.view.kmp001.b {
 
 			} else {
 				vm.$blockui("invisible");
-				vm.$ajax(KMP001B_API.GET_STAMPCARD + vm.stampCardBackSelect)
-					.then((data: IStampCard[]) => {
-						if (data) {
-							vm.items(data);
-							if (data[selectedIndex]) {
-								vm.model.stampNumber(data[selectedIndex].stampNumber);
-								vm.model.update(data[selectedIndex]);
-							} else {
-								vm.model.stampNumber('');
+				if (vm.stampCardBackSelect !== ''){
+					vm.$ajax(KMP001B_API.GET_STAMPCARD + vm.stampCardBackSelect)
+						.then((data: IStampCard[]) => {
+							if (data) {
+								vm.items(data);
+								if (data[selectedIndex]) {
+									vm.model.stampNumber(data[selectedIndex].stampNumber);
+									vm.model.update(data[selectedIndex]);
+								} else {
+									vm.model.stampNumber('');
+								}
 							}
-						}
 
-					}).always(() => {
-						vm.$blockui("clear");
-					});
-
+						}).always(() => {
+							vm.$blockui("clear");
+						});
+				}
 			}
 		}
 
