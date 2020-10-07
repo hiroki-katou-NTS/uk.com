@@ -40,7 +40,7 @@ public class EmployeeInformation {
 		Optional<EmployeeDataMngInfo> employeeDataMngInfo = employeeDataMngInfoRepo.findByEmpId(input.getEmployeeId());
 		EmployeeInformationDto dto = new EmployeeInformationDto();
 
-		if (!employeeDataMngInfo.isPresent()) {
+		if (employeeDataMngInfo.isPresent()) {
 			dto.setEmployeeCd(employeeDataMngInfo.get().getEmployeeCode().v());
 
 			Optional<Person> person = personRepo.getByPersonId(employeeDataMngInfo.get().getPersonId());
