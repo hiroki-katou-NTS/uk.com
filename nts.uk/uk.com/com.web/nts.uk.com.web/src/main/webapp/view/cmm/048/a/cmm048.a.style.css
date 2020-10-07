@@ -1,19 +1,142 @@
-.tab-outline {
-	margin: 20px;
+/* custom tab label start */
+.ui-widget.ui-tabs > .ui-tabs-panel {
+  border: none !important;
+  padding-top: 0 !important;
 }
 
-.tab-block {
-	margin: 20px;
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
+  border: none !important;
+  border-radius: 10% !important;
+  background-color: white;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
-.tab-rows {
-	margin-top: 20px;
-	width: 100%;
-	display: flex;
-    align-items: center;
+.ui-widget.ui-tabs > .ui-tabs-nav > li.ui-tabs-active {
+  background-color: rgba(157, 202, 240, 0.233) !important;
 }
 
-.tab-inline-item {
-	padding: 0px 10px 0px 10px;
-	display: inline-block;
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+  color: black !important;
 }
+
+.ui-widget.ui-tabs > .ui-tabs-nav > li > a {
+  padding: 5px 40px 5px 40px !important;
+}
+/* custom tab label end */
+/* tab title start */
+.tab-icon {
+  height: 15px;
+  width: auto;
+  margin-bottom: -2px;
+  padding-right: 5px;
+}
+/* tab title end */
+/* right table content start */
+.public-status {
+  text-align: left;
+}
+
+.profile-title,
+.password-title,
+.language-title,
+.notification-title {
+  font-weight: bold;
+  vertical-align: text-top;
+}
+
+.profile-information,
+.password-information,
+.language-information,
+.notification-information {
+  padding-left: 20px;
+  padding-right: 40px;
+  vertical-align: text-top;
+}
+
+.tab-profile td,
+.tab-password td,
+.tab-language td,
+.tab-notification td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.tabs-user {
+  margin-left: 30px;
+}
+
+/* right table content end */
+/* Avatar handle start */
+.avatar-container {
+  position: relative;
+  width: 100px;
+}
+
+.avatar {
+  display: block;
+  max-height: 100px;
+  max-width: 100px;
+  min-height: 100px;
+  min-width: 100px;
+  border-radius: 50%;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5); /* Black see-through */
+  transition: 0.5s ease;
+  opacity: 0;
+  text-align: center;
+  max-height: 50px;
+  max-width: 100px;
+  min-height: 50px;
+  min-width: 100px;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+}
+
+.avatar-container:hover .overlay {
+  opacity: 1;
+}
+
+#camera-hover {
+  height: 30px;
+  width: auto;
+  padding-top: 10px;
+}
+
+.add-new-anniversary {
+  padding-top: 10px;
+  padding-left: 100px;
+}
+
+#C2_1 {
+  padding-top: 27px;
+}
+
+#C2_5 {
+  padding-bottom: 10px;
+}
+#C2_7 {
+  padding-left: 10px;
+}
+
+#C3_1 {
+  height: 15px;
+  width: auto;
+  padding-left: 30px;
+}
+
+#C3_2 {
+  height: 15px;
+  width: auto;
+  padding-right: 10px;
+}
+textarea {
+  resize: none;
+}
+/* Avatar handle end */

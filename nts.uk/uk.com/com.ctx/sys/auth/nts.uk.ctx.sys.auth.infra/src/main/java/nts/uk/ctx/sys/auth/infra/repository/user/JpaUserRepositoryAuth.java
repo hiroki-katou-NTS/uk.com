@@ -206,7 +206,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return User.createFromJavatype(user.sacmtUserPK.userID, user.defaultUser == 1, user.password, user.loginID,
 				user.contractCd, user.expirationDate, user.specialUser, user.multiCompanyConcurrent, user.mailAdd,
 				StringUtil.isNullOrEmpty(businessName, true) ? user.userName : businessName, user.associatedPersonID,
-				user.passStatus);
+				user.passStatus,user.language);
 	}
 	
 	private static final String SELECT_USER_BY_LIST_AS_ID_ORDER_BY_LOGINID = "SELECT s FROM SacmtUser s WHERE s.associatedPersonID IN :listAssociatePersonId ORDER BY s.loginID";

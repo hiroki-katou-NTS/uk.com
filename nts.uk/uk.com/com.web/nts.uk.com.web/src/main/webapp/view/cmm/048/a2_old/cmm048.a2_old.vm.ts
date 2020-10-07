@@ -1,10 +1,10 @@
-module a2 {
+module a2_old {
 
-    import MainModel = nts.uk.com.view.cmm048.a.viewmodel.MainModel;
-    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeInfoContactModel;
-    import PersonContactModel = nts.uk.com.view.cmm048.a.viewmodel.PersonContactModel;
-    import UserInfoUseMethodModel = nts.uk.com.view.cmm048.a.viewmodel.UserInfoUseMethodModel;
-    import UseContactSettingModel = nts.uk.com.view.cmm048.a.viewmodel.UseContactSettingModel;
+    import MainModel = nts.uk.com.view.cmm048.a_old.viewmodel.MainModel;
+    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a_old.viewmodel.EmployeeInfoContactModel;
+    import PersonContactModel = nts.uk.com.view.cmm048.a_old.viewmodel.PersonContactModel;
+    import UserInfoUseMethodModel = nts.uk.com.view.cmm048.a_old.viewmodel.UserInfoUseMethodModel;
+    import UseContactSettingModel = nts.uk.com.view.cmm048.a_old.viewmodel.UseContactSettingModel;
     import bservice = nts.uk.com.view.cmm048.b.service;
     import FunctionSettingDto = nts.uk.com.view.cmm048.b.model.FunctionSettingDto;
     class ScreenModel {

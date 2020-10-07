@@ -1,65 +1,471 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+  <ui:composition template="../../../../master/base.xhtml">
 
-		<ui:define name="htmlHead">
+    <ui:define name="htmlHead">
 
-			<com:scriptfile set="IGNITE" />
+      <com:ValidatorScript>
+        nts.uk.ctx.bs.person.dom.person.contact.MailAddress
+        nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum
+        nts.uk.ctx.sys.gateway.dom.login.RawPassword
+      </com:ValidatorScript>
 
-			<com:stylefile path="cmm048.a.style.css" />
-			<com:scriptfile path="cmm048.a.service.js" />
-			<com:scriptfile path="../b/cmm048.b.service.js" />
-			<com:scriptfile path="cmm048.a.start.js" />
-			<com:scriptfile path="cmm048.a.vm.js" />
+      <com:scriptfile set="IGNITE" />
+      <com:scriptfile path="cmm048.a.vm.js" />
+      <com:stylefile path="cmm048.a.style.css" />
+    </ui:define>
 
-			<!-- Begin tab 01 -->
-			<com:scriptfile path="../a1/cmm048.a1.vm.js" />
-			<com:stylefile path="../a1/cmm048.a1.style.css" />
-			<!-- End tab 01 -->
-
-			<!-- Begin tab 02 -->
-			<com:scriptfile path="../a2/cmm048.a2.vm.js" />
-			<com:stylefile path="../a2/cmm048.a2.style.css" />
-			<!-- End tab 02 -->
-
-			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.contact.MailAddress
-				nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum
-				nts.uk.ctx.sys.gateway.dom.login.RawPassword
-			</com:ValidatorScript>
-
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="button-save" tabindex="1" class="proceed"
-					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CMM048_3')}</button>
-			</div>
-			<div id="contents-area">
-				<div id="tab-panel" tabindex="3"
-					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1">
-						<div class="tab-outline"
-							data-bind="ntsCMM048A1: {
-							model: mainModel
-						}">
-						</div>
+    <ui:define name="content">
+      <div id="functions-area">
+        <button id="button-save" tabindex="1" class="proceed"
+          data-bind="click : save">#{i18n.getText('CMM048_3')}</button>
+      </div>
+      <div id="contents-area">
+        <div class="tabs-user" id="tab-panel" style="box-shadow: none; outline: none;"
+          data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical'}">
+          <div class="tab-content-1">
+            <table class="tab-profile">
+              <!-- A4 start -->
+              <tr>
+                <td class="profile-title"><span id="A4">#{i18n.getText('CMM048_72')}</span></td>
+                <td>
+                  <div class="avatar-container" data-bind="click : openDialogE">
+                    <img src="./resource/kakashi.jpg" alt="Avatar" class="avatar" id="A4_1" />
+                    <div class="overlay"><img id="camera-hover" src="./resource/camera.svg" /></div>
+                  </div>
+                </td>
+              </tr>
+              <!-- A4 end -->
+              <!-- A5 start -->
+              <tr>
+                <td class="profile-title" id="A5_1">#{i18n.getText('CMM048_73')}</td>
+                <td><span id="A5_2">はたけ カカシ</span></td>
+              </tr>
+              <!-- A5 end -->
+              <!-- A6 start -->
+              <tr>
+                <td class="profile-title" colspan="2" id="A6">#{i18n.getText('CMM048_75')}</td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A6_1">#{i18n.getText('CMM048_76')}</td>
+                <td><span id="A6_2">000001</span></td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A6_3">#{i18n.getText('Com_Workplace')}</td>
+                <td><span id="A6_4">開発部１</span></td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A6_5">#{i18n.getText('Com_Jobtitle')}</td>
+                <td><span id="A6_6">Developer</span></td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A6_7">#{i18n.getText('CMM048_79')}</td>
+                <td><span id="A6_8">2010/10/07</span></td>
+              </tr>
+              <!-- A6 end -->
+              <!-- A7 start -->
+              <tr>
+                <td class="profile-title" colspan="2" id="A7">#{i18n.getText('CMM048_80')}</td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_2">#{i18n.getText('CMM048_82')}</td>
+                <td>
+                  <input id="A7_3" data-bind="ntsTextEditor: {
+											name: '#[CMM048_82]',
+											constraint: 'PhoneNum',
+											value: A7_3_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM048_77')}',
+												width: '150px',
+												textalign: 'left'
+											}
+										}" />
+                  <span id="A9_2">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_4">#{i18n.getText('CMM048_78')}</td>
+                <td>
+                  <input id="A7_5" data-bind="ntsTextEditor: {
+											name: '#[CMM048_78]',
+											constraint: 'PhoneNum',
+											value: A7_5_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM048_77')}',
+												width: '150px',
+												textalign: 'left'
+											}
+										}" />
+                  <span id="A9_4">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_6">#{i18n.getText('CMM048_83')}</td>
+                <td>
+                  <input id="A7_7" data-bind="ntsTextEditor: {
+											name: '#[CMM048_83]',
+											constraint: 'PhoneNum',
+											value: A7_7_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM048_77')}',
+												width: '150px',
+												textalign: 'left'
+											}
+										}" />
+                  <span id="A9_6">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_8">#{i18n.getText('CMM048_84')}</td>
+                <td>
+                  <input id="A7_9" data-bind="ntsTextEditor: {
+											name: '#[CMM048_84]',
+											constraint: 'PhoneNum',
+											value: A7_9_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM048_77')}',
+												width: '150px',
+												textalign: 'left'
+											}
+										}" />
+                  <span id="A9_8">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_10">#{i18n.getText('CMM048_85')}</td>
+                <td>
+                  <input id="A7_11" data-bind="ntsTextEditor: {
+										name: '#[CMM048_85]',
+										constraint: '',
+										value: A7_11_Value,
+										option: {
+											textmode: 'text',
+											width: '150px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_10">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_12">#{i18n.getText('CMM048_87')}</td>
+                <td>
+                  <input id="A7_13" data-bind="ntsTextEditor: {
+										name: '#[CMM048_87]',
+										constraint: '',
+										value: A7_13_Value,
+										option: {
+											textmode: 'text',
+											width: '150px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_12">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_14">#{i18n.getText('CMM048_88')}</td>
+                <td>
+                  <input id="A7_15" data-bind="ntsTextEditor: {
+										name: '#[CMM048_88]',
+										constraint: 'MailAddress',
+										value: A7_15_Value,
+										option: {
+											textmode: 'text',
+											width: '250px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_14">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_16">#{i18n.getText('CMM048_89')}</td>
+                <td>
+                  <input id="A7_17" data-bind="ntsTextEditor: {
+										name: '#[CMM048_89]',
+										constraint: 'MailAddress',
+										value: A7_17_Value,
+										option: {
+											textmode: 'text',
+											width: '250px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_16">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_18">#{i18n.getText('CMM048_90')}</td>
+                <td>
+                  <input id="A7_19" data-bind="ntsTextEditor: {
+										name: '#[CMM048_90]',
+										constraint: 'MailAddress',
+										value: A7_19_Value,
+										option: {
+											textmode: 'text',
+											width: '250px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_18">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="profile-information" id="A7_20">#{i18n.getText('CMM048_91')}</td>
+                <td colspan="2">
+                  <input id="A7_21" data-bind="ntsTextEditor: {
+										name: '#[CMM048_91]',
+										constraint: 'MailAddress',
+										value: A7_21_Value,
+										option: {
+											textmode: 'text',
+											width: '250px',
+											textalign: 'left'
+										}
+									}" />
+                  <span id="A9_20">#{i18n.getText('CMM048_81')}</span>
+                </td>
+              </tr>
+              <!-- A7 end -->
+              <!-- A8 start -->
+              <!-- <tr>
+								<td id="A8_1">#{i18n.getText('CMM048_3')}</td>
+								<td class="mail-adress" colspan="2"><input type="text" name="#{i18n.getText('CMM048_86')}" id="A8_2" /></td>
+								<td id="A8_4">#{i18n.getText('CMM048_81')}</td>>
+							</tr> -->
+              <!-- A8 end -->
+            </table>
+          </div>
+          <div class="tab-content-2">
+            <table class="tab-password">
+              <!-- B1 start -->
+              <tr>
+                <td class="password-title" colspan="3"><span id="B1">#{i18n.getText('CMM048_70')}</span>
+                </td>
+              </tr>
+              <!-- B1 end -->
+              <!-- B2 start -->
+              <tr>
+                <td class="password-information" id="B2_1">#{i18n.getText('CMM048_71')}</td>
+                <td><span id="B2_2">約１か月前に変化されまして</span></td>
+              </tr>
+              <!-- B2 end -->
+              <!-- B3 start -->
+              <tr>
+                <td class="password-information" id="B3_1">#{i18n.getText('CMM048_8')}</td>
+                <td><input id="B3_2" data-bind="ntsTextEditor: {
+										name: '#[CMM048_8]',
+										constraint: 'RawPassword',
+										value: B3_2_Value,
+										option: {
+											textmode: 'password',
+											width: '200px'
+										}
+									}" /></td>
+                <!-- B6 start -->
+                <td rowspan="3">
+                  <!-- <div class="tab-block" style="width: 75%;">
+										<com:ko tag="if" bind="mainModel.passwordPolicy.isUse">				
+											<div class="panel panel-gray-bg">
+												<table class="table-panel">
+													<tr>
+														<td colspan="2">
+															<div class="label">#{i18n.getText('CMM048_11')}</div>
+															<div><hr/></div>
+														</td>
+													</tr>
+													<tr data-bind="visible: passwordPolicy.haveLowestDigitsSetting">
+														<td class="left-column"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
+														<td>
+															<div class="label" data-bind="text: passwordPolicy.textLowestDigits"></div>
+														</td>
+													</tr>
+													<tr data-bind="visible: passwordPolicy.complexity.haveComplexitySetting">
+														<td class="left-column"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
+														<td>
+															<div class="label" data-bind="text: passwordPolicy.complexity.textAlphabetDigit ,visible: passwordPolicy.complexity.alAhabetDigitSetting"></div>
+															<div class="label" data-bind="text: passwordPolicy.complexity.textNumberOfDigits,visible: passwordPolicy.complexity.numberOfDigitsSetting"></div>
+															<div class="label" data-bind="text: passwordPolicy.complexity.textNumberOfChar,visible: passwordPolicy.complexity.numberOfCharSetting"></div>
+														</td>
+													</tr>
+													<tr data-bind="visible: passwordPolicy.historyCountSetting">
+														<td class="left-column"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
+														<td>
+															<div class="label" data-bind="text: passwordPolicy.textHistoryCount"></div>
+														</td>
+													</tr>
+													<tr data-bind="visible: passwordPolicy.validityPeriodSetting">
+														<td class="left-column"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
+														<td>
+															<div class="label" data-bind="text: passwordPolicy.textValidityPeriod"></div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</com:ko>
+									</div>		 -->
+                </td>
+                <!-- B6 end -->
+              </tr>
+              <!-- B3 end -->
+              <!-- B4 start -->
+              <tr>
+                <td class="password-information" id="B4_1">#{i18n.getText('CMM048_9')}</td>
+                <td><input id="B4_2" data-bind="ntsTextEditor: {
+									name: '#[CMM048_9]',
+									constraint: 'RawPassword',
+									value: B4_2_Value,
+									option: {
+										textmode: 'password',
+										width: '200px'
+									}
+								}" /></td>
+              </tr>
+              <!-- B4 end -->
+              <!-- B5 start -->
+              <tr>
+                <td class="password-information" id="B5_1">#{i18n.getText('CMM048_10')}</td>
+                <td><input id="B5_2" data-bind="ntsTextEditor: {
+										name: '#[CMM048_10]',
+										constraint: 'RawPassword',
+										value: B5_2_Value,
+										option: {
+											textmode: 'password',
+											width: '200px'
+										}
+									}" /></td>
+              </tr>
+              <tr>
+                <td class="password-information"></td>
+                <td><span id="B5_3">#{i18n.getText('CMM048_57')}</span></td>
+              </tr>
+              <!-- B5 end -->
+            </table>
+          </div>
+          <div class="tab-content-3">
+            <table class="tab-notification">
+              <!-- C1 start -->
+              <tr>
+                <td class="notification-title" colspan="2"><span id="C1">#{i18n.getText('CMM048_94')}</span>
+                </td>
+              </tr>
+              <!-- C1 end -->
+              <!-- C2 start -->
+              <tbody data-bind="foreach: listAnniversary">
+                <tr>
+                  <td class="notification-information" id="C2_1">#{i18n.getText('CMM048_74')}</td>
+                  <td>
+                    <table id="table-anniversary" class="tab-notification">
+                      <tr>
+                        <td id="C2_2">
+                          <div id="monthdays" data-bind="ntsMonthDays: {
+                        value: anniversaryDay, 
+                        enable: true
+                      }" />
+                          <input id="C2_3" data-bind="ntsTextEditor: {
+                        name: '#[CMM048_59]',
+                        constraint: '',
+                        value: anniversaryName,
+                        option: {
+                          textmode: 'text',
+                          placeholder: '#{i18n.getText('CMM048_59')}',
+                          width: '200px',
+                          textalign: 'left'
+                        }
+                      }" />
+                        </td>
+                        <td><img src="./resource/remove.png" alt="delete" id="C3_1"
+                            data-bind="click: function() { $vm.removeAnniversary.apply($vm, [$data]) }" /></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <textarea id="C2_4" rows="4" data-bind="ntsTextEditor: {
+                        name: '#[CMM048_74]',
+                        constraint: '',
+                        value: anniversaryRemark,
+                        option: {
+                          textmode: 'text',
+                          placeholder: '#{i18n.getText('CMM048_65')}',
+                          width: '373px',
+                          textalign: 'left'
+                        }
+                      }" />
+                          </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div id="C2_5">#{i18n.getText('CMM048_60')}</div>
+                      <div class="flex valign-center">
+                          <div id="combo-box" data-bind="ntsComboBox: {
+                          options: $parent.C2_6_Options,
+                          optionsValue: 'code',
+                          visibleItemsCount: 8,
+                          value: anniversaryNoticeBefore,
+                          optionsText: 'name',
+                          editable: false,
+                          enable: true,
+                          required: true,
+                          selectFirstIfNull: true,
+                          columns: [{ prop: 'name', length: 3 }]
+                        }"/> 
+                        <label id="C2_7">#{i18n.getText('CMM048_66')}</label>
+                      </div>
+                    
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+           </tbody>
+							<!-- C2 end -->
+            </table>
+            <div class="add-new-anniversary" data-bind="click: addNewAnniversary">
+              <img src="./resource/plus.png" alt="add" id="C3_2"/>
+              <span>#{i18n.getText('CMM048_62')}</span>
+            </div>
 					</div>
-					<div class="tab-content-2">
-						<div class="tab-outline"
-							data-bind="ntsCMM048A2: {
-							model: mainModel
-						}">
-						</div>
+					<div class="tab-content-4">
+						<table class="tab-language">
+							<!-- D1 start -->
+							<tr>
+								<td class="language-title" colspan="2"><span id="D1">#{i18n.getText('CMM048_68')}</span>
+								</td>
+							</tr>
+							<!-- D1 end -->
+							<!-- D2 start -->
+							<tr>
+								<td class="language-information" id="D2_1">#{i18n.getText('CMM048_69')}</td>
+								<td id="D2_2">
+									<div id="combo-box" data-bind="ntsComboBox: {
+									options: D2_2_Options,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: D2_2_Value,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									required: true,
+									selectFirstIfNull: true,
+									columns: [{ prop: 'name', length: 10 }]
+								}"></div>
+								</td>
+							</tr>
+							<!-- D2 end -->
+						</table>
 					</div>
 				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

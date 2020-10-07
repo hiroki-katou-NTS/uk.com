@@ -1,10 +1,10 @@
-module a1 {
+module a1_old {
 
-    import MainModel = nts.uk.com.view.cmm048.a.viewmodel.MainModel;
-    import EmployeeModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeModel;
-    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a.viewmodel.EmployeeInfoContactModel;
-    import PersonContactModel = nts.uk.com.view.cmm048.a.viewmodel.PersonContactModel;
-    import PasswordPolicyModel = nts.uk.com.view.cmm048.a.viewmodel.PasswordPolicyModel;
+    import MainModel = nts.uk.com.view.cmm048.a_old.viewmodel.MainModel;
+    import EmployeeModel = nts.uk.com.view.cmm048.a_old.viewmodel.EmployeeModel;
+    import EmployeeInfoContactModel = nts.uk.com.view.cmm048.a_old.viewmodel.EmployeeInfoContactModel;
+    import PersonContactModel = nts.uk.com.view.cmm048.a_old.viewmodel.PersonContactModel;
+    import PasswordPolicyModel = nts.uk.com.view.cmm048.a_old.viewmodel.PasswordPolicyModel;
     
     class ScreenModel {
 

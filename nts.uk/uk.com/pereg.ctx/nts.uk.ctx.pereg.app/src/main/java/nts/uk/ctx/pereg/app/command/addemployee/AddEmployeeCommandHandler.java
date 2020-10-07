@@ -702,7 +702,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1);
+				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1, 0);
 
 		this.userRepository.addNewUser(newUser);
 
