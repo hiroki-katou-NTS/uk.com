@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -27,20 +28,17 @@ public class WorkCyleInfoDto {
 
     private int dispOrder;
 
-    public WorkCyleInfoDto(String typeCode, String timeCode, int days, int dispOrder, List<WorkType> workTypes, List<WorkTimeSetting> workTimeItems) {
+    public WorkCyleInfoDto(String typeCode, String timeCode, int days, int dispOrder, Map<String , String> workTypes, Map<String , String> workTimeItems) {
         this.typeCode = typeCode;
         this.timeCode = timeCode;
         this.days = days;
         this.dispOrder = dispOrder;
 
         // Get WorkType
-        val workType = workTypes.stream().filter(i -> i.getWorkTypeCode().v().equals(typeCode)).findFirst();
-        this.typeName = workType.isPresent() ? workType.get().getName().v() : TextResource.localize("KSM003_2");
+        this.typeName = workTypes.containsKey(typeCode) ? workTypes.get(typeCode) : TextResource.localize("KSM003_2");
 
         if (timeCode != null) {
-            // Get WorkTime
-            val workTime = workTimeItems.stream().filter(i -> i.getWorktimeCode().v().equals(timeCode)).findFirst();
-            this.timeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : TextResource.localize("KSM003_2");
+            this.timeName = workTimeItems.containsKey(timeCode) ? workTimeItems.get(timeCode) : TextResource.localize("KSM003_2");
         }
 
     }

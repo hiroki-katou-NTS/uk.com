@@ -10,9 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -49,17 +47,17 @@ public class GetWorkCycle {
             return null;
         }
 
-        List<WorkType> workTypes = new ArrayList<>();
+        Map<String , String> workTypes = new LinkedHashMap<>();
         val listWrkTypes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
         if (!listWrkTypes.isEmpty()) {
-            workTypes = this.workTypeRepo.findNotDeprecatedByListCode(cid, listWrkTypes);
+            workTypes = this.workTypeRepo.getCodeNameWorkType(cid, listWrkTypes);
         }
 
-        List<WorkTimeSetting> workTimeItems = new ArrayList<>();
+        Map<String , String> workTimeItems = new LinkedHashMap<>();
         val listWrkTimes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTimeCodeNotNull()).collect(Collectors.toList());
         val listWrkTimeStr = listWrkTimes.stream().filter(i->i.isPresent()).map(i->i.get().v()).collect(Collectors.toList());
         if (!listWrkTimeStr.isEmpty()) {
-            workTimeItems = this.workTimeSettingRepository.findByCodes(cid, listWrkTimeStr);
+            workTimeItems = this.workTimeSettingRepository.getCodeNameByListWorkTimeCd(cid, listWrkTimeStr);
         }
 
         return WorkCycleDto.createFromDomain(workingCycle.get(),workTypes,workTimeItems);

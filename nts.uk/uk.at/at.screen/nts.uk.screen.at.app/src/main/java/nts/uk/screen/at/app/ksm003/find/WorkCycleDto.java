@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class WorkCycleDto {
 
     private List<WorkCyleInfoDto> infos;
 
-    public static WorkCycleDto createFromDomain(WorkCycle domain, List<WorkType> workTypes, List<WorkTimeSetting> workTimeItems) {
+    public static WorkCycleDto createFromDomain(WorkCycle domain, Map<String , String> workTypes, Map<String , String> workTimeItems) {
         AtomicInteger index = new AtomicInteger();
         List<WorkCyleInfoDto> infos = domain.getInfos().stream().map(i -> new WorkCyleInfoDto(
                 i.getWorkInformation().getWorkTypeCode().v(),
