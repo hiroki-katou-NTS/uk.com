@@ -233,9 +233,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				errorMsg = Optional.of("Msg_1707");
 			} else {
 				if (lateEarlyActualResults.get().getScheAttendanceTime1() == null
-						&& lateEarlyActualResults.get().getScheAttendanceTime2() == null
+						&& !lateEarlyActualResults.get().getScheAttendanceTime2().isPresent()
 						&& lateEarlyActualResults.get().getScheDepartureTime1() == null
-						&& lateEarlyActualResults.get().getScheDepartureTime2() == null) {
+						&& !lateEarlyActualResults.get().getScheDepartureTime2().isPresent()) {
 					errorMsg = Optional.of("Msg_1707");
 				}
 			}
@@ -591,8 +591,9 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	@Override
 	public ProcessResult register(int appType, ArrivedLateLeaveEarlyInfoOutput infoOutput, Application application) {
 		String employeeId = AppContexts.user().employeeId();
-		ProcessResult processResult = new ProcessResult(true, false, new ArrayList<>(), new ArrayList<>(),
-				new ArrayList<>(), application.getAppID(), "");
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
+		processResult.setAppID(application.getAppID());
 
 		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
 		this.registerDomain(application, infoOutput);
@@ -735,12 +736,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 	 */
 	@Override
 	public ProcessResult update(String companyId, Application application,
-			ArrivedLateLeaveEarly arrivedLateLeaveEarly) {
+			ArrivedLateLeaveEarly arrivedLateLeaveEarly, AppDispInfoStartupOutput infoStartupOutput) {
 		this.updateDomain(application, arrivedLateLeaveEarly);
 
 		// 4-2.詳細画面登録後の処理
 		ProcessResult result = this.afterUpdateService.processAfterDetailScreenRegistration(companyId,
-				application.getAppID());
+				application.getAppID(), infoStartupOutput);
 		return result;
 	}
 

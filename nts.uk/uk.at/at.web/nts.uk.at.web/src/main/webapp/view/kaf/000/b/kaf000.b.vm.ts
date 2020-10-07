@@ -212,7 +212,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = _.indexOf(vm.listApp(), vm.currentApp());
             if (index > 0) {
                 vm.currentApp(vm.listApp()[index - 1]);
-				vm.loadData();
+				vm.$errors("clear").then(() => {
+					vm.loadData();	
+				});
             }
         }
 
@@ -221,7 +223,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = _.indexOf(vm.listApp(), vm.currentApp());
 			if (index < (vm.listApp().length-1)) {
                 vm.currentApp(vm.listApp()[index + 1]);
-				vm.loadData();
+				vm.$errors("clear").then(() => {
+					vm.loadData();	
+				});
             }
         }
 
@@ -229,7 +233,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
             vm.$blockui("show");
             let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.approve, command)
@@ -246,7 +250,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
             vm.$blockui("show");
             let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
             	command = { memo, appDispInfoStartupOutput };
 
             vm.$ajax(API.deny, command)
@@ -323,7 +327,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+					let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+		            	command = { appDispInfoStartupOutput };
+                    return vm.$ajax(API.deleteapp, command);
                 }
             }).done((successData: any) => {
 				if(successData) {
@@ -424,6 +430,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
             });
 		}
+		
+		sendMailAfterUpdate() {
+			const vm = this;
+			return vm.$ajax(API.sendMailAfterUpdate)
+			.then((data: any) => {
+				if(data) {
+					if(data.isAutoSendMail) {
+						let mailResult = [];
+						mailResult.push({ value: data.autoSuccessMail, type: 'info' });
+						mailResult.push({ value: data.autoFailMail, type: 'error' });
+						mailResult.push({ value: data.autoFailServer, type: 'error' });
+						CommonProcess.showMailResult(_.slice(mailResult, 1), vm).then(() => vm.loadData());
+					}
+				}
+			});
+		}
     }
 
     const API = {
@@ -435,5 +457,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         cancel: "at/request/application/cancelapp",
         print: "at/request/application/print",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		sendMailAfterUpdate: ""
     }
 }

@@ -114,7 +114,7 @@ module nts.uk.at.view.ksm003.a {
                     }
                 }
             ).fail((error) => {
-                vm.$dialog.info({ messageId: error.messageId }).then(() => {
+                vm.$dialog.error({ messageId: error.messageId }).then(() => {
                     return;
                 });
             });
