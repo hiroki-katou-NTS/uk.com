@@ -36,10 +36,6 @@
 			<div id="functions-area">
 				<!-- A1_1 -->
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF007_54')}</button>
-				<!-- A1_3 -->
-				<button data-bind="click: ">#{i18n.getText('KAF007_56')}</button>
-				<!-- A1_5 -->
-				<button data-bind="click: ">#{i18n.getText('KAF007_68')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
@@ -83,7 +79,10 @@
 											params: {
 												model: model,
 												mode: 0,
-												appWorkChange: appWorkChange
+												appWorkChange: appWorkChange,
+												reflectWorkChange: reflectWorkChange,
+												isStraightBack: isStraightBack,
+												isStraightGo: isStraightGo
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component5', 
 											params: {
