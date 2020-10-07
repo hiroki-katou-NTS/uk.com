@@ -10,32 +10,22 @@ import java.util.Optional;
 
 @Value
 public class MonthlyAppContentCommand {
-
-    /**
-     * 申請者ID
-     */
-    String applicantId;
-
     /**
      * 対象者ID
      */
     String employeeId;
-
     /**
      * 36協定特別条項の適用申請.申請時間.1ヶ月時間
      */
     int errorTime;
-
     /**
      * 36協定特別条項の適用申請.申請時間.1ヶ月時間
      */
     Integer alarmTime;
-
     /**
      * 36協定特別条項の適用申請.申請時間.申請時間.1ヶ月時間.年月度
      */
     int yearMonth;
-
     /**
      * 36協定特別条項の適用申請.36協定申請理由
      */

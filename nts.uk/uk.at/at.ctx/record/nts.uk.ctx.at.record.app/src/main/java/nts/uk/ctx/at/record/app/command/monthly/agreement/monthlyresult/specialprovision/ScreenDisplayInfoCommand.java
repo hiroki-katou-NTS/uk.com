@@ -63,20 +63,10 @@ public class ScreenDisplayInfoCommand {
      */
     int monthError;
     /**
-     * 36協定特別条項の適用申請.画面表示情報.引き上げる前の上限.1ヶ月の上限
-     * B4_11
-     */
-    int monthAlarm;
-    /**
      * 36協定特別条項の適用申請.画面表示情報.引き上げる前の上限.1年間の上限
      * B4_11
      */
     int yearError;
-    /**
-     * 36協定特別条項の適用申請.画面表示情報.引き上げる前の上限.1年間の上限
-     * B4_11
-     */
-    int yearAlarm;
 
     public ScreenDisplayInfo toScreenDisplayInfo() {
         Overtime overtime = new Overtime(new AgreementOneMonthTime(monthTime), new AgreementOneYearTime(yearTime));
@@ -96,10 +86,10 @@ public class ScreenDisplayInfoCommand {
         UpperLimitBeforeRaising upperContents = new UpperLimitBeforeRaising(
                 OneMonthErrorAlarmTime.of(
                         new AgreementOneMonthTime(monthError),
-                        new AgreementOneMonthTime(monthAlarm)),
+                        new AgreementOneMonthTime(0)),
                 OneYearErrorAlarmTime.of(
                         new AgreementOneYearTime(yearError),
-                        new AgreementOneYearTime(yearAlarm)),
+                        new AgreementOneYearTime(0)),
                 new AgreementOneMonthTime(0));
         return ScreenDisplayInfo.create(overtime, overtimeIncludingHoliday, exceededNumber, upperContents);
     }

@@ -12,7 +12,9 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AnnualAppCreate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
@@ -107,12 +109,17 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
         }
 
         @Override
+        public UnitOfApprover getUsageSetting() {
+            return null;
+        }
+
+        @Override
         public Optional<SWkpHistRcImported> getYourWorkplace(String employeeId, GeneralDate baseDate) {
             return syWorkplaceAdapter.findBySid(employeeId, baseDate);
         }
 
         @Override
-        public Optional<ApproverItem> getApproveHistoryItem(String workplaceId, GeneralDate baseDate) {
+        public Optional<Approver36AgrByWorkplace> getApproveHistoryItem(String workplaceId, GeneralDate baseDate) {
             return Optional.empty();
         }
 

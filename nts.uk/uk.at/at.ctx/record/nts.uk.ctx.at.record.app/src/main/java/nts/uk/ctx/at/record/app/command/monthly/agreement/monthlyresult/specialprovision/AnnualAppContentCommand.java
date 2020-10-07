@@ -8,32 +8,22 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 
 @Value
 public class AnnualAppContentCommand {
-
-    /**
-     * 申請者ID
-     */
-    String applicantId;
-
     /**
      * 対象者ID
      */
     String employeeId;
-
     /**
      * 36協定特別条項の適用申請.申請時間.1ヶ月時間
      */
     int errorTime;
-
     /**
      * 36協定特別条項の適用申請.申請時間.1ヶ月時間
      */
     int alarmTime;
-
     /**
      * 36協定特別条項の適用申請.申請時間.申請時間.年間時間.年度
      */
     int year;
-
     /**
      * 36協定特別条項の適用申請.36協定申請理由
      */

@@ -8,6 +8,14 @@ module nts.uk.at.kaf021.c {
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(false);
         approveChecked: KnockoutObservable<boolean> = ko.observable(false);
         denialChecked: KnockoutObservable<boolean> = ko.observable(false);
+
+        unapproveCount: KnockoutObservable<number> = ko.observable(0);
+        unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
+        approveCount: KnockoutObservable<number> = ko.observable(1);
+        approveCountStr: KnockoutObservable<string> = ko.observable(null);
+        denialCount: KnockoutObservable<number> = ko.observable(2);
+        denialCountStr: KnockoutObservable<string> = ko.observable(null);
+
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
@@ -20,7 +28,12 @@ module nts.uk.at.kaf021.c {
         created(params: any) {
             const vm = this;
 
+            vm.unapproveCountStr(vm.$i18n("KAF021_66", [vm.unapproveCount().toString()]));
+            vm.approveCountStr(vm.$i18n("KAF021_66", [vm.approveCount().toString()]));
+            vm.denialCountStr(vm.$i18n("KAF021_66", [vm.denialCount().toString()]));
             vm.loadMGrid();
+
+            _.extend(window, { vm });
         }
 
         mounted() {

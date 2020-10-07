@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYe
 public class AgreementTimeYearDto {
 
     public AgreementTimeYearDto(AgreementTimeYear domain) {
-        AgreementTimeOfYear time = domain.getLimitTime();
+        AgreementTimeOfYear time = domain.getRecordTime();
         this.limitTime = time.getThreshold().getUpperLimit().v();
         this.time = time.getTargetTime().v();
         this.status = domain.getStatus().value;

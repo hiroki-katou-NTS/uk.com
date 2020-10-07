@@ -238,8 +238,7 @@ module nts.uk.at.kaf021.b {
                 let commandYears: Array<RegisterAppSpecialProvisionYearCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
                     let content: AnnualAppContentCommand = {
-                        applicantId: item.employeeId, //TODO
-                        employeeId: item.employeeId, //TODO
+                        employeeId: item.employeeId,
                         errorTime: moment.duration(item.newMax).asMinutes(),
                         alarmTime: moment.duration(item.newMax).asMinutes(),
                         year: 2020, //TODO
@@ -267,11 +266,7 @@ module nts.uk.at.kaf021.b {
                         /** B4_11 */
                         monthError: 0,
                         /** B4_11 */
-                        monthAlarm: 0,
-                        /** B4_11 */
-                        yearError: item.yearError,
-                        /** B4_11 */
-                        yearAlarm: item.yearAlarm
+                        yearError: item.yearError
                     };
                     let commandYear: RegisterAppSpecialProvisionYearCommand = {
                         content: content,
@@ -289,8 +284,7 @@ module nts.uk.at.kaf021.b {
                 let commandMonths: Array<RegisterAppSpecialProvisionMonthCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
                     let content: MonthlyAppContentCommand = {
-                        applicantId: item.employeeId, //TODO
-                        employeeId: item.employeeId, //TODO
+                        employeeId: item.employeeId,
                         errorTime: moment.duration(item.newMax).asMinutes(),
                         alarmTime: moment.duration(item.newMax).asMinutes(),
                         yearMonth: vm.processingMonth,
@@ -318,11 +312,7 @@ module nts.uk.at.kaf021.b {
                         /** B4_11 */
                         monthError: item.monthError,
                         /** B4_11 */
-                        monthAlarm: item.monthAlarm,
-                        /** B4_11 */
-                        yearError: 0,
-                        /** B4_11 */
-                        yearAlarm: 0
+                        yearError: 0
                     };
                     let commandYear: RegisterAppSpecialProvisionMonthCommand = {
                         content: content,
@@ -443,7 +433,6 @@ module nts.uk.at.kaf021.b {
     }
 
     interface AnnualAppContentCommand {
-        applicantId: string;
         employeeId: string;
         errorTime: number;
         alarmTime: number;
@@ -452,7 +441,6 @@ module nts.uk.at.kaf021.b {
     }
 
     interface MonthlyAppContentCommand {
-        applicantId: string;
         employeeId: string;
         errorTime: number;
         alarmTime: number;
@@ -482,11 +470,7 @@ module nts.uk.at.kaf021.b {
         /** B4_11 */
         monthError: number;
         /** B4_11 */
-        monthAlarm: number;
-        /** B4_11 */
         yearError: number;
-        /** B4_11 */
-        yearAlarm: number;
     }
 
     interface RegisterAppSpecialProvisionMonthCommand {
