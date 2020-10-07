@@ -192,7 +192,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
             let timeZoneWithWorkNoLst = [];
 
-            if (timeZone2 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.isEdit) {
+            if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.isEdit) {
                 timeZoneWithWorkNoLst.push(timeZone1);
             }
             if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.isEdit) {
