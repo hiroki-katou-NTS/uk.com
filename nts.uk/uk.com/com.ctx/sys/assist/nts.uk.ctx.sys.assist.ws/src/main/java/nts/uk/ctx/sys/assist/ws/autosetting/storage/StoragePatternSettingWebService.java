@@ -34,25 +34,25 @@ public class StoragePatternSettingWebService {
 	private DeletePatternCommandHandler deletePatternCommandHandler;
 	
 	@POST
-	@Path("/pattern/initialDisplay")
+	@Path("/storagePattern/initialDisplay")
 	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
 		return categoryInitDisplayFinder.initDisplay();
 	}
 	
 	@POST
-	@Path("/pattern/select")
+	@Path("/storagePattern/select")
 	public SelectedPatternParameterDto findSelectedPattern(FindSelectedPatternCommand command) {
 		return selectedPatternFinder.findSelectedPattern(command);
 	}
 	
 	@POST
-	@Path("/pattern/add")
+	@Path("/storagePattern/add")
 	public void addPattern(AddPatternCommand command) {
 		addPatternCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("/pattern/delete")
+	@Path("/storagePattern/delete")
 	public void deletePattern(DeletePatternCommand command) {
 		deletePatternCommandHandler.handle(command);
 	}

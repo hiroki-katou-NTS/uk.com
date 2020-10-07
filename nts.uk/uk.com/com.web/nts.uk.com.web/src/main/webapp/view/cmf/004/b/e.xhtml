@@ -86,7 +86,7 @@
                     optionsText: 'name',
                     value: $vm.selectedRuleCode,
                     required: true,
-                    enable: true }"></div>
+                    enable: true }" tabindex="3"></div>
             </div>
             <div class="div-line">
                 <table class="compressGrid" style="height: 100%;">
@@ -94,7 +94,7 @@
                         <!--E8_3 圧縮パスワ－ド(ラベル)-->
                         <td><div id="E8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_474')}</div></td>
                         <!--E8_3_1 圧縮パスワ－ド有無-->
-                        <td><div id="E8_3_1" class="form-B" data-bind="ntsCheckBox: { checked: $vm.checkboxChk, enable: $vm.selectedRuleCode() === 1 }" tabindex="1" style="height: initial;"></div></td>
+                        <td><div id="E8_3_1" class="form-B" data-bind="ntsCheckBox: { checked: $vm.checkboxChk, enable: $vm.selectedRuleCode() === 1 }" tabindex="4" style="height: initial;"></div></td>
                         <td>#{i18n.getText('CMF004_475')}</td>
                         <!--E8_3_2 圧縮パスワ－ド-->
                         <td id="E8_3_2" data-bind="with: $vm.pwdCompressEdt">

@@ -4,10 +4,10 @@ module nts.uk.com.view.cmf003.c {
 
   export module service {
     const paths = {
-      initDisplay: "ctx/sys/assist/autosetting/pattern/initialDisplay",
-      selectPattern: "ctx/sys/assist/autosetting/pattern/select",
-      addPattern: "ctx/sys/assist/autosetting/pattern/add",
-      deletePattern: "ctx/sys/assist/autosetting/pattern/delete",
+      initDisplay: "ctx/sys/assist/autosetting/storagePattern/initialDisplay",
+      selectPattern: "ctx/sys/assist/autosetting/storagePattern/select",
+      addPattern: "ctx/sys/assist/autosetting/storagePattern/add",
+      deletePattern: "ctx/sys/assist/autosetting/storagePattern/delete",
     }
 
     export function initDisplay(): JQueryPromise<any> {

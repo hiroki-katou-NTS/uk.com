@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.SelectCategoryCommand;
-import nts.uk.ctx.sys.assist.app.find.autosetting.TextResourceHolderDto;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;

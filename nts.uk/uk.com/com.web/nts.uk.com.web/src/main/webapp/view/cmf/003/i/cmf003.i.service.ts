@@ -3,7 +3,8 @@ module nts.uk.com.view.cmf003.i.service {
   var paths = {
       findSaveSetHistory: "ctx/sys/assist/datastorage/findSaveSet",
       findData: "ctx/sys/assist/datastorage/findData",
-      deleteData: "ctx/sys/assist/datastorage/deleteData"
+      deleteData: "ctx/sys/assist/datastorage/deleteData",
+      getFreeSpace: "ctx/sys/assist/datastorage/getFreeSpace"
   }
  
   export function findSaveSetHistory(fromDate: string, toDate: string): JQueryPromise<SaveSetHistoryDto[]> {
@@ -16,5 +17,9 @@ module nts.uk.com.view.cmf003.i.service {
 
   export function deleteData(param: string): JQueryPromise<DataDto[]> {
     return ajax('com', paths.deleteData, param)
+  }
+
+  export function getFreeSpace(): JQueryPromise<number> {
+    return ajax('com', paths.getFreeSpace);
   }
 }

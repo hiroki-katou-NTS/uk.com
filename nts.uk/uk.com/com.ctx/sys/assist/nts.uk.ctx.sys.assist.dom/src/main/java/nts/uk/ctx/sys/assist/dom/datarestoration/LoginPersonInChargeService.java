@@ -18,6 +18,11 @@ public class LoginPersonInChargeService {
 		return roleAdapter.getInChargeInfo();
 	}
 	
+	//FAKE_DATA
+	public LoginPersonInCharge fakePic() {
+		return new LoginPersonInCharge(true, true, true, true, true);
+	}
+	
 	public List<SystemType> getSystemTypes(LoginPersonInCharge pic) {
 		List<SystemType> systemTypes = new ArrayList<>();
 		if (pic.isAttendance())

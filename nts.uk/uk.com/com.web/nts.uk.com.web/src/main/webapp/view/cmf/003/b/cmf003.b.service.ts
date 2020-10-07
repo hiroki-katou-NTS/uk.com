@@ -8,7 +8,7 @@ module nts.uk.com.view.cmf003.b {
             getConditionList: "exio/condset/getAllCondition",
             addMalSet: "ctx/sys/assist/app/addMalSet",
             screenDisplayProcess: "ctx/sys/assist/autosetting/screenDisplayProcessing",
-            patternSettingSelect: "ctx/sys/assist/autosetting/patternSettingSelect"
+            patternSettingSelect: "ctx/sys/assist/autosetting/patternSettingSelect",
         }
 
         export function getConditionList(): JQueryPromise<any> {

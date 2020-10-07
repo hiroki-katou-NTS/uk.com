@@ -53,6 +53,7 @@ module nts.uk.com.view.cmf003.i {
         startDate: previousDateText,
         endDate: currentDateText
       });
+      $("#I2_4 .ntsStartDate input").focus();
     }
 
     private findSaveSet(from: string, to: string) {
@@ -78,8 +79,9 @@ module nts.uk.com.view.cmf003.i {
               $(this).css('background-color', '#cff1a5');
             });
           })
-        })
-        .always(() => vm.$blockui("hide"));
+        }).then(() => {
+          service.getFreeSpace().then((val: number) => vm.storageSize(Math.round(val)));
+        }).always(() => vm.$blockui("clear"));
     }
 
     public findData() {
@@ -110,7 +112,6 @@ module nts.uk.com.view.cmf003.i {
             res.push(x);
           });
         }
-        console.log(res);
         vm.resultItems(res);
         vm.loadDataGrid();
       }).always(() => vm.$blockui("hide"));

@@ -167,7 +167,7 @@ module nts.uk.com.view.cmf003.c {
 
   @bean()
   export class ViewModel extends ko.ViewModel {
-    screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.NEW);
+    screenMode: KnockoutObservable<number> = ko.observable();
     isNewMode: KnockoutObservable<boolean> = ko.computed(() => {
       const vm = this;
       return vm.screenMode() === ScreenMode.NEW;
@@ -210,7 +210,10 @@ module nts.uk.com.view.cmf003.c {
     //Auto execution
     saveFormatChecked: KnockoutObservable<boolean> = ko.observable(false);
     saveFormatEnabled: KnockoutObservable<boolean> = ko.observable(true);
+<<<<<<< HEAD
     disableMoveButton: KnockoutObservable<boolean> = ko.observable(false);
+=======
+>>>>>>> 2d7ee55b1d3c4491d60fab06451c11644513c217
     usePasswordChecked: KnockoutObservable<boolean> = ko.observable(false);
     targetYearDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel(0, '参照年'),
@@ -290,6 +293,7 @@ module nts.uk.com.view.cmf003.c {
 
     private initDisplay() {
       const vm = this;
+      vm.screenMode(ScreenMode.NEW);
       vm.$blockui("grayout");
       service.initDisplay().then((res) => {
         vm.checkInCharge(res.pic);
@@ -307,6 +311,7 @@ module nts.uk.com.view.cmf003.c {
           vm.categoriesDefault.push(c);
           vm.categoriesFiltered.push(c);
         });
+        console.log(vm.categoriesDefault());
       }).always(() => {
         vm.$blockui("clear");
       });
@@ -328,7 +333,8 @@ module nts.uk.com.view.cmf003.c {
       vm.password('');
       vm.confirmPassword('');
       vm.explanation('');
-      vm.categoriesFiltered(vm.categoriesDefault());
+      vm.categoriesFiltered([]);
+      _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
       vm.currentCateSelected([]);
       vm.$errors("clear");
     }
@@ -372,7 +378,7 @@ module nts.uk.com.view.cmf003.c {
             vm.patternList.valueHasMutated();
           }
         }).fail((err) => {
-          vm.$errors("#C7_2 input", err);
+          vm.$dialog.error({ messageId: 'Msg_3' });
         })
           .always(() => {
             vm.$blockui("clear");
@@ -444,6 +450,7 @@ module nts.uk.com.view.cmf003.c {
       param.patternCode = patternCode;
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
+      console.log(param);
       service.selectPattern(param).then((res) => {
         console.log(res);
         const pattern: any = res.selectedCategories[0].pattern;
@@ -466,7 +473,10 @@ module nts.uk.com.view.cmf003.c {
         });
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
         vm.saveFormatEnabled(pattern.patternClassification === 0);
+<<<<<<< HEAD
         vm.disableMoveButton(pattern.patternClassification === 1);
+=======
+>>>>>>> 2d7ee55b1d3c4491d60fab06451c11644513c217
         vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
         vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
         vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferYear));

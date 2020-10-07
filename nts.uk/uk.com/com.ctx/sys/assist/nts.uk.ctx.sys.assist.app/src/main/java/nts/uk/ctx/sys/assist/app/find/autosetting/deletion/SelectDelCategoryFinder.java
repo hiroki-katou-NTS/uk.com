@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.app.command.autosetting.deletion.SelectDelCategoryCommand;
-import nts.uk.ctx.sys.assist.app.find.autosetting.TextResourceHolderDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.TextResourceHolderDto;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDeleteRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;

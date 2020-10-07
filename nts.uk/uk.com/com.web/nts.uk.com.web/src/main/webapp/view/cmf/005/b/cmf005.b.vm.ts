@@ -139,9 +139,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       self.currentCategory = ko.observableArray([]);
       self.listColumnHeader = ko.observableArray([
         { headerText: '', key: 'categoryId', hidden: true },
-        { headerText: getText('CMF005_24'), key: 'categoryName', width: 220 },
-        { headerText: getText('CMF005_25'), key: 'timeStore', width: 100, formatter: timeStore },
-        { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 100, formatter: storageRangeSaved }
+        { headerText: getText('CMF005_24'), key: 'displayName', width: 220 },
+        { headerText: getText('CMF005_229'), key: '', width: 75 },
+        { headerText: getText('CMF005_25'), key: 'timeStore', width: 75, formatter: timeStore },
+        { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 75, formatter: storageRangeSaved }
       ]);
 
       //DatePcicker B6_1
@@ -284,7 +285,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             categoryId: x.categoryId,
             categoryName: x.categoryName,
             displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
-            periodDivision: x.periodDivision,
+            periodDeletion: x.periodDivision,
             separateCompClassification: x.separateCompClassification,
             specifiedMethod: x.specifiedMethod,
             storeRange: x.storeRange,
@@ -454,19 +455,19 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       for (let i = 0; i < self.listDataCategory().length; i++) {
         // self.listDataCategory.push(self.listDataCategory()[i]);
 
-        if (!self.requiredMonth() && self.listDataCategory()[i].periodDivision == model.TIME_STORE.MONTHLY) {
+        if (!self.requiredMonth() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.MONTHLY) {
           self.requiredMonth(true);
         }
 
-        if (!self.requiredYear() && self.listDataCategory()[i].periodDivision == model.TIME_STORE.ANNUAL) {
+        if (!self.requiredYear() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.ANNUAL) {
           self.requiredYear(true);
         }
 
-        if (!self.requiredDate() && self.listDataCategory()[i].periodDivision == model.TIME_STORE.DAILY) {
+        if (!self.requiredDate() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.DAILY) {
           self.requiredDate(true);
         }
 
-        if (self.listDataCategory()[i].periodDivision == 0) {
+        if (self.listDataCategory()[i].periodDeletion == 0) {
           $('.form-B .ntsDatepicker').ntsError('clear');
         }
       }
@@ -973,7 +974,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
   export class Category {
     categoryId: string;
     categoryName: string;
-    periodDivision: number;
+    periodDeletion: number;
     systemType: number;
     separateCompClassification: number;
     specifiedMethod: number;

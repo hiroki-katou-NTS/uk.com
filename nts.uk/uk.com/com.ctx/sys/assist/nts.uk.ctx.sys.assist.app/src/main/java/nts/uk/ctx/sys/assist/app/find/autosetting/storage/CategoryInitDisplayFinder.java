@@ -43,7 +43,9 @@ public class CategoryInitDisplayFinder {
 		List<DataStoragePatternSetting> patterns = dataStoragePatternSettingRepository.findByContractCd(user.contractCode());
 		
 		//２．ログイン者が担当者か判断する
-		LoginPersonInCharge pic = picService.getPic();
+//		LoginPersonInCharge pic = picService.getPic();
+		//FAKE-DATA
+		LoginPersonInCharge pic = picService.fakePic();
 		dto.setPic(pic);
 			
 		//List <カテゴリマスタ>を取得する
