@@ -22,6 +22,6 @@ public class EmployeeInformationDto {
 	private String employeeName;
 	
 	// 職場ID
-	private String companyId;
+	private String workplaceId;
 	
 }

@@ -19,4 +19,6 @@ public class SystemDateDto {
 	public int yearMonth;
 
 	private List<PeriodsClose> periodsClose;
+	
+	private EmployeeInformationDto employeeInfo;
 }

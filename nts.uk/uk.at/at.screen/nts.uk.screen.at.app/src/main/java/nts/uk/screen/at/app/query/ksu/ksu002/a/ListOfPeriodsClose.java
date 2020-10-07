@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.input.EmployeeInformationInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,6 +52,9 @@ public class ListOfPeriodsClose {
 	@Inject
 	private TheInitialDisplayDate theInitialDisplayDate;
 	
+	@Inject
+	private EmployeeInformation employeeInformation;
+	
 	public SystemDateDto get(ListOfPeriodsCloseInput input) {
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
@@ -58,17 +62,17 @@ public class ListOfPeriodsClose {
 		String companyId = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 		
-		SystemDateDto dtos = new SystemDateDto();
+		SystemDateDto dto = new SystemDateDto();
 		
 		if (input.getYearMonth() <= 0) {
-			dtos.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
+			dto.setYearMonth(this.theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
 		} else {
-			dtos.setYearMonth(input.getYearMonth());
+			dto.setYearMonth(input.getYearMonth());
 		}
 		
 		List<PeriodsClose> closes = new ArrayList<>();
 		
-		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(dtos.getYearMonth()));
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, sid, GeneralDate.today(), YearMonth.of(dto.getYearMonth()));
 		
 		List<Closure> closures = this.closureRepository.findByListId(companyId,
 				periods.stream().map(m -> m.getClosureId().value).collect(Collectors.toList()));
@@ -88,9 +92,12 @@ public class ListOfPeriodsClose {
 			closes.add(periodsClose);
 		}
 		
-		dtos.setPeriodsClose(closes);
+		dto.setPeriodsClose(closes);
 		
-		return dtos;
+		EmployeeInformationInput inputEmployee = new EmployeeInformationInput(AppContexts.user().employeeId(), dto.getPeriodsClose().get(0).getEndDate());
+		dto.setEmployeeInfo(this.employeeInformation.getEmployeeInfo(inputEmployee));
+		
+		return dto;
 	}
 
 	@AllArgsConstructor

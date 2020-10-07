@@ -41,22 +41,22 @@ public class EmployeeInformation {
 		EmployeeInformationDto dto = new EmployeeInformationDto();
 
 		if (!employeeDataMngInfo.isPresent()) {
-			dto.setCompanyId(employeeDataMngInfo.get().getEmployeeCode().v());
-		}
+			dto.setEmployeeCd(employeeDataMngInfo.get().getEmployeeCode().v());
 
-		Optional<Person> person = personRepo.getByPersonId(employeeDataMngInfo.get().getPersonId());
+			Optional<Person> person = personRepo.getByPersonId(employeeDataMngInfo.get().getPersonId());
 
-		if (!person.isPresent()) {
-			dto.setEmployeeName(person.get().getPersonNameGroup().getBusinessName().v());
+			if (!person.isPresent()) {
+				dto.setEmployeeName(person.get().getPersonNameGroup().getBusinessName().v());
+			}
 		}
 
 		List<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = affWorkplaceHistoryItemRepo
 				.getAffWrkplaHistItemByEmpIdAndDate(input.getBaseDate(), input.getEmployeeId());
-		
+
 		if (!affWorkplaceHistoryItem.isEmpty()) {
-			dto.setCompanyId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
+			dto.setWorkplaceId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
 		}
-		
+
 		return dto;
 	}
 }
