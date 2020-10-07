@@ -39,15 +39,17 @@ public class CategoryInitDisplayFinder {
 	@Inject
 	private CategoryService categoryService;
 	
-	public StartupParameterDto initDisplay() {
-		StartupParameterDto dto = new StartupParameterDto();
+	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
+		StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> dto = new StartupParameterDto<>();
 		
 		//１．ドメイン「パターン設定」を取得する
 		LoginUserContext user = AppContexts.user();
 		List<DataStoragePatternSetting> patterns = dataStoragePatternSettingRepository.findByContractCd(user.contractCode());
 		
 		//２．ログイン者が担当者か判断する
-		LoginPersonInCharge pic = picService.getPic();
+//		LoginPersonInCharge pic = picService.getPic();
+		//FAKE-DATA
+		LoginPersonInCharge pic = picService.fakePic();
 		dto.setPic(pic);
 			
 		//List <カテゴリマスタ>を取得する

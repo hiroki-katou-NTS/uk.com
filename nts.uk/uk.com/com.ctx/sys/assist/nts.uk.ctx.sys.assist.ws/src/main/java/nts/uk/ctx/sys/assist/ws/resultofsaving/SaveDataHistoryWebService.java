@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.FindDataHistoryDto;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetDataHistoryCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetSaveSetHistoryCommand;
+import nts.uk.ctx.sys.assist.app.find.autosetting.StorageFreeSpaceFinder;
 import nts.uk.ctx.sys.assist.app.find.datarestoration.SaveSetDto;
 import nts.uk.ctx.sys.assist.app.find.manualsetting.DeleteDataHandler;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
@@ -30,6 +31,9 @@ public class SaveDataHistoryWebService {
 	@Inject
 	private DeleteDataHandler deleteDataHandler;
 	
+	@Inject
+	private StorageFreeSpaceFinder freeSpaceFinder;
+	
 	@POST
 	@Path("findSaveSet")
 	public List<SaveSetDto> findSaveSetHistory(GetSaveSetHistoryCommand command) {
@@ -47,5 +51,11 @@ public class SaveDataHistoryWebService {
 	@Path("deleteData")
 	public void deleteData(String fileId) {
 		deleteDataHandler.handle(fileId);
+	}
+	
+	@POST
+	@Path("getFreeSpace")
+	public double findStorageFreeSpace() {
+		return freeSpaceFinder.getFreeSpace();
 	}
 }

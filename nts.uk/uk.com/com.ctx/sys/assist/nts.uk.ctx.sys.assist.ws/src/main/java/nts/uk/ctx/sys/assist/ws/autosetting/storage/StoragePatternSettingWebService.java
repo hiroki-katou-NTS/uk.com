@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.ws.autosetting;
+package nts.uk.ctx.sys.assist.ws.autosetting.storage;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -10,14 +10,16 @@ import nts.uk.ctx.sys.assist.app.command.autosetting.storage.AddPatternCommandHa
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.DeletePatternCommand;
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.DeletePatternCommandHandler;
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.FindSelectedPatternCommand;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.CategoryInitDisplayFinder;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectedPatternFinder;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectedPatternParameterDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.StartupParameterDto;
 
 @Path("ctx/sys/assist/autosetting")
 @Produces("application/json")
-public class PatternSettingWebService {
+public class StoragePatternSettingWebService {
 	
 	@Inject
 	private CategoryInitDisplayFinder categoryInitDisplayFinder;
@@ -32,25 +34,25 @@ public class PatternSettingWebService {
 	private DeletePatternCommandHandler deletePatternCommandHandler;
 	
 	@POST
-	@Path("/pattern/initialDisplay")
-	public StartupParameterDto initDisplay() {
+	@Path("/storagePattern/initialDisplay")
+	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
 		return categoryInitDisplayFinder.initDisplay();
 	}
 	
 	@POST
-	@Path("/pattern/select")
+	@Path("/storagePattern/select")
 	public SelectedPatternParameterDto findSelectedPattern(FindSelectedPatternCommand command) {
 		return selectedPatternFinder.findSelectedPattern(command);
 	}
 	
 	@POST
-	@Path("/pattern/add")
+	@Path("/storagePattern/add")
 	public void addPattern(AddPatternCommand command) {
 		addPatternCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("/pattern/delete")
+	@Path("/storagePattern/delete")
 	public void deletePattern(DeletePatternCommand command) {
 		deletePatternCommandHandler.handle(command);
 	}

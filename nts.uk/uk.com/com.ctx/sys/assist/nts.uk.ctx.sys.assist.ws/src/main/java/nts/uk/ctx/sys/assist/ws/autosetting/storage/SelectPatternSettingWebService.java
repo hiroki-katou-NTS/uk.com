@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.ws.autosetting;
+package nts.uk.ctx.sys.assist.ws.autosetting.storage;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
