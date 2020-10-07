@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 残数データ情報パラメータ
+ * 
+ */
 @Data
 @Builder
-
-//	残数データ情報パラメータ
 public class RemainInfoData {
 
 	//	発生管理データID
@@ -53,4 +55,6 @@ public class RemainInfoData {
 	
 	//	使用期限日数
 	Double usedDay;
+	
+	Integer mergeCell;
 }

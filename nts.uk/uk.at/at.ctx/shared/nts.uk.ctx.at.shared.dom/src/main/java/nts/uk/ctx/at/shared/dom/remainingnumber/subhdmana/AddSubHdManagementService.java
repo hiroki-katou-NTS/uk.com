@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -117,16 +118,11 @@ public class AddSubHdManagementService {
 		}
 		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
 		if (subHdManagementData.getLstLinkingDate() != null && !subHdManagementData.getLstLinkingDate().isEmpty()) {
-			List<LeaveManagementData> lstLeaveManagement = new ArrayList<>();
 			//	ドメインモデル「休出管理データ」を取得 Nhận domain model 「休出管理データ」
-			for (String item : subHdManagementData.getLstLinkingDate()) {
-				List<LeaveManagementData> lstLeaveManagementData = repoLeaveManaData.getBySidDate(
-						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(),
-						GeneralDate.fromString(item, "yyyy-MM-dd"));
-				for (LeaveManagementData data : lstLeaveManagementData) {
-					lstLeaveManagement.add(data);
-				}
-			}
+			List<LeaveManagementData> lstLeaveManagement = repoLeaveManaData.getBySidAndDatOff(
+					subHdManagementData.getEmployeeId(),
+					subHdManagementData.getLstLinkingDate().stream()
+					.map(x -> GeneralDate.fromString(x, "yyyy-MM-dd")).collect(Collectors.toList()));
 			String comDayOffID = IdentifierUtil.randomUniqueId();
 			String comDayOffIDSub = IdentifierUtil.randomUniqueId();
 			//	List＜代休管理データ＞

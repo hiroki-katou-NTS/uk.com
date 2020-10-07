@@ -49,4 +49,6 @@ public class RemainInfoDto {
 	
 	//	使用期限日数
 	private Double usedDay;
+	
+	private Integer mergeCell;
 }

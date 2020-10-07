@@ -115,6 +115,7 @@ public class FurikyuMngDataExtractionService {
 						.deadLine(item.getDeadLine().map(t -> t.toString()).orElse(""))
 						.usedTime(item.getUsedTime())
 						.usedDay(item.getUsedDay())
+						.mergeCell(item.getMergeCell())
 						.build();
 				return itemData;
 			}).collect(Collectors.toList());
@@ -133,6 +134,7 @@ public class FurikyuMngDataExtractionService {
 					.remainingData(lstDataRemainDto)
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
+					.closureId(closureId)
 					.build();
 				
 		return result;
@@ -272,6 +274,7 @@ public class FurikyuMngDataExtractionService {
 			List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout, String empId) {
 		// List＜残数データ情報＞を作成
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
+		Integer mergeCell = 0;
 		// Input．List<振出管理データ＞をループする
 		for (PayoutManagementData itemPayout : payoutManagementData) {
 			// Input.List＜振出振休紐付け管理＞を絞り込みする
@@ -287,7 +290,7 @@ public class FurikyuMngDataExtractionService {
 				 List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
 						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().get()))
 						.collect(Collectors.toList());
-				if(listSubstitution.isEmpty()) {
+				if(listSubstitution.isEmpty() && !lstDateOfUse.isEmpty()) {
 					// Step ドメインモデル「振休管理データ」を取得
 					listSubstitution = substitutionOfHDManaDataRepository
 							.getBySidListHoliday(AppContexts.user().companyId(),empId, lstDateOfUse);
@@ -309,10 +312,12 @@ public class FurikyuMngDataExtractionService {
 							.occurrenceHour(Optional.empty())
 							.digestionTimes(Optional.empty())
 							.remainingHours(Optional.empty())
+							.mergeCell(mergeCell)
 							.build();
 					// List＜残数データ情報＞に作成した「残数データ情報＞を追加
 					lstRemainInfoData.add(itemRemainInfo);
 				}
+				mergeCell++;
 				// Input．List<振出振休紐付け管理＞に絞り込みした「振出振休紐付け管理」を除く
 				payoutSubofHDManagementLinkToPayout.removeIf(x -> listPayoutSub.contains(x));
 				// Input．List＜振休管理データ＞に絞り込みした「振休管理データ」を除く
@@ -335,9 +340,11 @@ public class FurikyuMngDataExtractionService {
 						.occurrenceHour(Optional.empty())
 						.digestionTimes(Optional.empty())
 						.remainingHours(Optional.empty())
+						.mergeCell(mergeCell)
 						.build();
 				// List＜残数データ情報＞に作成した「残数データ情報＞を追加
 				lstRemainInfoData.add(itemRemainInfo);
+				mergeCell++;
 			}
 		}
 		// List＜振休管理データ＞をループする
@@ -371,10 +378,12 @@ public class FurikyuMngDataExtractionService {
 							.occurrenceHour(Optional.empty())
 							.digestionTimes(Optional.empty())
 							.remainingHours(Optional.empty())
+							.mergeCell(mergeCell)
 							.build();
 					//	List＜残数データ情報＞に作成した残数データ情報を追加
 					lstRemainInfoData.add(itemRemainInfo);
 				}
+				mergeCell++;
 			}else {
 				//	絞り込みした「振出振休紐付け管理」をチェック: ないの場合
 				//	残数データ情報を作成
@@ -393,9 +402,11 @@ public class FurikyuMngDataExtractionService {
 						.occurrenceHour(Optional.empty())
 						.digestionTimes(Optional.empty())
 						.remainingHours(Optional.empty())
+						.mergeCell(mergeCell)
 						.build();
 				//	List＜残数データ情報＞に作成した残数データ情報を追加
 				lstRemainInfoData.add(itemRemainInfo);
+				mergeCell++;
 			}
 		}
 		//	作成したList＜残数データ情報＞を返す

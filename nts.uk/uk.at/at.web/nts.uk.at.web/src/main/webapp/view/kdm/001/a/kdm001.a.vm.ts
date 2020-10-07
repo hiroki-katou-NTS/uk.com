@@ -134,7 +134,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'startDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: '', key: 'expiredDateText', dataType: 'string', width: '120px', hidden: true },
+                    { headerText: '', key: 'expiredDateText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     // A4_4_1 & A4_4_2
                     {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
@@ -201,6 +202,43 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         pageSize: 100,
                         pageSizeList: [15, 50, 100]
                     },
+                    {
+                        name: 'CellMerging',
+                        mergeType: 'physical',
+                        columnSettings: [
+                            {
+                                columnKey: 'accrualDate',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'occurrenceDay',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'legalDistinction',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'digestionDay',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'digestionDays',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ] &&
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            }
+                        ]
+                    }
                 ],
                 ntsControls: [
                     { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value: any) { vm.removeData(value) }, controlType: 'Button' }
@@ -230,6 +268,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             });
         }
 
+        isMergeStrategy(prevRec: any, curRec: any, columnKey: any): boolean {
+            if ($.type(prevRec[ columnKey ]) === 'string' &&
+                $.type(curRec[ columnKey ]) === 'string' &&
+                prevRec[ 'mergeCell' ] === curRec[ 'mergeCell' ] &&
+                !_.isEmpty(prevRec[ columnKey ])) {
+                    return prevRec[ columnKey ].toLowerCase() === curRec[ columnKey ].toLowerCase();
+            }
+            return false;
+        }
+
         // A4_2_9 削除
         public removeData(value: CompositePayOutSubMngData) {
             block.invisible();
@@ -241,9 +289,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 };
 
                 service.removePayout(data).done(() => {
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        nts.uk.ui.windows.close();
-                    });
+                    dialog.info({ messageId: "Msg_16" });
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(function () {
@@ -257,7 +303,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject});
+            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
 
             modal("/view/kdm/001/d/index.xhtml").onClosed(function () {
                 let params = getShared('KDM001_A_PARAMS');
@@ -312,11 +358,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         }
 
                         // update data to view
-                        self.compositePayOutSubMngData = ko.observableArray(compositePayOutSubMngDataArray);
+                        self.compositePayOutSubMngData(compositePayOutSubMngDataArray);
                         self.totalRemainingNumber(res.totalRemainingNumber);
                         self.expirationDateRes = res.expirationDate;
                         self.expirationDate(self.getExpirationTime(res.expirationDate));
-                        self.closureID = res.closureID;
+                        self.closureID = res.closureId;
                         self.newDataDisable(false);
 
                         if (isShowMsg && arrayResponse.length == 0) {
@@ -342,7 +388,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                       //     workplaceId: "", workplaceCode: "", workplaceName: ""
                       // };
                 }).fail(function (res: any) {
-                  dialog.alertError({messageId: res.messageId, messageParams: res.errorMessage})
+                  dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     if(res.messageId === 'Msg_1731'){
                       self.newDataDisable(true);
                     }
@@ -398,11 +444,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         dfd.resolve();
                     }
                 }).fail(function (result) {
-                    dialog.alertError({messageId: result.messageId, messageParams: result.errorMessage}).then(function () { nts.uk.ui.block.clear(); });;
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function () { nts.uk.ui.block.clear(); });;
                     dfd.reject();
                 });
             }).fail(function (result) {
-                dialog.alertError({messageId: result.messageId, messageParams: result.errorMessage}).then(function () { nts.uk.ui.block.clear(); });;
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function () { nts.uk.ui.block.clear(); });;
                 dfd.reject();
             });
 
@@ -644,18 +690,18 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         workplaceName: string;
     }
     export class EmployeeInfo {
-      employeeId: string;
-      employeeCode: string;
-      employeeName: string;
-      workplaceId: string;
-      workplaceName: string;
-      constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceName: string) {
-          this.employeeId = employeeId;
-          this.employeeCode = employeeCode;
-          this.employeeName = employeeName;
-          this.workplaceId = workplaceId;
-          this.workplaceName = workplaceName;
-      }
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+        workplaceId: string;
+        workplaceName: string;
+        constructor(employeeId: string, employeeCode: string, employeeName: string, workplaceId: string, workplaceName: string) {
+            this.employeeId = employeeId;
+            this.employeeCode = employeeCode;
+            this.employeeName = employeeName;
+            this.workplaceId = workplaceId;
+            this.workplaceName = workplaceName;
+        }
   }
 
     export interface Ccg001ReturnedData {
@@ -667,63 +713,64 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     }
 
   export class CompositePayOutSubMngData {
-      id: string;
-      occurrenceId: string;
-      accrualDate: string;
-      deadLine: string;
-      legalDistinction: number;
-      occurrenceDay: string;
-      unUsedDays: number;
-      stateAtr: number;
-      payoutTied: string;
-      subOfHDID: string;
-      unknownDateSub: boolean;
-      digestionDay: string;
-      digestionDays: string;
-      remainDays: number;
-      digestionId: string;
-      startDate: string
-      expirationDate : number;
-      endDate: string;
+        id: string;
+        occurrenceId: string;
+        accrualDate: string;
+        deadLine: string;
+        legalDistinction: number;
+        occurrenceDay: string;
+        unUsedDays: number;
+        stateAtr: number;
+        payoutTied: string;
+        subOfHDID: string;
+        unknownDateSub: boolean;
+        digestionDay: string;
+        digestionDays: string;
+        remainDays: number;
+        digestionId: string;
+        startDate: string
+        expirationDate : number;
+        endDate: string;
 
-      //add to fill grid A4_2_5
-      dayLetf: string;
+        //add to fill grid A4_2_5
+        dayLetf: string;
 
-      //add to fill grid A4_2_6
-      usedDay: string;
+        //add to fill grid A4_2_6
+        usedDay: string;
 
-      dataType: number = 1;
-      //add to set '日' after day number
-      occurredDaysText: string;
-      digestionDaysText: string;
-      dayLetfText: string;
-      usedDayText: string;
-      expiredDateText: string;
+        dataType: number = 1;
+        //add to set '日' after day number
+        occurredDaysText: string;
+        digestionDaysText: string;
+        dayLetfText: string;
+        usedDayText: string;
+        expiredDateText: string;
+        mergeCell: number
 
-      constructor(params:any,startDateP: string, endDateP:string ) {
-        this.startDate = startDateP;
-        this.endDate = endDateP;
-        this.id = params.occurrenceId;
-        this.occurrenceId = params.occurrenceId;
-        this.digestionId = params.digestionId;
-        let dayOffPayout = "";
-        if (params.accrualDate) {
-            dayOffPayout = params.accrualDate;
-        }
-        this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
-        this.deadLine = params.deadLine;
-        this.legalDistinction = params.legalDistinction;
-        this.unUsedDays = params.unUsedDays;
-        this.stateAtr = params.stateAtr;
-        this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
-        this.subOfHDID = params.subOfHDID;
-        this.unknownDateSub = params.unknownDateSub;
-        let digestionDay = "";
-        if (params.digestionDay) {
-          digestionDay = params.digestionDay;
-        }
-        this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
-        this.remainDays = params.remainDays;
+        constructor(params:any,startDateP: string, endDateP:string ) {
+            this.startDate = startDateP;
+            this.endDate = endDateP;
+            this.id = `${params.occurrenceId}-${params.digestionId}`;
+            this.occurrenceId = params.occurrenceId;
+            this.digestionId = params.digestionId;
+            let dayOffPayout = "";
+            if (params.accrualDate) {
+                dayOffPayout = params.accrualDate;
+            }
+            this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
+            this.deadLine = params.deadLine;
+            this.legalDistinction = params.legalDistinction;
+            this.unUsedDays = params.unUsedDays;
+            this.stateAtr = params.stateAtr;
+            this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
+            this.subOfHDID = params.subOfHDID;
+            this.unknownDateSub = params.unknownDateSub;
+            let digestionDay = "";
+            if (params.digestionDay) {
+                digestionDay = params.digestionDay;
+            }
+            this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
+            this.remainDays = params.remainDays;
 
             if (params.occurrenceDay > 0) {
                 this.occurredDaysText = getText("KDM001_27");
@@ -737,76 +784,77 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 this.digestionDays = params.digestionDays.toFixed(1);
             } else {
                 this.digestionDays = "" + params.digestionDays;
-        }
-
-        if (params.occurrenceId != null && params.occurrenceId != "") {
-          this.id = params.occurrenceId;
-          if(this.stateAtr !== 2 &&moment.utc(params.deadLine, "YYYY/MM/DD").diff( moment.utc(moment.utc().format("YYYY/MM/DD"), "YYYY/MM/DD")) >= 0) {
-            this.dayLetf = params.dayLetf;
-            this.usedDay = "0";
-            if(params.dayLetf > 0) {
-              this.dayLetfText = getText("KDM001_27");
-              this.dayLetf = params.unUsedDays.toFixed(1);
             }
-          } else {
-            this.dayLetf = "0";
-            this.usedDay = "" + params.unUsedDays;
-            if (params.unUsedDays > 0) {
-              this.usedDayText = getText("KDM001_27");
-              this.usedDay = params.unUsedDays.toFixed(1);
+
+            if (params.occurrenceId != null && params.occurrenceId != "") {
+                if (this.stateAtr !== 2 &&moment.utc(params.deadLine, "YYYY/MM/DD").diff( moment.utc(moment.utc().format("YYYY/MM/DD"), "YYYY/MM/DD")) >= 0) {
+                    this.dayLetf = params.dayLetf;
+                    this.usedDay = "0";
+                    if (params.dayLetf > 0) {
+                        this.dayLetfText = getText("KDM001_27");
+                        this.dayLetf = params.unUsedDays.toFixed(1);
+                    }
+                } else {
+                    this.dayLetf = "0";
+                    this.usedDay = "" + params.unUsedDays;
+                    if (params.unUsedDays > 0) {
+                        this.usedDayText = getText("KDM001_27");
+                        this.usedDay = params.unUsedDays.toFixed(1);
+                    }
+                }
+            } else if (params.digestionId != null && params.digestionId != "") {
+                this.dayLetf = "" + params.remainDays * -1;
+                this.usedDay = "0";
+                if (params.remainDays > 0) {
+                    this.dayLetfText = getText("KDM001_27");
+                    this.dayLetf = (params.remainDays * -1).toFixed(1);
+                }
             }
-          }
-        } else if (params.digestionId != null && params.digestionId != "") {
-          this.id = params.digestionId;
-          this.dayLetf = "" + params.remainDays * -1;
-          this.usedDay = "0";
-          if (params.remainDays > 0) {
-            this.dayLetfText = getText("KDM001_27");
-            this.dayLetf = (params.remainDays * -1).toFixed(1);
-          }
-        }
 
-        if(params.usedDay > 0) {
-          this.usedDayText = getText("KDM001_27");
-          this.usedDay = params.usedDay.toFixed(1);
-        } else {
-          this.usedDay = "" + params.usedDay;
-        }
+            if (params.usedDay > 0) {
+                this.usedDayText = getText("KDM001_27");
+                this.usedDay = params.usedDay.toFixed(1);
+            } else {
+                this.usedDay = "" + params.usedDay;
+            }
 
-        if(params.dayLetf > 0) {
-          this.dayLetf = getText("KDM001_27");
-          this.dayLetf = params.dayLetf.toFixed(1);
-        } else {
-          this.dayLetf = "" + params.dayLetf;
-        }
-          
-        
-          let expiredDateText = moment.utc(params.deadLine);
-          let startDate = moment.utc(this.startDate);
-          let endDate = moment.utc(this.endDate);
-          if(params.deadLine === '') {
-           this.expiredDateText === '';
-          } else if(startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
-            this.expiredDateText = getText('KDM001_161', [params.deadLine]);
-          } else if(startDate.isSameOrAfter(expiredDateText) && params.expirationDate > 0){
-            this.expiredDateText =  getText('KDM001_162', [params.deadLine]);
-          } else{
-            this.expiredDateText =  getText('KDM001_163', [params.deadLine]);
-          }
+            if (params.dayLetf > 0) {
+                this.dayLetf = getText("KDM001_27");
+                this.dayLetf = params.dayLetf.toFixed(1);
+            } else {
+                this.dayLetf = "" + params.dayLetf;
+            }
+            
+            let expiredDateText = moment.utc(params.deadLine);
+            let startDate = moment.utc(this.startDate);
+            let endDate = moment.utc(this.endDate);
+            if (params.deadLine === '') {
+                this.expiredDateText === '';
+            } else if (startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
+                this.expiredDateText = getText('KDM001_161', [params.deadLine]);
+            } else if (startDate.isSameOrAfter(expiredDateText) && params.usedDay > 0){
+                this.expiredDateText =  getText('KDM001_162', [params.deadLine]);
+            } else {
+                this.expiredDateText =  getText('KDM001_163', [params.deadLine]);
+            }
+
+            if (params.mergeCell !== null) {
+                this.mergeCell = params.mergeCell
+            }
          
+        }
     }
-  }
 
-  function getLawAtr(value, row) {
-      if (value && value === '0') {
-          return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
-      } else if (value && value === '1') {
-          return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
-      } else if (value && value === '2') {
-          return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
-      } else {
-          return '';
-      }
-  }
+    function getLawAtr(value: any, row: any) {
+        if (value && value === '0') {
+            return getText("Enum_HolidayAtr_STATUTORY_HOLIDAYS");
+        } else if (value && value === '1') {
+            return getText("Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS");
+        } else if (value && value === '2') {
+            return getText("Enum_HolidayAtr_PUBLIC_HOLIDAY");
+        } else {
+            return '';
+        }
+    }
 }
 

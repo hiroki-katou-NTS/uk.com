@@ -19,6 +19,9 @@ public class DisplayRemainingNumberDataInformation {
 	//	使用期限
 	private Integer expirationDate;
 	
+	//	使用期限
+	private String dispExpiredDate;
+	
 	//	残数データ
 	private List<RemainInfoDto> remainingData;
 	
@@ -33,6 +36,8 @@ public class DisplayRemainingNumberDataInformation {
 	
 	//	締め開始日
 	private GeneralDate startDate;
+
+	private Integer closureId;
 	
 	private ClosureEmployment closureEmploy;
 	

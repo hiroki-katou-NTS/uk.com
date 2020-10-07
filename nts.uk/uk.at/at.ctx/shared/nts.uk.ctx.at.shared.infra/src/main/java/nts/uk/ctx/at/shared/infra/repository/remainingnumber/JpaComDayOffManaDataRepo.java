@@ -414,7 +414,7 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public List<CompensatoryDayOffManaData> getByLstDate(String cid, List<GeneralDate> lstDate) {
 		return this.queryProxy().query(GET_BY_LST_DAYOFF_DATE, KrcmtComDayoffMaData.class)
-				.setParameter("cID", cid)
+				.setParameter("cId", cid)
 				.setParameter("lstDate", lstDate)
 				.getList()
 				.stream()

@@ -134,18 +134,16 @@ public class PayoutManagementDataService {
 			if (checkedSplit) {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
-			if (pause && pickUp) {
-				//	作成したList<振休管理データ＞
-				List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = new ArrayList<SubstitutionOfHDManagementData>();
-				substitutionOfHDManagementDatas.add(subMana);
-				if (checkedSplit) {
-					substitutionOfHDManagementDatas.add(splitMana);
-				}
-				
-				//	アルゴリズム「振出振休紐付け管理」を実行する
-				// (Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」"xử lý flag cập nhật data quản ly ngày nghỉ bù lại")
-				this.changeTheTieUpManagement(subMana.getSID(), substitutionOfHDManagementDatas, linkingDates);
+			//	作成したList<振休管理データ＞
+			List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = new ArrayList<SubstitutionOfHDManagementData>();
+			substitutionOfHDManagementDatas.add(subMana);
+			if (checkedSplit) {
+				substitutionOfHDManagementDatas.add(splitMana);
 			}
+			
+			//	アルゴリズム「振出振休紐付け管理」を実行する
+			// (Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」"xử lý flag cập nhật data quản ly ngày nghỉ bù lại")
+			this.changeTheTieUpManagement(subMana.getSID(), substitutionOfHDManagementDatas, linkingDates);
 		}
 		
 		return errors;
@@ -338,7 +336,7 @@ public class PayoutManagementDataService {
 			, List<String> linkingDateList) {
 
 		// Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
-		if (!linkingDateList.isEmpty()) { // ないの場合
+		if (linkingDateList.isEmpty()) { // ないの場合
 			return;
 		}
 

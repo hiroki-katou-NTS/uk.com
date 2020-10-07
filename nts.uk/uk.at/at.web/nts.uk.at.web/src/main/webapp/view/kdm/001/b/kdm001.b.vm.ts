@@ -200,7 +200,7 @@
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        self.dispExpiredDate(result.expirationDate);
+                        self.dispExpiredDate(result.dispExpiredDate);
                     } else {
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -216,7 +216,7 @@
                     }
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage })
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds })
                 });
             }
         }
@@ -249,7 +249,7 @@
                     if (!dayOffDate){
                         dayOffDate = '※';
                     } else dayOffDate += '※';
-                    
+                   
                 }
                 
                 if (data.expiredDate === null) {
@@ -257,7 +257,7 @@
                 }
                 else if (new Date(data.expiredDate).getMonth() === new Date(data.dayOffDate).getMonth() && new Date(data.expiredDate).getFullYear() === new Date(data.dayOffDate).getFullYear()) {
                     this.expiredDateText = getText('KDM001_161', [data.expiredDate]);
-                } 
+                }
                 else {
                     this.expiredDateText = getText('KDM001_162', [data.expiredDate]);
                 }
@@ -274,8 +274,12 @@
                     substituedexpiredDate = getText('KDM001_163', [data.deadLine])
                 }
 
+                data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
+                data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
+                data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
+
                 listData.push(new SubstitutedData(
-                    data.occurrenceId !== '' ? data.occurrenceId : data.digestionId,
+                    `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
                     (data.occurrenceId !== '' || data.occurrenceId !== 0) && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
@@ -288,7 +292,8 @@
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
                     data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
                     null,
-                    null
+                    null,
+                    data.mergeCell
                 ));
 
             });
@@ -328,6 +333,7 @@
                     { headerText: 'dataType', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'occurrenceId', key: 'occurrenceId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
                     { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:right"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
@@ -339,6 +345,37 @@
                 ],
                 features: [
                     {
+                        name: 'CellMerging',
+                        mergeType: 'physical',
+                        columnSettings: [
+                            {
+                                columnKey: 'substituedWorkingDate',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituedWorkingHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituedHolidayDate',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'substituteHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                }
+                            }
+                        ]
+                    },
+                    {
                         name: 'Paging',
                         type: "local",
                         pageSize: 100,
@@ -346,11 +383,21 @@
                     },
                 ],
                 ntsControls: [                
-                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function(value) { self.deleteHolidaySetting(value) }, controlType: 'Button' }
+                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: (value: any) => { self.deleteHolidaySetting(value) }, controlType: 'Button' }
                 ]
                 
             });
             
+        }
+
+        isMergeStrategy(prevRec: any, curRec: any, columnKey: any): boolean {
+            if ($.type(prevRec[ columnKey ]) === 'string' &&
+                $.type(curRec[ columnKey ]) === 'string' &&
+                prevRec[ 'mergeCell' ] === curRec[ 'mergeCell' ] &&
+                !_.isEmpty(prevRec[ columnKey ])) {
+                    return prevRec[ columnKey ].toLowerCase() === curRec[ columnKey ].toLowerCase();
+            }
+            return false;
         }
 
         disableLinkedData() {
@@ -396,8 +443,8 @@
                         self.convertToDisplayList();
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
-                        if (result.expirationDate){
-                            self.dispExpiredDate(result.expirationDate);
+                        if (result.dispExpiredDate){
+                            self.dispExpiredDate(result.dispExpiredDate);
                         }
                         self.initKCP009();
                         self.disableLinkedData();
@@ -417,11 +464,11 @@
                     if (result.messageId && result.messageId === 'Msg_1731') {
                         self.isHaveError(true);
                     }
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage }).then(function() { block.clear(); });
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError({ messageId: result.messageId, messageParams: result.errorMessage }).then(function() { block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
                 dfd.reject();
             });
             return dfd.promise();
@@ -520,13 +567,7 @@
                         comDayOffID: value.digestionId
                 };
                 service.deleteHolidaySetting(command)
-                    .done(() => 
-                        //情報メッセージ　Msg-16を表示する
-                        dialog.info({ messageId: "Msg_16" }).then(() => {
-                            self.closeDialog();
-                            block.clear();
-                        })
-                    )
+                    .then(() => dialog.info({ messageId: "Msg_16" }))
                     .fail(error => dialog.alertError(error))
                     .always(() => {
                         self.startPage()
@@ -561,9 +602,10 @@
         expiredHolidayHours: string;
         isLinked: number;
         dataType: number;
+        mergeCell: number;
         constructor(id: string, occurrenceId: string, digestionId: string, substituedWorkingDate: string, substituedWorkingHours: string, substituedWorkingPeg: string, substituedexpiredDate: string,
             substituedHolidayDate: string, substituteHolidayHours: string, substituedHolidayPeg: string, remainHolidayHours: string,
-            expiredHolidayHours: string, isLinked: number, dataType: number) {
+            expiredHolidayHours: string, isLinked: number, dataType: number, mergeCell: number) {
             this.id = id;
             this.occurrenceId = occurrenceId;
             this.digestionId = digestionId;
@@ -578,6 +620,7 @@
             this.expiredHolidayHours = expiredHolidayHours;
             this.isLinked = isLinked;
             this.dataType = dataType;
+            this.mergeCell = mergeCell;
         }
     }
 

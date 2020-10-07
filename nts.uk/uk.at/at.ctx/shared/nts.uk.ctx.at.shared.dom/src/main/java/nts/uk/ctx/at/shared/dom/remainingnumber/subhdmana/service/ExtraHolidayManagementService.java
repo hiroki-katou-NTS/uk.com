@@ -254,13 +254,14 @@ public class ExtraHolidayManagementService {
 					.deadLine(item.getDeadLine().map(t -> t.toString()).orElse(""))
 					.usedTime(item.getUsedTime())
 					.usedDay(item.getUsedDay())
+					.mergeCell(item.getMergeCell())
 					.build())
 				.collect(Collectors.toList());
 		// 「表示残数データ情報」を作成 Tạo "Thông tin dữ liệu còn lại hiển thị"
 		DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 				.employeeId(employeeId)
 				.totalRemainingNumber(carryforwardDays)
-				.expirationDate(compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().value)
+				.dispExpiredDate(compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description)
 				.remainingData(lstDataRemainDto)
 				.startDate(closing.get().getClosureStartDate())
 				.endDate(closing.get().getClosureEndDate())
@@ -337,11 +338,12 @@ public class ExtraHolidayManagementService {
 												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement) {
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
 		String cid = AppContexts.user().companyId();
+		Integer mergeCell = 0;
 		// Input．List＜休出管理データ＞をループする
 		for (LeaveManagementData leaveData : listLeaveData) {
 			// 「休出代休紐付け管理」を絞り込み Filter "Quản lý liên kết đi làm ngày nghỉ và nghỉ bù"
 			List<LeaveComDayOffManagement> lCOMSub = listLeaveComDayOffManagement.stream()
-				.filter(item -> item.getAssocialInfo().getOutbreakDay() == leaveData.getComDayOffDate().getDayoffDate().get())
+				.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(leaveData.getComDayOffDate().getDayoffDate().get()))
 				.collect(Collectors.toList());
 			
 			// 絞り込みした「休出代休紐付け管理」をチェック Check nội dung đã filter
@@ -361,8 +363,9 @@ public class ExtraHolidayManagementService {
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
 						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.mergeCell(mergeCell)
 						.build();
-				
+				mergeCell++;
 				// List＜残数データ情報＞に作成した残数データ情報を追加 Bổ sung thông tin data số dư đã tạo vào List＜残数データ情報＞
 				lstRemainInfoData.add(remainInfo);
 				continue;
@@ -383,7 +386,7 @@ public class ExtraHolidayManagementService {
 				cdomSub = comDayOffManaDataRepository.getByLstDate(cid, lstDate);
 			}
 			
-			cdomSub.stream().forEach(item -> {
+			for (CompensatoryDayOffManaData item : cdomSub) {
 				// 残数データ情報を作成 Tạo thông tin dữ liệu số dư
 				RemainInfoData remainInfo = RemainInfoData.builder()
 						.accrualDate(leaveData.getComDayOffDate().getDayoffDate())
@@ -399,11 +402,13 @@ public class ExtraHolidayManagementService {
 						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
 						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
 						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.mergeCell(mergeCell)
 						.build();
 				
 				// List＜残数データ情報＞に作成した残数データ情報を追加 Bổ sung thông tin data số dư đã tạo vào trong List＜残数データ情報＞
 				lstRemainInfoData.add(remainInfo);
-			});
+			}
+			mergeCell++;
 			
 			// Input．List<休出代休紐付け管理＞に絞り込みした「休出代休紐付け管理」を除く
 			listLeaveComDayOffManagement.removeIf(x -> lCOMSub.contains(x));
@@ -436,8 +441,9 @@ public class ExtraHolidayManagementService {
 						.remainingHours(Optional.of(0))
 						.usedDay(0d)
 						.usedTime(0)
+						.mergeCell(mergeCell)
 						.build();
-				
+				mergeCell++;
 				// List＜残数データ情報＞に作成した残数データ情報を追加 Bổ sung thông tin dữ liệu số dư đã tạo vào List＜残数データ情報＞
 				lstRemainInfoData.add(remainInfo);
 				continue;
@@ -447,7 +453,7 @@ public class ExtraHolidayManagementService {
 					.collect(Collectors.toList());
 			// ドメインモデル「休出管理データ」を取得する Get domain model 「休出管理データ」
 			List<LeaveManagementData> manaDataList = leaveManaDataRepository.getBySidAndDatOff(sid, dayOffs);
-			manaDataList.forEach(item -> {
+			for (LeaveManagementData item : manaDataList) {
 				// 残数データ情報を作成 Tạo thông tin dữ liệu số dư
 				RemainInfoData remainInfo = RemainInfoData.builder()
 						.accrualDate(item.getComDayOffDate().getDayoffDate())
@@ -463,12 +469,13 @@ public class ExtraHolidayManagementService {
 						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0))
 						.usedDay(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
 						.usedTime(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0)
+						.mergeCell(mergeCell)
 						.build();
 				
 				// List＜残数データ情報＞に作成した残数データ情報を追加 Bổ sung thông tin dữ liệu số dư đã tạo vào List＜残数データ情報＞
 				lstRemainInfoData.add(remainInfo);
-			});
-			
+			}
+			mergeCell++;
 		}
 		
 		return lstRemainInfoData.stream()

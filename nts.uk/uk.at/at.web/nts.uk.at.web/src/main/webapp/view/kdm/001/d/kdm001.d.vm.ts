@@ -148,6 +148,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public submitForm() {
             let self = this;
+
             let data = {
                 employeeId: self.employeeId(),
                 pickUp: self.pickUp(),

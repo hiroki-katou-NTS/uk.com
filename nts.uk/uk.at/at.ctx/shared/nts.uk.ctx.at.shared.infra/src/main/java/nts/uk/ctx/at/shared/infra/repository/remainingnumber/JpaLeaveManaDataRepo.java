@@ -531,4 +531,5 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.collect(Collectors.toList());
 	}
 	
+	
 }
