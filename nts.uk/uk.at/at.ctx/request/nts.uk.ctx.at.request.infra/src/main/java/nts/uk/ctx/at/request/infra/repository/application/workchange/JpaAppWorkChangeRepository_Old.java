@@ -22,11 +22,11 @@ import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkCha
 public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAppWorkChangeRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqdtAppWorkChange_Old f";
     
     private static final String SELECT_BY_KEY_STRING =SELECT_ALL_QUERY_STRING + " WHERE f.appWorkChangePk.cid =:companyID AND f.appWorkChangePk.appId =:appId ";
     
-    private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppWorkChange a"
+    private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppWorkChange_Old a"
     		+ " WHERE a.appWorkChangePk.cid = :companyID"
     		+ " AND a.appWorkChangePk.appId IN :lstAppId";
 
@@ -115,12 +115,12 @@ public class JpaAppWorkChangeRepository_Old extends JpaRepository implements IAp
 			return new ArrayList<>();
 		}
 		List<AppWorkChange_Old> resultList = new ArrayList<>();
-//		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange_Old.class)
-//								  .setParameter("companyID", companyID)
-//								  .setParameter("lstAppId", subList)
-//								  .getList(item -> toDomain(item)));
-//		});
+		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange_Old.class)
+								  .setParameter("companyID", companyID)
+								  .setParameter("lstAppId", subList)
+								  .getList(item -> toDomain(item)));
+		});
 		return resultList;
 	}
 

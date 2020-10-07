@@ -307,7 +307,11 @@ export class CmmS45CComponent extends Vue {
                 }
                 break;
             case 4:
-                self.$goto('kafs09a', self.appTransferData.appDetail);
+                if (self.$router.currentRoute.name == 'kafs09a') {
+                    self.$close(self.appTransferData.appDetail);
+                } else {
+                    self.$goto('kafs09a', self.appTransferData.appDetail);
+                }
                 break;
             default:
                 break;

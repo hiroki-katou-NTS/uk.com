@@ -75,7 +75,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final String FILE_NAME_CSV2 = "対象社員";
 	private static final int NUM_OF_TABLE_EACH_PROCESS = 100;
 	private static final String EMPLOYEE_CD = "5";
-	private String practitioner = "";
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
 	@Inject
@@ -104,11 +103,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	public void serverManualSaveProcessing(ManualSetOfDataSave manualSetting, FileGeneratorContext generatorContext) {
 		// ドメインモデル「データ保存の保存結果」へ書き出す
 		String storeProcessingId = manualSetting.getStoreProcessingId();
+		String practitioner = manualSetting.getPractitioner();
 		try {
-			practitioner = manualSetting.getPractitioner();
 			String cid = manualSetting.getCid();
 			int systemType = manualSetting.getSystemType().value;
-			String practitioner = manualSetting.getPractitioner();
 			int saveForm = 0;
 			String saveSetCode = null;
 			String saveName = manualSetting.getSaveSetName().v();
@@ -183,7 +181,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		} catch (Exception e) {
 			e.printStackTrace();
 			generatorContext.dispose();
-			evaluateAbnormalEndForException(storeProcessingId, 0, e);
+			evaluateAbnormalEndForException(practitioner, storeProcessingId, 0, e);
 		}
 	}
 
@@ -687,7 +685,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return ResultState.ABNORMAL_END;
 	}
 
-	private ResultState evaluateAbnormalEndForException(String storeProcessingId, int totalTargetEmployees, Exception e) {
+	private ResultState evaluateAbnormalEndForException(String practitioner, String storeProcessingId, int totalTargetEmployees, Exception e) {
 		// step ⓸ドメインモデル「データ保存の結果ログ」を追加
 		Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
 		resultOfSaving.ifPresent(result -> {

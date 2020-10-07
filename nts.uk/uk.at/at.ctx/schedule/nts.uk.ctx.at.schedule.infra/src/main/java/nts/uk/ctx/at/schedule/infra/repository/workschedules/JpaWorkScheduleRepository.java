@@ -12,6 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBonusPay;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.context.AppContexts;
@@ -46,6 +48,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
+		if (sids.isEmpty())
+			return new ArrayList<>();
+
 		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
 				.setParameter("sids", sids).setParameter("startDate", period.start())
 				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
@@ -217,13 +222,37 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			if (!oldData.get().atdLvwTimes.isEmpty()) {
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 					oldData.get().atdLvwTimes.forEach(x -> {
+						// Update data
 						if (y.pk.workNo == x.pk.workNo) {
 							x.cid = y.cid;
 							x.atdClock = y.atdClock;
 							x.lwkClock = y.lwkClock;
 						}
+						// Insert work no 2 when old data just have work no 1
+						if(y.pk.workNo == 2 && oldData.get().atdLvwTimes.size() < 2) {
+							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()
+									.getTimeLeavingWorks().stream().filter(z -> z.getWorkNo().v() == 2)
+									.findFirst().get();
+							this.insertAtdLvwTimes(leavingWork, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+						}
+						// Delete work no 2 when new data just have work no 1
+						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
+							String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
+									+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+									.setParameter("ymd", x.pk.ymd)
+									.setParameter("workNo", x.pk.workNo).executeUpdate();
+						}
 					});
 				}
+			} else {
+				// If old data is empty
+				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
+							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()
+									.getTimeLeavingWorks().stream().filter(z -> z.getWorkNo().v() == y.getPk().getWorkNo())
+									.findFirst().get();
+							this.insertAtdLvwTimes(leavingWork, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+					}
 			}
 
 			Optional<WorkSchedule> oldDatas = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
@@ -254,7 +283,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							x.shortTimeTsEnd = ts.shortTimeTsEnd;
 						}
 
-						if (x.pk.frameNo == 2 && newData.schShortTimeTs.size() < 2) {
+						if (x.pk.frameNo == 2 && workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().size() < 2) {
 							String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
 									+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
 									+ "  and o.pk.frameNo = :frameNo";
@@ -302,14 +331,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	@Override
 	public void delete(String sid, DatePeriod datePeriod) {
-		datePeriod.forEach(ymd -> {
-			Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
-			if (optWorkSchedule.isPresent()) {
-				KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
-						optWorkSchedule.get().getYmd());
-				this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
-			}
-		});
+		String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd >= :ymdStart " + " and o.pk.ymd <= :ymdEnd ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+				.setParameter("ymdStart",datePeriod.start()).setParameter("ymdEnd", datePeriod.end()).executeUpdate();
 	}
 
 	@Override
@@ -320,10 +345,21 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
 		}
 	}
+	
+	@Override
+	public void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
+			KscdtSchAtdLvwTimePK pk = new KscdtSchAtdLvwTimePK(sid, ymd, workNo);
+			this.commandProxy().remove(KscdtSchAtdLvwTime.class, pk);
+	}
 
 	@Override
 	public void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
 		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
+	}
+	
+	@Override
+	public void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
+		this.commandProxy().insert(KscdtSchAtdLvwTime.toEntity(leavingWork, sID, yMD, cID));
 	}
 
 	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
