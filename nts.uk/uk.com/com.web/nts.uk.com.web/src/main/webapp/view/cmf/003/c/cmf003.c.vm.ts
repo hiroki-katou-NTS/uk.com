@@ -306,6 +306,7 @@ module nts.uk.com.view.cmf003.c {
           vm.categoriesDefault.push(c);
           vm.categoriesFiltered.push(c);
         });
+        console.log(vm.categoriesDefault());
       }).always(() => {
         vm.$blockui("clear");
       });
@@ -327,7 +328,8 @@ module nts.uk.com.view.cmf003.c {
       vm.password('');
       vm.confirmPassword('');
       vm.explanation('');
-      vm.categoriesFiltered(vm.categoriesDefault());
+      vm.categoriesFiltered([]);
+      _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
       vm.currentCateSelected([]);
       vm.$errors("clear");
     }
@@ -443,6 +445,7 @@ module nts.uk.com.view.cmf003.c {
       param.patternCode = patternCode;
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
+      console.log(param);
       service.selectPattern(param).then((res) => {
         const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
