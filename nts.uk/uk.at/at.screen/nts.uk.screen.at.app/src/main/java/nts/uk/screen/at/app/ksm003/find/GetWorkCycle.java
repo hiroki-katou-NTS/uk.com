@@ -58,7 +58,7 @@ public class GetWorkCycle {
         List<WorkTimeSetting> workTimeItems = new ArrayList<>();
         val listWrkTimes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTimeCodeNotNull()).collect(Collectors.toList());
         val listWrkTimeStr = listWrkTimes.stream().filter(i->i.isPresent()).map(i->i.get().v()).collect(Collectors.toList());
-        if (listWrkTimeStr.isEmpty()) {
+        if (!listWrkTimeStr.isEmpty()) {
             workTimeItems = this.workTimeSettingRepository.findByCodes(cid, listWrkTimeStr);
         }
 

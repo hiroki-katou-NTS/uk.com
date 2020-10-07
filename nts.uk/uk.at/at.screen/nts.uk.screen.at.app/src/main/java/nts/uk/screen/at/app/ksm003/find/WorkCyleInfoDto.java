@@ -40,7 +40,7 @@ public class WorkCyleInfoDto {
         if (timeCode != null) {
             // Get WorkTime
             val workTime = workTimeItems.stream().filter(i -> i.getWorktimeCode().v().equals(timeCode)).findFirst();
-            this.timeCode = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : TextResource.localize("KSM003_2");
+            this.timeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : TextResource.localize("KSM003_2");
         }
 
     }
