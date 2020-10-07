@@ -57,7 +57,11 @@ module nts.uk.ui.at.ksu002.a {
 	<div class="component-action">
 		<div>
 			<label data-bind="i18n: 'KSU002_12'"></label>
-	        <div data-bind="ntsComboBox: {
+	        <div data-bind="
+				attr: {
+					tabindex: $component.data.tabIndex
+				},
+				ntsComboBox: {
 					width: '500px',
 					name: $component.$i18n('KSU002_12'),
 					value: $component.selectedWorkTypeCode,
@@ -71,28 +75,20 @@ module nts.uk.ui.at.ksu002.a {
 						{ prop: 'name', length: 10 },
 						{ prop: 'memo', length: 10 },
 					]
-				},
-				attr: {
-					tabindex: $component.data.tabIndex
 				}"></div>
 		</div>
 		<div>
 			<label data-bind="i18n: 'KSU002_13'"></label>
-	        <div data-bind="component: {
-					name: 'working-hours',
-					params: {
-						input: {
-							workPlaceId: ko.observable(''),
-							displayFormat: '',
-							fillter: false,
-							showNone: true,
-							showDeferred: true,
-							selectMultiple: false,
-							initiallySelected: []
-						},
-						callback: function() { $component.workHourSelect.apply($component, [...arguments]) }
-					}
-				}"></div>
+			<div data-bind="
+					kcp013: ko.observable('012'),
+					dataSources: ko.observableArray([]),
+					filter: false,
+					show-mode: 1,
+					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
+					tabindex: $component.data.tabIndex,
+					width: 570,
+					workplaceId: ko.observable('')
+				"></div>
 		</div>
 	</div>
 	<style type="text/css" rel="stylesheet">
@@ -263,7 +259,7 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		workHourSelect(input: any[], source: any[]) {
-			console.log(arguments);
+			console.log(input, source);
 		}
 	}
 

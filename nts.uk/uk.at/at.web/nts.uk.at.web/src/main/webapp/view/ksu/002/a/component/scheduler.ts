@@ -243,11 +243,7 @@ module nts.uk.ui.at.ksu002.a {
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
-                            click: function() { $component.showInput.apply($component, ['begin']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['begin', evt]) }
-                        },
-                        attr: {
-                            tabindex: $component.data.context.$tabindex
+                            click: function() { $component.showInput.apply($component, ['begin']) }
                         },
                         ntsTimeEditor: {
                             name: 'Duration',
@@ -255,8 +251,8 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
-                            readonly: ko.unwrap($component.readonly).begin,
-                            enable: ko.unwrap($editable)
+                            readonly: $component.readonly.begin,
+                            enable: $editable
                         }" />
                 </div>
                 <div class="leave">
@@ -268,11 +264,7 @@ module nts.uk.ui.at.ksu002.a {
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
-                            click: function() { $component.showInput.apply($component, ['finish']) },
-                            focus: function(evt) { $component.registerTab.apply($component, ['finish', evt]) }
-                        },
-                        attr: {
-                            tabindex: $component.data.context.$tabindex
+                            click: function() { $component.showInput.apply($component, ['finish']) }
                         },
                         ntsTimeEditor: {
                             name: 'Duration',
@@ -280,8 +272,8 @@ module nts.uk.ui.at.ksu002.a {
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
-                            readonly: ko.unwrap($component.readonly).finish,
-                            enable: ko.unwrap($editable)
+                            readonly: $component.readonly.finish,
+                            enable: $editable
                         }" />
                 </div>
             </div>
@@ -300,7 +292,13 @@ module nts.uk.ui.at.ksu002.a {
             };
 
             // old design (not use)
-            readonly!: KnockoutComputed<{ begin: boolean; finish: boolean; }>;
+            readonly: {
+                begin: KnockoutObservable<boolean>;
+                finish: KnockoutObservable<boolean>;
+            } = {
+                    begin: ko.observable(true),
+                    finish: ko.observable(true)
+                };
 
             text: {
                 wtype: string;
@@ -343,9 +341,7 @@ module nts.uk.ui.at.ksu002.a {
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.begin = c;
-                            setTimeout(() => {
-                                context.$change.apply(context.$vm, [clone]);
-                            }, 100);
+                            context.$change.apply(context.$vm, [clone]);
                         }
                     });
 
@@ -356,24 +352,19 @@ module nts.uk.ui.at.ksu002.a {
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.finish = c;
-                            setTimeout(() => {
-                                context.$change.apply(context.$vm, [clone]);
-                            }, 100);
+                            context.$change.apply(context.$vm, [clone]);
                         }
                     });
 
-                vm.readonly = ko.computed({
-                    read: () => {
-                        const begin = ko.unwrap(vm.click.begin);
-                        const finish = ko.unwrap(vm.click.finish);
+                vm.click.begin
+                    .subscribe(c => {
+                        vm.readonly.begin(c < 2);
+                    });
 
-                        return {
-                            begin: begin < 2,
-                            finish: finish < 2
-                        }
-                    },
-                    owner: vm
-                });
+                vm.click.finish
+                    .subscribe(c => {
+                        vm.readonly.finish(c < 2);
+                    });
             }
 
             mounted() {
