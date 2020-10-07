@@ -70,6 +70,7 @@
         <nts-switchbox v-model="model.bounce" v-bind:value="1">{{'KAFS09_9' | i18n}}</nts-switchbox>
         <nts-switchbox v-model="model.bounce" v-bind:value="2">{{'KAFS09_10' | i18n}}</nts-switchbox>
       </div>
+      <span v-if="model.straight == 2 && model.bounce == 2" class="textSize uk-text-dark-red">{{'Msg_1878' | i18n}}</span>
     </div>
    
     <div>

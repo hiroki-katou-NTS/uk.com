@@ -521,6 +521,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
     public register() {
         const self = this;
+        if (self.model.straight == 2 && self.model.bounce) {
+
+            return;
+        }
+        self.$mask('show');
         let validAll: boolean = true;
         for (let child of self.$children) {
             child.$validate();
@@ -534,12 +539,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.$validate();
         if (!self.$valid || !validAll) {
             window.scrollTo(500, 0);
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
 
             return;
         }
-        if (self.$valid && validAll) {
-            self.$mask('show');
-        }
+        // if (self.$valid && validAll) {
+        //     self.$mask('show');
+        // }
         self.bindAppWorkChangeRegister();
 
         // check before registering application
