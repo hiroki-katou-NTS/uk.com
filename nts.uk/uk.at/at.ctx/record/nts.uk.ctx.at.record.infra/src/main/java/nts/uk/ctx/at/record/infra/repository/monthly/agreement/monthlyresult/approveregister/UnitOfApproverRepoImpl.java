@@ -7,19 +7,6 @@ import nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.approve
 
 public class UnitOfApproverRepoImpl extends JpaRepository implements UnitOfApproverRepo {
 
-    private static String FIND_BY_APPID;
-
-    static {
-        StringBuilder builderString = new StringBuilder();
-        builderString.append(" SELECT s FROM Krcmt36ArgApvUnit s ");
-        String SELECT = builderString.toString();
-
-        builderString = new StringBuilder();
-        builderString.append(SELECT);
-        builderString.append(" WHERE s.companyID = :companyId ");
-        FIND_BY_APPID = builderString.toString();
-    }
-
     @Override
     public void insert(UnitOfApprover domain) {
         commandProxy().insert(Krcmt36ArgApvUnit.fromDomain(domain));
@@ -33,11 +20,7 @@ public class UnitOfApproverRepoImpl extends JpaRepository implements UnitOfAppro
 
     @Override
     public UnitOfApprover getByCompanyId(String companyId) {
-        Krcmt36ArgApvUnit krcmt36ArgApvUnit = this.queryProxy()
-                .query(FIND_BY_APPID, Krcmt36ArgApvUnit.class)
-                .setParameter("companyId", companyId)
-                .getSingleOrNull();
-
+        Krcmt36ArgApvUnit krcmt36ArgApvUnit = this.queryProxy().find(companyId, Krcmt36ArgApvUnit.class).get();
         return Krcmt36ArgApvUnit.toDomain(krcmt36ArgApvUnit);
     }
 }

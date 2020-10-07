@@ -18,26 +18,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GetWorkplaceApproveHistoryDomainServiceTest {
     @Injectable
     GetWorkplaceApproveHistoryDomainService.Require require;
-    private static String workplaceId = "wid";
+
     private static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
-    private static DatePeriod periodLast = DatePeriod.daysFirstToLastIn(YearMonth.of(202008));
     private static String employeeId = "eplId";
     private static String codeAndName = "codeName";
-    private   static List<String> approverList =  Arrays.asList("abc","cba","efg");
-    private   static List<String> confirmerList =  Arrays.asList("abc","cba","efg");
-    private   static List<String> listWplId =  Arrays.asList("abc","cba","efg");
+    private static String workplaceId = "000000000000-0003";
+    private static List<String> approverList =  Arrays.asList("7AB520B7-CF55-4068-8DEF-C4DF52C35C2E","7AD2CE3D-3AE8-4D90-B556-867596A830B7","7AB52E44-06B2-476D-B04C-0D35F712C00F");
+    private static List<String> confirmerList =  Arrays.asList("7AB52E44-06B2-476D-B04C-0D35F712C00F","7AD2CE3D-3AE8-4D90-B556-867596A830B7","7AB52E44-06B2-476D-B04C-0D35F712C00F");
+    private static List<String> listWplId =  Arrays.asList("000000000000-0001","000000000000-0002","000000000000-0003");
+
     private static Approver36AgrByWorkplace domain =  Approver36AgrByWorkplace.create(
             workplaceId,
             period,
             approverList,
             confirmerList
         );
-    private static Approver36AgrByWorkplace domainLast =  Approver36AgrByWorkplace.create(
-            workplaceId,
-            periodLast,
-            approverList,
-            confirmerList
-    );
 
     private static SWkpHistRcImported sWkpHistRcImported =  new SWkpHistRcImported(period,employeeId,workplaceId,codeAndName,codeAndName,codeAndName);
     @Test

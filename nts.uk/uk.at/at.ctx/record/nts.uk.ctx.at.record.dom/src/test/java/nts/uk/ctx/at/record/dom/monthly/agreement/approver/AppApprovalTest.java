@@ -5,6 +5,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -15,9 +16,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author khai.dh
@@ -38,7 +40,13 @@ public class AppApprovalTest {
 		String aplId = "dummyApplicantId";
 		String aprId = "dummyApproverId";
 		val cmt = Optional.of(new AgreementApprovalComments("comment"));
-		val apprSts = ApprovalStatus.UNAPPROVED;
+		val apprSts = ApprovalStatus.APPROVED;
+
+		// R1
+		new Expectations() {{
+			require.getApp(aplId);
+			result = Optional.empty();
+		}};
 
 		NtsAssert.businessException("Msg_1262", () -> AppApproval.change(require, aplId, aprId, apprSts, cmt));
 	}
@@ -51,11 +59,22 @@ public class AppApprovalTest {
 	 */
 	@Test
 	public void test02() {
-		String aplId = "dummyApplicantId";
+		String aplId = "aplId";
 		String aprId = "dummyApproverId";
-		val dummyApp = createDummyApp(TypeAgreementApplication.ONE_MONTH);
 		val cmt = Optional.of(new AgreementApprovalComments("comment"));
 		val apprSts = ApprovalStatus.UNAPPROVED;
+
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"aplId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_MONTH,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				Arrays.asList("apr01", "apr02", "apr03"), // approver sid list
+				Arrays.asList("cfm01", "cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -63,14 +82,24 @@ public class AppApprovalTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		new Expectations() {{
-			dummyApp.approveApplication(aplId, apprSts, cmt);
-		}};
+		val yesterday = GeneralDate.today().addDays(-1);
+		dummyApp.getApprovalStatusDetails().setApprovalDate(Optional.of(yesterday));
+		val aprStsDetail = ApprovalStatusDetails.create(
+				ApprovalStatus.APPROVED,
+				Optional.of("apr"),
+				Optional.of(new AgreementApprovalComments("comment2")),
+				Optional.of(yesterday));
+		dummyApp.setApprovalStatusDetails(aprStsDetail);
 
 		NtsAssert.atomTask(
 				() -> AppApproval.change(require, aplId, aprId, apprSts, cmt),
 				any -> require.updateApp(any.get()) // R4
 		);
+
+		assertThat(dummyApp.getApprovalStatusDetails().getApprovalStatus()).isEqualTo(ApprovalStatus.UNAPPROVED);
+		assertThat(dummyApp.getApprovalStatusDetails().getApproveSID().get()).isEqualTo(aprId);
+		assertThat(dummyApp.getApprovalStatusDetails().getApprovalComment()).isEqualTo(cmt);
+		assertThat(dummyApp.getApprovalStatusDetails().getApprovalDate().get()).isEqualTo(GeneralDate.today());
 	}
 
 	/**
@@ -79,15 +108,26 @@ public class AppApprovalTest {
 	 * Type of Agreement is ONE_MONTH
 	 * R2 returns empty result
 	 * <p>
-	 * Expected:	R4, R5 should be called
+	 * Expected: R4, R5 should be called
 	 */
 	@Test
 	public void test03() {
-		String aplId = "dummyApplicantId";
+		String aplId = "aplId";
 		String aprId = "dummyApproverId";
-		val dummyApp = createDummyApp(TypeAgreementApplication.ONE_MONTH);
-		val cmt = Optional.of(new AgreementApprovalComments("comment"));
 		val apprSts = ApprovalStatus.APPROVED;
+		val cmt = Optional.of(new AgreementApprovalComments("comment"));
+
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"aplId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_MONTH,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				Arrays.asList("apr01", "apr02", "apr03"), // approver sid list
+				Arrays.asList("cfm01", "cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -95,8 +135,11 @@ public class AppApprovalTest {
 			result = Optional.of(dummyApp);
 		}};
 
+		// R2
 		new Expectations() {{
-			dummyApp.approveApplication(aplId, apprSts, cmt);
+			val yearMonth = dummyApp.getApplicationTime().getOneMonthTime().get().getYearMonth();
+			require.getYearMonthSetting(aplId, yearMonth);
+			result = Optional.empty();
 		}};
 
 		NtsAssert.atomTask(
@@ -116,11 +159,22 @@ public class AppApprovalTest {
 	 */
 	@Test
 	public void test04() {
-		String aplId = "dummyApplicantId";
+		String aplId = "aplId";
 		String aprId = "dummyApproverId";
-		val dummyApp = createDummyApp(TypeAgreementApplication.ONE_MONTH);
-		val cmt = Optional.of(new AgreementApprovalComments("comment"));
 		val apprSts = ApprovalStatus.APPROVED;
+		val cmt = Optional.of(new AgreementApprovalComments("comment"));
+
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"aplId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_MONTH,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				Arrays.asList("apr01", "apr02", "apr03"), // approver sid list
+				Arrays.asList("cfm01", "cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -128,18 +182,12 @@ public class AppApprovalTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		new Expectations() {{
-			dummyApp.approveApplication(aplId, apprSts, cmt);
-		}};
-
-		val existingAgr36MonthSetting = new AgreementMonthSetting(
-				aplId, new YearMonth(0), new OneMonthErrorAlarmTime());
-		val yearMonth = dummyApp.getApplicationTime().getOneMonthTime().get().getYearMonth();
-
 		// R2
 		new Expectations() {{
+			val exMonthSetting = new AgreementMonthSetting(aplId, new YearMonth(0), new OneMonthErrorAlarmTime());
+			val yearMonth = dummyApp.getApplicationTime().getOneMonthTime().get().getYearMonth();
 			require.getYearMonthSetting(aplId, yearMonth);
-			result = Optional.of(existingAgr36MonthSetting);
+			result = Optional.of(exMonthSetting);
 		}};
 
 		NtsAssert.atomTask(
@@ -159,11 +207,22 @@ public class AppApprovalTest {
 	 */
 	@Test
 	public void test05() {
-		String aplId = "dummyApplicantId";
+		String aplId = "aplId";
 		String aprId = "dummyApproverId";
-		val dummyApp = createDummyApp(TypeAgreementApplication.ONE_YEAR);
-		val cmt = Optional.of(new AgreementApprovalComments("comment"));
 		val apprSts = ApprovalStatus.APPROVED;
+		val cmt = Optional.of(new AgreementApprovalComments("comment"));
+
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"aplId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_YEAR,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				Arrays.asList("apr01", "apr02", "apr03"), // approver sid list
+				Arrays.asList("cfm01", "cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -171,12 +230,13 @@ public class AppApprovalTest {
 			result = Optional.of(dummyApp);
 		}};
 
-		new Expectations() {{
-			dummyApp.approveApplication(aplId, apprSts, cmt);
-		}};
-
-		val existingAgr36YearSetting = new AgreementYearSetting(aplId, 0, new OneYearErrorAlarmTime());
 		val year = dummyApp.getApplicationTime().getOneYearTime().get().getYear();
+
+		// R3
+		new Expectations() {{
+			require.getYearSetting(aplId, year);
+			result = Optional.empty();
+		}};
 
 		NtsAssert.atomTask(
 				() -> AppApproval.change(require, aplId, aprId, apprSts, cmt),
@@ -195,11 +255,22 @@ public class AppApprovalTest {
 	 */
 	@Test
 	public void test06() {
-		String aplId = "dummyApplicantId";
+		String aplId = "aplId";
 		String aprId = "dummyApproverId";
-		val dummyApp = createDummyApp(TypeAgreementApplication.ONE_YEAR);
-		val cmt = Optional.of(new AgreementApprovalComments("comment"));
 		val apprSts = ApprovalStatus.APPROVED;
+		val cmt = Optional.of(new AgreementApprovalComments("comment"));
+
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"aplId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_YEAR,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				Arrays.asList("apr01", "apr02", "apr03"), // approver sid list
+				Arrays.asList("cfm01", "cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -207,17 +278,12 @@ public class AppApprovalTest {
 			result = Optional.of(dummyApp);
 		}};
 
+		// R3
 		new Expectations() {{
-			dummyApp.approveApplication(aplId, apprSts, cmt);
-		}};
-
-		val existingAgr36YearSetting = new AgreementYearSetting(
-				aplId, 0, new OneYearErrorAlarmTime());
-		val year = dummyApp.getApplicationTime().getOneYearTime().get().getYear();
-
-		new Expectations() {{
-			require.getYearSetting(aplId, year); // R3
-			result = Optional.of(existingAgr36YearSetting);
+			val exYearSetting = new AgreementYearSetting(aplId, 0, new OneYearErrorAlarmTime());
+			val year = dummyApp.getApplicationTime().getOneYearTime().get().getYear();
+			require.getYearSetting(aplId, year);
+			result = Optional.of(exYearSetting);
 		}};
 
 		NtsAssert.atomTask(
@@ -225,21 +291,5 @@ public class AppApprovalTest {
 				any -> require.updateApp(any.get()), // R4
 				any -> require.updateYearSetting(any.get()) // R8
 		);
-	}
-
-	private static SpecialProvisionsOfAgreement createDummyApp(TypeAgreementApplication type) {
-		OneMonthTime oneMonthTime = new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0));
-		OneYearTime oneYearTime = new OneYearTime(new OneYearErrorAlarmTime(), new Year(0));
-		ApplicationTime applicationTime = new ApplicationTime(type, Optional.of(oneMonthTime), Optional.of(oneYearTime));
-		List<String> listConfirmSID = new ArrayList<String>() {{ add("confirmerSID"); }};
-
-		return SpecialProvisionsOfAgreement.create(
-				"enteredPersonSID",
-				"dummyApplicantId",
-				applicationTime,
-				new ReasonsForAgreement("reasonsForAgreement"),
-				new ArrayList<>()
-				, listConfirmSID,
-				new ScreenDisplayInfo());
 	}
 }
