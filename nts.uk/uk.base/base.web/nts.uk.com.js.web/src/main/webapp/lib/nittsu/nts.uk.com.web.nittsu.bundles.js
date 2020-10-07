@@ -7806,6 +7806,10 @@ var nts;
                             options.overflowTooltipOn = this.overflowTooltipOn;
                         }
                     };
+                    ExTable.prototype.getChartRuler = function () {
+                        var self = this;
+                        return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+                    };
                     /**
                      * Create.
                      */
@@ -10286,6 +10290,9 @@ var nts;
                                     }).fail(function (res) {
                                         var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
                                         if ($target !== intan.NULL) {
+                                            var $parent = $editor.parentElement;
+                                            helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                            triggerStopEdit($exTable, $parent, land, value);
                                             errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
                                         }
                                         if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
@@ -10486,6 +10493,7 @@ var nts;
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
                                     if ($target !== intan.NULL) {
+                                        mo_1(helper.call(columnDf_3.ajaxValidate.onFailed, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                         errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
                                     }
                                     if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
@@ -10941,6 +10949,12 @@ var nts;
                                         if (!helper.isEqual(src[key], obj[key], fieldArr)
                                             && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
                                             objValCloned[tField] = srcVal[tField];
+                                            if (tField.slice(-4) === "Name") {
+                                                var codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                                                if (_.has(objValCloned, codeFieldName)) {
+                                                    objValCloned[codeFieldName] = srcVal[codeFieldName];
+                                                }
+                                            }
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                             origData[key] = objValCloned;
                                             return objValCloned;
@@ -16806,7 +16820,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection) {
                             var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
                             if (children.length > 0)
                                 removeClass(children, clazz);
@@ -16844,7 +16860,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.remove(clazz);
                             return;
                         }
