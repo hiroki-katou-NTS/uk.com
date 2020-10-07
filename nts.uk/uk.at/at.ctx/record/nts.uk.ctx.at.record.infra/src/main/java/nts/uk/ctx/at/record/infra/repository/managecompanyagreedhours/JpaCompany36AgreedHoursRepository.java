@@ -5,6 +5,9 @@ import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRep
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class JpaCompany36AgreedHoursRepository extends JpaRepository implements Company36AgreedHoursRepository {
     private static String FIND_BY_CID;
     static {

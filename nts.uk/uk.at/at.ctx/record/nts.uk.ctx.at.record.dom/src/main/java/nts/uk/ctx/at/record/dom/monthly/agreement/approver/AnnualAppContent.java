@@ -17,18 +17,18 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 public class AnnualAppContent extends ValueObject {
 
 	// 対象者
-	private String applicant;
+	private final String applicant;
 
 	// 年度
-	private Year year;
+	private final Year year;
 
 	// エラー時間
-	private AgreementOneYearTime errTime;
+	private final AgreementOneYearTime errTime;
 
 	// アラーム時間
 	@Setter
 	private AgreementOneYearTime alarmTime;
 
 	// 申請理由 : 36協定申請理由
-	private ReasonsForAgreement reason;
+	private final ReasonsForAgreement reason;
 }

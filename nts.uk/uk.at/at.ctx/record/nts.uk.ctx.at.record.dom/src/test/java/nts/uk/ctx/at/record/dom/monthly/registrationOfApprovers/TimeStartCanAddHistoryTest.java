@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthly.registrationOfApprovers;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
@@ -14,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, EnumAdaptor.valueOf(1, Unit.class),"workplaceId",GeneralDate.today())).isFalse();
+		        require, Unit.COMPANY, Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, EnumAdaptor.valueOf(1, Unit.class),"workplaceId",GeneralDate.today())).isTrue();
+		        require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, EnumAdaptor.valueOf(0, Unit.class),"workplaceId",GeneralDate.today())).isFalse();
+		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, EnumAdaptor.valueOf(0, Unit.class),"workplaceId",GeneralDate.today())).isTrue();
+		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
 	}
 
 }

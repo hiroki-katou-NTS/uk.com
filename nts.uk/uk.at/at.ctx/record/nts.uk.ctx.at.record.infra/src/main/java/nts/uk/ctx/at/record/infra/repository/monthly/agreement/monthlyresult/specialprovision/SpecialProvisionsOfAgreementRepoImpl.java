@@ -15,7 +15,6 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     private static String FIND_BY_APPREOVER;
     private static String FIND_BY_CONFIRMER;
-    private static String FIND_BY_APPID;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -31,13 +30,9 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE s.inputDate >= :startDate AND s.inputDate <= :endDate ");
-        builderString.append(" AND (s.confirmerSID1 = :confirmerSID OR  s.confirmerSID2 = :confirmerSID OR  s.confirmerSID3 = :confirmerSID OR  s.confirmerSID4 = :confirmerSID OR  s.confirmerSID5 = :confirmerSID OR  ) ");
+        builderString.append(" AND (s.confirmerSID1 = :confirmerSID OR  s.confirmerSID2 = :confirmerSID OR  s.confirmerSID3 = :confirmerSID OR  s.confirmerSID4 = :confirmerSID OR  s.confirmerSID5 = :confirmerSID ) ");
         FIND_BY_CONFIRMER = builderString.toString();
 
-        builderString = new StringBuilder();
-        builderString.append(SELECT);
-        builderString.append(" WHERE s.appID = :applicationID ");
-        FIND_BY_APPID = builderString.toString();
     }
 
     @Override
@@ -86,9 +81,6 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     @Override
     public Optional<SpecialProvisionsOfAgreement> getByAppId(String applicationID) {
-        return this.queryProxy()
-                .query(FIND_BY_APPID, Krcdt36AgrApp.class)
-                .setParameter("applicationID", applicationID)
-                .getSingle().map(Krcdt36AgrApp::toDomain);
+        return this.queryProxy().find(applicationID,Krcdt36AgrApp.class).map(x -> x.toDomain(x));
     }
 }

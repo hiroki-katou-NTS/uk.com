@@ -5,6 +5,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -14,8 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 /**
  * @author khai.dh
@@ -34,10 +38,16 @@ public class AppConfirmationTest {
 	@Test
 	public void test01() {
 		String aplId = "dummyApplicantId";
-		String cfmrId = "dummyConfirmerId";
+		String cfmId = "dummyConfirmerId";
 		val cfSts = ConfirmationStatus.UNCONFIRMED;
 
-		NtsAssert.businessException("Msg_1262", () -> AppConfirmation.change(require, aplId, cfmrId, cfSts));
+		// R1
+		new Expectations() {{
+			require.getApp(aplId);
+			result = Optional.empty();
+		}};
+
+		NtsAssert.businessException("Msg_1262", () -> AppConfirmation.change(require, aplId, cfmId, cfSts));
 	}
 
 	/**
@@ -48,9 +58,19 @@ public class AppConfirmationTest {
 	@Test
 	public void test02() {
 		String aplId = "dummyApplicantId";
-		String cfmrId = "dummyConfirmerId";
-		val cfSts = ConfirmationStatus.UNCONFIRMED;
-		val dummyApp = createDummyApp();
+		String cfId = "cfm02";
+		val cfSts = ConfirmationStatus.RECOGNITION;
+		val dummyApp = SpecialProvisionsOfAgreement.create(
+				"enteredSID",
+				"dummyApplicantId",
+				new ApplicationTime(
+						TypeAgreementApplication.ONE_MONTH,
+						Optional.of(new OneMonthTime(new OneMonthErrorAlarmTime(), new YearMonth(0))),
+						Optional.of(new OneYearTime(new OneYearErrorAlarmTime(), new Year(0)))),
+				new ReasonsForAgreement("reason"),
+				new ArrayList<>(),
+				Arrays.asList("cfm01","cfm02", "cfm03"), // confirmation sid list
+				new ScreenDisplayInfo());
 
 		// R1
 		new Expectations() {{
@@ -58,39 +78,22 @@ public class AppConfirmationTest {
 			result = Optional.of(dummyApp);
 		}};
 
+		val yesterday = GeneralDate.today().addDays(-1);
+		dummyApp.getConfirmationStatusDetails().forEach(item -> {
+			item.setConfirmDate(Optional.of(yesterday));
+		});
+
 		NtsAssert.atomTask(
-				() -> AppConfirmation.change(require, aplId, cfmrId, cfSts),
+				() -> AppConfirmation.change(require, aplId, cfId, cfSts),
 				any -> require.updateApp(any.get()) // R2
 		);
-	}
 
-	private static SpecialProvisionsOfAgreement createDummyApp() {
-		OneMonthTime oneMonthTime = new OneMonthTime(
-				new OneMonthErrorAlarmTime(),
-				new YearMonth(0)
-		);
-
-		OneYearTime oneYearTime = new OneYearTime(
-				new OneYearErrorAlarmTime(),
-				new Year(0)
-		);
-
-		ApplicationTime applicationTime = new ApplicationTime(
-				TypeAgreementApplication.ONE_MONTH,
-				Optional.of(oneMonthTime),
-				Optional.of(oneYearTime));
-
-		List<String> listConfirmSID = new ArrayList<String>(){{
-			add("confirmerSID");
-		}};
-
-		return SpecialProvisionsOfAgreement.create(
-				"enteredPersonSID",
-				"dummyApplicantId",
-				applicationTime,
-				new ReasonsForAgreement("reasonsForAgreement"),
-				new ArrayList<>()
-				, listConfirmSID,
-				new ScreenDisplayInfo());
+		assertThat(dummyApp.getConfirmationStatusDetails())
+				.extracting(d -> d.getConfirmerSID(), d -> d.getConfirmationStatus(), d -> d.getConfirmDate())
+				.containsExactly(
+						tuple("cfm01", ConfirmationStatus.UNCONFIRMED, Optional.of(yesterday)),
+						tuple("cfm02", ConfirmationStatus.RECOGNITION, Optional.of(GeneralDate.today())),
+						tuple("cfm03", ConfirmationStatus.UNCONFIRMED, Optional.of(yesterday))
+				);
 	}
 }

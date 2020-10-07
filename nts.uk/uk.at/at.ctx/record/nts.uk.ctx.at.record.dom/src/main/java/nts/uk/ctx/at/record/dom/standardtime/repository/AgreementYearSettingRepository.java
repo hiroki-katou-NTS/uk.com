@@ -15,7 +15,7 @@ public interface AgreementYearSettingRepository {
 	void update(AgreementYearSetting agreementYearSetting);
 	
 	void delete(String employeeId, int yearvalue);
-	
+
 	boolean checkExistData(String employeeId, BigDecimal yearValue);
 
 	void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld);
@@ -23,4 +23,9 @@ public interface AgreementYearSettingRepository {
 	Optional<AgreementYearSetting> findByKey(String employeeId, int yearMonth);
 
 	List<AgreementYearSetting> findByKey(List<String> employeeIds, int yearMonth);
+
+	void delete(AgreementYearSetting agreementYearSetting);
+
+
+
 }
