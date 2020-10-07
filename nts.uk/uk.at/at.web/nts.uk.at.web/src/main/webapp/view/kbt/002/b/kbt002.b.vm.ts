@@ -272,6 +272,22 @@ module nts.uk.at.view.kbt002.b {
         });
     }
 
+    public openDialogK(){
+      const vm = this;
+      vm.$window.modal('/view/kbt/002/k/index.xhtml')
+        .then(() => {
+          vm.$blockui('clear');
+        });
+    }
+
+    public openDialogL(){
+      const vm = this;
+      vm.$window.modal('/view/kbt/002/l/index.xhtml')
+        .then(() => {
+          vm.$blockui('clear');
+        });
+    }
+
     /**
      * Open dialog CDL008
      * 職場選択 button
