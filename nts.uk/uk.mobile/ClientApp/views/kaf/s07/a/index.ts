@@ -359,6 +359,10 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 // 入力中の申請理由
                 // empty
                 // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                 // 定型理由
+                 opAppStandardReasonCD: self.mode ? null : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                 // 申請理由
+                 opAppReason: self.mode ? null : self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
