@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
 
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Default;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,10 +12,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_WK_REC_ITEM")
 @NoArgsConstructor
-public class ItemsInTheWorkStatusTable extends UkJpaEntity implements Serializable {
+public class ItemsInTheWorkStatus extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
-    public ItemsInTheWorkStatusTablePk pk;
+    public ItemsInTheWorkStatusPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
