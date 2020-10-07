@@ -1,10 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -74,12 +70,6 @@ public class DeleteCategoryInitDisplayFinder {
 						.map(type -> categoryForDelService.categoriesBySystemType(type.value))
 						.flatMap(List::stream)
 						.map(DeleteCategoryDto::fromDomain)
-						.filter(distinctByKey(DeleteCategoryDto::getCategoryId))
 						.collect(Collectors.toList());
-	}
-	
-	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-	    Set<Object> seen = ConcurrentHashMap.newKeySet();
-	    return t -> seen.add(keyExtractor.apply(t));
 	}
 }

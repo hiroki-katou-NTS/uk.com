@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.command.autosetting;
+package nts.uk.ctx.sys.assist.app.command.autosetting.storage;
 
 import java.util.Optional;
 

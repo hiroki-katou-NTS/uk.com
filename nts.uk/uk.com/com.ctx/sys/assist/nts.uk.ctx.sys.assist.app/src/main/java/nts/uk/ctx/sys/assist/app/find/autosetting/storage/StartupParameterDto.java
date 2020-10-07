@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import java.util.List;
 
@@ -9,17 +9,17 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
  * 起動パラメータ DTO
  */
 @Data
-public class StartupParameterDto {
+public class StartupParameterDto<X, Y> {
 	
 	/**
 	 * List<カテゴリ>
 	 */
-	private List<CategoryDto> categories;
+	private List<X> categories;
 	
 	/**
 	 * List<パターン設定>
 	 */
-	private List<DataStoragePatternSettingDto> patterns;
+	private List<Y> patterns;
 	
 	/**
 	 * ログイン者が担当者か判断する

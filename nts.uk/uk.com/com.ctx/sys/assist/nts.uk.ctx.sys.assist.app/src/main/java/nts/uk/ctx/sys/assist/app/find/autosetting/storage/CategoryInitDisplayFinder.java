@@ -1,11 +1,7 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -39,8 +35,8 @@ public class CategoryInitDisplayFinder {
 	@Inject
 	private CategoryService categoryService;
 	
-	public StartupParameterDto initDisplay() {
-		StartupParameterDto dto = new StartupParameterDto();
+	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
+		StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> dto = new StartupParameterDto<>();
 		
 		//１．ドメイン「パターン設定」を取得する
 		LoginUserContext user = AppContexts.user();
@@ -77,12 +73,6 @@ public class CategoryInitDisplayFinder {
 						.map(type -> categoryService.categoriesBySystemType(type.value))
 						.flatMap(List::stream)
 						.map(CategoryDto::fromDomain)
-						.filter(distinctByKey(CategoryDto::getCategoryId))
 						.collect(Collectors.toList());
-	}
-	
-	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-	    Set<Object> seen = ConcurrentHashMap.newKeySet();
-	    return t -> seen.add(keyExtractor.apply(t));
 	}
 }

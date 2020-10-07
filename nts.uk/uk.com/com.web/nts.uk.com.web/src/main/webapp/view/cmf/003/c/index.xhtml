@@ -187,7 +187,7 @@
 								draggable: true,
 								multipleDrag: { left: true, right: false },
 								innerDrag: { left: false, right: true },
-								outerDrag: { left: true, right: true } 
+								outerDrag: { left: true, right: true },
                 disableMoveButton: disableMoveButton
               }">
               </div>
@@ -197,7 +197,7 @@
               <div id="C3_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_637')}</div>
               <!-- C3_2 調査用保存可否 -->
               <div id="C3_2" class="div-column-2"
-                data-bind="ntsCheckBox: { checked: saveFormatChecked, enable: true }" tabindex="13">
+                data-bind="ntsCheckBox: { checked: saveFormatChecked, enable: saveFormatEnabled }" tabindex="13">
                 #{i18n.getText('CMF003_50')}</div>
             </div>
             <div class="div-line flex">

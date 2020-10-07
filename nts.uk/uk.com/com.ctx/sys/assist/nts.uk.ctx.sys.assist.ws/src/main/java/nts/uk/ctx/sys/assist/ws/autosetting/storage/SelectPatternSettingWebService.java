@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.assist.ws.autosetting;
+package nts.uk.ctx.sys.assist.ws.autosetting.storage;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.assist.app.command.autosetting.SelectCategoryCommand;
-import nts.uk.ctx.sys.assist.app.find.autosetting.DataStoragePatternSettingDto;
-import nts.uk.ctx.sys.assist.app.find.autosetting.ScreenDisplayProcessingDto;
-import nts.uk.ctx.sys.assist.app.find.autosetting.ScreenDisplayProcessingFinder;
-import nts.uk.ctx.sys.assist.app.find.autosetting.SelectCategoryFinder;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.SelectCategoryCommand;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.ScreenDisplayProcessingDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.ScreenDisplayProcessingFinder;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.SelectCategoryFinder;
 
 @Path("ctx/sys/assist/autosetting")
 @Produces("application/json")

@@ -209,6 +209,7 @@ module nts.uk.com.view.cmf003.c {
 
     //Auto execution
     saveFormatChecked: KnockoutObservable<boolean> = ko.observable(false);
+    saveFormatEnabled: KnockoutObservable<boolean> = ko.observable(true);
     disableMoveButton: KnockoutObservable<boolean> = ko.observable(false);
     usePasswordChecked: KnockoutObservable<boolean> = ko.observable(false);
     targetYearDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -284,10 +285,6 @@ module nts.uk.com.view.cmf003.c {
         }
       });
 
-      vm.disableMoveButton.subscribe(value => {
-        console.log(value);
-      });
-      vm.disableMoveButton(false);
       vm.initDisplay();
     }
 
@@ -304,6 +301,7 @@ module nts.uk.com.view.cmf003.c {
           p.displayCode = x.patternClassification + x.patternCode;
           vm.patternList.push(p);
         });
+        vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
         _.map(res.categories, (x :any) => {
           let c = vm.convertToCategory(x);
           vm.categoriesDefault.push(c);
@@ -467,7 +465,7 @@ module nts.uk.com.view.cmf003.c {
           vm.currentCateSelected.push(category);
         });
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
-        debugger;
+        vm.saveFormatEnabled(pattern.patternClassification === 0);
         vm.disableMoveButton(pattern.patternClassification === 1);
         vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
         vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));

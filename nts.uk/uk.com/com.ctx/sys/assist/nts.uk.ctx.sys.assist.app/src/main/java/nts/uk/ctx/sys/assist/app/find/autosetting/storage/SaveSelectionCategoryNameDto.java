@@ -1,6 +1,7 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import lombok.Data;
+import nts.uk.ctx.sys.assist.app.find.autosetting.TextResourceHolderDto;
 
 /**
  * 選択カテゴリ名称保存 DTO

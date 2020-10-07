@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
 import lombok.Data;
-import nts.uk.ctx.sys.assist.app.find.autosetting.storage.TextResourceHolderDto;
+import nts.uk.ctx.sys.assist.app.find.autosetting.TextResourceHolderDto;
 
 /**
  * 選択カテゴリ名称保存 DTO

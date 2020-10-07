@@ -1,9 +1,9 @@
-package nts.uk.ctx.sys.assist.app.find.autosetting;
+package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.sys.assist.app.command.autosetting.SelectionCategoryNameDto;
+import nts.uk.ctx.sys.assist.app.command.autosetting.storage.SelectionCategoryNameDto;
 
 @Data
 public class SelectedPatternParameterDto {

@@ -661,6 +661,7 @@ module nts.uk.com.view.cmf003.b {
             p.displayCode = x.patternClassification + x.patternCode;
             self.patternList.push(p);
           });
+          self.patternList(_.orderBy(self.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
           self.systemTypes(res.systemTypes);
           self.selectedPatternId(self.patternList()[0].displayCode);
           self.selectPattern(self.patternList()[0].displayCode);
