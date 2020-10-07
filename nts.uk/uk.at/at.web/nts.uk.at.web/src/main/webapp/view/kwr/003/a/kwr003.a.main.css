@@ -34,6 +34,9 @@
   margin-right: 10px;
 }
 
-.kwr-003 .panel .row-right .row-switch-button {
+.kwr-003 .panel .row-switch-button {
   padding-left: 45px;
+}
+.kwr-003 .panel .switchButton-wrapper button {
+  width: 65px;
 }
