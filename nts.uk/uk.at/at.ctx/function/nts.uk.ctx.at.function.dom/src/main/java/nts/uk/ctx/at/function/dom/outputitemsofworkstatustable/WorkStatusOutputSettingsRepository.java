@@ -39,8 +39,8 @@ public interface WorkStatusOutputSettingsRepository {
      void duplicateConfigurationDetails(String cid,String replicationSourceSettingId,String replicationDestinationSettingId,OutputItemSettingCode duplicateCode,OutputItemSettingName copyDestinationName);
 
      // 	[10]  exist(コード、ログイン会社ID)
-     boolean  exist( String code,String cid);
+     boolean  exist( OutputItemSettingCode code,String cid);
 
      // 	[11]  exist(コード、ログイン会社ID、ログイン社員ID)
-     boolean  exist(String code,String cid,String employeeId);
+     boolean  exist(OutputItemSettingCode code,String cid,String employeeId);
 }
