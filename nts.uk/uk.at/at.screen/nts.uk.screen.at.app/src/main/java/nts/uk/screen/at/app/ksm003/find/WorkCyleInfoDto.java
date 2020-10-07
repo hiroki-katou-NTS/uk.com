@@ -3,12 +3,8 @@ package nts.uk.screen.at.app.ksm003.find;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 
-import java.util.List;
 import java.util.Map;
 
 @Data

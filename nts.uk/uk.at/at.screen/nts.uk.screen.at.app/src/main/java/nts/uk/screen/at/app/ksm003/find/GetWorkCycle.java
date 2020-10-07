@@ -2,9 +2,7 @@ package nts.uk.screen.at.app.ksm003.find;
 
 import lombok.val;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
