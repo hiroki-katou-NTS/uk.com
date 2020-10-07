@@ -148,7 +148,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
