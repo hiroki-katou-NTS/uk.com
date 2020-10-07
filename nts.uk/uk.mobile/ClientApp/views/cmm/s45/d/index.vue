@@ -157,8 +157,8 @@
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
       <div class="col-12">
-        <div v-if="comboReasonDisp" class="row">{{ comboReason | i18n }}</div> 
-        <div v-if="textReasonDisp" class="row">{{ textReason | i18n }}</div>
+        <div v-if="comboReasonDisp" class="row"><div class="col-12 pl-0">{{ comboReason | i18n }}</div></div> 
+        <div v-if="textReasonDisp" class="row"><div class="col-12 pl-0">{{ textReason | i18n }}</div></div>
       </div>
     </div>
     <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
