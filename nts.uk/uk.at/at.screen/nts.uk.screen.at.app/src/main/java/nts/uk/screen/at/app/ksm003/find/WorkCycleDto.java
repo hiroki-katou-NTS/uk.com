@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,13 +23,15 @@ public class WorkCycleDto {
 
     private List<WorkCyleInfoDto> infos;
 
-    public static WorkCycleDto createFromDomain(WorkCycle domain) {
+    public static WorkCycleDto createFromDomain(WorkCycle domain, List<WorkType> workTypes, List<WorkTimeSetting> workTimeItems) {
         AtomicInteger index = new AtomicInteger();
         List<WorkCyleInfoDto> infos = domain.getInfos().stream().map(i -> new WorkCyleInfoDto(
                 i.getWorkInformation().getWorkTypeCode().v(),
                 i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v(): null,
                 i.getDays().v(),
-                index.incrementAndGet()
+                index.incrementAndGet(),
+                workTypes,
+                workTimeItems
         )).collect(Collectors.toList());
         return new WorkCycleDto(domain.getCode().v(), domain.getName().v(), infos);
     }
