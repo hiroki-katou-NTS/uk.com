@@ -886,6 +886,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
 		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
 		
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.ac', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.app', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.infra', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pub', version: version)
+		runtime(group: 'com.exio', name: 'nts.uk.ctx.exio.pubimp', version: version)
+
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: version)
