@@ -14,7 +14,8 @@ import {
     IParamS00B,
     IParamS00C,
     IInfoOutput,
-    IRes
+    IRes,
+    IParams
 } from './define';
 
 @component({
@@ -54,7 +55,9 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public opAppReason: string = null;
     public reasonCD: number = 0;
     public prePostArt: number = 0;
-    public mode: boolean = true;
+    public paramsAComponent: IParams;
+
+    @Prop({default: true}) public readonly mode!: boolean;
 
     public created() {
         const vm = this;
@@ -68,6 +71,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
         vm.$mask('show');
         vm.$auth.user.then((usr: any) => {
             vm.user = usr;
+            vm.application.employeeID = vm.user.employeeId;
+            vm.infoOutPut.lateEarlyCancelAppSet.companyId = vm.user.companyId;
         }).then(() => {
             vm.$mask('show');
 
@@ -197,8 +202,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         infoOutput: vm.infoOutPut,
                     };
                     vm.$http.post('at', API.register,params).then((res: IRes) => {
-                        console.log(res.data.appID);
-                        alert('qua man tiep theo');
+                        vm.paramsAComponent = {
+                            appID: res.data.appID,
+                            mode: vm.mode,
+                        };
+                        vm.$emit('nextComponentA0',vm.paramsAComponent);
                         vm.$mask('hide');
                     });
                 } else {

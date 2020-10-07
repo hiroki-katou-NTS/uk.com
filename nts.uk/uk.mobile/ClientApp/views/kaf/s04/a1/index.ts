@@ -1,7 +1,8 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { KafS00DComponent } from '../../s00/d';
 import { ScreenMode } from '../../s00/b';
+import {IParams} from '../a/define';
 
 @component({
     name: 'kafs04a1',
@@ -19,21 +20,35 @@ export class KafS04A1Component extends Vue {
     
     public kafS00DParams: IParamS00D = null;
 
+    @Prop({default:(): IParams => ({appID: '',mode: true})}) public readonly paramsAComponent: IParams;
+
+    @Prop({default: true}) public readonly mode!: boolean;
+
     public created() {
         const vm = this;
 
-        vm.initS00DComponent();   
+        console.log(vm.mode);
+        vm.initS00DComponent();
     }
 
     public initS00DComponent() {
         const vm = this;
         
         vm.kafS00DParams = {
-            appID: '50ba21bc-1b6d-4cb8-b706-828c136ba210',
-            mode: ScreenMode.NEW,
+            appID: this.paramsAComponent.appID,
+            mode: this.paramsAComponent.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
         };
     }
+
+    public handleCloseModel(res) {
+        const vm = this;
+
+        console.log(res);
+        vm.paramsAComponent.mode = false;
+        vm.$emit('showComponentA', vm.paramsAComponent.mode);
+    }
 }
+
 
 interface IParamS00D {
      // 画面モード

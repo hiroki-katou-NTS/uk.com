@@ -324,5 +324,10 @@ export interface IRes {
     }
 }
 
+export interface IParams{
+    appID: string;
+    mode: boolean;
+}
+
 
 
