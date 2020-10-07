@@ -281,6 +281,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 // 入力中の申請理由
                 // empty
                 // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                // 定型理由
+                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
@@ -317,11 +321,17 @@ export class KafS09AComponent extends KafS00ShrComponent {
             return;
         }
         self.isChangeDate = false;
-        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workType ? goBackDirect.goBackApplication.dataWork.workType : null) : null);
+        let dataWork = goBackDirect.goBackApplication.dataWork;
+        let workType, workTime;
+        if (dataWork) {
+            workType = goBackDirect.goBackApplication.dataWork.workType;
+            workTime = goBackDirect.goBackApplication.dataWork.workTime;
+        }
+        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
 
-        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workTime ? goBackDirect.goBackApplication.dataWork.workTime : null) : null);
+        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         self.bindWorkTime(goBackDirect);
@@ -523,7 +533,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
     public register() {
         const self = this;
-        if (self.model.straight == 2 && self.model.bounce) {
+        if (self.model.straight == 2 && self.model.bounce == 2) {
 
             return;
         }
@@ -737,7 +747,7 @@ export class Work {
 
 }
 export class WorkTime extends Work {
-    public time: String = '項目移送';
+    public time: String = '';
     constructor() {
         super();
     }
