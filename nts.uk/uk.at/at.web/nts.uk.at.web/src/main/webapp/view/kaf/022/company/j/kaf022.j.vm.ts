@@ -8,68 +8,119 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         ]);
         supportFrames: KnockoutObservableArray<ItemModel>;
 
+        // 取消の機能の使用する
         cancelAtr: KnockoutObservable<number> = ko.observable(0);
 
+        // 上部コメント.コメント
         workComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         workComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         workComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         workComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         workComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         workComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         goOutPrivateDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutOfficeDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutCompensationDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutUnionDispAtr: KnockoutObservable<number> = ko.observable(1);
+        // 上部コメント.コメント
         goOutComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         goOutComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         goOutComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         goOutComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         goOutComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         goOutComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 上部コメント.コメント
         childCareComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         childCareComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         childCareComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         childCareComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         childCareComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         childCareComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 応援枠の表示件数
         supportFrameDispNO: KnockoutObservable<number> = ko.observable(1);
+        // 上部コメント.コメント
         supportComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         supportComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         supportComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         supportComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         supportComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         supportComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 上部コメント.コメント
         careComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         careComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         careComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         careComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         careComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         careComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 上部コメント.コメント
         breakComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         breakComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         breakComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         breakComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         breakComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         breakComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 上部コメント.コメント
         imageRecordComment1Content: KnockoutObservable<string> = ko.observable("");
+        // 上部コメント.文字色
         imageRecordComment1Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 上部コメント.太字
         imageRecordComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
+        // 下部コメント.コメント
         imageRecordComment2Content: KnockoutObservable<string> = ko.observable("");
+        // 下部コメント.文字色
         imageRecordComment2Color: KnockoutObservable<string> = ko.observable("#000000");
+        // 下部コメント.太字
         imageRecordComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
+        // 出退勤を反映する
         workTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        // 臨時出退勤を反映する
         extraWorkTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        // 外出時間帯を反映する
         goOutTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        // 育児時間帯を反映する
         childCareTimeReflecAtr: KnockoutObservable<number> = ko.observable(1);
+        // 応援開始、終了を反映する
         supportTimeReflecAtr: KnockoutObservable<number> = ko.observable(1);
+        // 介護時間帯を反映する
         careTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        // 休憩時間帯を反映する
         breakTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {

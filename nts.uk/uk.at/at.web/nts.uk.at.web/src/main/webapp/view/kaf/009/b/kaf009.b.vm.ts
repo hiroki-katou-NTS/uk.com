@@ -73,7 +73,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
-		approvalReason: KnockoutObservable<string>;
+        approvalReason: KnockoutObservable<string>;
+        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         applicationTest: any = {
             employeeID: this.$user.employeeId,
             appDate: moment(new Date()).format('YYYY/MM/DD'),
@@ -102,6 +103,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
         ) {
             const vm = this;
+            vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
 			vm.appType = params.appType;
@@ -144,6 +146,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                         lstWorkType: ko.observable(res.lstWorkType),
                         goBackApplication: ko.observable(res.goBackApplication)
                     });
+                    vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
             }).fail(err => {
                 vm.handleError(err);
@@ -169,6 +172,16 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
+			if (vm.model) {
+                if ((vm.model.checkbox3() == true || vm.model.checkbox3() == null) && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 0 || vm.dataFetch().goBackReflect().reflectApplication === 2)) {
+                   // $('#workSelect').focus();
+					let el = document.getElementById('workSelect');
+	                if (el) {
+	                    el.focus();                                                    
+	                }
+                    return;
+                } 
+			}
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
@@ -187,6 +200,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 goBackApp.dataWork = dw;
 
             }
+			
             vm.$blockui("show");
 
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')

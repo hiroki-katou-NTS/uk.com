@@ -2,9 +2,16 @@ module nts.uk.at.view.kaf022.i.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelI {
+        // 遅刻早退報告を行った場合はアラームとしない
         lateEarlyClearAlarmAtr: KnockoutObservable<number>;
+
+        // 取り消す設定
         lateEarlyCancelAtr: KnockoutObservable<number>;
-        itemListI1_2: KnockoutObservableArray<ItemModel>;
+
+        itemListI1_2: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel(1, text("KAF022_75")),
+            new ItemModel(0, text("KAF022_82"))
+        ]);
         itemListI1_3: KnockoutObservableArray<ItemModel> = ko.observableArray([
             new ItemModel(0, text("KAF022_671")),
             new ItemModel(1, text("KAF022_672")),
@@ -15,11 +22,6 @@ module nts.uk.at.view.kaf022.i.viewmodel {
             const self = this;
             self.lateEarlyClearAlarmAtr = ko.observable(0);
             self.lateEarlyCancelAtr = ko.observable(0);
-            self.itemListI1_2 = ko.observableArray([
-                new ItemModel(1, text("KAF022_75")),
-                new ItemModel(0, text("KAF022_82"))
-            ]);
-
 
             $("#fixed-table-i").ntsFixedTable({});
         }

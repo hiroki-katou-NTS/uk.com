@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryFrameTimeOfDaily;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
+import nts.uk.shr.com.time.AttendanceClock;
 
 
 /** 日別実績の総労働時間 */
@@ -98,6 +100,21 @@ public class TotalWorkingTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_O, jpPropertyName = HOLIDAY + ADD)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
+
+	/** インターバル時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = LAYOUT_P, jpPropertyName = INTERVAL + TIME)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int intervalTime;
+
+	/** インターバル出勤時刻: 勤怠時間 */
+	@AttendanceItemLayout(layout = LAYOUT_Q, jpPropertyName = INTERVAL + ATTENDANCE)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int intervalAttendanceClock;
+
+	/** 計算差異時間 */
+	@AttendanceItemLayout(layout = LAYOUT_R, jpPropertyName = CALC + DIFF)
+	@AttendanceItemValue(type = ValueType.TIME)
+	private int calcDiffTime;
 	
 	@Override
 	public TotalWorkingTimeDto clone() {
@@ -113,7 +130,10 @@ public class TotalWorkingTimeDto implements ItemConst {
 										raisingSalaryTime == null ? null : raisingSalaryTime.clone(), 
 										dailyOfHoliday == null ? null : dailyOfHoliday.clone(), 
 										workTimes,
-										vacationAddTime);
+										vacationAddTime,
+										intervalTime,
+										intervalAttendanceClock,
+										calcDiffTime);
 	}
 	
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {
@@ -146,7 +166,10 @@ public class TotalWorkingTimeDto implements ItemConst {
 //						null,
 						HolidayDailyPerformDto.from(domain.getHolidayOfDaily()), 
 						domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(),
-						domain.getVacationAddTime() == null ? null : domain.getVacationAddTime().valueAsMinutes());
+						domain.getVacationAddTime() == null ? null : domain.getVacationAddTime().valueAsMinutes(),
+						domain.getIntervalTime().getIntervalTime().v(),
+						domain.getIntervalTime().getIntervalAttendance().v(),
+						domain.getCalcDiffTime().v());
 	}
 
 	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
@@ -169,14 +192,12 @@ public class TotalWorkingTimeDto implements ItemConst {
 											createTimeWithCalc(c.getLateTime()),
 											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getBreakUse()),
-											new IntervalExemptionTime(new AttendanceTime(0), null,
-												toAttendanceTime(c.getIntervalExemptionTime())))),
+											new IntervalExemptionTime(toAttendanceTime(c.getIntervalExemptionTime())))),
 				ConvertHelper.mapTo(leaveEarlyTime, (c) -> new LeaveEarlyTimeOfDaily(
 											createTimeWithCalc(c.getTime()),
 											createTimeWithCalc(c.getDeductionTime()), new WorkNo(c.getNo()),
 											createTimeValication(c.getValicationUseTime()),
-											new IntervalExemptionTime(AttendanceTime.ZERO, AttendanceTime.ZERO,
-													toAttendanceTime(c.getIntervalExemptionTime())))),
+											new IntervalExemptionTime(toAttendanceTime(c.getIntervalExemptionTime())))),
 				breakTimeSheet == null ? BreakTimeSheetDailyPerformDto.defaultValue() : breakTimeSheet.toDmain(), 
 				ConvertHelper.mapTo(goOutTimeSheet, c -> c.toDomain()), 
 				raisingSalaryTime == null ? new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(), new ArrayList<>()) 
@@ -186,11 +207,13 @@ public class TotalWorkingTimeDto implements ItemConst {
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.toDomain(),
-				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain());
+				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
+				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
 		
 		if(vacationAddTime != null) {
 			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
 		}
+		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
 		return total;
 	}
 
