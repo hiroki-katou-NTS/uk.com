@@ -194,8 +194,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				}
 			}
 
-			let timeZoneWithWorkNoLst = [timeZone1];
-			if (timeZone2 !== null) {
+			let timeZoneWithWorkNoLst = [];
+
+			if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+				timeZoneWithWorkNoLst.push(timeZone1);
+			}
+			if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles) {
 				timeZoneWithWorkNoLst.push(timeZone2);
 			}
 
@@ -233,7 +237,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			vm.$validate('#kaf000-a-component4 .nts-input', '.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			// if()
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
 					if (isValid) {
 						return true;
