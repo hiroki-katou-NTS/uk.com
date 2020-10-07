@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class DateInfoDuringThePeriodDto {
-
+	
 	private boolean isHoliday;
 
 	private boolean isSpecificDay;

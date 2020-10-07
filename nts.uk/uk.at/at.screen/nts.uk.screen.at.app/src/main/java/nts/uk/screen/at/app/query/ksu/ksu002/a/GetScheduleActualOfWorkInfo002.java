@@ -56,7 +56,7 @@ public class GetScheduleActualOfWorkInfo002 {
 			listDataSchedule.removeAll(listToRemove);
 			listDataSchedule.addAll(listToAdd);
 		}
-		
+
 		return listDataSchedule;
 	}
 

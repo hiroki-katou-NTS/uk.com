@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.input.GetDateInfoDuringThePeriodInput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -77,6 +78,8 @@ public class GetWorkActualOfWorkInfo002 {
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
+	@Inject
+	private GetDateInfoDuringThePeriod getDateInfoDuringThePeriod;
 	
 	
 	public List<WorkScheduleWorkInforDto> getDataActualOfWorkInfo(DisplayInWorkInfoInput param) {
@@ -182,6 +185,13 @@ public class GetWorkActualOfWorkInfo002 {
 						}
 					}
 
+					// KSU002
+					List<String> sids = new ArrayList<>();
+					sids.add(AppContexts.user().employeeId());
+					GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
+					param1.setGeneralDate(daily.getYmd());
+					param1.setSids(sids);
+					
 					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
 							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
@@ -203,6 +213,7 @@ public class GetWorkActualOfWorkInfo002 {
 							.workHolidayCls(null)
 //							.isEdit(false) //
 //							.isActive(false) //
+							.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 							.build();
 
 					listWorkScheduleWorkInfor.add(dto);

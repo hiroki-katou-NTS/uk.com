@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EditStateOfDailyAttdDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.input.GetDateInfoDuringThePeriodInput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,16 +76,16 @@ public class GetScheduleOfWorkInfo002 {
 	private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	@Inject
+	private GetDateInfoDuringThePeriod getDateInfoDuringThePeriod;
 
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(DisplayInWorkInfoInput param) {
 
@@ -143,6 +144,14 @@ public class GetScheduleOfWorkInfo002 {
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			if (!value.isPresent()) {
 				// step 5.2
+				
+				// KSU002
+				List<String> sids = new ArrayList<>();
+				sids.add(AppContexts.user().employeeId());
+				GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
+				param1.setGeneralDate(key.getDate());
+				param1.setSids(sids);
+				
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
 						.date(key.getDate()).haveData(false).achievements(false).confirmed(false).needToWork(needToWork)
 						.supportCategory(SupportCategory.NOT_CHEERING.value).workTypeCode(null).workTypeName(null)
@@ -150,6 +159,7 @@ public class GetScheduleOfWorkInfo002 {
 						.startTime(null).startTimeEditState(null).endTime(null).endTimeEditState(null)
 //						.workHolidayCls(null).isEdit(true) //
 //						.isActive(true) //
+						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
 
 //				// ※Abc1
@@ -250,6 +260,13 @@ public class GetScheduleOfWorkInfo002 {
 				Optional<EditStateOfDailyAttd> endTimeEditStatus = workSchedule.getLstEditState().stream()
 						.filter(i -> i.getAttendanceItemId() == 4).findFirst();
 
+				// KSU002
+				List<String> sids = new ArrayList<>();
+				sids.add(AppContexts.user().employeeId());
+				GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
+				param1.setGeneralDate(key.getDate());
+				param1.setSids(sids);
+				
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
 						.date(key.getDate()).haveData(true).achievements(false)
 						.confirmed(workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value)
@@ -280,6 +297,7 @@ public class GetScheduleOfWorkInfo002 {
 										: null)
 //						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null).isEdit(true) //
 //						.isActive(true) //
+						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
 
 //				// ※Abc1

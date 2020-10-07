@@ -69,5 +69,7 @@ public class WorkScheduleWorkInforDto {
 	
 	// 出勤休日区分
 	public Integer workHolidayCls;
+	
+	public DateInfoDuringThePeriodDto dateInfoDuringThePeriod;
 
 }

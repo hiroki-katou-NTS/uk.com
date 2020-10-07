@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
@@ -62,60 +61,66 @@ public class GetDateInfoDuringThePeriod {
 	@Inject
 	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
 
-	public List<DateInfoDuringThePeriodDto> get(GetDateInfoDuringThePeriodInput param) {
+	public DateInfoDuringThePeriodDto get(GetDateInfoDuringThePeriodInput param) {
 
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
-		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
-		List<GeneralDate> dates = period.datesBetween();
-		List<DateInfoDuringThePeriodDto> result = new ArrayList<>();
-		
+		// DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		// List<DateInformation> listDateInfo = new
+		// ArrayList<DateInformation>();
+		// List<GeneralDate> dates = period.datesBetween();
+		DateInfoDuringThePeriodDto result = new DateInfoDuringThePeriodDto();
+
 		RequireImpl require = new RequireImpl(workplaceSpecificDateRepo, companySpecificDateRepo, workplaceEventRepo,
 				companyEventRepo, publicHolidayRepo, specificDateItemRepo);
-		
-		for (GeneralDate generalDate : dates) {
-			List<AffWorkplaceHistory> workplaceHistories = affWorkplaceHistoryRepo.findByEmployees(param.sids, generalDate);
-			List<String> histIds = new ArrayList<>();
-			
-			for (AffWorkplaceHistory affWorkplaceHistory : workplaceHistories) {
-				for (String histId : affWorkplaceHistory.getHistoryIds()) {
-					histIds.add(histId);
-				}
-			}
 
-			if (histIds.isEmpty()) {
-				continue;
-			}
+		List<AffWorkplaceHistory> workplaceHistories = affWorkplaceHistoryRepo.findByEmployees(param.sids,
+				param.generalDate);
+		List<String> histIds = new ArrayList<>();
 
-			List<AffWorkplaceHistoryItem> items = affWorkplaceHistoryItemRepo.findByHistIds(histIds);
-
-			List<String> workplaceIds = items.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
-			
-			if (workplaceIds.isEmpty()){
-				continue;
+		for (AffWorkplaceHistory affWorkplaceHistory : workplaceHistories) {
+			for (String histId : affWorkplaceHistory.getHistoryIds()) {
+				histIds.add(histId);
 			}
-			
-			List<DateInformation> list = workplaceIds.stream().map(s -> {
-				TargetOrgIdenInfor idenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(s);
-				DateInformation dateInformation = DateInformation.create(require, generalDate,
-						idenInfor);
-				return dateInformation;
-			}).collect(Collectors.toList());
-			
-			listDateInfo.addAll(list);
 		}
 
-		result = listDateInfo.stream().map(m -> {
-			DateInfoDuringThePeriodDto dto = new DateInfoDuringThePeriodDto();
-			dto.setHoliday(m.isHoliday());
-			dto.setListSpecDayNameCompany(m.getListSpecDayNameCompany().stream().map(c -> c.v()).collect(Collectors.toList()));
-			dto.setListSpecDayNameWorkplace(m.getListSpecDayNameWorkplace().stream().map(c -> c.v()).collect(Collectors.toList()));
-			dto.setOptCompanyEventName(m.getOptCompanyEventName().map(c -> c.v()).orElse(null));
-			dto.setOptWorkplaceEventName(m.getOptWorkplaceEventName().map(c -> c.v()).orElse(null));
-			dto.setSpecificDay(m.isSpecificDay());
-			
-			return dto;
-		}).collect(Collectors.toList());
-		
+		if (histIds.isEmpty()) {
+			return result;
+		}
+
+		List<AffWorkplaceHistoryItem> items = affWorkplaceHistoryItemRepo.findByHistIds(histIds);
+
+		List<String> workplaceIds = items.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
+
+		if (workplaceIds.isEmpty()) {
+			return result;
+		}
+
+		// List<DateInformation> list = workplaceIds.stream().map(s -> {
+		// TargetOrgIdenInfor idenInfor =
+		// TargetOrgIdenInfor.creatIdentifiWorkplace(s);
+		// DateInformation dateInformation = DateInformation.create(require,
+		// param.generalDate,
+		// idenInfor);
+		// return dateInformation;
+		// }).collect(Collectors.toList());
+
+		TargetOrgIdenInfor idenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workplaceIds.get(0));
+
+		DateInformation information = DateInformation.create(require, param.generalDate, idenInfor);
+
+		// listDateInfo.addAll(list);
+
+		// result = listDateInfo.stream().map(m -> {
+		result.setHoliday(information.isHoliday());
+		result.setListSpecDayNameCompany(
+				information.getListSpecDayNameCompany().stream().map(c -> c.v()).collect(Collectors.toList()));
+		result.setListSpecDayNameWorkplace(
+				information.getListSpecDayNameWorkplace().stream().map(c -> c.v()).collect(Collectors.toList()));
+		result.setOptCompanyEventName(information.getOptCompanyEventName().map(c -> c.v()).orElse(null));
+		result.setOptWorkplaceEventName(information.getOptWorkplaceEventName().map(c -> c.v()).orElse(null));
+		result.setSpecificDay(information.isSpecificDay());
+
+		// }).collect(Collectors.toList());
+
 		return result;
 	}
 
