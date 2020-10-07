@@ -198,7 +198,8 @@ public class ExitStampIncorrectOrderCheck {
 			TimeWithDayAttr secondAttendanceTime = attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().isPresent()?
 					attendanceLeavingGates.get(0).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondAttendanceTime != null) {
-				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
+				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1
+						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().get()
 								.getStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().get()
@@ -217,7 +218,8 @@ public class ExitStampIncorrectOrderCheck {
 			TimeWithDayAttr secondLeavingTime = attendanceLeavingGates.get(1).getLeaving().get().getTimeDay().getTimeWithDay().isPresent()?
 					attendanceLeavingGates.get(0).getLeaving().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondLeavingTime != null) {
-				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
+				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1 
+						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp()
 								.isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp()
