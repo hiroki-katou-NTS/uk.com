@@ -8,6 +8,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 
 public interface EmployeeUnregisterApprovalRoot {
 	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.L:未登録社員リスト.アルゴリズム."01.承認ルート未登録の社員を取得する"
 	 * 01.承認ルート未登録の社員を取得する
 	 * @param companyId
 	 * @param baseDate
