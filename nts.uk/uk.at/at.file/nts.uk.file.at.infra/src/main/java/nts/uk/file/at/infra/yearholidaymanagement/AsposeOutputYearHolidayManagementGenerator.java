@@ -199,6 +199,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		if(EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
 			// １年経過時点
 			// 所属情報取得用の基準日を返す - Returns the reference date for acquiring affiliation information
+			// TODO : cần check lại xử lý
 			returnDate = period.end().addYears(-1);
 		}
 		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.CURRENT)) {

@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -22,10 +20,12 @@ public interface GetAnnualHolidayGrantInfor {
 	 * @param referenceAtr 参照先区分
 	 * @param ym 指定年月
 	 * @param ymd 基準日
+	 * @param periodOutput 対象期間区分（現在/１年経過時点/過去）
+	 * @param fromTo １年経過用期間(From-To)
 	 * @return 年休付与情報
 	 */
-	Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
-			GeneralDate ymd);
+	GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
+			GeneralDate ymd, int periodOutput, DatePeriod fromTo);
 	/**
 	 * [NO.551]期間内の年休使用明細を取得する
 	 * @param cid
