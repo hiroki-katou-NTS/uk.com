@@ -321,11 +321,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
             return;
         }
         self.isChangeDate = false;
-        let dataWork = goBackDirect.goBackApplication.dataWork;
         let workType, workTime;
-        if (dataWork) {
-            workType = goBackDirect.goBackApplication.dataWork.workType;
-            workTime = goBackDirect.goBackApplication.dataWork.workTime;
+        if (goBackDirect.goBackApplication) {
+            let dataWork = goBackDirect.goBackApplication.dataWork;
+            if (dataWork) {
+                workType = goBackDirect.goBackApplication.dataWork.workType;
+                workTime = goBackDirect.goBackApplication.dataWork.workTime;
+            }
         }
         self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
@@ -366,6 +368,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     workTime: self.model.workTime.code
                 };
             }
+        } else {
+            self.appGoBackDirect.isChangedWork = null;
         }
         if (!self.mode) {
             self.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;
@@ -409,7 +413,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
-                self.$mask('hide');
                 self.isChangeDate = true;
                 self.dataOutput = res.data;
                 self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
@@ -425,13 +428,18 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         }
                     });
                     if (recordDate == 0) {
+                        self.$mask('hide');
+
                         return false;
                     }
+                    self.$mask('hide');
 
                     return true;
                 }
             
                 if (_.isNull(opErrorFlag)) {
+                    self.$mask('hide');
+
                     return true;    
                 }
                 switch (opErrorFlag) {
@@ -448,6 +456,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         break;
                 }
                 if (_.isEmpty(msgID)) { 
+                    self.$mask('hide');
+
                     return true;
                 }
                 self.$modal.error({ messageId: msgID }).then(() => {
@@ -455,6 +465,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         self.$goto('ccg008a');    
                     }    
                 });
+                self.$mask('hide');
 
                 return false;
                 
