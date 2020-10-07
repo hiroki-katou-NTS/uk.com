@@ -46,14 +46,14 @@ public class GetWorkCycle {
         }
 
         Map<String , String> workTypes = new LinkedHashMap<>();
-        val listWrkTypes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+        val listWrkTypes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTypeCode().v()).distinct().collect(Collectors.toList());
         if (!listWrkTypes.isEmpty()) {
             workTypes = this.workTypeRepo.getCodeNameWorkType(cid, listWrkTypes);
         }
 
         Map<String , String> workTimeItems = new LinkedHashMap<>();
         val listWrkTimes = workingCycle.get().getInfos().stream().map(i->i.getWorkInformation().getWorkTimeCodeNotNull()).collect(Collectors.toList());
-        val listWrkTimeStr = listWrkTimes.stream().filter(i->i.isPresent()).map(i->i.get().v()).collect(Collectors.toList());
+        val listWrkTimeStr = listWrkTimes.stream().filter(i->i.isPresent()).map(i->i.get().v()).distinct().collect(Collectors.toList());
         if (!listWrkTimeStr.isEmpty()) {
             workTimeItems = this.workTimeSettingRepository.getCodeNameByListWorkTimeCd(cid, listWrkTimeStr);
         }
