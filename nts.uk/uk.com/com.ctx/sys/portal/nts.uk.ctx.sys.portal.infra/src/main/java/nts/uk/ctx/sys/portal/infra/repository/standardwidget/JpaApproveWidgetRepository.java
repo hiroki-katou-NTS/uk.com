@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardwidget;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -18,4 +20,18 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 				.getSingle().map(SptmtApproveWidget::toDomain).orElse(null);
 	}
 
+	@Override
+	public void update(StandardWidget standardWidget, String companyId) {
+
+		Optional<SptmtApproveWidget> sptmtApproveWidget = this.queryProxy()
+				.query(FIND_BY_COMPANY, SptmtApproveWidget.class).setParameter("companyId", companyId).getSingle();
+
+		if (sptmtApproveWidget.isPresent()) {
+			SptmtApproveWidget approveWidgetEntity = sptmtApproveWidget.get();
+
+			SptmtApproveWidget.toEntity(approveWidgetEntity, standardWidget);
+			
+			this.commandProxy().update(approveWidgetEntity);
+		}
+	}
 }

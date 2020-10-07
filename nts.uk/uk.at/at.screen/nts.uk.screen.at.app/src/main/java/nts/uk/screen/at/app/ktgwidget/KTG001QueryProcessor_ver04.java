@@ -13,13 +13,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.management.RuntimeErrorException;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTrackRecordApprovalDay;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTargetItemDto;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTrackRecord;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -32,9 +34,12 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetReposit
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.TopPageDisplayYearMonthEnum;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataExecutionResultDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriod;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -64,7 +69,10 @@ public class KTG001QueryProcessor_ver04 {
 	private ApplicationRepository applicationRepository_New;
 
 	@Inject
-	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
+	private CheckTrackRecordApprovalDay checkTrackRecordApprovalDay;
+
+	@Inject
+	private CheckTrackRecord checkTrackRecord;
 
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.アルゴリズム.承認すべきデータのウィジェットを起動する
@@ -72,16 +80,21 @@ public class KTG001QueryProcessor_ver04 {
 	 * @param companyId
 	 * @param employeeId
 	 * @param yearMonth
+	 * @param closureId
 	 * @return
 	 */
-	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(String companyId, String employeeId,
-			int yearMonth) {
+	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, int closureId) {
+		
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		
 		ApprovedDataExecutionResultDto approvedDataExecutionResult = new ApprovedDataExecutionResultDto();
 		List<ClosureIdPresentClosingPeriod> closingPeriods = new ArrayList<>();
 
 		// 1. 指定するウィジェットの設定を取得する
 		StandardWidget standardWidget = approveWidgetRepository.findByCompanyId(companyId);
-
+		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
+		
 		// 2. 全ての締めの処理年月と締め期間を取得する
 		closingPeriods = getClosureIdPresentClosingPeriods(companyId);
 
@@ -97,6 +110,7 @@ public class KTG001QueryProcessor_ver04 {
 
 		if (applicationDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
 			approvedDataExecutionResult.setAppDisplayAtr(false);
+
 		} else {
 
 			// 承認すべき申請の対象期間を取得する
@@ -113,11 +127,59 @@ public class KTG001QueryProcessor_ver04 {
 
 		if (dailyPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
 			approvedDataExecutionResult.setDayDisplayAtr(false);
+
 		} else {
 
 			// トップページの設定により対象年月と締めIDを取得する
-			// ユーザー固有情報「トップページ表示年月」を取得する
-			List<CheckTarget> listCheckTargetItem = new ArrayList<>();
+			CheckTarget checkTarget = getCheckTarget(closingPeriods, closureId, yearMonth);
+
+			// 承認すべき日の実績があるかチェックする
+			Boolean dayDisplayAtr = checkTrackRecordApprovalDay.checkTrackRecordApprovalDayNew(companyId, employeeId,
+					checkTarget);
+
+			approvedDataExecutionResult.setDayDisplayAtr(dayDisplayAtr);
+		}
+
+		// 3.3. 月別実績の承認すべきデータの取得
+		ApprovedAppStatusDetailedSetting monthPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
+				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA.value)
+				.collect(Collectors.toList()).get(0);
+
+		if (monthPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
+			approvedDataExecutionResult.setMonthDisplayAtr(false);
+
+		} else {
+
+			// トップページの設定により対象年月と締めIDを取得する
+			CheckTarget checkTarget = getCheckTarget(closingPeriods, closureId, yearMonth);
+
+			// 承認すべき月の実績があるかチェックする
+			List<CheckTargetItemDto> listCheckTargetItemExport = new ArrayList<>();
+
+			CheckTargetItemDto checkTargetItemDto = new CheckTargetItemDto(checkTarget.getClosureId(),
+					checkTarget.getYearMonth());
+			listCheckTargetItemExport.add(checkTargetItemDto);
+
+			Boolean monthDisplayAtr = checkTrackRecord.checkTrackRecord(companyId, employeeId,
+					listCheckTargetItemExport);
+
+			approvedDataExecutionResult.setMonthDisplayAtr(monthDisplayAtr);
+		}
+		
+		//3.4. 4.36協定申請の承認すべきデータの取得
+		
+		ApprovedAppStatusDetailedSetting argPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
+				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA.value)
+				.collect(Collectors.toList()).get(0);
+
+		if (argPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
+			approvedDataExecutionResult.setAgrDisplayAtr(false);
+
+		} else {
+			//承認すべき申請の対象期間を取得する
+			PresentClosingPeriodImport periodImport = getPeriod(closingPeriods);
+		
+			//承認すべき36協定があるかチェックする
 
 		}
 
@@ -130,6 +192,15 @@ public class KTG001QueryProcessor_ver04 {
 				.setApprovedAppStatusDetailedSettings(standardWidget.getApprovedAppStatusDetailedSettingList());
 
 		return approvedDataExecutionResult;
+	}
+	
+	/**
+	 * 
+	 * @param standardWidget
+	 */
+	public void updateSetting(StandardWidget standardWidget) {
+		
+		approveWidgetRepository.update(standardWidget, AppContexts.user().companyId());
 	}
 
 	/**
@@ -214,6 +285,32 @@ public class KTG001QueryProcessor_ver04 {
 				.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND).collect(Collectors.toList());
 
 		return !listApplicationFilter.isEmpty();
+	}
+
+	/**
+	 * トップページの設定により対象年月と締めIDを取得する
+	 */
+	public CheckTarget getCheckTarget(List<ClosureIdPresentClosingPeriod> closingPeriods, int closureId,
+			Integer yearMonth) {
+
+		// 処理年月
+		YearMonth processingYm = closingPeriods.stream().filter(c -> c.getClosureId() == closureId)
+				.map(m -> m.getCurrentClosingPeriod().getProcessingYm()).collect(Collectors.toList()).get(0);
+
+		// トップページの設定により対象年月と締めIDを取得する
+		// ユーザー固有情報「トップページ表示年月」を取得する
+		if (EnumAdaptor.valueOf(yearMonth,
+				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.NEXT_MONTH_DISPLAY) {
+			return new CheckTarget(closureId, processingYm);
+
+		} else if (EnumAdaptor.valueOf(yearMonth,
+				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
+			return new CheckTarget(closureId, processingYm.addMonths(1));
+
+		} else {
+			return new CheckTarget(0, null);
+		}
+
 	}
 
 	/**

@@ -24,9 +24,11 @@ public class StandardWidget extends TopPagePart {
 	// 承認すべき申請状況の詳細設定
 	List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList;
 
+	@Setter
 	// 標準ウィジェット種別
 	StandardWidgetType standardWidgetType;
 
+	@Getter
 	// 申請状況の詳細設定
 	List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList;
 	

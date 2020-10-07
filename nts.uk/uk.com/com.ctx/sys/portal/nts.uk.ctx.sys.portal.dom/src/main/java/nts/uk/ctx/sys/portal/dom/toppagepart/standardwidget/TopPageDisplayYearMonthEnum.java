@@ -11,13 +11,13 @@ public enum TopPageDisplayYearMonthEnum {
 	/**
 	 * 1. 当月表示
 	 */
-	NEXT_MONTH_DISPLAY(0),
+	NEXT_MONTH_DISPLAY(1),
 	
 
 	/**
-	 * 2. 翌月表示
+	 * 2. 翌月表示s
 	 */
-	THIS_MONTH_DISPLAY(0);
+	THIS_MONTH_DISPLAY(2);
 	
 	public final int value;
 
