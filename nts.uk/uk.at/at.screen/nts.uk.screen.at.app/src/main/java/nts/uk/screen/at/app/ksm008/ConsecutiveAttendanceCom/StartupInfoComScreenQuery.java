@@ -2,9 +2,9 @@ package nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceCom;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsAttComRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsecutiveAttendanceCompany;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.SubCondition;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,14 +22,14 @@ public class StartupInfoComScreenQuery {
     private MaxDaysOfConsAttComRepository maxDaysOfConsAttComRepo;
 
     @Inject
-    private AlarmCheckConditionScheduleRepository alarmCheckConditionScheduleRepo;
+    private AlarmCheckConditionsQuery alarmCheckConditionsQuery;
 
     /**
      * 初期起動の情報を取得する
      */
     public ConsecutiveAttendanceComDto getStartupInfoCom() {
         AlarmCheckConditionScheduleCode code = new AlarmCheckConditionScheduleCode("06");
-        AlarmCheckConditionSchedule alarmCheckConditionSchedule = getComInfo(code);
+        AlarmCheckConditionSchedule alarmCheckConditionSchedule = alarmCheckConditionsQuery.getCodeNameDescription(code);
 
         Optional<MaxDaysOfConsecutiveAttendanceCompany> maxConsDays = maxDaysOfConsAttComRepo.get(AppContexts.user().companyId());
 
@@ -49,16 +49,5 @@ public class StartupInfoComScreenQuery {
                 explanation.toString(),
                 maxConsDays.isPresent() ? maxConsDays.get().getNumberOfDays().getNumberOfDays().v() : null
         );
-    }
-
-    /**
-     * コードと名称と説明を取得する
-     *
-     * @return 予定のアラームチェック条件
-     */
-    public AlarmCheckConditionSchedule getComInfo(AlarmCheckConditionScheduleCode code) {
-        AlarmCheckConditionSchedule alarmCheckConditionSchedule = alarmCheckConditionScheduleRepo.get(AppContexts.user().contractCode(), AppContexts.user().companyId(), code);
-
-        return alarmCheckConditionSchedule;
     }
 }

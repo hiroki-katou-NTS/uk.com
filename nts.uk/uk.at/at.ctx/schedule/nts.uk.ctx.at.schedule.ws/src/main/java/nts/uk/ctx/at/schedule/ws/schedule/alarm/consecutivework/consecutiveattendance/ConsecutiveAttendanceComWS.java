@@ -22,13 +22,13 @@ public class ConsecutiveAttendanceComWS {
     private DeleteConsecutiveAttendanceComCommandHandler deleteConsecutiveAttendanceComHandler;
 
     @POST
-    @Path("register")
+    @Path("com/register")
     public void registerConsecutiveAttendanceCom(RegisterConsecutiveAttendanceComDto command){
         registerConsecutiveAttendanceComHandler.handle(command);
     }
 
     @POST
-    @Path("delete")
+    @Path("com/delete")
     public void deleteConsecutiveAttendanceCom(DeleteConsecutiveAttendanceComDto command){
 
         deleteConsecutiveAttendanceComHandler.handle(command);

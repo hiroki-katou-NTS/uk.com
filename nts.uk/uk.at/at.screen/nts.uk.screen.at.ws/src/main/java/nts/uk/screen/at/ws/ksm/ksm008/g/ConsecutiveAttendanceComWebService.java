@@ -17,6 +17,6 @@ public class ConsecutiveAttendanceComWebService {
     @POST
     @Path("getStartupInfoCom")
     public ConsecutiveAttendanceComDto getStartupInfoCom() {
-        return this.startupInfoComScreenQuery.getStartupInfoCom();
+        return startupInfoComScreenQuery.getStartupInfoCom();
     }
 }
