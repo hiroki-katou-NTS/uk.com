@@ -2,8 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
 /**
@@ -13,8 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  * @author kumiko_otake
  *
  */
-@Getter
-@RequiredArgsConstructor
+@Value
 public class BreakTimeZone {
 
 	/** 休憩時間帯を固定にする **/

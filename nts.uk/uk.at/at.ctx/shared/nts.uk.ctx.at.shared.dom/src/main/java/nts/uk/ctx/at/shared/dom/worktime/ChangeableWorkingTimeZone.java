@@ -3,8 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 
 /**
@@ -14,8 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
  * @author kumiko_otake
  *
  */
-@Getter
-@RequiredArgsConstructor
+@Value
 public class ChangeableWorkingTimeZone {
 
 	/** 1日の勤務時間帯リスト **/

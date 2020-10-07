@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
@@ -15,8 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author kumiko_otake
  *
  */
-@Getter
-@RequiredArgsConstructor
+@Value
 public class ChangeableWorkingTimeZonePerNo {
 
 	/** 勤務NO **/
