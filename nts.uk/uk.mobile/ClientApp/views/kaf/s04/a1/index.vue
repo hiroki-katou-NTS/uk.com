@@ -1,8 +1,8 @@
 <template>
 <div class="kafs04a1">
-    <h3>Hello {{title | i18n}} component!</h3>
-    <nts-text-editor
-        name='title'
-        v-model='title' />
+    <kaf-s00-d
+    v-if="kafS00DParams"
+    v-bind:params="kafS00DParams"
+    />
 </div>
 </template>

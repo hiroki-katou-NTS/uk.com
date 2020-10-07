@@ -54,6 +54,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public opAppReason: string = null;
     public reasonCD: number = 0;
     public prePostArt: number = 0;
+    public mode: boolean = true;
 
     public created() {
         const vm = this;
