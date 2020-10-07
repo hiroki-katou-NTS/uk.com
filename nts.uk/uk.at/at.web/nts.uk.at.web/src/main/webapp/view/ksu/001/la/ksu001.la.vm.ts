@@ -120,9 +120,7 @@ module nts.uk.at.view.ksu001.la {
             private getEmpOrgInfo(): void {
                 const self = this;
                 let request:any = {};
-                let itemLeft: any = {} ;          
-                // let teamNameLeft: _.List<any> = [];
-                // let listTeamNameLeftTemp = "";
+                let itemLeft: any = {};  
                 request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
                 service.findEmpOrgInfo(request).done((dataAll: Array<ItemModel>)=>{
@@ -134,19 +132,7 @@ module nts.uk.at.view.ksu001.la {
                     if(self.selectedCode()){
                         itemLeft = _.filter(dataAll, x =>{
                             return x.teamCd != self.selectedCode();
-                        });
-                        // _.each(itemLeft, x =>{
-                        //     teamNameLeft.push(x.teamName);
-                        // });
-                        // let teamNameLeftTemp = _.uniq(teamNameLeft);
-                        // _.each(teamNameLeft, x =>{
-                        //     listTeamNameLeftTemp = listTeamNameLeftTemp + x.teamName + ", ";
-                        // });
-
-                        // listTeamNameLeftTemp.slice(0,15);
-                        // listTeamNameLeftTemp = listTeamNameLeftTemp + "...";
-                        // self.listTeamNameLeft(listTeamNameLeftTemp);
-                        
+                        });             
                         self.itemsLeft(_.sortBy(itemLeft, [function (item: { employeeCd: any; }) { return item.employeeCd; }]));
                         self.itemsRight(_.sortBy(_.difference(dataAll, itemLeft), [function (item: { employeeCd: any; }) { return item.employeeCd; }]));
                     } else {
@@ -251,8 +237,8 @@ module nts.uk.at.view.ksu001.la {
 
                 // get value and index from gridlist
                 let idAs = $('#emp-list-left').ntsGridList("getSelected");               
-                let itemChosen: _.Dictionary<any> = [];
-                let employeeCdChosen: any[] = [];
+                let itemChosen = [];
+                let employeeCdChosen = [];
                 _.each(idAs, id => {
                     // get item by index from gridlist
                     itemChosen.push(empListLeft[id.index]);
@@ -272,10 +258,12 @@ module nts.uk.at.view.ksu001.la {
 
                 // get value and index from gridlist
                 let idBs = $('#emp-list-right').ntsGridList("getSelected");
-                let itemChosen: _.List<any> = [];
-                let employeeCdChosen: any[] = [];
+                let itemChosen = [];
+                let employeeCdChosen = [];
                 _.each(idBs, id => {
-                    empListRight[id.index].teamName = nts.uk.resource.getText('KSU001_3223');
+                    if( empListRight[id.index].teamCd == vm.selectedCode()){
+                        empListRight[id.index].teamName = nts.uk.resource.getText('KSU001_3223');
+                    }                    
                     itemChosen.push(empListRight[id.index]);
                     employeeCdChosen.push(id.id);
                 });

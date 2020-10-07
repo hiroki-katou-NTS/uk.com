@@ -331,14 +331,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	@Override
 	public void delete(String sid, DatePeriod datePeriod) {
-		datePeriod.forEach(ymd -> {
-			Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
-			if (optWorkSchedule.isPresent()) {
-				KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
-						optWorkSchedule.get().getYmd());
-				this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
-			}
-		});
+		String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd >= :ymdStart " + " and o.pk.ymd <= :ymdEnd ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+				.setParameter("ymdStart",datePeriod.start()).setParameter("ymdEnd", datePeriod.end()).executeUpdate();
 	}
 
 	@Override

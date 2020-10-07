@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;

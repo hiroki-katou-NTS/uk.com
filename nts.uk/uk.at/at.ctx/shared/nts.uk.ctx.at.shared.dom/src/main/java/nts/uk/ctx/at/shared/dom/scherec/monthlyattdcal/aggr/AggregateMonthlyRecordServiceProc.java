@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
@@ -63,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysO
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
