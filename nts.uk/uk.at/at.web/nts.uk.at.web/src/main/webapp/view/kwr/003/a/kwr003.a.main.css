@@ -1,0 +1,39 @@
+.kwr-003 .fixed-flex-layout-left {
+  margin-right: 10px;
+  margin-left: 50px;
+}
+
+.kwr-003 .fixed-flex-layout-right {
+  width: 600px;
+}
+
+.kwr-003 .panel .panel-row {
+  display: flex;
+}
+
+.kwr-003 .panel .panel-row .row-left {
+  flex: 1;
+}
+.kwr-003 .panel .panel-row .row-right {
+  flex: 2;
+  display: flex;
+}
+.kwr-003 .panel .row-right .radios-group {
+  flex: 1;
+  padding-top: 10px;
+}
+.kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
+  margin-bottom: 16px;
+}
+.kwr-003 .panel .text-box-button .item {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+.kwr-003 .panel .text-box-button .item .ui-igcombo-wrapper {
+  margin-right: 10px;
+}
+
+.kwr-003 .panel .row-right .row-switch-button {
+  padding-left: 45px;
+}
