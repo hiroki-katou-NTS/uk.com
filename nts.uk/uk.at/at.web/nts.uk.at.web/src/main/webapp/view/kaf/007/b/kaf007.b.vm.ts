@@ -97,9 +97,9 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
             vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
 
-            if(params.reflectWorkChangeAppDto) {
-                vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
-                vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
+            if(appWorkChangeDispInfo.reflectWorkChangeAppDto) {
+                vm.reflectWorkChange.companyId = appWorkChangeDispInfo.reflectWorkChangeAppDto.companyId;
+                vm.reflectWorkChange.whetherReflectAttendance(appWorkChangeDispInfo.reflectWorkChangeAppDto.whetherReflectAttendance);
             }
             vm.getWorkDispName(appWorkChangeDispInfo.workTypeLst,
                 appWorkChangeParam.opWorkTypeCD,
@@ -183,8 +183,12 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 				}
 			}
 
-			let timeZoneWithWorkNoLst = [timeZone1];
-			if(timeZone2 !== null) {
+            let timeZoneWithWorkNoLst = [];
+            
+            if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+                timeZoneWithWorkNoLst.push(timeZone1);
+            }
+			if(timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles) {
 				timeZoneWithWorkNoLst.push(timeZone2);
 			}
 
@@ -206,7 +210,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 			}
             
             vm.$blockui( "show" );
-			return vm.$validate('#kaf000-a-component4 .nts-input', '.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
                     if ( isValid ) {
                         return true;
