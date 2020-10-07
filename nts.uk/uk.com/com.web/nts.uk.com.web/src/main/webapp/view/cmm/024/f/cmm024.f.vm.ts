@@ -141,6 +141,11 @@ module nts.uk.com.view.cmm024.f {
 		 * */
 		proceed() {
 			let vm = this;
+			
+			if( vm.currentCodeListSwap().length > 5 ) {				
+				vm.$dialog.error({ messageId: 'Msg_887' });
+				return;
+			}
 
 			if (!nts.uk.ui.errors.hasError()) {
 				vm.$window.storage('newWorkPlaceCodeList', {
