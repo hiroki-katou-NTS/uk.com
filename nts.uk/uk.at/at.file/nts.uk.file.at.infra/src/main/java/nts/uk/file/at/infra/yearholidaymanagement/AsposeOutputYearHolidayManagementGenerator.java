@@ -44,6 +44,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInforDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -294,35 +295,46 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				if (closure != null && closure.getClosureMonth() != null) {
 					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
 					// RQ550
-					holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, refType, yearMonthInput,
-							baseDate);
+					GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
+							empId, refType, yearMonthInput, baseDate, query.getSelectedDateType().value,
+							query.getPeriod());
+					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 					// 抽出対象社員かチェックする
-					// TODO
-					// アルゴリズム「年休明細情報を取得」を実行する II
-					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
-							baseDate);
+					if(anualHolidayGrantInfo.isEmployeeExtracted()) {
+						// アルゴリズム「年休明細情報を取得」を実行する II
+						holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
+								baseDate);
+					}
 
 				}
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.PAST) {
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する I
-				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
+						empId, ReferenceAtr.RECORD, printDate, baseDate, query.getSelectedDateType().value,
+						query.getPeriod());
+				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 				// 抽出対象社員かチェックする
-				// TODO
-				// アルゴリズム「年休明細情報を取得」を実行する II
-				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
+					// holidayInfo
+					// アルゴリズム「年休明細情報を取得」を実行する II
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				}
 
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する I
 				// 抽出対象社員かチェックする
-				holidayInfo = this.getGrantInfo.getAnnGrantInfor(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
-				// TODO
-				// アルゴリズム「年休明細情報を取得」を実行する II
-				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
-				
+				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
+						empId, ReferenceAtr.RECORD, printDate, baseDate,
+						query.getSelectedDateType().value, query.getPeriod());
+				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
+				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
+					// アルゴリズム「年休明細情報を取得」を実行する II
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+				}
 			}
 			// ❻入社退職の考慮
 			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う

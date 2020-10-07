@@ -68,16 +68,31 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	@Inject 
 	private RecordDomRequireService requireService;
 	
+	/**
+	 * 処理概要： 指定した年月の付与残数情報と、指定年月を含む前回付与日～次回付与日までの使用数を含めた残数を取得
+	 * @param 会社ID - cid
+	 * @param 社員ID - sid
+	 * @param 参照先区分（実績のみ or 予定・申請含む） - referenceAtr (actual results only or schedule / application included)
+	 * @param 指定年月（対象期間区分が１年経過時点の場合、NULL） - ym(NULL when the target period classification is after 1 year)
+	 * @param 基準日- ymd Base date
+	 * @param 対象期間区分（現在/１年経過時点/過去）
+	 * @param １年経過用期間(From-To)
+	 * @return <output>年休付与情報 - Annual leave grant information
+	 * @return 抽出対象社員（true(def)、false） - Employees to be extracted (true (def), false)
+	 */
 	@Override
-	public Optional<AnnualHolidayGrantInfor> getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
-			YearMonth ym, GeneralDate ymd) {
+	public GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
+			YearMonth ym, GeneralDate ymd, int periodOutput, DatePeriod fromTo) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-	
+		GetAnnualHolidayGrantInforDto getAnnualHolidayGrantInforDto = new GetAnnualHolidayGrantInforDto();
+		// 抽出対象社員←true（対象社員である）
+		getAnnualHolidayGrantInforDto.setEmployeeExtracted(true);
 		//指定した月を基準に、前回付与日から次回付与日までの期間を取得
-		Optional<DatePeriod> optPeriod = periodGrantInfor.getPeriodGrantDate(cid, sid, ym, ymd);
+		Optional<DatePeriod> optPeriod = periodGrantInfor.getPeriodGrantDate(cid, sid, ym, ymd, periodOutput, fromTo);
 		if(!optPeriod.isPresent()) {
-			return Optional.empty();
+			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.empty());
+			return getAnnualHolidayGrantInforDto;
 		}
 		DatePeriod period = optPeriod.get();
 		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end().addDays(1), new ArrayList<>());
@@ -86,7 +101,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		//指定月の締め開始日を取得
 		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ym, closureOfEmp.getClosureMonth().getProcessingYm(), ymd);
 		if(!optStartDate.isPresent()) {
-			return Optional.of(outPut);
+			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
+			return getAnnualHolidayGrantInforDto;
 		}
 		GeneralDate startDate = optStartDate.get();
 		//期間内の年休使用明細を取得する
@@ -126,7 +142,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					Optional.of(isPastMonth),//過去月集計モード
 					Optional.of(ym)); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
-			return Optional.of(outPut);
+			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
+			return getAnnualHolidayGrantInforDto;
 		}
 		AggrResultOfAnnualLeave annualLeaveRemain = optAnnualLeaveRemain.get();
 		//指定月時点の使用数を計算
@@ -155,8 +172,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				outPut.getLstGrantInfor().addAll(grantInforFormPeriod);
 			}
 		});
-		
-		return Optional.of(outPut);
+		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
+		return getAnnualHolidayGrantInforDto;
 	}
 	
 	/**

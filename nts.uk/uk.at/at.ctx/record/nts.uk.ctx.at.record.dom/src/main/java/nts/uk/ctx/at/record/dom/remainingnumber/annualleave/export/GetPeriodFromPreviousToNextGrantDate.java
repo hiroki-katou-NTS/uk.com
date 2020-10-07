@@ -15,7 +15,7 @@ public interface GetPeriodFromPreviousToNextGrantDate {
 	 * @param ymd 基準日
 	 * @return 期間
 	 */
-	Optional<DatePeriod> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd);
+	Optional<DatePeriod> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd, int periodOutput, DatePeriod fromTo);
 	/**
 	 * 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 	 * @param cid 会社ID
