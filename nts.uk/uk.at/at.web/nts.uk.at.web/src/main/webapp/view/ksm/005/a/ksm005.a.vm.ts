@@ -624,28 +624,21 @@ module nts.uk.at.view.ksm005.a {
 
             private clearWorkMothly() {
                 let self = this;
+                if (self.isBuild)  self.clearValiate();
 
-                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-
-                    if (self.isBuild)  self.clearValiate();
-
-                    let dataUpdate: WorkMonthlySettingDto[] = [];
-                    for (let item of self.lstWorkMonthlySetting()) {
-                        item.workTypeCode ='';
-                        item.workTypeName = '';
-                        item.workingCode ='';
-                        item.workingName = '';
-                        item.typeColor = TypeColor.HOLIDAY;
-                        dataUpdate.push(item);
-                    }
-                    self.lstWorkMonthlySetting(dataUpdate);
-                    self.updateWorkMothlySetting(dataUpdate);
-                    //self.enableDelete(false);
-                    //self.enableUpdate(false);
-
-                }).ifNo(function() {
-                    return;
-                })
+                let dataUpdate: WorkMonthlySettingDto[] = [];
+                for (let item of self.lstWorkMonthlySetting()) {
+                    item.workTypeCode ='';
+                    item.workTypeName = '';
+                    item.workingCode ='';
+                    item.workingName = '';
+                    item.typeColor = TypeColor.HOLIDAY;
+                    dataUpdate.push(item);
+                }
+                self.lstWorkMonthlySetting(dataUpdate);
+                self.updateWorkMothlySetting(dataUpdate);
+                //self.enableDelete(false);
+                //self.enableUpdate(false);
             }
 
 	        /*

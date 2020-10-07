@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service;
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
 /**
@@ -19,5 +20,5 @@ public interface NewRegisterMailSendCheck {
 	 * @param phaseNumber
 	 * @return
 	 */
-	public ProcessResult sendMail(AppTypeSetting appTypeSetting, Application application, Integer phaseNumber);
+	public List<String> sendMail(AppTypeSetting appTypeSetting, Application application, Integer phaseNumber);
 }
