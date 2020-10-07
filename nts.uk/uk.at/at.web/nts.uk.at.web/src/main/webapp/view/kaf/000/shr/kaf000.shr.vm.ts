@@ -285,6 +285,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                     vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                 }    
             });
+			return true;
         }
 
 		public static showMailResult(mailResult: Array<any>, vm: any) {
