@@ -157,9 +157,8 @@ public class EventInfoAndPersonalConditionsPeriod {
 		}
 
 		@Override
-		public boolean getHolidaysByDate(GeneralDate date) {
-			Optional<PublicHoliday> data = publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
-			return data.isPresent();
+		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
+			return publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
 		}
 
 		@Override
