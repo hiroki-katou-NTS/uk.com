@@ -556,10 +556,10 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "stick",
+            updateMode: "copyPaste",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "symbol",
+            viewMode: "time",
             showTooltipIfOverflow: true,
             errorMessagePopup: true,
             customValidate: customValidate,
@@ -807,9 +807,27 @@ __viewContext.ready(function () {
                     dfd.resolve(function() {
                         alert("error");
                     });
-                }
+                } else dfd.resolve(true);
                 
-                dfd.resolve(true);
+                return dfd.promise();
+            });
+        });
+    
+        $("#set-paste-valid").click(function() {
+            $("#extable").exTable("pasteValidate", function(data) {
+                let dfd = $.Deferred(), invalid = false;
+                _.forEach(data, d => {
+                    if (d.startTime === "6:00") {
+                        invalid = true;
+                        dfd.resolve(function() {
+                            nts.uk.ui.dialog.alert("Error");
+                        });
+                        
+                        return false;
+                    }
+                });
+                
+                if (!invalid) dfd.resolve(true)
                 return dfd.promise();
             });
         });

@@ -3848,6 +3848,26 @@ module nts.uk.ui.exTable {
                 cbData = self.getContents(cbData);
                 if (_.isNil(cbData)) return;
                 cbData = helper.getCellData(cbData);
+                let validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                if (_.isFunction(validate)) {
+                    let result = validate([ cbData ]);
+                    if (_.has(result, "done")) {
+                        result.done(res => {
+                            if (res === true) {
+                                let selectedCells = selection.getSelectedCells(this.$grid);
+                                let txId = util.randomId();
+                                _.forEach(selectedCells, function(cell: any, index: number) {
+                                    update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                                });
+                            } else if (_.isFunction(res)) {
+                                res();
+                            }
+                        });
+                    }
+                    
+                    return;
+                }
+                
                 let selectedCells = selection.getSelectedCells(this.$grid);
                 let txId = util.randomId();
                 _.forEach(selectedCells, function(cell: any, index: number) {
@@ -3859,19 +3879,41 @@ module nts.uk.ui.exTable {
              * Paste range.
              */
             pasteRange(evt: any) {
-                var cbData = this.getClipboardContent(evt);
+                var self = this, cbData = this.getClipboardContent(evt);
                 cbData = this.getContents(cbData);
                 if (_.isNil(cbData)) return;
-                cbData = this.process(cbData);
+                let objArr = [];
+                cbData = this.process(cbData, objArr);
+                
+                let validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                if (_.isFunction(validate) && objArr.length > 0) {
+                    let result = validate(objArr);
+                    if (_.has(result, "done")) {
+                        result.done(res => {
+                            if (res === true) {
+                                self.updateWith(cbData);
+                            } else if (_.isFunction(res)) {
+                                res();
+                            }
+                        });
+                    }
+                    
+                    return;
+                }
+                
                 this.updateWith(cbData);
             }
                 
             /**
              * Process.
              */
-            process(data: string) {
+            process(data: string, objArr: Array<any>) {
                 var dataRows = _.map(data.split("\n"), function(row) {
                     return _.map(row.split("\t"), function(cData) {
+                        if (cData !== "null" && !_.isNil(cData) && cData !== "") {
+                            objArr.push(helper.getCellData(cData));
+                        }
+                        
                         return cData.indexOf(",") > 0 ? cData.split(",") : cData;
                     });
                 });
@@ -6947,6 +6989,9 @@ module nts.uk.ui.exTable {
                 case "copyRedo":
                     redoCopy(self);
                     break;
+                case "pasteValidate":
+                    setPasteValidate(self, params[0]);
+                    break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
                     break;
@@ -7683,6 +7728,14 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Paste validate.
+         */
+        function setPasteValidate($container: JQuery, validate: any) {
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            $grid.data(internal.PASTE_VALIDATE, validate);
+        }
+        
+        /**
          * Clear histories.
          */
         function clearHistories($container: JQuery, type: string) {
@@ -8063,6 +8116,7 @@ module nts.uk.ui.exTable {
         export let OTHER_EDIT_HISTORY: string = "other-edit-history";
         export let STICK_HISTORY: string = "stick-history";
         export let STICK_REDO_STACK: string = "stick-redo-stack";
+        export let PASTE_VALIDATE: string = "paste-validate";
         export let TOOLTIP: string = "tooltip";
         export let CONTEXT_MENU: string = "context-menu";
         export let POPUP: string = "popup";
