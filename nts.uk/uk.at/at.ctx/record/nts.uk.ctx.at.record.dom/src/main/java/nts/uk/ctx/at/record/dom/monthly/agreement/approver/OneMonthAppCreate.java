@@ -74,7 +74,9 @@ public class OneMonthAppCreate {
 					displayInfo);
 
 			// $Atomtask
-			atomTask = AtomTask.of(() -> { require.addApp(app); });
+			atomTask = AtomTask.of(() -> {
+				require.addApp(app);
+			});
 		}
 
 		// return 申請作成結果
