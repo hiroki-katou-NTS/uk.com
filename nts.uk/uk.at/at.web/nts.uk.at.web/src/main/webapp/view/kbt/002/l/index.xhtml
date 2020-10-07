@@ -15,7 +15,6 @@
         </script>
         <com:stylefile path="kbt002.l.main.css" />
         <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="kbt002.l.service.js" />
         <com:scriptfile path="kbt002.l.vm.js" />
       </ui:define>
       <!-- content -->
@@ -25,28 +24,29 @@
             <table>
               <tr class="padding-table">
                 <td class="label-aligment">
-                  <div data-bind="ntsFormLabel: {}">
-                    <span>#{i18n.getText('KBT002_180')}</span>
+                  <div id="L1_1" data-bind="ntsFormLabel: {}">
+                    <span id="L1_2">#{i18n.getText('KBT002_180')}</span>
                   </div>
                 </td>
                 <td>
-                  <label for="">#{i18n.getText('KBT002_325')}</label>
+                  <label>#{i18n.getText('KBT002_325')}</label>
                 </td>
               </tr>
               <tr class="padding-table">
                 <td class="label-aligment">
-                  <div data-bind="ntsFormLabel: {}">
+                  <div id="L2_1" data-bind="ntsFormLabel: {}">
                     <span>#{i18n.getText('KBT002_326')}</span>
                   </div>
                 </td>
                 <td>
-                  <label data-bind="text: tableOfGoals"></label>
+                  <label id="L2-2" data-bind="text: tableOfGoals"></label>
                 </td>
               </tr>
             </table>
           </div>
           <div class="table-alignment">
-            <table id="single-list" data-bind="ntsGridList: {								
+            <table id="single-list" data-bind="ntsGridList: {			
+              name: '#[KBT002_332]',					
               height: 350,
               dataSource: items,
               primaryKey: 'tablePhysicalName',
@@ -57,7 +57,7 @@
           </div>
         </div>
         <div id="functions-area-bottom">
-          <button tabindex="1" class="padding-button" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
+          <button id="L4_1" tabindex="1" class="padding-button" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
         </div>
       </ui:define>
     </ui:composition>

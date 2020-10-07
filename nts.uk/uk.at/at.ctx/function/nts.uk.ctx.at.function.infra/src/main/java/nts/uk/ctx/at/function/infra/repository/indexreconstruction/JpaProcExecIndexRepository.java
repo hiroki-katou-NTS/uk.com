@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfndtProcExecIndex;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaProcExecIndexRepository extends JpaRepository implements ProcExecIndexRepository {
@@ -24,7 +23,7 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 			+ " WHERE f.pk.execId = :execId AND f.pk.tableName = :tableName AND f.pk.indexName = :indexName";
 
 	// Select one by execId
-	private static final String QUERY_SELECT_BY_EXEC_ID = QUERY_SELECT_ALL + " WHERE f.pk.execId = :execId";
+	private static final String QUERY_SELECT_BY_EXEC_ID = QUERY_SELECT_ALL + " WHERE f.pk.execId = :execId ORDER BY f.pk.tableName, f.pk.indexName ASC ";
 		
 	@Override
 	public Optional<ProcExecIndex> findOne(String execId, String tableName, String indexName) {

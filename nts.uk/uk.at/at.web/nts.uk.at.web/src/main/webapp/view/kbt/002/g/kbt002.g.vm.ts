@@ -1,25 +1,24 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kbt002.g {
 
-  import getText = nts.uk.resource.getText;
-
   @bean()
-  export class ScreenModel extends ko.ViewModel {
+  export class KBT002GViewModel extends ko.ViewModel {
     execLog: any = {};
     sharedObj = {};
     modalLink = '';
     execItemCd = '';
+    taskLogExecId = '';
 
     // Start page
     created(params: any) {
       let self = this;
       var dfd = $.Deferred();
       var sharedData = params;
-      // var sharedData = nts.uk.ui.windows.getShared('inputDialogG');
-      sharedData.execLog.taskLogList = _.sortBy(sharedData.execLog.taskLogList, [function (o: any) { return o.taskId; }]);
+      console.log(sharedData.taskLogList);
+      sharedData.taskLogList = _.sortBy(sharedData.taskLogList, [function (o: any) { return o.taskId; }]);
       if (sharedData) {
-        self.execLog = sharedData.execLog;
-
+        self.taskLogExecId = sharedData.execId;
+        self.execItemCd = sharedData.execItemCd;
       }
 
       dfd.resolve();
@@ -36,7 +35,7 @@ module nts.uk.at.view.kbt002.g {
     openDetailDialog(data: any, event: any) {
       let self = this;
       self.$blockui('grayout');
-      service.getLogHistory(self.execLog.execItemCd, self.execLog.taskLogExecId).done(function (logHistory) {
+      service.getLogHistory(self.execItemCd, self.taskLogExecId).done(function (logHistory) {
         var taskId = data.taskId;
         self.createLinkAndSharedObject(taskId, logHistory);
 
@@ -59,19 +58,6 @@ module nts.uk.at.view.kbt002.g {
           nts.uk.ui.windows.setShared('inputDialogR', { sharedObj: self.sharedObj });
           //画面「CMF001_外部受入」の「R:エラー一覧ダイアログ」を起動する
           self.modalLink = "/view/cmf/001/r/index.xhtml";
-          break;
-        case 1: // スケジュールの作成
-          self.sharedObj = {
-            executionId: logHistory.execId,
-            listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況
-            executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
-            objectPeriod: { startDate: null, endDate: null }, //・対象期間
-            nameClosue: null, //・選択した締め
-            processingMonth: null, //・処理月
-            height: 550
-          };
-          nts.uk.ui.windows.setShared("openH", self.sharedObj);
-          self.modalLink = "/view/kdw/001/h/index.xhtml";
           break;
         case 1: // スケジュールの作成
           self.sharedObj = {
@@ -150,7 +136,7 @@ module nts.uk.at.view.kbt002.g {
           // 任意期間の集計のエラー内容を表示する
           self.sharedObj = {
             arbitraryPeriodAggrExecId: logHistory.execId, //・任意期間集計実行ログID
-            execItemCd: self.execLog.execItemCd,
+            execItemCd: self.execItemCd,
             isDaily: false,
             nameObj: "任意期間の集計"
           };
@@ -174,7 +160,7 @@ module nts.uk.at.view.kbt002.g {
         case 9: // 承認ルート更新（日次）
           self.sharedObj = {
             executionId: logHistory.execId,
-            execItemCd: self.execLog.execItemCd,
+            execItemCd: self.execItemCd,
             isDaily: true,
             nameObj: "承認ルート更新（日次）"
           };
@@ -184,7 +170,7 @@ module nts.uk.at.view.kbt002.g {
         case 10: // 承認ルート更新（月次）
           self.sharedObj = {
             executionId: logHistory.execId,
-            execItemCd: self.execLog.execItemCd,
+            execItemCd: self.execItemCd,
             isDaily: false,
             nameObj: "承認ルート更新（月次）"
           };
@@ -201,8 +187,7 @@ module nts.uk.at.view.kbt002.g {
             isDaily: false,
             nameObj: "インデックス再構成"
           };
-          nts.uk.ui.windows.setShared('inputDialogL', { sharedObj: self.sharedObj });
-          self.modalLink = "/view/kbt/002/l/index.xhtml";
+          self.$window.modal('/view/kbt/002/l/index.xhtml', self.sharedObj);
           break;
         default:
           break;
