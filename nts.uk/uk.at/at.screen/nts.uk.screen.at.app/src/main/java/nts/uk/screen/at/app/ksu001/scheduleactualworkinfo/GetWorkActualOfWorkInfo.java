@@ -53,7 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -141,7 +141,7 @@ public class GetWorkActualOfWorkInfo {
 					String workTypeName = null;
 					Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 					if (workTypeInfor.isPresent()) {
-						workTypeName = workTypeInfor.get().getName();
+						workTypeName = workTypeInfor.get().getAbbreviationName();
 					}
 					String workTimeCode = workInformation.getWorkTimeCode() == null ? null: workInformation.getWorkTimeCode().toString();
 					Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();

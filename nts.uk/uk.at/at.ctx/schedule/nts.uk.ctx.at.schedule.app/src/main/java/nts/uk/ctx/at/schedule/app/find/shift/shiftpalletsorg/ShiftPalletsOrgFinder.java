@@ -71,12 +71,16 @@ public class ShiftPalletsOrgFinder {
 			return result;
 	}
 	
-	public List<ShiftPalletsOrgDto> getbyWorkPlaceGrId(String workplaceGrId) {
+	public ShiftPalletsOrgDtoJB getbyWorkPlaceGrId(String workplaceGrId) {
 		// 1 = work place group
+		RequireImpl require = new RequireImpl(groupAdapter, serviceAdapter, wplAdapter);
+		TargetOrgIdenInfor target = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGrId);
 		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(1, workplaceGrId);
-		
-		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceGrId ))
+		DisplayInfoOrganization data = target.getDisplayInfor(require, GeneralDate.today());
+		String displayName = data.getDisplayName();
+		List<ShiftPalletsOrgDto> list = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceGrId ))
 				.collect(Collectors.toList());
+		ShiftPalletsOrgDtoJB result = new ShiftPalletsOrgDtoJB(list, displayName);
 		return result;
 	}
 	

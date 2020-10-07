@@ -267,6 +267,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2 == null ? vm.workManagement.scheWorkTime2('--:--') :
                         vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
 
+                        vm.workManagement.workTime(null);
+                        vm.workManagement.leaveTime(null);
+                        vm.workManagement.workTime2(null);
+                        vm.workManagement.leaveTime2(null);
 
                         if(vm.application().prePostAtr() == 1) {
                             vm.workManagement.workTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);

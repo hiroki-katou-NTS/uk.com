@@ -178,3 +178,8 @@
 	border: 1px solid LightGrey !important;
     color: LightGrey !important;
 }
+
+.disabledShiftControl {
+	opacity: 0.3;
+	pointer-events: none;
+}

@@ -18,7 +18,9 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveResult;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
+import nts.uk.ctx.at.request.app.command.application.common.AppNewBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.CancelAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
@@ -50,9 +52,11 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -119,6 +123,12 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private ApplicationExportService applicationExportService;
+	
+	@Inject
+	private NewAfterRegister newAfterRegister;
+	
+	@Inject
+	private DetailAfterUpdate detailAfterUpdate;
 	
 	/**
 	 * remand application
@@ -316,7 +326,7 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("deleteapp")
-	public ProcessResult deleteApp(AppDispInfoStartupDto command){
+	public ProcessResult deleteApp(AppDetailBehaviorCmd command){
 		return deleteApp.handle(command);
 	}
 	
@@ -357,5 +367,20 @@ public class ApplicationWebservice extends WebService {
 		return applicationExportService.start(query);
     }
 	
+	@POST
+	@Path("afterRegister")
+	public AppListApproveResult afterRegister(AppNewBehaviorCmd appNewBehaviorCmd) {
+		
+		// return newAfterRegister.processAfterRegister(appID, appTypeSetting, mailServerSet);
+		return null;
+	}
+	
+	@POST
+	@Path("afterUpdate")
+	public AppListApproveResult afterUpdate(AppNewBehaviorCmd appNewBehaviorCmd) {
+		
+		// return newAfterRegister.processAfterRegister(appID, appTypeSetting, mailServerSet);
+		return null;
+	}
 }
 

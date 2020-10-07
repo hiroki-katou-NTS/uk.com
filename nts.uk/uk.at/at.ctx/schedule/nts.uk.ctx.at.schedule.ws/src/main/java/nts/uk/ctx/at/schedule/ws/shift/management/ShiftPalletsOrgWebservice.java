@@ -34,7 +34,7 @@ public class ShiftPalletsOrgWebservice extends WebService {
 	
 	@POST
 	@Path("getbyWorkplaceGrId")
-	public List<ShiftPalletsOrgDto> getListShijtPalletsOrgGr(String workplaceGrId) {
+	public ShiftPalletsOrgDtoJB getListShijtPalletsOrgGr(String workplaceGrId) {
 		return shiftPalletsOrgFinder.getbyWorkPlaceGrId(workplaceGrId);
 	}
 

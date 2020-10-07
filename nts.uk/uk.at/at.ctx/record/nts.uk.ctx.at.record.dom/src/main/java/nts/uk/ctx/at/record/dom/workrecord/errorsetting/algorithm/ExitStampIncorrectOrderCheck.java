@@ -153,7 +153,7 @@ public class ExitStampIncorrectOrderCheck {
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+		if (timeLeavingOfDailyPerformance != null &&timeLeavingOfDailyPerformance.getAttendance() !=null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 			List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily
 					.getTimeZone().getAttendanceLeavingGates();
 			// 1回目の入門と出勤．打刻が存在するか確認する(check first stamp attendance has data or
