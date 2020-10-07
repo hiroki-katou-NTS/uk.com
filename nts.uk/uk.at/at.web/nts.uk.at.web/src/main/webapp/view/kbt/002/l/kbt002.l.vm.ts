@@ -28,19 +28,21 @@ module nts.uk.at.view.kbt002.l {
         vm.execId(params.executionId);
         vm.getProExecIndex(vm.execId());
       }
+      this.getProExecIndex(vm.execId());
     }
 
     getProExecIndex(execId: string) {
+      debugger;
       const vm = this;
-      vm.$blockui('grayout');
-      vm.$ajax(API.getExecItemInfoList, execId)
-        .then((data: ProExecIndexAndNumberTargetDto) => {
-          if (data.indexReconstructionResult) {
-            vm.items(data.indexReconstructionResult);
-          }
-          vm.tableOfGoals(vm.$i18n("KBT002_327", [data.numberOfTargetTable + '']))
+      vm.$blockui('grayout')
+      .then(() => vm.$ajax(`${API.getExecItemInfoList}/${execId}`))
+      .then((data: ProExecIndexAndNumberTargetDto) => {
+        if (data.indexReconstructionResult) {
+          vm.items(data.indexReconstructionResult);
+        }
+        vm.tableOfGoals(vm.$i18n("KBT002_327", [String(data.numberOfTargetTable)]))
       })
-      .always(() => vm.$blockui("clear"));
+      .always(() => vm.$blockui("clear"));      
     }
 
     closeDialog() {
