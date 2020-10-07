@@ -3,12 +3,13 @@
     <!-- B2 -->
     <div class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
-        <span class="textPosition">{{'KAFS07_2' | i18n}}</span>
+        <span class="textPosition">{{'KAFS09_22' | i18n}}</span>
       </div>
     </div>
     <!-- B2_1 -->
     <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">変更する</span>
+      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">{{'KAFS09_24' | i18n}}</span>
+      <span v-if="dataOutput.goBackApplication.isChangedWork != 1">{{'KAFS09_23' | i18n}}</span>
     </div>
     <!-- B3 -->
 
@@ -19,7 +20,7 @@
     </div>
     <!-- B3_1 -->
     <div>
-      <span class="textSize uk-text-dark-gray">{{'KAFS09_04' | i18n}}</span>
+      <span class="textSize uk-text-dark-gray">{{'KAFS09_4' | i18n}}</span>
     </div>
     <!-- B3_2 -->
     <div class="paddingSpan">
@@ -27,7 +28,7 @@
     </div>
     <!-- B3_3 -->
     <div>
-      <span class="textSize uk-text-dark-gray">{{'KAFS09_05' | i18n}}</span>
+      <span class="textSize uk-text-dark-gray">{{'KAFS09_5' | i18n}}</span>
     </div>
     <!-- B3_4 -->
     <div class="paddingSpan">
@@ -38,17 +39,17 @@
 
     <div v-if="isCondition1" class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
-        <span class="textPosition">{{'KAFS09_08' | i18n}}</span>
+        <span class="textPosition">{{'KAFS09_8' | i18n}}</span>
       </div>
     </div>
     <!-- B5_1 -->
     <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="$app().straight">{{'KAFS09_06' | i18n}}</span>
-      <span v-if="!$app().straight">{{'KAFS09_07' | i18n}}</span>
+      <span v-if="$app().straight">{{'KAFS09_6' | i18n}}</span>
+      <span v-if="!$app().straight">{{'KAFS09_7' | i18n}}</span>
     </div>
     <!-- B5_2 -->
     <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="$app().bounce">{{'KAFS09_09' | i18n}}</span>
+      <span v-if="$app().bounce">{{'KAFS09_9' | i18n}}</span>
       <span v-if="!$app().bounce">{{'KAFS09_10' | i18n}}</span>
     </div>
   </div>
