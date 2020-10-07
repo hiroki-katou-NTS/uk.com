@@ -14,7 +14,9 @@
     </div>
     <div v-else></div>
     <kaf-s00-b 
-    v-if="kafS00BParams" 
+    v-if="kafS00BParams"
+    @kaf000BChangeDate="handleChangeDate"
+    @kaf000BChangePrePost="handleChangePrePost"
     v-bind:params="kafS00BParams" />
     <!-- A3 -->
       <div class="position-relative">
@@ -107,7 +109,9 @@
       </div>
     </div>
     <kaf-s00-c class="py-3"
-    v-if="kafS00CParams" 
+    v-if="kafS00CParams"
+    @kaf000CChangeAppReason="handleChangeAppReason"
+    @kaf000CChangeReasonCD="handleChangeReasonCD"
     v-bind:params="kafS00CParams" />
     <button @click="register()" type="button" class="btn btn-primary btn-block">
       {{ "申請する" }}

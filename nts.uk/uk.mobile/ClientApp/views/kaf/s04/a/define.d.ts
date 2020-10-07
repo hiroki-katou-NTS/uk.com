@@ -1,0 +1,328 @@
+
+export interface IParamS00A {
+    companyID: string;
+    employeeID: string;
+    employmentCD: string;
+    applicationUseSetting: IApplicationUseSetting;
+    receptionRestrictionSetting: IReceptionRestrictionSetting;
+}
+
+export interface IApplicationUseSetting {
+    useDivision: number | null;
+    appType: number | null;
+    memo: string;
+}
+
+export interface IReceptionRestrictionSetting {
+    otAppBeforeAccepRestric: null;
+    afterhandRestriction: {
+        allowFutureDay: boolean
+    };
+    beforehandRestriction: {
+        dateBeforehandRestrictions: number | null,
+        toUse: boolean
+    };
+    appType: number | null;
+}
+
+
+export interface IParamS00B {
+    input: IInput;
+    output: IOutput;
+}
+
+export interface IOutput {
+    prePostAtr: 1 | 0;
+    startDate: null;
+    endDate: null;
+}
+
+export interface IInput {
+    mode: number | null;
+    appDisplaySetting: {
+        prePostDisplayAtr: number | null,
+        manualSendMailAtr: number | null
+    };
+    newModeContent: {
+        appTypeSetting: IAppTypeSetting[],
+        useMultiDaySwitch: boolean,
+        initSelectMultiDay: boolean
+    };
+    detailModeContent: null;
+}
+
+export interface IAppTypeSetting {
+    appType: number | null;
+    sendMailWhenRegister: boolean;
+    sendMailWhenApproval: boolean;
+    displayInitialSegment: number | null;
+    canClassificationChange: boolean;
+}
+
+export interface IParamS00C {
+    input: {
+        displayFixedReason: number | null,
+        displayAppReason: number | null,
+        reasonTypeItemLst: any[],
+        appLimitSetting: IAppLimitSetting
+    };
+    output: {
+        opAppStandardReasonCD: string,
+        opAppReason: string
+    };
+}
+
+export interface IAppLimitSetting {
+    canAppAchievementMonthConfirm: boolean;
+    canAppAchievementLock: boolean;
+    canAppFinishWork: boolean;
+    requiredAppReason: boolean;
+    standardReasonRequired: boolean;
+    canAppAchievementConfirm: boolean;
+}
+
+export interface IEmployeeInfoLst {
+    sid: string;
+    scd: string;
+    bussinessName: string;
+}
+
+export interface IAppLimitSetting {
+    canAppAchievementMonthConfirm: boolean;
+    canAppAchievementLock: boolean;
+    canAppFinishWork: boolean;
+    requiredAppReason: boolean;
+    standardReasonRequired: boolean;
+    canAppAchievementConfirm: boolean;
+}
+
+export interface IAppTypeSetting {
+    appType: number | null;
+    sendMailWhenRegister: boolean;
+    sendMailWhenApproval: boolean;
+    displayInitialSegment: number | null;
+    canClassificationChange: boolean;
+}
+
+export interface IAppDeadlineSetLst {
+    useAtr: number | null;
+    closureId: number | null;
+    deadline: number | null;
+    deadlineCriteria: number | null;
+}
+
+export interface IReceptionRestrictionSetting {
+    otAppBeforeAccepRestric: null;
+    afterhandRestriction: {
+        allowFutureDay: boolean
+    };
+    beforehandRestriction: {
+        dateBeforehandRestrictions: number | null,
+        toUse: boolean
+    };
+    appType: number | null;
+}
+
+export interface IAppUseSetLst {
+    useDivision: number | null;
+    appType: number | null;
+    memo: string;
+}
+
+export interface IEmpHistImport {
+    employeeId: string;
+    employmentCode: string;
+    employmentName: string;
+    startDate: string;
+    endDate: string;
+}
+
+export interface ITargetWorkTypeByAppLst {
+    appType: number | null;
+    displayWorkType: boolean;
+    workTypeLst: any[];
+    opBreakOrRestTime: null;
+    opHolidayTypeUse: boolean;
+    opHolidayAppType: number | null;
+    opBusinessTripAppWorkType: null;
+}
+
+export interface IListApprover {
+    approverID: string;
+    approvalAtrValue: number | null;
+    approvalAtrName: string;
+    agentID: string;
+    approverName: string;
+    representerID: string;
+    representerName: string;
+    approvalDate: null;
+    approvalReason: string;
+    approverMail: string;
+    representerMail: string;
+    approverInListOrder: number | null;
+}
+
+export interface IListApprovalFrame {
+    frameOrder: number | null;
+    listApprover: IListApprover[];
+    confirmAtr: number | null;
+    appDate: string;
+}
+
+export interface IOpListApprovalPhaseState {
+    phaseOrder: number | null;
+    approvalAtrValue: number | null;
+    approvalAtrName: string;
+    approvalFormValue: number | null;
+    listApprovalFrame: IListApprovalFrame[];
+}
+
+export interface IOpWorkTimeLst {
+    companyId: string;
+    worktimeCode: string;
+    workTimeDivision: {
+        workTimeDailyAtr: number | null,
+        workTimeMethodSet: number | null
+    };
+    isAbolish: boolean;
+    colorCode: string;
+    workTimeDisplayName: {
+        workTimeName: string,
+        workTimeAbName: string,
+        workTimeSymbol: string
+    };
+    memo: string;
+    note: string;
+}
+
+export interface IAppDispInfoStartupOutput {
+    appDispInfoNoDateOutput: {
+        mailServerSet: boolean,
+        advanceAppAcceptanceLimit: number | null,
+        employeeInfoLst: IEmployeeInfoLst[],
+        applicationSetting: {
+            companyID: string,
+            appLimitSetting: IAppLimitSetting,
+            appTypeSetting: IAppTypeSetting[],
+            appSetForProxyApp: any[],
+            appDeadlineSetLst: IAppDeadlineSetLst[],
+            appDisplaySetting: {
+                prePostDisplayAtr: number | null,
+                manualSendMailAtr: number | null
+            },
+            receptionRestrictionSetting: IReceptionRestrictionSetting[],
+            recordDate: number | null
+        },
+        appReasonStandardLst: any[],
+        displayAppReason: number | null,
+        displayStandardReason: number | number,
+        reasonTypeItemLst: any[],
+        managementMultipleWorkCycles: boolean,
+        opAdvanceReceptionHours: null,
+        opAdvanceReceptionDate: null,
+        opEmployeeInfo: null
+    };
+    appDispInfoWithDateOutput: {
+        approvalFunctionSet: {
+            appUseSetLst: IAppUseSetLst[]
+        },
+        prePostAtr: 0 | 1,
+        baseDate: string,
+        empHistImport: IEmpHistImport,
+        appDeadlineUseCategory: number | null,
+        opEmploymentSet: {
+            companyID: string,
+            employmentCD: '01',
+            targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[],
+        },
+        opListApprovalPhaseState: IOpListApprovalPhaseState[],
+        opErrorFlag: number | null,
+        opActualContentDisplayLst: null,
+        opPreAppContentDispDtoLst: null,
+        opAppDeadline: string,
+        opWorkTimeLst: IOpWorkTimeLst[],
+    };
+    appDetailScreenInfo: null;
+}
+
+export interface IData {
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+    arrivedLateLeaveEarly: null;
+    earlyInfos: any[];
+    info: null;
+    lateEarlyCancelAppSet: {
+        companyId: '',
+        cancelAtr: number | null
+    };
+    cancelAtr: number | null;
+    companyId: '';
+}
+
+export interface ITime {
+    attendanceTime: number | null;
+    leaveTime: number | null;
+    attendanceTime2: number | null;
+    leaveTime2: number | null;
+}
+
+export interface IApplication {
+    appDate: string,
+    appId: null;
+    appType: number | null;
+    employeeID: string;
+    enteredPerson: null;
+    inputDate: null;
+    opAppEndDate: string;
+    opAppReason: string;
+    opAppStandardReasonCD: number | null;
+    opAppStartDate: string;
+    opReversionReason: null;
+    opStampRequestMode: null;
+    prePostAtr: number | null;
+    reflectionStatus: null;
+    version: null;
+}
+export interface IInfoOutput {
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput | null;
+    arrivedLateLeaveEarly: IArrivedLateLeaveEarly;
+    earlyInfos: IEarlyInfos[];
+    info: string;
+    lateEarlyCancelAppSet: {
+        cancelAtr: number | null;
+        companyId: string;
+    },
+}
+
+export interface IArrivedLateLeaveEarly {
+    lateCancelation: any[];
+    lateOrLeaveEarlies: ILateOrLeaveEarlies[];
+}
+
+export interface ILateOrLeaveEarlies {
+    lateOrEarlyClassification: number | null;
+    timeWithDayAttr: number | null;
+    workNo: number | null;
+}
+
+export interface IEarlyInfos {
+    category: number | null;
+    isActive: boolean;
+    isCheck: boolean;
+    isIndicated: boolean;
+    workNo: number | null;
+}
+
+export interface IRes {
+    data: {
+        autoSuccessMail: [];
+        autoFailMail: [];
+        autoFailServer: [];
+        appID: "";
+        reflectAppId: "";
+        processDone: boolean;
+        autoSendMail: boolean;
+    }
+}
+
+
+

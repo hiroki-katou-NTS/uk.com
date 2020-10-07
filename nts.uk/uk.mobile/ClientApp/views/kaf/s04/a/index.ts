@@ -1,9 +1,21 @@
-import { Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
+import { data } from 'jquery';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { vmOf } from 'vue/types/umd';
 import { KafS04BComponent } from '../b';
+
+import {
+    IOutput,
+    ITime,
+    IAppDispInfoStartupOutput,
+    IApplication,
+    IData,
+    IParamS00A,
+    IParamS00B,
+    IParamS00C,
+    IInfoOutput,
+    IRes
+} from './define';
 
 @component({
     name: 'kafs04a',
@@ -36,9 +48,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
-    public condition1: boolean = true;
-    public application!: IApplication ;
-
+    public application: IApplication = initAppData();
+    public infoOutPut: IInfoOutput = initInfoOutput();
+    public startDate: string = null;
+    public opAppReason: string = null;
+    public reasonCD: number = 0;
+    public prePostArt: number = 0;
 
     public created() {
         const vm = this;
@@ -112,7 +127,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
             newModeContent: {
                 appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                useMultiDaySwitch: true,
+                useMultiDaySwitch: false,
                 initSelectMultiDay: false
             },
             appDisplaySetting: {
@@ -173,7 +188,18 @@ export class KafS04AComponent extends KafS00ShrComponent {
             .then(() => vm.$children.forEach((v) => v.$validate()))
             .then(() => {
                 if (vm.validAll) {
-                    alert('qua man tiep theo');
+                    vm.$mask('show');
+                    vm.infoOutPut.appDispInfoStartupOutput = vm.data.appDispInfoStartupOutput;
+                    let params = {
+                        appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+                        application: vm.application,
+                        infoOutput: vm.infoOutPut,
+                    };
+                    vm.$http.post('at', API.register,params).then((res: IRes) => {
+                        console.log(res.data.appID);
+                        alert('qua man tiep theo');
+                        vm.$mask('hide');
+                    });
                 } else {
                     window.scrollTo(500, 0);
                 }
@@ -190,6 +216,35 @@ export class KafS04AComponent extends KafS00ShrComponent {
         return vm.$valid && !vm.$children.some((m) => !m.$valid);
     }
 
+    public handleChangeDate(paramsDate) {
+        const vm = this;
+        
+        vm.startDate = vm.$dt(paramsDate.startDate,'YYYY/MM/DD');
+        vm.application.appDate = vm.startDate;
+        vm.application.prePostAtr = vm.prePostArt;
+        vm.application.opAppStartDate = vm.startDate;
+        vm.application.opAppEndDate = vm.startDate;
+    }
+
+    public handleChangeAppReason(appReason) {
+        const vm = this;
+
+        vm.opAppReason = appReason;
+        vm.application.opAppReason = vm.opAppReason;
+    }
+
+    public handleChangeReasonCD(reasonCD) {
+        const vm = this;
+
+        vm.reasonCD = reasonCD;
+        vm.application.opAppStandardReasonCD = vm.reasonCD;
+    }
+
+    public handleChangePrePost(prePost) {
+        const vm = this;
+
+        vm.prePostArt = prePost;
+    }
 
     public mounted() {
         const vm = this;
@@ -204,287 +259,44 @@ const API = {
     getMsgList: 'at/request/application/lateorleaveearly/getMsgList'
 };
 
+const initAppData = (): IApplication => ({
+    appDate: '',
+    appId: null,
+    appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+    employeeID: '',
+    enteredPerson: null,
+    inputDate: null,
+    opAppEndDate: '',
+    opAppReason: '',
+    opAppStandardReasonCD: null,
+    opAppStartDate: '',
+    opReversionReason: null,
+    opStampRequestMode: null,
+    prePostAtr: null,
+    reflectionStatus: null,
+    version: null
+});
 
-interface IParamS00A {
-    companyID: string;
-    employeeID: string;
-    employmentCD: string;
-    applicationUseSetting: IApplicationUseSetting;
-    receptionRestrictionSetting: IReceptionRestrictionSetting;
-}
-
-interface IApplicationUseSetting {
-    useDivision: number | null;
-    appType: number | null;
-    memo: string;
-}
-
-interface IReceptionRestrictionSetting {
-    otAppBeforeAccepRestric: null;
-    afterhandRestriction: {
-        allowFutureDay: boolean
-    };
-    beforehandRestriction: {
-        dateBeforehandRestrictions: number | null,
-        toUse: boolean
-    };
-    appType: number | null;
-}
-
-
-interface IParamS00B {
-    input: IInput;
-    output: IOutput;
-}
-
-interface IOutput {
-    prePostAtr: 1 | 0;
-    startDate: null;
-    endDate: null;
-}
-
-interface IInput {
-    mode: number | null;
-    appDisplaySetting: {
-        prePostDisplayAtr: number | null,
-        manualSendMailAtr: number | null
-    };
-    newModeContent: {
-        appTypeSetting: IAppTypeSetting[],
-        useMultiDaySwitch: boolean,
-        initSelectMultiDay: boolean
-    };
-    detailModeContent: null;
-}
-
-interface IAppTypeSetting {
-    appType: number | null;
-    sendMailWhenRegister: boolean;
-    sendMailWhenApproval: boolean;
-    displayInitialSegment: number | null;
-    canClassificationChange: boolean;
-}
-
-interface IParamS00C {
-    input: {
-        displayFixedReason: number | null,
-        displayAppReason: number | null,
-        reasonTypeItemLst: any[],
-        appLimitSetting: IAppLimitSetting
-    };
-    output: {
-        opAppStandardReasonCD: string,
-        opAppReason: string
-    };
-}
-
-interface IAppLimitSetting {
-    canAppAchievementMonthConfirm: boolean;
-    canAppAchievementLock: boolean;
-    canAppFinishWork: boolean;
-    requiredAppReason: boolean;
-    standardReasonRequired: boolean;
-    canAppAchievementConfirm: boolean;
-}
-
-interface IEmployeeInfoLst {
-    sid: string;
-    scd: string;
-    bussinessName: string;
-}
-
-interface IAppLimitSetting {
-    canAppAchievementMonthConfirm: boolean;
-    canAppAchievementLock: boolean;
-    canAppFinishWork: boolean;
-    requiredAppReason: boolean;
-    standardReasonRequired: boolean;
-    canAppAchievementConfirm: boolean;
-}
-
-interface IAppTypeSetting {
-    appType: number | null;
-    sendMailWhenRegister: boolean;
-    sendMailWhenApproval: boolean;
-    displayInitialSegment: number | null;
-    canClassificationChange: boolean;
-}
-
-interface IAppDeadlineSetLst {
-    useAtr: number | null;
-    closureId: number | null;
-    deadline: number | null;
-    deadlineCriteria: number | null;
-}
-
-interface IReceptionRestrictionSetting {
-    otAppBeforeAccepRestric: null;
-    afterhandRestriction: {
-        allowFutureDay: boolean
-    };
-    beforehandRestriction: {
-        dateBeforehandRestrictions: number | null,
-        toUse: boolean
-    };
-    appType: number | null;
-}
-
-interface IAppUseSetLst {
-    useDivision: number | null;
-    appType: number | null;
-    memo: string;
-}
-
-interface IEmpHistImport {
-    employeeId: string;
-    employmentCode: string;
-    employmentName: string;
-    startDate: string;
-    endDate: string;
-}
-
-interface ITargetWorkTypeByAppLst {
-    appType: number | null;
-    displayWorkType: boolean;
-    workTypeLst: any[];
-    opBreakOrRestTime: null;
-    opHolidayTypeUse: boolean;
-    opHolidayAppType: number | null;
-    opBusinessTripAppWorkType: null;
-}
-
-interface IListApprover {
-    approverID: string;
-    approvalAtrValue: number | null;
-    approvalAtrName: string;
-    agentID: string;
-    approverName: string;
-    representerID: string;
-    representerName: string;
-    approvalDate: null;
-    approvalReason: string;
-    approverMail: string;
-    representerMail: string;
-    approverInListOrder: number | null;
-}
-
-interface IListApprovalFrame {
-    frameOrder: number | null;
-    listApprover: IListApprover[];
-    confirmAtr: number | null;
-    appDate: string;
-}
-
-interface IOpListApprovalPhaseState {
-    phaseOrder: number | null;
-    approvalAtrValue: number | null;
-    approvalAtrName: string;
-    approvalFormValue: number | null;
-    listApprovalFrame: IListApprovalFrame[];
-}
-
-interface IOpWorkTimeLst {
-    companyId: string;
-    worktimeCode: string;
-    workTimeDivision: {
-        workTimeDailyAtr: number | null,
-        workTimeMethodSet: number | null
-    };
-    isAbolish: boolean;
-    colorCode: string;
-    workTimeDisplayName: {
-        workTimeName: string,
-        workTimeAbName: string,
-        workTimeSymbol: string
-    };
-    memo: string;
-    note: string;
-}
-
-interface IAppDispInfoStartupOutput {
-    appDispInfoNoDateOutput: {
-        mailServerSet: boolean,
-        advanceAppAcceptanceLimit: number | null,
-        employeeInfoLst: IEmployeeInfoLst[],
-        applicationSetting: {
-            companyID: string,
-            appLimitSetting: IAppLimitSetting,
-            appTypeSetting: IAppTypeSetting[],
-            appSetForProxyApp: any[],
-            appDeadlineSetLst: IAppDeadlineSetLst[],
-            appDisplaySetting: {
-                prePostDisplayAtr: number | null,
-                manualSendMailAtr: number | null
-            },
-            receptionRestrictionSetting: IReceptionRestrictionSetting[],
-            recordDate: number | null
-        },
-        appReasonStandardLst: any[],
-        displayAppReason: number | null,
-        displayStandardReason: number | number,
-        reasonTypeItemLst: any[],
-        managementMultipleWorkCycles: boolean,
-        opAdvanceReceptionHours: null,
-        opAdvanceReceptionDate: null,
-        opEmployeeInfo: null
-    };
-    appDispInfoWithDateOutput: {
-        approvalFunctionSet: {
-            appUseSetLst: IAppUseSetLst[]
-        },
-        prePostAtr: 0 | 1,
-        baseDate: string,
-        empHistImport: IEmpHistImport,
-        appDeadlineUseCategory: number | null,
-        opEmploymentSet: {
-            companyID: string,
-            employmentCD: '01',
-            targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[],
-        },
-        opListApprovalPhaseState: IOpListApprovalPhaseState[],
-        opErrorFlag: number | null,
-        opActualContentDisplayLst: null,
-        opPreAppContentDispDtoLst: null,
-        opAppDeadline: string,
-        opWorkTimeLst: IOpWorkTimeLst[],
-    };
-    appDetailScreenInfo: null;
-}
-
-interface IData {
-    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
-    arrivedLateLeaveEarly: null;
-    earlyInfos: any[];
-    info: null;
+const initInfoOutput = (): IInfoOutput => ({
+    appDispInfoStartupOutput: null,
+    arrivedLateLeaveEarly: {
+        lateCancelation: [],
+        lateOrLeaveEarlies: [{
+            lateOrEarlyClassification: 0,
+            timeWithDayAttr: 0,
+            workNo: 0,
+        }],
+    },
+    earlyInfos: [{
+        category: 0,
+        isActive: true,
+        isCheck: false,
+        isIndicated: true,
+        workNo: 0,
+    }],
+    info: '',
     lateEarlyCancelAppSet: {
+        cancelAtr: 0,
         companyId: '',
-        cancelAtr: number | null
-    };
-    cancelAtr: number | null;
-    companyId: '';
-}
-
-interface ITime {
-    attendanceTime: number | null;
-    leaveTime: number | null;
-    attendanceTime2: number | null;
-    leaveTime2: number | null;
-}
-
-interface IApplication {
-    appDate: string;
-    appId: null;
-    appType: number | null;
-    employeeID: string;
-    enteredPerson: null;
-    inputDate: null;
-    opAppEndDate: string;
-    opAppReason: string;
-    opAppStandardReasonCD: number | null;
-    opAppStartDate: string;
-    opReversionReason: null;
-    opStampRequestMode: null;
-    prePostAtr: 0 | 1;
-    reflectionStatus: null;
-    version: null;
-}
+    }
+});
