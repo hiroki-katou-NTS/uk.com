@@ -39,7 +39,10 @@ public class SelectCategoryFinder {
 
 		// 設定初期表示処理
 		return dataStoragePatternSettingRepository
-				.findByContractCdAndPatternCd(AppContexts.user().contractCode(), command.getPatternCode())
+				.findByContractCdAndPatternCdAndPatternAtr(
+						AppContexts.user().contractCode(), 
+						command.getPatternCode(),
+						command.getPatternClassification())
 				.map(pattern -> {
 					DataStoragePatternSettingDto dto = new DataStoragePatternSettingDto();
 					pattern.setMemento(dto);

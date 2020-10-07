@@ -70,9 +70,8 @@ public class ManualSetDelCommand {
 	
 	
 	public List<CategoryDeletion> getCategories(String delId) {
-		//TODO-CMF005: Thêm systemType thay vì null
 		return categories.stream().map(x -> {
-			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), 1);
+			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), x.getSystemType());
 		}).collect(Collectors.toList());
 	}
 }

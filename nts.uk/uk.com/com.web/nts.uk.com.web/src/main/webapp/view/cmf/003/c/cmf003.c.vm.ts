@@ -209,6 +209,7 @@ module nts.uk.com.view.cmf003.c {
 
     //Auto execution
     saveFormatChecked: KnockoutObservable<boolean> = ko.observable(false);
+    disableMoveButton: KnockoutObservable<boolean> = ko.observable(false);
     usePasswordChecked: KnockoutObservable<boolean> = ko.observable(false);
     targetYearDD: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel(0, '参照年'),
@@ -283,6 +284,10 @@ module nts.uk.com.view.cmf003.c {
         }
       });
 
+      vm.disableMoveButton.subscribe(value => {
+        console.log(value);
+      });
+      vm.disableMoveButton(false);
       vm.initDisplay();
     }
 
@@ -442,6 +447,7 @@ module nts.uk.com.view.cmf003.c {
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
       service.selectPattern(param).then((res) => {
+        console.log(res);
         const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
         vm.codeValue(pattern.patternCode);
@@ -461,6 +467,8 @@ module nts.uk.com.view.cmf003.c {
           vm.currentCateSelected.push(category);
         });
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
+        debugger;
+        vm.disableMoveButton(pattern.patternClassification === 1);
         vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
         vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
         vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferYear));
@@ -522,11 +530,11 @@ module nts.uk.com.view.cmf003.c {
       if (pic.personnel)
         vm.systemTypes.push(new ItemModel(1, getText('CMF003_400')));
       if (pic.attendance)
-        vm.systemTypes.push(new ItemModel(1, getText('CMF003_401')));
+        vm.systemTypes.push(new ItemModel(2, getText('CMF003_401')));
       if (pic.payroll)
-        vm.systemTypes.push(new ItemModel(1, getText('CMF003_402')));
+        vm.systemTypes.push(new ItemModel(3, getText('CMF003_402')));
       if (pic.officeHelper)
-        vm.systemTypes.push(new ItemModel(1, getText('CMF003_403')));
+        vm.systemTypes.push(new ItemModel(4, getText('CMF003_403')));
     }
 
     private validateBeforeRegister(): boolean {

@@ -66,5 +66,4 @@ public class JpaCategoryDeletionRepository extends JpaRepository implements Cate
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_LIST, SspdtCategoryDeletion.class)
 				.setParameter("delId", delId).getList(c -> c.toDomain());
 	}
-
 }

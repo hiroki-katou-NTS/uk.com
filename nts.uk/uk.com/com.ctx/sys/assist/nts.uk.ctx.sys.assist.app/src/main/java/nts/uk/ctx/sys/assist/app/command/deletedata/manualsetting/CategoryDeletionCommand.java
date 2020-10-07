@@ -27,4 +27,9 @@ public class CategoryDeletionCommand {
 	    * 自動設定対象期間
 	    */
 	    private GeneralDate periodDeletion;
+	    
+	    /**
+	     * システム種類
+	     */
+	    private int systemType;
 }
