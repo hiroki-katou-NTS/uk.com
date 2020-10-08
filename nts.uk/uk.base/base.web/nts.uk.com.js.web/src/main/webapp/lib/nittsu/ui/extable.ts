@@ -7378,10 +7378,23 @@ module nts.uk.ui.exTable {
             let $grid = $container.find("." + BODY_PRF + DETAIL);
             if (mode !== DETERMINE) {
                 if (exTable.updateMode !== DETERMINE) {
+                    // Keep states while switching to new mode
+                    if (exTable.updateMode === EDIT) {
+                        let editor = $container.data(update.EDITOR);
+                        let inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                        if (editor) {
+                            update.outsideClick($container[0], null, true);
+                        } else if (inputSelecting) {
+                            selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                        }
+                    } else if (exTable.updateMode === COPY_PASTE) {
+                        selection.clearAll($grid[0]);
+                    }
+                    
                     exTable.setUpdateMode(mode);
-                    exTable.modifications = {};
-                    render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
-                    selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+//                    exTable.modifications = {};
+//                    render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
+//                    selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                 } else {
                     exTable.setUpdateMode(mode);
                 }
