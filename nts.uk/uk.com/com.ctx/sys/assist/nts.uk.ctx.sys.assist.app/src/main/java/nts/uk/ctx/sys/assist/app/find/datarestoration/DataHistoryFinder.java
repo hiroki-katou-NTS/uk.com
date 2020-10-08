@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.app.command.datarestoration.FindDataHistoryDto;
+import nts.uk.ctx.sys.assist.app.command.datarestoration.GetDataHistoryCommand;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
@@ -42,7 +43,8 @@ public class DataHistoryFinder {
 	@Inject
 	private SysEmployeeStorageAdapter sysEmployeeStorageAdapter;
 
-	public List<DataHistoryDto> findData(List<FindDataHistoryDto> list) {
+	public List<DataHistoryDto> findData(GetDataHistoryCommand command) {
+		List<FindDataHistoryDto> list = command.getObjects();
 		List<String> saveSetCodes = list.stream().map(FindDataHistoryDto::getPatternCode).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 		List<DataHistoryDto> res = new ArrayList<DataHistoryDto>();

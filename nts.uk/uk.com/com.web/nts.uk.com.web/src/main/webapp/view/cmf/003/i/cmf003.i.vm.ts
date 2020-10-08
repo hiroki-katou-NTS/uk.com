@@ -73,6 +73,7 @@ module nts.uk.com.view.cmf003.i {
             });
             vm.searchItems(res);
           }
+          vm.searchValue(1);
           //Create green rowNumber column
           $("document").ready(() => {
             $("#J3_1 tbody td:first-child").each(function (index) {

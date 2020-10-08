@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf004.j {
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
-        vm.findSaveSet(value.startDate, value.endDate);
+        vm.findSaveSet();
       });
       vm.loadDataGrid();
     }
@@ -52,11 +52,11 @@ module nts.uk.com.view.cmf004.j {
       $("#J2_4 .ntsStartDate input").focus();
     }
 
-    private findSaveSet(from: string, to: string) {
+    private findSaveSet() {
       const vm = this;
       vm.$blockui("grayout");
-      const momentFrom = moment.utc(from, "YYYY/MM/DD hh:mm:ss").toISOString();
-      const momentTo = moment.utc(to, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
+      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString();
+      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
           const res: SaveSetHistoryDto[] = [
@@ -69,6 +69,7 @@ module nts.uk.com.view.cmf004.j {
             });
             vm.searchItems(res);
           }
+          vm.searchValue(1);
           //Create green rowNumber column
           $("document").ready(() => {
             $("#J3 tbody td:first-child").each(function (index) {
@@ -90,10 +91,16 @@ module nts.uk.com.view.cmf004.j {
           .map(data => new FindDataHistoryDto(data.patternCode, data.saveName));
       } else {
         searchValue = vm.getSearchValue(vm.searchValue());
-        console.log(searchValue);
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      service.findData(arr).then((data: Array<DataDto>) => {
+      debugger;
+      const param = {
+        objects: arr,
+        from: moment.utc(vm.dateValue().startDate).toISOString(),
+        to: moment.utc(vm.dateValue().endDate).toISOString()
+      };
+      service.findData(param).then((data: Array<DataDto>) => {
+        console.log(data);
         const res: DataDto[] = [];
         if (data && data.length) {
           _.each(data, (x, i) => {
@@ -114,7 +121,6 @@ module nts.uk.com.view.cmf004.j {
           });
         }
         vm.resultItems(res);
-        console.log(vm.resultItems());
         vm.loadDataGrid();
       }).always(() => vm.$blockui("hide"));
     }
@@ -143,7 +149,7 @@ module nts.uk.com.view.cmf004.j {
         virtualizationMode: 'continuous',
         enter: 'right',
         useOptions: true,
-        idGen: (id) => id + "_" + nts.uk.util.randomId(),
+        idGen: (id: any) => id + "_" + nts.uk.util.randomId(),
         columns: vm.columnHeadersRes,
         features: [
           {

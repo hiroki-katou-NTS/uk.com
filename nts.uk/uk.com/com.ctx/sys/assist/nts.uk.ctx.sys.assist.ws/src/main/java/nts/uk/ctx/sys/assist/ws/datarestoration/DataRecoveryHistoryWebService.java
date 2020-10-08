@@ -32,6 +32,6 @@ public class DataRecoveryHistoryWebService {
 	@POST
 	@Path("findData")
 	public List<DataHistoryDto> findData(GetDataHistoryCommand command) {
-		return dataHistoryFinder.findData(command.getObjects());
+		return dataHistoryFinder.findData(command);
 	}
 }

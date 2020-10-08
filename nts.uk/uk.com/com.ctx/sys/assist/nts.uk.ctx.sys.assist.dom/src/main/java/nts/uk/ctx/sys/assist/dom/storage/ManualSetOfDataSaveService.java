@@ -212,7 +212,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
 
 			String categoryName = "";
-			int systemType = 1;
+			int systemType = categoryFieldMt.getSystemType().value;
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;

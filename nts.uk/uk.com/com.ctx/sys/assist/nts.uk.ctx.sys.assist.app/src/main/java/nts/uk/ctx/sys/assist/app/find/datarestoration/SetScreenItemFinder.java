@@ -30,7 +30,10 @@ public class SetScreenItemFinder {
 	
 	public List<ItemSetDto> findScreenItem(String dataStorageProcessId) {
 		// 「ログイン者が担当者か判断する」を取得する。
-		LoginPersonInCharge pic = picService.getPic();
+//		LoginPersonInCharge pic = picService.getPic();
+		
+		//FAKE-DATA
+		LoginPersonInCharge pic = picService.fakePic();
 		
 		//1. ドメインオブジェクト「テーブル一覧」を取得する。
 		//2. 取得したList<テーブル一覧>から「カテゴリのテーブル」をマッピングする。

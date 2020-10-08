@@ -392,31 +392,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       block.invisible();
       //Get Data TableList for Screen E
       service.findTableList(self.recoveryProcessingId).done(function (data: Array<any>) {
-        let listCategory: Array<CategoryInfo> = [];
-        if (data && data.length) {
-          _.each(data, (x, i) => {
-            let rowNumber = i + 1;
-            let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-            let isRecover: boolean = (x.canNotBeOld == 1);
-            let categoryName = x.categoryName;
-            let categoryId = x.categoryId;
-            let recoveryPeriod = x.retentionPeriodCls;
-            let startOfPeriod = x.saveDateFrom;
-            let endOfPeriod = x.saveDateTo;
-            let recoveryMethod = x.storageRangeSaved == 1 ? getText('CMF004_305') : getText('CMF004_306');
-            let systemType = x.systemType;
-            let saveSetName = x.saveSetName;
-            listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod,
-              startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld, systemType, saveSetName));
-          });
-          self.dataContentConfirm().dataContentcategoryList(listCategory);
-          self.recoverySourceFile(data[0].compressedFileName + '.zip');
-          self.recoverySourceCode(data[0].patternCode);
-          self.recoverySourceName(data[0].saveSetName);
-          self.saveForm(data[0].saveForm);
-          self.supplementaryExplanation(data[0].supplementaryExplanation);
-        }
-
+        
       }).always(() => {
         block.clear();
       });
@@ -613,8 +589,33 @@ module nts.uk.com.view.cmf004.b.viewmodel {
           }
         }
       }).then(() => {
-        service.setScreenItem(self.dataRecoverySelection().selectedRecoveryFile()).done((res) => {
-          if (res) self.output(res);
+        service.setScreenItem(self.dataRecoverySelection().selectedRecoveryFile()).done((data) => {
+          console.log(data);
+          let listCategory: Array<CategoryInfo> = [];
+          if (data && data.length) {
+            _.each(data, (c, i: number) => {
+              const x = c.categoryTable;
+              let rowNumber = i + 1;
+              let iscanNotBeOld: boolean = c.systemChargeCategory;
+              let isRecover: boolean = c.systemChargeCategory;
+              let categoryName = x.categoryName;
+              let categoryId = x.categoryId;
+              let recoveryPeriod = x.retentionPeriodCls;
+              let startOfPeriod = x.saveDateFrom;
+              let endOfPeriod = x.saveDateTo;
+              let recoveryMethod = x.storageRangeSaved == 1 ? getText('CMF004_305') : getText('CMF004_306');
+              let systemType = x.systemType;
+              let saveSetName = x.saveSetName;
+              listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod,
+                startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld, systemType, saveSetName));
+            });
+            self.dataContentConfirm().dataContentcategoryList(listCategory);
+            self.recoverySourceFile(data[0].categoryTable.compressedFileName + '.zip');
+            self.recoverySourceCode(data[0].categoryTable.patternCode);
+            self.recoverySourceName(data[0].categoryTable.saveSetName);
+            self.saveForm(data[0].categoryTable.saveForm);
+            self.supplementaryExplanation(data[0].categoryTable.supplementaryExplanation);
+          }
         })
       }).fail((err) => {
         dialog.alertError(err);

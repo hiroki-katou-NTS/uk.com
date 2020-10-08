@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,11 +45,15 @@ public class DeleteCategoryInitDisplayFinder {
 				.findByContractCd(user.contractCode());
 
 		// ２．ログイン者が担当者か判断する
-		LoginPersonInCharge pic = picService.getPic();
+//		LoginPersonInCharge pic = picService.getPic();
+		//FAKE-DATA
+		LoginPersonInCharge pic = picService.fakePic();
 		dto.setPic(pic);
 
 		// List <削除カテゴリマスタ>を取得する
-		List<DeleteCategoryDto> categories = getCategoryList(pic);
+		List<DeleteCategoryDto> categories = getCategoryList(pic).stream()
+				.sorted(Comparator.comparing(DeleteCategoryDto::getCategoryId))
+				.collect(Collectors.toList());
 
 		// List<カテゴリマスタ>をチェックする。
 		if (!categories.isEmpty()) {

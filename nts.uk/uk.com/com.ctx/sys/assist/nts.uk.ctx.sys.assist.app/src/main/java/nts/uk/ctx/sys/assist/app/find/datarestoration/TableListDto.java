@@ -118,6 +118,11 @@ public class TableListDto {
 	 * 調査用保存
 	 */
 	private Integer surveyPreservation;
+	
+	/**
+	 * パターンコード
+	 */
+	private String patternCode;
 
 	public static TableListDto fromDomain(TableList domain) {
 		List<TableInfoDto> tableList = Arrays.asList(new TableInfoDto(domain.getTableNo(), domain.getTableJapaneseName(), domain.getTableEnglishName()));
@@ -142,6 +147,7 @@ public class TableListDto {
 				domain.getScreenRetentionPeriod().orElse(null),
 				domain.getSupplementaryExplanation().orElse(null),
 				domain.getHasParentTblFlg().value,
-				domain.getSurveyPreservation().value);
+				domain.getSurveyPreservation().value,
+				domain.getPatternCode());
 	}
 }

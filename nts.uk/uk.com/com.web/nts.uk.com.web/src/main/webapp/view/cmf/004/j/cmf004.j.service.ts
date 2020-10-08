@@ -9,7 +9,7 @@ module nts.uk.com.view.cmf004.j.service {
     return ajax('com', paths.findSaveSetHistory, { from: fromDate, to: toDate });
   } 
 
-  export function findData(param: Array<FindDataHistoryDto>): JQueryPromise<DataDto[]> {
+  export function findData(param: any): JQueryPromise<DataDto[]> {
     return ajax('com', paths.findData, { objects: param })
   }
 }
