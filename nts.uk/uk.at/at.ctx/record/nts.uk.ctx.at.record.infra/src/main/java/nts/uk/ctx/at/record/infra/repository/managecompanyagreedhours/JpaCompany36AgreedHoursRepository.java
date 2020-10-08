@@ -3,8 +3,13 @@ package nts.uk.ctx.at.record.infra.repository.managecompanyagreedhours;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
+import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 
+import javax.ejb.Stateless;
+import java.util.Optional;
+
+@Stateless
 public class JpaCompany36AgreedHoursRepository extends JpaRepository implements Company36AgreedHoursRepository {
     private static String FIND_BY_CID;
     static {
@@ -26,10 +31,11 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     }
 
     @Override
-    public AgreementTimeOfCompany getByCid(String cid) {
+    public Optional<AgreementTimeOfCompany> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtCmp.class)
                 .setParameter("cid",cid)
-                .getSingle(Ksrmt36AgrMgtCmp::toDomain).get();
+                .getSingle(Ksrmt36AgrMgtCmp::toDomain);
+
     }
 
 }
