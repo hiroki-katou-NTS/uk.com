@@ -262,6 +262,19 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 						return true;
 					}
 				})
+				.then((isValid) => {
+					if(isValid) {
+						if(!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2Start': {messageId: 'Msg_1956'}});
+							return false;
+						}
+						if(_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2End': {messageId: 'Msg_1956'}});
+							return false;
+						}
+						return true;
+					}
+				})
 				.then(result => {
 					if (!result) return;
 					return vm.$ajax(API.checkBeforeRegister, command);
