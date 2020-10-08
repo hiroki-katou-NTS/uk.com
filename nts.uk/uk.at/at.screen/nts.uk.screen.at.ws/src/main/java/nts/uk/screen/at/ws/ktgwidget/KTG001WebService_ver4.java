@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.screen.at.app.ktgwidget.KTG001QueryProcessor_ver04;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataExecutionResultDto;
 
-@Path("screen/at/ktg001/")
+@Path("screen/at/ktg001")
 @Produces("application/json")
 public class KTG001WebService_ver4 {
 

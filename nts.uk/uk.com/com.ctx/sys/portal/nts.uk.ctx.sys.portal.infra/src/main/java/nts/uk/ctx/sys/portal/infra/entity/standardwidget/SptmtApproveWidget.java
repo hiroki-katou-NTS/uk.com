@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
@@ -81,21 +80,21 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 
 	public StandardWidget toDomain() {
 
-		StandardWidget standardWidget = (StandardWidget) new TopPagePart(companyId, null, null, null, null, null);
-
+		StandardWidget standardWidget = new StandardWidget(companyId, "", null, null, null, null);
+		
 		List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettings = new ArrayList<>();
 
 		ApprovedAppStatusDetailedSetting appDisplaySetting = new ApprovedAppStatusDetailedSetting(
-				EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class),
+				NotUseAtr.valueOf(this.appDisplayAtr),
 				ApprovedApplicationStatusItem.APPLICATION_DATA);
 		ApprovedAppStatusDetailedSetting dayDisplaySetting = new ApprovedAppStatusDetailedSetting(
-				EnumAdaptor.valueOf(this.dayDisplayAtr, NotUseAtr.class),
+				NotUseAtr.valueOf(this.dayDisplayAtr),
 				ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA);
 		ApprovedAppStatusDetailedSetting monDisplaySetting = new ApprovedAppStatusDetailedSetting(
-				EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class),
+				NotUseAtr.valueOf(this.monDisplayAtr),
 				ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA);
 		ApprovedAppStatusDetailedSetting agrDisplaySetting = new ApprovedAppStatusDetailedSetting(
-				EnumAdaptor.valueOf(this.appDisplayAtr, NotUseAtr.class),
+				NotUseAtr.valueOf(this.agrDisplayAtr),
 				ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA);
 
 		approvedAppStatusDetailedSettings.add(appDisplaySetting);

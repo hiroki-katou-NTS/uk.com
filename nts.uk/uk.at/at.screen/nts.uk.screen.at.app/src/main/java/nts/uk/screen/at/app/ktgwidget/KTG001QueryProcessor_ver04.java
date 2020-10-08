@@ -37,8 +37,11 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.TopPageDisplayYearMonthEnum;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataExecutionResultDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriod;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodImportDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -88,7 +91,7 @@ public class KTG001QueryProcessor_ver04 {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
-		ApprovedDataExecutionResultDto approvedDataExecutionResult = new ApprovedDataExecutionResultDto();
+		ApprovedDataExecutionResultDto approvedDataExecutionResultDto = new ApprovedDataExecutionResultDto();
 		List<ClosureIdPresentClosingPeriod> closingPeriods = new ArrayList<>();
 
 		// 1. 指定するウィジェットの設定を取得する
@@ -109,7 +112,7 @@ public class KTG001QueryProcessor_ver04 {
 				.collect(Collectors.toList()).get(0);
 
 		if (applicationDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
-			approvedDataExecutionResult.setAppDisplayAtr(false);
+			approvedDataExecutionResultDto.setAppDisplayAtr(false);
 
 		} else {
 
@@ -117,7 +120,7 @@ public class KTG001QueryProcessor_ver04 {
 			PresentClosingPeriodImport periodImport = getPeriod(closingPeriods);
 
 			// 承認すべき申請データ有無表示_（3次用）
-			approvedDataExecutionResult.setAppDisplayAtr(getAppDisplayAtr(periodImport, employeeId, companyId));
+			approvedDataExecutionResultDto.setAppDisplayAtr(getAppDisplayAtr(periodImport, employeeId, companyId));
 		}
 
 		// 3.2. 日別実績の承認すべきデータの取得
@@ -126,7 +129,7 @@ public class KTG001QueryProcessor_ver04 {
 				.collect(Collectors.toList()).get(0);
 
 		if (dailyPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
-			approvedDataExecutionResult.setDayDisplayAtr(false);
+			approvedDataExecutionResultDto.setDayDisplayAtr(false);
 
 		} else {
 
@@ -137,7 +140,7 @@ public class KTG001QueryProcessor_ver04 {
 			Boolean dayDisplayAtr = checkTrackRecordApprovalDay.checkTrackRecordApprovalDayNew(companyId, employeeId,
 					checkTarget);
 
-			approvedDataExecutionResult.setDayDisplayAtr(dayDisplayAtr);
+			approvedDataExecutionResultDto.setDayDisplayAtr(dayDisplayAtr);
 		}
 
 		// 3.3. 月別実績の承認すべきデータの取得
@@ -146,7 +149,7 @@ public class KTG001QueryProcessor_ver04 {
 				.collect(Collectors.toList()).get(0);
 
 		if (monthPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
-			approvedDataExecutionResult.setMonthDisplayAtr(false);
+			approvedDataExecutionResultDto.setMonthDisplayAtr(false);
 
 		} else {
 
@@ -163,7 +166,7 @@ public class KTG001QueryProcessor_ver04 {
 			Boolean monthDisplayAtr = checkTrackRecord.checkTrackRecord(companyId, employeeId,
 					listCheckTargetItemExport);
 
-			approvedDataExecutionResult.setMonthDisplayAtr(monthDisplayAtr);
+			approvedDataExecutionResultDto.setMonthDisplayAtr(monthDisplayAtr);
 		}
 		
 		//3.4. 4.36協定申請の承認すべきデータの取得
@@ -173,7 +176,7 @@ public class KTG001QueryProcessor_ver04 {
 				.collect(Collectors.toList()).get(0);
 
 		if (argPerformanceDataSetting.getDisplayType().value == NotUseAtr.NOT_USE.value) {
-			approvedDataExecutionResult.setAgrDisplayAtr(false);
+			approvedDataExecutionResultDto.setAgrDisplayAtr(false);
 
 		} else {
 			//承認すべき申請の対象期間を取得する
@@ -184,14 +187,23 @@ public class KTG001QueryProcessor_ver04 {
 		}
 
 		// 4. ログイン者が担当者か判断する
-
-		approvedDataExecutionResult.setHaveParticipant(haveParticipant());
-		approvedDataExecutionResult.setTopPagePartName(standardWidget.getName().v());
-		approvedDataExecutionResult.setClosingPeriods(closingPeriods);
-		approvedDataExecutionResult
-				.setApprovedAppStatusDetailedSettings(standardWidget.getApprovedAppStatusDetailedSettingList());
-
-		return approvedDataExecutionResult;
+		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();
+		
+		closingPeriodDtos = closingPeriods.stream().map(c -> new ClosureIdPresentClosingPeriodDto(closureId, 
+				new PresentClosingPeriodImportDto(
+						c.getCurrentClosingPeriod().getProcessingYm().v(),
+						c.getCurrentClosingPeriod().getClosureStartDate().toString(),
+						c.getCurrentClosingPeriod().getClosureEndDate().toString()))).collect(Collectors.toList());
+					
+		approvedDataExecutionResultDto.setHaveParticipant(haveParticipant());
+		approvedDataExecutionResultDto.setTopPagePartName(standardWidget.getName().v());
+		approvedDataExecutionResultDto.setClosingPeriods(closingPeriodDtos);
+				
+		approvedDataExecutionResultDto
+				.setApprovedAppStatusDetailedSettings(standardWidget.getApprovedAppStatusDetailedSettingList().stream()
+						.map(a -> new ApprovedAppStatusDetailedSettingDto(a.getDisplayType().value, a.getItem().value)).collect(Collectors.toList()));
+				
+		return approvedDataExecutionResultDto;
 	}
 	
 	/**
