@@ -64,31 +64,33 @@ export class CmmS45ComponentsApp4Component extends Vue {
             });
     }
     public bindStart() {
-        let params = this.dataOutput;
+        const self = this;
+        let params = self.dataOutput;
 
-        this.bindCodition(params);
+        self.bindCodition(params);
 
         let workTypeCode;
         if (params.goBackApplication.dataWork) {
             workTypeCode = params.goBackApplication.dataWork.workType;
         }
         let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS09_20');
-        this.$app().workType = (workTypeCode && workType) ? (workTypeCode + '  ' + workTypeName) : this.$i18n('KAFS09_20');
+        let workTypeName = workType ? workType.abbreviationName : self.$i18n('KAFS09_20');
+        self.$app().workType = workTypeCode ? (workTypeName ? workTypeCode + '  ' + workTypeName : self.$i18n('KAFS09_21')) : self.$i18n('KAFS09_20');
 
         let workTimeCode;
         if (params.goBackApplication.dataWork) {
             workTimeCode = params.goBackApplication.dataWork.workTime;
         }
         let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS09_21');
-        if (!workTimeCode || !workTime) {
-            workTimeCode = this.$i18n('KAFS09_20');
-            workTimeName = '';
-        }
-        this.$app().workTime = workTimeCode + '  ' + workTimeName;
-        this.$app().straight = params.goBackApplication.straightDistinction == 1 ? true : false;
-        this.$app().bounce = params.goBackApplication.straightLine == 1 ? true : false;
+        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : self.$i18n('KAFS09_21');
+
+        // if (!workTimeCode) {
+        //     workTimeCode = self.$i18n('KAFS09_20');
+        //     workTimeName = '';
+        // }
+        self.$app().workTime = workTimeCode ? (workTimeName ? workTime + ' ' + workTimeName : self.$i18n('KAFS09_21')) :  self.$i18n('KAFS09_20');
+        self.$app().straight = params.goBackApplication.straightDistinction == 1 ? true : false;
+        self.$app().bounce = params.goBackApplication.straightLine == 1 ? true : false;
 
 
     }
