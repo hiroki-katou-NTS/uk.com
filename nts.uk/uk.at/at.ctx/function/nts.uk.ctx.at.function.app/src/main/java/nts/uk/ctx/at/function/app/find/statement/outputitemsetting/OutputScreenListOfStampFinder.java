@@ -216,6 +216,7 @@ public class OutputScreenListOfStampFinder {
 				String optSupportCard = "";
 				String workLocationName = "";
 				String workTimeName = "";
+				boolean isAddress = false;
 				
 				if (stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
 					val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
@@ -232,7 +233,7 @@ public class OutputScreenListOfStampFinder {
 
 				// Local Infor
 				if (stamp.getLocationInfor().isPresent()) {
-					local = this.getLocation(stamp.getLocationInfor().get());
+					local = this.getLocation(stamp.getLocationInfor().get(), isAddress);
 				}
 
 				// Support Card
@@ -277,6 +278,7 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setAuthcMethod(stamp.getRelieve().getAuthcMethod().name);
 				employeEngravingInfor.setInstallPlace(workLocationName);
 				employeEngravingInfor.setLocalInfor(local);
+				employeEngravingInfor.setAddress(isAddress);
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
 				employeEngravingInfor.setSupportCard(optSupportCard);
 				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
@@ -296,7 +298,8 @@ public class OutputScreenListOfStampFinder {
 		return result;
 	}
 	
-	private String getLocation(StampLocationInfor stampLocationInfor) {
+	private String getLocation(StampLocationInfor stampLocationInfor, boolean isAddress) {
+		isAddress = false;
 		if (stampLocationInfor.getPositionInfor() == null) {
 			return "";
 		} else {
@@ -310,6 +313,7 @@ public class OutputScreenListOfStampFinder {
 				NodeList nodelist = doc.getElementsByTagName("location");
 				if(nodelist.getLength() > 0) {
 					Element element = (Element) nodelist.item(0);
+					isAddress = true;
 					return element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent();
 				}else {
 					return String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude());
@@ -363,6 +367,7 @@ public class OutputScreenListOfStampFinder {
 			String overtimeHours = "";
 			String lateNightTime = "";
 			String workLocationName = "";
+			boolean isAddress = false;
 			// String latitude = "";
 			// longitude = "";
 
@@ -389,7 +394,7 @@ public class OutputScreenListOfStampFinder {
 
 				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
 				if (locationInfo.isPresent()) {
-					localInfor = this.getLocation(locationInfo.get());
+					localInfor = this.getLocation(locationInfo.get(), isAddress);
 				}
 				if (refActualResults.getCardNumberSupport().isPresent()) {
 					supportCard = refActualResults.getCardNumberSupport().get();
@@ -426,6 +431,7 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setAuthcMethod(authcMethod);
 			cardNoStampInfo.setInstallPlace(workLocationName);
 			cardNoStampInfo.setLocalInfor(localInfor);
+			cardNoStampInfo.setAddress(isAddress);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
 			cardNoStampInfo.setOvertimeHours(overtimeHours);
