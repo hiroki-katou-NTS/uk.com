@@ -217,7 +217,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
                     closureId: self.closureId(),
-                    lstLinkingDate: self.listLinkingDate()
+                    lstLinkingDate: !_.isEmpty(self.listLinkingDate()) ? self.listLinkingDate() : [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')]
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
@@ -293,7 +293,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         public openKDL036() {
           // TODO open kdl036
           const vm = this;
-          modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
+          modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
             let listParam = getShared("KDL036_SHAREPARAM");
             vm.listLinkingDate(listParam);
           });

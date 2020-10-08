@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -122,7 +124,8 @@ public class FurikyuMngDataExtractionService {
 			// Step 月初の振休残数を取得
 			useDays = getNumberOfRemainingHolidays(empId);
 			// Step 振休管理設定を取得する
-			comSubstVacation = getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
+			EmpComSubstVacation substVaca = getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
+			comSubstVacation = substVaca.getComSubstVacation().orElse(null);
 			// Step 締めIDを取得する
 			closureId = getClosureId(empId, emplManage.getEmploymentCode());
 			
@@ -130,7 +133,9 @@ public class FurikyuMngDataExtractionService {
 			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 					.employeeId(empId)
 					.totalRemainingNumber(useDays)
-					.expirationDate(comSubstVacation.getSetting().getExpirationDate().value)
+					.expirationDate(comSubstVacation != null
+						? comSubstVacation.getSetting().getExpirationDate().value
+						: substVaca.getEmpSubstVacation().get().getSetting().getExpirationDate().value)
 					.remainingData(lstDataRemainDto)
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
@@ -157,9 +162,15 @@ public class FurikyuMngDataExtractionService {
 			// Step 取得した社員の雇用履歴をループする
 			for (EmploymentHistShareImport empHist : empHistShrImp) {
 				// Step 管理区分設定を取得する
-				ComSubstVacation comSubstVaca = getClassifiedManagementSetup(compId, empHist.getEmploymentCode());
+				EmpComSubstVacation ecSubstVaca = getClassifiedManagementSetup(compId, empHist.getEmploymentCode());
+				ComSubstVacation comSubstVaca = ecSubstVaca.getComSubstVacation().orElse(null);
+				Optional<EmpSubstVacation> empSubstVacation = ecSubstVaca.getEmpSubstVacation();
+				if (empSubstVacation.isPresent()) {
+					emplManage.setIsManage(empSubstVacation.get().getSetting().getIsManage());
+					emplManage.setEmploymentCode(empSubstVacation.get().getEmpContractTypeCode());
+				}
 				// Step 取得した「振休管理設定」．管理区分をチェック
-				if (comSubstVaca != null && comSubstVaca.isManaged()) {
+				if (comSubstVaca != null && comSubstVaca.getSetting().getIsManage() == ManageDistinct.YES) {
 					// Step 管理区分 ＝ 管理する
 					emplManage.setIsManage(ManageDistinct.YES);
 
@@ -178,16 +189,19 @@ public class FurikyuMngDataExtractionService {
 	}
 	
 	// Step 管理区分設定を取得する
-	public ComSubstVacation getClassifiedManagementSetup(String compId, String empCode) {
+	public EmpComSubstVacation getClassifiedManagementSetup(String compId, String empCode) {
 		Optional<ComSubstVacation> optComSubData = Optional.empty();
 		// Step ドメインモデル「雇用振休管理設定」を取得
 		Optional<EmpSubstVacation> optEmpSubData = empSubstVacationRepository.findById(compId, empCode);
 		// Step 取得した「振休管理設定」をチェック
-		if (!optEmpSubData.isPresent() || optEmpSubData.get().getSetting().getIsManage() == ManageDistinct.YES) {
+		if (!optEmpSubData.isPresent()) {
 			// Step ドメインモデル「振休管理設定」を取得
 			optComSubData = comSubstVacationRepository.findById(compId);
 		}
-		return optComSubData.orElse(null);
+		return EmpComSubstVacation.builder()
+				.comSubstVacation(optComSubData)
+				.empSubstVacation(optEmpSubData)
+				.build();
 	}	
 	
 	// Step 月初の振休残数を取得
@@ -439,4 +453,11 @@ public class FurikyuMngDataExtractionService {
 				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
 				.build());
 	}
+}
+
+@Data
+@Builder
+class EmpComSubstVacation {
+	Optional<EmpSubstVacation> empSubstVacation;
+	Optional<ComSubstVacation> comSubstVacation;
 }

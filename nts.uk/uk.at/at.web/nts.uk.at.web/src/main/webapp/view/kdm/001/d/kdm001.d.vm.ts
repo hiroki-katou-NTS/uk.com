@@ -164,7 +164,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
                 subDays: self.subDays(),
-                linkingDates: self.linkingDates()
+                linkingDates: !_.isEmpty(self.linkingDates()) ? self.linkingDates() : [moment.utc(self.dayOff()).format('YYYY-MM-DD')]
             };
             
             service.save(data).done(result => {
@@ -269,10 +269,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 // get List<振休振出紐付け管理> from KDL035
                 const linkingDates: Array<any> = getShared('linkingDates');
                 if (linkingDates.length > 0) {
-                   let linkingDatesFake =['2010-06-06',
-                    '2018-02-05',
-                    '2018-05-01','2018-05-10']
-                    vm.linkingDates(linkingDatesFake);
+                    vm.linkingDates(linkingDates);
                     vm.checkLinkingDates(true);
                 }
             });

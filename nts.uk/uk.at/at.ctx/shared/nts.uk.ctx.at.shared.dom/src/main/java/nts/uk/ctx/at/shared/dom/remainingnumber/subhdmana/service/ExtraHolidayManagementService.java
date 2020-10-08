@@ -224,7 +224,7 @@ public class ExtraHolidayManagementService {
 		// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 		CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, manageDistinct.getEmploymentCode());
 		CompensatoryLeaveComSetting compLeavCom = null;
-		if (empSetting != null) {
+		if (empSetting == null) {
 			// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 			compLeavCom = compensLeaveComSetRepository.find(cid);
 		}
@@ -261,7 +261,9 @@ public class ExtraHolidayManagementService {
 		DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 				.employeeId(employeeId)
 				.totalRemainingNumber(carryforwardDays)
-				.dispExpiredDate(compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description)
+				.dispExpiredDate(compLeavCom != null
+					? compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description
+					: empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
 				.remainingData(lstDataRemainDto)
 				.startDate(closing.get().getClosureStartDate())
 				.endDate(closing.get().getClosureEndDate())
@@ -302,9 +304,12 @@ public class ExtraHolidayManagementService {
 			// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 			CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, empHistShrImp.getEmploymentCode());
 			
-			if (empSetting == null || empSetting.getIsManaged() == ManageDistinct.YES) { // 取得結果＝0件
+			if (empSetting == null) { // 取得結果＝0件
 				// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 				compLeavCom = compensLeaveComSetRepository.find(cid);
+			} else {
+				emplData.setIsManage(empSetting.getIsManaged());
+				emplData.setEmploymentCode(empSetting.getEmploymentCode().v());
 			}
 			// 管理するかないかチェック Check Setting quản lý nghỉ bù hay ko
 			if (compLeavCom != null && (compLeavCom.isManaged() || compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().equals(ManageDistinct.YES))) {

@@ -251,16 +251,6 @@
                     } else dayOffDate += '※';
                    
                 }
-                
-                if (data.expiredDate === null) {
-                    this.expiredDateText = '';
-                }
-                else if (new Date(data.expiredDate).getMonth() === new Date(data.dayOffDate).getMonth() && new Date(data.expiredDate).getFullYear() === new Date(data.dayOffDate).getFullYear()) {
-                    this.expiredDateText = getText('KDM001_161', [data.expiredDate]);
-                }
-                else {
-                    this.expiredDateText = getText('KDM001_162', [data.expiredDate]);
-                }
 
                 let substituedexpiredDate = '';
                 if (data.deadLine === '') {
@@ -282,11 +272,11 @@
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
-                    (data.occurrenceId !== '' || data.occurrenceId !== 0) && data.accrualDate === null ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
-                    (data.digestionId !== '' || data.digestionId !== 0) && data.digestionDay === null ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
