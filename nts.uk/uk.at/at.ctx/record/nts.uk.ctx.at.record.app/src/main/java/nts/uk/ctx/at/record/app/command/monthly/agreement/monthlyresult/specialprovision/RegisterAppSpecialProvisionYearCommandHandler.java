@@ -76,7 +76,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
                 agreementTimeOfEmploymentRepo, agreementTimeCompanyRepo);
         List<RegisterAppSpecialProvisionYearCommand> commands = context.getCommand();
         for (RegisterAppSpecialProvisionYearCommand command : commands) {
-            AnnualAppCreate.create(require, cid, command.getContent().getApplicantId(),
+            AnnualAppCreate.create(require, cid, command.getContent().getEmployeeId(),
                     command.getContent().toAnnualAppContent(), command.getScreenInfo().toScreenDisplayInfo());
         }
     }

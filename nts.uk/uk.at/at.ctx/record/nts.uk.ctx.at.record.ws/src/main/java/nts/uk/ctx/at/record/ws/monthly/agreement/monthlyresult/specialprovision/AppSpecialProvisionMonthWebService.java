@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.record.ws.monthly.agreement.monthlyresult.specialprovision;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.RegisterAppSpecialProvisionMonthCommand;
-import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.RegisterAppSpecialProvisionMonthCommandHandler;
-import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.RegisterAppSpecialProvisionYearCommand;
-import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.RegisterAppSpecialProvisionYearCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.app.command.reservation.bento.*;
 
 import javax.inject.Inject;
@@ -14,6 +11,8 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 /**
+ * KAF021 Web service
+ *
  * @author Le Huu Dat
  */
 @Path("at/record/monthly/agreement/monthly-result/special-provision")
@@ -23,16 +22,40 @@ public class AppSpecialProvisionMonthWebService extends WebService {
     private RegisterAppSpecialProvisionMonthCommandHandler registerAppSpecialProvisionMonthCommandHandler;
     @Inject
     private RegisterAppSpecialProvisionYearCommandHandler registerAppSpecialProvisionYearCommandHandler;
+    @Inject
+    private ApplyAppSpecialProvisionMonthCommandHandler aplyAppSpecialProvisionMonthCommandHandler;
+    @Inject
+    private ApplyAppSpecialProvisionYearCommandHandler applyAppSpecialProvisionYearCommandHandler;
+    @Inject
+    private DeleteAppSpecialProvisionCommandHandler deleteAppSpecialProvisionCommandHandler;
 
     @Path("register-month")
     @POST
-    public void add(List<RegisterAppSpecialProvisionMonthCommand> commands) {
+    public void registerMonth(List<RegisterAppSpecialProvisionMonthCommand> commands) {
         this.registerAppSpecialProvisionMonthCommandHandler.handle(commands);
     }
 
     @Path("register-year")
     @POST
-    public void update(List<RegisterAppSpecialProvisionYearCommand> commands) {
+    public void registerYear(List<RegisterAppSpecialProvisionYearCommand> commands) {
         this.registerAppSpecialProvisionYearCommandHandler.handle(commands);
+    }
+
+    @Path("apply-month")
+    @POST
+    public void applyMonth(List<ApplyAppSpecialProvisionMonthCommand> commands) {
+        this.aplyAppSpecialProvisionMonthCommandHandler.handle(commands);
+    }
+
+    @Path("apply-year")
+    @POST
+    public void applyYear(List<ApplyAppSpecialProvisionYearCommand> commands) {
+        this.applyAppSpecialProvisionYearCommandHandler.handle(commands);
+    }
+
+    @Path("delete")
+    @POST
+    public void delete(List<DeleteAppSpecialProvisionCommand> commands) {
+        this.deleteAppSpecialProvisionCommandHandler.handle(commands);
     }
 }

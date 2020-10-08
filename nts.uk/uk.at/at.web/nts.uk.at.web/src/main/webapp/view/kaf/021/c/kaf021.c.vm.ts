@@ -3,6 +3,12 @@
 module nts.uk.at.kaf021.c {
     import parseTime = nts.uk.time.parseTime;
 
+    const API = {
+        INIT: 'screen/at/kaf021/init-display',
+        SEARCH: 'screen/at/kaf021/search',
+        CURRENT_MONTH: 'screen/at/kaf021/get-current-month'
+    };
+
     @bean()
     class ViewModel extends ko.ViewModel {
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(false);

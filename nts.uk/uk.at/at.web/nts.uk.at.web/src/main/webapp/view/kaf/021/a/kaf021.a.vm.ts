@@ -7,7 +7,7 @@ module nts.uk.at.kaf021.a {
     import common = nts.uk.at.kaf021.common;
 
     const API = {
-        INIT: 'screen/at/kaf021/init',
+        INIT: 'screen/at/kaf021/init-a',
         CURRENT_MONTH: 'screen/at/kaf021/get-current-month',
         NEXT_MONTH: 'screen/at/kaf021/get-next-month',
         YEAR: 'screen/at/kaf021/get-year',
