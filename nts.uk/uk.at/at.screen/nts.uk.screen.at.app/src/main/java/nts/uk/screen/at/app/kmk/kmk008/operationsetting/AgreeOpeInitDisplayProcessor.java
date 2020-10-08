@@ -1,11 +1,17 @@
 package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,13 +21,31 @@ import java.util.Optional;
 public class AgreeOpeInitDisplayProcessor {
 
     @Inject
+    I18NResourcesForUK ukResource;
+
+    @Inject
     private AgreementOperationSettingRepository operationSettingRepository;
 
     public AgreementOperationSettingDto find() {
 
+        AgreementOperationSettingDto operationSettingDto = new AgreementOperationSettingDto();
+
+        List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class, ukResource);
+        List<EnumConstant> closingDateType = EnumAdaptor.convertToValueNameList(ClosingDateType.class, ukResource);
+
+        operationSettingDto.setStartingMonthEnum(startingMonthEnum);
+        operationSettingDto.setClosureDate(closingDateType);
+
         Optional<AgreementOperationSetting> data = operationSettingRepository.find(AppContexts.user().companyId());
 
-        return AgreementOperationSettingDto.setData(data);
+        if (data.isPresent()){
+            operationSettingDto.getAgreementOperationSettingDetailDto().setStartingMonthEnum(data.get().getStartingMonth().value);
+            operationSettingDto.getAgreementOperationSettingDetailDto().setClosureDate(data.get().getClosureDate().getClosureDay().v());
+            operationSettingDto.getAgreementOperationSettingDetailDto().setSpecicalConditionApplicationUse(data.get().isSpecicalConditionApplicationUse());
+            operationSettingDto.getAgreementOperationSettingDetailDto().setYearSpecicalConditionApplicationUse(data.get().isYearSpecicalConditionApplicationUse());
+
+        }
+        return operationSettingDto;
     }
 
 }
