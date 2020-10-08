@@ -213,7 +213,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 			DatePeriod closurePeriod,
 			ClosureStatus closureStatus,
 			int specialHolidayCd,
-			ActualSpecialLeave actualSpecial,
+			SpecialLeave actualSpecial,
 			SpecialLeave specialLeave,
 			Optional<SpecialLeaveGrantUseDay> grantDays,
 			boolean grantAtr) {

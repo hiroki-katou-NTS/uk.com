@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -92,6 +92,21 @@ public class LeaveNumberInfo {
 			usedNumber.setMinutes(Optional.of(new LeaveUsedTime(used)));
 		}
 	}
+	
+	@Override
+	public LeaveNumberInfo clone() {
+		LeaveNumberInfo cloned = new LeaveNumberInfo();
+		try {
+			cloned.grantNumber = grantNumber.clone();
+			cloned.usedNumber = usedNumber.clone();
+			cloned.remainingNumber = remainingNumber.clone();
+			cloned.usedPercent = new LeaveUsedPercent(usedPercent.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveGrantRemainingData clone error.");
+		}
+		return cloned;
+	}
 
 //	public LeaveNumberInfo(){
 //		this.grantNumber = LeaveGrantNumber.createFromJavaType(0.0, null);
@@ -100,15 +115,16 @@ public class LeaveNumberInfo {
 //		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
 //	}
 	
-	public LeaveNumberInfo(double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
+	public LeaveNumberInfo(
+			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
 			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {
-//		this.grantNumber = LeaveGrantNumber.createFromJavaType(grantDays, grantMinutes);
-//		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays);
-//		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes);
-//		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
-//		if (grantDays != 0){
-//			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
-//			this.usedPercent = new LeaveUsedPercent(new BigDecimal(usedPer));
-//		}
+		this.grantNumber = LeaveGrantNumber.createFromJavaType(grantDays, grantMinutes);
+		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays);
+		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes);
+		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
+		if (grantDays != 0){
+			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
+			this.usedPercent = new LeaveUsedPercent(new BigDecimal(usedPer));
+		}
 	}
 }

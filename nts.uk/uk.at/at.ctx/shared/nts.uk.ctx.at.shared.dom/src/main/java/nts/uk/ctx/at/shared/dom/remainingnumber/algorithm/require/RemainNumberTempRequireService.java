@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
@@ -51,7 +52,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
@@ -229,12 +231,13 @@ public class RemainNumberTempRequireService {
 	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
-			AbsenceReruitmentMngInPeriodQuery.RequireM10, SpecialLeaveManagementService.RequireM5,
+			AbsenceReruitmentMngInPeriodQuery.RequireM10,
 			GetClosureStartForEmployee.RequireM1, ClosureService.RequireM3,
 			OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1, 
 			AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM4,
 			AbsenceTenProcess.RequireM3, AbsenceReruitmentMngInPeriodQuery.RequireM2,
-			WorkingConditionService.RequireM1, DailyStatutoryLaborTime.RequireM1 {
+			WorkingConditionService.RequireM1, DailyStatutoryLaborTime.RequireM1,
+			LeaveRemainingNumber.RequireM3, InforSpecialLeaveOfEmployeeSevice.RequireM4{
 
 	}
 
@@ -368,31 +371,6 @@ public class RemainNumberTempRequireService {
 		@Override
 		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
 			return annLeaEmpBasicInfoRepo.get(employeeId);
-		}
-		
-		@Override
-		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-			return specialLeaveGrantRepo.getBySpecialId(specialId);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-
-			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-		}
-
-		@Override
-		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-
-			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
-					deadlineDate);
-		}
-
-		@Override
-		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-			return interimSpecialHolidayMngRepo.findById(mngId);
 		}
 
 		@Override
@@ -670,6 +648,16 @@ public class RemainNumberTempRequireService {
 		public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
 				GeneralDate baseDate) {
 			return sharedAffWorkPlaceHisAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+		}
+
+		@Override
+		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
 		}
 	}
 

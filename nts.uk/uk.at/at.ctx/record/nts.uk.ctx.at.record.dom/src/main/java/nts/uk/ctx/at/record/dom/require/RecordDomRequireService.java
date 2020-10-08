@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
+import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
@@ -54,6 +55,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePers
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.cancelactuallock.CancelActualLock;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.logprocess.MonthlyClosureUpdateLogProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.MonthlyUpdateMgr;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updateremainnum.RemainAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
@@ -90,6 +92,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Tar
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -120,6 +123,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -139,6 +143,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -168,6 +173,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
@@ -209,6 +215,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.Vertica
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
@@ -226,6 +233,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.CalcFlexChangeDto;
@@ -335,6 +343,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProcKdm002;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 
 @Stateless
 public class RecordDomRequireService {
@@ -653,7 +662,11 @@ public class RecordDomRequireService {
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1,
 		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2, AgreementDomainService.RequireM5,
 		AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1,
-		GetExcessTimesYear.RequireM2 {
+		GetExcessTimesYear.RequireM2, SpecialLeaveManagementService.RequireM5,
+		FlexTimeOfMonthly.RequireM3, AggregateMonthlyRecordServiceProc.RequireM2,
+		MonthlyOldDatas.RequireM1, MonthlyAggregationService.RequireM2,
+		RemainAnnualLeaveUpdating.RequireM3
+		{
 		
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -1630,10 +1643,10 @@ public class RecordDomRequireService {
 			updateAllDomainMonthService.merge(domains, targetDate);
 		}
 		
-		@Override
-		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
-			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
-		}
+//		@Override
+//		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+//			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+//		}
 
 		@Override
 		public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
@@ -2383,6 +2396,43 @@ public class RecordDomRequireService {
 		public Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date) {
 
 			return getProcessingDate.getProcessingDate(employeeId, date);
+		}
+
+		@Override
+		public List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+//		@Override
+//		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+		
+		@Override
+		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+			return specialLeaveGrantRepo.getBySpecialId(specialId);
+		}
+
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+
+			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
+		}
+
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+
+			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
+					deadlineDate);
+		}
+		
+		@Override
+		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+			return interimSpecialHolidayMngRepo.findById(mngId);
 		}
 	}
 }

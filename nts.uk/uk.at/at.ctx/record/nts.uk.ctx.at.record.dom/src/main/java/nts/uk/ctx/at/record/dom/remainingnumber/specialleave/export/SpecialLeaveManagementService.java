@@ -36,8 +36,12 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemN
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
@@ -71,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveGrantSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -87,6 +92,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmplo
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM1;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ManagaData;
@@ -595,7 +601,7 @@ public class SpecialLeaveManagementService {
 				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
 			}
 			
-		});
+		};
 
 		// 付与日で期間を区切る ----------------------------
 		

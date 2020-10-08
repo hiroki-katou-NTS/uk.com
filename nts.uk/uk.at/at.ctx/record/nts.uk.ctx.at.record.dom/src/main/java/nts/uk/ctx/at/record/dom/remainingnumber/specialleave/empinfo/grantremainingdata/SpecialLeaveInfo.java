@@ -90,66 +90,12 @@ public class SpecialLeaveInfo implements Cloneable {
 		try {
 			cloned.ymd = this.ymd;
 			cloned.remainingNumber = this.remainingNumber.clone();
-			for (val grantRemainingNumber : this.grantRemainingList){
-				val detail = grantRemainingNumber.getDetails();
-				Integer grantMinutes = null;
-				if (detail.getGrantNumber().getMinutes().isPresent()){
-					grantMinutes = detail.getGrantNumber().getMinutes().get().v();
-				}
-				Integer usedMinutes = null;
-				if (detail.getUsedNumber().getMinutes().isPresent()){
-					usedMinutes = detail.getUsedNumber().getMinutes().get().v();
-				}
-				Double stowageDays = null;
-				if (detail.getUsedNumber().getStowageDays().isPresent()){
-					stowageDays = detail.getUsedNumber().getStowageDays().get().v();
-				}
-				Integer remainMinutes = null;
-				if (detail.getRemainingNumber().getMinutes().isPresent()){
-					remainMinutes = detail.getRemainingNumber().getMinutes().get().v();
-				}
-				Double prescribedDays = null;
-				Double deductedDays = null;
-				Double workingDays = null;
-				if (grantRemainingNumber.getSpecialLeaveConditionInfo().isPresent()){
-					val annualLeaveCond = grantRemainingNumber.getSpecialLeaveConditionInfo().get();
-					prescribedDays = annualLeaveCond.getPrescribedDays().v();
-					deductedDays = annualLeaveCond.getDeductedDays().v();
-					workingDays = annualLeaveCond.getWorkingDays().v();
-				}
-				SpecialLeaveGrantRemaining newRemainData = new SpecialLeaveGrantRemaining(
-						SpecialLeaveGrantRemainingData.createFromJavaType(
-								grantRemainingNumber.getAnnLeavID(),
-								grantRemainingNumber.getCid(),
-								grantRemainingNumber.getEmployeeId(),
-								grantRemainingNumber.getGrantDate(),
-								grantRemainingNumber.getDeadline(),
-								grantRemainingNumber.getExpirationStatus().value,
-								grantRemainingNumber.getRegisterType().value,
-								detail.getGrantNumber().getDays().v(),
-								grantMinutes,
-								detail.getUsedNumber().getDays().v(),
-								usedMinutes,
-								stowageDays,
-								detail.getRemainingNumber().getDays().v(),
-								remainMinutes,
-								0.0,
-								prescribedDays,
-								deductedDays,
-								workingDays));
-				newRemainData.setDummyAtr(grantRemainingNumber.isDummyAtr());
-				cloned.grantRemainingList.add(newRemainData);
-			}
-			if (this.grantInfo.isPresent()){
-				cloned.grantInfo = Optional.of(this.grantInfo.get().clone());
-			}
-			cloned.usedDays = new SpecialLeaveUsedDayNumber(this.usedDays.v());
-			cloned.usedTime = new UsedMinutes(this.usedTime.v());
-//			cloned.afterGrantAtr = this.afterGrantAtr;
 			
-			// 以下は、cloneしなくてよい。
-			cloned.maxData = this.maxData;
-			cloned.annualPaidLeaveSet = this.annualPaidLeaveSet;
+			cloned.grantRemainingList = new ArrayList<>();
+			for (val grantRemainingNumber : this.grantRemainingList){
+				grantRemainingList.add(grantRemainingNumber.clone());
+				
+			}
 		}
 		catch (Exception e){
 			throw new RuntimeException("SpecialLeaveInfo clone error.");

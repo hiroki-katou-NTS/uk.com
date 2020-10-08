@@ -224,6 +224,18 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public SpecialLeaveGrantRemainingData clone() {
+		SpecialLeaveGrantRemainingData cloned;
+		try {
+			cloned = (SpecialLeaveGrantRemainingData)super.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveGrantRemaining clone error.");
+		}
+		return cloned;
+	}
 
 //	/**
 //	 * コンストラクタ

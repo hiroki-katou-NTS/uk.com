@@ -60,4 +60,17 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 
 			return domain;
 	}
+	
+	@Override
+	public LeaveGrantRemaining clone() {
+		LeaveGrantRemaining cloned;
+		try {
+			cloned = (LeaveGrantRemaining)super.clone();
+			cloned.dummyAtr = dummyAtr;
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveGrantRemaining clone error.");
+		}
+		return cloned;
+	}
 }

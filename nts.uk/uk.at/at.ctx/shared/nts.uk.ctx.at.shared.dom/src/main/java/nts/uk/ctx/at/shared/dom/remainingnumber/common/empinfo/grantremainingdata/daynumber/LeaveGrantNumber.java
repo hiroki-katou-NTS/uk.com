@@ -3,7 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 休暇付与数  
@@ -12,6 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class LeaveGrantNumber {
 
 	/**
@@ -24,13 +27,28 @@ public class LeaveGrantNumber {
 	 */
 	protected Optional<LeaveGrantTime> minutes;
 
-//	protected LeaveGrantNumber(double days, Integer minutes) {
-//		this.days = new LeaveGrantDayNumber(days);
-//		this.minutes = minutes != null ? Optional.of(new LeaveGrantTime(minutes)) : Optional.empty();
-//	}
-//
-//	public static LeaveGrantNumber createFromJavaType(double days, Integer minutes) {
-//		return new LeaveGrantNumber(days, minutes);
-//	}
+	@Override
+	public LeaveGrantNumber clone() {
+		LeaveGrantNumber cloned = new LeaveGrantNumber();
+		try {
+			cloned.days = new LeaveGrantDayNumber(days.v());
+			if ( minutes.isPresent() ){
+				cloned.minutes = Optional.of(new LeaveGrantTime(minutes.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveGrantRemainingData clone error.");
+		}
+		return cloned;
+	}
+	
+	protected LeaveGrantNumber(double days, Integer minutes) {
+		this.days = new LeaveGrantDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new LeaveGrantTime(minutes)) : Optional.empty();
+	}
+
+	public static LeaveGrantNumber createFromJavaType(double days, Integer minutes) {
+		return new LeaveGrantNumber(days, minutes);
+	}
 
 }

@@ -99,7 +99,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 * @return
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require){
-		return Optional.ofNullable(this.recordInfo.getWorkStyle(require));
+		return this.recordInfo.getWorkStyle(require);
 	}
 
 	/**

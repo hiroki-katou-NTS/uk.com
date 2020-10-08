@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveOverNumber;
 
 /**
@@ -81,16 +83,22 @@ public class LeaveUsedNumber{
 		leaveOverLimitNumber = Optional.empty();
 	}
 
-//	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
-//		this.days = new LeaveUsedDayNumber(days);
-//		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
-//		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
-//				: Optional.empty();
-//	}
-//
-//	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
-//		return new LeaveUsedNumber(days, minutes, stowageDays);
-//	}
+	/**
+	 * コンストラクタ
+	 * @param days
+	 * @param minutes
+	 * @param stowageDays
+	 */
+	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
+		this.days = new LeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
+				: Optional.empty();
+	}
+
+	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
+		return new LeaveUsedNumber(days, minutes, stowageDays);
+	}
 	
 	/**
 	 * 使用数を加算
@@ -118,4 +126,19 @@ public class LeaveUsedNumber{
 		}
 	}
 
+	@Override
+	public LeaveUsedNumber clone() {
+		LeaveUsedNumber cloned = new LeaveUsedNumber();
+		try {
+			cloned.days = new LeaveUsedDayNumber(days.v());
+			cloned.minutes = minutes.map(c -> new LeaveUsedTime(c.v()));
+			cloned.stowageDays = stowageDays.map(c -> new LeaveUsedDayNumber(c.v()));
+			cloned.leaveOverLimitNumber = leaveOverLimitNumber.map(c -> c.clone());
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveUsedNumber clone error.");
+		}
+		return cloned;
+	}
+	
 }

@@ -11,11 +11,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveConditionInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
@@ -204,6 +199,24 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			targetRemainingDatas.add(dummyRemainData);
 			
 		}
+	}
+
+	@Override
+	public LeaveGrantRemainingData clone() {
+		LeaveGrantRemainingData cloned = new LeaveGrantRemainingData();
+		try {
+			cloned.annLeavID = new String(annLeavID);
+			cloned.employeeId = new String(employeeId);
+			cloned.grantDate = GeneralDate.localDate(grantDate.localDate());
+			cloned.deadline = GeneralDate.localDate(deadline.localDate());
+			cloned.expirationStatus = expirationStatus;
+			cloned.registerType = registerType;
+			
+		}
+		catch (Exception e){
+			throw new RuntimeException("LeaveGrantRemainingData clone error.");
+		}
+		return cloned;
 	}
 	
 }

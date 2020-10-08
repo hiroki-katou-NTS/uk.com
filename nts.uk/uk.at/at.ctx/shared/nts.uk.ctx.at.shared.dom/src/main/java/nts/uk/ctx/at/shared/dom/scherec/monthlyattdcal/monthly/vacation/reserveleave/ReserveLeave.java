@@ -79,12 +79,12 @@ public class ReserveLeave implements Cloneable {
 		return cloned;
 	}
 	
-//	/**
-//	 * 実積立年休から値をセット　（積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除）
-//	 * @param realReserveLeave 実積立年休
-//	 */
-//	public void setValueFromRealReserveLeave(ReserveLeave realReserveLeave){
-//		
+	/**
+	 * 実積立年休から値をセット　（積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除）
+	 * @param realReserveLeave 実積立年休
+	 */
+	public void setValueFromRealReserveLeave(ReserveLeave realReserveLeave){
+		// ooooo要修正！！
 //		// 実年休から上書き
 //		this.usedNumber = realReserveLeave.getUsedNumber().clone();
 //		this.remainingNumberInfo = realReserveLeave.getRemainingNumberInfo().clone();
@@ -108,8 +108,8 @@ public class ReserveLeave implements Cloneable {
 //			// 残数．合計残日数　←　0
 //			this.remainingNumberInfo.getTotalRemaining().setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 //		}
-
-		// 残数付与前からマイナスを削除
+//
+//		// 残数付与前からマイナスを削除
 //		if (this.remainingNumberInfoBeforeGrant.getTotalRemainingDays().lessThan(0.0)){
 //			// 積立年休．使用数（付与前）からマイナス分を引く
 //			double minusDays = this.remainingNumberInfoBeforeGrant.getTotalRemainingDays().v();
@@ -171,7 +171,7 @@ public class ReserveLeave implements Cloneable {
 //			// 残数．合計残日数　←　0
 //			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 //		}
-//	}
+	}
 	
 	/**
 	 * 積立年休付与残数データから積立年休残数を作成
