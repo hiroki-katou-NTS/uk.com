@@ -59,8 +59,8 @@ module nts.uk.at.view.kwr001.c {
 
             // switch btn A9_2
             dataSizeClassificationType: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KWR001_153") },
-                { code: 1, name: nts.uk.resource.getText("KWR001_154") }
+                { code: 1, name: nts.uk.resource.getText("KWR001_153") },
+                { code: 0, name: nts.uk.resource.getText("KWR001_154") }
             ]);
             selectedSizeClassificationType: KnockoutObservable<number> = ko.observable(0);
 

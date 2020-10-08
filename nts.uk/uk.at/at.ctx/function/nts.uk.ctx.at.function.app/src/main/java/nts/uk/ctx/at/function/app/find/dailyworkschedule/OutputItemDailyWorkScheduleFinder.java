@@ -263,7 +263,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		DataReturnDto dataReturnDto = new DataReturnDto();
 
 		// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-		List<DataInforReturnDto> dataInforReturnDtos = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
+		List<DataInforReturnDto> dataInforReturnDtos = getDomConvertDailyWork(companyId, codeSourceSerivce);
 
 		if (dataInforReturnDtos.isEmpty()) {
 			throw new BusinessException("Msg_1411");
@@ -312,7 +312,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		}
 
 		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
-		dataReturnDto.setDataInforReturnDtos(dataInforReturnDtos);
+		dataReturnDto.setDataInforReturnDtos(dataInforReturnDtos.stream().distinct().collect(Collectors.toList()));
 
 		// 表示項目の件数を最大表示件数とチェックする(Check số hạng mục hiển thị)
 		// 　・大の場合：48件までとする
@@ -335,7 +335,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce, Integer fontSize) {
+	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 

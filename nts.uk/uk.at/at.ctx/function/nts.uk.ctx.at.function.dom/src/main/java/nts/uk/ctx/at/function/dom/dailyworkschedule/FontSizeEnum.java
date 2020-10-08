@@ -7,9 +7,9 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
  */
 public enum FontSizeEnum {
 	/** 大 */
-	BIG(0),
+	BIG(1),
 	/** 小 */
-	SMALL(1);
+	SMALL(0);
 	
 	public final int value;
 

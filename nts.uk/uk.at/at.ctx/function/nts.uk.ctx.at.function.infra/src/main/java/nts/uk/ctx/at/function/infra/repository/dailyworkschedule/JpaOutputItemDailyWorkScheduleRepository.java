@@ -63,6 +63,14 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 
 	@Override
 	public void update(OutputItemDailyWorkSchedule domain, int selectionType, String companyId, String employeeId) {
+		// get all attendance display item by layoutId
+		List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds = this.queryProxy()
+				.query(GET_ATD_BY_LAYOUT_ID, KfnmtRptWkDaiOutatd.class)
+				.setParameter("layoutId", domain.getLayoutId())
+				.getList();
+		this.commandProxy().removeAll(lstKfnmtRptWkDaiOutatds);
+		this.getEntityManager().flush();
+
 		Optional<KfnmtRptWkDaiOutItem> oEntity = this.getOutItemByLayoutId(domain.getLayoutId());
 		if (oEntity.isPresent()) {
 			KfnmtRptWkDaiOutItem entity = oEntity.get();
