@@ -217,7 +217,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
                     closureId: self.closureId(),
-                    lstLinkingDate: !_.isEmpty(self.listLinkingDate()) ? self.listLinkingDate() : [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')]
+                    lstLinkingDate: !_.isEmpty(self.listLinkingDate())
+                        ? self.listLinkingDate()
+                        : self.checkedSubHoliday() ? [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')] : []
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;

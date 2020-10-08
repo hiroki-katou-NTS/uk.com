@@ -164,7 +164,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
                 subDays: self.subDays(),
-                linkingDates: !_.isEmpty(self.linkingDates()) ? self.linkingDates() : [moment.utc(self.dayOff()).format('YYYY-MM-DD')]
+                linkingDates: !_.isEmpty(self.linkingDates())
+                    ? self.linkingDates()
+                    : self.pause() ? [moment.utc(self.dayOff()).format('YYYY-MM-DD')] : []
             };
             
             service.save(data).done(result => {
