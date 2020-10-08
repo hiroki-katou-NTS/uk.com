@@ -250,8 +250,9 @@ export class CmmS45CComponent extends Vue {
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
-                    self.$http.post('at', API.delete, self.appTransferData.appDispInfoStartupOutput
-                    ).then((resDelete: any) => {
+                    self.$http.post('at', API.delete, {
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput    
+                    }).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
                             self.params.action = 1;
@@ -308,6 +309,11 @@ export class CmmS45CComponent extends Vue {
                 break;
             case 4:
                 self.$goto('kafs09a', self.appTransferData.appDetail);
+                // if (self.$router.currentRoute.name == 'kafs09a') {
+                //     self.$close(self.appTransferData.appDetail);
+                // } else {
+                //     self.$goto('kafs09a', self.appTransferData.appDetail);
+                // }
                 break;
             default:
                 break;
@@ -471,6 +477,9 @@ export class CmmS45CComponent extends Vue {
             });
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
+        }
+        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '' + ' ' + vm.$i18n('CMMS45_87');
         }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');

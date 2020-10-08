@@ -73,10 +73,29 @@
 
 .ksm005a  .fc-row .fc-content-skeleton .fc-content .fc-title {
     line-height: 20px;
+	font-size: small;
 }
 .ksm005a .code-name {
 	display: flex;
 }
 .ksm005a .input-code-name {
 	padding-top: 5px;
+}
+.ksm005a .input-code-name.table {
+	 width: 100%;
+}
+.ksm005a .input-code-name.table .cell:nth-child(1){
+	width: 200px;
+}
+.ksm005a .input-code-name.table .cell:nth-child(2){
+	width: 70px;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3){
+	width: auto;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3) > .nts-editor-wrapped{
+	width: 100%;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3) > .nts-editor-wrapped > input{
+	width: calc(100% - 22px)!important;
 }

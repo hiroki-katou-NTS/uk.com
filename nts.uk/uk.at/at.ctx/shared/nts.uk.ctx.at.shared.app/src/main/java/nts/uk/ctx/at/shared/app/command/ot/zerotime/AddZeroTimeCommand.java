@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromHd;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromHd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 
 /**
  * @author phongtq 

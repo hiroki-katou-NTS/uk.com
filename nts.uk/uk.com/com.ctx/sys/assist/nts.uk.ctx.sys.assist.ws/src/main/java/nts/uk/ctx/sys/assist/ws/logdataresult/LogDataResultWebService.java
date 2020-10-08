@@ -13,10 +13,11 @@ import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
 
 @Path("ctx/sys/assist/app")
 @Produces("application/json")
-public class LogDataResultWebService extends WebService{
+public class LogDataResultWebService extends WebService {
 
 	@Inject
 	LogDataResultFinder logDataResultFinder;
+	
 	@POST
 	@Path("getLogDataResults")
 	public List<LogDataResultDto> getLogDataResults(LogDataParams logDataParams) {

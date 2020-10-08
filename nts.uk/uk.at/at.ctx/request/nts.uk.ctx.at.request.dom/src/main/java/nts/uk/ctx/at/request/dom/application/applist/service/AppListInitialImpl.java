@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -163,9 +164,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	
 	@Inject
 	private AppDataCreation appDataCreation;
-	
-	private static final int PC = 0;
-	private static final int MOBILE = 1;
 
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -839,7 +837,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 - 申請一覧リスト取得承認件数
 		// AppInfoStatus appStatus = this.countAppListApproval(lstAppFull, sIDLogin, lstSync);
 		AppInfoStatus appStatus = null;
-		if (device == MOBILE) {
+		if (device == ApprovalDevice.MOBILE.value) {
 			return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 		}
 
@@ -1200,7 +1198,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		Optional<Integer> opTimeCalcUseAtr = Optional.empty();
 		if((displayWorkPlaceName==NotUseAtr.USE || 
 				application.isOverTimeApp() || application.isHolidayWorkApp()) &&
-				device == PC) {
+				device == ApprovalDevice.PC.value) {
 			// 所属職場履歴Listのキャッシュがあるかチェックする(Check xem có cache List lịch sử nơi làm việc)
 			Optional<Pair<String, DatePeriod>> containKey = mapWkpInfo.keySet().stream().filter(x -> {
 				boolean employeeCondition = x.getLeft().equals(application.getEmployeeID());

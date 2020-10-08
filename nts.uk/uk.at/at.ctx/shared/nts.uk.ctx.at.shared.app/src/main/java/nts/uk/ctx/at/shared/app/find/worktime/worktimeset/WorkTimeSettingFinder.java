@@ -311,7 +311,7 @@ public class WorkTimeSettingFinder {
 	 * @return the string
 	 */
 	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start, TimeWithDayAttr end) {
-		return start.getDayDivision().description + start.getInDayTimeWithFormat() + "　～　"
+		return start.getDayDivision().description + start.getInDayTimeWithFormat() + " ~ "
 				+ end.getDayDivision().description + end.getInDayTimeWithFormat();
 	}
 

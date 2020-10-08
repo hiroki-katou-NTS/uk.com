@@ -30,7 +30,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // to edit
     @Prop({ default: null })
     public params?: any;
-    public title: string = 'KafS07A';
+    public title: string = 'KafS09A';
 
     public model: Model = new Model();
 
@@ -47,6 +47,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     public kaf000_C_Params: any = null;
 
+    public isChangeDate: boolean = false;
     public user: any;
     public application: any = {
         version: 1,
@@ -140,17 +141,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.bindStart();
             self.$mask('hide');
         }).catch((err: any) => {
-            self.$mask('hide');
-            if (err.messageId) {
-                this.$modal.error({ messageId: err.messageId });
-            } else {
-
-                if (_.isArray(err.errors)) {
-                    this.$modal.error({ messageId: err.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: err.errors.messageId });
+            self.handleErrorMessage(err).then((res: any) => {
+                if (err.messageId == 'Msg_43') {
+                    self.$goto('ccg008a');
                 }
-            }
+            });
         });
     }
 
@@ -168,7 +163,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
@@ -182,7 +177,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 newModeContent: {
                     // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
                     appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: true,
+                    useMultiDaySwitch: false,
                     initSelectMultiDay: false
                 },
                 detailModeContent: null
@@ -206,53 +201,53 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.kaf000_B_Params = paramb;
         if (self.mode) {
             self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(startDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                //     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
+                // }
 
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
+                // if (!_.isNull(endDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
 
-                }
-                self.changeDate(listDate);
+                // }
+                // self.changeDate(listDate);
             });
 
             self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
 
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
+                //     return;
+                // }
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(endDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!_.isNull(startDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
+                // }
 
-                self.changeDate(listDate);
+                // self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
                 console.log(newV + ':' + oldV);
@@ -286,6 +281,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 // 入力中の申請理由
                 // empty
                 // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                // 定型理由
+                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
@@ -300,7 +299,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public bindStart() {
         const self = this;
         self.bindVisibleView();
-        self.bindCommon();
+        self.bindCommon(self.dataOutput);
         self.bindWork();
         self.bindDirectBounce();
         self.checkChangeWork();
@@ -317,15 +316,24 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         let params = self.dataOutput;
         let goBackDirect = self.dataOutput;
-        if (!goBackDirect) {
+        if (!goBackDirect && !self.isChangeDate) {
 
             return;
         }
-        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workType ? goBackDirect.goBackApplication.dataWork.workType : null) : null);
+        self.isChangeDate = false;
+        let workType, workTime;
+        if (goBackDirect.goBackApplication) {
+            let dataWork = goBackDirect.goBackApplication.dataWork;
+            if (dataWork) {
+                workType = goBackDirect.goBackApplication.dataWork.workType;
+                workTime = goBackDirect.goBackApplication.dataWork.workTime;
+            }
+        }
+        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
 
-        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workTime ? goBackDirect.goBackApplication.dataWork.workTime : null) : null);
+        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         self.bindWorkTime(goBackDirect);
@@ -336,55 +344,60 @@ export class KafS09AComponent extends KafS00ShrComponent {
         if (params.predetemineTimeSetting) {
             let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
             let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            self.model.workTime.time = self.$dt.timedr(startTime) + '~' + self.$dt.timedr(endTime);
+            self.model.workTime.time = self.$dt.timedr(startTime) + self.$i18n('KAFS09_12') + self.$dt.timedr(endTime);
         }
     }
 
 
-    public bindCommon() {
-        
+    public bindCommon(params: any) {
+        this.appDispInfoStartupOutput.appDispInfoNoDateOutput = params.appDispInfoStartup.appDispInfoNoDateOutput;
+        this.appDispInfoStartupOutput.appDispInfoWithDateOutput = params.appDispInfoStartup.appDispInfoWithDateOutput;
+        this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartup.appDetailScreenInfo;
     }
     public appGoBackDirect: any;
     public bindAppWorkChangeRegister() {
         const self = this;
         self.appGoBackDirect = {};
-        self.appGoBackDirect.straightDistinction = this.model.straight == 2 ? 0 : 1;
-        self.appGoBackDirect.straightLine = this.model.bounce == 2 ? 0 : 1;
-        self.appGoBackDirect.isChangedWork = this.model.changeWork == 2 ? 0 : 1;
-        if (self.model.changeWork == 1) {
-            self.appGoBackDirect.dataWork = {
-                workType: this.model.workType.code,
-                workTime: this.model.workTime.code
-            };
-        }
-        console.log(self.appGoBackDirect);
-        if (!this.mode) {
-            this.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;
-        }
-        if (this.mode) {
-            this.application.employeeID = this.user.employeeId;
-        }
-
-        if (this.kaf000_B_Params) {
-            if (this.mode) {
-                this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-                } else {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                }
+        self.appGoBackDirect.straightDistinction = self.model.straight == 2 ? 0 : 1;
+        self.appGoBackDirect.straightLine = self.model.bounce == 2 ? 0 : 1;
+        self.appGoBackDirect.isChangedWork = self.model.changeWork == 2 ? 0 : 1;
+        if (self.C1) {
+            if (self.model.changeWork == 1) {
+                self.appGoBackDirect.dataWork = {
+                    workType: self.model.workType.code,
+                    workTime: self.model.workTime.code
+                };
             }
-
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-
+        } else {
+            self.appGoBackDirect.isChangedWork = null;
+        }
+        if (!self.mode) {
+            self.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;
+        }
+        if (self.mode) {
+            self.application.employeeID = self.user.employeeId;
         }
 
-        if (this.kaf000_C_Params.output) {
-            this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
-            this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
-        }
-        this.application.enteredPerson = this.user.employeeId;
+        // if (self.kaf000_B_Params) {
+        //     if (self.mode) {
+        //         self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+        //         } else {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         }
+        //     }
+
+        //     self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+
+        // }
+
+        // if (self.kaf000_C_Params.output) {
+        //     self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
+        //     self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
+        // }
+        self.application.enteredPerson = self.user.employeeId;
 
 
     }
@@ -400,43 +413,71 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.isChangeDate = true;
                 self.dataOutput = res.data;
-                self.bindStart();
-                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-                    msgID = '';
+                self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+                self.bindWork();
+                let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = '';
+                if (useDivision == 0) {
+                    self.$modal.error('Msg_323').then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');   
+                        }
+                    });
+                    if (recordDate == 0) {
+                        self.$mask('hide');
+
+                        return false;
+                    }
+                    self.$mask('hide');
+
+                    return true;
+                }
+            
+                if (_.isNull(opErrorFlag)) {
+                    self.$mask('hide');
+
+                    return true;    
+                }
                 switch (opErrorFlag) {
                     case 1:
                         msgID = 'Msg_324';
                         break;
-                    case 2:
+                    case 2: 
                         msgID = 'Msg_238';
                         break;
                     case 3:
                         msgID = 'Msg_237';
                         break;
-                    default:
+                    default: 
                         break;
                 }
-                if (!_.isEmpty(msgID)) {
-                    self.$modal.error({ messageId: msgID });
+                if (_.isEmpty(msgID)) { 
+                    self.$mask('hide');
+
+                    return true;
                 }
+                self.$modal.error({ messageId: msgID }).then(() => {
+                    if (recordDate == 0) {
+                        self.$goto('ccg008a');    
+                    }    
+                });
                 self.$mask('hide');
+
+                return false;
+                
             })
             .catch((res: any) => {
                 self.$mask('hide');
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
+                self.handleErrorMessage(res).then((msgId: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
                     }
-                }
-
-
-            });
+                });
+            }); 
 
     }
     public registerData(res: any) {
@@ -452,19 +493,16 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
 
         } else {
@@ -475,19 +513,16 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    self.$modal.error({ messageId: res.messageId });
-                } else {
-    
-                    if (_.isArray(res.errors)) {
-                        self.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        self.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
     }
@@ -509,6 +544,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
     public register() {
         const self = this;
+        if (self.model.straight == 2 && self.model.bounce == 2) {
+
+            return;
+        }
+        self.$mask('show');
         let validAll: boolean = true;
         for (let child of self.$children) {
             child.$validate();
@@ -522,12 +562,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.$validate();
         if (!self.$valid || !validAll) {
             window.scrollTo(500, 0);
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
 
             return;
         }
-        if (self.$valid && validAll) {
-            self.$mask('show');
-        }
+        // if (self.$valid && validAll) {
+        //     self.$mask('show');
+        // }
         self.bindAppWorkChangeRegister();
 
         // check before registering application
@@ -555,19 +598,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }
 
         }).catch((res: any) => {
-            self.$mask('hide');
-            // show message error
-            if (res.messageId) {
-                self.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    self.$modal.error({ messageId: res.errors[0].messageId });
-                } else {
-                    self.$modal.error({ messageId: res.errors.messageId });
-                }
-            }
-
+            self.handleErrorMessage(res);
         });
 
     }
@@ -599,8 +630,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
     public checkChangeWork() {
         const self = this;
+        self.model.changeWork = self.dataOutput.goBackReflect.reflectApplication == ApplicationStatus.DO_REFLECT_1 ? 1 : 2;
         if (!self.mode) {
-            self.model.changeWork = self.dataOutput.goBackReflect.reflectApplication == ApplicationStatus.DO_REFLECT_1 ? 1 : 2;
+            if (self.isC1) {
+                self.model.changeWork = self.dataOutput.goBackApplication.isChangedWork == 1 ? 1 : 2;
+            }
         }
     }
 
@@ -632,22 +666,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         } else {
             this.$modal(
                 'worktime',
                 {
-                    isAddNone: 1,
+                    isAddNone: 0,
                     seledtedWkTimeCDs: _.map(self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                     selectedWorkTimeCD: this.model.workTime.code,
                     isSelectWorkTime: 1
@@ -659,22 +684,27 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
 
 
 
 
+    }
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
     }
 
     public dataFetch() {
@@ -687,7 +717,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
             appDispInfoStartupDto: this.appDispInfoStartupOutput
         }).then((res: any) => {
             this.dataOutput = res.data;
-            console.log(res.data);
             this.bindStart();
         }).catch((err: any) => {
             if (err.messageId) {
@@ -703,6 +732,41 @@ export class KafS09AComponent extends KafS00ShrComponent {
         });
     }
 
+    public kaf000BChangeDate(objectDate) {
+        const self = this;
+        console.log('emit' + objectDate);
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        const self = this;
+        console.log('emit' + prePostAtr);
+        self.application.prePostAtr = prePostAtr;
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const self = this;
+        console.log('emit' + opAppStandardReasonCD);
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+        
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        const self = this;
+        console.log('emit' + opAppReason);
+        self.application.opAppReason = opAppReason;
+    }
+
 }
 export class Work {
     public code: String = '';
@@ -713,7 +777,7 @@ export class Work {
 
 }
 export class WorkTime extends Work {
-    public time: String = '項目移送';
+    public time: String = '';
     constructor() {
         super();
     }
@@ -757,7 +821,7 @@ export enum ApplicationStatus {
 const API = {
     checkBeforRegister: 'at/request/application/gobackdirectly/checkBeforeRegisterNew',
     registerAppGoBackDirect: 'at/request/application/gobackdirectly/registerNewKAF009',
-    updateAppWorkChange: 'at/request/application/gobackdirectly/getAppDataByDate',
+    updateAppWorkChange: 'at/request/application/gobackdirectly/mobile/getAppDataByDate',
     startS09: 'at/request/application/gobackdirectly/mobile/start',
     updateApp: 'at/request/application/gobackdirectly/updateNewKAF009'
 
