@@ -5,12 +5,12 @@ import nts.uk.ctx.at.record.app.command.monthly.standardtime.classification.*;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTimeCompanyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTimeCompanyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.employment.*;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommand;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.UpdateAgreeOperationSetCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.RegisterAgreeOperationSetCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.RegisterAgreeOperationSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommandHandler;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommand;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.UpdateAgreeUnitSetCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.RegisterAgreeUnitSetCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.RegisterAgreeUnitSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace.*;
 
 import javax.inject.Inject;
@@ -53,10 +53,10 @@ public class AgreementTimeSettingService extends WebService {
     private DeleteTimeClassificationCommandHandler deleteClassification;
 
     @Inject
-    private UpdateAgreeOperationSetCommandHandler updateOperationSet;
+    private RegisterAgreeOperationSetCommandHandler registerOperationSet;
 
     @Inject
-    private UpdateAgreeUnitSetCommandHandler updateUnit;
+    private RegisterAgreeUnitSetCommandHandler RegisterUnit;
 
     @Inject
     private UpdateUnitSetOfApproveCommandHandler unitSetOfApproveCommandHandler;
@@ -122,15 +122,15 @@ public class AgreementTimeSettingService extends WebService {
     }
 
     @POST
-    @Path("operationSet/update")
-    public void updateOperationSet(UpdateAgreeOperationSetCommand command) {
-        this.updateOperationSet.handle(command);
+    @Path("operationSet/register")
+    public void updateOperationSet(RegisterAgreeOperationSetCommand command) {
+        this.registerOperationSet.handle(command);
     }
 
     @POST
-    @Path("unit/update")
-    public void updateUnit(UpdateAgreeUnitSetCommand command) {
-        this.updateUnit.handle(command);
+    @Path("unit/Register")
+    public void updateUnit(RegisterAgreeUnitSetCommand command) {
+        this.RegisterUnit.handle(command);
     }
 
     @POST

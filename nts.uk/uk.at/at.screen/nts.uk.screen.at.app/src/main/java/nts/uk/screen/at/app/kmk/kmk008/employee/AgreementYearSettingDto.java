@@ -3,9 +3,7 @@ package nts.uk.screen.at.app.kmk.kmk008.employee;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 
 import java.util.Optional;
 
@@ -15,16 +13,19 @@ import java.util.Optional;
 public class AgreementYearSettingDto {
 
     /** 年度 */
-    private Year yearValue;
+    private int yearValue;
 
     /** １年間時間 */
-    private OneYearErrorAlarmTime oneYearTime;
+    private int errorOneYear;
+
+    private int alarmOneYear;
 
     public static AgreementYearSettingDto setData(Optional<AgreementYearSetting> data){
 
         return data.map(setting -> new AgreementYearSettingDto(
-                setting.getYearValue(),
-                setting.getOneYearTime()
+                setting.getYearValue().v(),
+                setting.getOneYearTime().getError().v(),
+                setting.getOneYearTime().getAlarm().v()
         )).orElseGet(AgreementYearSettingDto::new);
     }
 }

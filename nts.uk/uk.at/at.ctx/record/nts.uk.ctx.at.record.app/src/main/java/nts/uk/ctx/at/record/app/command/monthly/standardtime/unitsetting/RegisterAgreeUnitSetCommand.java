@@ -11,7 +11,7 @@ import lombok.Getter;
  * 利用単位設定を更新登録する
  */
 @Getter
-public class UpdateAgreeUnitSetCommand {
+public class RegisterAgreeUnitSetCommand {
 
 	// 分類使用区分
 	private int classificationUseAtr;

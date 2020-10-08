@@ -14,13 +14,13 @@ import java.util.Optional;
 public class AgreementUnitSettingDto {
 
     /** 分類使用区分 */
-    private UseClassificationAtr classificationUseAtr;
+    private int classificationUseAtr;
 
     /** 雇用使用区分 */
-    private UseClassificationAtr employmentUseAtr;
+    private int employmentUseAtr;
 
     /** 職場使用区分 */
-    private UseClassificationAtr workPlaceUseAtr;
+    private int workPlaceUseAtr;
 
     public static AgreementUnitSettingDto setData(Optional<AgreementUnitSetting> data){
 
@@ -28,9 +28,9 @@ public class AgreementUnitSettingDto {
             return new AgreementUnitSettingDto();
         }
         return data.map(setting -> new AgreementUnitSettingDto(
-                setting.getClassificationUseAtr(),
-                setting.getEmploymentUseAtr(),
-                setting.getWorkPlaceUseAtr()
+                setting.getClassificationUseAtr().value,
+                setting.getEmploymentUseAtr().value,
+                setting.getWorkPlaceUseAtr().value
         )).orElseGet(AgreementUnitSettingDto::new);
     }
 }

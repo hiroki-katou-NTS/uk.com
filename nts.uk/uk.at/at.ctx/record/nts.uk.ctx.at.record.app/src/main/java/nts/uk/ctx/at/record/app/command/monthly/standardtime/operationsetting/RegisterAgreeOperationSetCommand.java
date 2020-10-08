@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  * 運用設定を更新登録する
  */
 @Getter
-public class UpdateAgreeOperationSetCommand {
+public class RegisterAgreeOperationSetCommand {
 
 	// ３６協定起算月
 	private int startingMonth;
@@ -24,7 +24,7 @@ public class UpdateAgreeOperationSetCommand {
 	private Boolean lastDayOfMonth;
 
 	//特別条項申請を使用する
-	private Boolean specicalConditionApplicationUse;
+	private Boolean specialConditionApplicationUse;
 
 	// 年間の特別条項申請を使用する
 	private Boolean yearSpecicalConditionApplicationUse;
