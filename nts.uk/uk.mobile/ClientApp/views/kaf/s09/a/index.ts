@@ -41,11 +41,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // data is fetched service
     public data: any = 'data';
 
-    public kaf000_A_Params: any = null;
+    // public kaf000_A_Params: any = null;
 
-    public kaf000_B_Params: any = null;
+    // public kaf000_B_Params: any = null;
 
-    public kaf000_C_Params: any = null;
+    // public kaf000_C_Params: any = null;
 
     public isChangeDate: boolean = false;
     public user: any;
