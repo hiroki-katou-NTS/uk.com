@@ -331,7 +331,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
         }
         self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
-        self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
+        self.model.workType.name = isExist ? isExist.name : self.$i18n('KAFS07_10');
 
         self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
