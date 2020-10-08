@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.task.schedule.JobScheduleOptions;
 import nts.arc.task.schedule.JobScheduler;
 import nts.arc.task.schedule.ScheduledJob;
+import nts.arc.task.schedule.UnscheduleParams;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.ScheduleInfo;
@@ -24,8 +25,10 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 	@Override
 	public ScheduleInfo scheduleOnCurrentCompany(UkJobScheduleOptions options) {
 		val scheduleInfo = ScheduleInfo.createNew();
+		String tenantCode = AppContexts.user().contractCode();
 		
 		val ntsOptions = new JobScheduleOptions(
+				tenantCode,
 				options.getJobClass(),
 				createJobContextKey(scheduleInfo.getScheduleId()),
 				options.getUserData(),
@@ -40,7 +43,11 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 
 	@Override
 	public void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, String scheduleId) {
-		this.scheduler.unschedule(jobClass, createJobContextKey(scheduleId));
+
+		String tenantCode = AppContexts.user().contractCode();
+		val params = new UnscheduleParams(tenantCode, jobClass, createJobContextKey(scheduleId));
+		
+		this.scheduler.unschedule(params);
 	}
 
 	@Override
