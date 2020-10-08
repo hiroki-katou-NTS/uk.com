@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreement.management.setting;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -9,7 +9,6 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AggregatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.junit.Test;
 
