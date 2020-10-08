@@ -39,11 +39,13 @@ public class AgreeOpeInitDisplayProcessor {
         Optional<AgreementOperationSetting> data = operationSettingRepository.find(AppContexts.user().companyId());
 
         if (data.isPresent()){
-            operationSettingDto.getAgreementOperationSettingDetailDto().setStartingMonth(data.get().getStartingMonth().value);
-            operationSettingDto.getAgreementOperationSettingDetailDto().setClosureDate(data.get().getClosureDate().getClosureDay().v());
-            operationSettingDto.getAgreementOperationSettingDetailDto().setSpecicalConditionApplicationUse(data.get().isSpecicalConditionApplicationUse());
-            operationSettingDto.getAgreementOperationSettingDetailDto().setYearSpecicalConditionApplicationUse(data.get().isYearSpecicalConditionApplicationUse());
+            AgreementOperationSettingDetailDto detailDto = new AgreementOperationSettingDetailDto();
 
+            detailDto.setStartingMonth(data.get().getStartingMonth().value);
+            detailDto.setClosureDate(data.get().getClosureDate().getClosureDay().v());
+            detailDto.setSpecialConditionApplicationUse(data.get().isSpecicalConditionApplicationUse());
+            detailDto.setYearSpecicalConditionApplicationUse(data.get().isYearSpecicalConditionApplicationUse());
+            operationSettingDto.setAgreementOperationSettingDetailDto(detailDto);
         }
         return operationSettingDto;
     }

@@ -26,7 +26,7 @@ public class UpdateAgreeOperationSetCommandHandler extends CommandHandler<Update
         AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(AppContexts.user().companyId(),
                 EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
                 new ClosureDate(command.getClosureDay(),command.getLastDayOfMonth()),
-                command.getSpecicalConditionApplicationUse(),
+                command.getSpecialConditionApplicationUse(),
                 command.getYearSpecicalConditionApplicationUse()
         );
         if (agreementOperationSettingOld.isPresent()){

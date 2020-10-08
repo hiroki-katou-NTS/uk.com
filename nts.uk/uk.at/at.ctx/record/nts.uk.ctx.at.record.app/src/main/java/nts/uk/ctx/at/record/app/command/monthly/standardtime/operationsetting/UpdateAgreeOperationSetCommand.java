@@ -24,7 +24,7 @@ public class UpdateAgreeOperationSetCommand {
 	private Boolean lastDayOfMonth;
 
 	//特別条項申請を使用する
-	private Boolean specicalConditionApplicationUse;
+	private Boolean specialConditionApplicationUse;
 
 	// 年間の特別条項申請を使用する
 	private Boolean yearSpecicalConditionApplicationUse;

@@ -23,7 +23,7 @@ public class AgreementOperationSettingDetailDto {
     private int closureDate;
 
     /** 特別条項申請を使用する **/
-    private boolean specicalConditionApplicationUse;
+    private boolean specialConditionApplicationUse;
 
     /** 年間の特別条項申請を使用する **/
     private boolean yearSpecicalConditionApplicationUse;
