@@ -228,7 +228,7 @@ module nts.uk.at.view.kmp001.b {
 				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
 				.then(() => vm.$window.storage('CDL009Output'))
 				.then((data: string | string[]) => {
-					if (data != '') {
+					if (data !== undefined) {
 						vm.employee.employeeId(ko.toJS(data));
 					}
 				});
