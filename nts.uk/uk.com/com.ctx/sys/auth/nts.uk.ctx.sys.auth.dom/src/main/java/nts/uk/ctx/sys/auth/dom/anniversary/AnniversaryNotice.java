@@ -6,7 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 /**
- * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション
+ * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
  */
 @Getter
 public class AnniversaryNotice extends AggregateRoot {
@@ -40,6 +40,11 @@ public class AnniversaryNotice extends AggregateRoot {
      */
     private NotificationMessage notificationMessage;
 
+    public static AnniversaryNotice createFromMemento(MementoGetter memento) {
+        AnniversaryNotice domain = new AnniversaryNotice();
+        domain.getMemento(memento);
+        return domain;
+    }
 
     //新記念日の判断
     public boolean isNewAnniversary(GeneralDate date) {
@@ -56,12 +61,6 @@ public class AnniversaryNotice extends AggregateRoot {
         } else {
             this.seenDate = todayAnniversary.addYears(-1);
         }
-    }
-
-    public static AnniversaryNotice createFromMemento(MementoGetter memento) {
-        AnniversaryNotice domain = new AnniversaryNotice();
-        domain.getMemento(memento);
-        return domain;
     }
 
     public void getMemento(MementoGetter memento) {
@@ -82,7 +81,7 @@ public class AnniversaryNotice extends AggregateRoot {
         memento.setNotificationMessage(this.notificationMessage.v());
     }
 
-    public static interface MementoSetter {
+    public interface MementoSetter {
         void setPersonalId(String personalId);
 
         void setNoticeDay(Integer noticeDay);
@@ -96,7 +95,7 @@ public class AnniversaryNotice extends AggregateRoot {
         void setNotificationMessage(String notificationMessage);
     }
 
-    public static interface MementoGetter {
+    public interface MementoGetter {
         String getPersonalId();
 
         Integer getNoticeDay();
