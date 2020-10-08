@@ -342,8 +342,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public bindWorkTime(params: any) {
         const self = this;
         if (!_.isEmpty(params.timezones)) {
-            let startTime = _.find(params.timezones, (item: any) => item.workNo == 1).start;
-            let endTime = _.find(params.timezones, (item: any) => item.workNo == 1).end;
+            let startTime = _.find(params.timezones, (item: any) => item.workNo == 1).startTime;
+            let endTime = _.find(params.timezones, (item: any) => item.workNo == 1).endTime;
             // let startTime = params.timezones[0].startTime;
             // let endTime = params.timezones[0].endTime;
             if (startTime && endTime) {
