@@ -14,7 +14,7 @@ public class JpaDataStorageSelectionCategoryRepository extends JpaRepository
 		implements DataStorageSelectionCategoryRepository {
 
 	private static final String SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES = "SELECT t FROM SspmtDataStorageSelectionCategory t "
-			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr AND t.systemType IN :systemTypes";
+			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr AND t.pk.systemType IN :systemTypes";
 
 	@Override
 	public List<DataStorageSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd,

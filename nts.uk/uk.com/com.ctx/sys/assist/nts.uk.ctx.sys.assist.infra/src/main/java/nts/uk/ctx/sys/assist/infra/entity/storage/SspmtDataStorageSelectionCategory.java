@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.assist.infra.entity.storage;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,10 +32,6 @@ public class SspmtDataStorageSelectionCategory extends UkJpaEntity implements Se
 
 	@EmbeddedId
 	public SspmtDataStorageSelectionCategoryPk pk;
-
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -105,5 +99,19 @@ public class SspmtDataStorageSelectionCategory extends UkJpaEntity implements Se
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+
+	@Override
+	public void setSystemType(int systemType) {
+		if (pk == null)
+			pk = new SspmtDataStorageSelectionCategoryPk();
+		pk.systemType = systemType;
+	}
+
+	@Override
+	public int getSystemType() {
+		if (pk != null)
+			return pk.systemType;
+		return 0;
 	}
 }

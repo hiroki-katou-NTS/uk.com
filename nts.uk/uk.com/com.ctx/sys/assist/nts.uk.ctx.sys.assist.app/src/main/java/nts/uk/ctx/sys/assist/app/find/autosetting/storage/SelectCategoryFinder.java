@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSettingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategory;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageSelectionCategoryRepository;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -52,6 +54,8 @@ public class SelectCategoryFinder {
 	}
 
 	private List<SaveSelectionCategoryNameDto> findSelectionCategoryName(SelectCategoryCommand command) {
+		//FAKE-DATA
+		command.setSystemType(Arrays.stream(SystemType.values()).map(t -> t.value).collect(Collectors.toList()));
 
 		// 選択カテゴリを取得する
 		List<DataStorageSelectionCategory> selectCategories = dataStorageSelectionCategoryRepository

@@ -38,4 +38,10 @@ public class SspmtDataStorageSelectionCategoryPk implements Serializable {
 	@NonNull
 	@Column(name = "CATEGORY_ID")
 	public String categoryId;
+	
+	/**
+	 * システム種類
+	 */
+	@Column(name = "SYSTEM_TYPE")
+	public int systemType;
 }
