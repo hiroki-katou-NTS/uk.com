@@ -18,7 +18,7 @@ module nts.uk.at.view.ksu001.la {
             enableDelete: KnockoutObservable<boolean> = ko.observable(true);
             isEditing: KnockoutObservable<boolean> = ko.observable(false);
             baseDate: KnockoutObservable<string> = ko.observable("");
-            exitStatus: KnockoutObservable<string> = ko.observable("Cancel");          
+            exitStatus: KnockoutObservable<string> = ko.observable("Cancel");  
             scheduleTeamModel: KnockoutObservable<ScheduleTeamModel> = ko.observable(new ScheduleTeamModel("", "", "", "",[]));
 
             constructor() {
@@ -37,8 +37,7 @@ module nts.uk.at.view.ksu001.la {
                     { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 90 },
                     { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 145 },
                     { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 65 }
-                ]);
-
+                ]);                
                 self.selectedCode.subscribe((code: string) => {
                     let dfd = $.Deferred();
                     blockUI.invisible();
@@ -73,8 +72,7 @@ module nts.uk.at.view.ksu001.la {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
                     isDialog: false
-                };
-                
+                };                
             }
 
             public startPage(): JQueryPromise<any> {
@@ -101,7 +99,7 @@ module nts.uk.at.view.ksu001.la {
                             nts.uk.ui.dialog.error({ messageId: res.messageId});
                             blockUI.clear(); 
                         });
-                        self.getEmpOrgInfo();
+                        //self.getEmpOrgInfo();
                         blockUI.clear();
                         dfd.resolve();
                     }                    
@@ -137,7 +135,7 @@ module nts.uk.at.view.ksu001.la {
                         self.itemsRight(_.sortBy(_.difference(dataAll, itemLeft), [function (item: { employeeCd: any; }) { return item.employeeCd; }]));
                     } else {
                         self.itemsLeft(_.sortBy(dataAll, [function(item: { employeeCd: any; }){return item.employeeCd;}]));    
-                    }                                    
+                    }                    
                 }).fail((res) => {
                     nts.uk.ui.dialog.error({ messageId: res.messageId });
                 });
@@ -192,6 +190,8 @@ module nts.uk.at.view.ksu001.la {
                         blockUI.clear();
                     });
                 }
+                self.currentCodeListLeft([]);
+                self.currentCodeListRight([]);
                 self.exitStatus("Update");
             }
 
