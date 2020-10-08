@@ -135,6 +135,7 @@ module nts.uk.at.view.ksm003.a {
 
             self.selectedCheckAll(false);
             self.addNewLineItem(true);
+            self.lessThan99Items(true);
 
             $("#inpCode").focus();
         }
@@ -582,7 +583,7 @@ module nts.uk.at.view.ksm003.a {
             self.mainModel().dailyPatternVals().map((item, index) => {
                 //day > 0 & workingCode null
                 if (nts.uk.text.isNullOrEmpty(item.typeCode())) {
-                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_1690", messageParams: [self.$i18n('KSM003_23')] });
+                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_1690", messageParams: [self.$i18n('KSM003_46')] });
                     hasRowIsNull = true;
                 }
 
