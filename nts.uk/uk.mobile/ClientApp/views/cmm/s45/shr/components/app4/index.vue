@@ -7,9 +7,9 @@
       </div>
     </div>
     <!-- B2_1 -->
-    <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">{{'KAFS09_24' | i18n}}</span>
-      <span v-if="dataOutput.goBackApplication.isChangedWork != 1">{{'KAFS09_23' | i18n}}</span>
+    <div v-if="isCondition1 && dataOutput.goBackApplication.isChangedWork" class="paddingSpan">
+      <span v-if="dataOutput.goBackApplication.isChangedWork != 1">{{'KAFS09_24' | i18n}}</span>
+      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">{{'KAFS09_23' | i18n}}</span>
     </div>
     <!-- B3 -->
 
