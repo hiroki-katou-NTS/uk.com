@@ -1068,8 +1068,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         if (cell.needToWork == false) {
                             workTypeName = '';
                             workTimeName = '';
@@ -1154,8 +1154,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
@@ -3182,6 +3182,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workHolidayCls: number; // 出勤休日区分
         isEdit: boolean;
         isActive: boolean;
+        workTypeNameIsNull: boolean; 
+        workTimeNameIsNull: boolean;
     }
 
     interface IWorkScheduleShiftInforDto {
