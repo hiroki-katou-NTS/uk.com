@@ -34,12 +34,12 @@ public class AgreeOpeInitDisplayProcessor {
         List<EnumConstant> closingDateType = EnumAdaptor.convertToValueNameList(ClosingDateType.class, ukResource);
 
         operationSettingDto.setStartingMonthEnum(startingMonthEnum);
-        operationSettingDto.setClosureDate(closingDateType);
+        operationSettingDto.setClosureDateEnum(closingDateType);
 
         Optional<AgreementOperationSetting> data = operationSettingRepository.find(AppContexts.user().companyId());
 
         if (data.isPresent()){
-            operationSettingDto.getAgreementOperationSettingDetailDto().setStartingMonthEnum(data.get().getStartingMonth().value);
+            operationSettingDto.getAgreementOperationSettingDetailDto().setStartingMonth(data.get().getStartingMonth().value);
             operationSettingDto.getAgreementOperationSettingDetailDto().setClosureDate(data.get().getClosureDate().getClosureDay().v());
             operationSettingDto.getAgreementOperationSettingDetailDto().setSpecicalConditionApplicationUse(data.get().isSpecicalConditionApplicationUse());
             operationSettingDto.getAgreementOperationSettingDetailDto().setYearSpecicalConditionApplicationUse(data.get().isYearSpecicalConditionApplicationUse());

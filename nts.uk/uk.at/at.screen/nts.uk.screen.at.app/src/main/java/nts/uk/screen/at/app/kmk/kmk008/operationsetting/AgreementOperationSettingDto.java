@@ -20,7 +20,7 @@ public class AgreementOperationSettingDto {
     private List<EnumConstant> startingMonthEnum;
 
     /** 締め日 **/
-    private List<EnumConstant> closureDate;
+    private List<EnumConstant> closureDateEnum;
 
     private AgreementOperationSettingDetailDto agreementOperationSettingDetailDto;
 

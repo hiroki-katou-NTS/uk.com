@@ -17,7 +17,7 @@ import java.util.Optional;
 public class AgreementOperationSettingDetailDto {
 
     /** ３６協定起算月 **/
-    private int startingMonthEnum;
+    private int startingMonth;
 
     /** 締め日 **/
     private int closureDate;
@@ -28,13 +28,4 @@ public class AgreementOperationSettingDetailDto {
     /** 年間の特別条項申請を使用する **/
     private boolean yearSpecicalConditionApplicationUse;
 
-//    public static AgreementOperationSettingDetailDto setData(Optional<AgreementOperationSetting> data){
-//
-//        return data.map(setting -> new AgreementOperationSettingDetailDto(
-//                setting.getStartingMonth(),
-//                setting.getClosureDate(),
-//                setting.isSpecicalConditionApplicationUse(),
-//                setting.isYearSpecicalConditionApplicationUse()
-//        )).orElseGet(AgreementOperationSettingDetailDto::new);
-//    }
 }

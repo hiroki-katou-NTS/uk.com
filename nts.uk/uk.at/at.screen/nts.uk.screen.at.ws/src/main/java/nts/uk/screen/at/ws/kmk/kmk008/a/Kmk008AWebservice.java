@@ -1,6 +1,6 @@
 package nts.uk.screen.at.ws.kmk.kmk008.a;
 
-import nts.uk.screen.at.app.kmk.kmk008.operationsetting.AgreeOpeSetScreenProcessor;
+import nts.uk.screen.at.app.kmk.kmk008.operationsetting.AgreeOpeInitDisplayProcessor;
 import nts.uk.screen.at.app.kmk.kmk008.operationsetting.AgreementOperationSettingDto;
 
 import javax.inject.Inject;
@@ -13,12 +13,12 @@ import javax.ws.rs.Produces;
 public class Kmk008AWebservice {
 
     @Inject
-    private AgreeOpeSetScreenProcessor agreeOpeSetScreenProcessor;
+    private AgreeOpeInitDisplayProcessor agreeOpeSetScreenProcessor;
 
     @POST
     @Path("get")
     public AgreementOperationSettingDto getAgreeOpeSetting() {
-        return this.agreeOpeSetScreenProcessor.findDataAgreeOpeSet();
+        return this.agreeOpeSetScreenProcessor.find();
     }
 
 }
