@@ -19,9 +19,10 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
+ * 所定時間設定
  * The Class PredetemineTimeSetting.
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.共通設定.所定時間.所定時間設定
  */
-// 所定時間設定
 @Getter
 @NoArgsConstructor
 public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Cloneable, Serializable{
@@ -94,7 +95,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	}
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 */
 	public PredetemineTimeSetting(String companyId, AttendanceTime rangeTimeDay, WorkTimeCode workTimeCode,
 			PredetermineTime predTime, boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting,
@@ -109,32 +110,23 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		this.startDateClock = startDateClock;
 		this.predetermine = predetermine;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {		
+	public void validate() {
 		// Validate startDateClock in -12:00 ~ 23:59
 		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
-				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {		
+				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
 			this.bundledBusinessExceptions.addMessage("Msg_785");
-		}		
+		}
 		// Validate oneDay < rangeTimeDay
-		this.validateOneDay();			
+		this.validateOneDay();
 		// Validate PrescribedTimezone between startDate and startDate + rangeTimeDay
 		this.validatePrescribedTimezone();
 
 		super.validate();
-	}
-
-	/**
-	 * Gets the end date clock.
-	 *
-	 * @return the end date clock
-	 */
-	public TimeWithDayAttr getEndDateClock() {
-		return this.startDateClock.forwardByMinutes(this.rangeTimeDay.valueAsMinutes());
 	}
 
 	/**
@@ -161,35 +153,35 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		return start.lessThan(this.startDateClock) || start.greaterThan(endDateClock)
 				|| end.lessThan(this.startDateClock) || end.greaterThan(endDateClock);
 	}
-	
+
 	/**
 	 * Validate one day.
 	 */
 	private void validateOneDay() {
 		AttendanceTime oneDayRange = this.getRangeTimeDay();
 		// Pred time
-		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
+		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay();
 		if (oneDayTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
-		AttendanceTime morningTime = this.getPredTime().getPredTime().getMorning(); 		
+		AttendanceTime morningTime = this.getPredTime().getPredTime().getMorning();
 		if (morningTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
-		AttendanceTime afternoonTime = this.getPredTime().getPredTime().getAfternoon(); 		
+		AttendanceTime afternoonTime = this.getPredTime().getPredTime().getAfternoon();
 		if (afternoonTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
 		// Add time
-		AttendanceTime oneDayAddTime = this.getPredTime().getAddTime().getOneDay(); 		
+		AttendanceTime oneDayAddTime = this.getPredTime().getAddTime().getOneDay();
 		if (oneDayAddTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
-		AttendanceTime morningAddTime = this.getPredTime().getAddTime().getMorning(); 		
+		AttendanceTime morningAddTime = this.getPredTime().getAddTime().getMorning();
 		if (morningAddTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
-		AttendanceTime afternoonAddTime = this.getPredTime().getAddTime().getAfternoon(); 		
+		AttendanceTime afternoonAddTime = this.getPredTime().getAddTime().getAfternoon();
 		if (afternoonAddTime.greaterThan(oneDayRange)) {
 			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
@@ -231,7 +223,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * Restore disabled data from.
 	 *
@@ -243,17 +235,27 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			this.prescribedTimezoneSetting.restoreDisabledDataFrom(domain.getPrescribedTimezoneSetting());
 		}
 	}
-	
+
+
 	/**
+	 * 日付終了時刻
+	 * Gets the end date clock.
+	 * @return the end date clock
+	 */
+	public TimeWithDayAttr getEndDateClock() {
+		return this.startDateClock.forwardByMinutes(this.rangeTimeDay.valueAsMinutes());
+	}
+
+
+	/**
+	 * 1日の勤務時間範囲
 	 * Gets the one day span.
-	 *
 	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
-		return new TimeSpanForCalc(startDateClock,
-				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
+		return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
 	}
-	
+
 	/**
 	 * Gets the predetermine end time.
 	 *
@@ -264,8 +266,8 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	}
 
 	/**
+	 * 勤務NOに対応した時間帯を取得する
 	 * Gets the time sheet of.
-	 *
 	 * @param workNo the work no
 	 * @return the time sheet of
 	 */
@@ -280,18 +282,18 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 * @param workTimeType the work time type
 	 * @param oldDomain the old domain
 	 */
-	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {	
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {
 		// Tab 1
-		this.prescribedTimezoneSetting.correctData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());	
+		this.prescribedTimezoneSetting.correctData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());
 		this.predTime.correctData(screenMode, workTimeType, oldDomain.getPredTime());
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = oldDomain.getRangeTimeDay();
 			this.nightShift = oldDomain.isNightShift();
 			this.predetermine = oldDomain.isPredetermine();
-		} 	
+		}
 	}
-	
+
 	/**
 	 * Restore default data.
 	 *
@@ -299,14 +301,14 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 */
 	public void correctDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
 		// Tab 1
-		this.prescribedTimezoneSetting.correctDefaultData(screenMode, workTimeType);	
+		this.prescribedTimezoneSetting.correctDefaultData(screenMode, workTimeType);
 		this.predTime.correctDefaultData(screenMode, workTimeType);
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);
 			this.nightShift = false;
 			this.predetermine = false;
-		} 		
+		}
 	}
 
 	/**
@@ -331,7 +333,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		}
 		return cloned;
 	}
-	
+
 	public void setStartDateClock(int value) {
 		this.startDateClock = new TimeWithDayAttr(value);
 	}
