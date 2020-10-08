@@ -84,14 +84,15 @@ public class SelectedPatternFinder {
 				.collect(Collectors.toList()));
 		
 		//List<選択可能カテゴリ＞を作成
-		List<String> ids = selectCategories.stream()
-				   .map(sc -> sc.getCategoryId().v())
-				   .collect(Collectors.toList());
-		dto.setSelectableCategories(command.getCategories().stream()
-									.filter(c -> !ids.contains(c.getCategoryId()))
-									.sorted(Comparator.comparing(CategoryDto::getCategoryId))
-									.collect(Collectors.toList()));
+		dto.setSelectableCategories(getSelectable(dto.getSelectedCategories(), command.getCategories()));
 		//オブジェクト「選択パターンパラメータ」を返す。
 		return dto;
+	}
+	
+	private List<CategoryDto> getSelectable(List<SelectionCategoryNameDto> selected, List<CategoryDto> categories) {
+		return categories.stream()
+				.filter(c -> !selected.stream().anyMatch(s -> s.getCategoryId().equals(c.getCategoryId())
+															&& s.getSystemType() == c.getSystemType()))
+				.collect(Collectors.toList());
 	}
 }

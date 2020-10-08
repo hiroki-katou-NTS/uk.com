@@ -257,9 +257,10 @@ module nts.uk.com.view.cmf003.c {
 
       vm.selectedSystemType.subscribe(value => {
         if (Number(value) !== 0) {
-          vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value)));
+          vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value) - 1));
         } else {
-          vm.categoriesFiltered(vm.categoriesDefault());
+          vm.categoriesFiltered([]);
+          _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
         };
         vm.categoriesFiltered.valueHasMutated();
       });
@@ -310,7 +311,6 @@ module nts.uk.com.view.cmf003.c {
           vm.categoriesDefault.push(c);
           vm.categoriesFiltered.push(c);
         });
-        console.log(vm.categoriesDefault());
       }).always(() => {
         vm.$blockui("clear");
       });
@@ -335,6 +335,8 @@ module nts.uk.com.view.cmf003.c {
       vm.categoriesFiltered([]);
       _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
       vm.currentCateSelected([]);
+      vm.disableMoveButton(false);
+      vm.saveFormatEnabled(true);
       vm.$errors("clear");
     }
 
@@ -449,9 +451,7 @@ module nts.uk.com.view.cmf003.c {
       param.patternCode = patternCode;
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
-      console.log(param);
       service.selectPattern(param).then((res) => {
-        console.log(res);
         const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
         vm.codeValue(pattern.patternCode);
@@ -463,12 +463,8 @@ module nts.uk.com.view.cmf003.c {
         });
         vm.currentCateSelected([]);
         _.forEach(res.selectedCategories, c => {
-          let category: Category = new Category();
-          category.categoryId = c.categoryId;
-          category.categoryName = c.categoryName;
-          category.retentionPeriod = getText(c.retentionPeriod);
-          category.systemType = c.systemType;
-          vm.currentCateSelected.push(category);
+          vm.currentCateSelected.push(vm.convertToCategory(c));
+          console.log(vm.currentCateSelected());
         });
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
         vm.saveFormatEnabled(pattern.patternClassification === 0);

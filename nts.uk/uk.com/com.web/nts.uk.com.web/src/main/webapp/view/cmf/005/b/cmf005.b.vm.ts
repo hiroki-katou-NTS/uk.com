@@ -140,8 +140,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       self.listColumnHeader = ko.observableArray([
         { headerText: '', key: 'categoryId', hidden: true },
         { headerText: getText('CMF005_24'), key: 'displayName', width: 220 },
-        { headerText: getText('CMF005_229'), key: '', width: 75 },
         { headerText: getText('CMF005_25'), key: 'timeStore', width: 75, formatter: timeStore },
+        { headerText: getText('CMF005_229'), key: 'timeStore', width: 75 },
         { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 75, formatter: storageRangeSaved }
       ]);
 
@@ -285,7 +285,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             categoryId: x.categoryId,
             categoryName: x.categoryName,
             displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
-            periodDeletion: x.periodDivision,
+            timeStore: x.periodDivision,
             separateCompClassification: x.separateCompClassification,
             specifiedMethod: x.specifiedMethod,
             storeRange: x.storeRange,
@@ -455,19 +455,19 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       for (let i = 0; i < self.listDataCategory().length; i++) {
         // self.listDataCategory.push(self.listDataCategory()[i]);
 
-        if (!self.requiredMonth() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.MONTHLY) {
+        if (!self.requiredMonth() && self.listDataCategory()[i].timeStore == model.TIME_STORE.MONTHLY) {
           self.requiredMonth(true);
         }
 
-        if (!self.requiredYear() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.ANNUAL) {
+        if (!self.requiredYear() && self.listDataCategory()[i].timeStore == model.TIME_STORE.ANNUAL) {
           self.requiredYear(true);
         }
 
-        if (!self.requiredDate() && self.listDataCategory()[i].periodDeletion == model.TIME_STORE.DAILY) {
+        if (!self.requiredDate() && self.listDataCategory()[i].timeStore == model.TIME_STORE.DAILY) {
           self.requiredDate(true);
         }
 
-        if (self.listDataCategory()[i].periodDeletion == 0) {
+        if (self.listDataCategory()[i].timeStore == 0) {
           $('.form-B .ntsDatepicker').ntsError('clear');
         }
       }
@@ -815,8 +815,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         moment.utc(self.monthValue().startDate, 'YYYY/MM').toISOString(), moment.utc(self.monthValue().endDate, 'YYYY/MM').toISOString(),
         self.yearValue().startDate, self.yearValue().endDate,
         Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
-        Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.listDataCategory());
-      debugger;
+        Number(self.selectedTitleAtr()), self.selectedPatternId().substring(1), self.employeeDeletionList(), self.listDataCategory());
+      console.log(manualSetting);
       service.addManualSetDel(manualSetting).done(function (data: any) {
         self.delId(data);
         self.gotoscreenF();
@@ -922,13 +922,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     passwordForCompressFile: string;
     haveEmployeeSpecifiedFlg: number;
     employees: Array<EmployeeDeletion>;
+    delPattern: string;
     categories: Array<Category>;
 
     constructor(delName: string, suppleExplanation: string, systemType: number, referenceDate: string,
       executionDateAndTime: string, dayStartDate: string, dayEndDate: string,
       monthStartDate: string, monthEndDate: string,
       startYear: number, endYear: number, isSaveBeforeDeleteFlg: number, isExistCompressPasswordFlg: number,
-      passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, employees: Array<EmployeeDeletion>,
+      passwordForCompressFile: string, haveEmployeeSpecifiedFlg: number, delPattern: string, employees: Array<EmployeeDeletion>,
       categories: Array<Category>) {
       this.delName = delName;
       this.suppleExplanation = suppleExplanation;
@@ -946,6 +947,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       this.passwordForCompressFile = passwordForCompressFile;
       this.haveEmployeeSpecifiedFlg = haveEmployeeSpecifiedFlg;
       this.employees = employees;
+      this.delPattern = delPattern;
       this.categories = categories;
     }
   }
@@ -974,7 +976,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
   export class Category {
     categoryId: string;
     categoryName: string;
-    periodDeletion: number;
+    timeStore: number;
     systemType: number;
     separateCompClassification: number;
     specifiedMethod: number;

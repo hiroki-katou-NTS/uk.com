@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.app.command.autosetting.storage;
 
 import lombok.Data;
+import nts.uk.ctx.sys.assist.app.find.autosetting.storage.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.autosetting.storage.DataStoragePatternSettingDto;
 
 /**
@@ -43,4 +44,18 @@ public class SelectionCategoryNameDto {
 	 * 詳細設定
 	 */
 	private DataStoragePatternSettingDto pattern;
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CategoryDto) {
+			return ((CategoryDto) obj).getCategoryId() == this.categoryId
+					&& ((CategoryDto) obj).getSystemType() == this.systemType;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return categoryId.hashCode();
+	}
 }
