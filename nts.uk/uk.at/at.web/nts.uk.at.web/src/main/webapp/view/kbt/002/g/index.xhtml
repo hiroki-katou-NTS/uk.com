@@ -29,10 +29,10 @@
 					    <tbody>
 					        <tr>
 					            <td class="inputLabel">#{i18n.getText('KBT002_200')}</td>
-					            <td><div data-bind = "text: execLog.overallStatus" /></td>
+					            <td><div data-bind="text: overallStatus" /></td>
 					        </tr>
 					        <tr>
-					        	<td colspan="2"><div data-bind = "text: execLog.overallError" /></td>
+					        	<td colspan="2"><div data-bind="text: overallError" /></td>
 					        </tr>
 					    </tbody>
 					</table>
@@ -59,7 +59,7 @@
 								<th class="inputLabel"></th>
 							</tr>
 						</thead>
-					    <tbody data-bind = "foreach: execLog.taskLogList">
+					    <tbody data-bind = "foreach: taskLogList">
 							<tr>
 								<td class="inputLabel"><div data-bind="text: taskName" /></td>
 								<com:ko-if bind="taskId !== 2">
