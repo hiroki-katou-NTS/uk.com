@@ -3,7 +3,7 @@
 module nts.uk.at.view.kmp001.b {
 	const template = `
 		<div id="functions-area">
-			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' },text: $i18n('KMP001_100')"></a>
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind= "text: $i18n('KMP001_6'), click: deleteStamCard"></button>
 		</div>

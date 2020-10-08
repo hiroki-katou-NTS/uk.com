@@ -8,7 +8,7 @@ module nts.uk.at.view.kmp001.e {
 			}">
 		</div>
 		<div id="functions-area">
-			<a class="goback" data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' }"></a>
+			<a class="goback" data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' }"></a>
 		</div>
 		<div class="view-kmp">
 			<div class="list-component float-left viewa">

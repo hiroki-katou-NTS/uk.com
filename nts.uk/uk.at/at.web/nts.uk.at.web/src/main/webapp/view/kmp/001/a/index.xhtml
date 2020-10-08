@@ -36,7 +36,8 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="let: { selected: ko.observable('KMP001_H') }">
+			<div data-bind="component: { name: 'view-a', params: {} }"></div>
+			<!-- <div data-bind="let: { selected: ko.observable('KMP001_H') }">
 
 				<div data-bind="if: selected() === 'KMP001_A'">
 					<div data-bind="component: { name: 'view-a', params: {} }"></div>
@@ -55,7 +56,7 @@
 						data-bind="component: { name: 'view-h', params: { model: selected } }"></div>
 				</div>
 				<div class="cf"></div>
-			</div>
+			</div> -->
 		</ui:define>
 
 	</ui:composition>

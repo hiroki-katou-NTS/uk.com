@@ -112,22 +112,22 @@ module nts.uk.at.view.kmp001.h {
 
 		view_A() {
 			const vm = this;
-			vm.params.model('KMP001_A');
+			vm.$jump('/view/kmp/001/a/index.xhtml');
 		}
 
 		view_B() {
 			const vm = this;
-			vm.params.model('KMP001_B');
+			vm.$jump('/view/kmp/001/b/index.xhtml');
 		}
 
 		view_C() {
 			const vm = this;
-			vm.params.model('KMP001_C');
+			vm.$jump('/view/kmp/001/c/index.xhtml');
 		}
 
 		view_E() {
 			const vm = this;
-			vm.params.model('KMP001_E');
+			vm.$jump('/view/kmp/001/e/index.xhtml');
 		}
 
 		showDiaLog() {
