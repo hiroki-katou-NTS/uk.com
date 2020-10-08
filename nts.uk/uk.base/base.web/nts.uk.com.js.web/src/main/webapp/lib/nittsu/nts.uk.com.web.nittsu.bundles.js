@@ -7819,6 +7819,10 @@ var nts;
                             options.overflowTooltipOn = this.overflowTooltipOn;
                         }
                     };
+                    ExTable.prototype.getChartRuler = function () {
+                        var self = this;
+                        return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+                    };
                     /**
                      * Create.
                      */
@@ -10298,6 +10302,9 @@ var nts;
                                     }).fail(function (res) {
                                         var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
                                         if ($target !== intan.NULL) {
+                                            var $parent = $editor.parentElement;
+                                            helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                            triggerStopEdit($exTable, $parent, land, value);
                                             errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
                                         }
                                         if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
@@ -10498,6 +10505,7 @@ var nts;
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
                                     if ($target !== intan.NULL) {
+                                        mo_1(helper.call(columnDf_3.ajaxValidate.onFailed, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                         errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
                                     }
                                     if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
@@ -10955,6 +10963,12 @@ var nts;
                                         if (!helper.isEqual(src[key], obj[key], fieldArr)
                                             && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
                                             objValCloned[tField] = srcVal[tField];
+                                            if (tField.slice(-4) === "Name") {
+                                                var codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                                                if (_.has(objValCloned, codeFieldName)) {
+                                                    objValCloned[codeFieldName] = srcVal[codeFieldName];
+                                                }
+                                            }
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                             origData[key] = objValCloned;
                                             return objValCloned;
@@ -11449,12 +11463,32 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
+                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate)) {
+                                var result = validate([cbData]);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
+                                            var txId_1 = uk.util.randomId();
+                                            _.forEach(selectedCells_1, function (cell, index) {
+                                                update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
+                                            });
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -11465,19 +11499,38 @@ var nts;
                          * Paste range.
                          */
                         Printer.prototype.pasteRange = function (evt) {
-                            var cbData = this.getClipboardContent(evt);
+                            var self = this, cbData = this.getClipboardContent(evt);
                             cbData = this.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
-                            cbData = this.process(cbData);
+                            var objArr = [];
+                            cbData = this.process(cbData, objArr);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate) && objArr.length > 0) {
+                                var result = validate(objArr);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            self.updateWith(cbData);
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             this.updateWith(cbData);
                         };
                         /**
                          * Process.
                          */
-                        Printer.prototype.process = function (data) {
+                        Printer.prototype.process = function (data, objArr) {
                             var dataRows = _.map(data.split("\n"), function (row) {
                                 return _.map(row.split("\t"), function (cData) {
+                                    if (cData !== "null" && !_.isNil(cData) && cData !== "") {
+                                        objArr.push(helper.getCellData(cData));
+                                    }
                                     return cData.indexOf(",") > 0 ? cData.split(",") : cData;
                                 });
                             });
@@ -14579,6 +14632,9 @@ var nts;
                             case "copyRedo":
                                 redoCopy(self);
                                 break;
+                            case "pasteValidate":
+                                setPasteValidate(self, params[0]);
+                                break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
@@ -14953,10 +15009,24 @@ var nts;
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         if (mode !== DETERMINE) {
                             if (exTable.updateMode !== DETERMINE) {
+                                // Keep states while switching to new mode
+                                if (exTable.updateMode === EDIT) {
+                                    var editor = $container.data(update.EDITOR);
+                                    var inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                                    if (editor) {
+                                        update.outsideClick($container[0], null, true);
+                                    }
+                                    else if (inputSelecting) {
+                                        selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                    }
+                                }
+                                else if (exTable.updateMode === COPY_PASTE) {
+                                    selection.clearAll($grid[0]);
+                                }
                                 exTable.setUpdateMode(mode);
-                                exTable.modifications = {};
-                                render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
-                                selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                                //                    exTable.modifications = {};
+                                //                    render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
+                                //                    selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                             }
                             else {
                                 exTable.setUpdateMode(mode);
@@ -15296,6 +15366,13 @@ var nts;
                         if (!printer)
                             return;
                         printer.redo();
+                    }
+                    /**
+                     * Paste validate.
+                     */
+                    function setPasteValidate($container, validate) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.PASTE_VALIDATE, validate);
                     }
                     /**
                      * Clear histories.
@@ -15685,6 +15762,7 @@ var nts;
                     internal.OTHER_EDIT_HISTORY = "other-edit-history";
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
+                    internal.PASTE_VALIDATE = "paste-validate";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
@@ -16822,7 +16900,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection) {
                             var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
                             if (children.length > 0)
                                 removeClass(children, clazz);
@@ -16860,7 +16940,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.remove(clazz);
                             return;
                         }
@@ -48463,6 +48545,67 @@ var nts;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts_1.uk || (nts_1.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var PrettyPrintBindingHandler = /** @class */ (function () {
+                    function PrettyPrintBindingHandler() {
+                    }
+                    PrettyPrintBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var lang = valueAccessor() || 'xml';
+                        var value = allValueAccessor.get('code');
+                        var html = value || element.innerHTML
+                            .trim()
+                            .replace(/\n/g, '')
+                            .replace(/\]\]--\>$/g, '')
+                            .replace(/^\<\!--\[CDATA\[/g, '');
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var pr = _.get(window, 'PR');
+                            if (!pr) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return pr;
+                        })
+                            .then(function () { return PR; })
+                            .then(function (_a) {
+                            var prettyPrintOne = _a.prettyPrintOne;
+                            var match = html.match(/\s{2,}/g);
+                            var matctgm = function (p, c) { return c.length < p.length ? c : p; };
+                            if (match) {
+                                var min = match.reduce(matctgm, match[0]);
+                                html = html.replace(new RegExp(min, 'g'), '\n');
+                            }
+                            element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
+                            element.classList.add('prettyprint');
+                        });
+                        return { controlsDescendantBindings: true };
+                    };
+                    PrettyPrintBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'prettify'
+                        })
+                    ], PrettyPrintBindingHandler);
+                    return PrettyPrintBindingHandler;
+                }());
+                bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var NtsSortableBindingHandler = /** @class */ (function () {
     function NtsSortableBindingHandler() {
