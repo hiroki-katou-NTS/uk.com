@@ -4638,7 +4638,7 @@ input.nts-editor::-ms-clear {
 
 /* line 49, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
-  background-color: #FFFFCC;
+  background-color: #FFFFCC !important;
 }
 
 /* line 52, ../sass/components/_extable.scss */
@@ -4648,7 +4648,7 @@ input.nts-editor::-ms-clear {
 
 /* line 55, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
-  background-color: #3498DB;
+  background-color: #3498DB !important;
   color: #FFF;
 }
 
