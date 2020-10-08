@@ -399,7 +399,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
         self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : null) : null);
         isExist = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
-        self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
+        self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : (self.model.workTime.code ? self.$i18n('KAFS07_10') : null);
         self.bindWorkTime(params.appWorkChangeDispInfo);
         if (!self.mode) {
             if (!self.model.workTime.code) {
