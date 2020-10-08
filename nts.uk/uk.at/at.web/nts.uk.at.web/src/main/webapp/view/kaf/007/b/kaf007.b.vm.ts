@@ -124,12 +124,12 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.appWorkChange.workTypeCode(workTypeCode);
             var dataWorkType = _.filter(workTypeLst, (x) => { return workTypeCode === x.workTypeCode });
             vm.appWorkChange.workTypeName(dataWorkType.length > 0 ? dataWorkType[0].name : vm.$i18n('KAF007_79'));
-            if (workTimeCode === null) {
-                vm.appWorkChange.workTimeName(null);
-            } else {
-                var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
-                vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
-            }
+            if(workTimeCode) {
+				var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
+				vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+			} else {
+				vm.appWorkChange.workTimeName(null);
+			}
         }
 
         handleError(err: any) {
