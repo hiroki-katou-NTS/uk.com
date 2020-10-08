@@ -252,7 +252,7 @@ export class CmmS45BComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3],
+                            listAppType: [2, 3, 4],
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
