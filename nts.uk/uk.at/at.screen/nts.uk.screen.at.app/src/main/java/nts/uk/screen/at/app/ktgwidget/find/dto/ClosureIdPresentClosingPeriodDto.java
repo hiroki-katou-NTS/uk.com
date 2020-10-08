@@ -2,13 +2,18 @@ package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
  * @author tutt
  *
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ClosureIdPresentClosingPeriodDto {
 	

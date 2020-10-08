@@ -189,7 +189,7 @@ public class KTG001QueryProcessor_ver04 {
 		// 4. ログイン者が担当者か判断する
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();
 		
-		closingPeriodDtos = closingPeriods.stream().map(c -> new ClosureIdPresentClosingPeriodDto(closureId, 
+		closingPeriodDtos = closingPeriods.stream().map(c -> new ClosureIdPresentClosingPeriodDto(c.getClosureId(), 
 				new PresentClosingPeriodImportDto(
 						c.getCurrentClosingPeriod().getProcessingYm().v(),
 						c.getCurrentClosingPeriod().getClosureStartDate().toString(),
