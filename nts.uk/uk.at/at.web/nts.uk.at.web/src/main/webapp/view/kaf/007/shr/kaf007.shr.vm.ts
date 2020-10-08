@@ -201,12 +201,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 }).fail(fail => console.log(fail))
                 
             }).always(() => {
-                if(vm.mode === 0) {
-                    $('#kaf000-a-component4-singleDate').focus(); $('.ntsStartDatePicker').focus();
-                } else {
                     $('#time1Start').focus();
-                }
-
             });;
         }
 
