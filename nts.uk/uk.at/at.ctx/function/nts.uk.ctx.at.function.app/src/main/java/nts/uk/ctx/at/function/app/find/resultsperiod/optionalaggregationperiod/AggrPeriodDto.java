@@ -3,8 +3,6 @@ package nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.OptionalAggrPeriodDto;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 
 /**
  * The Class AggrPeriodDto.
