@@ -343,7 +343,7 @@ public class GoBackDirectlyFinder {
 		
 		if (paramStart.getMode()) {
 //			new
-			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithm(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
+			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataAlgorithmMobile(companyId, Optional.ofNullable(null), employeeId, appDispInfoStartupOutput));
 		}else {
 			
 			String appId = "";
@@ -351,7 +351,7 @@ public class GoBackDirectlyFinder {
 				appId = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getAppID();
 			}
 //			edit
-			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithm(paramStart.getCompanyId(), appId, appDispInfoStartupOutput));
+			return InforGoBackCommonDirectDto.fromDomain(goBackDirectService.getDataDetailAlgorithmMobile(paramStart.getCompanyId(), appId, appDispInfoStartupOutput));
 		}
 	}
 	/**
