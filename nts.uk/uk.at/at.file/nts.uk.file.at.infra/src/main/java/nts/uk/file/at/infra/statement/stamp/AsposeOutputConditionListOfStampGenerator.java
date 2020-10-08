@@ -1,7 +1,6 @@
 package nts.uk.file.at.infra.statement.stamp;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
-import com.aspose.cells.CellArea;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.HorizontalPageBreakCollection;
-import com.aspose.cells.ImageFormat;
-import com.aspose.cells.ImageOrPrintOptions;
-import com.aspose.cells.PaperSizeType;
-import com.aspose.cells.PrintingPageType;
 
 import lombok.SneakyThrows;
 import lombok.val;
