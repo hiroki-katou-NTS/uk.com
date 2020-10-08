@@ -192,10 +192,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
             let timeZoneWithWorkNoLst = [];
 
-            if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.isEdit) {
+            if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.isEdit && vm.model().setupType() === 0) {
                 timeZoneWithWorkNoLst.push(timeZone1);
             }
-            if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.isEdit) {
+            if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.isEdit
+             && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
                 timeZoneWithWorkNoLst.push(timeZone2);
             }
 

@@ -199,10 +199,11 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			let timeZoneWithWorkNoLst = [];
 
-			if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+			if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
 				timeZoneWithWorkNoLst.push(timeZone1);
 			}
-			if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles) {
+			if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+			 && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
 				timeZoneWithWorkNoLst.push(timeZone2);
 			}
 
