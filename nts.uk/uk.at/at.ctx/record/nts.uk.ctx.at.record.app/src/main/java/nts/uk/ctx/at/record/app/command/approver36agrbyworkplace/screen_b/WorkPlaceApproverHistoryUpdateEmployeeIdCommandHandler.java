@@ -30,9 +30,9 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
         if(domainPrevOpt.isPresent()){
             DatePeriod period = new DatePeriod(domainPrevOpt.get().getPeriod().start(),command.getPeriod().start().addDays(-1));
             val domainPrevUpdate =  Approver36AgrByWorkplace.create(domainPrevOpt.get().getWorkplaceId(),period,domainPrevOpt.get().getApproverIds(),domainPrevOpt.get().getConfirmerIds());
-            repo.update(domainPrevUpdate,period.start());
+            repo.updateStartDate(domainPrevUpdate,period.start());
         }
-        repo.update(domain,command.getStartDateBeforeChange());
+        repo.updateStartDate(domain,command.getStartDateBeforeChange());
 
     }
 }

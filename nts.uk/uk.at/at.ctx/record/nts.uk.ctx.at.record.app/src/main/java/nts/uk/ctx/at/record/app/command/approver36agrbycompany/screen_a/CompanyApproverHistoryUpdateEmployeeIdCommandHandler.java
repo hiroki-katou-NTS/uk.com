@@ -43,9 +43,9 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
             DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
             val domain =  Approver36AgrByCompany.create(domainPrev.getCompanyId(),period,domainPrev.getApproverList()
                     ,domainPrev.getConfirmerList() );
-            repo.update(domain,period.start());
+            repo.updateStartDate(domain,period.start());
         }
-        repo.update(domainUpdate,command.getStartDateBeforeChange());
+        repo.updateStartDate(domainUpdate,command.getStartDateBeforeChange());
 
     }
 
