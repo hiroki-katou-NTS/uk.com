@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.dom.personal.contact;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.primitive.PrimitiveValueBase;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,16 +99,16 @@ public class PersonalContact extends AggregateRoot {
 
     public void setMemento(MementoSetter memento) {
         memento.setPersonalId(this.personalId);
-        memento.setMailAddress(this.mailAddress.isPresent() ? this.mailAddress.get().v() : null);
-        memento.setIsMailAddressDisplay(this.isMailAddressDisplay.isPresent() ? this.isMailAddressDisplay.get() : null);
-        memento.setMobileEmailAddress(this.mobileEmailAddress.isPresent() ? this.mobileEmailAddress.get().v() : null);
-        memento.setIsMobileEmailAddressDisplay(this.isMobileEmailAddressDisplay.isPresent() ? this.isMobileEmailAddressDisplay.get() : null);
-        memento.setPhoneNumber(this.phoneNumber.isPresent() ? this.phoneNumber.get().v() : null);
-        memento.setIsPhoneNumberDisplay(this.isPhoneNumberDisplay.isPresent() ? this.isPhoneNumberDisplay.get() : null);
-        memento.setEmergencyContact1(this.emergencyContact1.isPresent() ? this.emergencyContact1.get() : null);
-        memento.setIsEmergencyContact1Display(this.isEmergencyContact1Display.isPresent() ? this.isEmergencyContact1Display.get() : null);
-        memento.setEmergencyContact2(this.emergencyContact2.isPresent() ? this.emergencyContact2.get() : null);
-        memento.setIsEmergencyContact2Display(this.isEmergencyContact2Display.isPresent() ? this.isEmergencyContact2Display.get() : null);
+        memento.setMailAddress(this.mailAddress.map(PrimitiveValueBase::v).orElse(null));
+        memento.setIsMailAddressDisplay(this.isMailAddressDisplay.orElse(null));
+        memento.setMobileEmailAddress(this.mobileEmailAddress.map(PrimitiveValueBase::v).orElse(null));
+        memento.setIsMobileEmailAddressDisplay(this.isMobileEmailAddressDisplay.orElse(null));
+        memento.setPhoneNumber(this.phoneNumber.map(PrimitiveValueBase::v).orElse(null));
+        memento.setIsPhoneNumberDisplay(this.isPhoneNumberDisplay.orElse(null));
+        memento.setEmergencyContact1(this.emergencyContact1.orElse(null));
+        memento.setIsEmergencyContact1Display(this.isEmergencyContact1Display.orElse(null));
+        memento.setEmergencyContact2(this.emergencyContact2.orElse(null));
+        memento.setIsEmergencyContact2Display(this.isEmergencyContact2Display.orElse(null));
         memento.setOtherContacts(this.otherContacts);
 
     }

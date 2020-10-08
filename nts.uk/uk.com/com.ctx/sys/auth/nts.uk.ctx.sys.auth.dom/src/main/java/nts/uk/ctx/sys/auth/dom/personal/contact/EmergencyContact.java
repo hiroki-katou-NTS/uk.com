@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.personal.contact;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -7,6 +8,7 @@ import nts.arc.layer.dom.DomainObject;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人連絡先.個人連絡先
  */
 @Getter
+@Builder
 public class EmergencyContact extends DomainObject {
 
     /**
@@ -25,7 +27,7 @@ public class EmergencyContact extends DomainObject {
     private PhoneNumber phoneNumber;
 
     public static EmergencyContact createFromMemento(MementoGetter memento) {
-        EmergencyContact domain = new EmergencyContact();
+        EmergencyContact domain = EmergencyContact.builder().build();
         domain.getMemento(memento);
         return domain;
     }

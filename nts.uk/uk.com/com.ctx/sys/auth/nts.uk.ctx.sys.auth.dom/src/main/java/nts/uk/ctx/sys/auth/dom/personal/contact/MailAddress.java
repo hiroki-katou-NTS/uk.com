@@ -12,11 +12,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(256)
 public class MailAddress extends StringPrimitiveValue<MailAddress> {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public MailAddress(String rawValue) {
+    public MailAddress(String rawValue) {
         super(rawValue);
     }
 }

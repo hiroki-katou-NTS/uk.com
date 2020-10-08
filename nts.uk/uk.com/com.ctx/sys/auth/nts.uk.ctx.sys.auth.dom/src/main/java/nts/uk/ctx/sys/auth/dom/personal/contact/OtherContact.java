@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.personal.contact;
 
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,6 +10,7 @@ import java.util.Optional;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人連絡先.個人連絡先
  */
 @Getter
+@Builder
 public class OtherContact extends DomainObject {
 
     /**
@@ -28,7 +30,7 @@ public class OtherContact extends DomainObject {
 
 
     public OtherContact createFromMemento(MementoGetter memento) {
-        OtherContact domain = new OtherContact();
+        OtherContact domain = OtherContact.builder().build();
         domain.getMemento(memento);
         return domain;
     }
@@ -43,7 +45,7 @@ public class OtherContact extends DomainObject {
 
     public void setMemento(MementoSetter memento) {
         memento.setOtherContactNo(this.otherContactNo);
-        memento.setDisplay(this.isDisplay.isPresent() ? this.isDisplay.get() : null);
+        memento.setDisplay(this.isDisplay.orElse(null));
         memento.setAddress(this.address);
     }
 

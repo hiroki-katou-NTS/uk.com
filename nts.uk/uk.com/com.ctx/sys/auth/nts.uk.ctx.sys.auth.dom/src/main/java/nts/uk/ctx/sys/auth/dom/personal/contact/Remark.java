@@ -9,11 +9,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(200)
 public class Remark extends StringPrimitiveValue<Remark> {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public Remark(String rawValue) {
+    public Remark(String rawValue) {
         super(rawValue);
     }
 }

@@ -12,11 +12,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(20)
 public class PhoneNumber extends StringPrimitiveValue<PhoneNumber> {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public PhoneNumber(String rawValue) {
+    public PhoneNumber(String rawValue) {
         super(rawValue);
     }
 }

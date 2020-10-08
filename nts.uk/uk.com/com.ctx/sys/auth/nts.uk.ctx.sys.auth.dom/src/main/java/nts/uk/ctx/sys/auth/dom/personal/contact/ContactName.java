@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.personal.contact;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
@@ -11,11 +9,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(41)
 public class ContactName extends StringPrimitiveValue<ContactName> {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public ContactName(String rawValue) {
+    public ContactName(String rawValue) {
         super(rawValue);
     }
 }
