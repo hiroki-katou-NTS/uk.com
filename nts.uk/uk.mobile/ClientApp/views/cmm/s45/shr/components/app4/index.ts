@@ -74,7 +74,7 @@ export class CmmS45ComponentsApp4Component extends Vue {
             workTypeCode = params.goBackApplication.dataWork.workType;
         }
         let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : self.$i18n('KAFS09_20');
+        let workTypeName = workType ? workType.abbreviationName : null;
         self.$app().workType = workTypeCode ? (workTypeName ? workTypeCode + '  ' + workTypeName : self.$i18n('KAFS09_21')) : self.$i18n('KAFS09_20');
 
         let workTimeCode;
@@ -82,7 +82,7 @@ export class CmmS45ComponentsApp4Component extends Vue {
             workTimeCode = params.goBackApplication.dataWork.workTime;
         }
         let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : self.$i18n('KAFS09_21');
+        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : null;
 
         // if (!workTimeCode) {
         //     workTimeCode = self.$i18n('KAFS09_20');
