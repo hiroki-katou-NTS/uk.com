@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting;
 
+import lombok.val;
+import mockit.Mock;
+import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -205,16 +208,25 @@ public class AgreementOperationSettingTest {
 		assertThat(result).isEqualTo(new YearMonthPeriod(new YearMonth(201903), new YearMonth(202002)));
 	}
 
-//	@Test
-//	public void getPeriodYearTest_2() {
-//
-//		AgreementOperationSetting target =
-//				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(1,true),true,true);
-//
-//		YearMonthPeriod result = target.getPeriodYear(GeneralDate.ymd(2020, 2, 25));
-//
-//		assertThat(result).isEqualTo(new YearMonthPeriod(new YearMonth(202001), new YearMonth(202012)));
-//	}
+	@Test
+	public void getPeriodYearTest_2() {
+
+		AgreementOperationSetting target =
+				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(1,true),true,true);
+
+		// Mock up
+		val setting = new DatePeriod(GeneralDate.ymd(2020, 3 ,25), GeneralDate.ymd(2021, 2, 25));
+		new MockUp<AgreementOperationSetting>() {
+			@Mock
+			public DatePeriod getAgreementPeriodByYMPeriod(YearMonthPeriod yearMonthPeriod) {
+				return setting;
+			}
+		};
+
+		YearMonthPeriod result = target.getPeriodYear(GeneralDate.ymd(2020, 2, 25));
+
+		assertThat(result).isEqualTo(new YearMonthPeriod(new YearMonth(202001), new YearMonth(202012)));
+	}
 
 	@Test
 	public void getPeriodYearTest_3() {

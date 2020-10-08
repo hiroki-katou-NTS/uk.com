@@ -238,6 +238,39 @@ public class CheckErrorApplicationMonthServiceTest {
     }
 
     /**
+     * チェックする TestCase 2
+     * 1: [R-1] getMaxAverageMulti not null with errorClassification = SIX_MONTH_MAX_TIME with errorClassification = empty
+     * 2: [R-2] timeYear return null
+     * 3: [R-3] algorithm return null
+     */
+    @Test
+    public void getMaxAverageMultiTest_6() {
+        ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
+        MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
+                new AgreementOneMonthTime(1), Optional.of(new AgreementOneMonthTime(2)), reason);
+
+        // Mock up
+        new Expectations() {{
+
+            AgreMaxAverageTime agreMaxAverageTime = AgreMaxAverageTime.of( new YearMonthPeriod(new YearMonth(202009), new YearMonth(202009)),new AttendanceTimeYear(0), AgreMaxTimeStatusOfMonthly.ERROR_OVER);
+            AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
+            agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
+
+            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
+            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
+            result = agreMaxAverageTimeMulti;
+
+            require.algorithm(require,monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
+            result = null;
+        }};
+
+        List<ExcessErrorContent> data = CheckErrorApplicationMonthService.check(require, monthlyAppContent);
+
+        assertThat(data.size()).isEqualTo(1);
+    }
+
+    /**
      * チェックする TestCase 3
      * 1: [R-1] getMaxAverageMulti return null
      * 2: [R-2] timeYear return not null
