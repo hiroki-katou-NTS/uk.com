@@ -35,11 +35,6 @@ public class LogSettingSaveCommandHandler extends CommandHandler<LogSettingSaveC
 		List<LogSettingDto> listLogSettingDto = context.getCommand().getLogSettings();
 		if (!listLogSettingDto.isEmpty()) {
 			
-			List<LogSetting> logSettings = this.logSettingRepository.findBySystem(cId, listLogSettingDto.get(0).getSystem());
-			if (logSettings.isEmpty()) {
-				cId = "000000000000-0000";
-			}
-			
 			// Step ドメインモデル「ログ設定」を削除
 			this.logSettingRepository.delete(cId, listLogSettingDto.get(0).getSystem());
 			

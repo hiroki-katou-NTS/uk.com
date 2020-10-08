@@ -639,13 +639,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                     if (success) {
                                         console.log(success);
 
-                                        for (var i = 0; i < success.length; i++) {
-                                            vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
-                                                if (result !== 'yes') {
-                                                    return;
-                                                }
-                                            });
-                                        }
+                                        // for (var i = 0; i < success.length; i++) {
+                                        //     vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
+                                        //         if (result !== 'yes') {
+                                        //             return;
+                                        //         }
+                                        //     });
+                                        // }
+                                        vm.showConfirmResult(success, vm);
 
                                         this.afterRegister(application);
                                     } else {
@@ -873,6 +874,26 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             // return true;
             return this.condition2() && this.condition8() && this.condition10Display(idItem);
         }
+
+        public showConfirmResult(messages: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(messages)) {
+					resolve(true);
+				}
+				let msg = messages[0].value,
+					type = messages[0].type;
+				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
+					if (result === 'yes') {
+		            	return vm.showConfirmResult(_.slice(messages, 1), vm);
+		            }
+					resolve();
+	        	});	
+            }).then((data: any) => {
+				if(data) {
+
+                }		
+			});
+		}
     }
 
     const API = {
