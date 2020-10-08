@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.FindDataHistoryDto;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetDataHistoryCommand;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
@@ -49,7 +50,7 @@ public class DataHistoryFinder {
 				.collect(Collectors.toList());
 		List<DataHistoryDto> res = new ArrayList<DataHistoryDto>();
 		if (!saveSetCodes.isEmpty()) {
-			res.addAll(findBySaveSetCodes(saveSetCodes));
+			res.addAll(findBySaveSetCodes(saveSetCodes, command.getFrom(), command.getTo()));
 		}
 
 		if (!res.isEmpty()) {
@@ -71,7 +72,7 @@ public class DataHistoryFinder {
 		return res.stream().sorted(Comparator.comparing(DataHistoryDto::getStartDatetime)).collect(Collectors.toList());
 	}
 
-	private List<DataHistoryDto> findBySaveSetCodes(List<String> saveSetCodes) {
+	private List<DataHistoryDto> findBySaveSetCodes(List<String> saveSetCodes, GeneralDateTime from, GeneralDateTime to) {
 		/**
 		 * 起動する時取得したList<データ保存の結果＞から絞り込みする。
 		 */
@@ -86,8 +87,8 @@ public class DataHistoryFinder {
 		/**
 		 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
 		 */
-		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(
-				pdrList.stream().map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
+		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList.stream()
+				.map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
 		return pdrList
 				.stream().map(
 						pdr -> DataHistoryDto
@@ -98,6 +99,10 @@ public class DataHistoryFinder {
 												.findFirst().orElse(null),
 										pdr,
 										drrList.stream()
+												.filter(data -> data.getStartDateTime().after(from) 
+															&& data.getEndDateTime().isPresent() 
+																	? data.getEndDateTime().get().before(to) 
+																	: true)
 												.filter(drr -> drr.getDataRecoveryProcessId()
 														.equals(pdr.getDataRecoveryProcessId()))
 												.findFirst().orElse(null)))

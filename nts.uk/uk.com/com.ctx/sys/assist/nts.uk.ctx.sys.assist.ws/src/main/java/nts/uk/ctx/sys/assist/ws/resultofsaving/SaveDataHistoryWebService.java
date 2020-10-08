@@ -1,14 +1,12 @@
 package nts.uk.ctx.sys.assist.ws.resultofsaving;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.assist.app.command.datarestoration.FindDataHistoryDto;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetDataHistoryCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetSaveSetHistoryCommand;
 import nts.uk.ctx.sys.assist.app.find.autosetting.StorageFreeSpaceFinder;
@@ -43,8 +41,7 @@ public class SaveDataHistoryWebService {
 	@POST
 	@Path("findData")
 	public List<ResultOfSavingDto> findData(GetDataHistoryCommand command) {
-		return historyFinder.findHistory(command.getObjects().stream()
-				.map(FindDataHistoryDto::getPatternCode).collect(Collectors.toList()));
+		return historyFinder.findHistory(command);
 	}
 	
 	@POST

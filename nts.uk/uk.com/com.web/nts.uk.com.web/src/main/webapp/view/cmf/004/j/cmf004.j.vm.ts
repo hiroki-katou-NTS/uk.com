@@ -8,6 +8,10 @@ module nts.uk.com.view.cmf004.j {
       startDate: null,
       endDate: null,
     });
+    baseDateValue: KnockoutObservable<any> = ko.observable({
+      startDate: null,
+      endDate: null,
+    });
     searchItems: KnockoutObservableArray<SaveSetHistoryDto> = ko.observableArray([
       { rowNumber: 1, patternCode: '', saveName: 'すべて' }
     ]);
@@ -36,7 +40,10 @@ module nts.uk.com.view.cmf004.j {
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
-        vm.findSaveSet();
+        if (value.startDate !== vm.baseDateValue().startDate && value.endDate !== vm.baseDateValue().endDate) {
+          vm.baseDateValue({ startDate: value.startDate, endDate: value.endDate });
+          vm.findSaveSet();
+        }
       });
       vm.loadDataGrid();
     }
@@ -75,9 +82,13 @@ module nts.uk.com.view.cmf004.j {
             $("#J3 tbody td:first-child").each(function (index) {
               $(this).css('background-color', '#cff1a5');
             });
-          })
+          });
         })
-        .always(() => vm.$blockui("hide"));
+        .then(() => {
+          vm.findData();
+        }).always(() => {
+          vm.$blockui("hide");
+        });
     }
 
     public findData() {
@@ -85,7 +96,7 @@ module nts.uk.com.view.cmf004.j {
       vm.$blockui("grayout");
       let arr: FindDataHistoryDto[] = [];
       let searchValue: SaveSetHistoryDto;
-      if (vm.searchValue() === '1') {
+      if (Number(vm.searchValue()) === 1) {
         arr = vm.searchItems()
           .filter(data => data.rowNumber !== 1)
           .map(data => new FindDataHistoryDto(data.patternCode, data.saveName));
@@ -93,11 +104,10 @@ module nts.uk.com.view.cmf004.j {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      debugger;
       const param = {
         objects: arr,
-        from: moment.utc(vm.dateValue().startDate).toISOString(),
-        to: moment.utc(vm.dateValue().endDate).toISOString()
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
       service.findData(param).then((data: Array<DataDto>) => {
         console.log(data);
@@ -135,7 +145,6 @@ module nts.uk.com.view.cmf004.j {
       if ($("#J6").data("mGrid")) {
         $("#J6").mGrid("destroy");
       }
-      console.log(vm.states);
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#J6")[0], {
         height: 800,
         headerHeight: "40px",

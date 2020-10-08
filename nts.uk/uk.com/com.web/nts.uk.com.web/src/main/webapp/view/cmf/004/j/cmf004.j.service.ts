@@ -10,6 +10,6 @@ module nts.uk.com.view.cmf004.j.service {
   } 
 
   export function findData(param: any): JQueryPromise<DataDto[]> {
-    return ajax('com', paths.findData, { objects: param })
+    return ajax('com', paths.findData, param)
   }
 }

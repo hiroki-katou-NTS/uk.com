@@ -9,6 +9,10 @@ module nts.uk.com.view.cmf003.i {
       startDate: null,
       endDate: null,
     });
+    baseDateValue: KnockoutObservable<any> = ko.observable({
+      startDate: null,
+      endDate: null,
+    });
     searchItems: KnockoutObservableArray<SaveSetHistoryDto> = ko.observableArray([
       { rowNumber: 1, patternCode: '', saveName: 'すべて' }
     ]);
@@ -40,7 +44,10 @@ module nts.uk.com.view.cmf003.i {
     created() {
       const vm = this;
       vm.dateValue.subscribe((value: any) => {
-        vm.findSaveSet(value.startDate, value.endDate);
+        if (value.startDate !== vm.baseDateValue().startDate && value.endDate !== vm.baseDateValue().endDate) {
+          vm.baseDateValue({ startDate: value.startDate, endDate: value.endDate });
+          vm.findSaveSet();
+        }
       });
       vm.loadDataGrid();
     }
@@ -56,11 +63,11 @@ module nts.uk.com.view.cmf003.i {
       $("#I2_4 .ntsStartDate input").focus();
     }
 
-    private findSaveSet(from: string, to: string) {
+    private findSaveSet() {
       const vm = this;
       vm.$blockui("grayout");
-      const momentFrom = moment.utc(from, "YYYY/MM/DD hh:mm:ss").toISOString();
-      const momentTo = moment.utc(to, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
+      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString();
+      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
           const res: SaveSetHistoryDto[] = [
@@ -81,6 +88,8 @@ module nts.uk.com.view.cmf003.i {
             });
           })
         }).then(() => {
+          vm.findData();
+        }).then(() => {
           service.getFreeSpace().then((val: number) => vm.storageSize(Math.round(val)));
         }).always(() => vm.$blockui("clear"));
     }
@@ -90,13 +99,18 @@ module nts.uk.com.view.cmf003.i {
       vm.$blockui("grayout");
       let arr: FindDataHistoryDto[] = [];
       let searchValue: SaveSetHistoryDto;
-      if (vm.searchValue() === '1') {
+      if (Number(vm.searchValue()) === 1) {
         arr = _.map(_.filter(vm.searchItems(), data => data.rowNumber !== 1), data => new FindDataHistoryDto(data.patternCode, data.saveName));
       } else {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      service.findData(arr).then((data: DataDto[]) => {
+      const param = {
+        objects: arr,
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+      };
+      service.findData(param).then((data: DataDto[]) => {
         const res: DataDto[] = [];
         if (data && data.length) {
           _.each(data, (x, i) => {

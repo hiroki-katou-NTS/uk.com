@@ -11,8 +11,8 @@ module nts.uk.com.view.cmf003.i.service {
     return ajax('com', paths.findSaveSetHistory, { from: fromDate, to: toDate });
   } 
 
-  export function findData(param: Array<FindDataHistoryDto>): JQueryPromise<DataDto[]> {
-    return ajax('com', paths.findData, { objects: param })
+  export function findData(param: any): JQueryPromise<DataDto[]> {
+    return ajax('com', paths.findData, param)
   }
 
   export function deleteData(param: string): JQueryPromise<DataDto[]> {
