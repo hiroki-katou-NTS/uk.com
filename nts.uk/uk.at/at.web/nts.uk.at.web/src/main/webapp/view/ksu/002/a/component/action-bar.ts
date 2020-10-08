@@ -89,7 +89,7 @@ module nts.uk.ui.at.ksu002.a {
 					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
 					tabindex: $component.data.tabIndex,
 					width: 570,
-					workplaceId: ko.observable('')
+					workplaceId: $component.data.workplaceId
 				"></div>
 		</div>
 	</div>
@@ -167,15 +167,16 @@ module nts.uk.ui.at.ksu002.a {
 		virtual: false
 	})
 	export class ActionBarComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+		init(element: HTMLElement, valueAccessor: () => KnockoutObservable<null | WorkData>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
-
+			const selected = valueAccessor();
 			const tabIndex = element.getAttribute('tabindex') || '1';
 			const mode = allBindingsAccessor.get('mode');
 			const clickable = allBindingsAccessor.get('clickable');
 			const clickBtn = allBindingsAccessor.get('click-btn');
+			const workplaceId = allBindingsAccessor.get('workplace-id');
 
-			const params = { clickable, clickBtn, tabIndex, mode };
+			const params = { selected, clickable, clickBtn, tabIndex, mode, workplaceId };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -218,25 +219,35 @@ module nts.uk.ui.at.ksu002.a {
 						redo: ko.computed(() => true),
 						undo: ko.computed(() => true)
 					},
-					mode: ko.observable('copy')
+					mode: ko.observable('copy'),
+					workplaceId: ko.observable(''),
+					selected: ko.observable(null)
 				};
 			}
 
-			const { clickable, clickBtn, mode } = vm.data;
+			const { selected, clickable, clickBtn, mode, workplaceId } = vm.data;
 
-			if (!mode) {
+			if (selected === undefined) {
+				vm.data.selected = ko.observable(null);
+			}
+
+			if (mode === undefined) {
 				vm.data.mode = ko.observable('edit');
 			}
 
-			if (!clickBtn) {
+			if (clickBtn === undefined) {
 				vm.data.clickBtn = () => { };
 			}
 
-			if (!clickable) {
+			if (clickable === undefined) {
 				vm.data.clickable = {
 					redo: ko.computed(() => true),
 					undo: ko.computed(() => true)
 				};
+			}
+
+			if (workplaceId === undefined) {
+				vm.data.workplaceId = ko.observable('');
 			}
 
 			const { redo, undo } = vm.data.clickable;
@@ -251,20 +262,6 @@ module nts.uk.ui.at.ksu002.a {
 
 			const selectedWtime: KnockoutObservable<string> = ko.observable('');
 			const dataSourcesWtime: KnockoutObservableArray<k.WorkTimeModel> = ko.observableArray([]);
-
-			vm.workTimeData = {
-				selected: selectedWtime,
-				dataSources: dataSourcesWtime,
-				currentItem: ko.computed({
-					read: () => {
-						const sl = ko.unwrap(selectedWtime);
-						const ds = ko.unwrap(dataSourcesWtime);
-
-						return _.find(ds, f => f.code === sl);
-					},
-					owner: vm
-				})
-			};
 
 			const selectedWtype: KnockoutObservable<string> = ko.observable('');
 			const dataSourcesWtype: KnockoutObservableArray<WorkType> = ko.observableArray([]);
@@ -282,6 +279,56 @@ module nts.uk.ui.at.ksu002.a {
 					owner: vm
 				})
 			};
+
+			vm.workTimeData = {
+				selected: selectedWtime,
+				dataSources: dataSourcesWtime,
+				currentItem: ko.computed({
+					read: () => {
+						const sl = ko.unwrap(selectedWtime);
+						const ds = ko.unwrap(dataSourcesWtime);
+
+						return _.find(ds, f => f.code === sl);
+					},
+					owner: vm
+				})
+			};
+
+			ko.computed({
+				read: () => {
+					const { data, } = vm;
+					const d = ko.unwrap(data.mode) === 'copy';
+
+					const wtypec = ko.unwrap(selectedWtype);
+					const wtyped = ko.unwrap(dataSourcesWtype);
+
+					const wtimec = ko.unwrap(selectedWtime);
+					const wtimed = ko.unwrap(dataSourcesWtime);
+
+					if (!d) {
+						data.selected(null);
+					} else {
+						const wtime = _.find(wtimed, w => w.code === wtimec);
+						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
+
+						data.selected({
+							wtype: {
+								code: wtype ? wtype.workTypeCode : '',
+								name: wtype ? wtype.name : '',
+							},
+							wtime: {
+								code: wtime ? wtime.code : '',
+								name: wtime ? wtime.name : '',
+								value: {
+									begin: wtime ? wtime.tzStart1 : null,
+									finish: wtime ? wtime.tzEnd1 : null
+								}
+							}
+						});
+					}
+				},
+				owner: vm
+			});
 		}
 
 		created() {
@@ -317,6 +364,7 @@ module nts.uk.ui.at.ksu002.a {
 	export type EDIT_MODE = 'edit' | 'copy';
 
 	interface Parameter {
+		selected: KnockoutObservable<null | WorkData>;
 		mode: KnockoutObservable<EDIT_MODE>;
 		tabIndex: string;
 		clickable: {
@@ -324,11 +372,27 @@ module nts.uk.ui.at.ksu002.a {
 			redo: KnockoutComputed<boolean>;
 		};
 		clickBtn: (btn: 'undo' | 'redo') => void;
+		workplaceId: KnockoutObservable<string>;
 	}
 
 	interface WorkType {
 		memo: string;
 		name: string;
 		workTypeCode: string;
+	}
+
+	export interface WorkData {
+		wtype: {
+			code: string;
+			name: string;
+		};
+		wtime: {
+			code: string;
+			name: string;
+			value: {
+				begin: number | null;
+				finish: number | null;
+			}
+		}
 	}
 }

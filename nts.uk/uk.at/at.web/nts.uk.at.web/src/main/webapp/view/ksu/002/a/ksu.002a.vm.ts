@@ -28,6 +28,9 @@ module nts.uk.ui.at.ksu002.a {
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
 		schedules: m.MementoObservableArray<c.DayData<ScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
 
+		workplaceId: KnockoutObservable<string> = ko.observable('');
+		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
+
 		created() {
 			const vm = this;
 			const bussinesName: KnockoutObservable<string> = ko.observable('');
@@ -125,26 +128,26 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		clickDayCell(type: c.CLICK_CELL, data: c.DayData<ScheduleData>) {
+		clickDayCell(type: c.CLICK_CELL, cell: c.DayData<ScheduleData>) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
+			const workData = ko.unwrap(vm.workData);
 
-			const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
+			if (type === 'info' && mode === 'copy' && workData) {
+				const { wtime, wtype } = workData;
+				const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
 
-			const exist = _.find(wrap, f => moment(f.date).isSame(data.date, 'date'));
+				const exist = _.find(wrap, f => moment(f.date).isSame(cell.date, 'date'));
 
-			if (exist) {
-				const { data, className } = exist;
+				if (exist) {
+					const { data } = exist;
 
-				exist.data = { ...data, holiday: 'Holiday' };
+					data.wtime = wtime.name;
+					data.value = wtime.value;
 
-				exist.className = [...(className || []), c.COLOR_CLASS.HOLIDAY];
+					data.wtype = wtype.name;
+				}
 
-				exist.data.value.begin = 720;
-				exist.data.value.finish = 1440;
-			}
-
-			if (type === 'info' && mode === 'copy') {
 				vm.schedules.memento(wrap);
 			}
 		}

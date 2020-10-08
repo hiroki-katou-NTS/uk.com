@@ -108,7 +108,7 @@ module nts.uk.ui.at.ksu002.a {
 			const mode = allBindingsAccessor.get('mode');
 			const workplaceId = allBindingsAccessor.get('workplace-id');
 			const tabIndex = element.getAttribute('tabindex') || '1';
-			const params = { mode, dateRange, tabIndex };
+			const params = { mode, dateRange, tabIndex, workplaceId };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -149,18 +149,23 @@ module nts.uk.ui.at.ksu002.a {
 				vm.params = {
 					tabIndex: "1",
 					dateRange: ko.observable({ begin, finish }),
-					mode: ko.observable(1)
+					mode: ko.observable(1),
+					workplaceId: ko.observable('')
 				};
 			}
 
-			const { mode, dateRange } = params;
+			const { mode, dateRange, workplaceId } = params;
 
-			if (!ko.unwrap(mode) && !ko.isObservable(mode)) {
+			if (mode === undefined) {
 				vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
 			}
 
-			if (!ko.unwrap(dateRange) && !ko.isObservable(dateRange)) {
+			if (dateRange === undefined) {
 				vm.params.dateRange = ko.observable({ begin, finish });
+			}
+
+			if (workplaceId === undefined) {
+				vm.params.workplaceId = ko.observable('');
 			}
 		}
 
@@ -172,7 +177,11 @@ module nts.uk.ui.at.ksu002.a {
 				const oid = ko.unwrap(vm.selectedRangeIndex);
 
 				if (response) {
-					const { yearMonth, periodsClose } = response;
+					const { yearMonth, periodsClose, employeeInfo } = response;
+
+					if (employeeInfo) {
+						vm.params.workplaceId(employeeInfo.workplaceId);
+					}
 
 					// vm.dateRanges([]);
 					vm.yearMonth(`${yearMonth}`);
@@ -230,6 +239,7 @@ module nts.uk.ui.at.ksu002.a {
 		tabIndex: string;
 		dateRange: KnockoutObservable<c.DateRange | null>;
 		mode: KnockoutObservable<ACHIEVEMENT>;
+		workplaceId: KnockoutObservable<string>;
 	}
 
 	interface DateOption extends c.DateRange {

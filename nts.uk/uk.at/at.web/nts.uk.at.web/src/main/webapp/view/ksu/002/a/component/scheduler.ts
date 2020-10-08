@@ -120,7 +120,8 @@ module nts.uk.ui.at.ksu002.a {
                     height: 24px;
                     font-size: 12px;
                     text-align: center;
-                    box-sizing: border-box;                    
+                    box-sizing: border-box;
+                    white-space: nowrap;
                 }
                 .scheduler .data-info .join *,
                 .scheduler .data-info .leave *{
