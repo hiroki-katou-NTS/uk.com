@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -55,7 +57,10 @@ public class InforGoBackCommonDirectDto {
 		}else {
 			info.setGoBackDirectly(Optional.ofNullable(null));
 		}
-		List<TimezoneUse> timezones = this.timezones.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		List<TimezoneUse> timezones = Collections.emptyList();
+		if (!CollectionUtil.isEmpty(this.timezones)) {
+			timezones = this.timezones.stream().map(x -> x.toDomain()).collect(Collectors.toList());			
+		}
 		info.setTimezones(timezones);
 		return info;
 	}
