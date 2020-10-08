@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
 import java.util.Optional;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
  */
 @Setter
 @Getter
+@Builder
 public class NursingLeaveSettingDto {
 
     /** The manage type. */

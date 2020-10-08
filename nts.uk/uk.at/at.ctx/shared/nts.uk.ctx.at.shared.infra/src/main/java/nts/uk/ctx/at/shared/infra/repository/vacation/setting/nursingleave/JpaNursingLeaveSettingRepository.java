@@ -140,7 +140,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         
         // CHILD NURSING
         KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
-                NursingCategory.ChildNursing.value);
+        		nursingCategory);
         return new NursingLeaveSetting(
                 new JpaNursingLeaveSettingGetMemento(childNursingSetting));
         
