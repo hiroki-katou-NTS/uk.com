@@ -106,6 +106,7 @@ module nts.uk.ui.at.ksu002.a {
 			const name = COMPONENT_NAME;
 			const dateRange = valueAccessor();
 			const mode = allBindingsAccessor.get('mode');
+			const workplaceId = allBindingsAccessor.get('workplace-id');
 			const tabIndex = element.getAttribute('tabindex') || '1';
 			const params = { mode, dateRange, tabIndex };
 			const component = { name, params };
@@ -245,6 +246,13 @@ module nts.uk.ui.at.ksu002.a {
 	interface Period {
 		periodsClose: Closure[];
 		yearMonth: number;
+		employeeInfo: EmployeeInfo;
+	}
+
+	interface EmployeeInfo {
+		employeeCd: string;
+		employeeName: string;
+		workplaceId: string;
 	}
 
 	enum ACHIEVEMENT {

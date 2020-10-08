@@ -66,8 +66,8 @@ module nts.uk.ui.at.ksu002.a {
 				ntsComboBox: {
 					width: '500px',
 					name: $component.$i18n('KSU002_12'),
-					value: $component.selectedWorkTypeCode,
-					options: $component.workTypes,
+					value: $component.workTypeData.selected,
+					options: $component.workTypeData.dataSources,
 					optionsValue: 'workTypeCode',
 					enable: ko.unwrap($component.data.mode) === 'copy',
 					editable: false,
@@ -193,8 +193,11 @@ module nts.uk.ui.at.ksu002.a {
 		template
 	})
 	export class ActionBarComponent extends ko.ViewModel {
-		workTypes: KnockoutObservableArray<WorkType> = ko.observableArray([]);
-		selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
+		workTypeData!: {
+			selected: KnockoutObservable<string>;
+			dataSources: KnockoutObservableArray<WorkType>;
+			currentItem: KnockoutComputed<WorkType | null>;
+		};
 
 		workTimeData!: {
 			selected: KnockoutObservable<string>;
@@ -246,18 +249,35 @@ module nts.uk.ui.at.ksu002.a {
 				vm.data.clickable.undo = ko.computed(() => true);
 			}
 
-			const selected = ko.observable('');
-			const dataSources =  ko.observableArray([]);
+			const selectedWtime: KnockoutObservable<string> = ko.observable('');
+			const dataSourcesWtime: KnockoutObservableArray<k.WorkTimeModel> = ko.observableArray([]);
 
 			vm.workTimeData = {
-				selected,
-				dataSources,
+				selected: selectedWtime,
+				dataSources: dataSourcesWtime,
 				currentItem: ko.computed({
 					read: () => {
-						const sl = ko.unwrap(selected);
-						const ds = ko.unwrap(dataSources);
+						const sl = ko.unwrap(selectedWtime);
+						const ds = ko.unwrap(dataSourcesWtime);
 
 						return _.find(ds, f => f.code === sl);
+					},
+					owner: vm
+				})
+			};
+
+			const selectedWtype: KnockoutObservable<string> = ko.observable('');
+			const dataSourcesWtype: KnockoutObservableArray<WorkType> = ko.observableArray([]);
+
+			vm.workTypeData = {
+				selected: selectedWtype,
+				dataSources: dataSourcesWtype,
+				currentItem: ko.computed({
+					read: () => {
+						const sl = ko.unwrap(selectedWtype);
+						const ds = ko.unwrap(dataSourcesWtype);
+
+						return _.find(ds, f => f.workTypeCode === sl);
 					},
 					owner: vm
 				})
@@ -267,13 +287,19 @@ module nts.uk.ui.at.ksu002.a {
 		created() {
 			const vm = this;
 
-			vm.workTimeData.currentItem.subscribe(c => {
-				console.log(c);
-			});
+			vm.workTimeData.currentItem
+				.subscribe(c => {
+					console.log(c);
+				});
+
+			vm.workTypeData.currentItem
+				.subscribe(c => {
+					console.log(c);
+				});
 
 			vm.$ajax('at', API.WTYPE)
 				.then((response: WorkType[]) => {
-					vm.workTypes(response.map((m) => ({ ...m, memo: vm.$i18n(m.memo) })));
+					vm.workTypeData.dataSources(response.map((m) => ({ ...m, memo: vm.$i18n(m.memo) })));
 				});
 		}
 
@@ -281,10 +307,6 @@ module nts.uk.ui.at.ksu002.a {
 			const vm = this;
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
-
-			/* setTimeout(() => {
-				$(vm.$el).find('working-hours [tabindex="0"]').attr('tabindex', vm.data.tabIndex);
-			}, 1000); */
 		}
 
 		workHourSelect(input: any[], source: any[]) {
