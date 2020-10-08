@@ -22,3 +22,6 @@
     display: block;
     margin: 5px 0;
 }
+.cmm024-c .end-date-label label {
+    padding-left: 10px;
+}

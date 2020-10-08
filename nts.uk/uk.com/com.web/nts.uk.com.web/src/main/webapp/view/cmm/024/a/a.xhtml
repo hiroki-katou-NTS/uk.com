@@ -24,7 +24,7 @@
                     </div>
                     <div class="ntsGrid" tabindex="1">
                         <table id="historyList" data-bind="ntsGridList: {
-                                height: 265,
+                                height: 260,
                                 dataSource: companyScheduleHistoryList,
                                 primaryKey: 'code',
                                 optionsValue: 'code',
@@ -58,7 +58,8 @@
                                                     }, 
                                                     text: displayName,
                                                     css: {
-                                                        'link-setting' : (employeeCode == -1)
+                                                        'link-setting' : (employeeCode == -1),
+                                                        'not-allow-setting' : !vm.allowSettingA()
                                                     }"></a>
                                 </div>
                             </div>
@@ -80,7 +81,8 @@
                                                     }, 
                                                     text: displayName,
                                                     css: {
-                                                        'link-setting' : (employeeCode == -1)
+                                                        'link-setting' : (employeeCode == -1),
+                                                        'not-allow-setting' : !vm.allowSettingA()
                                                     }"></a>
                                 </div>
                             </div>
