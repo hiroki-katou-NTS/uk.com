@@ -46,7 +46,7 @@ public class AgeementTimeCommonSettingTest {
         AgeementTimeCommonSetting target = new AgeementTimeCommonSetting(agreementSettingsGetter,new HashMap<>());
         // Mock up
         val setting = new BasicAgreementSetting(new AgreementOneMonth(), null, null, null);
-        new MockUp<AgeementTimeCommonSetting>() {
+        new MockUp<BasicAgreementSettingsGetter>() {
             @Mock
             public BasicAgreementSetting getBasicSet(
                     String companyId,
@@ -68,8 +68,12 @@ public class AgeementTimeCommonSettingTest {
         AgreementUnitSetting agreementUnitSetting = new AgreementUnitSetting("cid", UseClassificationAtr.USE,UseClassificationAtr.USE,UseClassificationAtr.USE);
         BasicAgreementSettingsGetter agreementSettingsGetter =
                 new BasicAgreementSettingsGetter(agreementUnitSetting, Arrays.asList(),Arrays.asList(), new HashMap<>(),new HashMap<>(),new HashMap<>(),new HashMap<>(),Arrays.asList());
-        AgeementTimeCommonSetting target = new AgeementTimeCommonSetting(agreementSettingsGetter,new HashMap<>());
 
+        Map<String, Map<GeneralDate, WorkingConditionItem>> mapResult = new HashMap<>();
+        Map<GeneralDate, WorkingConditionItem> map = new HashMap<>();
+        map.put(GeneralDate.today(),new WorkingConditionItem("historyId", ManageAtr.USE,"employee"));
+        mapResult.put("employee",map);
+        AgeementTimeCommonSetting target = new AgeementTimeCommonSetting(agreementSettingsGetter,mapResult);
 
         Optional<WorkingConditionItem> result = target.getWorkCondition("sid", GeneralDate.today());
         assertThat(result).isEqualTo(Optional.empty());

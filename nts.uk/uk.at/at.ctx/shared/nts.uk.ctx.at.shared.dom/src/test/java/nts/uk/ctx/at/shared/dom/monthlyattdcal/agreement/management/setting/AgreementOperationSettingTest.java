@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal.setting;
+package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreement.management.setting;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -232,7 +232,7 @@ public class AgreementOperationSettingTest {
 	public void getAgrTargetDayTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(1,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(31,true),true,true);
 
 		YearMonth result = target.getAgreementYMBytargetDay(GeneralDate.ymd(2019, 12, 25));
 
@@ -258,7 +258,7 @@ public class AgreementOperationSettingTest {
 
 		YearMonth result = target.getAgreementYMBytargetDay(GeneralDate.ymd(2019, 12, 15));
 
-		assertThat(result).isEqualTo(new YearMonth(202001));
+		assertThat(result).isEqualTo(new YearMonth(201912));
 	}
 
 	@Test
