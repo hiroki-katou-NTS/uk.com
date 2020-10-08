@@ -3,7 +3,7 @@
 /**
  * Use
  * Reference path of javascript file
- *  <com:scriptfile path="{path_to_kcp}/kcp/013/component/kcp013.vm.js" />
+ *  <com:scriptfile path="{path_to_kcp}/kcp/013/shared/kcp013.vm.js" />
  * 
  * Call component by binding:
     <div data-bind="
@@ -41,8 +41,8 @@
         KnockoutObservable<number> | number
  */
 
-module nts.uk.ui.at.kcp013.a {
-    enum SHOW_MODE {
+module nts.uk.ui.at.kcp013.shared {
+    export enum SHOW_MODE {
         // not has any option
         NOT_SET = 0,
         // show none option
@@ -218,10 +218,11 @@ module nts.uk.ui.at.kcp013.a {
             const { data } = vm;
             const subscribe = (workPlaceId: string) => {
                 const fillter = ko.unwrap(vm.filter);
+                const filter = ko.unwrap(data.filter);
                 const showMode = ko.unwrap(data.showMode);
                 const selected = ko.toJS(data.selected);
 
-                const filterable = fillter && workPlaceId;
+                const filterable = filter && fillter && workPlaceId;
 
                 const cmd = filterable ? { fillter, workPlaceId } : undefined;
                 const url = filterable ? GET_WORK_HOURS_URL : GET_ALL_WORK_HOURS_URL;
@@ -316,6 +317,15 @@ module nts.uk.ui.at.kcp013.a {
                     }
                 });
 
+            if (ko.isObservable(data.filter)) {
+                data.filter
+                    .subscribe(() => {
+                        if (ko.isObservable(data.workplaceId)) {
+                            data.workplaceId.valueHasMutated();
+                        }
+                    });
+            }
+
             if (ko.isObservable(data.showMode)) {
                 data.showMode
                     .subscribe(() => {
@@ -334,7 +344,7 @@ module nts.uk.ui.at.kcp013.a {
         }
     }
 
-    interface WorkTimeModel {
+    export interface WorkTimeModel {
         id: string;
         code: string;
         name: string;
