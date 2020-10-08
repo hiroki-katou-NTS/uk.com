@@ -104,10 +104,14 @@ module nts.uk.at.view.ksm003.a {
                     } else {
                         vm.itemLst([]);
                         vm.itemLst(dataRes);
-
+                       
                         if (nts.uk.util.isNullOrEmpty(vm.selectedCode())) {
-                            vm.selectedCode(vm.itemLst()[0].code);
-                            vm.selectedName(vm.itemLst()[0].name);
+                            if(vm.mainModel().patternCode())
+                                vm.selectedCode(vm.mainModel().patternCode());
+                            else {
+                                vm.selectedCode(vm.itemLst()[0].code);
+                                vm.selectedName(vm.itemLst()[0].name);
+                            }
                         }
 
                         $("#inpPattern").focus();
@@ -537,17 +541,19 @@ module nts.uk.at.view.ksm003.a {
 
                 let patternCode = vm.mainModel().patternCode();
 
-                vm.selectedCode(patternCode);
+                //vm.selectedCode(patternCode);
                 vm.selectedCheckAll(false);
                 vm.enableRemoveItem(false);
-
-                $("#inpPattern").focus();
-
-                if (!vm.isEditting()) vm.isEditting(true);
-
+                //reload working list
                 vm.getListWorkingCycle();
-                vm.getPatternValByPatternCd(patternCode);
+                
+                if(vm.isEditting()) 
+                    vm.getPatternValByPatternCd(patternCode);
+                else {                   
+                    vm.isEditting(true);
+                }       
 
+                $("#inpPattern").focus();  
                 vm.$blockui("hide");
 
             }).fail(function (res) {
@@ -675,39 +681,37 @@ module nts.uk.at.view.ksm003.a {
             var self = this,
                 currentRow: DailyPatternValModel = data;
 
-            self.$window.storage("parentCodes", {
+            nts.uk.ui.windows.setShared("parentCodes", {
                 selectedWorkTypeCode: currentRow.typeCode(),
                 selectedWorkTimeCode: currentRow.timeCode()
-            });
+            }, true);
 
-            //self.$window.storage("childData", undefined).then(() => {
-            self.$window
-                .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
-                .then(function () {
-                    self.$window.storage("childData").then((resultData) => {
-                        if (resultData) {
-                            currentRow.typeCode(resultData.selectedWorkTypeCode);
-                            currentRow.timeCode(resultData.selectedWorkTimeCode);
-                            currentRow.setWorkTypeName(resultData.selectedWorkTypeName);
-                            currentRow.setWorkTimeName(resultData.selectedWorkTimeName);
+            
+            nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml")
+                .onClosed(function () {
+                    var resultData = nts.uk.ui.windows.getShared('childData');
+                    if (resultData) {
+                        currentRow.typeCode(resultData.selectedWorkTypeCode);
+                        currentRow.timeCode(resultData.selectedWorkTimeCode);
+                        currentRow.setWorkTypeName(resultData.selectedWorkTypeName);
+                        currentRow.setWorkTimeName(resultData.selectedWorkTimeName);
 
-                            //update model
-                            let dailyPatternVals = self.mainModel().dailyPatternVals();
-                            dailyPatternVals.map((item, i) => {
-                                if (item.displayOrder == currentRow.dispOrder) {
-                                    dailyPatternVals[i].typeCode(resultData.selectedWorkTypeCode);
-                                    dailyPatternVals[i].timeCode(resultData.selectedWorkTimeCode);
-                                }
-                            });
+                        //update model
+                        let dailyPatternVals = self.mainModel().dailyPatternVals();
+                        dailyPatternVals.map((item, i) => {
+                            if (item.displayOrder == currentRow.dispOrder) {
+                                dailyPatternVals[i].typeCode(resultData.selectedWorkTypeCode);
+                                dailyPatternVals[i].timeCode(resultData.selectedWorkTimeCode);
+                            }
+                        });
 
-                            self.mainModel().dailyPatternVals([]);
-                            self.mainModel().dailyPatternVals(dailyPatternVals);
+                        self.mainModel().dailyPatternVals([]);
+                        self.mainModel().dailyPatternVals(dailyPatternVals);
 
-                            nts.uk.ui.errors.clearAll();
-                        }
-                    });
+                        nts.uk.ui.errors.clearAll();
+                    }
                 });
-            //});
+           
         }
 
         displayWorkingInfo(patternCode: string) {
