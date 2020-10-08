@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.ktgwidget.find.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
+
 @Data
 @Builder
 public class YearMonthOvertime {
