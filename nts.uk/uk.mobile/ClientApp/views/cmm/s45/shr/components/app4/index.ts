@@ -75,7 +75,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
         }
         let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
         let workTypeName = workType ? workType.abbreviationName : null;
-        self.$app().workType = workTypeCode ? (workTypeName ? workTypeCode + '  ' + workTypeName : self.$i18n('KAFS09_21')) : self.$i18n('KAFS09_20');
+        workTypeCode = workTypeCode ? workTypeCode : 'KAFS09_20';
+        workTypeName = workTypeName ? workTypeName : self.$i18n('KAFS09_21');
+        self.$app().workType = workTypeCode == 'KAFS09_20' ? self.$i18n(workTypeCode) : (workTypeCode + ' ' + workTypeName);
 
         let workTimeCode;
         if (params.goBackApplication.dataWork) {
@@ -83,12 +85,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
         }
         let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
         let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : null;
-
-        // if (!workTimeCode) {
-        //     workTimeCode = self.$i18n('KAFS09_20');
-        //     workTimeName = '';
-        // }
-        self.$app().workTime = workTimeCode ? (workTimeName ? workTime + ' ' + workTimeName : self.$i18n('KAFS09_21')) :  self.$i18n('KAFS09_20');
+        workTimeCode = workTimeCode ? workTimeCode : 'KAFS09_20';
+        workTime = workTime ? (workTimeName ? workTimeName : self.$i18n('KAFS09_21')) : self.$i18n('KAFS09_21');
+        self.$app().workTime = workTimeCode == 'KAFS09_20' ? self.$i18n(workTimeCode) : (workTimeCode + ' ' + workTime);
         self.$app().straight = params.goBackApplication.straightDistinction == 1 ? true : false;
         self.$app().bounce = params.goBackApplication.straightLine == 1 ? true : false;
 
