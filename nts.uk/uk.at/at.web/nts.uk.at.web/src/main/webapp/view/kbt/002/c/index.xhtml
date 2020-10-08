@@ -186,7 +186,7 @@
                 </td>
                 <td>
                   <div class="text-edit-month-day">
-                      <input class="ntsTextEditor" data-bind="ntsTextEditor: {
+                      <textarea class="ntsTextEditor" data-bind="ntsMultilineEditor: {
                         name: '#[CPS016_22]',
                         value:  $parent.monthDays,
                         enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2,

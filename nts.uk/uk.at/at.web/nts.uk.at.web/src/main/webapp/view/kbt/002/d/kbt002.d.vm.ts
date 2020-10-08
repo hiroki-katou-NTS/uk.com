@@ -25,7 +25,7 @@ module nts.uk.at.view.kbt002.d {
                     self.selectedDaysList(sharedData.repeatMonthDateList);
                 }
                 service.getEnumDataList().done(function(setting) {
-                    self.monthDaysList(setting.monthDays);
+                    self.monthDaysList(setting.monthDayList);
                     dfd.resolve();
                 });
                 

@@ -37,20 +37,6 @@
   min-width: 70px;
 }
 
-.radio-group>.ntsRadioBox:focus {
-  outline: none;
-  outline-color: initial;
-  outline-style: none;
-  outline-width: initial;
-}
-
-.radio-group-small>.ntsRadioBox:focus {
-  outline: none;
-  outline-color: initial;
-  outline-style: none;
-  outline-width: initial;
-}
-
 .date-picker {
   margin-left: 15px;
 }
@@ -66,8 +52,11 @@
 .repeat-interval-and-end-date {
   min-width: 112px;
 }
-.margin-botton{
+.margin-botton {
   margin-top: 10px;
+}
+.ntsTextEditor {
+  resize: none;
 }
 
 #monthDays {
