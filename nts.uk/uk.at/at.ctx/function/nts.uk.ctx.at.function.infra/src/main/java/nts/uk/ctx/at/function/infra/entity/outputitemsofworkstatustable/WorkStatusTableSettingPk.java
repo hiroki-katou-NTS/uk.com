@@ -16,7 +16,7 @@ public class WorkStatusTableSettingPk implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // 	設定ID
-    @Column(name="ID")
+    @Column(name = "ID")
     private String iD;
 
 

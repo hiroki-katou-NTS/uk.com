@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
+package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DisplayContentsOfWorkStatusPk implements Serializable {
+public class DisplayContentsOfAnnualWorkLedgerPk implements Serializable {
     public static final long serialVersionUID = 1L;
 
     // 	設定ID
@@ -24,7 +24,6 @@ public class DisplayContentsOfWorkStatusPk implements Serializable {
     public int itemPos;
 
     // 	勤怠項目ID->出力項目詳細の選択勤怠項目.勤怠項目ID
-    @Column(name = "ATTENDANCE_ID")
+    @Column(name = "ATTENDANCE_ITEM_ID")
     public int attendanceId;
-
 }

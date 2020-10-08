@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
+package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -9,14 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+/**
+ * Entity: 	年間勤務台帳の表示内容
+ */
 @Entity
-@Table(name = "KFNMT_RPT_WK_REC_DISP_CONT")
+@Table(name = "KFNMT_RPT_YR_REC_DISP_CONT")
 @AllArgsConstructor
-public class DisplayContentsOfWorkStatus extends UkJpaEntity implements Serializable {
-    public static long serialVersionUID = 1L;
-    @EmbeddedId
-    public DisplayContentsOfWorkStatusPk pk;
+public class DisplayContentsOfAnnualWorkLedger extends UkJpaEntity implements Serializable {
 
+    private static long serialVersionUID = 1L;
+
+    @EmbeddedId
+    public DisplayContentsOfAnnualWorkLedgerPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
     private String contractCode;

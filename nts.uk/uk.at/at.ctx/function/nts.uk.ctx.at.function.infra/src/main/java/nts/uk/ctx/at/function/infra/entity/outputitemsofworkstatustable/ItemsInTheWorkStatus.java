@@ -31,7 +31,7 @@ public class ItemsInTheWorkStatus extends UkJpaEntity implements Serializable {
 
     //	出力印刷対象フラグ	->出力項目.印刷対象フラグ
     @Column(name = "ITEM_IS_PRINTED")
-    boolean  itemIsPrintEd;
+    boolean itemIsPrintEd;
 
     //	出力項目詳細の単独計算区分->出力項目.単独計算区分
     @Column(name = "ITEM_TYPE")
