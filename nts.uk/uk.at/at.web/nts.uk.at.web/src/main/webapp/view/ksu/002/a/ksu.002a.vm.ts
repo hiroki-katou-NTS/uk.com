@@ -86,8 +86,14 @@ module nts.uk.ui.at.ksu002.a {
 									if (exits) {
 										exits.data = {
 											...exits.data,
-											wtype: d.workTypeName,
-											wtime: d.workTimeName,
+											wtype: {
+												code: d.workTypeCode,
+												name: d.workTypeName
+											},
+											wtime: {
+												code: d.workTimeCode,
+												name: d.workTimeName
+											},
 											value: {
 												begin: d.startTime,
 												finish: d.endTime
@@ -142,10 +148,14 @@ module nts.uk.ui.at.ksu002.a {
 				if (exist) {
 					const { data } = exist;
 
-					data.wtime = wtime.name;
-					data.value = wtime.value;
+					data.wtime = {
+						code: wtime.code,
+						name: wtime.name
+					};
 
-					data.wtype = wtype.name;
+					data.wtype = wtype;
+
+					data.value = wtime.value;
 				}
 
 				vm.schedules.memento(wrap);

@@ -3,9 +3,15 @@
 module nts.uk.ui.at.ksu002.a {
     import c = nts.uk.ui.calendar;
 
+
+    interface WData {
+        code: string;
+        name: string;        
+    }
+
     export interface ScheduleData extends c.DataInfo {
-        wtype: string;
-        wtime: string;
+        wtype: WData;
+        wtime: WData;
         value: {
             begin: number | null;
             finish: number | null;
@@ -122,6 +128,7 @@ module nts.uk.ui.at.ksu002.a {
                     text-align: center;
                     box-sizing: border-box;
                     white-space: nowrap;
+                    overflow: hidden;
                 }
                 .scheduler .data-info .join *,
                 .scheduler .data-info .leave *{
@@ -324,8 +331,8 @@ module nts.uk.ui.at.ksu002.a {
                 if (dayData.data) {
                     const { data } = dayData;
 
-                    vm.text.wtype = data.wtype;
-                    vm.text.wtime = data.wtime;
+                    vm.text.wtype = data.wtype.name;
+                    vm.text.wtime = data.wtime.name;
 
                     if (data.value) {
                         const { value } = data;
