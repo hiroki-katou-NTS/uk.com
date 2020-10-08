@@ -158,6 +158,7 @@ public class CommonApprovalRootFinder {
 			//TH: not grouping
 			else{
 				for (CompanyAppRootDto com : lstCompanyRoot) {
+					
 					if(com.getCompany().getApprovalId().compareTo(objDate.getApprovalId())==0){
 						lstItem.add(com);
 					}
@@ -263,19 +264,25 @@ public class CommonApprovalRootFinder {
 	private CommonApprovalRootDto getDataComApprovalRoot(ParamDto param, String companyName){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
+		
 		List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
+		
 		//get all data from ComApprovalRoot (会社別就業承認ルート)
-		List<ComApprovalRootDto> lstCom = this.repoCom.getComRootStart(companyId, param.getSystemAtr(), 
-				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
-							.stream()
-							.map(c->ComApprovalRootDto.fromDomain(c))
-							.collect(Collectors.toList());
+		List<ComApprovalRootDto> lstCom = this.repoCom.getComRootStart(companyId, 
+				param.getSystemAtr(), 
+				param.getLstAppType(), 
+				param.getLstNoticeID(), 
+				param.getLstEventID()).stream()
+									  .map(c->ComApprovalRootDto.fromDomain(c))
+									  .collect(Collectors.toList());
+		
 		for (ComApprovalRootDto rootCom : lstCom) {
 			//get All Approval Phase by approvalId
 			List<ApprovalPhaseDto> lstPhaseDto = this.convertDto(rootCom.getApprovalId());
 			//add in lstAppRoot
 			lstComRoot.add(new CompanyAppRootDto(rootCom, lstPhaseDto));
 		}
+		
 		return new CommonApprovalRootDto(companyName,"","",lstComRoot, null, null);
 	}
 	/**
