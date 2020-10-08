@@ -222,7 +222,7 @@ module nts.uk.ui.at.kcp013.shared {
                 const showMode = ko.unwrap(data.showMode);
                 const selected = ko.toJS(data.selected);
 
-                const filterable = filter && fillter && workPlaceId;
+                const filterable = filter && !fillter && workPlaceId;
 
                 const cmd = filterable ? { fillter, workPlaceId } : undefined;
                 const url = filterable ? GET_WORK_HOURS_URL : GET_ALL_WORK_HOURS_URL;
