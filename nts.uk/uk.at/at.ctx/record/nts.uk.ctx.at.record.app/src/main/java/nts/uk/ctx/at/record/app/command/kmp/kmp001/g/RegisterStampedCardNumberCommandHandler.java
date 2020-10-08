@@ -35,6 +35,7 @@ public class RegisterStampedCardNumberCommandHandler {
 				if (stampCard.isPresent()) {
 					continue;
 				}
+				// 1 create
 				StampCard card = new StampCard(AppContexts.user().contractCode(),
 						param.cardGeneration.get(i).getCardNumber(), param.sid.get(i));
 
