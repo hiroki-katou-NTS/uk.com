@@ -74,7 +74,7 @@ export class CmmS45ComponentsApp4Component extends Vue {
             workTypeCode = params.goBackApplication.dataWork.workType;
         }
         let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : null;
+        let workTypeName = workType ? workType.name : null;
         workTypeCode = workTypeCode ? workTypeCode : 'KAFS09_20';
         workTypeName = workTypeName ? workTypeName : self.$i18n('KAFS09_21');
         self.$app().workType = workTypeCode == 'KAFS09_20' ? self.$i18n(workTypeCode) : (workTypeCode + ' ' + workTypeName);
