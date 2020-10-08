@@ -1,6 +1,8 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
+	import k = nts.uk.ui.at.kcp013.shared;
+
 	const template = `
 	<div class="btn-action">
 		<div class="cf">
@@ -80,8 +82,8 @@ module nts.uk.ui.at.ksu002.a {
 		<div>
 			<label data-bind="i18n: 'KSU002_13'"></label>
 			<div data-bind="
-					kcp013: ko.observable('012'),
-					dataSources: ko.observableArray([]),
+					kcp013: $component.workTimeData.selected,
+					dataSources: $component.workTimeData.dataSources,
 					filter: false,
 					show-mode: 1,
 					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
@@ -194,6 +196,12 @@ module nts.uk.ui.at.ksu002.a {
 		workTypes: KnockoutObservableArray<WorkType> = ko.observableArray([]);
 		selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
 
+		workTimeData!: {
+			selected: KnockoutObservable<string>;
+			dataSources: KnockoutObservableArray<k.WorkTimeModel>;
+			currentItem: KnockoutComputed<k.WorkTimeModel | null>;
+		};
+
 		constructor(private data: Parameter) {
 			super();
 
@@ -237,10 +245,31 @@ module nts.uk.ui.at.ksu002.a {
 			if (!undo) {
 				vm.data.clickable.undo = ko.computed(() => true);
 			}
+
+			const selected = ko.observable('');
+			const dataSources =  ko.observableArray([]);
+
+			vm.workTimeData = {
+				selected,
+				dataSources,
+				currentItem: ko.computed({
+					read: () => {
+						const sl = ko.unwrap(selected);
+						const ds = ko.unwrap(dataSources);
+
+						return _.find(ds, f => f.code === sl);
+					},
+					owner: vm
+				})
+			};
 		}
 
 		created() {
 			const vm = this;
+
+			vm.workTimeData.currentItem.subscribe(c => {
+				console.log(c);
+			});
 
 			vm.$ajax('at', API.WTYPE)
 				.then((response: WorkType[]) => {
