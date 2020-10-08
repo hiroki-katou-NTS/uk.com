@@ -80,7 +80,7 @@ public class CheckErrorApplicationMonthService {
         }
 
         // 5:<call>
-        AgreementExcessInfo agreementOver = require.algorithm(monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
+        AgreementExcessInfo agreementOver = require.algorithm(require,monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
 
         if (agreementOver != null &&
                 agreementSet.getOverMaxTimes().value <= agreementOver.getExcessTimes() &&
@@ -139,7 +139,7 @@ public class CheckErrorApplicationMonthService {
          * [R-3] 超過回数を取得する
          * 	アルゴリズム.[No.458]年間超過回数の取得(社員ID,年度)
          */
-        AgreementExcessInfo algorithm(String employeeId, Year year);
+        AgreementExcessInfo algorithm(Require require,String employeeId, Year year);
 
     }
 
