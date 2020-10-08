@@ -28,11 +28,12 @@
                 </div>
               </td>
               <td>
-                <div id="K1_2">
-                  <div tabindex="1" id="K1_3" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true,name: '#[KBT002_152]'}"></div> 
-                  <span> ~ </span>
-                  <div tabindex="2" id="K1_4" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD',required: true,name: '#[KBT002_153]'}"></div>
-                </div>
+                <div id="K1_2" tabindex="1" data-bind="ntsDateRangePicker: { 
+                  name : '#[KBT002_272]',
+                  required: true,
+                  enable: true, 
+                  showNextPrevious: false, 
+                  value: dateValue }"/>
               </td>
             </tr>
             <tr class="row padding-table">
