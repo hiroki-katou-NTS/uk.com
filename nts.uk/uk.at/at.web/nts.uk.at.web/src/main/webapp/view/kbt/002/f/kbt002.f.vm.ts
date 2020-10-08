@@ -6,6 +6,7 @@ module nts.uk.at.view.kbt002.f {
     getExecItemInfoList: "at/function/processexec/getExecItemInfoList",
     execute: 'at/function/processexec/execute',
     terminate: 'at/function/processexec/terminate',
+    changeSetting: 'at/function/processexec/changeSetting',
   };
 
   @bean()
@@ -365,8 +366,13 @@ module nts.uk.at.view.kbt002.f {
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'yes') {
             // logic for yes case
-            // TODO
-            console.log('update setting ' + execItemCd);
+            const selectedItem: any = _.find(vm.dataSource, (item) => item.execItemCd === execItemCd);
+            if (selectedItem) {
+              const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
+              vm.$ajax(API.changeSetting, command)
+                .then(res => vm.getExecItemInfoList())
+                .fail((err) => vm.$dialog.alert({ messageId: err.messageId }));
+            }
           }
         });
     }
@@ -459,6 +465,48 @@ module nts.uk.at.view.kbt002.f {
       this.businessError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorBusiness)
         ? vm.$i18n('KBT002_61')
         : vm.$i18n('KBT002_62');
+    }
+  }
+
+  export class ChangeExecutionTaskSettingCommand {
+    companyId: string;
+    execItemCd: string;
+    enabledSetting: boolean;
+    oneDayRepInterval: number;
+    oneDayRepClassification: number;
+    nextExecDateTime: string;
+    endDate: string;
+    endDateCls: number;
+    endTime: number;
+    endTimeCls: number;
+    repeatContent: number;
+    startDate: string;
+    startTime: number;
+    scheduleId: string;
+    endScheduleId: string;
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+    january: boolean;
+    february: boolean;
+    march: boolean;
+    april: boolean;
+    may: boolean;
+    june: boolean;
+    july: boolean;
+    august: boolean;
+    september: boolean;
+    october: boolean;
+    november: boolean;
+    december: boolean;
+    repeatMonthDateList: number[];
+
+    constructor(init?: Partial<ChangeExecutionTaskSettingCommand>) {
+      $.extend(this, init);
     }
   }
 

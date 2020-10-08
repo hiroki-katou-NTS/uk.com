@@ -18,7 +18,7 @@ module nts.uk.at.view.kbt002.k {
       const vm = this;
       let today = moment().utc();
       let currentDate = today.format("YYYY/MM/DD");
-      
+
       vm.dateValue().startDate = currentDate;
       vm.dateValue().endDate = currentDate;
 
@@ -27,14 +27,14 @@ module nts.uk.at.view.kbt002.k {
         { code: 2, name: vm.$i18n('KBT002_276') }
       ]);
 
-      vm.startDateString.subscribe(function(value){
+      vm.startDateString.subscribe((value) => {
         vm.dateValue().startDate = value;
-        vm.dateValue.valueHasMutated();        
+        vm.dateValue.valueHasMutated();
       });
-      
-      vm.endDateString.subscribe(function(value){
-          vm.dateValue().endDate = value;   
-          vm.dateValue.valueHasMutated();      
+
+      vm.endDateString.subscribe((value) => {
+        vm.dateValue().endDate = value;
+        vm.dateValue.valueHasMutated();
       });
     }
 
@@ -45,15 +45,10 @@ module nts.uk.at.view.kbt002.k {
         startDate: moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
         endDate: moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD').toISOString()
       });
-      
+
       vm.$blockui('grayout');
       vm.$ajax(API.exportCSV, command)
-        .then((data: any) => {
-          
-        })
-        .always(() => {
-          vm.$blockui('clear');
-        })
+        .always(() => vm.$blockui('clear'));
     }
 
     closeDialog() {
