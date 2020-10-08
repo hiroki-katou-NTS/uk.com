@@ -39,8 +39,8 @@ public class OptionalAggrPeriodImportFinder {
 				.map(item -> AggrPeriodDto.builder()
 					.aggrFrameCode(item.getAggrFrameCode())
 					.companyId(item.getCompanyId())
-					.endDate(item.getEndDate().toString("yyyy/MM/dd"))
-					.startDate(item.getStartDate().toString("yyyy/MM/dd"))
+					.endDate(item.getEndDate())
+					.startDate(item.getStartDate())
 					.optionalAggrName(item.getOptionalAggrName())
 					.build()
 				).get();
@@ -57,8 +57,8 @@ public class OptionalAggrPeriodImportFinder {
 				.map(item -> AggrPeriodDto.builder()
 						.aggrFrameCode(item.getAggrFrameCode())
 						.companyId(item.getCompanyId())
-						.endDate(item.getEndDate().toString())
-						.startDate(item.getStartDate().toString())
+						.endDate(item.getEndDate())
+						.startDate(item.getStartDate())
 						.optionalAggrName(item.getOptionalAggrName())
 						.build())
 				.collect(Collectors.toList());
