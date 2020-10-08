@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ws.processexecution;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.function.app.command.processexecution.SaveProcessExecutionC
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.find.processexecution.ExecutionTaskSettingFinder;
+import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
@@ -46,8 +46,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 public class ProcessExecutionWebService extends WebService {
 	
 	/* Finder */
-//	@Inject
-//	private ProcessExecutionFinder procExecFinder;
+	@Inject
+	private ProcessExecutionFinder procExecFinder;
 	
 	@Inject
 	private ProcessExecutionLogFinder execLogFinder;
@@ -99,8 +99,7 @@ public class ProcessExecutionWebService extends WebService {
 	@POST
 	@Path("getProcExecList")
 	public List<ProcessExecutionDto> getProcExecList() {
-//		return this.procExecFinder.findAll();
-		return Collections.emptyList();
+		return this.procExecFinder.findAll();
 	}
 	
 	@POST
