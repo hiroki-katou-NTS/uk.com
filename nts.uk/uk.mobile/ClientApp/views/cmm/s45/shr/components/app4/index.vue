@@ -37,18 +37,18 @@
 
     <!-- B5 -->
 
-    <div v-if="isCondition1" class="card card-label">
+    <div class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
         <span class="textPosition">{{'KAFS09_8' | i18n}}</span>
       </div>
     </div>
     <!-- B5_1 -->
-    <div v-if="isCondition1" class="paddingSpan">
+    <div class="paddingSpan">
       <span v-if="$app().straight">{{'KAFS09_6' | i18n}}</span>
       <span v-if="!$app().straight">{{'KAFS09_7' | i18n}}</span>
     </div>
     <!-- B5_2 -->
-    <div v-if="isCondition1" class="paddingSpan">
+    <div class="paddingSpan">
       <span v-if="$app().bounce">{{'KAFS09_9' | i18n}}</span>
       <span v-if="!$app().bounce">{{'KAFS09_10' | i18n}}</span>
     </div>
