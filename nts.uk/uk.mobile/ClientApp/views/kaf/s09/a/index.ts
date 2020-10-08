@@ -41,11 +41,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // data is fetched service
     public data: any = 'data';
 
-    public kaf000_A_Params: any = null;
+    // public kaf000_A_Params: any = null;
 
-    public kaf000_B_Params: any = null;
+    // public kaf000_B_Params: any = null;
 
-    public kaf000_C_Params: any = null;
+    // public kaf000_C_Params: any = null;
 
     public isChangeDate: boolean = false;
     public user: any;
@@ -201,53 +201,53 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.kaf000_B_Params = paramb;
         if (self.mode) {
             self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(startDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                //     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
+                // }
 
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
+                // if (!_.isNull(endDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
 
-                }
-                self.changeDate(listDate);
+                // }
+                // self.changeDate(listDate);
             });
 
             self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
 
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
+                //     return;
+                // }
+                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                // if (_.isNull(endDate)) {
 
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
+                //     return;
+                // }
+                // let listDate = [];
+                // if (!_.isNull(startDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
+                // }
 
-                self.changeDate(listDate);
+                // self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
                 console.log(newV + ':' + oldV);
@@ -281,6 +281,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 // 入力中の申請理由
                 // empty
                 // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                // 定型理由
+                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
@@ -317,11 +321,19 @@ export class KafS09AComponent extends KafS00ShrComponent {
             return;
         }
         self.isChangeDate = false;
-        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workType ? goBackDirect.goBackApplication.dataWork.workType : null) : null);
+        let workType, workTime;
+        if (goBackDirect.goBackApplication) {
+            let dataWork = goBackDirect.goBackApplication.dataWork;
+            if (dataWork) {
+                workType = goBackDirect.goBackApplication.dataWork.workType;
+                workTime = goBackDirect.goBackApplication.dataWork.workTime;
+            }
+        }
+        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
 
-        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? (goBackDirect.goBackApplication.dataWork.workTime ? goBackDirect.goBackApplication.dataWork.workTime : null) : null);
+        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         self.bindWorkTime(goBackDirect);
@@ -349,11 +361,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.appGoBackDirect.straightDistinction = self.model.straight == 2 ? 0 : 1;
         self.appGoBackDirect.straightLine = self.model.bounce == 2 ? 0 : 1;
         self.appGoBackDirect.isChangedWork = self.model.changeWork == 2 ? 0 : 1;
-        if (self.model.changeWork == 1) {
-            self.appGoBackDirect.dataWork = {
-                workType: self.model.workType.code,
-                workTime: self.model.workTime.code
-            };
+        if (self.C1) {
+            if (self.model.changeWork == 1) {
+                self.appGoBackDirect.dataWork = {
+                    workType: self.model.workType.code,
+                    workTime: self.model.workTime.code
+                };
+            }
+        } else {
+            self.appGoBackDirect.isChangedWork = null;
         }
         if (!self.mode) {
             self.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;
@@ -362,25 +378,25 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.application.employeeID = self.user.employeeId;
         }
 
-        if (self.kaf000_B_Params) {
-            if (self.mode) {
-                self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-                } else {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                }
-            }
+        // if (self.kaf000_B_Params) {
+        //     if (self.mode) {
+        //         self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+        //         } else {
+        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+        //         }
+        //     }
 
-            self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+        //     self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
 
-        }
+        // }
 
-        if (self.kaf000_C_Params.output) {
-            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        }
+        // if (self.kaf000_C_Params.output) {
+        //     self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
+        //     self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
+        // }
         self.application.enteredPerson = self.user.employeeId;
 
 
@@ -397,7 +413,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
-                self.$mask('hide');
                 self.isChangeDate = true;
                 self.dataOutput = res.data;
                 self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
@@ -413,13 +428,18 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         }
                     });
                     if (recordDate == 0) {
+                        self.$mask('hide');
+
                         return false;
                     }
+                    self.$mask('hide');
 
                     return true;
                 }
             
                 if (_.isNull(opErrorFlag)) {
+                    self.$mask('hide');
+
                     return true;    
                 }
                 switch (opErrorFlag) {
@@ -436,6 +456,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         break;
                 }
                 if (_.isEmpty(msgID)) { 
+                    self.$mask('hide');
+
                     return true;
                 }
                 self.$modal.error({ messageId: msgID }).then(() => {
@@ -443,6 +465,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                         self.$goto('ccg008a');    
                     }    
                 });
+                self.$mask('hide');
 
                 return false;
                 
@@ -470,13 +493,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                    self.dataOutput = res;
-                    // self.bindCommon(self.data);
-                    self.mode = false;
-                    self.fetchStart();
-                    self.$forceUpdate();
-                });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -489,13 +513,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             }).then((res: any) => {
                 self.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
-                self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                    self.dataOutput = res;
-                    // self.bindCommon(self.data);
-                    self.mode = false;
-                    self.fetchStart();
-                    self.$forceUpdate();
-                });
+                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
+                //     self.dataOutput = res;
+                //     // self.bindCommon(self.data);
+                //     self.mode = false;
+                //     self.fetchStart();
+                //     self.$forceUpdate();
+                // });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -519,6 +544,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
     public register() {
         const self = this;
+        if (self.model.straight == 2 && self.model.bounce == 2) {
+
+            return;
+        }
+        self.$mask('show');
         let validAll: boolean = true;
         for (let child of self.$children) {
             child.$validate();
@@ -532,12 +562,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.$validate();
         if (!self.$valid || !validAll) {
             window.scrollTo(500, 0);
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
 
             return;
         }
-        if (self.$valid && validAll) {
-            self.$mask('show');
-        }
+        // if (self.$valid && validAll) {
+        //     self.$mask('show');
+        // }
         self.bindAppWorkChangeRegister();
 
         // check before registering application
@@ -699,6 +732,41 @@ export class KafS09AComponent extends KafS00ShrComponent {
         });
     }
 
+    public kaf000BChangeDate(objectDate) {
+        const self = this;
+        console.log('emit' + objectDate);
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        const self = this;
+        console.log('emit' + prePostAtr);
+        self.application.prePostAtr = prePostAtr;
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const self = this;
+        console.log('emit' + opAppStandardReasonCD);
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+        
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        const self = this;
+        console.log('emit' + opAppReason);
+        self.application.opAppReason = opAppReason;
+    }
+
 }
 export class Work {
     public code: String = '';
@@ -709,7 +777,7 @@ export class Work {
 
 }
 export class WorkTime extends Work {
-    public time: String = '項目移送';
+    public time: String = '';
     constructor() {
         super();
     }

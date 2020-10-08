@@ -24,6 +24,8 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
     public isCondition1: boolean = false;
     public isCondition2: boolean = false;
+    public isCondition3: boolean = false;
+    public isCondition4: boolean = false;
 
     public appWorkChange: any = new AppWorkChange();
 
@@ -95,16 +97,31 @@ export class CmmS45ComponentsApp4Component extends Vue {
         // set condition
         this.isCondition1 = this.isDisplay1(params);
         this.isCondition2 = this.isDisplay2(params);
+        this.isCondition3 = this.isDisplay3(params);
+        this.isCondition4 = this.isDisplay4(params);
     }
-    // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay1(params: any) {
 
-        return true;
+        return params.goBackApplication.isChangedWork != null;
+        // return true;
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
     public isDisplay2(params: any) {
 
-        return true;
+        return params.goBackReflect.reflectApplication != 0; 
+        // return true;
+
+    }
+    public isDisplay3(params: any) {
+
+        return params.goBackApplication.dataWork != null;
+        // return true;
+
+    }
+    public isDisplay4(params: any) {
+
+        return !(params.goBackReflect.reflectApplication == 0 || params.goBackReflect.reflectApplication == 1);
+        // return true;
 
     }
 

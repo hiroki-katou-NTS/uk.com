@@ -1,5 +1,6 @@
 import { Vue, _, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs00b',
@@ -36,6 +37,25 @@ import { component, Prop, Watch } from '@app/core/component';
         dateRange: {
             required: true,
             dateRange: true
+        },
+        prePostAtr: {
+            selectCheck: {
+                test(value: number) {
+                    const vm = this;
+                    if (value == null || value < 0 || value > 1) {
+                        document.getElementById('prePostSelect').className += ' invalid';
+
+                        return false;
+                    }
+                    let prePostSelectElement = document.getElementById('prePostSelect');
+                    if (!_.isNull(prePostSelectElement)) {
+                        prePostSelectElement.classList.remove('invalid');
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            }
         }
     },
     constraints: []
@@ -44,16 +64,7 @@ export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: {
         // KAFS00_B_起動情報
-        input: {
-            // 画面モード
-            mode: ScreenMode;
-            // 申請表示設定
-            appDisplaySetting: any;
-            // 新規モード内容
-            newModeContent?: NewModeContent;
-            // 詳細モード内容
-            detailModeContent?: DetailModeContent;
-        },
+        input: KAFS00BParams,
         output: {
             // 事前事後区分
             prePostAtr: number;
@@ -65,6 +76,7 @@ export class KafS00BComponent extends Vue {
     };
     public prePostResource: Array<Object> = [];
     public dateSwitchResource: Array<Object> = [];
+    public prePostAtr: number = null;
     public date: Date = null;
     public dateRange: any = {};
 
@@ -88,10 +100,26 @@ export class KafS00BComponent extends Vue {
             start: null,
             end: null,
         };
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
+        }
         if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+            self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
         } else {
             self.$output.prePostAtr = null;
+            self.prePostAtr = null;
         }
         if (self.$input.newModeContent) {
             if (self.$input.newModeContent.initSelectMultiDay) {
@@ -103,14 +131,17 @@ export class KafS00BComponent extends Vue {
             }
             if (self.displayPrePost) {
                 self.$updateValidator('params.output.prePostAtr', { validate: true });
+                self.$updateValidator('prePostAtr', { validate: true });
             } else {
                 self.$updateValidator('params.output.prePostAtr', { validate: false });
+                self.$updateValidator('prePostAtr', { validate: false });
             }
         }
         if (self.$input.detailModeContent) {
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
             self.$updateValidator('params.output.prePostAtr', { validate: false });
+            self.$updateValidator('prePostAtr', { validate: false });
         }
     }
 
@@ -167,17 +198,46 @@ export class KafS00BComponent extends Vue {
     }
 
     @Watch('date')
-    public dateWatcher() {
+    public dateWatcher(value) {
         const self = this;
         self.$output.startDate = self.date;
         self.$output.endDate = self.date;
+        self.$emit('kaf000BChangeDate',
+            {
+                startDate: value,
+                endDate: value
+            });
     }
 
     @Watch('dateRange')
-    public dateRangeWatcher() {
+    public dateRangeWatcher(value) {
         const self = this;
         self.$output.startDate = self.dateRange.start;
         self.$output.endDate = self.dateRange.end;
+        new Promise((resolve) => {
+            self.$validate('clear');
+            setTimeout(() => {
+                resolve(true);
+            }, 200);
+        })
+        .then(() => self.$validate('dateRange'))
+        .then(() => self.$valid)
+        .then((valid: boolean) => {
+            if (valid) {
+                self.$emit('kaf000BChangeDate',
+                    {
+                        startDate: value.start,
+                        endDate: value.end
+                    });
+            }
+        });
+    }
+
+    @Watch('prePostAtr')
+    public prePostAtrWatcher() {
+        const self = this;
+        self.params.output.prePostAtr = self.prePostAtr;
+        self.$emit('kaf000BChangePrePost', self.prePostAtr);
     }
 }
 
@@ -213,4 +273,16 @@ interface DetailModeContent {
     startDate: string;
     // 申請終了日
     endDate: string;
+}
+
+// KAFS00_B_起動情報
+export interface KAFS00BParams {
+    // 画面モード
+    mode: ScreenMode;
+    // 申請表示設定
+    appDisplaySetting: any;
+    // 新規モード内容
+    newModeContent?: NewModeContent;
+    // 詳細モード内容
+    detailModeContent?: DetailModeContent;
 }
