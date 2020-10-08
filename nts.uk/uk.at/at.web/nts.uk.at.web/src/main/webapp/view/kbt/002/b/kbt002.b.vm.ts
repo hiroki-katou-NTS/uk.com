@@ -3,11 +3,12 @@
 module nts.uk.at.view.kbt002.b {
   const API = {
     getEnumDataList: 'at/function/processexec/getEnum',
-    findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
     getProcExecList: 'at/function/processexec/getProcExecList',
     saveProcExec: 'at/function/processexec/saveProcExec',
     deleteProcExec: 'at/function/processexec/removeProcExec',
+    getMasterInfo: 'at/function/processexec/getMasterInfo',
     getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting',
+    findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
     findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004'
   };
 
@@ -67,6 +68,10 @@ module nts.uk.at.view.kbt002.b {
       const vm = this;
       vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.ENABLED);
       vm.selectedTab(TabPanelId.TAB_1);
+      vm.$ajax(API.getMasterInfo)
+        .then((response: any) => {
+          console.log(response)
+        });
 
       vm.selectedExecCode.subscribe(execItemCode => {
         errors.clearAll();
