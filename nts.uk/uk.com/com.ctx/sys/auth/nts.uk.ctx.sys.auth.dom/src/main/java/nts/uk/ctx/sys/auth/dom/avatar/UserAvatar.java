@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション
+ * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の顔写真
  */
 @Getter
 public class UserAvatar extends AggregateRoot {
@@ -30,17 +30,19 @@ public class UserAvatar extends AggregateRoot {
     }
 
     public void setMemento(MementoSetter memento) {
-       memento.setPersonalId(this.personalId);
-       memento.setFileId(this.fileId);
+        memento.setPersonalId(this.personalId);
+        memento.setFileId(this.fileId);
     }
 
-    public static interface MementoSetter {
+    public interface MementoSetter {
         void setPersonalId(String personalId);
+
         void setFileId(String fileId);
     }
 
-    public static interface MementoGetter {
+    public interface MementoGetter {
         String getPersonalId();
+
         String getFileId();
     }
 }
