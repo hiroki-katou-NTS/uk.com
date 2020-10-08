@@ -154,6 +154,18 @@ export class KafS00CComponent extends Vue {
         return self.displayFixedReason || self.displayAppReason;
     }
 
+    get standardReasonRequired() {
+        const self = this;
+
+        return self.$input.appLimitSetting.standardReasonRequired;
+    }
+
+    get requiredAppReason() {
+        const self = this;
+
+        return self.$input.appLimitSetting.requiredAppReason;
+    }
+
     @Watch('opAppStandardReasonCD')
     public opAppStandardReasonCDWatcher(value) {
         const self = this;
