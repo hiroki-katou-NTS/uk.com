@@ -946,7 +946,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getWorktypeNameByCode(code: string): string {
             let self = this;
-            let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code); // khaidh
+            let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
             if (result) {
                 return result.name;
             }
