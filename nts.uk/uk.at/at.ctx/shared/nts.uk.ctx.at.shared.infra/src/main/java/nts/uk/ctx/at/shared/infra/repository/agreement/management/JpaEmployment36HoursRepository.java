@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 
 import lombok.val;

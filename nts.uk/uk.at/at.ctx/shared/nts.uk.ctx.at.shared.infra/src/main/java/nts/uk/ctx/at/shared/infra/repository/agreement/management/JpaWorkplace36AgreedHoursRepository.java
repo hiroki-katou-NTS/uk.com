@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.manageworkplaceagreedhours;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Agre
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 職場３６協定時間Repository

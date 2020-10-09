@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
-import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCls;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtClsPk;
 
 import java.util.List;
 import java.util.Optional;
