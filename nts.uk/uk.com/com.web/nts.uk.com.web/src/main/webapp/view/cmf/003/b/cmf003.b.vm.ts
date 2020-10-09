@@ -653,14 +653,16 @@ module nts.uk.com.view.cmf003.b {
         const self = this;
         block.grayout();
         service.screenDisplayProcess().done(res => {
+          let arr: Pattern[] = [];
           _.forEach(res.patterns, x => {
             let p = new Pattern();
             p.code = x.patternCode;
             p.patternName = x.patternName;
             p.patternClassification = x.patternClassification;
             p.displayCode = x.patternClassification + x.patternCode;
-            self.patternList.push(p);
+            arr.push(p);
           });
+          self.patternList(arr);
           self.patternList(_.orderBy(self.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
           self.systemTypes(res.systemTypes);
           self.selectedPatternId(self.patternList()[0].displayCode);
@@ -817,10 +819,12 @@ module nts.uk.com.view.cmf003.b {
               separateCompClassification: x.separateCompClassification,
               specifiedMethod: x.specifiedMethod,
               storeRange: x.storeRange,
-              systemType: x.systemType
+              systemType: x.systemType,
+              id: nts.uk.util.randomId()
             };
             return category;
           }));
+          console.log(self.categorys());
 
           if (res.dailyReferMonth && res.dailyReferYear) {
             self.dayValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
@@ -905,7 +909,7 @@ module nts.uk.com.view.cmf003.b {
       specifiedMethod: number;
       storeRange: number;
       displayName: string;
-      id?: string = nts.uk.util.randomId();
+      id: string;
     }
 
     export class CategoryModel {

@@ -258,6 +258,7 @@ module nts.uk.com.view.cmf003.c {
       vm.selectedSystemType.subscribe(value => {
         if (Number(value) !== 0) {
           vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value) - 1));
+          vm.categoriesFiltered(_.orderBy(vm.categoriesFiltered(), ["categoryId"], ["asc"]));
         } else {
           vm.categoriesFiltered([]);
           _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
@@ -297,20 +298,26 @@ module nts.uk.com.view.cmf003.c {
       vm.$blockui("grayout");
       service.initDisplay().then((res) => {
         vm.checkInCharge(res.pic);
+        let patternArr: Pattern[] = [];
         _.map(res.patterns, (x: any) => {
           let p = new Pattern();
           p.code = x.patternCode;
           p.patternName = x.patternName;
           p.patternClassification = x.patternClassification;
           p.displayCode = x.patternClassification + x.patternCode;
-          vm.patternList.push(p);
+          patternArr.push(p);
         });
+        vm.patternList(patternArr);
         vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
-        _.map(res.categories, (x :any) => {
+
+        let arr: Category[] = [];
+        _.map(res.categories, (x: any) => {
           let c = vm.convertToCategory(x);
-          vm.categoriesDefault.push(c);
-          vm.categoriesFiltered.push(c);
+          arr.push(c);
         });
+        vm.categoriesDefault(arr);
+        _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
+        vm.categoriesFiltered.valueHasMutated();
       }).always(() => {
         vm.$blockui("clear");
       });
@@ -457,22 +464,26 @@ module nts.uk.com.view.cmf003.c {
         vm.codeValue(pattern.patternCode);
         vm.nameValue(pattern.patternName);
         vm.categoriesFiltered([]);
+        let arr: Category[] = [];
         _.forEach(res.selectableCategories, c => {
           let category = vm.convertToCategory(c);
-          vm.categoriesFiltered().push(category);
+          arr.push(category);
         });
+        vm.categoriesFiltered(arr);
+        arr = [];
         vm.currentCateSelected([]);
         _.forEach(res.selectedCategories, c => {
-          vm.currentCateSelected.push(vm.convertToCategory(c));
-          console.log(vm.currentCateSelected());
+          let category = vm.convertToCategory(c);
+          arr.push(category);
         });
+        vm.currentCateSelected(arr);
         vm.saveFormatChecked(pattern.idenSurveyArch === 1);
         vm.saveFormatEnabled(pattern.patternClassification === 0);
         vm.disableMoveButton(pattern.patternClassification === 1);
         vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
         vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
-        vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferYear));
-        vm.selectedMonthlyTargetYear(vm.getReferValue(pattern.monthlyReferMonth));
+        vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferMonth));
+        vm.selectedMonthlyTargetYear(vm.getReferValue(pattern.monthlyReferYear));
         vm.selectedAnnualTargetYear(vm.getReferValue(pattern.annualReferYear));
         vm.usePasswordChecked(pattern.withoutPassword === 1);
         vm.password(pattern.patternCompressionPwd);
@@ -520,8 +531,6 @@ module nts.uk.com.view.cmf003.c {
       category.categoryName = c.categoryName;
       category.retentionPeriod = getText(c.retentionPeriod);
       category.systemType = c.systemType;
-      category.contractCode = c.contractCode;
-      category.patternCode = c.patternCode;
       category.patternClassification = c.patternClassification;
       category.displayName = c.categoryName + nts.uk.text.format(getText('CMF003_634'), vm.getSystemText(c.systemType));
       return category;
@@ -540,7 +549,7 @@ module nts.uk.com.view.cmf003.c {
     }
 
     private getSystemText(type: number): string {
-      switch(type) {
+      switch (type) {
         case 0: return getText('Enum_SystemType_PERSON_SYSTEM');
         case 1: return getText('Enum_SystemType_ATTENDANCE_SYSTEM');
         case 2: return getText('Enum_SystemType_PAYROLL_SYSTEM');
@@ -574,6 +583,17 @@ module nts.uk.com.view.cmf003.c {
       }
       return true;
     }
+
+    public checkAfterMoveLeft(toRight: any, oldSource: any, newI: any) {
+      const vm = nts.uk.ui._viewModel.content;
+      vm.selectedSystemType.valueHasMutated();
+    }
+
+    public checkAfterMoveRight(toRight: any, oldSource: any, newI: any) {
+      const vm = nts.uk.ui._viewModel.content;
+      vm.currentCateSelected(_.orderBy(vm.currentCateSelected(), ["categoryId"], ["asc"]));
+      vm.currentCateSelected.valueHasMutated();
+    }
   }
 
   export class Pattern {
@@ -588,9 +608,7 @@ module nts.uk.com.view.cmf003.c {
     categoryName: string;
     retentionPeriod: string;
     systemType: number;
-    patternCode?: string;
     patternClassification?: number;
-    contractCode?: string;
     id?: string = nts.uk.util.randomId();
     displayName: string;
   }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.app.find.manualsetting;
+package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

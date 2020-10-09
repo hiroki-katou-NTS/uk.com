@@ -66,8 +66,8 @@ module nts.uk.com.view.cmf003.i {
     private findSaveSet() {
       const vm = this;
       vm.$blockui("grayout");
-      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString();
-      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
+      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString();
+      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
           const res: SaveSetHistoryDto[] = [
@@ -107,8 +107,8 @@ module nts.uk.com.view.cmf003.i {
       }
       const param = {
         objects: arr,
-        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
-        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
       service.findData(param).then((data: DataDto[]) => {
         const res: DataDto[] = [];
@@ -118,8 +118,8 @@ module nts.uk.com.view.cmf003.i {
             x.id = nts.uk.util.randomId();
             x.targetNumberPeople += "人";
             x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
-            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
-            x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD hh:mm:ss");
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
+            x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD HH:mm:ss");
             x.save = getText("CMF003_330");
             x.saveForm = vm.getSaveForm(Number(x.saveForm));
             x.deleteFile = x.deletedFiles === 0 ? "1" : null;
@@ -151,7 +151,7 @@ module nts.uk.com.view.cmf003.i {
       });
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#I6_1")[0], {
         height: 800,
-        subHeight: 400,
+        subHeight: 50,
         headerHeight: "40px",
         autoFitWindow: true,
         dataSource: vm.resultItems(),
@@ -196,6 +196,12 @@ module nts.uk.com.view.cmf003.i {
 
       $("#I6_1").ready(function() {
         vm.updateGridUI();
+        let totalHeight = 0;
+        $("#I6_1 > div").each(function(index){
+          if (index % 2)
+            totalHeight += $(this).height();
+        });
+        $(".storage-size").css("margin-top", totalHeight + 75);
       });
 
       $("#I6_1 .mgrid-free").scroll(function() {

@@ -33,4 +33,9 @@ public class SspmtCategoryFieldMtPk implements Serializable
     @Column(name = "TABLE_NO")
     public int tableNo;
     
+    /**
+	 * システム種類
+	 */
+	@Column(name = "SYSTEM_TYPE")
+	public int systemType;
 }

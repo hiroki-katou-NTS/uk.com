@@ -62,8 +62,8 @@ module nts.uk.com.view.cmf004.j {
     private findSaveSet() {
       const vm = this;
       vm.$blockui("grayout");
-      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString();
-      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
+      const momentFrom = moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString();
+      const momentTo = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString();
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
           const res: SaveSetHistoryDto[] = [
@@ -106,8 +106,8 @@ module nts.uk.com.view.cmf004.j {
       }
       const param = {
         objects: arr,
-        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD hh:mm:ss").toISOString(),
-        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD hh:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
       service.findData(param).then((data: Array<DataDto>) => {
         console.log(data);
@@ -118,8 +118,8 @@ module nts.uk.com.view.cmf004.j {
             x.id = nts.uk.util.randomId();
             x.restoreCount += "人";
             x.saveCount += "人";
-            x.startDatetime = moment.utc(x.startDatetime).format("YYYY/MM/DD hh:mm:ss");
-            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD hh:mm:ss");
+            x.startDatetime = moment.utc(x.startDatetime).format("YYYY/MM/DD HH:mm:ss");
+            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
             res.push(x);
 
             if (x.executionResult === 'Enum_SaveStatus_FAILURE') {
