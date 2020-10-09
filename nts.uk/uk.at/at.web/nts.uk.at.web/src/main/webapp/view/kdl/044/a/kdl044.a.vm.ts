@@ -18,13 +18,9 @@ module nts.uk.at.view.kdl044.a {
             gridFields: Array<String>;
             constructor() {
                 let self = this;
-                let holders = getText('KDL044_2') + '・'
-                    + getText('KDL044_3') + '・'
-                    + getText('KDL044_4') + '・'
-                    + getText('KDL044_5') + '・'
-                    + getText('KDL044_6') + '・'
-                    + getText('KDL044_8') + 'で検索…';
-                self.placeHolders = holders.replace("１", "");
+                let holders = getText('KDL044_2') + '・' + getText('KDL044_3') + '・' + getText('KDL044_6') + '・'
+                    + getText('KDL044_7') + '・' + getText('KDL044_8') +  'で検索…';
+                self.placeHolders = holders;
             }
 
             startPage(): JQueryPromise<any> {

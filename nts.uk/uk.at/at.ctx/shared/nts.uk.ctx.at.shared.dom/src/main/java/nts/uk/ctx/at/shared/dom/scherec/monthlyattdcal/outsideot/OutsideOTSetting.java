@@ -225,7 +225,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		
 		/** ○丸め処理 */
 		attendanceItemValues.stream().forEach(v -> {
-			val value = new AttendanceTimeMonth(v.value());
+			val value = new AttendanceTimeMonth(v.valueOrDefault());
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});

@@ -680,7 +680,7 @@ export class CmmS45DComponent extends Vue {
             return '';
         }
 
-        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
+        return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
     }
 }
 
