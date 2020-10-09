@@ -72,18 +72,17 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 
 	@Override
 	public EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate) {
-		SWkpHistExport sWkpHistExport = workPlacePub.findBySid(employeeId, baseDate).orElse(null);
+
 		EmployeeJobHistExport employeeJobHistExport = syJobTitlePub.findBySid(employeeId, baseDate).orElse(null);
+		SWkpHistExport sWkpHistExport = workPlacePub.findBySid(employeeId, baseDate).orElse(null);
 		RoleWhetherLoginPubExport roleWhetherLoginPubExport = roleExportRepo.getWhetherLoginerCharge();
-		if (sWkpHistExport == null || employeeJobHistExport == null) {
-			return null;
-		} else {
-			return new EmployeeInformationImport(
-					employeeId,
-					roleWhetherLoginPubExport.isEmployeeCharge(),
-					employeeJobHistExport.getJobTitleCode(),
-					sWkpHistExport.getWkpDisplayName()
-			);
+		
+		String positionName =employeeJobHistExport == null ? null : employeeJobHistExport.getJobTitleName();
+		String wkpDisplayName = sWkpHistExport == null ? null : sWkpHistExport.getWkpDisplayName();
+		boolean permision = false;
+		if(roleWhetherLoginPubExport.isEmployeeCharge() || roleWhetherLoginPubExport.isPersonalInformation() || roleWhetherLoginPubExport.isHumanResOfficer()){
+			permision = true;
 		}
+		return new EmployeeInformationImport(employeeId, permision, positionName, wkpDisplayName);
 	}
 }
