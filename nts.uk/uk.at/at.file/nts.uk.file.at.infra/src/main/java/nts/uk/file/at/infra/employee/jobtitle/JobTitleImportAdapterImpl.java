@@ -48,7 +48,7 @@ public class JobTitleImportAdapterImpl extends JpaRepository implements JobTitle
 				+ "from BSYMT_AFF_JOB_HIST BAJH " + "left join BSYMT_AFF_JOB_HIST_ITEM BAJHI "
 				+ "on BAJH.HIST_ID = BAJHI.HIST_ID "
 				+ "where BAJH.SID = ? and BAJH.START_DATE <= ? and BAJH.END_DATE >= ? " + ") A "
-				+ "left join " + "(select BJI.JOB_ID, BJI.JOB_NAME " + "from BSYMT_JOB_INFO BJI "
+				+ "left join " + "(select BJI.JOB_ID, BJI.JOB_NAME, BJI.JOB_CD " + "from BSYMT_JOB_INFO BJI "
 				+ "left join BSYMT_JOB_HIST BJH "
 				+ "on BJI.CID = BJH.CID AND BJI.HIST_ID = BJH.HIST_ID "
 				+ "where BJI.CID = ? and BJH.START_DATE <= ? and BJH.END_DATE >= ?" + ") B "
@@ -65,6 +65,7 @@ public class JobTitleImportAdapterImpl extends JpaRepository implements JobTitle
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> EmployeeJobHistExport
 					.builder().employeeId(rec.getString("SID")).jobTitleID(rec.getString("JOB_ID"))
 					.jobTitleName(rec.getString("JOB_NAME"))
+					.jobCode(rec.getString("JOB_CD"))
 					.startDate(rec.getGeneralDate("START_DATE"))
 					.endDate(rec.getGeneralDate("END_DATE")).build());
 		}

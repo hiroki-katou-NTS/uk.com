@@ -118,3 +118,11 @@
     display: flex;
     flex-direction: column;
 }
+
+.row-C7-1 {
+	margin: -15px 10px 10px 10px !important;
+}
+
+#swap-list-search-area {
+	height: 38px !important;
+}

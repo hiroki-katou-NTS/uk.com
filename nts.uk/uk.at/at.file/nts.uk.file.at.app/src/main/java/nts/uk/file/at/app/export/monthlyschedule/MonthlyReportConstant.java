@@ -16,7 +16,8 @@ public class MonthlyReportConstant {
 	public static final String TEMPLATE_EMPLOYEE = "report/KWR006_Employee.xlsx";
 	
 	/** The Constant CHUNK_SIZE. */
-	public static final int CHUNK_SIZE = 16;
+	public static final int CHUNK_BIG_SIZE = 16;
+	public static final int CHUNK_SMALL_SIZE = 16;
 
 	/** The Constant DATA_COLUMN_INDEX. */
 	public static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
@@ -25,7 +26,8 @@ public class MonthlyReportConstant {
 	public static final String FONT_FAMILY = "ＭＳ ゴシック";
 
 	/** The Constant FONT_SIZE. */
-	public static final double FONT_SIZE = 6.5;
+	public static final double BIG_SIZE = 6;
+	public static final double SMALL_SIZE = 4.5;
 	
 	/** The Constant DATA_PREFIX. */
 	public static final String DATA_PREFIX = "DATA_";

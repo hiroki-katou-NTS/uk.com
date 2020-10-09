@@ -30,8 +30,16 @@ public class EmployeeReportData {
 	/** The employment name. */
 	public String employmentName;
 	
+	/** The employment code. */
+	// Add by LienPTK ver-20
+	public String employmentCode;
+	
 	/** The position. */
 	public String position;
+
+	// Add by LienPTK ver-20
+	/** The job title code. */
+	public String jobTitleCode;
 	
 	/** The lst detailed performance. */
 	public List<DetailedDailyPerformanceReportData> lstDetailedPerformance;

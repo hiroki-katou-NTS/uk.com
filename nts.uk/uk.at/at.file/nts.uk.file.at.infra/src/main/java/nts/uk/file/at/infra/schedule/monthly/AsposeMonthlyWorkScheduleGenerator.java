@@ -57,6 +57,7 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisp
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
@@ -96,6 +97,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
+import nts.uk.file.at.app.export.monthlyschedule.DisplayTypeEnum;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyReportConstant;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleCondition;
@@ -108,6 +110,7 @@ import nts.uk.file.at.infra.schedule.daily.WorkScheOutputConstants;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -196,10 +199,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The font family. */
 //	private final String FONT_FAMILY = "ＭＳ ゴシック";
     private final String FONT_FAMILY = MonthlyReportConstant.FONT_FAMILY;
-
-	/** The font size. */
-//	private final double FONT_SIZE = 6.5;
-    private final double FONT_SIZE = MonthlyReportConstant.FONT_SIZE;
 	
 	/** The Constant DATA_PREFIX. */
 //	private static final String DATA_PREFIX = "DATA_";
@@ -344,10 +343,24 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Write detailed work schedule
 			if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE)
-				currentRow = writeDetailedWorkSchedule(query,currentRow, sheetCollection, sheetInfo, reportData.getWorkplaceReportData(), nSize, condition, rowPageTracker);
+				currentRow = writeDetailedWorkSchedule(query
+						, currentRow
+						, sheetCollection
+						, sheetInfo
+						, reportData.getWorkplaceReportData()
+						, nSize
+						, condition
+						, rowPageTracker
+						, outputItemMonthlyWork.getTextSize());
 			else {
 				MonthlyReportData dailyReportData = reportData.getMonthlyReportData();
-				currentRow = writeDetailedMonthlySchedule(currentRow, sheetCollection, sheetInfo, dailyReportData, nSize, condition, rowPageTracker);
+				currentRow = writeDetailedMonthlySchedule(currentRow
+						, sheetCollection
+						, sheetInfo
+						, dailyReportData
+						, nSize, condition
+						, rowPageTracker
+						, outputItemMonthlyWork.getTextSize());
 			}
 			
             // Set default row height 0.45cm
@@ -386,9 +399,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, optOutputItemMonthlyWork.get().getItemName().v() + "_" + currentFormattedDate + ".xlsx"));
 			else {
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, optOutputItemMonthlyWork.get().getItemName().v() + "_" + currentFormattedDate + ".pdf"));
 			}
 
 		} catch (Exception e) {
@@ -939,10 +952,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		// Job title
 		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
-		if (optJobTitle.isPresent())
+		if (optJobTitle.isPresent()) {
 			employeeData.position = optJobTitle.get().getJobTitleName();
-		else
+			employeeData.jobTitleCode = optJobTitle.get().getJobCode();
+		} else {
 			employeeData.position = "";
+			employeeData.jobTitleCode = "";
+		}
 		
 		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
 		if (workplaceData != null) {
@@ -1587,7 +1603,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @throws Exception the exception
 	 */
 	public int writeDetailedWorkSchedule(MonthlyWorkScheduleQuery query, int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, WorkplaceReportData workplaceReportData,
-			int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker) throws Exception {
+			int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker, TextSizeCommonEnum textSizeCommonEnum) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getTotalOutputSetting();
@@ -1609,7 +1625,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 //				if (totalOutput.isPersonalTotal())  usedRow++;
 //				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += countPeriodMonth*dataRowCount;
 				if(totalOutput.isDetails() && ! employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()){
-					int countItem = employeeReportData.countItem();
+//					int countItem = employeeReportData.countItem();
 //					usedRow += (countItem % CHUNK_SIZE) != 0 ? countItem / CHUNK_SIZE + 1 : countItem / CHUNK_SIZE;
                     usedRow += employeeReportData.countItem();
 				}
@@ -1755,7 +1771,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            		cell.putValue(value);
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
 				            	}
-				            	setFontStyle(style);
+				            	setFontStyle(style, textSizeCommonEnum);
 				            	cell.setStyle(style);
 				            }
 				            
@@ -1784,7 +1800,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
-				            	setFontStyle(style);
+				            	setFontStyle(style, textSizeCommonEnum);
 				            	remarkCell.setStyle(style);
 				            }
 				            
@@ -1865,7 +1881,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()){
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
-			            	setFontStyle(style);
+			            	setFontStyle(style, textSizeCommonEnum);
 			            	cell.setStyle(style);
 			            }
 			            currentRow++;
@@ -1949,7 +1965,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	setFontStyle(style);
+	            	setFontStyle(style, textSizeCommonEnum);
 	            	cell.setStyle(style);
 	            }
 	            currentRow++;
@@ -1984,7 +2000,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 			}
 			
-			currentRow = writeDetailedWorkSchedule(query,currentRow, templateSheetCollection, sheetInfo, entry.getValue(), dataRowCount, condition, rowPageTracker);
+			currentRow = writeDetailedWorkSchedule(query,currentRow, templateSheetCollection, sheetInfo, entry.getValue(), dataRowCount, condition, rowPageTracker, textSizeCommonEnum);
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE)
@@ -2104,7 +2120,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
-				            	setFontStyle(style);
+				            	setFontStyle(style, textSizeCommonEnum);
 				            	cell.setStyle(style);
 				            }
 				        }
@@ -2158,7 +2174,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @throws Exception the exception
 	 */
 	public int writeDetailedMonthlySchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, MonthlyReportData dailyReport,
-			int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker) throws Exception {
+			int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker, TextSizeCommonEnum textSizeCommonEnum) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		List<WorkplaceMonthlyReportData> lstMonthlyReportData = dailyReport.getLstMonthlyReportData();
 		
@@ -2189,9 +2205,17 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// B3_1
 			int month = monthlyReportData.getYearMonth().month();
 			String date = monthlyReportData.getYearMonth().year() + "/" + (month < 10 ? "0" + month : month);
-			String titleDate = WorkScheOutputConstants.DATE_BRACKET + "　" + date;
+			String titleDate = TextResource.localize("KWR006_77") + "　" + date;
 
-			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheetInfo, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker, titleDate);
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow
+					, sheetInfo
+					, templateSheetCollection
+					, rootWorkplace
+					, dataRowCount
+					, condition
+					, rowPageTracker
+					, titleDate
+					, textSizeCommonEnum);
 		
 			/*if (condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE
 					|| condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE) {
@@ -2238,7 +2262,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			Cell grossTotalCellTag = cells.get(currentRow, 0);
 			grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
 			
-			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheetInfo.getSheet(), dataRowCount, rowPageTracker, condition);
+			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheetInfo.getSheet(), dataRowCount, rowPageTracker, condition, textSizeCommonEnum);
 		}
 		
 		return currentRow;
@@ -2257,7 +2281,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @return the int
 	 * @throws Exception the exception
 	 */
-	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow, WorkSheetInfo sheetInfo, WorksheetCollection templateSheetCollection, MonthlyWorkplaceData rootWorkplace, int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker, String titleDate) throws Exception {
+	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow
+			, WorkSheetInfo sheetInfo
+			, WorksheetCollection templateSheetCollection
+			, MonthlyWorkplaceData rootWorkplace
+			, int dataRowCount
+			, MonthlyWorkScheduleCondition condition
+			, RowPageTracker rowPageTracker
+			, String titleDate
+			, TextSizeCommonEnum textSizeCommonEnum) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		if (!findDetailedData(rootWorkplace))
 			return currentRow;
@@ -2409,7 +2441,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								cell.setValue(value);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
 							}
-			            	setFontStyle(style);
+			            	setFontStyle(style, textSizeCommonEnum);
 			            	cell.setStyle(style);
 			            }
 			            
@@ -2438,7 +2470,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	Style style = remarkCell.getStyle();
 			            	remarkCell.setValue(remarkContentRow);
 							style.setHorizontalAlignment(TextAlignmentType.LEFT);
-			            	setFontStyle(style);
+			            	setFontStyle(style, textSizeCommonEnum);
 			            	remarkCell.setStyle(style);
 			            }
 			            
@@ -2499,7 +2531,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// B6_2
 			if (rootWorkplace.hasData)
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true);
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true, textSizeCommonEnum);
 		}
 		
 		Map<String, MonthlyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
@@ -2521,7 +2553,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Iterator<Map.Entry<String, MonthlyWorkplaceData>> workplaceIterator = mapChildWorkplace.entrySet().iterator();
 		while (workplaceIterator.hasNext()) {
 			Map.Entry<String, MonthlyWorkplaceData> entry = workplaceIterator.next();
-			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheetInfo, templateSheetCollection, entry.getValue(), dataRowCount, condition, rowPageTracker, titleDate);
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow
+					, sheetInfo
+					, templateSheetCollection
+					, entry.getValue()
+					, dataRowCount
+					, condition
+					, rowPageTracker
+					, titleDate
+					, textSizeCommonEnum);
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || 
@@ -2578,7 +2618,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
 				
 				// B7_2 - B11_2
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false);
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, textSizeCommonEnum);
 			} while (levelIterator != null && levelIterator.hasNext());
 		}
 		
@@ -2595,7 +2635,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param totalType the total type
 	 * @return the int
 	 */
-	private int writeWorkplaceTotal(int currentRow, MonthlyWorkplaceData rootWorkplace, Worksheet sheet, int dataRowCount, boolean totalType) {
+	private int writeWorkplaceTotal(int currentRow
+			, MonthlyWorkplaceData rootWorkplace
+			, Worksheet sheet
+			, int dataRowCount
+			, boolean totalType
+			, TextSizeCommonEnum textSizeCommonEnum) {
 		List<TotalValue> totalWorkplaceValue;
 		if (!totalType)
 			totalWorkplaceValue = rootWorkplace.getWorkplaceTotal().getTotalWorkplaceValue();
@@ -2647,7 +2692,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	setFontStyle(style);
+	            	setFontStyle(style, textSizeCommonEnum);
 	            	cell.setStyle(style);
 			    }
 			    currentRow++;
@@ -2669,7 +2714,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 */
-	private int writeGrossTotal(int currentRow, List<TotalValue> lstGrossTotal, Worksheet sheet, int dataRowCount, RowPageTracker rowPageTracker, MonthlyWorkScheduleCondition condition) {
+	private int writeGrossTotal(int currentRow
+			, List<TotalValue> lstGrossTotal
+			, Worksheet sheet
+			, int dataRowCount
+			, RowPageTracker rowPageTracker
+			, MonthlyWorkScheduleCondition condition
+			, TextSizeCommonEnum textSizeCommonEnum) {
 		
 		int size = lstGrossTotal.size();
 		if (size == 0) {
@@ -2717,7 +2768,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        	if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	setFontStyle(style);
+	            	setFontStyle(style, textSizeCommonEnum);
 	            	cell.setStyle(style);
 			    }
 			    currentRow++;
@@ -2774,9 +2825,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 *
 	 * @param style the new font style
 	 */
-	private void setFontStyle(Style style) {
+	private void setFontStyle(Style style, TextSizeCommonEnum textSize) {
 		Font font = style.getFont();
-		font.setDoubleSize(FONT_SIZE);
+		font.setDoubleSize(textSize == TextSizeCommonEnum.BIG
+				? MonthlyReportConstant.BIG_SIZE
+				: MonthlyReportConstant.SMALL_SIZE);
 		font.setName(FONT_FAMILY);
 	}
 
@@ -2808,7 +2861,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		YearMonth endMonth = query.getEndYearMonth();
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append(WorkScheOutputConstants.PERIOD);
+		
+		// A1_5 - update ver20
+		builder.append(TextResource.localize("KWR006_66"));
 		builder.append(" ");
 		builder.append(startMonth.year() + "/" + startMonth.month());
 		builder.append(" ～ ");
@@ -2934,23 +2989,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		return lstEnabledLevel;
 	}
-	
-	/**
-	 * Create print area of the entire report, important for exporting to PDF.
-	 *
-	 * @param sheet the sheet
-	 */
-	private void createPrintArea(Worksheet sheet) {
-		// Get the last column and row name
-		Cells cells = sheet.getCells();
-		int maxDataRow = cells.getMaxDataRow();
-		Cell lastCell = cells.get(maxDataRow, 38);
-		String lastCellName = lastCell.getName();
-		
-		PageSetup pageSetup = sheet.getPageSetup();
-		pageSetup.setPrintArea("A1:" + lastCellName);
-	}
-	
+
 	/**
 	 * Hide footer.
 	 *
@@ -3011,10 +3050,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
             rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
             // A4_1
             Cell employeeTagCell = cells.get(currentRow, 0);
-            employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode
-                    + "　" + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-                    + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) + WorkScheOutputConstants.POSITION + "　"
-                    + employeeReportData.position);
+            employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE
+            		+ "　" + employeeReportData.employeeCode																 // A4_2
+                    + "　" + employeeReportData.employeeName																 // A4_3
+                    + "　" + WorkScheOutputConstants.EMPLOYMENT															 // A4_4
+                    + "　" + (employeeReportData.employmentName == null ? "" : (employeeReportData.employmentName + "　")) // A4_5_1
+                    + "　" + (employeeReportData.employeeCode == null ? "" : (employeeReportData.employeeCode + "　"))     // A4_5_2
+                    + WorkScheOutputConstants.POSITION																	 // A4_6	
+                    + "　" + employeeReportData.jobTitleCode																 // A4_7_1
+                    + "　" + employeeReportData.position);																 // A4_7_2
             currentRow++;
         }
         return currentRow;

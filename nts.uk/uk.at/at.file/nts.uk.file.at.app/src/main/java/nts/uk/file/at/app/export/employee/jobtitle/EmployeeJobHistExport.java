@@ -26,6 +26,8 @@ public class EmployeeJobHistExport {
 	// 職位名称
 	private String jobTitleName;
 
+	private String jobCode;
+
 	// 配属期間 start
 	private GeneralDate startDate;
 
