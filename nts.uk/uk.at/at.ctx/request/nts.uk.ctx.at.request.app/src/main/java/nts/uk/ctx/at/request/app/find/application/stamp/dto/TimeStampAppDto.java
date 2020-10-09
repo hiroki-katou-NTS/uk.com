@@ -28,7 +28,7 @@ public class TimeStampAppDto {
 	public static TimeStampAppDto fromDomain(TimeStampApp timeStampApp) {
 		return new TimeStampAppDto(
 				DestinationTimeAppDto.fromDomain(timeStampApp.getDestinationTimeApp()),
-				timeStampApp.getTimeOfDay().getDayTime(),
+				timeStampApp.getTimeOfDay().v(),
 				timeStampApp.getWorkLocationCd().isPresent() ? timeStampApp.getWorkLocationCd().get().v() : null,
 				timeStampApp.getAppStampGoOutAtr().isPresent() ? timeStampApp.getAppStampGoOutAtr().get().value : null);
 	}

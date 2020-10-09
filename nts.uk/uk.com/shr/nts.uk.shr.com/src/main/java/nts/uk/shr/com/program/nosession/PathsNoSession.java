@@ -24,9 +24,11 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/ctx/sys/gateway/login/.*",
 			"/ctx/sys/gateway/sendmail/.*",
 			"/ctx/sys/gateway/changepassword/.*",
+			"/ctx/sys/gateway/singlesignon/saml/.*",
 			"/ctx/sys/gateway/url/.*",
 			"/validate/constraints/.*",
-			"/enums/map"
+			"/enums/map",
+			"/sys/portal/webmenu/logout"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
@@ -36,6 +38,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/view/url/index.xhtml",
 			"/view/ccg/033/index.xhtml",
 			"/ccg/033/a",
+			"/sessiontimeout/index.xhtml",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
