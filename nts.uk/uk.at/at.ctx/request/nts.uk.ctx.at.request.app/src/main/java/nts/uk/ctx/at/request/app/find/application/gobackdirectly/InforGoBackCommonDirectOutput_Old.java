@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InforGoBackCommonDirectOutput {
+public class InforGoBackCommonDirectOutput_Old {
 //	勤務種類初期選択
 	private InforWorkType workType;
 //	就業時間帯初期選択
