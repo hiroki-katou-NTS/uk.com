@@ -141,14 +141,19 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				vm.appWorkChange.startTime2(null);
 				vm.appWorkChange.endTime2(null);
 			} else {
-				var lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
+				var lstTimezone = [];
+
+				if(params.predetemineTimeSetting) {
+					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone
+				}
+				
 				var time1 = _.filter(lstTimezone, ['workNo', 1]);
 				var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
-				vm.appWorkChange.startTime1(time1.length > 0 ? time1[0].start : null);
-				vm.appWorkChange.endTime1(time1.length > 0 ? time1[0].end : null);
-				vm.appWorkChange.startTime2(time2.length > 0 ? time2[0].start : null);
-				vm.appWorkChange.endTime2(time2.length > 0 ? time2[0].end : null);
+				vm.appWorkChange.startTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].start : null);
+				vm.appWorkChange.endTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].end : null);
+				vm.appWorkChange.startTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].start : null);
+				vm.appWorkChange.endTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].end : null);
 			}
 			vm.comment1(vm.model().appWorkChangeSet.comment1.comment);
 			$("#comment1")
@@ -167,8 +172,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			vm.appWorkChange.workTypeCode(workTypeCode);
 			var dataWorkType = _.filter(workTypeLst, (x) => { return workTypeCode === x.workTypeCode });
 			vm.appWorkChange.workTypeName(dataWorkType.length > 0 ? dataWorkType[0].name : vm.$i18n('KAF007_79'));
-			var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
-			vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+			if(workTimeCode) {
+				var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
+				vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+			} else {
+				vm.appWorkChange.workTimeName(null);
+			}
 		}
 
 		register() {
@@ -251,6 +260,19 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
 							return vm.$validate('.nts-input');
 						} 
+						return true;
+					}
+				})
+				.then((isValid) => {
+					if(isValid) {
+						if(!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2Start': {messageId: 'Msg_1956'}});
+							return false;
+						}
+						if(_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2End': {messageId: 'Msg_1956'}});
+							return false;
+						}
 						return true;
 					}
 				})

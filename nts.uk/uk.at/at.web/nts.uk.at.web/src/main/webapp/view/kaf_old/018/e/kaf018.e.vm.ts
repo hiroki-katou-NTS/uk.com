@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.e.viewmodel {
+module nts.uk.at.view.kaf018_old.e.viewmodel {
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     import error = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
-    import shareModel = kaf018.share.model;
+    import shareModel = kaf018_old.share.model;
 
     export class ScreenModel {
         listWkpStatusConfirm: Array<ApprSttActivityDta>;
