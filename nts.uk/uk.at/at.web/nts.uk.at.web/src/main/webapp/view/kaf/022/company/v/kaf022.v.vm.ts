@@ -55,7 +55,7 @@ module nts.uk.at.view.kaf022.v.viewmodel {
                                 case "KAF004":
                                     return o.appType == 9;
                                 case "KAF002":
-                                    return o.appType == 7 && ((o.stampRequestMode == 0 && m.screenId == "A") || (o.stampRequestMode == 1 && m.screenId == "C"));
+                                    return o.appType == 7 && ((o.stampRequestMode == 0 && m.screenId == "A") || (o.stampRequestMode == 1 && m.screenId == "B"));
                                 case "KAF011":
                                     return o.appType == 10;
                                 case "KAF020":
@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf022.v.viewmodel {
                             return {appType: 9, overtimeAppAtr: null, stampRequestMode: null};
                         case "KAF002A":
                             return {appType: 7, overtimeAppAtr: null, stampRequestMode: 0};
-                        case "KAF002C":
+                        case "KAF002B":
                             return {appType: 7, overtimeAppAtr: null, stampRequestMode: 1};
                         case "KAF011A":
                             return {appType: 10, overtimeAppAtr: null, stampRequestMode: null};

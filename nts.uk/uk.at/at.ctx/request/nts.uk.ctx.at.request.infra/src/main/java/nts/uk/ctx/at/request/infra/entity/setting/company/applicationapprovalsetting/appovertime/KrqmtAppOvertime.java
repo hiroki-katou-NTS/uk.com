@@ -123,7 +123,7 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
                         this.instructExcessAtr,
                         this.dvgcExcessAtr,
                         this.atdExcessOverrideAtr),
-                KrqmtAppOvertimeFrame.toDomains(this.companyId, this.overtimeFrames),
+                KrqmtAppOvertimeFrame.toDomains(this.overtimeFrames),
                 ApplicationDetailSetting.create(
                         this.instructRequiredAtr,
                         this.preRequiredAtr,

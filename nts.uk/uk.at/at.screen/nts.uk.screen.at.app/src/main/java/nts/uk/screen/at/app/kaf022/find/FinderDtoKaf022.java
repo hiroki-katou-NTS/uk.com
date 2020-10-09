@@ -194,7 +194,7 @@ public class FinderDtoKaf022 {
 		queries.add(new StandardMenuNameQuery("KAF012", "A", Optional.empty()));
 		queries.add(new StandardMenuNameQuery("KAF004", "A", Optional.empty()));
 		queries.add(new StandardMenuNameQuery("KAF002", "A", Optional.empty()));
-		queries.add(new StandardMenuNameQuery("KAF002", "C", Optional.empty()));
+		queries.add(new StandardMenuNameQuery("KAF002", "B", Optional.empty()));
 		queries.add(new StandardMenuNameQuery("KAF011", "A", Optional.empty()));
 		queries.add(new StandardMenuNameQuery("KAF020", "A", Optional.empty()));
 		List<StandardMenuNameExport> menuList = menuPub.getMenuDisplayName(companyId, queries);

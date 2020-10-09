@@ -22,7 +22,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button class="proceed" data-bind="click: saveOTQuotaSet">#{i18n.getText('KAF022_1')}</button>
+            <button class="proceed" data-bind="click: saveOTQuotaSet, enable: enableRegister">#{i18n.getText('KAF022_1')}</button>
             <button style="float: right; margin-right: 100px" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
         </div>
         <div id="contents-area">
