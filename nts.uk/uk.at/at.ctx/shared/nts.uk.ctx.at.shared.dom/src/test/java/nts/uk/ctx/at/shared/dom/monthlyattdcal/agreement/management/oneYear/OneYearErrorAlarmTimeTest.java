@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal;
+package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreement.management.oneYear;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 public class OneYearErrorAlarmTimeTest {
@@ -26,8 +26,8 @@ public class OneYearErrorAlarmTimeTest {
 	public void createTest_2() {
         OneYearErrorAlarmTime target = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20));;
 
-		Assert.assertEquals( new AgreementOneYearTime(30),target.getError());
-		Assert.assertEquals( new AgreementOneYearTime(20),target.getAlarm());
+		assertThat(target.getError()).isEqualTo(new AgreementOneYearTime(30));
+		assertThat(target.getAlarm()).isEqualTo(new AgreementOneYearTime(20));
 	}
 
 	@Test
@@ -35,8 +35,8 @@ public class OneYearErrorAlarmTimeTest {
         OneYearErrorAlarmTime target = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(40));
 
-		Assert.assertEquals( true,result.getLeft());
-		Assert.assertEquals( new AgreementOneYearTime(30),result.getRight());
+		assertThat(result.getLeft()).isEqualTo(true);
+		assertThat(result.getRight()).isEqualTo(new AgreementOneYearTime(30));
 	}
 
 	@Test
@@ -44,8 +44,8 @@ public class OneYearErrorAlarmTimeTest {
         OneYearErrorAlarmTime target = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(10));
 
-		Assert.assertEquals( false,result.getLeft());
-		Assert.assertEquals( new AgreementOneYearTime(30),result.getRight());
+		assertThat(result.getLeft()).isEqualTo(false);
+		assertThat(result.getRight()).isEqualTo( new AgreementOneYearTime(30));
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class OneYearErrorAlarmTimeTest {
         OneYearErrorAlarmTime target = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(40));
 
-		Assert.assertEquals(new AgreementOneYearTime(30),result);
+		assertThat(result).isEqualTo(new AgreementOneYearTime(30));
 	}
 
 	@Test
@@ -61,6 +61,6 @@ public class OneYearErrorAlarmTimeTest {
         OneYearErrorAlarmTime target = OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(10));
 
-		Assert.assertEquals(new AgreementOneYearTime(0),result);
+		assertThat(result).isEqualTo(new AgreementOneYearTime(0));
 	}
 }

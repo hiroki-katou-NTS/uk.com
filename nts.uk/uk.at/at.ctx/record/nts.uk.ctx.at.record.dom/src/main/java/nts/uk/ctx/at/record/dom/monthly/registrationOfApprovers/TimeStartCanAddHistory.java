@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.registrationOfApprovers;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Unit;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 履歴を追加可能な開始日か
@@ -18,17 +19,19 @@ public class TimeStartCanAddHistory {
     /**
      * [1] 確認する
      */
-    public static boolean checkAdd(Require require, Unit unit, String workplaceId, GeneralDate startDate){
+    public static boolean checkAdd(Require require, Unit unit, Optional<String> workplaceId, GeneralDate startDate){
 
         // 1:指定日以降の履歴を取得する(年月日)
-        if (unit.value == EnumAdaptor.valueOf(Unit.WORKPLACE.value, Unit.class).value){
+        if (unit.value == Unit.COMPANY.value){
             List<Approver36AgrByCompany> agrByCompany = require.getByCompanyIdFromDate(startDate);
             return agrByCompany.size() != 0;
         }
 
         // 1.1:指定日以降の履歴を取得する(職場ID,年月日)
-        List<Approver36AgrByWorkplace> agrByWorkplaces = require.getByWorkplaceIdFromDate(workplaceId,startDate);
-
+        List<Approver36AgrByWorkplace> agrByWorkplaces = new ArrayList<>();
+        if (workplaceId.isPresent()){
+            agrByWorkplaces = require.getByWorkplaceIdFromDate(workplaceId.get(),startDate);
+        }
         return agrByWorkplaces.size() != 0;
     }
 

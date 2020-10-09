@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal;
+package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreement.management.oneMonth;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 public class OneMonthTimeTest {
@@ -33,9 +33,9 @@ public class OneMonthTimeTest {
 
         OneMonthTime target = OneMonthTime.of(errorTimeInMonth,new AgreementOneMonthTime(50));
 
-        Assert.assertEquals(errorTimeInMonth.getError(), target.getErAlTime().getError());
-        Assert.assertEquals(errorTimeInMonth.getAlarm(), target.getErAlTime().getAlarm());
-        Assert.assertEquals(new AgreementOneMonthTime(50), target.getUpperLimit());
+        assertThat(target.getErAlTime().getError()).isEqualTo(errorTimeInMonth.getError());
+        assertThat( target.getErAlTime().getAlarm()).isEqualTo(errorTimeInMonth.getAlarm());
+        assertThat( target.getUpperLimit()).isEqualTo(new AgreementOneMonthTime(50));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         ExcessState result = target.check(new AttendanceTimeMonth(30));
 
-        Assert.assertEquals(ExcessState.NORMAL.value,result.value);
+        assertThat(result.value).isEqualTo(ExcessState.NORMAL.value);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         ExcessState result = target.check(new AttendanceTimeMonth(40));
 
-        Assert.assertEquals(ExcessState.ALARM_OVER.value,result.value);
+        assertThat(result.value).isEqualTo(ExcessState.ALARM_OVER.value);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         ExcessState result = target.check(new AttendanceTimeMonth(50));
 
-        Assert.assertEquals(ExcessState.ERROR_OVER.value,result.value);
+        assertThat(result.value).isEqualTo(ExcessState.ERROR_OVER.value);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         ExcessState result = target.check(new AttendanceTimeMonth(60));
 
-        Assert.assertEquals( ExcessState.UPPER_LIMIT_OVER.value,result.value);
+        assertThat(result.value).isEqualTo(ExcessState.UPPER_LIMIT_OVER.value);
     }
 
     @Test
@@ -80,8 +80,8 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         Pair<Boolean, AgreementOneMonthTime> result = target.isErrorTimeOver(new AgreementOneMonthTime(60));
 
-        Assert.assertEquals(true,result.getLeft());
-        Assert.assertEquals(new AgreementOneMonthTime(40),result.getRight());
+        assertThat(result.getLeft()).isEqualTo(true);
+        assertThat(result.getRight()).isEqualTo(new AgreementOneMonthTime(40));
     }
 
     @Test
@@ -90,8 +90,8 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         Pair<Boolean, AgreementOneMonthTime> result = target.isErrorTimeOver(new AgreementOneMonthTime(35));
 
-        Assert.assertEquals(false,result.getLeft());
-        Assert.assertEquals(new AgreementOneMonthTime(40),result.getRight());
+        assertThat(result.getLeft()).isEqualTo(false);
+        assertThat(result.getRight()).isEqualTo(new AgreementOneMonthTime(40));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         AgreementOneMonthTime result = target.calcAlarmTime(new AgreementOneMonthTime(50));
 
-        Assert.assertEquals(new AgreementOneMonthTime(40),result);
+        assertThat(result).isEqualTo(new AgreementOneMonthTime(40));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class OneMonthTimeTest {
                 new AgreementOneMonthTime(50));
         AgreementOneMonthTime result = target.calcAlarmTime(new AgreementOneMonthTime(10));
 
-        Assert.assertEquals(new AgreementOneMonthTime(0),result);
+        assertThat(result).isEqualTo(new AgreementOneMonthTime(0));
     }
 
 }

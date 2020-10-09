@@ -18,18 +18,18 @@ import java.util.Optional;
 @AllArgsConstructor
 public class MonthlyAppContent extends ValueObject {
 	// 対象者
-	private String applicant;
+	private final String applicant;
 
 	// 年月度
-	private YearMonth ym;
+	private final YearMonth ym;
 
 	// エラー時間
-	private AgreementOneMonthTime errTime;
+	private final AgreementOneMonthTime errTime;
 
 	// アラーム時間
 	@Setter
 	private Optional<AgreementOneMonthTime> alarmTime;
 
 	// 申請理由 : 36協定申請理由
-	private ReasonsForAgreement reason;
+	private final ReasonsForAgreement reason;
 }

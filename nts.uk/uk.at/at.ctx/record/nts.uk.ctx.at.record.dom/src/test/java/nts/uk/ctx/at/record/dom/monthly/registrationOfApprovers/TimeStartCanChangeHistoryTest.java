@@ -33,7 +33,7 @@ public class TimeStartCanChangeHistoryTest {
 		}};
 
 		assertThat(TimeStartCanChangeHistory.checkUpdate(
-		        require, EnumAdaptor.valueOf(0, Unit.class),"workplaceId",GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isTrue();
+		        require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(true);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class TimeStartCanChangeHistoryTest {
 		}};
 
 		assertThat(TimeStartCanChangeHistory.checkUpdate(
-		        require, EnumAdaptor.valueOf(0, Unit.class),"workplaceId",GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isFalse();
+		        require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(false);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class TimeStartCanChangeHistoryTest {
 		}};
 
 		assertThat(TimeStartCanChangeHistory.checkUpdate(
-				require, EnumAdaptor.valueOf(1, Unit.class),"workplaceId",GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isTrue();
+				require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(true);
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class TimeStartCanChangeHistoryTest {
 		}};
 
 		assertThat(TimeStartCanChangeHistory.checkUpdate(
-				require, EnumAdaptor.valueOf(1, Unit.class),"workplaceId",GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isFalse();
+				require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(false);
 	}
 
 }

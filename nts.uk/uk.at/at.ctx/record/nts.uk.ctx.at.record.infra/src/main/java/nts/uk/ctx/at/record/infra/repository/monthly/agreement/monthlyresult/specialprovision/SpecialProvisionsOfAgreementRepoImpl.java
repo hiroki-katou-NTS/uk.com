@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement.monthlyresult.specialprovision;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.specialprovision.Krcdt36AgrApp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +16,6 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     private static String FIND_BY_APPREOVER;
     private static String FIND_BY_CONFIRMER;
-    private static String FIND_BY_APPID;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -29,13 +31,9 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE s.inputDate >= :startDate AND s.inputDate <= :endDate ");
-        builderString.append(" AND (s.confirmerSID1 = :confirmerSID OR  s.confirmerSID2 = :confirmerSID OR  s.confirmerSID3 = :confirmerSID OR  s.confirmerSID4 = :confirmerSID OR  s.confirmerSID5 = :confirmerSID OR  ) ");
+        builderString.append(" AND (s.confirmerSID1 = :confirmerSID OR  s.confirmerSID2 = :confirmerSID OR  s.confirmerSID3 = :confirmerSID OR  s.confirmerSID4 = :confirmerSID OR  s.confirmerSID5 = :confirmerSID ) ");
         FIND_BY_CONFIRMER = builderString.toString();
 
-        builderString = new StringBuilder();
-        builderString.append(SELECT);
-        builderString.append(" WHERE s.appID = :applicationID ");
-        FIND_BY_APPID = builderString.toString();
     }
 
     @Override
@@ -55,9 +53,11 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
         if (listApprove.size() > 0) {
-            FIND_BY_APPREOVER += "AND a.approvalStatus IN (:listApprove)";
+            val lstApprove = new ArrayList<>();
+            listApprove.forEach(x -> lstApprove.add(x.value));
+            FIND_BY_APPREOVER += "AND a.approvalStatus IN (:lstApprove)";
         }
         return this.queryProxy()
                 .query(FIND_BY_APPREOVER, Krcdt36AgrApp.class)
@@ -69,9 +69,11 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
         if (listApprove.size() > 0) {
-            FIND_BY_CONFIRMER += "AND a.approvalStatus IN (:listApprove)";
+            val lstConfirm = new ArrayList<>();
+            listApprove.forEach(x -> lstConfirm.add(x.value));
+            FIND_BY_CONFIRMER += "AND a.approvalStatus IN (:lstConfirm)";
         }
         return this.queryProxy()
                 .query(FIND_BY_CONFIRMER, Krcdt36AgrApp.class)
@@ -84,9 +86,6 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     @Override
     public Optional<SpecialProvisionsOfAgreement> getByAppId(String applicationID) {
-        return this.queryProxy()
-                .query(FIND_BY_APPID, Krcdt36AgrApp.class)
-                .setParameter("applicationID", applicationID)
-                .getSingle().map(Krcdt36AgrApp::toDomain);
+        return this.queryProxy().find(applicationID,Krcdt36AgrApp.class).map(x -> x.toDomain(x));
     }
 }
