@@ -22,16 +22,16 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
@@ -79,15 +79,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().insert(toEntity(affiliationInforOfDailyPerfor));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String bonusPaycode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() + "'" : null;
-			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE ) "
+			String bonusPaycode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
+			String businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
+			String insertTableSQL = "INSERT INTO KRCDT_DAI_AFFILIATION_INF ( SID , YMD , EMP_CODE, JOB_ID , CLS_CODE , WKP_ID , BONUS_PAY_CODE,WORK_TYPE_CODE ) "
 					+ "VALUES( '" + affiliationInforOfDailyPerfor.getEmployeeId() + "' , '"
 					+ affiliationInforOfDailyPerfor.getYmd() + "' , '"
-					+ affiliationInforOfDailyPerfor.getEmploymentCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getJobTitleID() + "' , '"
-					+ affiliationInforOfDailyPerfor.getClsCode().v() + "' , '"
-					+ affiliationInforOfDailyPerfor.getWplID() + "' , "
-					+ bonusPaycode + " )";
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v() + "' , '"
+					+ affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID() + "' , "
+					+ bonusPaycode +" , " + businessTypeCode + " )";
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
@@ -102,14 +103,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null
-				? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
-		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null
-				: affiliationInforOfDailyPerfor.getClsCode().v();
-		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null
-				: affiliationInforOfDailyPerfor.getEmploymentCode().v();
-		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
-		entity.workplaceID = affiliationInforOfDailyPerfor.getWplID();
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() != null
+				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v() : null;
+		entity.businessTypeCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
+				? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v() : null;
+		entity.classificationCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode() == null ? null
+				: affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v();
+		entity.employmentCode = affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode() == null ? null
+				: affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v();
+		entity.jobtitleID = affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID();
+		entity.workplaceID = affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID();
 
 		return entity;
 	}
@@ -135,7 +138,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 						rec.getString("WKP_ID"), 
 						ymd, 
 						new ClassificationCode(rec.getString("CLS_CODE")), 
-						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						);
 				return ent;
 			});
 			
@@ -168,11 +173,12 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
+		String bonusPaycode = domain.getAffiliationInfor().getBonusPaySettingCode() != null ? "'" + domain.getAffiliationInfor().getBonusPaySettingCode().v() + "'" : null;
+		String businessTypeCode = domain.getAffiliationInfor().getBusinessTypeCode().isPresent() ? "'" + domain.getAffiliationInfor().getBusinessTypeCode().get().v() + "'" : null;
 		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
-				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
-				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
-				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
+				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()
+				+ "' , CLS_CODE = '" + domain.getAffiliationInfor().getClsCode().v() + "' , WKP_ID = '" + domain.getAffiliationInfor().getWplID()
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + "  WHERE SID = '"
 				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
@@ -196,7 +202,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	private List<AffiliationInforOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 //		String subEmp = NtsStatement.In.createParamsString(empIds);
 		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
-		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE from KRCDT_DAI_AFFILIATION_INF "
+		String sql = "select EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE from KRCDT_DAI_AFFILIATION_INF "
 				+ " where SID in (" + NtsStatement.In.createParamsString(empIds) + ")"
 				+ " and YMD <= ?"
 				+ " and YMD >= ?";
@@ -214,7 +220,10 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				AffiliationInforOfDailyPerfor ent = new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")),
+						new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE"))
+						);
 				return ent;
 			});
 		} catch (SQLException e) {
@@ -243,7 +252,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE FROM KRCDT_DAI_AFFILIATION_INF");
+		StringBuilder query = new StringBuilder("SELECT EMP_CODE, SID, JOB_ID, WKP_ID, YMD, CLS_CODE, BONUS_PAY_CODE,WORK_TYPE_CODE FROM KRCDT_DAI_AFFILIATION_INF");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		
@@ -259,7 +268,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				return new AffiliationInforOfDailyPerfor(new EmploymentCode(rec.getString("EMP_CODE")), 
 						rec.getString("SID"), rec.getString("JOB_ID"), rec.getString("WKP_ID"), rec.getGeneralDate("YMD"), 
-						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")));
+						new ClassificationCode(rec.getString("CLS_CODE")), new BonusPaySettingCode(rec.getString("BONUS_PAY_CODE")),
+						rec.getString("WORK_TYPE_CODE")== null?null: new BusinessTypeCode(rec.getString("WORK_TYPE_CODE")));
 			});
 		}
 	}

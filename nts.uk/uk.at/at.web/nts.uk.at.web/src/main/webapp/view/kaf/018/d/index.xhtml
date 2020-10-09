@@ -5,51 +5,16 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 1160,
-					height : 660
-				};
-			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kaf018.d.main.css" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="kaf018.d.start.js" />
-			<com:scriptfile path="kaf018.d.service.js" />
-			<com:scriptfile path="kaf018.d.vm.js" />
+			<com:stylefile path="/view/kaf/018/d/kaf018.d.css" />
+			<com:scriptfile path="/view/kaf/018/d/kaf018.d.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="contents-area">
-				<table class="tbl-control">
-					<colgroup>
-						<col width="500px" />
-						<col width="640px" />
-					</colgroup>
-					<tr>
-						<td>
-							<!-- D1_社員名 -->
-							<div class="limited-label label" style="width: 300px;"
-								data-bind="text: dispEmpName"></div>
-						</td>
-						<td class="text-status">
-							<!-- D3_1_未承認説明ラベル --> <!--D3_2_承認済説明ラベル --> <!-- D3_3_否認明ラベル -->
-							<div>
-								<span class="text-unapproval">－：未承認</span>
-								<span class="text-approval">〇：承認済み</span> 
-							    <span class="text-denial">×：否認</span>
-							</div>
-						</td>
-					</tr>
-				</table>
-				<!--D4_申請内容一覧 -->
-				<table id="grid1" tabindex="1" ></table>
-				
+			<div id="functions-area">
 			</div>
-			<div id="functions-area-bottom">
-				<button data-bind="click: closeUp">#{i18n.getText('KAF018_48')}</button>
+			<div id="contents-area">
 			</div>
 		</ui:define>
 	</ui:composition>

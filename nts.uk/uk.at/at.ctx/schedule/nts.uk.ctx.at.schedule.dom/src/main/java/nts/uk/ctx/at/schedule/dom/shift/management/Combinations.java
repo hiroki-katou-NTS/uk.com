@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 /**
  * シフトパレットのシフト
@@ -19,9 +20,9 @@ public class Combinations implements DomainValue {
 
 	@Getter
 	/** シフトコード */
-	private ShiftPalletCode shiftCode;
+	private ShiftMasterCode shiftCode;
 
-	public Combinations(int order, ShiftPalletCode shiftCode) {
+	public Combinations(int order, ShiftMasterCode shiftCode) {
 
 		// inv-1 1 <= 順番 <= 31
 		if (!(1 <= order && order <= 31)) {

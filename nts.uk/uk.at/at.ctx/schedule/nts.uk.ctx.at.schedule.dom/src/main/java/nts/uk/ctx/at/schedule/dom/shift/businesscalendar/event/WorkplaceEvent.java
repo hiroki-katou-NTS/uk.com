@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 /**
+ * 職場行事
  * @author hungnm
  *
  */

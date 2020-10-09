@@ -314,7 +314,7 @@ module nts.uk.at.kmr003.a {
                 vm.headerInfos = _.map(res.bentos, (item: IHeaderInfoDto) => { return new HeaderInfoDto(item); });
                 _.forEach(vm.headerInfos, (item: HeaderInfoDto) => {
                     vm.dynamicColumns.push({
-                        headerText: item.bentoName,
+                        headerText: _.escape(item.bentoName),
                         group: [
                             {
                                 headerText: item.unitLabel,

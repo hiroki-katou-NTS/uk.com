@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.time.TimeWithDayAttr;

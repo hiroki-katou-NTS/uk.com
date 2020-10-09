@@ -2823,6 +2823,7 @@ button.nts-switch-button[disabled].selected {
 }
 
 /* fix for header column width not map with column width in body */
+/* line 33, ../sass/components/_gridlist.scss */
 .ui-iggrid-headertable {
   max-width: 100% !important;
 }
@@ -4596,7 +4597,7 @@ input.nts-editor::-ms-clear {
 
 /* line 24, ../sass/components/_extable.scss */
 .extable div.xdet, .extable td.xdet {
-  background-color: #D2B4DE;
+  background-color: #ECCEFB;
 }
 
 /* line 27, ../sass/components/_extable.scss */
@@ -4606,7 +4607,7 @@ input.nts-editor::-ms-clear {
 
 /* line 30, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
-  background-color: #CCC;
+  background-color: #DDDDD2;
 }
 
 /* line 33, ../sass/components/_extable.scss */
@@ -4637,7 +4638,7 @@ input.nts-editor::-ms-clear {
 
 /* line 49, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
-  background-color: #FFFFCC;
+  background-color: #FFFFCC !important;
 }
 
 /* line 52, ../sass/components/_extable.scss */
@@ -4647,7 +4648,7 @@ input.nts-editor::-ms-clear {
 
 /* line 55, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
-  background-color: #3498DB;
+  background-color: #3498DB !important;
   color: #FFF;
 }
 
@@ -4658,7 +4659,7 @@ input.nts-editor::-ms-clear {
 
 /* line 62, ../sass/components/_extable.scss */
 .extable td.x-error, .extable div.x-error {
-  border: solid 1px #FF6666 !important;
+  border: 1px double #FF6666 !important;
 }
 
 /* line 65, ../sass/components/_extable.scss */
@@ -4706,10 +4707,10 @@ div .ex-area-line.x-stay {
 
 /* line 97, ../sass/components/_extable.scss */
 .top-right-tooltip {
-  background-color: #CACA1E;
+  background-color: #E0F59E;
   box-shadow: 2px 2px 2px #95A5A6;
   border-radius: 2px;
-  border: solid 1px #CACA1E;
+  border: solid 1px #E0F59E;
   display: inline-block;
   padding-left: 4px;
   padding-top: 4px;
@@ -4797,9 +4798,6 @@ div .ex-area-line.x-stay {
 /* line 173, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
-  color: #0D86D1;
-  text-decoration: underline;
-  cursor: pointer;
   user-select: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4807,7 +4805,14 @@ div .ex-area-line.x-stay {
   width: 100%;
 }
 
-/* line 185, ../sass/components/_extable.scss */
+/* line 182, ../sass/components/_extable.scss */
+.x-link:hover {
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* line 188, ../sass/components/_extable.scss */
 .x-cell-overflow {
   position: absolute;
   display: inline-block;
@@ -4818,6 +4823,25 @@ div .ex-area-line.x-stay {
   -webkit-box-shadow: 1px 1px 5px 1px #888;
   -moz-box-shadow: 1px 1px 5px 1px #888;
   box-shadow: 1px 1px 5px 1px #888;
+}
+
+/* line 200, ../sass/components/_extable.scss */
+.x-error-message {
+  position: absolute;
+  border: 1px solid #F00;
+  background-color: #FCC;
+  max-width: 300px;
+  padding: 3px;
+}
+
+/* line 208, ../sass/components/_extable.scss */
+.black-corner-mark {
+  background-image: linear-gradient(135deg, black, black 5px, transparent 5px, transparent);
+}
+
+/* line 212, ../sass/components/_extable.scss */
+.red-corner-mark {
+  background-image: linear-gradient(135deg, red, red 5px, transparent 5px, transparent);
 }
 
 /*****************************

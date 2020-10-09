@@ -7,13 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -22,6 +15,14 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -68,8 +69,8 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 												getAttendanceTime(c.getOrderTime()), c.getOverWorkFrameNo().v())),
 						ConvertHelper.mapTo(domain.getOverTimeWorkFrameTimeSheet(),
 										c -> new OverTimeFrameTimeSheetDto(
-												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan().getStart()),
-														getAttendanceTime(c.getTimeSpan().getEnd())),
+												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getStart()),
+														getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getEnd())),
 												c.getFrameNo().v())),
 						ExcessOverTimeWorkMidNightTimeDto
 								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().isPresent()
@@ -103,7 +104,7 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
 				ConvertHelper.mapTo(overTimeFrameTimeSheet,
-						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
+						(c) -> new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(createTimeSheet(c.getTimeSheet())),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
 				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),

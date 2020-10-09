@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
@@ -24,33 +23,29 @@ import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfD
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-//import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 //@Stateless
@@ -94,28 +89,30 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	@Override
 	public DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain) {
-		this.employeeId(domain.getAffiliationInfor().getEmployeeId());
-		this.workingDate(domain.getAffiliationInfor().getYmd());
-		this.withWorkInfo(domain.getWorkInformation());
-		this.withCalcAttr(domain.getCalAttr());
-		this.withAffiliationInfo(domain.getAffiliationInfor());
-		this.withBusinessType(domain.getBusinessType().orElse(null));
+		String employeeId = domain.getEmployeeId();
+		GeneralDate ymd = domain.getYmd();
+		this.employeeId(employeeId);
+		this.workingDate(ymd);
+		this.withWorkInfo(employeeId,ymd,domain.getWorkInformation());
+		this.withCalcAttr(employeeId,ymd,domain.getCalAttr());
+		this.withAffiliationInfo(employeeId,ymd,domain.getAffiliationInfor());
+//		this.withBusinessType(domain.getBusinessType().orElse(null));
 		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
 			this.withEmployeeErrors(domain.getEmployeeError());
 		}
-		this.withOutingTime(domain.getOutingTime().orElse(null));
-		this.withBreakTime(domain.getBreakTime());
-		this.withAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().orElse(null));
-		this.withAttendanceTimeByWork(domain.getAttendancetimeByWork().orElse(null));
-		this.withTimeLeaving(domain.getAttendanceLeave().orElse(null));
-		this.withShortTime(domain.getShortTime().orElse(null));
-		this.withSpecificDateAttr(domain.getSpecDateAttr().orElse(null));
-		this.withAttendanceLeavingGate(domain.getAttendanceLeavingGate().orElse(null));
-		this.withAnyItems(domain.getAnyItemValue().orElse(null));
-		this.withEditStates(domain.getEditState());
-		this.withTemporaryTime(domain.getTempTime().orElse(null));
-		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
-		this.withRemarks(domain.getRemarks());
+		this.withOutingTime(employeeId,ymd,domain.getOutingTime().orElse(null));
+		this.withBreakTime(employeeId,ymd,domain.getBreakTime());
+		this.withAttendanceTime(employeeId,ymd,domain.getAttendanceTimeOfDailyPerformance().orElse(null));
+//		this.withAttendanceTimeByWork(domain.getAttendancetimeByWork().orElse(null));
+		this.withTimeLeaving(employeeId,ymd,domain.getAttendanceLeave().orElse(null));
+		this.withShortTime(employeeId,ymd,domain.getShortTime().orElse(null));
+		this.withSpecificDateAttr(employeeId,ymd,domain.getSpecDateAttr().orElse(null));
+		this.withAttendanceLeavingGate(employeeId,ymd,domain.getAttendanceLeavingGate().orElse(null));
+		this.withAnyItems(employeeId,ymd,domain.getAnyItemValue().orElse(null));
+		this.withEditStates(employeeId,ymd,domain.getEditState());
+		this.withTemporaryTime(employeeId,ymd,domain.getTempTime().orElse(null));
+		this.withPCLogInfo(employeeId,ymd,domain.getPcLogOnInfo().orElse(null));
+		this.withRemarks(employeeId,ymd,domain.getRemarks());
 		return this;
 	}
 	
@@ -130,23 +127,23 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return new DailyRecordToAttendanceItemConverterImpl(optionalItems);
 	}
 
-	public DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain) {
-		this.dailyRecord.withWorkInfo(WorkInformationOfDailyDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withWorkInfo(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance domain) {
+		this.dailyRecord.withWorkInfo(WorkInformationOfDailyDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain) {
-		this.dailyRecord.withCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withCalcAttr(String employeeId,GeneralDate ymd,CalAttrOfDailyAttd domain) {
+		this.dailyRecord.withCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain) {
-		this.dailyRecord.withBusinessType(BusinessTypeOfDailyPerforDto.getDto(domain));
-		return this;
-	}
+//	public DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain) {
+//		this.dailyRecord.withBusinessType(BusinessTypeOfDailyPerforDto.getDto(domain));
+//		return this;
+//	}
 
-	public DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain) {
-		this.dailyRecord.withAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withAffiliationInfo(String employeeId,GeneralDate ymd,AffiliationInforOfDailyAttd domain) {
+		this.dailyRecord.withAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
@@ -155,86 +152,86 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyPerformance domain) {
-		this.dailyRecord.outingTime(OutingTimeOfDailyPerformanceDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withOutingTime(String employeeId,GeneralDate ymd,OutingTimeOfDailyAttd domain) {
+		this.dailyRecord.outingTime(OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withBreakTime(BreakTimeOfDailyPerformance domain) {
-		this.dailyRecord.addBreakTime(BreakTimeDailyDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withBreakTime(String employeeId,GeneralDate ymd,BreakTimeOfDailyAttd domain) {
+		this.dailyRecord.addBreakTime(BreakTimeDailyDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 	
-	public DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain) {
-		this.dailyRecord.breakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
+	public DailyRecordToAttendanceItemConverter withBreakTime(String employeeId,GeneralDate ymd,List<BreakTimeOfDailyAttd> domain) {
+		this.dailyRecord.breakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyPerformance domain) {
-		this.dailyRecord.attendanceTime(AttendanceTimeDailyPerformDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withAttendanceTime(String employeeId,GeneralDate ymd,AttendanceTimeOfDailyAttendance domain) {
+		this.dailyRecord.attendanceTime(AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain) {
-		this.dailyRecord.attendanceTimeByWork(AttendanceTimeByWorkOfDailyDto.getDto(domain));
+//	public DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain) {
+//		this.dailyRecord.attendanceTimeByWork(AttendanceTimeByWorkOfDailyDto.getDto(domain));
+//		return this;
+//	}
+
+	public DailyRecordToAttendanceItemConverter withTimeLeaving(String employeeId,GeneralDate ymd,TimeLeavingOfDailyAttd domain) {
+		this.dailyRecord.timeLeaving(TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyPerformance domain) {
-		this.dailyRecord.timeLeaving(TimeLeavingOfDailyPerformanceDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withShortTime(String employeeId,GeneralDate ymd,ShortTimeOfDailyAttd domain) {
+		this.dailyRecord.shortWorkTime(ShortTimeOfDailyDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withShortTime(ShortTimeOfDailyPerformance domain) {
-		this.dailyRecord.shortWorkTime(ShortTimeOfDailyDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withSpecificDateAttr(String employeeId,GeneralDate ymd,SpecificDateAttrOfDailyAttd domain) {
+		this.dailyRecord.specificDateAttr(SpecificDateAttrOfDailyPerforDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withSpecificDateAttr(SpecificDateAttrOfDailyPerfor domain) {
-		this.dailyRecord.specificDateAttr(SpecificDateAttrOfDailyPerforDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(String employeeId,GeneralDate ymd,AttendanceLeavingGateOfDailyAttd domain) {
+		this.dailyRecord.attendanceLeavingGate(AttendanceLeavingGateOfDailyDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(AttendanceLeavingGateOfDaily domain) {
-		this.dailyRecord.attendanceLeavingGate(AttendanceLeavingGateOfDailyDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withAnyItems(String employeeId,GeneralDate ymd,AnyItemValueOfDailyAttd domain) {
+		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(employeeId,ymd,domain, this.optionalItems));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
-		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, this.optionalItems));
+	public DailyRecordToAttendanceItemConverter withEditStates(String employeeId,GeneralDate ymd,EditStateOfDailyAttd domain) {
+		this.dailyRecord.addEditStates(EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withEditStates(EditStateOfDailyPerformance domain) {
-		this.dailyRecord.addEditStates(EditStateOfDailyPerformanceDto.getDto(domain));
-		return this;
-	}
-
-	public DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain) {
+	public DailyRecordToAttendanceItemConverter withEditStates(String employeeId,GeneralDate ymd,List<EditStateOfDailyAttd> domain) {
 //		List<Integer> current = this.dailyRecord.getEditStates().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
-		this.dailyRecord.editStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
+		this.dailyRecord.editStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyPerformance domain) {
-		this.dailyRecord.temporaryTime(TemporaryTimeOfDailyPerformanceDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withTemporaryTime(String employeeId,GeneralDate ymd,TemporaryTimeOfDailyAttd domain) {
+		this.dailyRecord.temporaryTime(TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,domain));
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDaily domain) {
-		this.dailyRecord.pcLogInfo(PCLogOnInforOfDailyPerformDto.from(domain));
-		return this;
-	}
-
-	@Override
-	public DailyRecordToAttendanceItemConverter withRemark(RemarksOfDailyPerform domain) {
-		this.dailyRecord.addRemarks(RemarksOfDailyDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withPCLogInfo(String employeeId,GeneralDate ymd,PCLogOnInfoOfDailyAttd domain) {
+		this.dailyRecord.pcLogInfo(PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,domain));
 		return this;
 	}
 
 	@Override
-	public DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyPerform> domain) {
-		this.dailyRecord.remarks(domain.stream().map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList()));
+	public DailyRecordToAttendanceItemConverter withRemark(String employeeId,GeneralDate ymd,RemarksOfDailyAttd domain) {
+		this.dailyRecord.addRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain));
+		return this;
+	}
+
+	@Override
+	public DailyRecordToAttendanceItemConverter withRemarks(String employeeId,GeneralDate ymd,List<RemarksOfDailyAttd> domain) {
+		this.dailyRecord.remarks(domain.stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 		return this;
 	}
 	
@@ -254,68 +251,68 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance workInfo() {
+	public WorkInfoOfDailyAttendance workInfo() {
 		return this.dailyRecord.getWorkInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
 	}
 
 	@Override
-	public CalAttrOfDailyPerformance calcAttr() {
+	public CalAttrOfDailyAttd calcAttr() {
 		return this.dailyRecord.getCalcAttr().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
 	}
 
-	@Override
-	public Optional<WorkTypeOfDailyPerformance> businessType() {
-		return this.dailyRecord.getBusinessType().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
-	}
+//	@Override
+//	public Optional<WorkTypeOfDailyPerformance> businessType() {
+//		return this.dailyRecord.getBusinessType().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+//	}
 
 	@Override
-	public AffiliationInforOfDailyPerfor affiliationInfo() {
+	public AffiliationInforOfDailyAttd affiliationInfo() {
 		return this.dailyRecord.getAffiliationInfo().toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate());
 	}
 
 	@Override
-	public Optional<OutingTimeOfDailyPerformance> outingTime() {
+	public Optional<OutingTimeOfDailyAttd> outingTime() {
 		return this.dailyRecord.getOutingTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public List<BreakTimeOfDailyPerformance> breakTime() {
+	public List<BreakTimeOfDailyAttd> breakTime() {
 		return this.dailyRecord.getBreakTime().stream().map(d ->
 				d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<AttendanceTimeOfDailyPerformance> attendanceTime() {
+	public Optional<AttendanceTimeOfDailyAttendance> attendanceTime() {
 		return this.dailyRecord.getAttendanceTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
-	@Override
-	public Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork() {
-		return this.dailyRecord.getAttendanceTimeByWork().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
-	}
+//	@Override
+//	public Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork() {
+//		return this.dailyRecord.getAttendanceTimeByWork().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+//	}
 
 	@Override
-	public Optional<TimeLeavingOfDailyPerformance> timeLeaving() {
+	public Optional<TimeLeavingOfDailyAttd> timeLeaving() {
 		return this.dailyRecord.getTimeLeaving().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public Optional<ShortTimeOfDailyPerformance> shortTime() {
+	public Optional<ShortTimeOfDailyAttd> shortTime() {
 		return this.dailyRecord.getShortWorkTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr() {
+	public Optional<SpecificDateAttrOfDailyAttd> specificDateAttr() {
 		return this.dailyRecord.getSpecificDateAttr().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate() {
+	public Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate() {
 		return this.dailyRecord.getAttendanceLeavingGate().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public Optional<AnyItemValueOfDaily> anyItems() {
+	public Optional<AnyItemValueOfDailyAttd> anyItems() {
 		this.dailyRecord.getOptionalItem().ifPresent(c -> {
 			if(optionalItems != null) {
 				c.correctItems(optionalItems);
@@ -325,23 +322,23 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	@Override
-	public List<EditStateOfDailyPerformance> editStates() {
+	public List<EditStateOfDailyAttd> editStates() {
 		return this.dailyRecord.getEditStates().stream().map(d ->
 						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<TemporaryTimeOfDailyPerformance> temporaryTime() {
+	public Optional<TemporaryTimeOfDailyAttd> temporaryTime() {
 		return this.dailyRecord.getTemporaryTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public Optional<PCLogOnInfoOfDaily> pcLogInfo() {
+	public Optional<PCLogOnInfoOfDailyAttd> pcLogInfo() {
 		return this.dailyRecord.getPcLogInfo().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
 	}
 
 	@Override
-	public List<RemarksOfDailyPerform> remarks() {
+	public List<RemarksOfDailyAttd> remarks() {
 		return this.dailyRecord.getRemarks().stream().map(d ->
 						d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).collect(Collectors.toList());
 	}

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,16 +16,24 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * The Class FixedWorkSetting.
@@ -244,5 +253,76 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			throw new RuntimeException("FixedWorkSetting clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 勤務種類から就業時間帯Noと法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return Map<就業時間帯No, 法定内の残業枠No>
+	 */
+	public Map<EmTimezoneNo, OverTimeFrameNo> getLegalOverTimeFrameNoMap(WorkType workType) {
+		return this.getOverTimeOfTimeZoneSet(workType).stream()
+				//就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toMap(k->k.getWorkTimezoneNo(), v->new OverTimeFrameNo(v.getLegalOTframeNo().v())));
+	}
+	
+	/**
+	 * 勤務種類から法定内残業枠Noを取得する
+	 * @param workType 勤務種類
+	 * @return 法定内の残業枠No(List)
+	 */
+	public List<OverTimeFrameNo> getLegalOverTimeFrameNoList(WorkType workType) {
+		return this.getOverTimeOfTimeZoneSet(workType).stream()
+				.map(overTimeOfTimeZoneSet -> overTimeOfTimeZoneSet.getLegalOTframeNo())
+				.map(oTframeNo -> new OverTimeFrameNo(oTframeNo.v())) //就業時間帯の残業枠はOTFrameNoになっている為、OverTimeFrameNoへ変換する必要がある。
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 勤務種類から就業時間の時間帯設定を取得する
+	 * @param workType 勤務種類
+	 * @return 就業時間の時間帯設定(List)
+	 */
+	public List<EmTimeZoneSet> getEmTimeZoneSet(WorkType workType) {
+		return this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).isPresent()
+					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstWorkingTimezone()
+					:Collections.emptyList();
+	}
+	
+	/**
+	 * 勤務種類から残業時間の時間帯設定を取得する
+	 * @param workType 勤務種類
+	 * @return 残業時間の時間帯設定(List)
+	 */
+	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
+		return this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).isPresent()
+					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
+					:Collections.emptyList();
+	}
+	
+	/**
+	 * 出勤休日区分から固定勤務の平日出勤用勤務時間帯を取得する
+	 * 
+	 * @param attendanceHolidayAttr 出勤休日区分
+	 * @return 固定勤務の平日出勤用勤務時間帯(List)
+	 */
+	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
+		switch(attendanceHolidayAttr) {
+		case FULL_TIME:	return this.getFixHalfDayWorkTimezone(AmPmAtr.ONE_DAY);
+		case MORNING:		return this.getFixHalfDayWorkTimezone(AmPmAtr.AM);
+		case AFTERNOON:	return this.getFixHalfDayWorkTimezone(AmPmAtr.PM);
+		case HOLIDAY:		return Optional.empty();
+		default:			throw new RuntimeException("unknown AttendanceHolidayAttr");
+		}
+	}
+	
+	/**
+	 * 午前午後区分から固定勤務の平日出勤用勤務時間帯を取得する
+	 * 
+	 * @param amPmAtr 午前午後区分
+	 * @return 固定勤務の平日出勤用勤務時間帯(List)
+	 */
+	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AmPmAtr amPmAtr){
+		return this.lstHalfDayWorkTimezone.stream().filter(timeZone -> timeZone.getDayAtr().equals(amPmAtr)).findFirst();
 	}
 }

@@ -15,8 +15,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
@@ -24,8 +24,8 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
@@ -42,14 +42,14 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -69,7 +69,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class AppDetailInfoImpl implements AppDetailInfoRepository {
 
 	@Inject
-	private GoBackDirectlyRepository repoGoBack;
+	private GoBackDirectlyRepository_Old repoGoBack;
 	@Inject
 	private OvertimeRepository repoOverTime;
 	@Inject
@@ -97,7 +97,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private RecruitmentAppRepository recRepo;
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
 
@@ -194,8 +194,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	 */
 	@Override
 	public AppGoBackInfoFull getAppGoBackInfo(String companyID, String appId) {
-		Optional<GoBackDirectly> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
-		GoBackDirectly appGoBack = appGoBackOp.get();
+		Optional<GoBackDirectly_Old> appGoBackOp = repoGoBack.findByApplicationID(companyID, appId);
+		GoBackDirectly_Old appGoBack = appGoBackOp.get();
 		return new AppGoBackInfoFull(appId, appGoBack.getGoWorkAtr1().value,
 				this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 				appGoBack.getBackHomeAtr1().value,
@@ -302,8 +302,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppWorkChangeFull getAppWorkChangeInfo(String companyID, String appId, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
-		Optional<AppWorkChange> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
-		AppWorkChange appWkChange = workChange.get();
+		Optional<AppWorkChange_Old> workChange = repoworkChange.getAppworkChangeById(companyID, appId);
+		AppWorkChange_Old appWkChange = workChange.get();
 		String workTypeName = "";
 		if (appWkChange.getWorkTypeCd() != null && !Strings.isBlank(appWkChange.getWorkTypeCd())) {
 			// 勤務就業名称を作成 - WorkType
@@ -666,10 +666,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 			List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
 		List<AppWorkChangeFull> lstAppFull = new ArrayList<>();
 		// get list app work change by lstId
-		List<AppWorkChange> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
+		List<AppWorkChange_Old> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
 		Map<String, String> mapWorkTypeName = new HashMap<>();
 		Map<String, String> mapWorkTimeName = new HashMap<>();
-		for (AppWorkChange appWkChange : lstWorkChange) {
+		for (AppWorkChange_Old appWkChange : lstWorkChange) {
 			// find work type name
 			String wkTypeCD = appWkChange.getWorkTypeCd();
 			String workTypeName = "";
@@ -715,8 +715,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public List<AppGoBackInfoFull> getListAppGoBackInfo(String companyID, List<String> lstAppId) {
 		List<AppGoBackInfoFull> lstAppFull = new ArrayList<>();
-		List<GoBackDirectly> lstAppGoBack = repoGoBack.getListAppGoBack(companyID, lstAppId);
-		for (GoBackDirectly appGoBack : lstAppGoBack) {
+		List<GoBackDirectly_Old> lstAppGoBack = repoGoBack.getListAppGoBack(companyID, lstAppId);
+		for (GoBackDirectly_Old appGoBack : lstAppGoBack) {
 			lstAppFull.add(new AppGoBackInfoFull(appGoBack.getAppID(), appGoBack.getGoWorkAtr1().value,
 					this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
 					appGoBack.getBackHomeAtr1().value,
@@ -747,8 +747,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 			// check B co trong list don xin k?
 			String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
 			// lay thong tin chung
-			Application_New sub = repoApp.findByID(companyID, appIdSync).get();
-			appDateSub = sub.getAppDate().toString("yyyy/MM/dd");
+			Application sub = repoApp.findByID(companyID, appIdSync).get();
+			appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
 			appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
 			appSub = this.getAppCompltLeaveInfo(companyID, appIdSync, sync.getType() == 0 ? 1 : 0, lstWkType);
 		}

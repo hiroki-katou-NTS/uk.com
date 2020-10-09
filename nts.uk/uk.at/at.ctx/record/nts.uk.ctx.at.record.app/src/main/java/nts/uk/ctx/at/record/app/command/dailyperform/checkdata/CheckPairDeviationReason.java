@@ -19,14 +19,14 @@ import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.algorithm.DetermineLeakage;
 //import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -68,7 +68,7 @@ public class CheckPairDeviationReason {
 				new DatePeriod(dates.get(0), dates.get(dates.size() - 1)));
 		// if(!employeeError.isEmpty()) return Collections.emptyList();
 
-		List<DivergenceTime> divergenceTime = divergenceTimeRepository.getDivTimeListByUseSet(companyId);
+		List<DivergenceTimeRoot> divergenceTime = divergenceTimeRepository.getDivTimeListByUseSet(companyId);
 		Map<Pair<String, GeneralDate>, List<ItemValue>> mapValueOld = itemValues.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x.getItems()));
 		for (DailyRecordWorkCommand command : commands) {
 			resultErrorAll.addAll(checkReasonInput(command, employeeError, divergenceTime, textResource, mapValueOld));
@@ -77,7 +77,7 @@ public class CheckPairDeviationReason {
 	}
 
 	public List<DPItemValueRC> checkReasonInput(DailyRecordWorkCommand command,
-			List<EmployeeDailyPerError> employeeError, List<DivergenceTime> divergenceTime, String textResource, Map<Pair<String, GeneralDate>, List<ItemValue>> mapValueOld) {
+			List<EmployeeDailyPerError> employeeError, List<DivergenceTimeRoot> divergenceTime, String textResource, Map<Pair<String, GeneralDate>, List<ItemValue>> mapValueOld) {
 		Map<Integer, String> itemCommonMap = new HashMap<>();
 		List<EmployeeDailyPerError> errorRow = employeeError.stream()
 				.filter(x -> x.getEmployeeID().equals(command.getEmployeeId())
@@ -93,7 +93,7 @@ public class CheckPairDeviationReason {
 
 		// 乖離時間をチェックする
 
-		Map<Integer, DivergenceTime> divergenceTimeNoMap = divergenceTime.stream()
+		Map<Integer, DivergenceTimeRoot> divergenceTimeNoMap = divergenceTime.stream()
 				.collect(Collectors.toMap(x -> x.getDivergenceTimeNo(), x -> x));
 		if (divergenceTimeNoMap.isEmpty())
 			return resultError;

@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

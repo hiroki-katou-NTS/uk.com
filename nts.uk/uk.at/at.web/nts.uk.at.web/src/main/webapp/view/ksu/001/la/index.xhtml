@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 1120, height: 630 };</script>
+            <com:ValidatorScript>
+                nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd
+                nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName
+                nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamRemarks
+            </com:ValidatorScript>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+            <com:stylefile path="ksu001.la.style.css" />
+            <com:scriptfile path="ksu001.la.vm.js" />
+            <com:scriptfile path="ksu001.la.start.js" />
+            <com:scriptfile path="ksu001.la.service.js" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area">
+                <div>
+                    <button tabindex="1" data-bind="click: clearData">#{i18n.getText('KSU001_3202')}</button>
+                    <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3203')}</button>
+                    <button class="danger" tabindex="3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU001_3204')}</button>
+                    <button data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KSU001_3206')}</button>
+                </div>
+            </div>
+            <div id="contents-area" class="fixed-flex-layout">
+                <div id="left-content" class="fixed-flex-layout-left">
+                    <div id="emp-component" style="visibility: hidden; width: 0px; height: 0px;"></div>
+                    <div
+                        data-bind="ntsPanel:{width: '260px', height: '446px', direction: 'right', showIcone: true, visible: true}">
+                        <table id="single-list" data-bind="ntsGridList: {								
+                            height: 438,
+                            dataSource: listScheduleTeam,
+                            primaryKey: 'code',
+                            columns: columns,
+                            rows: 18,
+                            multiple: false,
+                            value: selectedCode
+                        }"></table>
+                    </div>
+                </div>
+                <div id="right-content" class="fixed-flex-layout-right">                    
+                    <div id="workplaceGroupName" data-bind="{text:workplaceGroupName}"></div> 
+                    <hr id="line" />
+                    <div class="container-custom">
+                        <div data-bind="ntsFormLabel:{ required:true, constraint:['ScheduleTeamCd', 'ScheduleTeamName']}">
+                            #{i18n.getText('KSU001_3208')}/#{i18n.getText('KSU001_3209')}</div>
+                           
+                        <div style="margin-left: 10px;">
+                            <input id ="scheduleTeamCd" data-bind="ntsTextEditor:{
+                                    name:'#[KSU001_3208]',
+                                    required: true,
+                                    constraint: 'ScheduleTeamCd',  
+                                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
+                                        width: '20px',
+                                        textalign: 'left'
+                                    })),                            
+                                    enable: scheduleTeamModel().isEnableCode,      
+                                    value: scheduleTeamModel().code                                    
+                                }" tabindex="6" />
+                        </div>                       
+                         
+                        <div class="input">                            
+                            <input id = "scheduleTeamName" data-bind="ntsTextEditor:{
+                                            name:'#[KSU001_3209]',
+                                            required: true,
+                                            constraint: 'ScheduleTeamName',
+                                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
+                                                width: '40px',
+                                                textalign: 'left'
+                                            })),                                              
+                                            value: scheduleTeamModel().name
+                                        }" tabindex="7" />
+                        </div>
+                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        </div>
+                        <div class="input">
+                            <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
+                                            name:'#[KSU001_3210]',                                            
+                                            constraint: 'ScheduleTeamRemarks',      
+                                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
+                                                width: '110px',
+                                                textalign: 'left'
+                                            })),                                      
+                                            value: scheduleTeamModel().note
+                                        }" tabindex="8" />
+                        </div>
+                    </div>
+
+                    <div class="label">#{i18n.getText('KSU001_3211')}</div>
+
+                    <div class="container-custom">
+                        <div class="lblForm" data-bind="ntsFormLabel:{ require:true}">#{i18n.getText('KSU001_3212')}
+                        </div>                        
+                        <div class="lblForm" data-bind="ntsFormLabel:{ require:true} "> 
+                            <div data-bind="if: isEditing"> 
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [scheduleTeamModel().name()])}"></div>   
+                            </div>
+                            <div data-bind="ifnot: isEditing">
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [nts.uk.resource.getText('KSU001_3202')])}"></div>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="container-custom">
+                        <div class="custom">
+                            <i class="icon icon-searchbox"></i>
+                        </div>
+                        <div style="width: 300px" tabindex="9"
+                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', placeHolder: placeHolders,
+                                            items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName', 'teamName'], mode: 'igGrid'}" />
+
+                        <div style="width: 96px;"></div>
+                        <div class="custom">
+                            <i class="icon icon-searchbox"></i>
+                        </div>
+                        <div style="width: 266px;" class = "nts-searchbox-custom" tabindex="10"
+                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-right', searchMode: 'highlight',
+                                            items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
+                    </div>
+
+                    <div class="container-table">
+                        <div>
+                            <table id="emp-list-left" tabindex="11" data-bind="ntsGridList: {
+                                            height: 265,
+                                            options: itemsLeft,
+                                            optionsValue: 'employeeCd',
+                                            columns: columnsLeft,
+                                            multiple: true,                                               
+                                            value: currentCodeListLeft,
+                                            rows: 10
+                                        }">
+                            </table>
+                        </div>
+                        <div class="arrow-button">
+                            <div>
+                                <button class="large btn-custom"  tabindex="12"  data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
+                            </div>
+                            <div>
+                                <button class="large btn-custom" tabindex="13" data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
+                            </div>   
+                        </div>
+                        <div>
+                            <table id="emp-list-right" tabindex="14" data-bind="ntsGridList: {
+                                            height: 265,
+                                            options: itemsRight,
+                                            optionsValue: 'employeeCd',
+                                            columns: columnsRight,
+                                            multiple: true,
+                                            rows: 10,
+                                            value: currentCodeListRight
+                                        }">
+                            </table>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2px">#{i18n.getText('KSU001_3216')}</div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

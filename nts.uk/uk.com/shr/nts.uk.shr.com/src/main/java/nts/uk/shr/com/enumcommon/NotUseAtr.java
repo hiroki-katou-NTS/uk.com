@@ -4,10 +4,10 @@ package nts.uk.shr.com.enumcommon;
 public enum NotUseAtr {
 
 	/** The use. */
-	USE(1, "Enum_UseClassificationAtr_USE"),
+	USE(1, "利用する"),
 
 	/** The not use. */
-	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE");
+	NOT_USE(0, "利用しない");
 
 	/** The value. */
 	public final int value;
@@ -17,7 +17,7 @@ public enum NotUseAtr {
 
 	/** The Constant values. */
 	private final static NotUseAtr[] values = NotUseAtr.values();
-
+	
 	/**
 	 * Instantiates a new rounding.
 	 *
