@@ -516,7 +516,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	}
 
 	@Override
-	public List<DivergenceTime> findByCompanyAndUseDistination(String companyId, int useDistination) {
+	public List<DivergenceTimeRoot> findByCompanyAndUseDistination(String companyId, int useDistination) {
 		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcstDvgcTime.class)
 								.setParameter("companyId", companyId)
 								.setParameter("dvgcTimeUseSet", BigDecimal.valueOf(useDistination))

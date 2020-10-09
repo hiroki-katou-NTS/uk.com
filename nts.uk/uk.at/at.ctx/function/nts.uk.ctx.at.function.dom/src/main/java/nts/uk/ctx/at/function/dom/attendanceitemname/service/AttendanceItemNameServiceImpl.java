@@ -35,7 +35,6 @@ import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuAdaptor;
 import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
@@ -48,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayT
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
@@ -116,6 +116,9 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	
 	@Inject
 	private BentoMenuAdaptor bentoMenuAdaptor;
+	
+	@Inject
+	private TempAbsenceFrameApdater tempAbsenceFrameApdater;
 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {

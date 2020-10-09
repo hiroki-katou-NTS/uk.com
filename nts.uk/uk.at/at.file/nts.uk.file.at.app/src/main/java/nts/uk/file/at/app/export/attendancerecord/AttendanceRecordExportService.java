@@ -55,9 +55,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
@@ -66,6 +63,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -169,9 +168,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	@Inject
 	private SyCompanyPub symCompany;
-	
-	@Inject
-	private EmployeeInformationRepository empInfoRepo;
 	
 	@Inject
 	private AffiliationInfoOfMonthlyRepository affiliationInfoOfMonthlyRepository;
