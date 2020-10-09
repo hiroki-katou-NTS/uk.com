@@ -143,16 +143,17 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			} else {
 				var lstTimezone = [];
 
-				if(params.predetemineTimeSetting) [
-					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
-				]
+				if(params.predetemineTimeSetting) {
+					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone
+				}
+				
 				var time1 = _.filter(lstTimezone, ['workNo', 1]);
 				var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
-				vm.appWorkChange.startTime1(time1.length > 0 ? time1[0].start : null);
-				vm.appWorkChange.endTime1(time1.length > 0 ? time1[0].end : null);
-				vm.appWorkChange.startTime2(time2.length > 0 ? time2[0].start : null);
-				vm.appWorkChange.endTime2(time2.length > 0 ? time2[0].end : null);
+				vm.appWorkChange.startTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].start : null);
+				vm.appWorkChange.endTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].end : null);
+				vm.appWorkChange.startTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].start : null);
+				vm.appWorkChange.endTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].end : null);
 			}
 			vm.comment1(vm.model().appWorkChangeSet.comment1.comment);
 			$("#comment1")
