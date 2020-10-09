@@ -25,12 +25,12 @@ public interface SpecialProvisionsOfAgreementRepo {
     /**
      * [4] get by approver
      */
-    List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove);
+    List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove);
 
     /**
      * [4] get by confirmer
      */
-    List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove);
+    List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove);
 
     /**
      * [4] get applicationID
