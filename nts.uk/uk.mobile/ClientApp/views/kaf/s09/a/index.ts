@@ -336,7 +336,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
-        self.bindWorkTime(goBackDirect);
+        if (self.model.workTime.code) {
+            self.bindWorkTime(goBackDirect);
+        }
 
     }
     public bindWorkTime(params: any) {
@@ -347,9 +349,19 @@ export class KafS09AComponent extends KafS00ShrComponent {
             // let startTime = params.timezones[0].startTime;
             // let endTime = params.timezones[0].endTime;
             if (startTime && endTime) {
-                self.model.workTime.time = self.$dt.timewd(startTime) + self.$i18n('KAFS09_12') + self.$dt.timewd(endTime);
+                self.model.workTime.time = self.handleTimeWithDay(startTime) + ' ' + self.$i18n('KAFS09_12') + ' ' + self.handleTimeWithDay(endTime);
             }
         }
+    }
+    public handleTimeWithDay(time: number) {
+        const self = this;
+        const nameTime = '当日';
+        if (!time) {
+
+            return;
+        }
+
+        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
     }
 
 
