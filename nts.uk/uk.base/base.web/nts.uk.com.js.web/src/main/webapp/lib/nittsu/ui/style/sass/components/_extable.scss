@@ -47,13 +47,13 @@
     background-color: #ffff00;
 }
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
-	background-color: #FFFFCC;
+	background-color: #FFFFCC !important;
 }
 .extable td.ex-round-go {
 	cursor: pointer;
 }
 .extable div.x-cell-selected, .extable td.x-cell-selected {
-	background-color: #3498DB;
+	background-color: #3498DB !important;
 	color: #FFF;
 }
 .extable tr.x-row-selected {

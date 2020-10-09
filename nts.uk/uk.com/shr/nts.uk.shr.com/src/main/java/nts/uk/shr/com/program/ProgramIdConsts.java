@@ -1105,7 +1105,11 @@ public class ProgramIdConsts {
 	
 	/** KMP001 */
 	public static final String KMP001A = "KMP001A";
+	public static final String KMP001B = "KMP001B";
+	public static final String KMP001C = "KMP001C";
 	public static final String KMP001D = "KMP001D";
+	public static final String KMP001E = "KMP001E";
+	public static final String KMP001H = "KMP001H";
 
 	public static final String KDL020A = "KDL020A";
 	public static final String KDL020B = "KDL020B";
