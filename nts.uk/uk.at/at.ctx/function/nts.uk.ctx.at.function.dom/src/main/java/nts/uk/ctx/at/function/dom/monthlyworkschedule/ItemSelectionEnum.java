@@ -9,10 +9,10 @@ package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 public enum ItemSelectionEnum {
 	/** The Free setting . */
 	// 定型選択
-	FREE_SETTING(0, "Enum_FreeSetting"),
+	FREE_SETTING(1, "Enum_FreeSetting"),
 	/** The Standard selection. */
 	// 自由設定
-	STANDARD_SELECTION(1, "Enum_StandardSelection");
+	STANDARD_SELECTION(0, "Enum_StandardSelection");
 
 	/** The value. */
 	public final Integer value;
