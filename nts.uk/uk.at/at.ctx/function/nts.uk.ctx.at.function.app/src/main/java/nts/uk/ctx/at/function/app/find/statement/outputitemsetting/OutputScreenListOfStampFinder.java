@@ -216,7 +216,7 @@ public class OutputScreenListOfStampFinder {
 				String optSupportCard = "";
 				String workLocationName = "";
 				String workTimeName = "";
-				boolean isAddress = false;
+				Boolean isAddress = false;
 				
 				if (stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
 					val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
@@ -298,8 +298,7 @@ public class OutputScreenListOfStampFinder {
 		return result;
 	}
 	
-	private String getLocation(StampLocationInfor stampLocationInfor, boolean isAddress) {
-		isAddress = false;
+	private String getLocation(StampLocationInfor stampLocationInfor, Boolean isAddress) {
 		if (stampLocationInfor.getPositionInfor() == null) {
 			return "";
 		} else {
@@ -367,7 +366,7 @@ public class OutputScreenListOfStampFinder {
 			String overtimeHours = "";
 			String lateNightTime = "";
 			String workLocationName = "";
-			boolean isAddress = false;
+			Boolean isAddress = false;
 			// String latitude = "";
 			// longitude = "";
 
