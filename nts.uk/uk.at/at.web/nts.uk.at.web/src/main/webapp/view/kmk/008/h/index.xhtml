@@ -11,48 +11,66 @@
       <ui:define name="htmlHead">
         <script>
           var dialogSize = {
-            width: 400,
-            height: 350,
+            width: 370,
+            height: 420,
           };
         </script>
         <com:scriptfile set="IGNITE" />
-        <com:stylefile path="kmk008.i.main.css" />
-        <com:scriptfile path="kmk008.i.vm.js" />
+        <com:stylefile path="kmk008.h.main.css" />
+        <com:scriptfile path="kmk008.h.vm.js" />
       </ui:define>
 
       <ui:define name="content">
-        <div id="contents-area" class="kmk008-i">
+        <div id="contents-area" class="kmk008-h">
           <div class="table">
             <div class="wrapper">
               <div class="head-title">
-                <span data-itemno="I1_1">#{i18n.getText('KMK008_171')}</span>
+                <span data-itemno="H1_1">#{i18n.getText('KMK008_39')}</span>
               </div>
-              <div data-itemno="I1_2" class="company">
-                <span data-itemno="I1_1">#{i18n.getText('Com_Company')}</span>
+              <div class="head-title company">
+                <span data-itemno="H1_2"
+                  >#{i18n.getText('Com_Employment')}</span
+                >
               </div>
               <div
-                class="chk_I13"
-                data-itemno="I1_3"
+                class="chk_H13"
+                data-itemno="H1_3"
                 tabindex="1"
+                data-bind="ntsCheckBox: { checked: useEmployment }"
+              >
+                #{i18n.getText('Com_Employment')}
+              </div>
+              <div
+                class="chk_H14"
+                data-itemno="H1_4"
+                tabindex="2"
                 data-bind="ntsCheckBox: { checked: useWorkPlace }"
               >
                 #{i18n.getText('Com_Workplace')}
+              </div>
+              <div
+                class="chk_H15"
+                data-itemno="H1_5"
+                tabindex="3"
+                data-bind="ntsCheckBox: { checked: useClass }"
+              >
+                #{i18n.getText('Com_Class')}
               </div>
             </div>
           </div>
         </div>
         <div id="functions-area-bottom">
           <button
-            tabindex="2"
+            tabindex="4"
             class="x-large proceed"
-            data-itemno="I1_4"
+            data-itemno="H1_6"
             data-bind="click: submitAndCloseDialog"
           >
             #{i18n.getText('KMK008_37')}
           </button>
           <button
-            tabindex="3"
-            data-itemno="I1_5"
+            tabindex="5"
+            data-itemno="H1_7"
             data-bind="click: closeDialog"
           >
             #{i18n.getText('KMK008_38')}

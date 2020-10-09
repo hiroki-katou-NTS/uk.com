@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmk008.a {
 	const API = {
 		START: "screen/at/kmk008/a/get",
@@ -17,15 +19,18 @@ module nts.uk.at.view.kmk008.a {
 			const vm = this;
 			_.extend(window, {vm});
 
-			vm.$blockui("grayout");
+			//vm.$blockui("grayout");
 
 			// Call init API
+			vm.specicalConditionApplicationUse(true);
+			/*
 			vm.$ajax(API.START).done((data) => {
 				vm.specicalConditionApplicationUse(data.specicalConditionApplicationUse);
-			}).fail(function(res) {
+			}).fail((res) => {
+				vm.specicalConditionApplicationUse(true);
 			}).always(() => {
 				vm.$blockui("clear");
-			});
+			}); */
 		}
 
 		mounted() {

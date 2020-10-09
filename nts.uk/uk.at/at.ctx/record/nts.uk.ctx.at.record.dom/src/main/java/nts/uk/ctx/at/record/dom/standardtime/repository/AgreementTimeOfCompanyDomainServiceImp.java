@@ -20,9 +20,6 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
 
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
-
 	@Override
 	public List<String> add(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfCompany agreementTimeOfCompany) {
@@ -31,7 +28,6 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 		
 		if (errors.isEmpty()) {
 			this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
-			this.basicAgreementSettingRepository.add(basicAgreementSetting);
 		}
 		return errors;
 	}
@@ -43,7 +39,6 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 
 		if (errors.isEmpty()) {
 			this.agreementTimeCompanyRepository.update(agreementTimeOfCompany);
-			this.basicAgreementSettingRepository.updateForCompany(basicAgreementSetting);
 		}
 
 		return errors;

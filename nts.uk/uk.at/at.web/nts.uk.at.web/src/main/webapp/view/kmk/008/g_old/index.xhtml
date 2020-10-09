@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kmk008.g.main.css" />
+			<com:scriptfile path="kmk008.g.start.js" />
+			<com:scriptfile path="kmk008.g.vm.js" />
+			<com:scriptfile path="kmk008.g.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div id="functions-area-content"><a
+			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a></div>
+			</div>
+			<div id="contents-area">
+				<div id="ccgcomponent" tabindex="1"></div>
+				<div id="main" class=" container cf">
+					<div id="component-items-list"></div>
+
+					<div style=" margin-left: 30px; float: left;">
+						<div class="lbl-title-employeer-name">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Person'])}</div>
+							<span class="label" data-bind="text: employeeName"></span>
+						</div>
+						<div class="label">#{i18n.getText('KMK008_10')}</div>
+						<HR />
+						<div id="kmk008-tab-panel">
+						<div id="tab-panel" tabindex="2"
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }" style="margin-top: 30px;">
+							<div class="tab-content-1">
+								<button id="settingButton" tabindex="3" data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
+								<div>
+									<table id="single-list"
+										data-bind="ntsGridList: {								
+									height: 250,
+									dataSource: items,
+									primaryKey: 'year',
+									columns: columns,
+									multiple: false,
+									value: currentCode
+								}"></table>
+								</div>
+							</div>
+							<div class="tab-content-2">
+								<div>
+									<button id="settingButton" tabindex="3" data-bind="click: openDiaglog , enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
+									<table id="single-list"
+										data-bind="ntsGridList: {								
+									height: 250,
+									dataSource: items2,
+									primaryKey: 'year',
+									columns: columns2,
+									multiple: false,
+									value: currentCode
+								}"></table>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

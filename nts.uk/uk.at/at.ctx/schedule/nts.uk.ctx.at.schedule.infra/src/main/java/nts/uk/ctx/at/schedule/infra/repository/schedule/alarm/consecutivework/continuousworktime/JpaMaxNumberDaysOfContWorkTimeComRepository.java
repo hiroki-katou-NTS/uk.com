@@ -13,11 +13,15 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmpDtl;
 
+import javax.ejb.Stateless;
+
 /**
  * 
  * @author hiroko_miura
  *
  */
+
+@Stateless
 public class JpaMaxNumberDaysOfContWorkTimeComRepository extends JpaRepository implements MaxDaysOfContinuousWorkTimeCompanyRepository {
 
 	private static String SELECT_HEADER_WHERE_CID = "SELECT * FROM KSCMT_ALCHK_CONSECUTIVE_WKTM_CMP"
