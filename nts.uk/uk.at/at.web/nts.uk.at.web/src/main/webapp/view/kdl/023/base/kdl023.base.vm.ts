@@ -515,8 +515,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
             else{
                 vm.reflectionParam({
-                    creationPeriodStartDate : defaultStartDate,
-                    creationPeriodEndDate : defaultEndDate,
+                    creationPeriodStartDate : moment(vm.dateValue().startDate, "YYYY-MM").startOf("month")
+						.format(CONST.MOMENT_DATE_FORMAT),
+                    creationPeriodEndDate : moment(vm.dateValue().endDate, "YYYY-MM").endOf("month")
+						.format(CONST.MOMENT_DATE_FORMAT),
                     workCycleCode : vm.reflectionSetting().selectedPatternCd(),
                     refOrder : refOrder,
                     numOfSlideDays : slideDay,
