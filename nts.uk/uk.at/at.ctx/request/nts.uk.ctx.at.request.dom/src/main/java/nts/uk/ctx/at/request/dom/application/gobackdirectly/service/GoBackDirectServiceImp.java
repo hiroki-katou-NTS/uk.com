@@ -355,6 +355,14 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 				inforGoBackCommonDirectOutput.setGoBackDirectly(Optional.empty());
 			}
 		}
+		// 所定時間帯を取得する
+				// ※勤務種類コード　OR　就業時間帯コード　がない場合：　処理を呼ばない
+				Boolean isUseTimeZone = StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkType()) || StringUtils.isBlank(inforWorkGoBackDirectOutput.getWorkTime());
+				if (!isUseTimeZone) {
+					PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(companyId, inforWorkGoBackDirectOutput.getWorkTime(), inforWorkGoBackDirectOutput.getWorkType(), null);
+					List<TimezoneUse> timezones = predetermineTimeSetForCalc.getTimezones();
+					inforGoBackCommonDirectOutput.setTimezones(timezones);
+				}
 		return inforGoBackCommonDirectOutput;
 	}
 
