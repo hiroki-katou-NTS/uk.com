@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,7 +27,6 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 		OutputItemMonthlyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		OutputItemMonthlyWorkSchedule domain = new OutputItemMonthlyWorkSchedule(command);
-		domain.setContractCD(AppContexts.user().contractCode());
 		domain.setCompanyID(companyId);
 		domain.setEmployeeID(AppContexts.user().employeeId());
 		// Get employee by command

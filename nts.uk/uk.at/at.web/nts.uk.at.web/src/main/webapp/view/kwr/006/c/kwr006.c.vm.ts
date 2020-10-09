@@ -61,7 +61,6 @@ module nts.uk.at.view.kwr006.c {
                         return value == o.itemCode;
                     });
                     if (!_.isNil(codeChoose)) {
-                        console.log(codeChoose);
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
@@ -69,10 +68,11 @@ module nts.uk.at.view.kwr006.c {
                         self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule.lstDisplayedAttendance);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
-                        self.C5_4_value(codeChoose.printSettingRemarksColumn);
+                        self.C5_4_value();
                         self.currentRemarkInputContent(codeChoose.remarkInputContent);
                         self.C9_2_value(codeChoose.textSize);
                         self.layoutId(codeChoose.layoutID);
+                        self.isEnableRemarkInputContents(codeChoose.remarkPrinted);
                         $('#C3_3').focus();
                     } else {
                         self.newMode();
@@ -82,10 +82,10 @@ module nts.uk.at.view.kwr006.c {
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
                     { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
-                self.itemListConditionSet = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
-                    new BoxModel(1, nts.uk.resource.getText("KWR006_57"))
-                ]);
+                // self.itemListConditionSet = ko.observableArray([
+                //     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
+                //     new BoxModel(1, nts.uk.resource.getText("KWR006_57"))
+                // ]);
                 self.items = ko.observableArray([]);
                 // self.selectedCodeA8_2 = ko.observable(0);
                 self.isEnableRemarkInputContents = ko.observable(false);
@@ -100,10 +100,10 @@ module nts.uk.at.view.kwr006.c {
                 self.mapCodeIdAtd = {};
 
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("KWR006_92"), 1),
-                    new ItemModel(2, nts.uk.resource.getText("KWR006_93"), 2)
+                    new ItemModel(0, nts.uk.resource.getText("KWR006_92"), 0),
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), 1)
                 ]);
-                self.C9_2_value = ko.observable(1);
+                self.C9_2_value = ko.observable(0);
                 self.itemListAttribute = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("KWR006_105"), 0),
                     new ItemModel(1, nts.uk.resource.getText("KWR006_106"), 1),
@@ -113,6 +113,9 @@ module nts.uk.at.view.kwr006.c {
                     new ItemModel(5, nts.uk.resource.getText("KWR006_108"), 5)
                 ]);
                 self.C5_4_value = ko.observable(0);
+                self.C5_4_value.subscribe((value) => {
+                    self.fillterByAttendanceType(value);
+                });
             }
 
             /*
@@ -120,8 +123,7 @@ module nts.uk.at.view.kwr006.c {
             */
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
-
-                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
+                 let lstSwapLeft =_.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     _.forEach(lstDisplayedAttendance, (item, index) => {
@@ -130,9 +132,9 @@ module nts.uk.at.view.kwr006.c {
                         }
                     });
                 }
-
                 // refresh data for C7_8
                 self.currentCodeListSwap(lstSwapRight);
+                
                 // refresh data for C7_2
                 self.items(lstSwapLeft);
             }
@@ -148,6 +150,8 @@ module nts.uk.at.view.kwr006.c {
             openScreenD() {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR006_D', self.outputItemPossibleLst(), true);
+                let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
+                nts.uk.ui.windows.setShared('itemSelectionCopy', itemType);
                 if (!_.isEmpty(self.selectedCodeC2_3())) {
                     self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
@@ -214,7 +218,8 @@ module nts.uk.at.view.kwr006.c {
                 self.currentRemarkInputContent(0);
                 self.isEnableRemarkInputContents(false);
                 self.C5_4_value(0);
-                self.C9_2_value(1);
+                self.C9_2_value(0);
+                self.layoutId("");
             }
 
             /*
@@ -231,16 +236,19 @@ module nts.uk.at.view.kwr006.c {
                 blockUI.grayout();
                 let dfd = $.Deferred();
                 let command: any = {};
+                let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
                 command.itemCode = self.C3_2_value();
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
-                command.printSettingRemarksColumn = self.C5_4_value();
-                command.itemType = nts.uk.ui.windows.getShared('itemTypeSelection');
+                // command.printSettingRemarksColumn = self.C5_4_value();
+                command.itemType = itemType;
                 command.textSize = self.C9_2_value();
                 command.layoutID = self.layoutId();
+                command.isRemarkPrinted = self.isEnableRemarkInputContents();
                 _.map(self.currentCodeListSwap(), function (value, index) {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
+                
                  if (self.isEnableRemarkInputContents() == true) {
                      command.remarkInputNo = self.currentRemarkInputContent();
                  } else {
@@ -251,7 +259,6 @@ module nts.uk.at.view.kwr006.c {
                      self.currentRemarkInputContent(command.remarkInputNo);
                  }
                 command.newMode = (_.isUndefined(self.selectedCodeC2_3()) || _.isNull(self.selectedCodeC2_3()) || _.isEmpty(self.selectedCodeC2_3())) ? true : false;
-                console.log( command);
                 service.save(command).done(function () {
                     self.getDataService().done(function () {
                         self.selectedCodeC2_3(self.C3_2_value());
@@ -277,11 +284,13 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
-                    service.remove(self.selectedCodeC2_3()).done(function () {
+                    let command: any = {};
+                    command.itemCode = self.selectedCodeC2_3();
+                    command.itemType = nts.uk.ui.windows.getShared('itemSelection');
+                    service.remove(command).done(function () {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function (value, index) {
                             return self.selectedCodeC2_3() == value.code;
                         })
-
                         // self.currentCodeList only have 1 element in list
                         if (self.outputItemList().length == 1) {
                             self.selectedCodeC2_3(null);
@@ -314,7 +323,7 @@ module nts.uk.at.view.kwr006.c {
             */
             public closeScreenC(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('selectedCodeScreenC', self.selectedCodeC2_3(), true)
+                nts.uk.ui.windows.setShared('selectedCodeScreenC', self.selectedCodeC2_3(), true);
                 nts.uk.ui.windows.close();
             }
 
@@ -322,8 +331,13 @@ module nts.uk.at.view.kwr006.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
-                $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function () {
-                    self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
+                $.when(self.getDataService(), self.getEnumRemarkInputContent()).done(function () {
+                    if(nts.uk.ui.windows.getShared('itemSelection')==0){
+                        self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
+                    }else{
+                        self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCodeFreeSetting'));
+                    }
+                   
                     if (_.isNil(self.selectedCodeC2_3()))
                         self.newMode();
                     dfd.resolve();
@@ -337,7 +351,7 @@ module nts.uk.at.view.kwr006.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.getDataStartPage(nts.uk.ui.windows.getShared('itemTypeSelection')).done(function (data: any) {
+                service.getDataStartPage(nts.uk.ui.windows.getShared('itemSelection')).done(function (data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
                     // variable temporary 
@@ -359,18 +373,18 @@ module nts.uk.at.view.kwr006.c {
                 return dfd.promise();
             }
 
-            /*
-                get Enum Setting Print
-            */
-            private getEnumSettingPrint(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumSettingPrint().done(function (data: any) {
-                    dfd.resolve();
-                })
+            // /*
+            //     get Enum Setting Print
+            // */
+            // private getEnumSettingPrint(): JQueryPromise<void> {
+            //     let dfd = $.Deferred<void>();
+            //     let self = this;
+            //     service.getEnumSettingPrint().done(function (data: any) {
+            //         dfd.resolve();
+            //     })
 
-                return dfd.promise();
-            }
+            //     return dfd.promise();
+            // }
 
             /*
              * get enum EnumRemarkInputContent
@@ -406,6 +420,38 @@ module nts.uk.at.view.kwr006.c {
             private convertNumToBool(value: number): boolean {
                 return value == 1 ? true : false;
             }
+            private fillterByAttendanceType(code: number) {
+                const vm = this;
+                const NOT_USE_ATR = 9;  // 日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                const CODE = 0;         // 日次勤怠項目の属性=0:コード
+                const NUMBEROFTIME = 2; // 日次勤怠項目の属性=2:回数
+                const TIME = 5;         //日次勤怠項目の属性=5:時間
+                let lstResult = vm.outputItemPossibleLst();
+                switch (code) {
+                    case -1:
+                        // 「全件」⓪の場合は、絞り込み不要とする。
+                        lstResult = vm.outputItemPossibleLst();
+                        break;
+                    case -2:
+                        // 「その他」④の場合は、「全体」⓪から時間①、回数②、計算項目③を除いたものを表示する。
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt !== NUMBEROFTIME
+                                                                                  || item.attendanceItemAtt !== TIME 
+                                                                                  || item.attendanceItemAtt !== CODE);
+                        break;
+                    case CODE:
+                        //「計算項目」③の場合は、日次勤怠項目の属性=0:コード　かつ　日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === CODE
+                                                                                  && item.masterType
+                                                                                  && item.masterType === NOT_USE_ATR);
+                    default:
+                        //「時間」①の場合は、日次勤怠項目の属性=5:時間
+                        //「回数」②の場合は、日次勤怠項目の属性=2:回数
+                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === code);
+                        break;
+                }
+                vm.items(lstResult);
+            }
+        }
         }
 
         class ItemModel {

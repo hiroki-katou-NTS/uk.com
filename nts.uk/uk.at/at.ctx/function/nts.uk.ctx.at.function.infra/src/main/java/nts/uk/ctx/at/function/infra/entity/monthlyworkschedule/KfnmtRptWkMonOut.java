@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,7 +44,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Column(name = "LAYOUT_ID")
 	private String layoutID;
 	// column 排他バージョン
-	@Version
+	
 	@Column(name = "EXCLUS_VER")
 	private long version;
 
@@ -112,21 +111,15 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 			kfnmtRptWkMonOuttdPK.setOrderNo(item.getOrderNo());
 			kfnmtRptWkMonOuttdPK.setLayoutID(this.layoutID);
 			KfnmtRptWkMonOuttd kfnmtRptWkMonOuttd = new KfnmtRptWkMonOuttd();
+			kfnmtRptWkMonOuttd.setAtdDisplay(item.getAttendanceDisplay());
 			kfnmtRptWkMonOuttd.setPk(kfnmtRptWkMonOuttdPK);
 			kfnmtRptWkMonOuttd.setCompanyID(this.companyID);
 			kfnmtRptWkMonOuttd.setContractCd(this.contractCd);
+			kfnmtRptWkMonOuttd.setVersion(0);
 			return kfnmtRptWkMonOuttd;
 		}).collect(Collectors.toList());
 	}
 
-	@Override
-	public void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn) {
-		if (printSettingRemarksColumn.value == 0) {
-			this.isRemarkPrinted = false;
-		} else if (printSettingRemarksColumn.value == 1) {
-			this.isRemarkPrinted = true;
-		}
-	}
 
 	@Override
 	public void setRemarkInputNo(RemarkInputContent remarkInputNo) {
@@ -149,7 +142,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	public void setLayoutID(String layoutID) {
 		this.layoutID = layoutID ;
 	}
-
+		
 	@Override
 	public MonthlyOutputItemSettingCode getItemCode() {
 		return new MonthlyOutputItemSettingCode(this.itemCode);
@@ -163,23 +156,16 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
 		List<MonthlyAttendanceItemsDisplay> monthlyAttendanceItemsDisplays = new ArrayList<>();
-		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream().map(item ->{
-			MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
-			monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());
-			monthlyAttendanceItemsDisplay.setOrderNo(item.getPk().getOrderNo());
-			return monthlyAttendanceItemsDisplay;
-		}).collect(Collectors.toList());
+		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream()
+				.map(item -> {
+					MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
+					monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());
+					monthlyAttendanceItemsDisplay.setOrderNo(item.getPk().getOrderNo());
+					return monthlyAttendanceItemsDisplay;
+				}).collect(Collectors.toList());
 		return monthlyAttendanceItemsDisplays;
 	}
 
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		if (this.isRemarkPrinted==true) {
-			return PrintSettingRemarksColumn.valueOf(1);
-		}else {
-			return PrintSettingRemarksColumn.valueOf(0);
-		}
-	}
 
 	@Override
 	public RemarkInputContent getRemarkInputNo() {
@@ -201,9 +187,24 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	}
 
 	@Override
-	public void setContractCD(String contractCD) {
-		this.contractCd = contractCD;
+	public Boolean getIsRemarkPrinted() {
+		return this.isRemarkPrinted;
 	}
 
-	
+	@Override
+	public void setIsRemarkPrinted(Boolean isRemarkPrinted) {
+		this.isRemarkPrinted = isRemarkPrinted ;
+	}
+
+	@Override
+	public void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
@@ -18,10 +19,10 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OutputItemMonthlyWorkScheduleCommand.
  */
+@Data
 public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWorkScheduleGetMemento {
 
 	/** The item code. */
@@ -29,12 +30,14 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 
 	/** The item name. */
 	private String itemName;
+	
+	/** The Item selection type*/
+	private Integer itemType;
 
 	/** The lst displayed attendance. */
 	private List<AttendanceTobeDisplayCommand> lstDisplayedAttendance;
 
-	/** The print setting remarks column. */
-	private int printSettingRemarksColumn;
+	private Boolean isRemarkPrinted ;
 	
 	/** The remark input no. */
 	private int remarkInputNo;
@@ -48,8 +51,8 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	/** The text size */
 	private int textSize;
 	
-	/** The Item selection type*/
-	private int  itemType;
+	
+	
 	/** The new mode. */
 	// This variable used to know is new mode when save.
 
@@ -105,23 +108,11 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	 */
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
-
 		return lstDisplayedAttendance.stream().map(command -> {
 			return new MonthlyAttendanceItemsDisplay(command.getSortBy(), command.getItemToDisplay());
 		}).collect(Collectors.toList());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.
-	 * OutputItemMonthlyWorkScheduleGetMemento#getPrintSettingRemarksColumn()
-	 */
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return PrintSettingRemarksColumn.valueOf(this.printSettingRemarksColumn);
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento#getRemarkInputNo()
@@ -149,5 +140,16 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	@Override
 	public TextSizeCommonEnum getTextSize() {
 		return TextSizeCommonEnum.valueOf(this.textSize);
+	}
+
+	@Override
+	public Boolean getIsRemarkPrinted() {
+		return this.isRemarkPrinted;
+	}
+
+	@Override
+	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

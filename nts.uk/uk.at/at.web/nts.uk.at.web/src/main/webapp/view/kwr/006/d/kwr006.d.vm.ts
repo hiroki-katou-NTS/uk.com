@@ -56,7 +56,13 @@ module nts.uk.at.view.kwr006.d {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                service.executeCopy(self.D1_6_value(), self.selectedCode()).done(function(data: any) {
+                let command: any = {};
+                let itemType: number = nts.uk.ui.windows.getShared('itemSelection');
+                command.codeCopy = self.D1_6_value();
+                command.codeSourceSerivce = self.selectedCode();
+                command.itemType = itemType;
+
+                service.executeCopy(command).done(function(data: any) {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();

@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,8 +24,8 @@ public class KfnmtRptWkMonOuttd extends UkJpaEntity implements Serializable {
 	// Embedded primary key 出力項目ID + 並び順
 	@EmbeddedId
 	private KfnmtRptWkMonOuttdPK pk;
+	
 	// column 排他バージョン
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 
@@ -40,7 +39,7 @@ public class KfnmtRptWkMonOuttd extends UkJpaEntity implements Serializable {
 
 	// column 表示する項目
 	@Column(name = "ATD_DISPLAY")
-	private Integer atdDisplay;
+	private int atdDisplay;
 
 	@Override
 	protected Object getKey() {

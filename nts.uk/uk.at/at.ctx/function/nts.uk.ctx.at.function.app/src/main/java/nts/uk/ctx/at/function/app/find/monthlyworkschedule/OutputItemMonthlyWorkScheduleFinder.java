@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -197,9 +196,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				dto.setItemName(domain.getItemName().v());
 				dto.setLstDisplayedAttendance(
 						toDtoTimeItemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeNameAttendance));
-				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn().value);
 				dto.setRemarkInputContent(domain.getRemarkInputNo().value);
 				dto.setLayoutID(domain.getLayoutID());
+				dto.setTextSize(domain.getTextSize().value);
+				dto.setRemarkPrinted(domain.isRemarkPrinted());
 				return dto;
 			}).sorted(Comparator.comparing(OutputItemMonthlyWorkScheduleDto::getItemCode))
 					.collect(Collectors.toList()));
@@ -265,38 +265,38 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
 		// Get employee by command
 		String employeeId = AppContexts.user().employeeId();
-		//	パラメータ.出力項目一覧の件数をチェックする
-		List<OutputItemMonthlyWorkSchedule> listDisplayItem = this.outputItemMonthlyWorkScheduleRepository
-				.findBySelectionAndSidAndNameAndCode(copyCommand.getItemSelectionEnum(), copyCommand.getName(), copyCommand.getCodeCopy(), employeeId);
-		if(listDisplayItem.isEmpty()) {
-			//	エラーメッセージ(#Msg_1411)を表示
-			throw new BusinessException("Msg_1411");
-		}
-		//	１件以上
-		//	「取得したパラメータ.出力項目一覧」と「月次の勤怠項目が利用できる帳票」の３（月別勤務集計表）を比較する 
-		// Compare 3 (monthly work summary table) of "acquired parameter. Output item list" and "form that can use monthly attendance items"
-		//	合致した項目の件数をチェック - Check the number of matching items
-		Optional<OutputItemMonthlyWorkSchedule> outputItemMonthlyWorkSchedule = this.outputItemMonthlyWorkScheduleRepository.
-				findByCidAndCode(companyId, copyCommand.getCodeCopy());
-		List<OutputItemMonthlyWorkSchedule> checkList =listDisplayItem.stream().filter(item ->outputItemMonthlyWorkSchedule.equals(item)).collect(Collectors.toList());
-		if(!checkList.isEmpty()) {
-			throw new BusinessException("Msg_1411");
-		}else {
-			this.outputItemMonthlyWorkScheduleRepository.add(outputItemMonthlyWorkSchedule.get());
-		}
+//		//	パラメータ.出力項目一覧の件数をチェックする
+//		Optional<OutputItemMonthlyWorkSchedule> listDisplayItem = this.outputItemMonthlyWorkScheduleRepository
+//				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId, copyCommand.getCodeCopy(), employeeId);
+//		if(listDisplayItem.isPresent()) {
+//			//	エラーメッセージ(#Msg_1411)を表示
+//			throw new BusinessException("Msg_1411");
+//		}
+//		//	１件以上
+//		//	「取得したパラメータ.出力項目一覧」と「月次の勤怠項目が利用できる帳票」の３（月別勤務集計表）を比較する 
+//		// Compare 3 (monthly work summary table) of "acquired parameter. Output item list" and "form that can use monthly attendance items"
+//		//	合致した項目の件数をチェック - Check the number of matching items
+//		Optional<OutputItemMonthlyWorkSchedule> outputItemMonthlyWorkSchedule = this.outputItemMonthlyWorkScheduleRepository.
+//				findByCidAndCode(companyId, copyCommand.getCodeCopy());
+//		List<OutputItemMonthlyWorkSchedule> checkList =listDisplayItem.stream().filter(item ->outputItemMonthlyWorkSchedule.equals(item)).collect(Collectors.toList());
+//		if(!checkList.isEmpty()) {
+//			throw new BusinessException("Msg_1411");
+//		}else {
+//			this.outputItemMonthlyWorkScheduleRepository.add(outputItemMonthlyWorkSchedule.get());
+//		}
 		
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
-				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId,copyCommand.getCodeCopy(), employeeId);
+				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId, copyCommand.getCodeCopy(), employeeId);
 //				.findByCidAndCode(companyId, new OutputItemSettingCode(codeCopy).v());
 
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, copyCommand.getCodeSourceSerivce(), copyCommand.getFontSize());
+			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, copyCommand.getCodeSourceSerivce());
 			returnDto.setLstDisplayTimeItem(dtos);
 
-			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid( copyCommand.getItemSelectionEnum().value);
+			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid(copyCommand.getItemSelectionEnum().value);
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
 					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));
@@ -316,7 +316,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	// アルゴリズム「月別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert monthly work
 	// table format")
-	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code, int fontSize) {
+	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code) {
 
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<MonthlyFormatPerformanceImport> optFormatPerformanceImport = monthlyFormatPerformanceAdapter
@@ -356,16 +356,16 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		sheetNo1.setListDisplayTimeItem(sheetNo1.getListDisplayTimeItem().stream()
 				.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder)).collect(Collectors.toList()));
 		
-		if (sheetNo1.getListDisplayTimeItem().size() <= fontSize) {
-			return sheetNo1
-					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-					item.getDisplayOrder(), item.getColumnWidthTable())).
-					limit(FOR_SMALL_CASES).collect(Collectors.toList());
-		} else if (sheetNo1.getListDisplayTimeItem().size() > fontSize) {
+		if (sheetNo1.getListDisplayTimeItem().size() <= 48) {
 			return sheetNo1
 					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
 					item.getDisplayOrder(), item.getColumnWidthTable())).
 					limit(LIMIT_DISPLAY_ITEMS).collect(Collectors.toList());
+		} else if (sheetNo1.getListDisplayTimeItem().size() > 60) {
+			return sheetNo1
+					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
+					item.getDisplayOrder(), item.getColumnWidthTable())).
+					limit(FOR_SMALL_CASES).collect(Collectors.toList());
 		}
 		return sheetNo1
 				.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),

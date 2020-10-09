@@ -8,13 +8,13 @@ package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 public enum TextSizeCommonEnum {
 	/** Small. */
 	// 小
-	SMALL(1, "SMALL"),
+	SMALL(0, "SMALL"),
 	/** Big*/
 	// 大
-	BIG(2, "BIG"),
+	BIG(1, "BIG"),
 	/** During */
 	// 中 
-	DURING(3, "DURING");
+	DURING(2, "DURING");
 	
 	/** The value. */
 	public final Integer value;

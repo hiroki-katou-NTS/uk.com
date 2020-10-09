@@ -30,7 +30,6 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyReturnItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
@@ -112,16 +111,16 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 		this.outputItemMonthlyWorkScheduleDeleteHandler.handle(command);
 	}
 
-	/**
-	 * Gets the enum setting print.
-	 *
-	 * @return the enum setting print
-	 */
-	@Path("enumSettingPrint")
-	@POST
-	public List<EnumConstant> getEnumSettingPrint() {
-		return EnumAdaptor.convertToValueNameList(PrintSettingRemarksColumn.class);
-	}
+//	/**
+//	 * Gets the enum setting print.
+//	 *
+//	 * @return the enum setting print
+//	 */
+//	@Path("enumSettingPrint")
+//	@POST
+//	public List<EnumConstant> getEnumSettingPrint() {
+//		return EnumAdaptor.convertToValueNameList(PrintSettingRemarksColumn.class);
+//	}
 
 	/**
 	 * Find copy.

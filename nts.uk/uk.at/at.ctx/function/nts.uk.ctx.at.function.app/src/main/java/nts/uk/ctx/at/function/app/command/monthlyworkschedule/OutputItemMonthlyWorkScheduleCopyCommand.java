@@ -13,15 +13,11 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 @Data
 public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonthlyWorkScheduleGetMemento{
-	String name;
-	
 	String codeCopy;
 	
 	String codeSourceSerivce;
 	
-	int itemSelectionEnum;
-	
-	String employeeId;
+	int itemType;
 	
 	int fontSize;
 
@@ -50,12 +46,6 @@ public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonth
 	}
 
 	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public RemarkInputContent getRemarkInputNo() {
 		// TODO Auto-generated method stub
 		return null;
@@ -68,17 +58,30 @@ public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonth
 	}
 
 	@Override
-	public String getEmployeeID() {
-		return this.employeeId;
-	}
-
-	@Override
 	public TextSizeCommonEnum getTextSize() {
 		return TextSizeCommonEnum.valueOf(this.fontSize);
 	}
 
 	@Override
 	public ItemSelectionEnum getItemSelectionEnum() {
-		return ItemSelectionEnum.valueOf(this.itemSelectionEnum);
+		return ItemSelectionEnum.valueOf(this.itemType);
+	}
+
+	@Override
+	public String getEmployeeID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getIsRemarkPrinted() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

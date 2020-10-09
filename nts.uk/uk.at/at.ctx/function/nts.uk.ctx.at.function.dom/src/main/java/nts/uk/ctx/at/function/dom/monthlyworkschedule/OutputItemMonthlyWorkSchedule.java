@@ -40,14 +40,14 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/** The is print. */
 	// 備考欄の印字設定
 	private PrintSettingRemarksColumn printSettingRemarksColumn;
-
+	
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
 	
 	/** The remark input. */
 	// 備考入力
-	private boolean remarkInput;
+	private boolean isRemarkPrinted;
 	
 	/** The Layout ID*/
 	// 出力項目ID
@@ -65,9 +65,6 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	// 項目選択種類
 	private ItemSelectionEnum  itemType;
 	
-	/** The Contract_CD*/
-	// 項目選択種類
-	private String contractCD;
 	
 	/** The Constant MAX_ATTENDANCE_ITEM. */
 	private static final int MAX_ATTENDANCE_ITEM = 48;
@@ -86,13 +83,13 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		}
 		this.itemCode = memento.getItemCode();
 		this.itemName = memento.getItemName();
-		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
-		this.printSettingRemarksColumn = memento.getPrintSettingRemarksColumn();
+		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();		
 		this.remarkInputNo = memento.getRemarkInputNo();
 		this.layoutID = memento.getLayoutID();
 		this.employeeID = memento.getEmployeeID();
 		this.textSize = memento.getTextSize();
 		this.itemType = memento.getItemSelectionEnum();
+		this.isRemarkPrinted = memento.getIsRemarkPrinted();
 	}
 
 	/**
@@ -108,14 +105,13 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setCompanyID(this.companyID);
 		memento.setItemCode(this.itemCode);
 		memento.setItemName(this.itemName);
-		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
-		memento.setPrintRemarksColumn(this.printSettingRemarksColumn);
-		memento.setRemarkInputNo(this.remarkInputNo);
 		memento.setLayoutID(this.layoutID);
+		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
+		memento.setRemarkInputNo(this.remarkInputNo);
 		memento.setEmployeeID(this.employeeID);
 		memento.setTextSize(this.textSize);
 		memento.setItemSelectionEnum(this.itemType);
-		memento.setContractCD(AppContexts.user().contractCode());
+		memento.setIsRemarkPrinted(this.isRemarkPrinted);
 	}
 
 	/*
@@ -143,76 +139,5 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	public OutputItemMonthlyWorkSchedule() {
 		super();
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((companyID == null) ? 0 : companyID.hashCode());
-		result = prime * result + ((employeeID == null) ? 0 : employeeID.hashCode());
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
-		result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
-		result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
-		result = prime * result + ((layoutID == null) ? 0 : layoutID.hashCode());
-		result = prime * result + ((lstDisplayedAttendance == null) ? 0 : lstDisplayedAttendance.hashCode());
-		result = prime * result + ((printSettingRemarksColumn == null) ? 0 : printSettingRemarksColumn.hashCode());
-		result = prime * result + (remarkInput ? 1231 : 1237);
-		result = prime * result + ((remarkInputNo == null) ? 0 : remarkInputNo.hashCode());
-		result = prime * result + ((textSize == null) ? 0 : textSize.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OutputItemMonthlyWorkSchedule other = (OutputItemMonthlyWorkSchedule) obj;
-		if (companyID == null) {
-			if (other.companyID != null)
-				return false;
-		} else if (!companyID.equals(other.companyID))
-			return false;
-		if (employeeID == null) {
-			if (other.employeeID != null)
-				return false;
-		} else if (!employeeID.equals(other.employeeID))
-			return false;
-		if (itemCode == null) {
-			if (other.itemCode != null)
-				return false;
-		} else if (!itemCode.equals(other.itemCode))
-			return false;
-		if (itemName == null) {
-			if (other.itemName != null)
-				return false;
-		} else if (!itemName.equals(other.itemName))
-			return false;
-		if (itemType != other.itemType)
-			return false;
-		if (layoutID == null) {
-			if (other.layoutID != null)
-				return false;
-		} else if (!layoutID.equals(other.layoutID))
-			return false;
-		if (lstDisplayedAttendance == null) {
-			if (other.lstDisplayedAttendance != null)
-				return false;
-		} else if (!lstDisplayedAttendance.equals(other.lstDisplayedAttendance))
-			return false;
-		if (printSettingRemarksColumn != other.printSettingRemarksColumn)
-			return false;
-		if (remarkInput != other.remarkInput)
-			return false;
-		if (remarkInputNo != other.remarkInputNo)
-			return false;
-		if (textSize != other.textSize)
-			return false;
-		return true;
-	}
-	
 	
 }

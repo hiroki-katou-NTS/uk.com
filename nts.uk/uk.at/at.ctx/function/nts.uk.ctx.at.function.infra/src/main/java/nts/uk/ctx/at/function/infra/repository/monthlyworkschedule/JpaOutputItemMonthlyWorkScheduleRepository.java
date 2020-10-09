@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.repository.monthlyworkschedule;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,8 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOut;
+import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOuttd;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
@@ -36,14 +39,9 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	private static final String FIND_BY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID" + " AND c.itemCode = :itemCode" + " AND c.employeeID = :employeeID"
 			+ " AND c.itemType = :itemType";
-
-	private static final String FIND_BY_SELECTION_NAME_CODE = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.itemSelectionType = :itemSelectionType" + " AND c.itemName = :itemName"
-			+ " AND c.itemCode = :itemCode";
-
-	private static final String FIND_BY_SELECTION_NAME_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.itemType = :itemType" + " AND c.itemName = :itemName" + " AND c.itemCode = :itemCode"
-			+ " AND c.employeeID = :employeeID";
+	
+	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOuttd c"
+			+ " WHERE c.pk.layoutID = :layoutID";
 
 	/*
 	 * (non-Javadoc)
@@ -57,6 +55,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 		return this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class).setParameter("companyID", companyId)
 				.setParameter("itemCode", code).getSingle(entity -> this.toDomain(entity));
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -85,6 +84,8 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void add(OutputItemMonthlyWorkSchedule domain) {
+		String layoutId = UUID.randomUUID().toString();
+		domain.setLayoutID(layoutId);
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 
@@ -97,8 +98,13 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void update(OutputItemMonthlyWorkSchedule domain) {
-		this.commandProxy().update(this.toEntity(domain));
-
+		List<KfnmtRptWkMonOuttd> otdList = this.queryProxy().query(FIND_BY_LAYOUTID, KfnmtRptWkMonOuttd.class)
+											.setParameter("layoutID", domain.getLayoutID())
+											.getList();
+		
+		this.commandProxy().removeAll(otdList);
+		this.getEntityManager().flush();
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	/*
@@ -151,6 +157,8 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	private KfnmtRptWkMonOut toEntity(OutputItemMonthlyWorkSchedule domain) {
 		KfnmtRptWkMonOut entity = new KfnmtRptWkMonOut();
+		String contractCd = AppContexts.user().contractCode();
+		entity.setContractCd(contractCd);
 		domain.saveToMemento(entity);
 		return entity;
 	}
@@ -173,21 +181,21 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	}
 
 	@Override
-	public void deleteBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum, String itemCode,
-			String companyId, String employeeId) {
+	public void deleteBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum, 
+			String companyId, String itemCode, String employeeId) {
 		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = null;
 		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
 			kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_SELECTION_CID_CODE, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum)
+					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum.value)
 					.setParameter("itemCode", itemCode).getSingle();
 		}
 		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
 			kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_SELECTION_CID_CODE_SID, KfnmtRptWkMonOut.class)
 					.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
-					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum).getSingle();
+					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum.value).getSingle();
 		}
 		if (kfnmtRptWkMonOut.isPresent()) {
-			this.commandProxy().remove(kfnmtRptWkMonOut);
+			this.commandProxy().remove(kfnmtRptWkMonOut.get());
 		}
 	}
 
@@ -196,34 +204,16 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 			ItemSelectionEnum itemSelectionEnum, String companyId, String itemCode, String employeeId) {
 		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
 			return this.queryProxy().query(FIND_BY_SELECTION_CID_CODE, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum)
+					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum.value)
 					.setParameter("itemCode", itemCode).getSingle(entity -> this.toDomain(entity));
 		}
 		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
 			return this.queryProxy().query(FIND_BY_SELECTION_CID_CODE_SID, KfnmtRptWkMonOut.class)
 					.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
-					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum)
+					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum.value)
 					.getSingle(entity -> this.toDomain(entity));
 		}
 		return Optional.empty();
-	}
-
-	@Override
-	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndSidAndNameAndCode(ItemSelectionEnum itemSelectionEnum,
-			String name, String code, String employeeId) {
-		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
-			return this.queryProxy().query(FIND_BY_SELECTION_NAME_CODE, KfnmtRptWkMonOut.class)
-					.setParameter("itemCode", code).setParameter("itemName", name)
-					.setParameter("itemType", itemSelectionEnum)
-					.getList(item -> new OutputItemMonthlyWorkSchedule(item));
-		}
-		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
-			return this.queryProxy().query(FIND_BY_SELECTION_NAME_CODE_SID, KfnmtRptWkMonOut.class)
-					.setParameter("itemCode", code).setParameter("itemName", name)
-					.setParameter("employeeID", employeeId).setParameter("itemType", itemSelectionEnum)
-					.getList(item -> new OutputItemMonthlyWorkSchedule(item));
-		}
-		return Collections.emptyList();
 	}
 
 }

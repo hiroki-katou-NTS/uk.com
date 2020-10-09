@@ -181,24 +181,24 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 // A9_2
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_99"), ""),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_100"), ""),
-                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"), "")
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_99")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_100")),
+                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"))
                 ]);
                 // A6_2
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_10"), ""),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_11"), "")
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_10")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_11"))
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_88"), ""),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"), "")
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_88")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_89"))
                 ]);
                 // A13_1
                 self.dataDisplaySwitching = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_97"), ""),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"), "")
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_97")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"))
                 ]);
             }
 
@@ -430,11 +430,13 @@ module nts.uk.at.view.kwr006.a {
             public openScreenC(): void {
                 let self = this;
                 nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
-                nts.uk.ui.windows.setShared('itemTypeSelection', self.itemSelection());
+                nts.uk.ui.windows.setShared('selectedCodeFreeSetting', self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting());
+                nts.uk.ui.windows.setShared('itemSelection', self.itemSelection());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml', { height: 750 }).onClosed(() => {
                     self.loadListOutputItemMonthlyWorkSchedule().done(() => {
                         let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
                         self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                        self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(data);
                     });
                 });
             }
@@ -495,12 +497,12 @@ module nts.uk.at.view.kwr006.a {
                 let dfd = $.Deferred<void>();
                 service.findAllOutputItemMonthlyWorkSchedule(0).done(data => {
                     let datas = _.sortBy(data, item => item.itemCode);
-                    self.itemCodeStandardSelection(_.map(datas, item => new ItemModel(item.itemCode, item.itemName, item.layoutId)));
+                    self.itemCodeStandardSelection(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
                 service.findAllOutputItemMonthlyWorkSchedule(1).done(data => {
                     let datas = _.sortBy(data, item => item.itemCode);
-                    self.itemCodeFreeSetting(_.map(datas, item => new ItemModel(item.itemCode, item.itemName, item.layoutId)));
+                    self.itemCodeFreeSetting(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -531,7 +533,7 @@ module nts.uk.at.view.kwr006.a {
                 let dfd = $.Deferred<void>();
                 service.saveCharacteristic(self.monthlyWorkScheduleConditionModel.toDto()).done(() => dfd.resolve());
                 return dfd.promise();
-            }
+            }   
 
             private hasSelectedEmployees(): boolean {
                 let self = this;
@@ -547,11 +549,9 @@ module nts.uk.at.view.kwr006.a {
         class ItemModel {
             code: string;
             name: string;
-            layoutId: string;
-            constructor(code: string, name: string, layoutId: string) {
+            constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-                this.layoutId = layoutId;
             }
         }
 
@@ -641,6 +641,7 @@ module nts.uk.at.view.kwr006.a {
             itemSelection: KnockoutObservable<number>;
             displayClassification: KnockoutObservable<number>;
             displaySwitching: KnockoutObservable<number>;
+            selectedCodeFreeSetting: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
@@ -655,6 +656,7 @@ module nts.uk.at.view.kwr006.a {
                 self.itemSelection = ko.observable(0);
                 self.displayClassification = ko.observable(0);
                 self.displaySwitching = ko.observable(0);
+                self.selectedCodeFreeSetting = ko.observable('');
             }
             public updateData(data: MonthlyWorkScheduleConditionDto): void {
                 let self = this;
@@ -856,9 +858,9 @@ module nts.uk.at.view.kwr006.a {
 
         export class ItemSelectionType {
             /** 定型選択 */
-            static STANDARD_SELECTION = 0;
+            static STANDARD_SELECTION = 1;
             /** 目由設定 */
-            static FREE_SETTING = 1;
+            static FREE_SETTING = 0;
         }
 
     }

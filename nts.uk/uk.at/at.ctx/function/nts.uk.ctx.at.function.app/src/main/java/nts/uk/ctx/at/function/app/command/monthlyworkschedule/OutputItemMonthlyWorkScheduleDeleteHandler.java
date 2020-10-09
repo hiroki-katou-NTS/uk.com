@@ -22,7 +22,6 @@ public class OutputItemMonthlyWorkScheduleDeleteHandler extends CommandHandler<O
 	protected void handle(CommandHandlerContext<OutputItemMonthlyWorkScheduleDeleteCommand> context) {
 		OutputItemMonthlyWorkScheduleDeleteCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		// Get employee by command
 		String employeeId = AppContexts.user().employeeId();
 		repository.deleteBySelectionAndCidAndSidAndCode(command.getItemSelectionEnum(), companyId, command.getItemCode().v(), employeeId);
 	}

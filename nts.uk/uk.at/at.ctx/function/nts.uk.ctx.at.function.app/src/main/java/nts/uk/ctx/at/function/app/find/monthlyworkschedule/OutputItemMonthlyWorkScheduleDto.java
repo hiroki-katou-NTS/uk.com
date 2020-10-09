@@ -35,5 +35,8 @@ public class OutputItemMonthlyWorkScheduleDto {
 	/** The text size */
 	private int textSize;
 	
+	/** The isRemarkPrinted */
+	private boolean isRemarkPrinted;
+	
 
 }

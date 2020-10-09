@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
 import java.util.List;
 
+import lombok.Data;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -10,14 +11,11 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingNa
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
-
+@Data
 public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMonthlyWorkScheduleGetMemento {
 	/** The item code. */
 	private String itemCode;
-	
-	/** The Employee ID. */
-	private String employeeID;
-	
+		
 	/** The Item selection type */
 	private int itemType;
 
@@ -35,7 +33,7 @@ public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMon
 
 	@Override
 	public String getEmployeeID() {
-		return this.employeeID;
+		return null;
 	}
 	
 	@Override
@@ -55,11 +53,6 @@ public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMon
 		return null;
 	}
 
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public RemarkInputContent getRemarkInputNo() {
@@ -75,6 +68,18 @@ public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMon
 
 	@Override
 	public TextSizeCommonEnum getTextSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getIsRemarkPrinted() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
 		// TODO Auto-generated method stub
 		return null;
 	}
