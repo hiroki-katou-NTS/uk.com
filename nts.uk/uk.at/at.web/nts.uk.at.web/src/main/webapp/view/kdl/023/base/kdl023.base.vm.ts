@@ -492,11 +492,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
             }
 
+            let focusElementId = '#cbb-reflection-order-1';
             if(vm.reflectionMethod() === 2){
                 if(vm.reflectionOrder1() != WorkCreateMethod.NON){
                     refOrder.push(vm.reflectionOrder1());
+					focusElementId = '#cbb-reflection-order-2';
                     if(vm.reflectionOrder2() != WorkCreateMethod.NON){
                         refOrder.push(vm.reflectionOrder2());
+						focusElementId = '#cbb-reflection-order-3';
                         if(vm.reflectionOrder3() != WorkCreateMethod.NON){
                             refOrder.push(vm.reflectionOrder3());
                         }
@@ -507,45 +510,53 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else{
                 refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK];
             }
-            if(refOrder.length === 0){
-                vm.$dialog.error({ messageId: "MsgB_2", messageParams: [vm.$i18n('KDL023_31')]});
+
+            if(refOrder.length < 3){
+				nts.uk.ui.dialog.bundledErrors({
+					errors: [{
+						message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_3')]),
+						messageId: "MsgB_2",
+						supplements: {}
+					}]
+				}).then(() => {
+					$(focusElementId).focus();
+				}) ;
                 vm.$blockui('clear');
-                $('#cbb-reflection-order-1').focus();
+
                 return;
             }
-            else{
-                vm.reflectionParam({
-                    creationPeriodStartDate : moment(vm.dateValue().startDate, "YYYY-MM").startOf("month")
-						.format(CONST.MOMENT_DATE_FORMAT),
-                    creationPeriodEndDate : moment(vm.dateValue().endDate, "YYYY-MM").endOf("month")
-						.format(CONST.MOMENT_DATE_FORMAT),
-                    workCycleCode : vm.reflectionSetting().selectedPatternCd(),
-                    refOrder : refOrder,
-                    numOfSlideDays : slideDay,
-                    legalHolidayCd: legalHolidayCd,
-                    nonStatutoryHolidayCd: nonStatutoryHolidayCd,
-                    holidayCd: holidayCd
-                })
 
-                service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done( (val) =>{
-                    vm.refImageEachDayDto(val);
-                    vm.setCalendarData(val);
-                    vm.promise(false);
-                }).fail( () => {
+			vm.reflectionParam({
+				creationPeriodStartDate : moment(vm.dateValue().startDate, "YYYY-MM").startOf("month")
+					.format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodEndDate : moment(vm.dateValue().endDate, "YYYY-MM").endOf("month")
+					.format(CONST.MOMENT_DATE_FORMAT),
+				workCycleCode : vm.reflectionSetting().selectedPatternCd(),
+				refOrder : refOrder,
+				numOfSlideDays : slideDay,
+				legalHolidayCd: legalHolidayCd,
+				nonStatutoryHolidayCd: nonStatutoryHolidayCd,
+				holidayCd: holidayCd
+			})
 
-                    }
-                ).always(()=>{
-                        vm.$blockui('clear');
-                    }
-                );
-                vm.setPatternRange() // Set pattern's range
-                    .done(() => {
-                        //vm.optionDates(vm.getOptionDates()); // Reload calendar
-                        $('#component-calendar-kcp006').focus(); // Set focus control
-                    }).always(() => {
+			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done( (val) =>{
+				vm.refImageEachDayDto(val);
+				vm.setCalendarData(val);
+				vm.promise(false);
+			}).fail( () => {
 
-                });
-            }
+				}
+			).always(()=>{
+					vm.$blockui('clear');
+				}
+			);
+			vm.setPatternRange() // Set pattern's range
+				.done(() => {
+					//vm.optionDates(vm.getOptionDates()); // Reload calendar
+					$('#component-calendar-kcp006').focus(); // Set focus control
+				}).always(() => {
+
+			});
         }
 
         /**
