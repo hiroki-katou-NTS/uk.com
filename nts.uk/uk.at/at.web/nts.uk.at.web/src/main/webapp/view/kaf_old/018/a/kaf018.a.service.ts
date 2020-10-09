@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.a.service {
+module nts.uk.at.view.kaf018_old.a.service {
     import format = nts.uk.text.format;
     var paths: any = {
         getAll: "at/request/application/setting/workplace/getall",

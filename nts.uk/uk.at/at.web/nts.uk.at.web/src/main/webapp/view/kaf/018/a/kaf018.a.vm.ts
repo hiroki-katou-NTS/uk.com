@@ -41,7 +41,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		}
         
 		emailSetting() {
-			
+			const vm = this;
+			vm.$window.modal('/view/kaf/018/i/index.xhtml');
 		}
     }
 
