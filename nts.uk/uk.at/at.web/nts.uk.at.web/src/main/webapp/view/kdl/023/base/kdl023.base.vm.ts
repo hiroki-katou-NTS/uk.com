@@ -325,6 +325,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     // Show message Msg_37 then close dialog.
                     if (vm.isDataEmpty) {
                         vm.showErrorThenCloseDialog();
+						dfd.fail();
                     }
                     vm.$blockui('clear')
                 });
@@ -406,6 +407,38 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         public onBtnApplySetting(slideDay: number): void {
             let vm = this;
             vm.$blockui('invisible')
+
+			let holidayListsErrors = [];
+			if (vm.listSatHoliday.length == 0){
+				holidayListsErrors.push({
+					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_6')]),
+					messageId: "MsgB_2",
+					supplements: {}
+				});
+			}
+
+			if (vm.listNonSatHoliday.length == 0){
+				holidayListsErrors.push({
+					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_7')]),
+					messageId: "MsgB_2",
+					supplements: {}
+				});
+			};
+
+			if (vm.listPubHoliday.length == 0) {
+				holidayListsErrors.push({
+					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_8')]),
+					messageId: "MsgB_2",
+					supplements: {}
+				});
+			}
+
+			if(holidayListsErrors.length > 0){
+				nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
+				vm.$blockui('clear');
+
+				return;
+			}
 
             let dateString = vm.yearMonthPicked().toString() + vm.startDate.toString();
             let year:number = +dateString.substring(0,4);
@@ -1091,6 +1124,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let vm = this;
             nts.uk.ui.dialog.alertError({ messageId: "Msg_37" }).then(() => {
 				vm.$blockui("clear");
+				vm.closeDialog();
 			});
         }
 
@@ -1120,6 +1154,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set calendar range.
                 self.calendarStartDate = moment(self.shared.calendarStartDate, CONST.MOMENT_DATE_FORMAT);
                 self.calendarEndDate = moment(self.shared.calendarEndDate, CONST.MOMENT_DATE_FORMAT);
+
+				self.dateValue({
+					startDate: self.calendarStartDate.format('YYYY/MM'),
+					endDate: self.calendarEndDate.format('YYYY/MM')
+				});
 
                 // Date range must <= 31 days
                 // If end date parameter out of range -> set end date to 31 days after start date parameter.
