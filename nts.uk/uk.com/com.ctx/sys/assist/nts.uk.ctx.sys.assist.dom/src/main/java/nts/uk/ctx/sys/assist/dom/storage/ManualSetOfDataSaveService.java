@@ -155,7 +155,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			// ドメインモデル「データ保存動作管理」を登録する
-			if (!repoDataSto.update(storeProcessingId, manualSetting.getCategory().size(), 0,
+			List<String> categoryIds = manualSetting.getCategory().stream()
+					.map(TargetCategory::getCategoryId)
+					.distinct()
+					.collect(Collectors.toList());
+			if (!repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
 					OperatingCondition.SAVING)) {
 				return;
 			}
@@ -372,6 +376,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
+				List<String> ids = tableLists.stream().map(TableList::getCategoryId).distinct().collect(Collectors.toList());
 				int i = 0;
 				for (TableList tableList : tableLists) {
 					rowCsv = getDataTableListeCsv(rowCsv, headerCsv, tableList);
@@ -396,7 +401,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				csv.destroy();
 				offset += NUM_OF_TABLE_EACH_PROCESS;
 				// テーブルをすべて書き出したか判定
-				if (tableLists.size() < NUM_OF_TABLE_EACH_PROCESS)
+				if (tableLists.size() <= NUM_OF_TABLE_EACH_PROCESS)
 					break;
 			}
 
