@@ -26,9 +26,6 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 	
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
-	
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	@Override
 	public List<String> add(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem) {

@@ -20,9 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfClassificationDomainServiceImp implements AgreementTimeOfClassificationDomainService {
 
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
-
-	@Inject
 	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
 
 	@Override
@@ -33,7 +30,6 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 
 		if (errors.isEmpty()) {
 			this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
-			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 		}
 		return errors;
 	}
@@ -45,7 +41,6 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 		
 		if (errors.isEmpty()) {
 			this.agreementTimeOfClassificationRepository.update(agreementTimeOfClassification);
-			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		}
 
 		return errors;
@@ -53,8 +48,6 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 
 	@Override
 	public void remove(String companyId, int laborSystemAtr, String classificationCode, String basicSettingId) {
-
-		this.basicAgreementSettingRepository.remove(basicSettingId);
 
 		this.agreementTimeOfClassificationRepository.remove(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);

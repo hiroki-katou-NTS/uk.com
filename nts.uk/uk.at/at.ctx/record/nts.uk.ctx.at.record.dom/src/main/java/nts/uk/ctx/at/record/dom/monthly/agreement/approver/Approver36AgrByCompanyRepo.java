@@ -23,7 +23,7 @@ public interface Approver36AgrByCompanyRepo {
 	/**
 	 * [2] Update(会社別の承認者（36協定）)
 	 */
-	public void update(Approver36AgrByCompany domain, GeneralDate startDateBeforeChange);
+	public void update(Approver36AgrByCompany domain);
 
 	/**
 	 * [3] Delete(会社別の承認者（36協定）)
@@ -76,4 +76,9 @@ public interface Approver36AgrByCompanyRepo {
 	 * 		m.期間.開始日 <= 基準日 <= m.期間.終了日
 	 */
 	public Optional<Approver36AgrByCompany> getByCompanyIdAndDate(String companyId, GeneralDate refDate);
+
+	/**
+	 * [8] Update(会社別の承認者（36協定）)
+	 */
+	public void updateStartDate(Approver36AgrByCompany domain, GeneralDate startDateBeforeChange);
 }
