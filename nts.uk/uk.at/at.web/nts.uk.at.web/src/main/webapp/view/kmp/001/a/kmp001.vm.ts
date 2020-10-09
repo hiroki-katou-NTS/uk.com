@@ -4,16 +4,16 @@ module nts.uk.at.view.kmp001 {
 	export module a {
 		@bean()
 		export class ViewModel extends ko.ViewModel {
-			tabs: KnockoutObservableArray<string> = ko.observableArray([]);
+			/*tabs: KnockoutObservableArray<string> = ko.observableArray([]);*/
 
 			mounted() {
 				const vm = this;
 
-				if (vm.$user.role.isInCharge.attendance) {
+				/*if (vm.$user.role.isInCharge.attendance) {
 					vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
 				} else {
 					vm.tabs(['KMP001_1']);
-				}
+				}*/
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.h {
+module nts.uk.at.view.kaf018_old.h {
     import format = nts.uk.text.format;
     export module service {
         var paths: any = {

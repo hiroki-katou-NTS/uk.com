@@ -1,10 +1,10 @@
-module nts.uk.at.view.kaf018.b.viewmodel {
+module nts.uk.at.view.kaf018_old.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.alertError;
-    import shareModel = kaf018.share.model;
+    import shareModel = kaf018_old.share.model;
     import confirm = nts.uk.ui.dialog.confirm;
     import block = nts.uk.ui.block;
 
