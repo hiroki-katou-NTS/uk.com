@@ -8,11 +8,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSettingPK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class JpaAgreementOperationSettingRepository extends JpaRepository
@@ -62,18 +65,16 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		}
 	}
 
-	private static AgreementOperationSetting toDomain(KmkmtAgeementOperationSetting kmkmtAgeementOperationSetting) {
-		return null;
-//		AgreementOperationSetting agreementOperationSetting = AgreementOperationSetting.createFromJavaType(
-//				kmkmtAgeementOperationSetting.kmkmtAgeementOperationSettingPK.companyId,
-//				kmkmtAgeementOperationSetting.startingMonthType.intValue(),
-//				kmkmtAgeementOperationSetting.numberTimesOverLimitType.intValue(),
-//				kmkmtAgeementOperationSetting.closingDateType.intValue(),
-//				kmkmtAgeementOperationSetting.closingDateAtr.intValue(),
-//				kmkmtAgeementOperationSetting.yearlyWorkTableAtr.intValue(),
-//				kmkmtAgeementOperationSetting.alarmListAtr.intValue());
-//
-//		return agreementOperationSetting;
+	private static AgreementOperationSetting toDomain(KmkmtAgeementOperationSetting entity) {
+		
+		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(
+				entity.kmkmtAgeementOperationSettingPK.companyId, 
+				EnumAdaptor.valueOf(entity.startingMonthType.intValue(), StartingMonthType.class),
+				new ClosureDate(entity.closingDateType.intValue(), 
+								entity.closingDateType.intValue() == 30), 
+				false, false);
+
+		return agreementOperationSetting;
 	}
 
 	private KmkmtAgeementOperationSetting toEntity(AgreementOperationSetting agreementOperationSetting) {

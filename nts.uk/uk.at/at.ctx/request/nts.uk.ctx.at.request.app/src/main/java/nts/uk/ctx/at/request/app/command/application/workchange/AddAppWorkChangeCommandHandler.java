@@ -43,8 +43,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 					application.getOpAppEndDate(),
 					application.getOpAppReason(),
 					application.getOpAppStandardReasonCD());
-		}
-		
+		    }
 		
 		return workChangeRegisterService.registerProcess(
 				command.getMode(),

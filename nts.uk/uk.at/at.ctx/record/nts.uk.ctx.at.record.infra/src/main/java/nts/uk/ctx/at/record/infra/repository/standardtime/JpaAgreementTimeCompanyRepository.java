@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -35,9 +37,9 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 	
 	@Override
 	public List<AgreementTimeOfCompany> find(String companyId) {
-		String query = "SELECT a FROM KmkmtAgeementTimeCompany a WHERE a.kmkmtAgeementTimeCompanyPK.companyId = :companyId ";
+//		String query = "SELECT a FROM KmkmtAgeementTimeCompany a WHERE a.kmkmtAgeementTimeCompanyPK.companyId = :companyId ";
 		
-		return this.queryProxy().query(query, KmkmtAgeementTimeCompany.class).setParameter("companyId", companyId).getList(f -> toDomain(f));
+		return new ArrayList<>();
 	}
 
 	@Override
