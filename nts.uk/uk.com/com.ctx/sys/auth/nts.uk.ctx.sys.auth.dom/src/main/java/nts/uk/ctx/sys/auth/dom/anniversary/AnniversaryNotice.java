@@ -40,6 +40,25 @@ public class AnniversaryNotice extends AggregateRoot {
      */
     private NotificationMessage notificationMessage;
 
+    public AnniversaryNotice(String personalId, Integer noticeDay, GeneralDate anniversary, String anniversaryTitle, String notificationMessage) {
+        super();
+        this.personalId = personalId;
+        this.noticeDay = EnumAdaptor.valueOf(noticeDay, NoticeDay.class);
+        this.anniversary = anniversary;
+        this.anniversaryTitle = new AnniversaryTitle(anniversaryTitle);
+        this.notificationMessage = new NotificationMessage(notificationMessage);
+        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.month(), anniversary.day());
+        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
+            this.seenDate = todayAnniversary;
+        } else {
+            this.seenDate = todayAnniversary.addYears(-1);
+        }
+    }
+
+    public AnniversaryNotice() {
+        super();
+    }
+
     public static AnniversaryNotice createFromMemento(MementoGetter memento) {
         AnniversaryNotice domain = new AnniversaryNotice();
         domain.getMemento(memento);
