@@ -586,7 +586,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
                 dfd.resolve();
             }).fail(() => {
-                self.showErrorThenCloseDialog();
                 dfd.fail();
             });
             return dfd.promise();
