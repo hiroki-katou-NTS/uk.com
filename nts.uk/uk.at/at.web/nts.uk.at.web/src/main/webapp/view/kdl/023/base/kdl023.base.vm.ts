@@ -186,6 +186,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
 
                     vm.reflectionMethod.subscribe(val => {
+						vm.promise(true);
+
 						if(val === 2){
 							vm.reflectionSetting().statutorySetting.useClassification(false);
 							vm.reflectionSetting().nonStatutorySetting.useClassification(false);
@@ -204,6 +206,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					});
 
                     vm.reflectionOrder1.subscribe(val =>{
+						vm.promise(true);
+
 						let array2 = ([
 							{code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
 							{code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
@@ -236,9 +240,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						if(vm.reflectionOrder2() === val){
 							vm.reflectionOrder2(WorkCreateMethod.NON);
 						}
-						if(vm.reflectionOrder3() === val){
-							vm.reflectionOrder2(WorkCreateMethod.NON);
-						}
 						vm.workCycleEnable2(true);
                         let arrCheck = ([val,vm.reflectionOrder2(), vm.reflectionOrder3()]);
 						vm.checkReflectionOrder(arrCheck)
@@ -253,6 +254,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					})
 
                     vm.reflectionOrder2.subscribe( val => {
+						vm.promise(true);
+
                         if(val === WorkCreateMethod.NON){
                             vm.reflectionOrder3(WorkCreateMethod.NON);
                             vm.workCycleEnable3(false);
@@ -292,6 +295,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					})
 
                     vm.reflectionOrder3.subscribe(val => {
+						vm.promise(true);
+
 						let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
 						vm.checkReflectionOrder(arrCheck);
 					})
@@ -312,6 +317,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     vm.reflectionSetting().selectedPatternCd.subscribe(() => {
                         vm.promise(true);
                     });
+
+					vm.reflectionSetting().statutorySetting.workTypeCode.subscribe(() => {
+						vm.promise(true);
+					});
+
+					vm.reflectionSetting().nonStatutorySetting.workTypeCode.subscribe(() => {
+						vm.promise(true);
+					});
+
+					vm.reflectionSetting().holidaySetting.workTypeCode.subscribe(() => {
+						vm.promise(true);
+					});
 
                     if(vm.isExecMode()){
                         $('.ntsStartDatePicker').focus();
