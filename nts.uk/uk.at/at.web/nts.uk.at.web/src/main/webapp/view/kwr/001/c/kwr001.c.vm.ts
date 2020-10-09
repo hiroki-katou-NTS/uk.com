@@ -76,6 +76,7 @@ module nts.uk.at.view.kwr001.c {
 
             // C7_13 label
             sizeClassificationLabel: KnockoutObservable<string>;
+            limitAttendanceItem: KnockoutObservable<number>;
 
             layoutId: string;
             selectionType: number;
@@ -176,9 +177,11 @@ module nts.uk.at.view.kwr001.c {
 
                 self.sizeClassificationLabel = ko.observable(nts.uk.resource.getText("KWR001_65"));
                 self.selectedSizeClassificationType.subscribe(value => {
-                    if (value === 1) {
+                    if (value === FontSizeEnum.SMALL) {
+                        self.limitAttendanceItem(48);
                         self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_142"));
                     } else {
+                        self.limitAttendanceItem(60);
                         self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_65"));
                     }
                 });
@@ -624,8 +627,8 @@ module nts.uk.at.view.kwr001.c {
         }
 
         class FontSizeEnum {
-            static BIG = 0;
-            static SMALL = 1;
+            static BIG = 1;
+            static SMALL = 0;
         }
     }
 }
