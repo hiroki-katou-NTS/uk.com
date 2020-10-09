@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRepository;
-import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCmp;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
