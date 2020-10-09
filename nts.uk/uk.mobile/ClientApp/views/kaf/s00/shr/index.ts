@@ -4,6 +4,12 @@ export class KafS00ShrComponent extends Vue {
 
     public appDispInfoStartupOutput: any = null;
 
+    public kaf000_A_Params: any = null;
+
+    public kaf000_B_Params: any = null;
+
+    public kaf000_C_Params: any = null;
+
     public loadCommonSetting(
         appType: number,
         employeeID?: string,
@@ -74,6 +80,27 @@ export class KafS00ShrComponent extends Vue {
         });
     }
 
+    public createApplicationInsert(appTypeParam): ApplicationInsert {
+        return {
+            prePostAtr: null,
+            employeeIDLst: [],
+            appType: appTypeParam,
+            appDate: null,
+            opAppReason: null,
+            opAppStandardReasonCD: null,
+            opAppStartDate: null,
+            opAppEndDate: null,
+            opStampRequestMode: null
+        };
+    }
+
+    public createApplicationUpdate(): ApplicationUpdate {
+        return {
+            opAppReason: null,
+            opAppStandardReasonCD: null
+        };
+    }
+
 }
 
 export enum AppType {
@@ -102,6 +129,23 @@ export enum AppTypeName {
     EARLY_LEAVE_CANCEL_APPLICATION = '遅刻早退取消申請',
     COMPLEMENT_LEAVE_APPLICATION = '振休振出申請',
     OPTIONAL_ITEM_APPLICATION = '任意項目申請'
+}
+
+export interface ApplicationInsert {
+    prePostAtr: number;
+    employeeIDLst: Array<String>;
+    appType: number;
+    appDate: string;
+    opAppReason: string;
+    opAppStandardReasonCD: string;
+    opAppStartDate: string;
+    opAppEndDate: string;
+    opStampRequestMode?: number;   
+}
+
+export interface ApplicationUpdate {
+    opAppReason: string;
+    opAppStandardReasonCD: string;
 }
 
 const API = {

@@ -41,11 +41,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
     // data is fetched service
     public data: any = 'data';
 
-    public kaf000_A_Params: any = null;
+    // public kaf000_A_Params: any = null;
 
-    public kaf000_B_Params: any = null;
+    // public kaf000_B_Params: any = null;
 
-    public kaf000_C_Params: any = null;
+    // public kaf000_C_Params: any = null;
 
     public isChangeDate: boolean = false;
     public user: any;
@@ -331,21 +331,37 @@ export class KafS09AComponent extends KafS00ShrComponent {
         }
         self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
         let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
-        self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
+        self.model.workType.name = isExist ? isExist.name : self.$i18n('KAFS07_10');
 
         self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
         isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
-        self.bindWorkTime(goBackDirect);
+        if (self.model.workTime.code) {
+            self.bindWorkTime(goBackDirect);
+        }
 
     }
     public bindWorkTime(params: any) {
         const self = this;
-        if (params.predetemineTimeSetting) {
-            let startTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).start;
-            let endTime = _.find(params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone, (item: any) => item.workNo == 1).end;
-            self.model.workTime.time = self.$dt.timedr(startTime) + self.$i18n('KAFS09_12') + self.$dt.timedr(endTime);
+        if (!_.isEmpty(params.timezones)) {
+            let startTime = _.find(params.timezones, (item: any) => item.workNo == 1).startTime;
+            let endTime = _.find(params.timezones, (item: any) => item.workNo == 1).endTime;
+            // let startTime = params.timezones[0].startTime;
+            // let endTime = params.timezones[0].endTime;
+            if (startTime && endTime) {
+                self.model.workTime.time = self.handleTimeWithDay(startTime) + ' ' + self.$i18n('KAFS09_12') + ' ' + self.handleTimeWithDay(endTime);
+            }
         }
+    }
+    public handleTimeWithDay(time: number) {
+        const self = this;
+        const nameTime = '当日';
+        if (!time) {
+
+            return;
+        }
+
+        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
     }
 
 

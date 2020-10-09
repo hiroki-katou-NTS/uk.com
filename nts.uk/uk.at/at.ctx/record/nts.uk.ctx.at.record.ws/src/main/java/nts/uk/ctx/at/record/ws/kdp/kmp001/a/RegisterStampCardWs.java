@@ -96,7 +96,7 @@ public class RegisterStampCardWs extends WebService {
 	
 	@POST
 	@Path("view-g/registerCardGenarate")
-	public void gegister(RegisterStampedCardNumberInput command) {
+	public void register(RegisterStampedCardNumberInput command) {
 		this.handlerRegister.add(command);
 	}
 }

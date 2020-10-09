@@ -68,7 +68,25 @@ public interface GoBackDirectService {
 	 */
 	public InforGoBackCommonDirectOutput getDateChangeMobileAlgorithm(String companyId, List<GeneralDate> dates, List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput);
 	
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS09_直行直帰申請（スマホ）.A：直行直帰申請（新規・編集）.アルゴリズム.直行直帰申請の初期（新規・編集）
+	 * @param companyId
+	 * @param sids
+	 * @param dates
+	 * @param appDispInfoStartup
+	 * @return
+	 */
+	public InforGoBackCommonDirectOutput getDataAlgorithmMobile(String companyId, Optional<List<GeneralDate>> dates, Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup);
 	
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS09_直行直帰申請（スマホ）.B：直行直帰申請（見るだけ）.ユースケース
+	 * @param companyId
+	 * @param appId
+	 * @return //直行直帰申請起動時の表示情報
+	 */
+	public InforGoBackCommonDirectOutput getDataDetailAlgorithmMobile(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
 }
 
 

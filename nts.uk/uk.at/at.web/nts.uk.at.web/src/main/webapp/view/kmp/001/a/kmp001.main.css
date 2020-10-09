@@ -211,3 +211,6 @@
 .caret-inline:after {
 	margin-left: -2px;
 }
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header, .ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active, .ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus, .ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+	white-space: pre;
+}

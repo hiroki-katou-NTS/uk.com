@@ -34,6 +34,12 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 	
 	private static final String TEMPLATE_FILE = "report/KMP001.xlsx";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
+	
+	private final int ROW_TYPE_EDIT_CARD = 13;
+	private final int ROW_TIME = 4;
+	private final int ROW_NAME_COMPANY = 4;
+	private final int ROW_MAX_LENGTH_CARD = 12;
+	private final int COLUMN_DATA = 1;
 
 	@Override
 	public void export(FileGeneratorContext generatorContext, StampEdittingExportDatasource input) {
@@ -61,23 +67,23 @@ public class AsposeStampEdittingExport extends AsposeCellsReportGenerator implem
 
 		switch (dataSource.getStampMethod()) {
 		case 1:
-			cells.get(13, 1).setValue(TextResource.localize("KMP001_42"));
+			cells.get(ROW_TYPE_EDIT_CARD, COLUMN_DATA).setValue(TextResource.localize("KMP001_42"));
 			break;
 		case 2:
-			cells.get(13, 1).setValue(TextResource.localize("KMP001_43"));
+			cells.get(ROW_TYPE_EDIT_CARD, COLUMN_DATA).setValue(TextResource.localize("KMP001_43"));
 			break;
 		case 3:
-			cells.get(13, 1).setValue(TextResource.localize("KMP001_44"));
+			cells.get(ROW_TYPE_EDIT_CARD, COLUMN_DATA).setValue(TextResource.localize("KMP001_44"));
 			break;
 		case 4:
-			cells.get(13, 1).setValue(TextResource.localize("KMP001_45"));
+			cells.get(ROW_TYPE_EDIT_CARD, COLUMN_DATA).setValue(TextResource.localize("KMP001_45"));
 			break;
 		default:
 			break;
 		}
 
-		cells.get(2, 1).setValue(AppContexts.user().companyCode() + " " + companyName);
-		cells.get(12, 1).setValue(dataSource.getDigitsNumber());
-		cells.get(4, 1).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a")));
+		cells.get(ROW_NAME_COMPANY, COLUMN_DATA).setValue(AppContexts.user().companyCode() + " " + companyName);
+		cells.get(ROW_MAX_LENGTH_CARD, COLUMN_DATA).setValue(dataSource.getDigitsNumber());
+		cells.get(ROW_TIME, COLUMN_DATA).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a")));
 	}
 }
