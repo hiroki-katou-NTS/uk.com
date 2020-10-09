@@ -40,13 +40,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     // data is fetched service
     public data: any = 'data';
-
-    // public kaf000_A_Params: any = null;
-
-    // public kaf000_B_Params: any = null;
-
-    // public kaf000_C_Params: any = null;
-
     public isChangeDate: boolean = false;
     public user: any;
     public application: any = {
@@ -199,62 +192,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
             };
         }
         self.kaf000_B_Params = paramb;
-        if (self.mode) {
-            self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                // if (_.isNull(startDate)) {
-
-                //     return;
-                // }
-                // let listDate = [];
-                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                //     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                // }
-
-                // if (!_.isNull(endDate)) {
-                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
-                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                //         while (startDate.getTime() <= endDate.getTime()) {
-                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                //             startDate.setDate(startDate.getDate() + 1);
-                //         }
-                //     }
-
-                // }
-                // self.changeDate(listDate);
-            });
-
-            self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                // if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-
-                //     return;
-                // }
-                // let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                // let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                // if (_.isNull(endDate)) {
-
-                //     return;
-                // }
-                // let listDate = [];
-                // if (!_.isNull(startDate)) {
-                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
-                //     if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                //         while (startDate.getTime() <= endDate.getTime()) {
-                //             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                //             startDate.setDate(startDate.getDate() + 1);
-                //         }
-                //     }
-                // }
-
-                // self.changeDate(listDate);
-            });
-            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
-                console.log(newV + ':' + oldV);
-            });
-
-        }
-
 
     }
     public createParamC() {
@@ -393,26 +330,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
         }
-
-        // if (self.kaf000_B_Params) {
-        //     if (self.mode) {
-        //         self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-        //         self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-        //         if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-        //         } else {
-        //             self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-        //         }
-        //     }
-
-        //     self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
-
-        // }
-
-        // if (self.kaf000_C_Params.output) {
-        //     self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-        //     self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        // }
         self.application.enteredPerson = self.user.employeeId;
 
 
@@ -508,14 +425,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 mode: self.mode,
             }).then((res: any) => {
                 self.$mask('hide');
-                // KAFS00_D_申請登録後画面に移動する
-                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                //     self.dataOutput = res;
-                //     // self.bindCommon(self.data);
-                //     self.mode = false;
-                //     self.fetchStart();
-                //     self.$forceUpdate();
-                // });
                 self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
@@ -528,14 +437,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 inforGoBackCommonDirectDto: self.dataOutput,
             }).then((res: any) => {
                 self.$mask('hide');
-                // KAFS00_D_申請登録後画面に移動する
-                // self.$modal('kafs00d', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID }).then((res: any) => {
-                //     self.dataOutput = res;
-                //     // self.bindCommon(self.data);
-                //     self.mode = false;
-                //     self.fetchStart();
-                //     self.$forceUpdate();
-                // });
                 self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
@@ -584,9 +485,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
             return;
         }
-        // if (self.$valid && validAll) {
-        //     self.$mask('show');
-        // }
         self.bindAppWorkChangeRegister();
 
         // check before registering application
@@ -723,31 +621,6 @@ export class KafS09AComponent extends KafS00ShrComponent {
         }
     }
 
-    public dataFetch() {
-        this.$http.post('at', API.startS09, {
-            companyId: this.user.companyId,
-            employeeId: this.user.employeeId,
-            dates: [],
-            mode: true,
-            inforGoBackCommonDirectDto: null,
-            appDispInfoStartupDto: this.appDispInfoStartupOutput
-        }).then((res: any) => {
-            this.dataOutput = res.data;
-            this.bindStart();
-        }).catch((err: any) => {
-            if (err.messageId) {
-                this.$modal.error({ messageId: err.messageId });
-            } else {
-
-                if (_.isArray(err.errors)) {
-                    this.$modal.error({ messageId: err.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: err.errors.messageId });
-                }
-            }
-        });
-    }
-
     public kaf000BChangeDate(objectDate) {
         const self = this;
         console.log('emit' + objectDate);
@@ -840,6 +713,4 @@ const API = {
     updateAppWorkChange: 'at/request/application/gobackdirectly/mobile/getAppDataByDate',
     startS09: 'at/request/application/gobackdirectly/mobile/start',
     updateApp: 'at/request/application/gobackdirectly/updateNewKAF009'
-
-
 };
