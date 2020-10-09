@@ -42,8 +42,8 @@ module nts.uk.at.view.ksu001.la {
                 ]);      
                 
                 let holders = getText('KSU001_3208') + '・'
-                    + getText('KSU001_3215') + '・'
-                    + getText('KSU001_3209') + 'で検索…';
+                    + getText('KSU001_3209') + '・'
+                    + getText('KSU001_3215') + 'で検索…';                    
                 self.placeHolders = holders.replace("１", "");
                 self.selectedCode.subscribe((code: string) => {
                     let dfd = $.Deferred();
