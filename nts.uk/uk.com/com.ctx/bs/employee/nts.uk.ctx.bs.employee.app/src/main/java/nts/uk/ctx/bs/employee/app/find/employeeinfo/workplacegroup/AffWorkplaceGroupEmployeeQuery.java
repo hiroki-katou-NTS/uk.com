@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.shr.com.context.AppContexts;
@@ -55,8 +57,13 @@ public class AffWorkplaceGroupEmployeeQuery {
 			String companyId = AppContexts.user().companyId();
 			
 			/** 3:get(ログイン会社ID, 社員の所属組織.職場グループID): Optional<職場グループ> **/
-			return workplaceGroupRespository.getById(companyId, WKPGRPID)
-					.map(x -> new AffWorkplaceGroupDto(x.getWKPGRPName().v(), x.getWKPGRPID())).orElse(null);
+			Optional<WorkplaceGroup> workplaceGroupOptional = workplaceGroupRespository.getById(companyId, WKPGRPID);
+			if(workplaceGroupOptional.isPresent()) {
+				return new AffWorkplaceGroupDto(workplaceGroupOptional.get().getWKPGRPName().v(), workplaceGroupOptional.get().getWKPGRPID());				
+			} else {
+				/** 2: 社員の所属組織.isEmpty**/
+				throw new BusinessException("Msg_1867");
+			}						
 		} else {
 			/** 2: 社員の所属組織.isEmpty**/
 			throw new BusinessException("Msg_1867");

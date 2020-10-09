@@ -5,15 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
 
-
-
 @Stateless
-public class EmpBasicInfoAdapterImpl  implements EmpBasicInfoAdapter{
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class EmpBasicInfoAdapterImpl implements EmpBasicInfoAdapter {
 	
 	@Inject
 	private PersonEmpBasicInfoPub personEmpBasicInfoPub;
@@ -22,8 +25,7 @@ public class EmpBasicInfoAdapterImpl  implements EmpBasicInfoAdapter{
 	public List<EmpBasicInfoImport> getEmployeeCodeByEmpId(String empId) {
 		List<String> employeeIds = Arrays.asList(empId);
 		List<EmpBasicInfoImport> lstPerson = 
-				personEmpBasicInfoPub.getPerEmpBasicInfo(employeeIds)
-					.stream()
+				personEmpBasicInfoPub.getPerEmpBasicInfo(employeeIds).stream()
 					.map(item -> {
 						return new EmpBasicInfoImport(
 								item.getPersonId(),
@@ -38,6 +40,4 @@ public class EmpBasicInfoAdapterImpl  implements EmpBasicInfoAdapter{
 					.collect(Collectors.toList());
 		return lstPerson;
 	}
-
-
 }
