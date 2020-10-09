@@ -1,3 +1,4 @@
+import { extend } from "jquery";
 
 export interface IParamS00A {
     companyID: string;
@@ -270,7 +271,7 @@ export interface IApplication {
     appId: null;
     appType: number | null;
     employeeID: string;
-    enteredPerson: null;
+    enteredPerson: string;
     inputDate: null;
     opAppEndDate: string;
     opAppReason: string;
@@ -324,10 +325,7 @@ export interface IRes {
     }
 }
 
-export interface IParams{
+export interface IParams {
     appID: string;
     mode: boolean;
 }
-
-
-

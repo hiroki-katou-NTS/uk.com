@@ -21,7 +21,6 @@ export class KafS04A1Component extends Vue {
     public kafS00DParams: IParamS00D = null;
 
     @Prop({default:(): IParams => ({appID: '',mode: true})}) public readonly paramsAComponent: IParams;
-
     @Prop({default: true}) public readonly mode!: boolean;
 
     public created() {

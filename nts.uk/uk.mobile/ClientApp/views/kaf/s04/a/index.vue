@@ -42,7 +42,7 @@
       <nts-checkbox
           v-model="cbCancelLate"
           v-if="showCheckBox"
-          v-bind:value="'1'">{{'KAFS04_5' | i18n}}
+          v-bind:value="'Attendance'">{{'KAFS04_5' | i18n}}
         </nts-checkbox>
       <template v-else />
       <div class="position-relative">
@@ -59,7 +59,7 @@
         <nts-checkbox
           v-model="cbCancelEarlyLeave"
           v-if="showCheckBox"
-          v-bind:value="'2'">{{'KAFS04_7' | i18n}}
+          v-bind:value="'Early'">{{'KAFS04_7' | i18n}}
         </nts-checkbox>
         <template v-else />
       </div>
@@ -86,7 +86,7 @@
       <nts-checkbox
         v-model="cbCancelLate"
         v-if="showCheckBox"
-        v-bind:value="'3'">{{'KAFS04_10' | i18n}}
+        v-bind:value="'Attendace2'">{{'KAFS04_10' | i18n}}
       </nts-checkbox>
       <template v-else />
       <div class="position-relative">
@@ -103,7 +103,7 @@
         <nts-checkbox
           v-model="cbCancelEarlyLeave"
           v-if="showCheckBox"
-          v-bind:value="'4'">{{'KAFS04_12' | i18n}}
+          v-bind:value="'Early2'">{{'KAFS04_12' | i18n}}
         </nts-checkbox>
         <template v-else />
       </div>

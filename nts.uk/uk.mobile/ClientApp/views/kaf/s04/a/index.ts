@@ -1,5 +1,4 @@
 import { component, Prop, Watch } from '@app/core/component';
-import { data } from 'jquery';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS04BComponent } from '../b';
@@ -15,7 +14,7 @@ import {
     IParamS00C,
     IInfoOutput,
     IRes,
-    IParams
+    IParams,
 } from './define';
 
 @component({
@@ -44,20 +43,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: IParamS00B = null;
     public kafS00CParams: IParamS00C = null;
-    public user !: any;
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
     public application: IApplication = initAppData();
     public infoOutPut: IInfoOutput = initInfoOutput();
-    public startDate: string = null;
-    public opAppReason: string = null;
-    public reasonCD: number = 0;
-    public prePostArt: number = 0;
     public paramsAComponent: IParams;
+    public cbCancelLate: string = 'Attendance';
 
-    @Prop({default: true}) public readonly mode!: boolean;
+    @Prop({ default: true }) public readonly mode!: boolean;
 
     public created() {
         const vm = this;
@@ -69,10 +64,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const vm = this;
 
         vm.$mask('show');
-        vm.$auth.user.then((usr: any) => {
-            vm.user = usr;
-            vm.application.employeeID = vm.user.employeeId;
-            vm.infoOutPut.lateEarlyCancelAppSet.companyId = vm.user.companyId;
+        vm.$auth.user.then((usr) => {
+            const { infoOutPut, application } = vm;
+            const { employeeId, companyId } = usr;
+
+            application.employeeID = employeeId;
+            application.enteredPerson = employeeId;
+
+            infoOutPut.lateEarlyCancelAppSet.companyId = companyId;
         }).then(() => {
             vm.$mask('show');
 
@@ -99,6 +98,20 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     } else {
                         vm.conditionLateEarlyLeave2Show = true;
                     }
+                    // if (vm.application.prePostAtr == 1) {
+                    //     const { infoOutPut } = vm;
+                    //     const { lateEarlyCancelAppSet } = infoOutPut;
+                    //     const { cancelAtr } = lateEarlyCancelAppSet;
+
+                    //     if (cancelAtr == 0) {
+                    //         vm.showCheckBox == false;
+                    //     }
+                    //     if (cancelAtr == 1) {
+                    //         alert('abc');
+                    //     } else {
+                    //         vm.showCheckBox == true;
+                    //     }
+                    // }
                 });
             }
         });
@@ -107,21 +120,31 @@ export class KafS04AComponent extends KafS00ShrComponent {
     get showCheckBox() {
         const vm = this;
 
-        if (vm.kafS00BParams != null) {
-            return vm.kafS00BParams.output.prePostAtr === 1;
-        }
+        return vm.application.prePostAtr == 1;
     }
 
     public initComponentA() {
         const vm = this;
+        const { data } = vm;
+        const { appDispInfoStartupOutput } = data;
 
-        vm.kafS00AParams = {
-            companyID: vm.user.companyId,
-            employeeID: vm.user.employeeId,
-            employmentCD: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport.employmentCode,
-            applicationUseSetting: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
-            receptionRestrictionSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
-        };
+        const { appDispInfoWithDateOutput, appDispInfoNoDateOutput } = appDispInfoStartupOutput;
+        const { empHistImport, approvalFunctionSet } = appDispInfoWithDateOutput;
+
+        const [applicationUseSetting] = approvalFunctionSet.appUseSetLst;
+        const [receptionRestrictionSetting] = appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting;
+
+        vm.$auth.user.then((usr) => {
+            const { employeeId, companyId } = usr;
+
+            vm.kafS00AParams = {
+                companyID: companyId,
+                employeeID: employeeId,
+                employmentCD: empHistImport.employmentCode,
+                applicationUseSetting,
+                receptionRestrictionSetting
+            };
+        });
     }
 
 
@@ -155,7 +178,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
     }
 
-
     public initComponentC() {
         const vm = this;
 
@@ -179,6 +201,50 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public register() {
         const vm = this;
 
+
+        vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies = [];
+
+        if (vm.time.attendanceTime != null) {
+            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                {
+                    lateOrEarlyClassification: 0,
+                    timeWithDayAttr: vm.time.attendanceTime,
+                    workNo: 1,
+                }
+            );
+        }
+
+        if (vm.time.leaveTime != null) {
+            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                {
+                    lateOrEarlyClassification: 1,
+                    timeWithDayAttr: vm.time.leaveTime,
+                    workNo: 1,
+                }
+            );
+        }
+
+
+        if (vm.time.attendanceTime2 != null) {
+            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                {
+                    lateOrEarlyClassification: 0,
+                    timeWithDayAttr: vm.time.attendanceTime2,
+                    workNo: 2,
+                }
+            );
+        }
+
+        if (vm.time.attendanceTime2 != null) {
+            vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
+                {
+                    lateOrEarlyClassification: 1,
+                    timeWithDayAttr: vm.time.leaveTime2,
+                    workNo: 2,
+                }
+            );
+        }
+
         vm.checkValidAll();
     }
 
@@ -201,12 +267,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         application: vm.application,
                         infoOutput: vm.infoOutPut,
                     };
-                    vm.$http.post('at', API.register,params).then((res: IRes) => {
+                    vm.$http.post('at', API.register, params).then((res: IRes) => {
                         vm.paramsAComponent = {
                             appID: res.data.appID,
                             mode: vm.mode,
                         };
-                        vm.$emit('nextComponentA0',vm.paramsAComponent);
+                        vm.$emit('nextComponentA0', vm.paramsAComponent);
                         vm.$mask('hide');
                     });
                 } else {
@@ -227,32 +293,77 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public handleChangeDate(paramsDate) {
         const vm = this;
-        
-        vm.startDate = vm.$dt(paramsDate.startDate,'YYYY/MM/DD');
-        vm.application.appDate = vm.startDate;
-        vm.application.prePostAtr = vm.prePostArt;
-        vm.application.opAppStartDate = vm.startDate;
-        vm.application.opAppEndDate = vm.startDate;
+        let appDatesLst = [];
+
+
+        const startDate = vm.$dt(paramsDate.startDate, 'YYYY/MM/DD');
+
+        appDatesLst.push(startDate);
+
+        let params = {
+            appDates: appDatesLst,
+            appDispNoDate: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+            appDispWithDate: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+            appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+            baseDate: startDate,
+            setting: vm.infoOutPut.lateEarlyCancelAppSet
+        };
+        if (paramsDate.startDate) {
+            vm.$http.post('at', API.changeAppDate, params).then((res: any) => {
+                const { data } = res;
+                const { appDispInfoWithDateOutput } = data;
+                const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
+
+                console.log(opActualContentDisplayLst);
+                opActualContentDisplayLst.forEach((i) => {
+                    if (i.opAchievementDetail) {
+                        if (i.opAchievementDetail.opWorkTime != null && i.opAchievementDetail.opLeaveTime != null) {
+                            vm.time.attendanceTime = i.opAchievementDetail.opWorkTime;
+                            vm.time.leaveTime = i.opAchievementDetail.opLeaveTime;
+                            vm.time.attendanceTime2 = i.opAchievementDetail.opWorkTime2;
+                            vm.time.leaveTime2 = i.opAchievementDetail.opDepartureTime2;
+                        }
+                    } else {
+                        if (vm.application.prePostAtr == 0) {
+                            vm.$updateValidator('vm.time.attendanceTime', { required: false });
+                            vm.$updateValidator('vm.time.leaveTime', { required: false });
+                            vm.time.attendanceTime = null;
+                            vm.time.leaveTime = null;
+                        } else {
+                            vm.$updateValidator('vm.time.attendanceTime', { required: false });
+                            vm.$updateValidator('vm.time.leaveTime', { required: false });
+                            vm.time.attendanceTime = null;
+                            vm.time.leaveTime = null;
+                            vm.$modal.error('Msg_1707');
+
+                            return;
+                        }
+                    }
+                });
+            });
+        }
+        vm.application.appDate = startDate;
+        vm.application.prePostAtr;
+        vm.application.opAppStartDate = startDate;
+        vm.application.opAppEndDate = startDate;
     }
 
     public handleChangeAppReason(appReason) {
         const vm = this;
 
-        vm.opAppReason = appReason;
-        vm.application.opAppReason = vm.opAppReason;
+        vm.application.opAppReason = appReason;
     }
 
     public handleChangeReasonCD(reasonCD) {
         const vm = this;
 
-        vm.reasonCD = reasonCD;
-        vm.application.opAppStandardReasonCD = vm.reasonCD;
+        vm.application.opAppStandardReasonCD = reasonCD;
     }
 
     public handleChangePrePost(prePost) {
         const vm = this;
 
-        vm.prePostArt = prePost;
+        vm.application.prePostAtr = prePost;
     }
 
     public mounted() {
@@ -290,11 +401,7 @@ const initInfoOutput = (): IInfoOutput => ({
     appDispInfoStartupOutput: null,
     arrivedLateLeaveEarly: {
         lateCancelation: [],
-        lateOrLeaveEarlies: [{
-            lateOrEarlyClassification: 0,
-            timeWithDayAttr: 0,
-            workNo: 0,
-        }],
+        lateOrLeaveEarlies: [],
     },
     earlyInfos: [{
         category: 0,
@@ -309,3 +416,4 @@ const initInfoOutput = (): IInfoOutput => ({
         companyId: '',
     }
 });
+
