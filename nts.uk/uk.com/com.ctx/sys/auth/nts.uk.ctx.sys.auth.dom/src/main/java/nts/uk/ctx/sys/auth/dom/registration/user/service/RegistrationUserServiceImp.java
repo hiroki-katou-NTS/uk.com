@@ -25,8 +25,8 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 /**
  * The Class RegistrationUserServiceImp.

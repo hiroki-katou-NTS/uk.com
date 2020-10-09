@@ -17,10 +17,10 @@ import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

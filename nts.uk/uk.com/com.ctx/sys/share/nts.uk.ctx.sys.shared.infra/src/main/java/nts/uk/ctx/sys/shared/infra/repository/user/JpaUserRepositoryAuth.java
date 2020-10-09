@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.repository.user;
+package nts.uk.ctx.sys.shared.infra.repository.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.auth.dom.user.SearchUser;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
+import nts.uk.ctx.sys.shared.dom.user.SearchUser;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.infra.entity.user.SacmtUser;
 
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {

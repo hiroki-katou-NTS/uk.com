@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.grant.RoleFromUserIdPub;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprExport;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprPub;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 /**
  * 
  * @author Doan Duy Hung

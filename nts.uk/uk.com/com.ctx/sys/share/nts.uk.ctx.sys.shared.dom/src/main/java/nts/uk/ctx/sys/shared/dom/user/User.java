@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.user;
+package nts.uk.ctx.sys.shared.dom.user;
 
 import java.util.Optional;
 

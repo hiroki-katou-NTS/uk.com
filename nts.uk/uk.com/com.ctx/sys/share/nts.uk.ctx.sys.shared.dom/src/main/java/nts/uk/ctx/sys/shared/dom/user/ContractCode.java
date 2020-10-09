@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.user;
+package nts.uk.ctx.sys.shared.dom.user;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

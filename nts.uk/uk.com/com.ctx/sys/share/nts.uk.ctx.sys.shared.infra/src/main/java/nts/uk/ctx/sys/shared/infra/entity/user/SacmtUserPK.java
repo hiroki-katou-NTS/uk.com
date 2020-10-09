@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.entity.user;
+package nts.uk.ctx.sys.shared.infra.entity.user;
 
 import java.io.Serializable;
 

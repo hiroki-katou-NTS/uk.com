@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.auth.app.find.registration.user;
 
 import lombok.Value;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.User;
 
 /* (non-Javadoc)
  * @see java.lang.Object#toString()

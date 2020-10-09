@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.entity.user;
+package nts.uk.ctx.sys.shared.infra.entity.user;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.infra.repository.user;
+package nts.uk.ctx.sys.shared.infra.repository.user;
 
 import javax.ejb.Stateless;
 

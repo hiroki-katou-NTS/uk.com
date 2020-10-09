@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.tenant.dom;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**
  * テナント管理者を作る
