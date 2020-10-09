@@ -92,7 +92,7 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 					.setParameter("cid", cid)
 					.setParameter("code", workCycle.get().getKdpstDailyPatternSetPK().patternCd)
 					.getList();
-			return Optional.of(KdpstDailyPatternSet.toDomain(workCycle.get(), workCycleInfos));
+			return Optional.of(KdpstDailyPatternSet.toDomainGet(workCycle.get(), workCycleInfos));
 		}
 		return Optional.empty();
 	}
@@ -109,7 +109,7 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 		if (!workCycles.isEmpty()) {
 			workCycles.stream().forEach(i -> {
 				val workCycleInfos = this.queryProxy().query(GET_INFO_BY_CID_AND_CODE, KdpstDailyPatternVal.class).setParameter("cid", cid).setParameter("code", i.getKdpstDailyPatternSetPK().patternCd).getList();
-				result.add(KdpstDailyPatternSet.toDomain(i, workCycleInfos));
+				result.add(KdpstDailyPatternSet.toDomainGet(i, workCycleInfos));
 			});
 		}
 		return result;
