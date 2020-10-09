@@ -532,11 +532,10 @@ module nts.uk.at.kdp003.a {
 									const { stampResultDisplay } = fingerStampSetting;
 									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 									const { USE } = NotUseAtr;
-									const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
 									vm.playAudio(btn.audioType);
 
-									if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
+									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 										return storage('KDP010_2C', displayItemId)
 											.then(() => storage('infoEmpToScreenC', employeeInfo))
 											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;

@@ -66,7 +66,7 @@ public class Ksu001uScreenQuery {
 		/** 2. 組織の表示情報を取得する(Require, 年月日) **/
 		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, request.toDate());
 		if (displayInfoOrganization != null) {
-			dto.setDisplayName(displayInfoOrganization.getName());
+			dto.setDisplayName(displayInfoOrganization.getDisplayName());
 		}
 		if (shiftTable.isPresent()) {
 			dto.setPublicDate(shiftTable.get().getEndDatePublicationPeriod().toString());

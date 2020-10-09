@@ -48,14 +48,14 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDir
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -675,7 +675,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 					appTypeSetting,
 					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
 		}	
-		return new ProcessResult(true, false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), application.getAppID(), "");
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
+		processResult.setAppID(application.getAppID());
+		return processResult;
 
 	}
 	@Override
@@ -720,7 +723,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
 //				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID());
+		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID(), inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 //		return null;
 
 	}

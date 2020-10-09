@@ -1,53 +1,56 @@
 <template>
   <div class="cmms45componentsapp4">
-    <div class="card card-label">
+    <!-- B2 -->
+    <div v-if="isCondition1 && isCondition4" class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
-        <span class="textPosition">{{'KAFS07_2' | i18n}}</span>
+        <span class="textPosition">{{'KAFS09_22' | i18n}}</span>
       </div>
     </div>
-    <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">変更する</span>
+    <!-- B2_1 -->
+    <div v-if="isCondition1 && isCondition4" class="paddingSpan">
+      <span v-if="dataOutput.goBackApplication.isChangedWork == 0">{{'KAFS09_24' | i18n}}</span>
+      <span v-if="dataOutput.goBackApplication.isChangedWork == 1">{{'KAFS09_23' | i18n}}</span>
     </div>
-    <!-- B1_1 -->
+    <!-- B3 -->
 
-    <div class="card card-label">
+    <div v-if="isCondition2 && isCondition3" class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
-        <span class="textPosition">{{'KAFS07_2' | i18n}}</span>
+        <span class="textPosition">{{'KAFS09_3' | i18n}}</span>
       </div>
     </div>
-    <!-- B1_2 -->
-    <div>
-      <span class="textSize uk-text-dark-gray">{{'KAFS07_3' | i18n}}</span>
+    <!-- B3_1 -->
+    <div v-if="isCondition2 && isCondition3">
+      <span class="textSize uk-text-dark-gray">{{'KAFS09_4' | i18n}}</span>
     </div>
-    <!-- B1_3 -->
-    <div class="paddingSpan">
+    <!-- B3_2 -->
+    <div v-if="isCondition2 && isCondition3" class="paddingSpan">
       <span>{{$app().workType | i18n}}</span>
     </div>
-    <!-- B1_4 -->
-    <div>
-      <span class="textSize uk-text-dark-gray">{{'KAFS07_4' | i18n}}</span>
+    <!-- B3_3 -->
+    <div v-if="isCondition2 && isCondition3">
+      <span class="textSize uk-text-dark-gray">{{'KAFS09_5' | i18n}}</span>
     </div>
-    <!-- B1_5 -->
-    <div class="paddingSpan">
+    <!-- B3_4 -->
+    <div v-if="isCondition2 && isCondition3" class="paddingSpan">
       <span>{{$app().workTime | i18n}}</span>
     </div>
 
-    <!-- B2_1 -->
+    <!-- B5 -->
 
-    <div v-if="isCondition1" class="card card-label">
+    <div class="card card-label">
       <div class="card-header uk-bg-accordion headerDiv">
-        <span class="textPosition">{{'KAFS07_5' | i18n}}</span>
+        <span class="textPosition">{{'KAFS09_8' | i18n}}</span>
       </div>
     </div>
-    <!-- B2_2 -->
-    <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="$app().straight">{{'KAFS07_11' | i18n}}</span>
-      <span v-if="!$app().straight">{{'KAFS07_12' | i18n}}</span>
+    <!-- B5_1 -->
+    <div class="paddingSpan">
+      <span v-if="$app().straight">{{'KAFS09_6' | i18n}}</span>
+      <span v-if="!$app().straight">{{'KAFS09_7' | i18n}}</span>
     </div>
-    <!-- B2_3 -->
-    <div v-if="isCondition1" class="paddingSpan">
-      <span v-if="$app().bounce">{{'KAFS07_13' | i18n}}</span>
-      <span v-if="!$app().bounce">{{'KAFS07_14' | i18n}}</span>
+    <!-- B5_2 -->
+    <div class="paddingSpan">
+      <span v-if="$app().bounce">{{'KAFS09_9' | i18n}}</span>
+      <span v-if="!$app().bounce">{{'KAFS09_10' | i18n}}</span>
     </div>
   </div>
 </template>

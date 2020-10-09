@@ -53,8 +53,13 @@ module nts.uk.at.view.ksu001.q {
 						self.budgetData.itemCode = codeEB;
 						self.listperiodsTemp = [];						
 						self.arrayDate.forEach((x) => {
-							self.listperiodsTemp.push(new ItemModel(x, ''));
-						});					
+							self.listperiodsTemp.push(new ItemModel(x, ''));							
+						});		
+						let size = self.arrayDate.length ;
+						while (size < 10){
+							self.listperiodsTemp.push(new ItemModel('', ''));
+							size++;
+						}			
 						self.listperiods.removeAll();
 						self.loadFindBudgetDaily(self.budgetData).done(() => {		
 							nts.uk.ui.errors.clearAll();			
@@ -105,13 +110,14 @@ module nts.uk.at.view.ksu001.q {
 
 				self.getDaysArray = function(start, end) {					
 					let arr = [];
-					let datePlus = new Date(end);		
+					// let datePlus = new Date(end);		
 					for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
 						arr.push(new Date(dt));
 					}
-					while(arr.length <10){										
-						arr.push(new Date(datePlus.setDate(datePlus.getDate() + 1)));						
-					}
+					// while(arr.length <10){										
+					// 	// arr.push(new Date(datePlus.setDate(datePlus.getDate() + 1)));	
+					// 	arr.push();						
+					// }
 					return arr;
 				};
 
@@ -134,7 +140,7 @@ module nts.uk.at.view.ksu001.q {
 				self.currencyeditor = {
 					option: new nts.uk.ui.option.CurrencyEditorOption({
 						grouplength: 3,
-						currencyposition:"right",						
+						currencyposition:"right",	
 						currencyformat: "JPY"
 					}),
 				};
@@ -145,7 +151,6 @@ module nts.uk.at.view.ksu001.q {
 				let self = this;
 				var dfd = $.Deferred();							
 				service.findBudgetDaily(data).done(function(items: any) {
-					self.clearError();
 					if (items) {						
 						self.listBudgetDaily = items;
 						items.forEach(item => {
@@ -199,12 +204,14 @@ module nts.uk.at.view.ksu001.q {
 				command.unit = self.targetData.unit;
 				command.id = self.targetData.id;
 				command.itemCode = self.selectItemCode();
-				var dateValues = [];
+				var dateValues = [];				
 				self.listperiods().forEach((x) => {
-					dateValues.push({
-						date: x.date().slice(0, 10),
-						value: x.value()
-					});
+					if(x.date() != ''){
+						dateValues.push({
+							date: x.date().slice(0, 10),
+							value: x.value()
+						});
+					}					
 				});
 				command.dateAndValues = dateValues;				
 				command.type = self.labelQ32();

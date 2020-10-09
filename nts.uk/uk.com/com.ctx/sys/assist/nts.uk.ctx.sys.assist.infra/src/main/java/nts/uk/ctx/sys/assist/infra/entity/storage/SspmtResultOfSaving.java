@@ -8,6 +8,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -170,7 +171,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SspmtResultOfLog> listResultOfLogs;
 
 	@Override
