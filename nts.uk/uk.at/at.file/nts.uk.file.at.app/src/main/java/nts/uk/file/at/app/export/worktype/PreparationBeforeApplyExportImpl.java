@@ -304,14 +304,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                                         : "";
                                 break;
                             case 2:
-                                value = appDeadlineSetting.isPresent()
-                                        ? (appDeadlineSetting.get().getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY
+                                if (appDeadlineSetting.isPresent() && appDeadlineSetting.get().getUseAtr() == UseDivision.TO_USE)
+                                    value = appDeadlineSetting.get().getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY
                                         ? TextResource.localize("KAF022_321") + TextResource.localize("KAF022_508")
-                                        : TextResource.localize("KAF022_322") + TextResource.localize("KAF022_508"))
-                                        : "";
+                                        : TextResource.localize("KAF022_322") + TextResource.localize("KAF022_508");
+                                else value = "";
                                 break;
                             case 3:
-                                if (appDeadlineSetting.isPresent()) {
+                                if (appDeadlineSetting.isPresent() && appDeadlineSetting.get().getUseAtr() == UseDivision.TO_USE) {
                                     int resourceId = 323 + appDeadlineSetting.get().getDeadline().v();
                                     String resource = "KAF022_" + resourceId;
                                     value = TextResource.localize(resource) + TextResource.localize("KAF022_509");
@@ -382,15 +382,25 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             if (col == MAIN_COL_SIZE - 1) {
                 if (row == 0) return setting.getOtAppBeforeAccepRestric().get().isToUse() ? CHECK : NOT_CHECK;
                 if (row == 1)
-                    return setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY ? TextResource.localize("KAF022_63") : TextResource.localize("KAF022_66");
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse()
+                            ? setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY ? TextResource.localize("KAF022_63") : TextResource.localize("KAF022_66")
+                            : "";
                 if (row == 2)
-                    return setting.getOtAppBeforeAccepRestric().get().getDateBeforehandRestrictions().name + TextResource.localize("KAF022_510");
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_DAY
+                            ? setting.getOtAppBeforeAccepRestric().get().getDateBeforehandRestrictions().name + TextResource.localize("KAF022_510")
+                            : "";
                 if (row == 3)
-                    return setting.getOtAppBeforeAccepRestric().get().getOpEarlyOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("");
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
+                            ? setting.getOtAppBeforeAccepRestric().get().getOpEarlyOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
+                            : "";
                 if (row == 4)
-                    return setting.getOtAppBeforeAccepRestric().get().getOpNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("");
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
+                            ? setting.getOtAppBeforeAccepRestric().get().getOpNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
+                            : "";
                 if (row == 5)
-                    return setting.getOtAppBeforeAccepRestric().get().getOpEarlyNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("");
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
+                            ? setting.getOtAppBeforeAccepRestric().get().getOpEarlyNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
+                            : "";
                 return setting.getAfterhandRestriction().isAllowFutureDay() ? CHECK : NOT_CHECK;
             }
         } else {
@@ -401,7 +411,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             if (col == MAIN_COL_SIZE - 1) {
                 if (row == 0) return setting.getBeforehandRestriction().get().isToUse() ? CHECK : NOT_CHECK;
                 else if (row == 1)
-                    return setting.getBeforehandRestriction().get().getDateBeforehandRestrictions().name + TextResource.localize("KAF022_510");
+                    return setting.getBeforehandRestriction().get().isToUse()
+                            ? setting.getBeforehandRestriction().get().getDateBeforehandRestrictions().name + TextResource.localize("KAF022_510")
+                            : "";
                 else return setting.getAfterhandRestriction().isAllowFutureDay() ? CHECK : NOT_CHECK;
             }
         }
@@ -479,7 +491,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         if (col == MAIN_COL_SIZE - 1) {
             if (row == 0) return value ? TextResource.localize("KAF022_403") : TextResource.localize("KAF022_404");
             if (row == 1) return value ? TextResource.localize("KAF022_272") : TextResource.localize("KAF022_273");
-            else return value ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
+            else return value ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
         }
         return "";
     }
@@ -599,12 +611,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         if (col == MAIN_COL_SIZE - 1) {
             if (row == 0)
                 return setting.isStandardReasonRequired()
-                        ? TextResource.localize("KAF022_100")
-                        : TextResource.localize("KAF022_101");
+                        ? TextResource.localize("KAF022_75")
+                        : TextResource.localize("KAF022_82");
             if (row == 1)
                 return setting.isRequiredAppReason()
-                        ? TextResource.localize("KAF022_100")
-                        : TextResource.localize("KAF022_101");
+                        ? TextResource.localize("KAF022_75")
+                        : TextResource.localize("KAF022_82");
         }
         return "";
     }
