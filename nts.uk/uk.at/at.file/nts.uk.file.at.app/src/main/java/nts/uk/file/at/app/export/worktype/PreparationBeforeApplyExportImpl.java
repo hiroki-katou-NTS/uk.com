@@ -921,22 +921,23 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         }
                         data.add(MasterData.builder().rowData(rowData).build());
                     }
-                } else {
-                    Map<String, MasterCellData> rowData = new HashMap<>();
-                    for (int col = 0; col < REASON_COL_SIZE; col++) {
-                        String value;
-                        if (col == 0) value = appType.name;
-                        else value = "";
-                        rowData.put(
-                                COLUMN_NO_HEADER + col,
-                                MasterCellData.builder()
-                                        .columnId(COLUMN_NO_HEADER + col)
-                                        .value(value)
-                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                                        .build());
-                    }
-                    data.add(MasterData.builder().rowData(rowData).build());
                 }
+//                else {
+//                    Map<String, MasterCellData> rowData = new HashMap<>();
+//                    for (int col = 0; col < REASON_COL_SIZE; col++) {
+//                        String value;
+//                        if (col == 0) value = appType.name;
+//                        else value = "";
+//                        rowData.put(
+//                                COLUMN_NO_HEADER + col,
+//                                MasterCellData.builder()
+//                                        .columnId(COLUMN_NO_HEADER + col)
+//                                        .value(value)
+//                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+//                                        .build());
+//                    }
+//                    data.add(MasterData.builder().rowData(rowData).build());
+//                }
             } else {
                 List<AppReasonStandard> hdReasons = reasons.stream().filter(r -> r.getApplicationType() == appType).collect(Collectors.toList());
                 EnumSet.allOf(HolidayAppType.class).forEach(hdAppType -> {
@@ -963,22 +964,23 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             }
                             data.add(MasterData.builder().rowData(rowData).build());
                         }
-                    } else {
-                        Map<String, MasterCellData> rowData = new HashMap<>();
-                        for (int col = 0; col < REASON_COL_SIZE; col++) {
-                            String value;
-                            if (col == 0) value = appType.name + " - 【" + hdAppType.name + "】";
-                            else value = "";
-                            rowData.put(
-                                    COLUMN_NO_HEADER + col,
-                                    MasterCellData.builder()
-                                            .columnId(COLUMN_NO_HEADER + col)
-                                            .value(value)
-                                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                                            .build());
-                        }
-                        data.add(MasterData.builder().rowData(rowData).build());
                     }
+//                    else {
+//                        Map<String, MasterCellData> rowData = new HashMap<>();
+//                        for (int col = 0; col < REASON_COL_SIZE; col++) {
+//                            String value;
+//                            if (col == 0) value = appType.name + " - 【" + hdAppType.name + "】";
+//                            else value = "";
+//                            rowData.put(
+//                                    COLUMN_NO_HEADER + col,
+//                                    MasterCellData.builder()
+//                                            .columnId(COLUMN_NO_HEADER + col)
+//                                            .value(value)
+//                                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+//                                            .build());
+//                        }
+//                        data.add(MasterData.builder().rowData(rowData).build());
+//                    }
                 });
             }
         });
