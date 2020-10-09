@@ -192,7 +192,7 @@ module nts.uk.at.view.ksm003.a {
                         vm.mainModel().patternName(dataRes.name);
 
                         //disabel addNew button
-                        vm.lessThan99Items(dataRes.infos.length <= vm.maxWorkingTimeItems);
+                        vm.lessThan99Items(dataRes.infos.length < vm.maxWorkingTimeItems);
 
                         //get list item
                         let dailyPatternVals = dataRes.infos.map(function (item) {
@@ -295,7 +295,7 @@ module nts.uk.at.view.ksm003.a {
         disableAddNewLine() {
             let vm = this;
             let dailyPatternVals = vm.mainModel().dailyPatternVals();
-            vm.lessThan99Items(dailyPatternVals.length <= vm.maxWorkingTimeItems);
+            vm.lessThan99Items(dailyPatternVals.length < vm.maxWorkingTimeItems);
         }
 
         //click button open Dialog Working
