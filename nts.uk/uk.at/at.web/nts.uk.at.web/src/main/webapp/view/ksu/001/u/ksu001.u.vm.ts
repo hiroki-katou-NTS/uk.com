@@ -1136,7 +1136,11 @@ module nts.uk.at.view.ksu001.u {
                 if(self.newEditDate() == self.editDate()){
                     size = numberDayOfMonth + parseInt(publicDateSplit[2]);
                 } else {
-                    size = numberDayOfMonth + parseInt(editDateSplit[2]);                                 
+                    if(parseInt(editDateSplit[1]) != parseInt(prevWeekSplit[1])){
+                        size = numberDayOfMonth + parseInt(editDateSplit[2]);    
+                    } else {
+                        size = numberDayOfMonth;  
+                    }                                                  
                 }                
                 for (let i = 1; i <= size; i++) {
                     let date = self.formatDate(new Date(parseInt(prevWeekEditDateSplit[0]), parseInt(prevWeekEditDateSplit[1]) - 1, i));                  
