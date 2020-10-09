@@ -64,16 +64,7 @@ export class KafS00BComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: {
         // KAFS00_B_起動情報
-        input: {
-            // 画面モード
-            mode: ScreenMode;
-            // 申請表示設定
-            appDisplaySetting: any;
-            // 新規モード内容
-            newModeContent?: NewModeContent;
-            // 詳細モード内容
-            detailModeContent?: DetailModeContent;
-        },
+        input: KAFS00BParams,
         output: {
             // 事前事後区分
             prePostAtr: number;
@@ -109,6 +100,20 @@ export class KafS00BComponent extends Vue {
             start: null,
             end: null,
         };
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
+        }
         if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
             self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
             self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
@@ -268,4 +273,16 @@ interface DetailModeContent {
     startDate: string;
     // 申請終了日
     endDate: string;
+}
+
+// KAFS00_B_起動情報
+export interface KAFS00BParams {
+    // 画面モード
+    mode: ScreenMode;
+    // 申請表示設定
+    appDisplaySetting: any;
+    // 新規モード内容
+    newModeContent?: NewModeContent;
+    // 詳細モード内容
+    detailModeContent?: DetailModeContent;
 }
