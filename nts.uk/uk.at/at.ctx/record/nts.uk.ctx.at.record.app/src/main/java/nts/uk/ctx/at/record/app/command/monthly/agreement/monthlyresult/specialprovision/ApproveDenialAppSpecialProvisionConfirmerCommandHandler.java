@@ -9,6 +9,9 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ConfirmationStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,12 +20,14 @@ import java.util.Optional;
  *
  * @author Le Huu Dat
  */
-public class ApproveAppSpecialProvisionConfirmerCommandHandler extends CommandHandler<List<ApproveAppSpecialProvisionConfirmerCommand>> {
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class ApproveDenialAppSpecialProvisionConfirmerCommandHandler extends CommandHandler<List<ApproveDenialAppSpecialProvisionConfirmerCommand>> {
     @Override
-    protected void handle(CommandHandlerContext<List<ApproveAppSpecialProvisionConfirmerCommand>> context) {
+    protected void handle(CommandHandlerContext<List<ApproveDenialAppSpecialProvisionConfirmerCommand>> context) {
         RequireImpl require = new RequireImpl();
-        List<ApproveAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
-        for (ApproveAppSpecialProvisionConfirmerCommand command : commands) {
+        List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
+        for (ApproveDenialAppSpecialProvisionConfirmerCommand command : commands) {
             AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), command.getConfirmerId(),
                     EnumAdaptor.valueOf(command.getConfirmStatus(), ConfirmationStatus.class));
             transaction.execute(persist);

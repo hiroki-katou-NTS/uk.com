@@ -8,7 +8,7 @@ import lombok.Value;
  * @author Le Huu Dat
  */
 @Value
-public class ApproveAppSpecialProvisionApproverCommand {
+public class ApproveDenialAppSpecialProvisionApproverCommand {
     /**
      * 申請ID
      */

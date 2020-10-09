@@ -4,9 +4,11 @@ import lombok.Value;
 
 /**
  * 36協定特別条項の適用申請の承認/否認を行う（従業員代表）
+ *
+ * @author Le Huu Dat
  */
 @Value
-public class ApproveAppSpecialProvisionConfirmerCommand {
+public class ApproveDenialAppSpecialProvisionConfirmerCommand {
     /**
      * 申請ID
      */

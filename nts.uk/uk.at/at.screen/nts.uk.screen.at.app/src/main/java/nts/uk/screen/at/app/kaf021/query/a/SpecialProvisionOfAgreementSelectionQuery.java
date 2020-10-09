@@ -123,7 +123,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
         }
         for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
             for (String employeeId : employeeIds) {
-                GetAgreementTime.get(null, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
+                GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
             }
         }
 

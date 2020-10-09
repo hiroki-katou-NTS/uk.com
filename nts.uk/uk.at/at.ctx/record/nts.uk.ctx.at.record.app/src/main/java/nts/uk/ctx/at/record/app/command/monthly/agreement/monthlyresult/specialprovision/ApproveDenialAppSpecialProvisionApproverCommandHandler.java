@@ -14,6 +14,9 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,12 +25,14 @@ import java.util.Optional;
  *
  * @author Le Huu Dat
  */
-public class ApproveAppSpecialProvisionApproverCommandHandler extends CommandHandler<List<ApproveAppSpecialProvisionApproverCommand>> {
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class ApproveDenialAppSpecialProvisionApproverCommandHandler extends CommandHandler<List<ApproveDenialAppSpecialProvisionApproverCommand>> {
     @Override
-    protected void handle(CommandHandlerContext<List<ApproveAppSpecialProvisionApproverCommand>> context) {
+    protected void handle(CommandHandlerContext<List<ApproveDenialAppSpecialProvisionApproverCommand>> context) {
         RequireImpl require = new RequireImpl();
-        List<ApproveAppSpecialProvisionApproverCommand> commands = context.getCommand();
-        for (ApproveAppSpecialProvisionApproverCommand command : commands) {
+        List<ApproveDenialAppSpecialProvisionApproverCommand> commands = context.getCommand();
+        for (ApproveDenialAppSpecialProvisionApproverCommand command : commands) {
             Optional<AgreementApprovalComments> approvalComment = Optional.empty();
             if (command.getApprovalComment() != null) {
                 approvalComment = Optional.of(new AgreementApprovalComments(command.getApprovalComment()));

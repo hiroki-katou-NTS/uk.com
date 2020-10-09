@@ -28,6 +28,14 @@ public class AppSpecialProvisionMonthWebService extends WebService {
     private ApplyAppSpecialProvisionYearCommandHandler applyAppSpecialProvisionYearCommandHandler;
     @Inject
     private DeleteAppSpecialProvisionCommandHandler deleteAppSpecialProvisionCommandHandler;
+    @Inject
+    private ApproveDenialAppSpecialProvisionApproverCommandHandler approveDenialAppSpecialProvisionApproverCommandHandler;
+    @Inject
+    private ApproveDenialAppSpecialProvisionConfirmerCommandHandler approveDenialAppSpecialProvisionConfirmerCommandHandler;
+    @Inject
+    private BulkApproveAppSpecialProvisionApproverCommandHandler bulkApproveAppSpecialProvisionApproverCommandHandler;
+    @Inject
+    private BulkApproveAppSpecialProvisionConfirmerCommandHandler bulkApproveAppSpecialProvisionConfirmerCommandHandler;
 
     @Path("register-month")
     @POST
@@ -57,5 +65,29 @@ public class AppSpecialProvisionMonthWebService extends WebService {
     @POST
     public void delete(List<DeleteAppSpecialProvisionCommand> commands) {
         this.deleteAppSpecialProvisionCommandHandler.handle(commands);
+    }
+
+    @Path("approve-denial-approver")
+    @POST
+    public void approveDenialApprover(List<ApproveDenialAppSpecialProvisionApproverCommand> commands) {
+        this.approveDenialAppSpecialProvisionApproverCommandHandler.handle(commands);
+    }
+
+    @Path("approve-denial-confirmer")
+    @POST
+    public void approveDenialConfirmer(List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands) {
+        this.approveDenialAppSpecialProvisionConfirmerCommandHandler.handle(commands);
+    }
+
+    @Path("bulk-approve-approver")
+    @POST
+    public void bulkApproveApprover(List<BulkApproveAppSpecialProvisionApproverCommand> commands) {
+        this.bulkApproveAppSpecialProvisionApproverCommandHandler.handle(commands);
+    }
+
+    @Path("bulk-approve-confirmer")
+    @POST
+    public void bulkApproveConfirmer(List<BulkApproveAppSpecialProvisionConfirmerCommand> commands) {
+        this.bulkApproveAppSpecialProvisionConfirmerCommandHandler.handle(commands);
     }
 }

@@ -366,7 +366,7 @@ module nts.uk.at.kaf021.b {
         getCurrentMaxHeader() {
             const vm = this;
             if (vm.isYearMode()) {
-                return vm.$i18n("KAF021_4");
+                return vm.$i18n("KAF021_67");
             } else {
                 let month = vm.getMonth();
                 return vm.$i18n("KAF021_64", [month.toString()])
