@@ -8,29 +8,29 @@ import { vmOf } from 'vue/types/umd';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        params: {
-            output: {
-                prePostAtr: {
-                    selectCheck: {
-                        test(value: number) {
-                            const vm = this;
-                            if (value == null || value < 0 || value > 1) {
-                                document.getElementById('prePostSelect').className += ' invalid';
+        // params: {
+        //     output: {
+        //         prePostAtr: {
+        //             selectCheck: {
+        //                 test(value: number) {
+        //                     const vm = this;
+        //                     if (value == null || value < 0 || value > 1) {
+        //                         document.getElementById('prePostSelect').className += ' invalid';
 
-                                return false;
-                            }
-                            let prePostSelectElement = document.getElementById('prePostSelect');
-                            if (!_.isNull(prePostSelectElement)) {
-                                prePostSelectElement.classList.remove('invalid');
-                            }
+        //                         return false;
+        //                     }
+        //                     let prePostSelectElement = document.getElementById('prePostSelect');
+        //                     if (!_.isNull(prePostSelectElement)) {
+        //                         prePostSelectElement.classList.remove('invalid');
+        //                     }
 
-                            return true;
-                        },
-                        messageId: 'MsgB_30'
-                    }
-                }
-            }
-        },
+        //                     return true;
+        //                 },
+        //                 messageId: 'MsgB_30'
+        //             }
+        //         }
+        //     }
+        // },
         date: {
             required: true
         },
@@ -115,10 +115,10 @@ export class KafS00BComponent extends Vue {
             return;
         }
         if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
-            self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+            // self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
             self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
         } else {
-            self.$output.prePostAtr = null;
+            // self.$output.prePostAtr = null;
             self.prePostAtr = null;
         }
         if (self.$input.newModeContent) {
@@ -130,17 +130,17 @@ export class KafS00BComponent extends Vue {
                 self.$updateValidator('date', { validate: true });
             }
             if (self.displayPrePost) {
-                self.$updateValidator('params.output.prePostAtr', { validate: true });
+                // self.$updateValidator('params.output.prePostAtr', { validate: true });
                 self.$updateValidator('prePostAtr', { validate: true });
             } else {
-                self.$updateValidator('params.output.prePostAtr', { validate: false });
+                // self.$updateValidator('params.output.prePostAtr', { validate: false });
                 self.$updateValidator('prePostAtr', { validate: false });
             }
         }
         if (self.$input.detailModeContent) {
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
-            self.$updateValidator('params.output.prePostAtr', { validate: false });
+            // self.$updateValidator('params.output.prePostAtr', { validate: false });
             self.$updateValidator('prePostAtr', { validate: false });
         }
     }
