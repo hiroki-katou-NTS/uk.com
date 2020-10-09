@@ -196,13 +196,12 @@ module nts.uk.com.view.cmf003.i {
 
       $("#I6_1").ready(function() {
         vm.updateGridUI();
-        let totalHeight = 0;
-        $("#I6_1 > div").each(function(index){
-          if (index % 2)
-            totalHeight += $(this).height();
-        });
-        $(".storage-size").css("margin-top", totalHeight + 75);
+        vm.updateStorageLabelPos();
       });
+
+      $(window).on('resize', () => {
+        vm.updateStorageLabelPos();
+      })
 
       $("#I6_1 .mgrid-free").scroll(function() {
         vm.updateGridUI();
@@ -212,6 +211,15 @@ module nts.uk.com.view.cmf003.i {
     private updateGridUI() {
       $("#I6_1 .mcell").addClass("halign-center");
       $("#I6_1 .mcell:nth-child(2) button").addClass("download-icon");
+    }
+
+    private updateStorageLabelPos() {
+      let totalHeight = 0;
+      $("#I6_1 > div").each(function(index){
+        if (index % 2)
+          totalHeight += $(this).height();
+      });
+      $(".storage-size").css("margin-top", totalHeight + 75);
     }
 
     private download(value: any) {
