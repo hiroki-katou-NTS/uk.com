@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -20,12 +22,18 @@ public class AgreementMonthSettingDto {
 
     private int alarmOneMonth;
 
-    public static AgreementMonthSettingDto setData(Optional<AgreementMonthSetting> data){
+    public static List<AgreementMonthSettingDto> setData(List<AgreementMonthSetting> data){
 
-        return data.map(setting -> new AgreementMonthSettingDto(
-                setting.getYearMonthValue().v(),
-                setting.getOneMonthTime().getError().v(),
-                setting.getOneMonthTime().getAlarm().v()
-        )).orElseGet(AgreementMonthSettingDto::new);
+        List<AgreementMonthSettingDto> agreementMonthSettingDtos = new ArrayList<>();
+
+        data.forEach(x -> {
+            agreementMonthSettingDtos.add(new AgreementMonthSettingDto(
+                    x.getYearMonthValue().v(),
+                    x.getOneMonthTime().getError().v(),
+                    x.getOneMonthTime().getAlarm().v()
+            ));
+        });
+
+        return agreementMonthSettingDtos;
     }
 }
