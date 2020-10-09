@@ -8,10 +8,10 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove;
 import lombok.Getter;
 
 /**
- * 利用単位設定を更新登録する
+ * ３６承認者登録単位設定を更新登録する
  */
 @Getter
-public class UpdateUnitSetOfApproveCommand {
+public class RegisterUnitSetOfApproveCommand {
 
 	// 職場を利用する
 	private Boolean useWorkplace;

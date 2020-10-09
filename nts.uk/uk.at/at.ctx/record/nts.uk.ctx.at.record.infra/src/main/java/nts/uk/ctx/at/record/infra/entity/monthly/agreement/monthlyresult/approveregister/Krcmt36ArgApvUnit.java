@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.approveregister;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
