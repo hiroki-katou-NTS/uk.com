@@ -44,7 +44,7 @@ public class WorkPlaceApproverHistoryDeleteDateCommandHandler extends CommandHan
 
         @Override
         public void changeLatestHistory(Approver36AgrByWorkplace domain,GeneralDate date) {
-            byWorkplaceRepo.update(domain,date);
+            byWorkplaceRepo.updateStartDate(domain,date);
         }
 
         @Override

@@ -28,7 +28,7 @@
 }
 
 .contents-area .panel-content .panel-right .noted {
-    max-width: 500px;
+    max-width: 560px;
     width: 100%;
     line-height: 22px;
     margin-bottom: 10px;
@@ -118,7 +118,15 @@
     margin-top: 0;
 }
 
+.contents-area .employee-lists .not-allow-setting {
+    color: #B1B1B1 !important;
+    cursor: default;
+}
+
 /* fixed in small screen < 1366px */
+.fix1366.contents-area .approver-employee-panel .panel-box .employee-lists {   
+    width: calc(70% + 15px);
+}
 .fix1366.contents-area .approver-employee-panel .panel-box {
     width: 380px;
 }

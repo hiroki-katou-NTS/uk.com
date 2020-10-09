@@ -52,7 +52,7 @@ public class CompanyApproverHistoryDeleteDateCommandHandler extends CommandHandl
 
         @Override
         public void changeHistory(Approver36AgrByCompany hist,GeneralDate date) {
-            byCompanyRepo.update(hist,date);
+            byCompanyRepo.updateStartDate(hist,date);
         }
 
         @Override
