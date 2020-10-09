@@ -432,7 +432,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             vm.$blockui('invisible')
 
 			let holidayListsErrors = [];
-			if (vm.listSatHoliday().length == 0){
+			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
 				holidayListsErrors.push({
 					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_6')]),
 					messageId: "MsgB_2",
@@ -440,7 +440,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				});
 			}
 
-			if (vm.listNonSatHoliday().length == 0){
+			if (vm.listNonSatHoliday().length == 0 && vm.reflectionSetting().nonStatutorySetting.useClassification()){
 				holidayListsErrors.push({
 					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_7')]),
 					messageId: "MsgB_2",
@@ -448,7 +448,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				});
 			};
 
-			if (vm.listPubHoliday().length == 0) {
+			if (vm.listPubHoliday().length == 0 && vm.reflectionSetting().holidaySetting.useClassification()) {
 				holidayListsErrors.push({
 					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_8')]),
 					messageId: "MsgB_2",
