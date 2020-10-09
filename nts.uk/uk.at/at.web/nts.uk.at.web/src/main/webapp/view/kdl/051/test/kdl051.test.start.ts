@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl020.test.start {
+module nts.uk.at.view.kdl051.test.start {
     let __viewContext: any = window['__viewContext'] || {};
     __viewContext.ready(() => {
 

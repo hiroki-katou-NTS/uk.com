@@ -37,18 +37,24 @@ public class ChildNursingLeaveFinder {
 						.build()
 		).collect(Collectors.toList());
 		NursingLeaveSetting childNursingLeave = nursingLeaveRepo.findByCompanyIdAndNursingCategory(cId, NursingCategory.ChildNursing.value);
-		NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
-														.manageType(childNursingLeave.getManageType().value)
-														.nursingCategory(childNursingLeave.getNursingCategory().value)
-														.startMonthDay(childNursingLeave.getStartMonthDay().intValue())
-														.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-														.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
-														.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
-														.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
-														.build();
+		if(childNursingLeave != null) {
+			NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
+					.manageType(childNursingLeave.getManageType().value)
+					.nursingCategory(childNursingLeave.getNursingCategory().value)
+					.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay().intValue() : 0)
+					.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
+					.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
+					.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
+					.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
+					.build();
+			return ManagementClassificationByEmployeeDto.builder()
+			.lstEmp(lstEmpRs)
+			.nursingLeaveSt(childNursingLeaveDt)
+			.build();
+		}
 		return ManagementClassificationByEmployeeDto.builder()
 				.lstEmp(lstEmpRs)
-				.nursingLeaveSt(childNursingLeaveDt)
+				.nursingLeaveSt(null)
 				.build();
 	}
 }

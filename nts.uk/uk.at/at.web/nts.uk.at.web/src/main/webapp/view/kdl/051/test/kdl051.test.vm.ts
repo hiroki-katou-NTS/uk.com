@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl020.test.screenModel {
+module nts.uk.at.view.kdl051.test.screenModel {
 
     import dialog = nts.uk.ui.dialog.info;
     import text = nts.uk.resource.getText;
@@ -23,10 +23,10 @@ module nts.uk.at.view.kdl020.test.screenModel {
 
         }
 
-        openKDL020Dialog() {
+        openKDL051Dialog() {
             let self = this,
                 employeeList = _.split(self.selectedCodeList(), ',');
-            setShared('KDL020A_PARAM', { baseDate: self.baseDate(), employeeIds: employeeList } );
+            setShared('KDL051A_PARAM', { baseDate: self.baseDate(), employeeIds: employeeList } );
             if(employeeList.length > 1 ) {
               modal("/view/kdl/051/multi.xhtml");
             } else {
