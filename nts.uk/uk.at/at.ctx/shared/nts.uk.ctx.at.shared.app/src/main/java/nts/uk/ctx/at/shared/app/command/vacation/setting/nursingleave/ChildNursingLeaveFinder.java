@@ -48,9 +48,9 @@ public class ChildNursingLeaveFinder {
 					.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 					.build();
 			return ManagementClassificationByEmployeeDto.builder()
-			.lstEmp(lstEmpRs)
-			.nursingLeaveSt(childNursingLeaveDt)
-			.build();
+					.lstEmp(lstEmpRs)
+					.nursingLeaveSt(childNursingLeaveDt)
+					.build();
 		}
 		return ManagementClassificationByEmployeeDto.builder()
 				.lstEmp(lstEmpRs)
