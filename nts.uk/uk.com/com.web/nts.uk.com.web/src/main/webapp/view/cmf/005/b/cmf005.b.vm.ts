@@ -109,6 +109,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     selectedPatternId: KnockoutObservable<string> = ko.observable('');
     savedName: KnockoutObservable<string> = ko.observable('');
     nextButtonText: KnockoutObservable<string> = ko.observable('');
+    buttonEnable: KnockoutObservable<boolean> = ko.observable(true);
 
     constructor() {
       var self = this;
@@ -138,10 +139,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       self.currentCode = ko.observable();
       self.currentCategory = ko.observableArray([]);
       self.listColumnHeader = ko.observableArray([
-        { headerText: '', key: 'categoryId', hidden: true },
+        { headerText: '', key: 'id', hidden: true },
         { headerText: getText('CMF005_24'), key: 'displayName', width: 220 },
         { headerText: getText('CMF005_25'), key: 'timeStore', width: 75, formatter: timeStore },
-        { headerText: getText('CMF005_229'), key: 'timeStore', width: 75 },
+        { headerText: getText('CMF005_229'), key: 'timeStop', width: 75 },
         { headerText: getText('CMF005_26'), key: 'storageRangeSaved', width: 75, formatter: storageRangeSaved }
       ]);
 
@@ -242,14 +243,16 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       const self = this;
       block.grayout();
       service.screenDisplayProcess().done(res => {
+        let arr: Pattern[] = [];
         _.forEach(res.patterns, x => {
           let p = new Pattern();
           p.code = x.patternCode;
           p.patternName = x.patternName;
           p.patternClassification = x.patternClassification;
           p.displayCode = x.patternClassification + x.patternCode;
-          self.patternList.push(p);
+          arr.push(p);
         });
+        self.patternList(arr);
         self.systemTypes(res.systemTypes);
         self.selectedPatternId(self.patternList()[0].displayCode);
         self.selectPattern(self.patternList()[0].displayCode);
@@ -289,7 +292,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             separateCompClassification: x.separateCompClassification,
             specifiedMethod: x.specifiedMethod,
             storeRange: x.storeRange,
-            systemType: x.systemType
+            systemType: x.systemType,
+            timeStop: x.timeStop,
+            id: nts.uk.util.randomId()
           };
           return category;
         }));
@@ -675,6 +680,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
           item.employeeName, item.affiliationName));
       });
       self.employeeList(employeeSearchs);
+      self.employeeDeletionList(_.map(self.employeeList(), e => new EmployeeDeletion(e.code, e.name, e.id, e.code, e.name)));
     }
 
     initComponnentKCP005() {
@@ -803,12 +809,13 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
       setShared("CMF005_E_PARAMS", params);
       modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
-        nts.uk.request.jump("/view/cmf/005/a/index.xhtml");
+        self.backScreenA();
       });
     }
 
     private saveManualSetting(): void {
       let self = this;
+      console.log(self.employeeDeletionList())
       let manualSetting = new ManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
         moment.utc(self.referenceDate, 'YYYY/MM/DD').toISOString(), moment.utc().toISOString(),
         moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString(),
@@ -977,10 +984,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     categoryId: string;
     categoryName: string;
     timeStore: number;
+    timeStop: string;
     systemType: number;
     separateCompClassification: number;
     specifiedMethod: number;
     storeRange: number;
     displayName: string;
+    id: string;
   }
 }

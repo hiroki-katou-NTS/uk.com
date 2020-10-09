@@ -38,4 +38,10 @@ public class SspmtDataDeletionSelectionCategoryPK implements Serializable {
 	@NonNull
 	@Column(name = "CONTRACT_CD")
 	public String contractCode;
+	
+	/**
+	 * システム種類
+	 */
+	@Column(name = "SYSTEM_TYPE")
+	public int systemType;
 }

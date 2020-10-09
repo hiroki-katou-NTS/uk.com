@@ -47,10 +47,7 @@ td.red-color {
 	color: #FF0000;
 }
 
-#I4_4 {
-  margin-left: 10px;
-}
-
-#I6_1 {
-  height: 570px !important;
+#I1_2 {
+  float: right;
+  margin-right: 10px;
 }

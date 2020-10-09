@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.assist.app.command.datarestoration.GetDataHistoryCommand;
 import nts.uk.ctx.sys.assist.app.command.datarestoration.GetSaveSetHistoryCommand;
 import nts.uk.ctx.sys.assist.app.find.autosetting.StorageFreeSpaceFinder;
 import nts.uk.ctx.sys.assist.app.find.datarestoration.SaveSetDto;
-import nts.uk.ctx.sys.assist.app.find.manualsetting.DeleteDataHandler;
+import nts.uk.ctx.sys.assist.app.find.resultofsaving.DeleteDataHandler;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.StorageHistoryFinder;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.StorageSaveSetFinder;

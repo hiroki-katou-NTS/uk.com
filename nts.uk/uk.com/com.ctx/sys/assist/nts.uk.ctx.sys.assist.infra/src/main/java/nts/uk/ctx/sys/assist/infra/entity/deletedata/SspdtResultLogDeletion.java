@@ -77,9 +77,11 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 	}
 
 	public static SspdtResultLogDeletion toEntity(ResultLogDeletion resultLog) {
-		return new SspdtResultLogDeletion(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
+		SspdtResultLogDeletion e = new SspdtResultLogDeletion(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
 				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().v(),
 				resultLog.getErrorEmployeeId(), resultLog.getErrorDate());
+		System.out.println();
+		return e;
 	}
 
 	public SspdtResultLogDeletion
@@ -95,6 +97,7 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 			super();
 			this.sspdtResultLogDeletionPK = sspdtResultLogDeletionPK;
 			this.companyID = companyId;
+			this.logTime = logTime;
 			this.processingContent = processingContent;
 			this.errorContent = errorContent;
 			this.errorEmployeeId = errorEmployeeId;

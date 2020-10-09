@@ -9,9 +9,12 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 
 @Getter
 @Setter
@@ -90,6 +93,16 @@ public class ManualSetDeletion extends AggregateRoot {
 	private Optional<Integer> endYearOfMonthly;
 	
 	/**
+	 * 実行区分
+	 */
+	public StorageClassification executeClassification;
+	
+	/**
+	 * 削除パターン
+	 */
+	public PatternCode delPattern;
+	
+	/**
 	 * 対象カテゴリ
 	 */
 	private List<CategoryDeletion> categories;
@@ -99,7 +112,7 @@ public class ManualSetDeletion extends AggregateRoot {
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
 			Integer startMonthOfMonthly, Integer endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly,
-			List<CategoryDeletion> categories) {
+			int executeClassification, String delPattern, List<CategoryDeletion> categories) {
 		return new ManualSetDeletion(delId, companyId, new DelName(delName), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, 
 				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)),
@@ -109,7 +122,9 @@ public class ManualSetDeletion extends AggregateRoot {
 				Optional.ofNullable(startDateOfDaily), Optional.ofNullable(endDateOfDaily), 
 				convertIntToYearStartMonth(Optional.ofNullable(startMonthOfMonthly)), 
 				convertIntToYearStartMonth(Optional.ofNullable(endMonthOfMonthly)), 
-				Optional.ofNullable(startYearOfMonthly), Optional.ofNullable(endYearOfMonthly), categories);
+				Optional.ofNullable(startYearOfMonthly), Optional.ofNullable(endYearOfMonthly),
+				EnumAdaptor.valueOf(executeClassification, StorageClassification.class),
+				new PatternCode(delPattern), categories);
 	}
 	public static Optional<Integer> convertYearMonthToInt(Optional<GeneralDate> yearMonth) {
 		if (yearMonth.isPresent()) {

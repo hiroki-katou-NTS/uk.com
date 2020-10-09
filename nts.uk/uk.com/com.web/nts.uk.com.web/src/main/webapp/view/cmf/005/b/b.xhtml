@@ -76,7 +76,7 @@
 							width: 500,
 							showNumbering: false,
 							dataSource: listDataCategory,
-							primaryKey: 'categoryId',
+							primaryKey: 'id',
 							columns: listColumnHeader,
 							multiple: false,
 							value : currentCategory,
@@ -166,7 +166,7 @@
             }" tabindex="10"></div>
           </div>
 					<div style="text-align: center; margin-top: 20px">
-						<button id="B20_2" class="x-large proceed" data-bind="click: nextScreenD, text: nextButtonText"></button>
+						<button id="B20_2" class="x-large proceed" data-bind="click: nextScreenD, text: nextButtonText, enable: buttonEnable"></button>
 					</div>
 
 				</div>

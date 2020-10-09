@@ -91,7 +91,7 @@ public class SaveErrorLogDeleteResult {
 			GeneralDateTime endDateTimeDel = GeneralDateTime.now();
 			ResultDeletion resultDel = optResultDel.get();
 			resultDel.setStatus(SaveStatus.INTERRUPTION);
-			resultDel.setEndDateTimeDel(endDateTimeDel);
+			resultDel.setEndDateTimeDel(Optional.ofNullable(endDateTimeDel));
 			resultDel.setFileName(new FileName(""));
 			resultDel.setFileSize(0);
 			resultDel.setFileId("");

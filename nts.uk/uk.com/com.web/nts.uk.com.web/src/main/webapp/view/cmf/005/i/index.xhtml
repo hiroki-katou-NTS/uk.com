@@ -17,26 +17,28 @@
       <div id="functions-area">
         <!--I1_1 操作選択に戻る-->
         <a id="I1_1" class="goback"
-          data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF003_300')}</a>
+          data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF005_9')}</a>
+        <!-- I1_2 デ－タ削除 -->
+        <label id="I1_2">#{i18n.getText('CMF005_2')}</label>
       </div>
       <div id="contents-area">
         <div class="content">
           <div class="div-line">
-            <!-- I2_1 画面タイトル -->
-            <label id="I2_1">#{i18n.getText('CMF003_301')}</label>
+            <!-- I2 デ－タ削除実行履歴 -->
+            <label id="I2">#{i18n.getText('CMF005_123')}</label>
           </div>
           <div class="div-line">
-            <!-- I2_2 カテゴリパネル -->
-            <div id="I2_2" data-bind="ntsPanel: {height: '160px', direction: 'none', showIcon: true }"
+            <!-- I3 削除セット選択(パネル) -->
+            <div id="I3" data-bind="ntsPanel: {height: '160px', direction: 'none', showIcon: true }"
               class="search-panel">
               <div class="flex">
-                <!-- I2_3 実行期間 -->
-                <div id="I2_3" class="div-column-1 flex" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_303')}
+                <!-- I3_1 実行期間(ラベル) -->
+                <div id="I2_3" class="div-column-1 flex" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_124')}
                 </div>
                 <div class="ntsControl">
-                  <!-- I2_4 検索期間入力 -->
-                  <div id="I2_4" class="flex valign-center div-column-2" data-bind="ntsDateRangePicker: { 
-                      name: '#[CMF003_304]',
+                  <!-- I3_1_1 実行期間 -->
+                  <div id="I3_1_1" class="flex valign-center div-column-2" data-bind="ntsDateRangePicker: { 
+                      name: '#[CMF005_124]',
                       enable: true, 
                       type: 'fullDate',
                       value: dateValue,
@@ -45,13 +47,13 @@
                 </div>
               </div>
               <div class="flex save-set-grid">
-                <!-- I2_5 保存セット -->
-                <div id="I2_5" class="div-column-1 flex" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_305')}
+                <!-- I3_2 削除セット -->
+                <div id="I3_2" class="div-column-1 flex" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_125')}
                 </div>
                 <div>
-                  <!-- I2_6 保存セット一覧 -->
-                  <table id="I2_6" data-bind="ntsGridList: {
-                    name: '#[CMF003_322]',
+                  <!-- I3_3 削除セット一覧 -->
+                  <table id="I3_3" data-bind="ntsGridList: {
+                    name: '#[CMF005_143]',
                     height: 130,
                     dataSource: $vm.searchItems,
                     primaryKey: 'rowNumber',
@@ -63,25 +65,17 @@
 
                   </table>
                 </div>
-                <!-- I2_12 検索ボタン -->
-                <button id="I2_12" class="large div-column-3 valign-bottom search-button"
-                  data-bind="click: findData, enable: searchValue" tabindex="2">#{i18n.getText('CMF003_308')}</button>
+                <!-- I4 検索 -->
+                <button id="I4" class="large div-column-3 valign-bottom search-button"
+                  data-bind="click: findData, enable: searchValue" tabindex="2">#{i18n.getText('CMF005_126')}</button>
               </div>
             </div>
           </div>
           <div class="div-line">
             <div class="compact-grid">
-              <!-- I6_1 保存結果一覧 -->
-              <div id="I6_1"></div>
+              <!-- I5 削除セット一覧 -->
+              <div id="I5" tabindex="3"></div>
             </div>
-          </div>
-          <div class="div-line storage-size">
-            <!-- I4_3 空き容量 -->
-            <div id="I4_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_321')}</div>
-            <!-- I4_4 空き容量表示 -->
-            <label id="I4_4" data-bind="text: storageSize"></label>
-            <!-- I5_5 容量単位 -->
-            <label id="I5_5">#{i18n.getText('CMF003_323')}</label>
           </div>
         </div>
       </div>

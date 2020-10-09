@@ -19,6 +19,5 @@ public interface CategoryFieldMtForDelRepository
 
     void remove();
 
-    List<CategoryFieldMtForDelete> getCategoryFieldMtByListId(List<String> categoryIds);
-    
+    List<CategoryFieldMtForDelete> getCategoryFieldMtByListId(List<String> categoryIds);   
 }

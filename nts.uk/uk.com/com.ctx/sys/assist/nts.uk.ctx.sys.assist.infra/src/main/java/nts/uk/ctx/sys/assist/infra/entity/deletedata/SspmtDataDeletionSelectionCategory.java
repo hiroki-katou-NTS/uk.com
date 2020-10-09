@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.assist.infra.entity.deletedata;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,13 +41,6 @@ public class SspmtDataDeletionSelectionCategory extends UkJpaEntity implements S
 			@JoinColumn(name = "PATTERN_ATR", referencedColumnName = "PATTERN_ATR", insertable = false, updatable = false),
 			@JoinColumn(name = "PATTERN_CD", referencedColumnName = "PATTERN_CD", insertable = false, updatable = false) })
 	public SspmtDataDeletionPatternSetting patternSetting;
-	
-	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	private int systemType;
 
 	@Override
 	public void setCategoryId(String categoryId) {
@@ -110,5 +101,19 @@ public class SspmtDataDeletionSelectionCategory extends UkJpaEntity implements S
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+
+	@Override
+	public void setSystemType(int systemType) {
+		if (pk == null)
+			pk = new SspmtDataDeletionSelectionCategoryPK();
+		pk.systemType = systemType;
+	}
+
+	@Override
+	public int getSystemType() {
+		if (pk != null)
+			return pk.systemType;
+		return 0;
 	}
 }

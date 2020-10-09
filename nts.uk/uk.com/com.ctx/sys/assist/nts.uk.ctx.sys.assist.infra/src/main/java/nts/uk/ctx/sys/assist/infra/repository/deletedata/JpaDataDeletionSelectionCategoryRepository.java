@@ -14,7 +14,7 @@ public class JpaDataDeletionSelectionCategoryRepository extends JpaRepository im
 
 	private static final String SELECT_BY_PATTERN_CD_AND_PATTERN_ATR_AND_SYSTEM_TYPES = "SELECT t from SspmtDataDeletionSelectionCategory t "
 			+ "WHERE t.pk.patternCode = :patternCd AND t.pk.patternClassification = :patternAtr "
-			+ "AND t.systemType IN :systemTypes";
+			+ "AND t.pk.systemType IN :systemTypes";
 	
 	@Override
 	public List<DataDeletionSelectionCategory> findByPatternCdAndPatternAtrAndSystemTypes(String patternCd,

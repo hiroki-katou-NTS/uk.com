@@ -39,6 +39,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.Result;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
@@ -203,18 +204,20 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	 */
 	private void saveStartResultDel(ManualSetDeletion domain) {
 		GeneralDateTime startDateTimeDel = GeneralDateTime.now();
-		int delType = DelType.MANUAL.value;
+		int delType = domain.getExecuteClassification().value;
 		int fileSize = 0;
 		int numberEmployees = 0;
+		String delCode = domain.getDelPattern().v();
+		String password = domain.getPasswordCompressFileEncrypt().map(PasswordCompressFileEncrypt::v).orElse(null);
 		String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
 		String pcName = AppContexts.requestedWebApi().getRequestPcName();
 		String account = AppContexts.windowsAccount().getUserName();
 		LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 		List<ResultLogDeletion> listResultLogDeletions = new ArrayList<ResultLogDeletion>();
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
-				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
+				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), delCode, numberEmployees,
 				listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
-				fileSize, null, loginInfo);
+				fileSize, password, loginInfo);
 		repoResultDel.add(resultDomain);
 	}
 
@@ -310,7 +313,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			String nameFile = domain.getCompanyId() + domain.getDelName()  + datetimenow;	
 			ResultDeletion resultDel = optResultDel.get();
 			resultDel.setStatus(status);
-			resultDel.setEndDateTimeDel(endDateTimeDel);
+			resultDel.setEndDateTimeDel(Optional.ofNullable(endDateTimeDel));
 			resultDel.setFileSize(fileSize);
 			resultDel.setFileId(fileId);
 			if (fileId == null || fileId == "") {

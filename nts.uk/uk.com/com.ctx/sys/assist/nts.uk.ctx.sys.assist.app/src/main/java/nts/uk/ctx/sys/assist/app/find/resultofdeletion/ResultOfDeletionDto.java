@@ -117,7 +117,7 @@ public class ResultOfDeletionDto {
 			domain.getSId(),
 			domain.getStatus().value,
 			domain.getStartDateTimeDel(), 
-			domain.getEndDateTimeDel(), 
+			domain.getEndDateTimeDel().orElse(null), 
 			domain.getFileId(),
 			domain.getFileName().v(),
 			domain.getFileSize(),
