@@ -147,7 +147,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				}
 				AnnualLeaveGrantRemaining newRemainData = new AnnualLeaveGrantRemaining(
 						AnnualLeaveGrantRemainingData.createFromJavaType(
-								grantRemainingNumber.getAnnLeavID(),
+								grantRemainingNumber.getLeaveID(),
 								grantRemainingNumber.getCid(),
 								grantRemainingNumber.getEmployeeId(),
 								grantRemainingNumber.getGrantDate(),

@@ -30,14 +30,18 @@ public class ReserveLeaveDto implements ItemConst {
 	private RsvLeaveRemainingNumberInfoDto remainingNumber;
 
 	public static ReserveLeaveDto from(ReserveLeave domain) {
-		return domain == null ? null : new ReserveLeaveDto(
-						DayUsedNumberDto.from(domain.getUsedNumber()),
-						RsvLeaveRemainingNumberInfoDto.from(domain.getRemainingNumberInfo()));
+		// ooooo要修正！！
+//		return domain == null ? null : new ReserveLeaveDto(
+//						DayUsedNumberDto.from(domain.getUsedNumber()),
+//						RsvLeaveRemainingNumberInfoDto.from(domain.getRemainingNumberInfo()));
+		return null;
 	}
 
 	public ReserveLeave toDomain() {
-		return ReserveLeave.of(usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
-				remainingNumber == null ? new ReserveLeaveRemainingNumberInfo() : remainingNumber.toReserveDomain());
+		// ooooo要修正！！
+//		return ReserveLeave.of(usedNumber == null ? new ReserveLeaveUsedNumber() : usedNumber.toDomain(),
+//				remainingNumber == null ? new ReserveLeaveRemainingNumberInfo() : remainingNumber.toReserveDomain());
+		return null;
 	}
 	
 //	public static ReserveLeaveDto from(ReserveLeave domain) {

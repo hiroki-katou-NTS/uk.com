@@ -36,8 +36,10 @@ public class DayUsedNumberDto implements ItemConst {
 	private Double usedDaysAfterGrant;
 	
 	public static DayUsedNumberDto from(ReserveLeaveUsedNumber domain){
-		return domain == null ? null : new DayUsedNumberDto(domain.getUsedDays().v(), domain.getUsedDaysBeforeGrant().v(), 
-				domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+		// ooooo要修正！！
+//		return domain == null ? null : new DayUsedNumberDto(domain.getUsedDays().v(), domain.getUsedDaysBeforeGrant().v(), 
+//				domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+		return null;
 	}
 	
 	public ReserveLeaveUsedNumber toDomain(){
@@ -46,12 +48,16 @@ public class DayUsedNumberDto implements ItemConst {
 	}
 	
 	public static DayUsedNumberDto from(SpecialLeaveUseDays domain){
-		return domain == null ? null : new DayUsedNumberDto(domain.getUseDays().v(), domain.getBeforeUseGrantDays().v(), 
-				domain.getAfterUseGrantDays().isPresent() ? domain.getAfterUseGrantDays().get().v() : null);
+		// ooooo要修正！！
+//		return domain == null ? null : new DayUsedNumberDto(domain.getUseDays().v(), domain.getBeforeUseGrantDays().v(), 
+//				domain.getAfterUseGrantDays().isPresent() ? domain.getAfterUseGrantDays().get().v() : null);
+		return null;
 	}
 	
 	public SpecialLeaveUseDays toSpecial(){
-		return new SpecialLeaveUseDays(new SpecialLeaveRemainDay(usedDays), new SpecialLeaveRemainDay(usedDaysBeforeGrant), 
-				Optional.ofNullable(usedDaysAfterGrant == null ? null : new SpecialLeaveRemainDay(usedDaysAfterGrant)));
+		// ooooo要修正！！
+//		return new SpecialLeaveUseDays(new SpecialLeaveRemainDay(usedDays), new SpecialLeaveRemainDay(usedDaysBeforeGrant), 
+//				Optional.ofNullable(usedDaysAfterGrant == null ? null : new SpecialLeaveRemainDay(usedDaysAfterGrant)));
+		return null;
 	}
 }

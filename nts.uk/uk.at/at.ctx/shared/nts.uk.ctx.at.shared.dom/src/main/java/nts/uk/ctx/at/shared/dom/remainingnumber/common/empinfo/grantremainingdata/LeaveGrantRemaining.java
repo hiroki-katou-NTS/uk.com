@@ -25,7 +25,7 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 	private boolean dummyAtr = false;
 
 	public static LeaveGrantRemaining createFromJavaType(
-			String annLeavID, 
+			String leavID, 
 			String cID, 
 			String employeeId,
 			GeneralDate grantDate, 
@@ -45,7 +45,7 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 			Double workingDays) {
 		
 		LeaveGrantRemaining domain = new LeaveGrantRemaining();
-			domain.annLeavID = annLeavID;
+			domain.leaveID = leavID;
 			domain.cid = cID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;

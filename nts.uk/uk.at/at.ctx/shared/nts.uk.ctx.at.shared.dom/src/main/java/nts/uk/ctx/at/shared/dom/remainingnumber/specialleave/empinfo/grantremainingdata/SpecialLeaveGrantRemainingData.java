@@ -78,7 +78,7 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 			domain.cid = cID;
-			domain.annLeavID = annLeavID;
+			domain.leaveID = annLeavID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
 			domain.deadline = deadline;

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
 
 /**
  * 特別休暇残数
@@ -25,4 +26,12 @@ public class SpecialLeaveRemain {
 	 * 時間
 	 */
 	private Optional<SpecialLeavaRemainTime> time;
+	
+	/**
+	 * データをクリア
+	 */
+	public void clear(){
+		days = new SpecialLeaveRemainDay(0.0);
+		time = Optional.empty();
+	}
 }

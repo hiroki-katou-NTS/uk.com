@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseTimes;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.UseNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.UseNumber;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -71,17 +71,21 @@ public class TimeUsedNumberDto implements ItemConst {
 	}
 	
 	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
-		return domain == null ? null : new TimeUsedNumberDto(
-						domain.getUseNumber().v(), 
-						domain.getUseTimes().valueAsMinutes(),
-						domain.getBeforeUseGrantTimes().valueAsMinutes(),
-						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
+		// ooooo要修正！！
+//		return domain == null ? null : new TimeUsedNumberDto(				
+//						domain.getUseNumber().v(), 
+//						domain.getUseTimes().valueAsMinutes(),
+//						domain.getBeforeUseGrantTimes().valueAsMinutes(),
+//						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
+		return null;
 	}
 	
 	public SpecialLeaveUseTimes toSpecial(){
-		return new SpecialLeaveUseTimes(new UseNumber(usedTimes), 
-										new SpecialLeavaRemainTime(usedTime), 
-										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
-										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
+		// ooooo要修正！！
+//		return new SpecialLeaveUseTimes(new UseNumber(usedTimes), 
+//										new SpecialLeavaRemainTime(usedTime), 
+//										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
+//										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
+	return null;
 	}
 }

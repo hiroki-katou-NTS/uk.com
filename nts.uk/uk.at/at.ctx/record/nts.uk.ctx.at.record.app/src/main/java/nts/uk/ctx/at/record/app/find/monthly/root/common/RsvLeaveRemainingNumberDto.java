@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -35,14 +33,18 @@ public class RsvLeaveRemainingNumberDto implements ItemConst {
 	private List<CommonlLeaveRemainingDetailDto> details;
 
 	public static RsvLeaveRemainingNumberDto from(ReserveLeaveRemainingNumber domain) {
-		return domain == null ? null : new RsvLeaveRemainingNumberDto(
-				domain.getTotalRemainingDays().v(),
-				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
+		// ooooo要修正！！
+//		return domain == null ? null : new RsvLeaveRemainingNumberDto(
+//				domain.getTotalRemainingDays().v(),
+//				ConvertHelper.mapTo(domain.getDetails(), c -> CommonlLeaveRemainingDetailDto.from(c)));
+		return null;
 	}
 	
 	public ReserveLeaveRemainingNumber toReserveDomain() {
-		return ReserveLeaveRemainingNumber.of(
-				new ReserveLeaveRemainingDayNumber(totalRemainingDays), 
-				ConvertHelper.mapTo(details, c -> c == null ? null : c.toReserveDomain()));
+		// ooooo要修正！！
+//		return ReserveLeaveRemainingNumber.of(
+//				new ReserveLeaveRemainingDayNumber(totalRemainingDays), 
+//				ConvertHelper.mapTo(details, c -> c == null ? null : c.toReserveDomain()));
+		return null;
 	}
 }

@@ -105,17 +105,19 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	
 	@Override
 	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return new SpecialHolidayRemainData(
-				employeeId,
-				ym,
-				closureID, 
-				datePeriod == null ? null : datePeriod.toDomain(), 
-				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				closureDate == null ? null : closureDate.toDomain(),
-				no, actualSpecial == null ? null : actualSpecial.toActualDomain(), 
-				specialLeave == null ? null : specialLeave.toDomain(),
-				grantAtr,
-				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+		// // ooooo要修正！！
+//		return new SpecialHolidayRemainData(
+//				employeeId,
+//				ym,
+//				closureID, 
+//				datePeriod == null ? null : datePeriod.toDomain(), 
+//				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
+//				closureDate == null ? null : closureDate.toDomain(),
+//				no, actualSpecial == null ? null : actualSpecial.toActualDomain(), 
+//				specialLeave == null ? null : specialLeave.toDomain(),
+//				grantAtr,
+//				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+		return null;
 	}
 	@Override
 	public YearMonth yearMonth() {

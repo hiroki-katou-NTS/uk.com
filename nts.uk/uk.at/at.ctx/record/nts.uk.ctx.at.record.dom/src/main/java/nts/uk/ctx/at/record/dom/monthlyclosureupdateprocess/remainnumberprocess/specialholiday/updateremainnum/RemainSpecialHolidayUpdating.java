@@ -43,10 +43,10 @@ public class RemainSpecialHolidayUpdating {
 		List<SpecialLeaveGrantRemainingData> datas = require.specialLeaveGrantRemainingData(empId, specialLeaveCode);
 		for (SpecialLeaveGrantRemainingData data : datas){
 			if (data.getGrantDate().after(period.start()) && autoGrant == 1) {
-				atomTask.add(AtomTask.of(() -> require.deleteSpecialLeaveGrantRemainingData(data.getSpecialId())));
+				atomTask.add(AtomTask.of(() -> require.deleteSpecialLeaveGrantRemainingData(data.getLeaveID())));
 			}
 			else {
-				existDataMap.putIfAbsent(data.getGrantDate(), data.getSpecialId());
+				existDataMap.putIfAbsent(data.getGrantDate(), data.getLeaveID());
 			}
 		}
 		

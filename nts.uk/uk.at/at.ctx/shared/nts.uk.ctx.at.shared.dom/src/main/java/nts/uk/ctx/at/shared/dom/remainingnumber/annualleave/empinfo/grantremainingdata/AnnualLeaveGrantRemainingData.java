@@ -70,7 +70,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 		
 			AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
 			domain.cid = cID;
-			domain.annLeavID = annLeavID;
+			domain.leaveID = annLeavID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
 			domain.deadline = deadline;
@@ -112,7 +112,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 		
 		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
 		domain.cid = history.getCid();
-		domain.annLeavID = IdentifierUtil.randomUniqueId();
+		domain.leaveID = IdentifierUtil.randomUniqueId();
 		domain.employeeId = history.getEmployeeId();
 		domain.grantDate = history.getGrantDate();
 		domain.deadline = history.getDeadline();

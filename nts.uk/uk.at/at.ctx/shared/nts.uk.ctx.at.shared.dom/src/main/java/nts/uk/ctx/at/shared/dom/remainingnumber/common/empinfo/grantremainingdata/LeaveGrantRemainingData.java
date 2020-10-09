@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @AllArgsConstructor
 public class LeaveGrantRemainingData extends AggregateRoot {
 
-	protected String annLeavID;
+	protected String leaveID;
 	
 	/**
 	 * 会社ID
@@ -85,7 +85,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			Double workingDays) {
 		
 			LeaveGrantRemainingData domain = new LeaveGrantRemainingData();
-			domain.annLeavID = annLeavID;
+			domain.leaveID = annLeavID;
 			domain.cid = cID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
@@ -152,7 +152,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			// 「年休付与残数データ」を作成する
 			val dummyRemainData = new LeaveGrantRemaining();
 			
-			dummyRemainData.setAnnLeavID("");
+			dummyRemainData.setLeaveID("");
 			dummyRemainData.setCid("");
 			// 社員ID←パラメータ「社員ID」
 			dummyRemainData.setEmployeeId(employeeId);
@@ -205,7 +205,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	public LeaveGrantRemainingData clone() {
 		LeaveGrantRemainingData cloned = new LeaveGrantRemainingData();
 		try {
-			cloned.annLeavID = new String(annLeavID);
+			cloned.leaveID = new String(leaveID);
 			cloned.employeeId = new String(employeeId);
 			cloned.grantDate = GeneralDate.localDate(grantDate.localDate());
 			cloned.deadline = GeneralDate.localDate(deadline.localDate());

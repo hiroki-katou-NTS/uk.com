@@ -25,13 +25,18 @@ public class SpecialLeaveUseNumberDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_B)
 	private TimeUsedNumberDto useTimes;
 	
+	
 	public SpecialLeaveUseNumber toDomain(){
-		return new SpecialLeaveUseNumber(useDays == null ? null : useDays.toSpecial(),
-										Optional.ofNullable(useTimes == null ? null : useTimes.toSpecial()));
+		// ooooo要修正！！
+//		return new SpecialLeaveUseNumber(useDays == null ? null : useDays.toSpecial(),
+//										Optional.ofNullable(useTimes == null ? null : useTimes.toSpecial()));
+	return null;
 	}
 	
 	public static SpecialLeaveUseNumberDto from(SpecialLeaveUseNumber domain){
-		return domain == null ? null : new SpecialLeaveUseNumberDto(DayUsedNumberDto.from(domain.getUseDays()), 
-																	TimeUsedNumberDto.from(domain.getUseTimes().orElse(null)));
+		// ooooo要修正！！
+//		return domain == null ? null : new SpecialLeaveUseNumberDto(DayUsedNumberDto.from(domain.getUseDays()), 
+//																	TimeUsedNumberDto.from(domain.getUseTimes().orElse(null)));
+		return null;
 	}
 }
