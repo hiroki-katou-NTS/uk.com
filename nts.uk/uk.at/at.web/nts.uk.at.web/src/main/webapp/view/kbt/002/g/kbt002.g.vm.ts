@@ -71,7 +71,6 @@ module nts.uk.at.view.kbt002.g {
             startDate: logHistory.schCreateStart,
             endDate: logHistory.schCreateEnd
           };
-          debugger
           // Step アルゴリズム「個人スケジュール作成エラー内容表示処理」を実行する
           nts.uk.ui.windows.setShared('dataFromDetailDialog', self.sharedObj);
           // 「個人スケジュールの作成」K画面を起動する
