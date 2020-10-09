@@ -89,16 +89,16 @@ public class WorkCycleReflectionDialog {
 		dto.setSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.STATUTORY_HOLIDAYS))));
 		dto.setNonSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.NON_STATUTORY_HOLIDAYS))));
 
-		String nonSatHoliday = CollectionUtil.isEmpty(dto.getNonSatHoliday()) ? null : dto.getNonSatHoliday().get(0).getWorkTypeCode();
 		String satHoliday = CollectionUtil.isEmpty(dto.getSatHoliday()) ? null : dto.getSatHoliday().get(0).getWorkTypeCode();
+		String nonSatHoliday = CollectionUtil.isEmpty(dto.getNonSatHoliday()) ? null : dto.getNonSatHoliday().get(0).getWorkTypeCode();
 		String pubHoliday = CollectionUtil.isEmpty(dto.getPubHoliday()) ? null : dto.getPubHoliday().get(0).getWorkTypeCode();
 
 		val config = new WorkCycleRefSetting(
 				workCycleCode,
 				refOrder,
 				numOfSlideDays,
-				nonSatHoliday,
 				satHoliday,
+				nonSatHoliday,
 				pubHoliday
 		);
 		val cRequire = new CreateWorkCycleAppImageRequire(
@@ -115,6 +115,10 @@ public class WorkCycleReflectionDialog {
 	}
 
 	public List<WorkCycleReflectionDto.WorkTypeDto> convertToDomain(List<WorkType> list){
+		if(CollectionUtil.isEmpty(list)){
+			return Collections.emptyList();
+		}
+
         Set<WorkCycleReflectionDto.WorkTypeDto> result = new HashSet<>();
         list.forEach( i -> result.add(WorkCycleReflectionDto.WorkTypeDto.fromDomain(i)));
         return new ArrayList<>(result).stream()
