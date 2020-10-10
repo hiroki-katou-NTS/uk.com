@@ -76,7 +76,7 @@ module nts.uk.at.view.kwr001.c {
 
             // C7_13 label
             sizeClassificationLabel: KnockoutObservable<string>;
-            limitAttendanceItem: KnockoutObservable<number>;
+            limitAttendanceItem: KnockoutObservable<number> = ko.observable(48);
 
             layoutId: string;
             selectionType: number;
