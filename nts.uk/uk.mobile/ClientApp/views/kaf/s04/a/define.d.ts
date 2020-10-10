@@ -329,3 +329,22 @@ export interface IParams {
     appID: string;
     mode: boolean;
 }
+
+export interface ICheck {
+    cbCancelLate: {
+        value: string;
+        isDisable: boolean;
+    }
+    cbCancelEarlyLeave: {
+        value: string;
+        isDisable: boolean;
+    }
+    cbCancelLate2: {
+        value: string;
+        isDisable: boolean;
+    }
+    cbCancelEarlyLeave2: {
+        value: string;
+        isDisable: boolean;
+    }
+}

@@ -40,7 +40,8 @@
       />
       <!-- A3_3 -->
       <nts-checkbox
-          v-model="cbCancelLate"
+          v-model="check.cbCancelLate.value"
+          v-bind:disabled="check.cbCancelLate.isDisable"
           v-if="showCheckBox"
           v-bind:value="'Attendance'">{{'KAFS04_5' | i18n}}
         </nts-checkbox>
@@ -57,8 +58,9 @@
         />
         <!-- A3_6 -->
         <nts-checkbox
-          v-model="cbCancelEarlyLeave"
+          v-model="check.cbCancelEarlyLeave.value"
           v-if="showCheckBox"
+          v-bind:disabled="check.cbCancelEarlyLeave.isDisable"
           v-bind:value="'Early'">{{'KAFS04_7' | i18n}}
         </nts-checkbox>
         <template v-else />
@@ -84,9 +86,10 @@
       />
       <!-- A4_3 -->
       <nts-checkbox
-        v-model="cbCancelLate"
+        v-model="check.cbCancelLate2.value"
         v-if="showCheckBox"
-        v-bind:value="'Attendace2'">{{'KAFS04_10' | i18n}}
+        v-bind:disabled="check.cbCancelLate2.isDisable"
+        v-bind:value="'Attendance2'">{{'KAFS04_10' | i18n}}
       </nts-checkbox>
       <template v-else />
       <div class="position-relative">
@@ -101,8 +104,9 @@
         />
         <!-- A4_6 -->
         <nts-checkbox
-          v-model="cbCancelEarlyLeave"
+          v-model="check.cbCancelEarlyLeave2.value"
           v-if="showCheckBox"
+          v-bind:disabled="check.cbCancelEarlyLeave2.isDisable"
           v-bind:value="'Early2'">{{'KAFS04_12' | i18n}}
         </nts-checkbox>
         <template v-else />

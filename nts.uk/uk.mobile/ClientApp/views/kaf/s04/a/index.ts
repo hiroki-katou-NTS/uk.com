@@ -15,6 +15,7 @@ import {
     IInfoOutput,
     IRes,
     IParams,
+    ICheck,
 } from './define';
 
 @component({
@@ -50,7 +51,27 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public application: IApplication = initAppData();
     public infoOutPut: IInfoOutput = initInfoOutput();
     public paramsAComponent: IParams;
-    public cbCancelLate: string = 'Attendance';
+    public cancelAtr: number;
+    public check: ICheck = {
+        cbCancelLate: {
+            value: 'Attendance',
+            isDisable: true,
+        },
+        cbCancelEarlyLeave: {
+            value: 'Early',
+            isDisable: true,
+        },
+        cbCancelLate2: {
+            value: 'Attendance2',
+            isDisable: true,
+        },
+        cbCancelEarlyLeave2: {
+            value: 'Early2',
+            isDisable: true,
+        }
+    };
+    public isCheck: boolean = false;
+
 
     @Prop({ default: true }) public readonly mode!: boolean;
 
@@ -98,20 +119,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     } else {
                         vm.conditionLateEarlyLeave2Show = true;
                     }
-                    // if (vm.application.prePostAtr == 1) {
-                    //     const { infoOutPut } = vm;
-                    //     const { lateEarlyCancelAppSet } = infoOutPut;
-                    //     const { cancelAtr } = lateEarlyCancelAppSet;
 
-                    //     if (cancelAtr == 0) {
-                    //         vm.showCheckBox == false;
-                    //     }
-                    //     if (cancelAtr == 1) {
-                    //         alert('abc');
-                    //     } else {
-                    //         vm.showCheckBox == true;
-                    //     }
-                    // }
+                    const { data } = vm;
+                    const { lateEarlyCancelAppSet } = data;
+                    const { cancelAtr } = lateEarlyCancelAppSet;
+
+                    vm.cancelAtr = cancelAtr;
+
                 });
             }
         });
@@ -120,7 +134,27 @@ export class KafS04AComponent extends KafS00ShrComponent {
     get showCheckBox() {
         const vm = this;
 
-        return vm.application.prePostAtr == 1;
+        if (vm.application.prePostAtr == 1) {
+            if (vm.cancelAtr == 1 || vm.cancelAtr == 2) {
+                if (vm.cancelAtr == 1) {
+                    vm.check.cbCancelLate.value = '';
+                    vm.check.cbCancelEarlyLeave.value = '';
+                    vm.check.cbCancelLate2.value = '';
+                    vm.check.cbCancelEarlyLeave2.value = '';
+                }
+                if (vm.cancelAtr == 2) {
+                    vm.check.cbCancelLate.value = 'Attendance';
+                    vm.check.cbCancelEarlyLeave.value = 'Early';
+                    vm.check.cbCancelLate2.value = 'Attendance2';
+                    vm.check.cbCancelEarlyLeave2.value = 'Early2';
+                }
+
+                return true;
+            } else {
+
+                return false;
+            }
+        }
     }
 
     public initComponentA() {
@@ -314,7 +348,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 const { appDispInfoWithDateOutput } = data;
                 const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
 
-                console.log(opActualContentDisplayLst);
                 opActualContentDisplayLst.forEach((i) => {
                     if (i.opAchievementDetail) {
                         if (i.opAchievementDetail.opWorkTime != null && i.opAchievementDetail.opLeaveTime != null) {
@@ -322,6 +355,9 @@ export class KafS04AComponent extends KafS00ShrComponent {
                             vm.time.leaveTime = i.opAchievementDetail.opLeaveTime;
                             vm.time.attendanceTime2 = i.opAchievementDetail.opWorkTime2;
                             vm.time.leaveTime2 = i.opAchievementDetail.opDepartureTime2;
+
+                            vm.check.cbCancelLate.isDisable = false;
+                            vm.check.cbCancelEarlyLeave.isDisable = false;
                         }
                     } else {
                         if (vm.application.prePostAtr == 0) {
@@ -335,6 +371,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
                             vm.time.attendanceTime = null;
                             vm.time.leaveTime = null;
                             vm.$modal.error('Msg_1707');
+                            vm.check.cbCancelLate.isDisable = true;
+                            vm.check.cbCancelEarlyLeave.isDisable = true;
 
                             return;
                         }
