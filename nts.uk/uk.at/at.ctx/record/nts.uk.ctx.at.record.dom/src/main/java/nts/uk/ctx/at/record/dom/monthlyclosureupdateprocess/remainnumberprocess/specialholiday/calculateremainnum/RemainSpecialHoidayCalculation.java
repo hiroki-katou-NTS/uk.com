@@ -39,7 +39,8 @@ public class RemainSpecialHoidayCalculation {
 				true, period.getPeriod().end(), specialLeaveCode, true,
 				true, interimMng, interimSpecialData,
 				Optional.empty()); //ソースがエラーを発生しないようにとりあえずEmptyを追加した、修正依頼があったら修正してください
-		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(require, cacheCarrier, param)
+		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
+				require, cacheCarrier, param)
 					.getAggSpecialLeaveResult();
 	}
 	

@@ -20,7 +20,7 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 	
 	public SpecialLeaveGrantRemaining(LeaveGrantRemaining parent){
 		
-		this.leaveID = parent.getAnnLeavID();
+		this.leaveID = parent.getLeaveID();
 		this.cid = parent.getCid();
 		this.employeeId = parent.getEmployeeId();
 		this.grantDate = parent.getGrantDate();

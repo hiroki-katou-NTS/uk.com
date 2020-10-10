@@ -50,6 +50,15 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 		return domain;
 	}
 	
+	public void clear(){
+		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
+		this.details = new ArrayList<>();
+	}
+	
+	public void clearDetails(){
+		this.details = new ArrayList<>();
+	}
+	
 	@Override
 	public ReserveLeaveRemainingNumber clone() {
 		ReserveLeaveRemainingNumber cloned = new ReserveLeaveRemainingNumber();
