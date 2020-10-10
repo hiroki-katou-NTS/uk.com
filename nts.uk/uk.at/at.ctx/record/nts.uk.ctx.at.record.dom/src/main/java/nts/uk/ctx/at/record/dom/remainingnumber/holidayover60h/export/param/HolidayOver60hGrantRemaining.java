@@ -23,7 +23,7 @@ public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingDa
 	
 	public HolidayOver60hGrantRemaining(HolidayOver60hGrantRemainingData parent){
 		
-		this.leaveID = parent.getAnnLeavID();
+		this.leaveID = parent.getLeaveID();
 		this.cid = parent.getCid();
 		this.employeeId = parent.getEmployeeId();
 		this.grantDate = parent.getGrantDate();

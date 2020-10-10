@@ -134,7 +134,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @return 特休の集計結果
 	 */
 	public InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
-			LeaveRemainingNumber.RequireM3 require,
+			SpecialLeaveManagementService.RequireM5 require,
 			String companyId,
 			String employeeId,
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
@@ -330,7 +330,6 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @return 特休の集計結果
 	 */
 	private InPeriodOfSpecialLeaveResultInfor grantProcess(
-//			LeaveRemainingNumber.RequireM3 require,
 			SpecialLeaveManagementService.RequireM5 require,
 			String companyId,
 			String employeeId,
@@ -655,16 +654,12 @@ public class SpecialLeaveInfo implements Cloneable {
 					
 				});
 				
-				
-//				
 //				// 実特休（特休（マイナスあり））に使用数を加算する
 //				this.remainingNumber.getSpecialLeaveWithMinus().addUsedNumber(
 //						useDaysWork.v(), aggregatePeriodWork.isAfterGrant());
 //				
 //				// 特休情報残数を更新
 //				this.updateRemainingNumber();
-				
-				
 				
 			}
 		}

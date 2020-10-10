@@ -156,7 +156,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GrantTime grantTime = speHoliday.getGrantRegular().get
+		GrantTime grantTime = speHoliday.getGrantRegular().getTypeTime();
 		//取得している「特別休暇．付与情報．固定付与日．周期」
 		int interval = grantTime.getFixGrantDate().getInterval().v();
 		//取得している「特別休暇．付与情報．固定付与日．周期」をチェックする
@@ -613,7 +613,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 				SpecialHolidayInfor output = new SpecialHolidayInfor();
 				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
 					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null 
-							? Optional.of(grantDaysInfor.getGrantDate().addDays(-1)) : Optional.empty());
+							? Optional.of(grantDaysInfor.getGrantDate().get().addDays(-1)) : Optional.empty());
 				} else {
 					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
 					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd().addDays(-1)));
@@ -673,7 +673,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 				//　※最後の処理で次の「付与日数一覧．年月日」が存在しない場合 パラメータ「期間外次回付与日」をセット
 				//List<GrantDaysInfor> lstGrantDaysInfor
 				int i = 1;
-				for (GrantDaysInfor daysInfor : c.getLstGrantDaysInfor()) {
+				for (NextSpecialLeaveGrant daysInfor : c.getLstGrantDaysInfor()) {
 					SpecialHolidayInfor output = new SpecialHolidayInfor();
 					if(i == c.getLstGrantDaysInfor().size()) {
 						output = new SpecialHolidayInfor(daysInfor, c.getGrantDate() != null 

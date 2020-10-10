@@ -440,6 +440,8 @@ public class SpecialLeaveManagementService {
 			int specialLeaveCode,
 			GeneralDate closureStart){
 		
+		List<SpecialLeaveGrantRemainingData> lstSpeData = new ArrayList();
+		
 		// 取得した締め開始日とパラメータ「集計開始日」を比較
 		
 		// 締め開始日>=パラメータ「集計開始日」
@@ -453,9 +455,7 @@ public class SpecialLeaveManagementService {
 			// 期限日>=締め開始日
 			// 期限切れ状態=使用可能
 
-			// ooooo
-			List<SpecialLeaveGrantRemainingData> lstSpeData 
-				= require.specialLeaveGrantRemainingData(employeeId, specialLeaveCode,
+			lstSpeData = require.specialLeaveGrantRemainingData(employeeId, specialLeaveCode,
 						aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
 			
 			return lstSpeData;
@@ -509,15 +509,13 @@ public class SpecialLeaveManagementService {
 				= complileInPeriodOfSpecialLeave(
 					require, cacheCarrier, paramStart);
 			
-			List<SpecialLeaveGrantRemainingData> lstSpeData
-				= new ArrayList<SpecialLeaveGrantRemainingData>();
-			inPeriodOfSpecialLeaveResultInforStart.getAsOfStartNextDayOfPeriodEnd()
-				.getGrantRemainingList().forEach(c->{
-					lstSpeData.add((SpecialLeaveGrantRemainingData)c);
-				});
+			lstSpeData = inPeriodOfSpecialLeaveResultInforStart
+					.getAsOfStartNextDayOfPeriodEnd()
+					.getGrantRemainingList();
 			
 			return lstSpeData;
 		}
+		return lstSpeData;
 	}
 	
 	/**
@@ -581,7 +579,7 @@ public class SpecialLeaveManagementService {
 			specialLeaveLapsedWork.setLapsedAtr(true);
 			
 			// 年月日←期限日の翌日
-			val nextDayOfDeadLine = deadline;
+			GeneralDate nextDayOfDeadLine = deadline;
 			if (deadline.before(GeneralDate.max())){
 				nextDayOfDeadLine = deadline.addDays(1);
 			}
@@ -609,14 +607,17 @@ public class SpecialLeaveManagementService {
 		// 【条件】
 		// 付与年月日>=パラメータ「開始日」の翌日
 		// 付与年月日<=パラメータ「終了日」の翌日
-		GeneralDate nextDayStart = aggrPeriod.start();
-		if (nextDayStart.before(GeneralDate.max())){
-			nextDayStart = nextDayStart.addDays(1);
+		GeneralDate nextDayStartTmp = aggrPeriod.start();
+		if (nextDayStartTmp.before(GeneralDate.max())){
+			nextDayStartTmp = nextDayStartTmp.addDays(1);
 		}
-		GeneralDate nextDayEnd = aggrPeriod.end();
-		if (nextDayEnd.before(GeneralDate.max())){
-			nextDayEnd = nextDayEnd.addDays(1);
+		final GeneralDate nextDayStart = nextDayStartTmp;
+		
+		GeneralDate nextDayEndTmp = aggrPeriod.end();
+		if (nextDayEndTmp.before(GeneralDate.max())){
+			nextDayEndTmp = nextDayEndTmp.addDays(1);
 		}
+		final GeneralDate nextDayEnd = nextDayEndTmp;
 		
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList_period
 			= nextSpecialLeaveGrantList.stream()
@@ -680,10 +681,7 @@ public class SpecialLeaveManagementService {
 			
 			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
 			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
-			list.forEach(c->{
-					c.setDayBeforePeriodEnd(true);
-					break;
-				});
+			list.get(0).setDayBeforePeriodEnd(true);
 		}
 		
 		// 終了日翌日の処理単位分割日を取得
@@ -738,12 +736,12 @@ public class SpecialLeaveManagementService {
 		
 		// 付与前か付与後か = 付与前
 		boolean afterGrant = false;
-		specialLeaveGrantList4.forEach(c->{
+		for(SpecialLeaveDividedDayEachProcess c: specialLeaveGrantList4){
 			if ( c.isAfterGrant() ){ // 付与フラグ
 				afterGrant = true;
 			}
 			c.setAfterGrant(afterGrant);
-		});
+		}
 		
 		// 特別休暇集計WORK作成 ----------------------------
 		
@@ -757,7 +755,7 @@ public class SpecialLeaveManagementService {
 		
 		// 処理単位分割日でループ
 		boolean isFirst = true;
-		GeneralDate preYmd;
+		GeneralDate preYmd = null;
 		
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
 			
@@ -2079,7 +2077,7 @@ public class SpecialLeaveManagementService {
 		@Override
 		public List<AffCompanyHistImport> listAffCompanyHistImport(
 				List sids, DatePeriod period){
-			this.syCompanyRecordAdapter.getAffCompanyHistByEmployee(new ArrayList<>(sids), period);
+			return this.syCompanyRecordAdapter.getAffCompanyHistByEmployee(new ArrayList<>(sids), period);
 		}
 
 		/** 締め状態管理 */

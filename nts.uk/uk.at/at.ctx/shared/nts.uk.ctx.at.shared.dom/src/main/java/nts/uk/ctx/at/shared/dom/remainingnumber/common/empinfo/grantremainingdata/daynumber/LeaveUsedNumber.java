@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveOverNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 
 /**
  * 休暇使用数  
@@ -36,6 +39,7 @@ public class LeaveUsedNumber{
 	 * 上限超過消滅日数
 	 */
 	public Optional<LeaveOverNumber> leaveOverLimitNumber;
+	
 	
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す

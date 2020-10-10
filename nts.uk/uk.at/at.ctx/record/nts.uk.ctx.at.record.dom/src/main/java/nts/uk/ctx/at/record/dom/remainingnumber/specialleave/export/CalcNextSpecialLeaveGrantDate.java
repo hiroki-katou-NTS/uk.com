@@ -704,29 +704,41 @@ public class CalcNextSpecialLeaveGrantDate {
 			return nextSpecialLeaveGrantList;
 		}
 		
-		// テーブルに基づいた付与日数一覧を求める
-		GrantDaysInforByDates grantDaysInforByDates
-			= askGrantdaysFromtable(
-					require, 
-					cacheCarrier, 
-					companyId, 
-					employeeId, 
-					spLeaveCD,
-					period.get(),
-					grantDateOpt.get(),
-					specialHoliday
-					);
+		// 特別休暇基本情報を取得
+		Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfoOpt
+			= require.specialLeaveBasicInfo(employeeId, spLeaveCD, UseAtr.USE);
 		
-		// 期限日を求める
-		List<NextSpecialLeaveGrant> nextSpecialLeaveGrant
-			= getExpireDate(
-					require,
-					cacheCarrier,
-					companyId,
-					employeeId,
-					spLeaveCD,
-					grantDaysInforByDates.getNextSpecialLeaveGrant(),
-					grantDaysInforByDates.getGrantDate().get());
+		if ( specialLeaveBasicInfoOpt.isPresent() ){
+		
+			// テーブルに基づいた付与日数一覧を求める
+			GrantDaysInforByDates grantDaysInforByDates
+				= askGrantdaysFromtable(
+						require, 
+						cacheCarrier, 
+						companyId, 
+						employeeId, 
+						spLeaveCD,
+						period.get(),
+						grantDateOpt.get(),
+						specialLeaveBasicInfoOpt.get(),
+						specialHoliday
+						);
+		
+			// 期限日を求める
+			List<NextSpecialLeaveGrant> nextSpecialLeaveGrant
+				= getExpireDate(
+						require,
+						cacheCarrier,
+						companyId,
+						employeeId,
+						spLeaveCD,
+						grantDaysInforByDates.getNextSpecialLeaveGrant(),
+						grantDaysInforByDates.getGrantDate().get());
+			
+			return nextSpecialLeaveGrant;
+		}
+		
+		return nextSpecialLeaveGrantList;
 		
 //		List<NextSpecialLeaveGrant> getExpireDate(
 //				SpecialLeaveManagementService.RequireM5 require, 
@@ -857,7 +869,7 @@ public class CalcNextSpecialLeaveGrantDate {
 	 * @return　付与日数一覧
 	 */
 	public static GrantDaysInforByDates askGrantdaysFromtable(
-			RequireM1 require, 
+			SpecialLeaveManagementService.RequireM5 require, 
 			CacheCarrier cacheCarrier,
 			String cid, 
 			String sid,
@@ -984,12 +996,10 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 			
 			// 利用条件をチェックする
-			ErrorFlg checkUser = checkUseCondition(
+			boolean checkUser = checkUseCondition(
 					require, cacheCarrier, cid, sid, spLeaveCD, grantDateTmp);
-			if(checkUser.isAgeError() //エラーがあるとき
-					|| checkUser.isClassError()
-					|| checkUser.isEmploymentError()
-					|| checkUser.isGenderError()) {
+			if(!checkUser) {
+				
 //				// パラメータ「付与日数一覧」を追加する
 //				GrantDaysInfor outPut = new GrantDaysInfor(grantDateTmp, Optional.of(checkUser), 0);
 //				lstOutput.add(outPut);
