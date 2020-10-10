@@ -117,7 +117,7 @@
     @kaf000CChangeAppReason="handleChangeAppReason"
     @kaf000CChangeReasonCD="handleChangeReasonCD"
     v-bind:params="kafS00CParams" />
-    <button @click="register()" type="button" class="btn btn-primary btn-block">
+    <button @click="checkBeforeRegister()" type="button" class="btn btn-primary btn-block">
       {{ "申請する" }}
     </button>
   </div>

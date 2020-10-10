@@ -1,4 +1,3 @@
-import { extend } from "jquery";
 
 export interface IParamS00A {
     companyID: string;
@@ -34,8 +33,8 @@ export interface IParamS00B {
 
 export interface IOutput {
     prePostAtr: 1 | 0;
-    startDate: null;
-    endDate: null;
+    startDate: Date;
+    endDate: Date;
 }
 
 export interface IInput {
@@ -295,13 +294,18 @@ export interface IInfoOutput {
 }
 
 export interface IArrivedLateLeaveEarly {
-    lateCancelation: any[];
+    lateCancelation: ILateCancelation[];
     lateOrLeaveEarlies: ILateOrLeaveEarlies[];
 }
 
 export interface ILateOrLeaveEarlies {
     lateOrEarlyClassification: number | null;
     timeWithDayAttr: number | null;
+    workNo: number | null;
+}
+
+export interface ILateCancelation{
+    lateOrEarlyClassification: number | null;
     workNo: number | null;
 }
 
