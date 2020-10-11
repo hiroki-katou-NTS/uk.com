@@ -11,6 +11,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.DataSo
  */
 public interface EmployeeRegisterApprovalRoot {
 	/**
+	 * excel for N
+	 * Refactor UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.N:承認者一覧.アルゴリズム."01.申請者としての承認ルートを取得する"
 	 * 01.申請者としての承認ルートを取得する
 	 * Hoatt customize
 	 * @param companyID 会社ID 

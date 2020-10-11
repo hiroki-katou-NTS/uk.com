@@ -245,6 +245,7 @@ module nts.uk.com.view.cmm018.a {
                                 });
                                 self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
                                 self.lstNameAppType.push(new vmbase.ApplicationType(1, getText('CMM018_108'),2));
+								
                                 self.getDataCompany(1).done(function(){
                                     if(self.listHistory().length > 0){
                                         self.currentCode(self.listHistory()[0].id);
@@ -808,7 +809,7 @@ module nts.uk.com.view.cmm018.a {
                         /**プログラムID(インベント)*/
                         lstEventID: self.lstEventDis};
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
-                    if(data == null || data === undefined || data.lstCompany.length == 0){
+                    if(data == null || data === undefined || data.lstCompany.length == 0){ // 画面を新規モードにする
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
@@ -821,7 +822,8 @@ module nts.uk.com.view.cmm018.a {
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
-                    } 
+                    }
+                    // 最新の「就業承認ルート履歴」を選択する
                     self.nameCompany(data.companyName);
                     self.enableDelete(true);
                     self.enableRegister(true); 

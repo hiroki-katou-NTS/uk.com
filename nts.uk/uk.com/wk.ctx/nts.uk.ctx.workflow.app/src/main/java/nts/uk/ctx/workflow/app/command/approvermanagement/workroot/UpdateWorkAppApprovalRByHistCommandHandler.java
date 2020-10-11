@@ -55,6 +55,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 	@Override
 	protected void handle(CommandHandlerContext<UpdateWorkAppApprovalRByHistCommand> context) {
 		UpdateWorkAppApprovalRByHistCommand  objUpdateItem = context.getCommand();
+		// 03.履歴の削除を実行する(まとめて設定モード)
+		// Refactor5: UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.J:履歴の編集.アルゴリズム."03.履歴の削除を実行する(まとめて設定モード)"
 		//TH: company - domain 会社別就業承認ルート
 		if(objUpdateItem.getCheck() == COMPANY){
 			this.updateHistoryCom(objUpdateItem);
@@ -64,6 +66,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			this.updateHistoryWorkplace(objUpdateItem);
 		}
 		//TH: person - domain 個人別就業承認ルート
+		// 06.履歴の削除を実行する(申請個別設定モード)
+		// Refactor5: UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.J:履歴の編集.アルゴリズム."06.履歴の削除を実行する(申請個別設定モード)"
 		else{
 			this.updateHistoryPerson(objUpdateItem);
 		}
@@ -132,6 +136,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//get all  ApprovalPhase by approvalId
 					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(comAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
+					// 「承認フェーズ」を削除する 
+					// 
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
@@ -141,8 +147,10 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoAppPhase.deleteAllAppPhaseByApprovalId(comAppRoot.getApprovalId());
 					}
 					//delete history current
+					// 「会社別承認ルート」を削除する
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
+					// remove in ver10
 					repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
 				}
 			}

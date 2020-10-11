@@ -275,6 +275,10 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	 * @return
 	 */
 	private boolean checkByType(Integer typeV, String typeS, int empR, AppTypes appTypes){
+		// CMM018 ver10 , do not get 36 type applications
+		if (appTypes.getEmpRoot() != 0 || appTypes.getEmpRoot() != 2 || appTypes.getEmpRoot() != 4 || appTypes.getEmpRoot() != 5) {
+			return false;
+		}
 		if(empR == 0) {
 			if(appTypes.getEmpRoot() == 0) return true;
 		}else if(empR == 5) {
