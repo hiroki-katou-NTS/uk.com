@@ -24,6 +24,8 @@ public class StampList {
 	
 	private static final int maxCharLocation = 36; //số ký tự tối đa trên cell 打刻位置
 	private static final int maxCharClassification = 24; //số ký tự tối đa trên cell 出退勤区分
+	private static final int heightDefault = 48; //chiều cao mặc định của một dòng dữ liệu 
+	private static final int heightAddRow = 31; //chiều cao khi thêm một dòng dữ liệu 
 
 	public void setDate(String datetime) {
 		this.date = datetime.split(" ")[0];
@@ -37,7 +39,7 @@ public class StampList {
 		int locationRow = isAddress ? this.locationCountRow(): 1;
 		int classRow = this.classCountRow();
 		
-		return locationRow > classRow ? (locationRow - 1) * 31 + 48 : (classRow - 1) * 31 + 48;
+		return locationRow > classRow ? (locationRow - 1) * heightAddRow + heightDefault : (classRow - 1) * heightAddRow + heightDefault;
 	}
 	
 	private int locationCountRow() {

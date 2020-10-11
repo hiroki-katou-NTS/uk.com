@@ -40,7 +40,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 
 	private static final int START_ROW = 4;
 	
-	private static final int heightContentPage = 1423; //minimet 
+	private static final int heightContentPage = 1504; //minimet 
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,
@@ -319,32 +319,4 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			cell.get(rows, 10).setStyle(nightStyle);
 			cell.get(rows, 10).setValue(stampList.getNightTime());
 	}
-
-	// create page to print in case: employee
-	private Map<Integer, List<StampList>> createPages(Map<String, List<StampList>> cardGroup) {
-		AtomicInteger pages = new AtomicInteger(1);
-		Map<Integer, List<StampList>> employeeList = new HashMap<>();
-		cardGroup.forEach((k, v) -> {
-			if (v.size() > 32) {
-				int start = 0;
-				int totalPage = v.size() / 32 + (v.size() % 32 == 0 ? 0 : 1);
-				List<StampList> stampList;
-				for (int i = 1; i <= totalPage; i++) {
-					if (i == totalPage) {
-						stampList = v.subList(start, v.size());
-					} else {
-						stampList = v.subList(start, 32 * i);
-						start = 32 * i;
-					}
-					employeeList.put(pages.get(), stampList);
-					pages.getAndIncrement();
-				}
-			} else {
-				employeeList.put(pages.get(), v);
-				pages.getAndIncrement();
-			}
-		});
-		return employeeList;
-	}
-
 }
