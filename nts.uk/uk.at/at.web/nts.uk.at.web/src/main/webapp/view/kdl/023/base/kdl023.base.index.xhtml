@@ -7,7 +7,14 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1024, height: 768 };</script>
+				<script>
+					var sharedData = nts.uk.ui.windows.getShared("reflectionSetting");
+					var dialogHeight = 752;
+					if (!sharedData.calendarStartDate || !sharedData.calendarEndDate) {
+						dialogHeight = 720;
+                    }
+					var dialogSize = { width: 1024, height: dialogHeight };
+				</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
