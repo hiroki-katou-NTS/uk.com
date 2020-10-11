@@ -25,7 +25,7 @@ public class AnnualLeaveGrantRemaining extends AnnualLeaveGrantRemainingData {
 //				parent.getRegisterType(),
 //				parent.getDetails());
 		
-		this.leaveID = parent.getAnnLeavID();
+		this.leaveID = parent.getLeaveID();
 		this.cid = parent.getCid();
 		this.employeeId = parent.getEmployeeId();
 		this.grantDate = parent.getGrantDate();

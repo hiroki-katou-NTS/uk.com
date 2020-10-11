@@ -37,6 +37,7 @@ public class SpecialLeaveRemainingNumber {
 	private SpecialLeaveRemainingNumber(BigDecimal days, Integer minutes) {
 		this.dayNumberOfRemain = new DayNumberOfRemain(days== null? 0.0d: days.doubleValue());
 		this.timeOfRemain = minutes != null ? Optional.of(new TimeOfRemain(minutes)) : Optional.empty();
+		this.details = new ArrayList();
 	}
 
 	public static SpecialLeaveRemainingNumber createFromJavaType(BigDecimal days, Integer minutes) {
@@ -45,6 +46,7 @@ public class SpecialLeaveRemainingNumber {
 	private SpecialLeaveRemainingNumber(Double days, Integer minutes) {
 		this.dayNumberOfRemain = new DayNumberOfRemain(days);
 		this.timeOfRemain = minutes != null ? Optional.of(new TimeOfRemain(minutes)) : Optional.empty();
+		this.details = new ArrayList();
 	}
 
 	public static SpecialLeaveRemainingNumber createFromJavaType(Double days, Integer minutes) {
@@ -94,14 +96,14 @@ public class SpecialLeaveRemainingNumber {
 			cloned.dayNumberOfRemain = new DayNumberOfRemain(this.dayNumberOfRemain.v());
 			if (this.timeOfRemain.isPresent()){
 				cloned.timeOfRemain = Optional.of(new TimeOfRemain(this.timeOfRemain.get().v()));
-				if ( !this.details.isEmpty() ){
-					ArrayList<SpecialLeaveRemainingDetail> list
-						= new ArrayList<SpecialLeaveRemainingDetail>();
-					this.details.stream().forEach(c->{
-						list.add(c.clone());
-					});
-					cloned.details = list;
-				}
+			}
+			if ( !this.details.isEmpty() ){
+				ArrayList<SpecialLeaveRemainingDetail> list
+					= new ArrayList<SpecialLeaveRemainingDetail>();
+				this.details.stream().forEach(c->{
+					list.add(c.clone());
+				});
+				cloned.details = list;
 			}
 		}
 		catch (Exception e){
