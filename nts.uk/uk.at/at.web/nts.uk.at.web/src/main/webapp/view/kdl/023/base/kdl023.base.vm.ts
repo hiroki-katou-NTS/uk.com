@@ -392,9 +392,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             //
             // // Reload calendar
             // self.optionDates(self.getOptionDates());
-
-            // Set focus control
-            $('#component-calendar-kcp006').focus();
         }
 
         /**
@@ -414,9 +411,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             //
             // // Reload calendar
             // self.optionDates(self.getOptionDates());
-
-            // Set focus control
-            $('#component-calendar-kcp006').focus();
         }
 
         /**
