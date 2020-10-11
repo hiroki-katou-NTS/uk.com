@@ -2274,6 +2274,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	                		+ employeeReportData.employmentCode + "　"			   // A4_8
 	                        + employeeReportData.employmentName + "　"			   // A4_5
 	                		+ TextResource.localize("KWR001_93") + "　"			   // A4_6
+	                		+ employeeReportData.jobTitleCode + "　"			   
 	                        + employeeReportData.position;
 
 	                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle, contentPosition);
@@ -2312,8 +2313,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							+ employeeReportData.employeeCode + "　"
 							+ employeeReportData.employeeName + "　"
 							+ TextResource.localize("KWR001_92") + "　"
+							+ employeeReportData.employmentCode + "　"
 							+ employeeReportData.employmentName + "　"
 							+ TextResource.localize("KWR001_93") + "　"
+							+ employeeReportData.jobTitleCode + "　"
 							+ employeeReportData.position);
 					currentRow++;
 				}
@@ -2341,10 +2344,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							}
 							rowPageTracker.resetRemainingRow();
 					                String workplaceTitle = TextResource.localize("KWR001_90") + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
-					                String personalTitle = TextResource.localize("KWR001_91") + "　" + employeeReportData.employeeCode + "　"
-					                        + employeeReportData.employeeName + "　" + TextResource.localize("KWR001_92") + "　"
-					                        + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
-					                        + employeeReportData.position;
+					                String personalTitle = TextResource.localize("KWR001_91")
+					                		+ "　" + employeeReportData.employeeCode
+					                		+ "　" + employeeReportData.employeeName
+					                		+ "　" + TextResource.localize("KWR001_92")
+					                		+ "　" + employeeReportData.employmentCode
+					                		+ "　" + employeeReportData.employmentName
+					                		+ "　" + WorkScheOutputConstants.POSITION
+					                		+ "　" + employeeReportData.jobTitleCode
+					                		+ "　" + employeeReportData.position;
 					                departmentCode.add(workplaceReportData.getWorkplaceCode());
 					                // A3_1
 					                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
