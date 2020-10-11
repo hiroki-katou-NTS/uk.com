@@ -20,7 +20,7 @@ export class KafS04A1Component extends Vue {
     
     public kafS00DParams: IParamS00D = null;
 
-    @Prop({default:(): IParams => ({appID: '',mode: true})}) public readonly paramsAComponent: IParams;
+    @Prop({default:(): IParams => ({appID: '',mode: true,res: null})}) public readonly paramsAComponent: IParams;
     @Prop({default: true}) public readonly mode!: boolean;
 
     public created() {
@@ -42,9 +42,9 @@ export class KafS04A1Component extends Vue {
     public handleCloseModel(res) {
         const vm = this;
 
-        console.log(res);
+        //console.log(res);
         vm.paramsAComponent.mode = false;
-        vm.$emit('showComponentA', vm.paramsAComponent.mode);
+        vm.$emit('showComponentA', vm.paramsAComponent.mode,res);
     }
 }
 

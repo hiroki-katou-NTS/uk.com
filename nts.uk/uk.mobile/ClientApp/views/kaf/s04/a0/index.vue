@@ -3,6 +3,7 @@
     <kaf-s04-a
       v-if="showComponentA"
       v-bind:mode="paramsAComponent.mode"
+      v-bind:res="paramsAComponent.res"
       @nextComponentA0="handlNextComponentA0"
     />
     <kaf-s04-a1

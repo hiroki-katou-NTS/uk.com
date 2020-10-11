@@ -5,18 +5,17 @@ import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS04BComponent } from '../b';
 
 import {
-    IOutput,
     ITime,
     IAppDispInfoStartupOutput,
     IApplication,
     IData,
     IParamS00A,
-    IParamS00B,
-    IParamS00C,
     IInfoOutput,
     IRes,
     IParams,
     ICheck,
+    ILateOrLeaveEarlies,
+    IResDetail,
 } from './define';
 
 @component({
@@ -43,12 +42,13 @@ import {
 export class KafS04AComponent extends KafS00ShrComponent {
     public title: string = 'KafS04A';
     public kafS00AParams: IParamS00A = null;
-    public kafS00BParams: IParamS00B = null;
-    public kafS00CParams: IParamS00C = null;
+    public kafS00BParams: any;
+    public kafS00CParams: any;
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
+    public lateOrLeaveEarlies: ILateOrLeaveEarlies;
     public application: IApplication = initAppData();
     public infoOutPut: IInfoOutput = initInfoOutput();
     public paramsAComponent: IParams;
@@ -76,9 +76,29 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     @Prop({ default: true }) public readonly mode!: boolean;
 
+    @Prop({ default: () => ({}) }) public readonly res!: IResDetail;
+
     public created() {
         const vm = this;
 
+        if (!vm.mode) {
+            // vm.time.attendanceTime = vm.res.arrivedLateLeaveEarly.lateOrLeaveEarlies[0].timeWithDayAttr;
+            // vm.time.leaveTime = vm.res.arrivedLateLeaveEarly.lateOrLeaveEarlies[1].timeWithDayAttr;
+            vm.res.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, idx) => {
+                if (idx == 0) {
+                    vm.time.attendanceTime = item.timeWithDayAttr;
+                }
+                if (idx == 1) {
+                    vm.time.leaveTime = item.timeWithDayAttr;
+                }
+                if (idx == 2) {
+                    vm.time.attendanceTime2 = item.timeWithDayAttr;
+                }
+                if (idx == 3) {
+                    vm.time.leaveTime2 = item.timeWithDayAttr;
+                }
+            });
+        }
         vm.fetchStart();
     }
 
@@ -135,6 +155,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
     get showCheckBox() {
         const vm = this;
 
+        if (!vm.mode) {
+
+        }
+
         if (vm.application.prePostAtr == 1) {
             if (vm.cancelAtr == 1 || vm.cancelAtr == 2) {
                 if (vm.cancelAtr == 1) {
@@ -186,67 +210,78 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public initComponetB() {
         const vm = this;
 
-        let input = {
-            mode: 0,
-            appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-            newModeContent: {
-                appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                useMultiDaySwitch: false,
-                initSelectMultiDay: false
-            },
-            appDisplaySetting: {
-                prePostDisplayAtr: null,
-                manualSendMailAtr: null,
-            },
-            detailModeContent: null
-        };
+        vm.kafS00BParams = null;
+        let paramb = {
 
-        let output: IOutput = {
-            prePostAtr: 0,
-            startDate: new Date(),
-            endDate: new Date(),
+            input: {
+                mode: vm.mode ? 0 : 1,
+                appDisplaySetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+                newModeContent: {
+                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                    appTypeSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                    useMultiDaySwitch: false,
+                    initSelectMultiDay: false
+                },
+                detailModeContent: null
+
+            },
+            output: {
+                prePostAtr: 0,
+                startDate: null,
+                endDate: null
+            }
         };
 
         if (!vm.mode) {
-            input.detailModeContent = {
-                prePostAtr: 1,
-                startDate: '2020/09/22',
-                endDate: '2020/09/22',
-                employeeName: _.isEmpty(vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            paramb.input.detailModeContent = {
+                prePostAtr: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
-
-        vm.kafS00BParams = {
-            input,
-            output
-        };
-
-
+        vm.kafS00BParams = paramb;
     }
 
     public initComponentC() {
         const vm = this;
 
-        let input = {
-            displayFixedReason: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason,
-            displayAppReason: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason,
-            reasonTypeItemLst: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
-            appLimitSetting: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appLimitSetting
-        };
-        let output = {
-            opAppStandardReasonCD: '',
-            opAppReason: ''
-        };
-
         vm.kafS00CParams = {
-            input,
-            output,
+            input: {
+                // 定型理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+                displayFixedReason: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason,
+                // 申請理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+                displayAppReason: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason,
+                // 定型理由一覧
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+                reasonTypeItemLst: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
+                // 申請制限設定
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+                appLimitSetting: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+                // 選択中の定型理由
+                // empty
+                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                // 入力中の申請理由
+                // empty
+                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            },
+            output: {
+                // 定型理由
+                opAppStandardReasonCD: vm.mode ? '' : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: vm.mode ? '' : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+            }
         };
+        if (vm.kafS00CParams.output) {
+            vm.kafS00CParams.output.opAppReason = vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
+            vm.kafS00CParams.output.opAppStandardReasonCD = vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
+        }
     }
 
     public checkBeforeRegister() {
         const vm = this;
-
 
         vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies = [];
         vm.infoOutPut.earlyInfos = [];
@@ -263,12 +298,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                 {
                     lateOrEarlyClassification: 0,
-                    workNo: 1    
+                    workNo: 1
                 }
             );
         }
 
-        vm.infoOutPut.earlyInfos.push (
+        vm.infoOutPut.earlyInfos.push(
             {
                 category: 0,
                 isActive: vm.check.cbCancelLate.isDisable ? false : true,
@@ -289,16 +324,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                 {
                     lateOrEarlyClassification: 1,
-                    workNo: 1    
+                    workNo: 1
                 }
             );
         }
 
-        vm.infoOutPut.earlyInfos.push (
+        vm.infoOutPut.earlyInfos.push(
             {
                 category: 1,
                 isActive: vm.check.cbCancelEarlyLeave.isDisable ? false : true,
-                isCheck: vm.check.cbCancelEarlyLeave.value ? true : false ,
+                isCheck: vm.check.cbCancelEarlyLeave.value ? true : false,
                 workNo: 1,
                 isIndicated: true
             });
@@ -315,12 +350,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                 {
                     lateOrEarlyClassification: 0,
-                    workNo: 2   
+                    workNo: 2
                 }
             );
         }
 
-        vm.infoOutPut.earlyInfos.push (
+        vm.infoOutPut.earlyInfos.push(
             {
                 category: 0,
                 isActive: vm.check.cbCancelLate2.isDisable ? false : true,
@@ -340,12 +375,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                 {
                     lateOrEarlyClassification: 1,
-                    workNo: 2  
+                    workNo: 2
                 }
             );
         }
 
-        vm.infoOutPut.earlyInfos.push (
+        vm.infoOutPut.earlyInfos.push(
             {
                 category: 1,
                 isActive: vm.check.cbCancelEarlyLeave2.isDisable ? false : true,
@@ -376,11 +411,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         agentAtr: true,
                         isNew: true,
                         infoOutput: vm.infoOutPut,
-                        application: vm.application,
+                        application: vm.mode ? vm.application : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application,
                     };
 
                     vm.$mask('show');
-                    vm.$http.post('at',API.getMsgList + '/' + AppType.EARLY_LEAVE_CANCEL_APPLICATION,paramsErrorLst).then((res: any) => {
+                    vm.$http.post('at', API.getMsgList + '/' + AppType.EARLY_LEAVE_CANCEL_APPLICATION, paramsErrorLst).then((res: any) => {
                         vm.mode ? vm.register() : vm.update();
                         vm.$mask('hide');
                     }).catch((err: any) => {
@@ -406,6 +441,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.paramsAComponent = {
                 appID: res.data.appID,
                 mode: vm.mode,
+                res: null,
             };
             vm.$emit('nextComponentA0', vm.paramsAComponent);
             vm.$mask('hide');
@@ -415,7 +451,21 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public update() {
         const vm = this;
 
-        alert('dang o mode update');
+        let paramsUpdate = {
+            application: vm.application,
+            arrivedLateLeaveEarlyDto: vm.infoOutPut.arrivedLateLeaveEarly,
+            appDispInfoStartupDto: vm.res.appDispInfoStartupOutput
+        };
+        vm.$mask('show');
+        vm.$http.post('at', API.updateApp, paramsUpdate).then((res: any) => {
+            vm.$mask('hide');
+            vm.paramsAComponent = {
+                appID: res.data.appID,
+                mode: vm.mode,
+                res: null,
+            };
+            vm.$emit('nextComponentA0', vm.paramsAComponent);
+        });
         //do something
     }
 
@@ -500,10 +550,31 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 });
             });
         }
-        vm.application.appDate = startDate;
-        vm.application.prePostAtr;
-        vm.application.opAppStartDate = startDate;
-        vm.application.opAppEndDate = startDate;
+        if (vm.mode) {
+            vm.application.appDate = startDate;
+            vm.application.prePostAtr;
+            vm.application.opAppStartDate = startDate;
+            vm.application.opAppEndDate = startDate;
+        }
+        if (!vm.mode) {
+            vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            const {res} = vm;
+            const {appDispInfoStartupOutput} = res;
+            
+            const {appDetailScreenInfo} = appDispInfoStartupOutput;
+            const {application} = appDetailScreenInfo;
+
+            const {reflectionStatus,inputDate,appID,appDate,prePostAtr,opAppStartDate,opAppEndDate} = application;
+
+            vm.application.appDate = appDate;
+            vm.application.prePostAtr = prePostAtr;
+            vm.application.opAppStartDate = opAppStartDate;
+            vm.application.opAppEndDate = opAppEndDate;
+            vm.application.appId = appID;
+            vm.application.inputDate = inputDate;
+            vm.application.reflectionStatus = reflectionStatus;
+        }
+
     }
 
     public handleChangeAppReason(appReason) {
@@ -534,7 +605,8 @@ const API = {
     startKAFS04: 'at/request/application/lateorleaveearly/initPage',
     changeAppDate: 'at/request/application/lateorleaveearly/changeAppDate',
     register: 'at/request/application/lateorleaveearly/register',
-    getMsgList: 'at/request/application/lateorleaveearly/getMsgList'
+    getMsgList: 'at/request/application/lateorleaveearly/getMsgList',
+    updateApp: 'at/request/application/lateorleaveearly/updateInfoApp',
 };
 
 const initAppData = (): IApplication => ({

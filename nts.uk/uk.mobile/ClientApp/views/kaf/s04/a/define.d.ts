@@ -33,12 +33,12 @@ export interface IParamS00B {
 
 export interface IOutput {
     prePostAtr: 1 | 0;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
 }
 
 export interface IInput {
-    mode: number | null;
+    mode: boolean;
     appDisplaySetting: {
         prePostDisplayAtr: number | null,
         manualSendMailAtr: number | null
@@ -48,7 +48,12 @@ export interface IInput {
         useMultiDaySwitch: boolean,
         initSelectMultiDay: boolean
     };
-    detailModeContent: null;
+    detailModeContent: {
+        prePostAtr: number | null;
+        startDate: null;
+        endDate: null;
+        employeeName: string;
+    }
 }
 
 export interface IAppTypeSetting {
@@ -60,16 +65,27 @@ export interface IAppTypeSetting {
 }
 
 export interface IParamS00C {
-    input: {
-        displayFixedReason: number | null,
-        displayAppReason: number | null,
-        reasonTypeItemLst: any[],
-        appLimitSetting: IAppLimitSetting
-    };
-    output: {
-        opAppStandardReasonCD: string,
-        opAppReason: string
-    };
+    input: IInputCPrams;
+    output: IOutPutCParams;
+}
+
+export interface IInputCPrams {
+    displayFixedReason: number | null;
+    displayAppReason: number | null;
+    reasonTypeItemLst: any[];
+    appLimitSetting: {
+        canAppAchievementMonthConfirm: boolean;
+        canAppAchievementLock: boolean;
+        canAppFinishWork: boolean;
+        requiredAppReason: boolean;
+        standardReasonRequired: boolean;
+        canAppAchievementConfirm: boolean;
+    }
+}
+
+export interface IOutPutCParams {
+    opAppReason: string;
+    opAppStandardReasonCD: number | null;
 }
 
 export interface IAppLimitSetting {
@@ -242,7 +258,33 @@ export interface IAppDispInfoStartupOutput {
         opAppDeadline: string,
         opWorkTimeLst: IOpWorkTimeLst[],
     };
-    appDetailScreenInfo: null;
+    appDetailScreenInfo: {
+        application: {
+            version: number | null;
+            appID: string;
+            prePostAtr: 0 | 1;
+            employeeID: string;
+            appType: number | null;
+            appDate: string;
+            enteredPerson: string;
+            inputDate: string;
+            reflectionStatus: any;
+            opStampRequestMode: number | null;
+            opReversionReason: string;
+            opAppStartDate: string;
+            opAppEndDate: string;
+            opAppReason: string;
+            opAppStandardReasonCD: number | null;
+        };
+        approvalLst: any[];
+        authorComment: string;
+        user: number | null;
+        reflectPlanState: number | null;
+        outputMode: number | null;
+        authorizableFlags: boolean;
+        approvalATR: number | null;
+        alternateExpiration: boolean;
+    };
 }
 
 export interface IData {
@@ -267,11 +309,11 @@ export interface ITime {
 
 export interface IApplication {
     appDate: string,
-    appId: null;
+    appId: string;
     appType: number | null;
     employeeID: string;
     enteredPerson: string;
-    inputDate: null;
+    inputDate: string;
     opAppEndDate: string;
     opAppReason: string;
     opAppStandardReasonCD: number | null;
@@ -304,7 +346,7 @@ export interface ILateOrLeaveEarlies {
     workNo: number | null;
 }
 
-export interface ILateCancelation{
+export interface ILateCancelation {
     lateOrEarlyClassification: number | null;
     workNo: number | null;
 }
@@ -332,6 +374,16 @@ export interface IRes {
 export interface IParams {
     appID: string;
     mode: boolean;
+    res: {
+        appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+        arrivedLateLeaveEarly: IArrivedLateLeaveEarly;
+        earlyInfos: IEarlyInfos;
+        info: string;
+        lateEarlyCancelAppSet: {
+            cancelAtr: number | null;
+            companyId: string;
+        }
+    }
 }
 
 export interface ICheck {
@@ -350,5 +402,19 @@ export interface ICheck {
     cbCancelEarlyLeave2: {
         value: string;
         isDisable: boolean;
+    }
+}
+
+export interface IResDetail {
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+    arrivedLateLeaveEarly: {
+        lateCancelation: ILateCancelation[];
+        lateOrLeaveEarlies: ILateOrLeaveEarlies[];
+    }
+    earlyInfos: IEarlyInfos[];
+    info: string;
+    lateEarlyCancelAppSet: {
+        cancelAtr: number | null;
+        companyId: string;
     }
 }

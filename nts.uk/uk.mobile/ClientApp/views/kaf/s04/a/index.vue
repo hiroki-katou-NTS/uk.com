@@ -113,12 +113,22 @@
       </div>
     </div>
     <kaf-s00-c class="py-3"
-    v-if="kafS00CParams"
+    v-if="kafS00CParams != null"
     @kaf000CChangeAppReason="handleChangeAppReason"
     @kaf000CChangeReasonCD="handleChangeReasonCD"
     v-bind:params="kafS00CParams" />
-    <button @click="checkBeforeRegister()" type="button" class="btn btn-primary btn-block">
-      {{ "申請する" }}
-    </button>
+   <button
+        v-if="mode"
+        type="button"
+        class="btn btn-primary btn-block"
+        v-on:click="checkBeforeRegister()"
+      >{{'KAFS09_11' | i18n}}</button>
+      <!-- 画面モード = 編集モード -->
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary btn-block"
+        v-on:click="checkBeforeRegister()"
+      >{{'KAFS09_2' | i18n}}</button>
   </div>
 </template>
