@@ -261,15 +261,21 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 })
                 .fail(err => {
-                    let messageId, messageParams;
+                    let messageId: any, messageParams: any;
                     if (err.errors) {
                         let errors = err.errors;
                         messageId = errors[0].messageId;
+                        
                     } else {
                         messageId = err.messageId;
                         messageParams = [err.parameterIds.join('、')];
                     }
-                    vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+                    return vm.$dialog.error({ messageId: messageId, messageParams: messageParams })
+                    .then(() => {
+                        if(messageId === "Msg_197") {
+                            vm.reload();
+                        }
+                    });
                 })
                 .always(() => vm.$blockui("hide"));
         }
