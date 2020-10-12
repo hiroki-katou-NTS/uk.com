@@ -5,10 +5,10 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
+import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
 
 /**
  * 	従業員用の時間外時間表示
- *
  */
 @Data
 @Builder

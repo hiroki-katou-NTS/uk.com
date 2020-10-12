@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
-import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementExcessInfoDto;
+import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.EmployeesOvertimeDisplayDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodDto;

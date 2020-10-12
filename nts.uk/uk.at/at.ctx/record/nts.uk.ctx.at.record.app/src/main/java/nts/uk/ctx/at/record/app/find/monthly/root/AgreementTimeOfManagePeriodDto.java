@@ -35,7 +35,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 	/** 社員ID */
 	private String employeeId;
 	/** 月度 */
-	private YearMonth yearMonth;
+	private Integer yearMonth;
 	
 	/** 36協定対象時間  */
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
@@ -75,7 +75,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 
 	@Override
 	public YearMonth yearMonth() {
-		return yearMonth;
+		return YearMonth.of(yearMonth);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getBreakdown()));
 			dto.setAgreMax(AgreementTimeOfMonthlyDto.from(domain.getLegalMaxTime()));
 			dto.setState(domain.getStatus().value);
-			dto.setYearMonth(domain.getYm());
+			dto.setYearMonth(domain.getYm().v());
 			dto.exsistData();
 		}
 		return dto;

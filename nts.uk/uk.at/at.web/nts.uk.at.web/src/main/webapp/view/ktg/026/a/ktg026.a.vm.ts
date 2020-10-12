@@ -24,18 +24,23 @@ module nts.uk.at.view.ktg026.a.viewmodel {
 
     employeeId: string;
 
-    employeesOvertime: EmployeesOvertimeDisplay;
+    employeesOvertime: EmployeesOvertimeDisplay = new EmployeesOvertimeDisplay();
 
     created() {
       const vm = this;
       vm.$blockui('grayout');
+      vm.employeeId = (__viewContext as any).user.employeeId;
       vm.employeeName = ko.observable('');
       vm.dataTable = ko.observableArray([]);
+      let targetDate = null;
       const cache = windows.getShared('cache');
-      const dataStored = vm.$window.storage('KTG026_PARAM') as any;
+      vm.$window.storage('KTG026_PARAM').then((data: any) => {
+        if (data) {
+          vm.employeeId = data.employeeId;
+          targetDate = data.targetDate;
+        }
+      });
 
-      vm.employeeId = !!dataStored.employeeId ? dataStored.employeeId : (__viewContext as any).user.employeeId;
-      const targetDate = !!dataStored.targetDate ? dataStored.targetDate : null;
       const currentOrNextMonth = !!cache ? cache.currentOrNextMonth : 1; // 1: 従業員参照モード 2: 上長参照モード
 
       const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
@@ -57,19 +62,22 @@ module nts.uk.at.view.ktg026.a.viewmodel {
             vm.targetYear(targetYear.toString());
           }
         })
+        .fail(err => {
+          vm.$dialog.alert(err);
+        })
         .always(() => vm.$blockui('clear'));
-
     }
 
     mounted() {
       const vm = this;
-      vm.targetYear.subscribe(() => {
+      vm.targetYear.subscribe(year => {
         vm.$blockui('grayout');
+        const processingYm = vm.employeesOvertime.closingPeriod ? vm.employeesOvertime.closingPeriod.processingYm : moment().format('YYYYMM');
         const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
           employeeId: vm.employeeId,
           closingId: vm.employeesOvertime.closureID,
-          targetYear: Number(vm.targetYear()),
-          processingYm: vm.employeesOvertime.closingPeriod.processingYm
+          targetYear: Number(year),
+          processingYm: processingYm
         });
 
         vm.extractOvertime(requestBody);
@@ -80,12 +88,13 @@ module nts.uk.at.view.ktg026.a.viewmodel {
       const vm = this;
       vm.$blockui('grayout');
       const cache = windows.getShared('cache');
+      const processingYm = vm.employeesOvertime.closingPeriod ? vm.employeesOvertime.closingPeriod.processingYm : moment().format('YYYYMM');
       const targetYear = cache.currentOrNextMonth === 1 ? vm.employeesOvertime.yearIncludeThisMonth : vm.employeesOvertime.yearIncludeNextMonth;
       const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
         employeeId: vm.employeeId,
         closingId: vm.employeesOvertime.closureID,
         targetYear: targetYear,
-        processingYm: vm.employeesOvertime.closingPeriod.processingYm
+        processingYm: processingYm
       });
 
       vm.extractOvertime(requestBody);
@@ -101,6 +110,9 @@ module nts.uk.at.view.ktg026.a.viewmodel {
             vm.displayDataTable(response);
           }
         })
+        .fail(err => {
+          vm.$dialog.alert(err);
+        })
         .always(() => vm.$blockui('clear'));
     }
 
@@ -110,7 +122,8 @@ module nts.uk.at.view.ktg026.a.viewmodel {
         const dataTable = _.map(data.ymOvertimes, item => new EmployeeOvertimeHours(
           item.yearMonth,
           item.agreeTime ? item.agreeTime.agreementTime.agreementTime : 0,
-          item.agreeTime ? item.agreeTime.agreementMaxTime.agreementTime : 0
+          item.agreeTime ? item.agreeTime.agreMax.agreementTime : 0,
+          item.agreeTime ? item.agreeTime.state : 0
         ));
         vm.dataTable(dataTable);
       }
@@ -126,7 +139,7 @@ module nts.uk.at.view.ktg026.a.viewmodel {
 
   }
 
-  export interface EmployeesOvertimeDisplay {
+  export class EmployeesOvertimeDisplay {
     // ログイン者の締めID
     closureID: number;
     // 対象社員の個人情報
@@ -143,6 +156,10 @@ module nts.uk.at.view.ktg026.a.viewmodel {
     yearIncludeNextMonth: number;
     // 表示する年
     displayYear: number;
+
+    constructor(init?: Partial<EmployeesOvertimeDisplay>) {
+      $.extend(this, init);
+    }
 
   }
 
@@ -163,8 +180,10 @@ module nts.uk.at.view.ktg026.a.viewmodel {
     nonStatutoryTime: string
     // 法定内時間のグラフ
     legalTime: string;
+    // 色
+    cssClass: string;
 
-    constructor(yearMonth: number, agreementTime: number, agreementMaxTime: number) {
+    constructor(yearMonth: number, agreementTime: number, agreementMaxTime: number, state: number) {
       this.yearMonth = moment.utc(yearMonth, "YYYYMM").format("YYYY/MM");
       this.agreementTime = agreementTime;
       this.agreementMaxTime = agreementMaxTime;
@@ -175,6 +194,25 @@ module nts.uk.at.view.ktg026.a.viewmodel {
       this.agreementMaxTimeDisplay = format.byId('Clock_Short_HM', agreementMaxTime - agreementTime);
       this.nonStatutoryTime = agreementTime > 6000 ? '200px' : `${2 * agreementTime / 60}px`;
       this.legalTime = agreementTime > 6000 ? '' : `${2 * (agreementMaxTime - agreementTime) / 60}px`;
+      this.cssClass = this.getCssClass(state);
+    }
+
+    // 色	※色定義-就業.xlsxを参照
+    getCssClass(state: number): string {
+      if (state === 2) {
+        return 'exceeding-limit-alarm';
+      } else if (state === 1) {
+        return 'exceeding-limit-error';
+      } else if (state === 7) {
+        return 'special-exceeding-limit';
+      } else if (state === 6) {
+        return 'special-exceeding-limit-error';
+      } else if (state === 4) {
+        return 'special-exceeded-limit-alarm';
+      } else if (state === 3) {
+        return 'special-exceeded-limit-error';
+      }
+      return '';
     }
   }
 

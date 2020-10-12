@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.Builder;
 import lombok.Data;
-
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 
 @Data
@@ -12,6 +11,5 @@ public class YearMonthOvertime {
 	private Integer yearMonth;
 
 	/** 対象年月の時間外時間 */
-	AgreementTimeOfManagePeriodDto agreeTime;
-
+	private AgreementTimeOfManagePeriodDto agreeTime;
 }

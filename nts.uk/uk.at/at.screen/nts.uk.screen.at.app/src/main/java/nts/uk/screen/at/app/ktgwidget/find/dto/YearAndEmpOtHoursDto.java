@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 
 @Data
 @Builder

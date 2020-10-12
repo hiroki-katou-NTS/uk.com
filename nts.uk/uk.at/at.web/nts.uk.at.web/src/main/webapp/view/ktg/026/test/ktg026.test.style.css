@@ -1,14 +1,4 @@
-
 #contents-area {
-  padding-top: 5px;
-  padding-left: 5px;
-  width: 440px;
-  border: 1px groove;
-}
-.contents-area {
-  padding-top: 5px;
-  padding-left: 5px;
-  width: 440px;
   border: 1px groove;
 }
 .grid {
@@ -137,45 +127,24 @@ table thead tr th {
 .text-right {
   text-align: right;
 }
-.h385 {
-  height: 385px;
+.content-left {
+  float: left;
+  width: 30%;
+  border-right: 1px solid groove;
 }
-.mh-195 {
-  max-height: 195px;
+.panel-content {
+  width: 500px;
+  height: 500px;
 }
-.h-350 {
-  height: 350px;
+.content-right {
+  position: relative;
+  display: inline-block;
 }
-.mh-200 {
-  max-height: 200px;
+.c-widget-panel {
+  width: 525px;
+  height: 500px;
+  border: 1px solid #B1B1B1;
+  box-shadow: 0 5px 0 #2FCC71 inset;
+  padding: 10px;
+  box-sizing: border-box;
 }
-
-/* 限度アラーム時間超過 */
-.exceeding-limit-alarm {
-  background-color: #f6f636; /* 36協定アラーム */
-  color: #ff0000; /* 36協定アラーム文字 */
-}
-/* 限度エラー時間超過 */
-.exceeding-limit-error {
-  background-color: #0c0606; /* 36協定エラー */
-  color: #ffffff; /* 36協定エラー文字 */
-}
-/* 限度アラーム時間超過（特例あり） */
-.special-exceeding-limit {
-  background-color: #eb9152; /* 36協定特例 */
-}
-/* 限度エラー時間超過（特例あり） */
-.special-exceeding-limit-error {
-  background-color: #eb9152; /* 36協定特例 */
-}
-/* 特例限度アラーム時間超過 */
-.special-exceeded-limit-alarm  {
-  background-color: #f6f636; /* 36協定アラーム */
-  color: #ff0000; /* 36協定アラーム文字 */
-}
-/* 特例限度エラー時間超過 */
-.special-exceeded-limit-error {
-  background-color: #0c0606; /* 36協定エラー */
-  color: #ffffff; /* 36協定エラー文字 */
-}
-
