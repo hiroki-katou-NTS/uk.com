@@ -311,15 +311,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         // set Deco background
                         if (value == 1) {
-                            // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift) 
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
-                            
                             let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
-                            if (cell.shiftCode != null) {
-                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                            if (dataCellOnGrid.shiftCode != null) {
+                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     let color = '#'+ objShiftMasterWithWorkStyle[0].color;
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
+                                }else{
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));    
                                 }
                             }
                         } else if (value == 0) {
@@ -367,6 +366,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
                 }
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
+                
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                if (userInfor.updateMode == 'copyPaste') {
+                    self.coppyData();
+                }
                 self.stopRequest(true);
             });
 
@@ -1063,8 +1068,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         if (cell.needToWork == false) {
                             workTypeName = '';
                             workTimeName = '';
@@ -1149,8 +1154,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
@@ -1862,7 +1867,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         // khi thay đổi combobox backgrounndMode
-        updateExTableWhenChangeModeBg(detailContentDecoUpdate ): void {
+        updateExTableWhenChangeModeBg(detailContentDecoUpdate, updateMode ): void {
             let self = this;
             // save scroll's position
             self.stopRequest(false);
@@ -1876,7 +1881,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 columns: detailColumns,
                 dataSource: detailContentDs,
                 primaryKey: "sid",
-                //        highlight: false,
+                //highlight: false,
                 features: [{
                     name: "BodyCellStyle",
                     decorator: detailContentDeco
@@ -1897,12 +1902,79 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
             };
 
-            $("#extable").exTable("mode", 'shift', 'stick', null, [{
-                name: "BodyCellStyle",
-                decorator: detailContentDeco
-            }]);
+//            $("#extable").exTable("mode", 'shift', updateMode, null, [{
+//                name: "BodyCellStyle",
+//                decorator: detailContentDeco
+//            }]);
 
            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+            
+            self.setCoppyStyler();
+        }
+        
+        setCoppyStyler() {
+            let self = this;
+            // get listShiftMaster luu trong localStorage
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            let listShiftMasterSaveLocal = userInfor.shiftMasterWithWorkStyleLst;
+            
+            // set color for cell
+            $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
+                let modeBackGround = self.backgroundColorSelected(); // 0||1
+                let shiftCode;
+                if (_.isNil(stickOrigData)) {
+                    shiftCode = data.shiftCode;
+                } else {
+                    shiftCode = stickOrigData.shiftCode == "" ? data.shiftCode : stickOrigData.shiftCode;
+                }
+                let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftCode; });
+                if (workInfo.length > 0) {
+                    let workStyle = workInfo[0].workStyle;
+                    if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
+                        if (modeBackGround == 1) {
+                            return { textColor: "#0000ff", background: "#" + workInfo[0].color }; // color-attendance
+                        } else {
+                            return { textColor: "#0000ff" }; // color-attendance
+                        }
+                    }
+                    if (workStyle == AttendanceHolidayAttr.MORNING + '') {
+                        if (modeBackGround == 1) {
+                            return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                        } else {
+                            return { textColor: "#FF7F27" };// color-half-day-work
+                        }
+                    }
+                    if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
+                        if (modeBackGround == 1) {
+                            return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                        } else {
+                            return { textColor: "#FF7F27" };// color-half-day-work
+                        }
+                    }
+                    if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
+                        if (modeBackGround == 1) {
+                            return { textColor: "#ff0000", background: "#" + workInfo[0].color };// color-holiday
+                        } else {
+                            return { textColor: "#ff0000" };// color-holiday
+                        }
+
+                    }
+                    if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                        if (modeBackGround == 1) {
+                            return { textColor: "#000000", background: "#ffffff" } // デフォルト（黒）  Default (black)
+                        } else {
+                            return { textColor: "#000000" }
+                        }
+                    }
+                    /**
+                     *  1日休日系  ONE_DAY_REST(0)
+                     *  午前出勤系 MORNING_WORK(1)
+                     *  午後出勤系 AFTERNOON_WORK(2)
+                     *  1日出勤系 ONE_DAY_WORK(3)
+                     */
+                }
+            });
         }
         
         // khi thay đổi mode edit va confirm
@@ -2481,10 +2553,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     for (item in data) {
                         let x = {
                             shiftmastercd: data[item].shiftCode,
-                            workTypeCode:  data[item].workTypeCode,
-                            workTimeCode:  data[item].workTimeCode
+                            workTypeCode: data[item].workTypeCode,
+                            workTimeCode: data[item].workTimeCode
                         };
-                         param.push(x);
+                        param.push(x);
                     }
                     service.validWhenPaste(param).done((data) => {
                         if (data == true) {
@@ -2514,9 +2586,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
-            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                return { textColor: "" };
-            });
+            
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
@@ -2530,6 +2600,44 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode =  'copyPaste';
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
+            self.setCoppyStyler();
+            
+            $("#extable").exTable("pasteValidate", function(data) {
+                let dfd = $.Deferred();
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                let param = [];
+                self.stopRequest(false);
+                _.forEach(data, d => {
+                    let shiftCode = d.shiftCode;
+                    let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    let objShiftMaster = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == shiftCode; });
+                    if (objShiftMaster.length > 0) {
+                        let x = {
+                            shiftmastercd: shiftCode,
+                            workTypeCode: objShiftMaster[0].workTypeCode,
+                            workTimeCode: objShiftMaster[0].workTimeCode
+                        };
+                        param.push(x);
+                    }
+                });
+                service.validWhenPaste(param).done((data) => {
+                    if (data == true) {
+                        dfd.resolve(true);
+                    }
+                    self.stopRequest(true);
+                }).fail(function() {
+                    self.stopRequest(true);
+                    dfd.reject();
+                }).always((data) => {
+                    if (data.messageId == "Msg_1728") {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_1728' });
+                    }
+                    self.stopRequest(true);
+                });
+                return dfd.promise();
             });
             nts.uk.ui.block.clear();
         }
@@ -3074,6 +3182,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workHolidayCls: number; // 出勤休日区分
         isEdit: boolean;
         isActive: boolean;
+        workTypeNameIsNull: boolean; 
+        workTimeNameIsNull: boolean;
     }
 
     interface IWorkScheduleShiftInforDto {

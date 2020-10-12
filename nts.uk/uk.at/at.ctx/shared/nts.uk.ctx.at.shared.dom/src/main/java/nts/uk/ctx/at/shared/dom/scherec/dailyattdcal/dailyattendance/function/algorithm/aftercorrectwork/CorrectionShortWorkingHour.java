@@ -43,8 +43,8 @@ public class CorrectionShortWorkingHour {
 			List<ShortWorkTimeHistoryItem> shortTimeHistItem = sWTHistItemRepo.findWithSidDatePeriod(companyId,
 					Arrays.asList(sid), new DatePeriod(date, date));
 
-			if (shortTimeHistItem.isEmpty() && domainDaily.getShortTime().isPresent()) {
-				domainDaily.getShortTime().get().clear(domainDaily.getEditState());
+			if (shortTimeHistItem.isEmpty()) {
+				domainDaily.getShortTime().ifPresent(x -> x.clear(domainDaily.getEditState()));
 				return domainDaily;
 			}
 			// 短時間勤務を変更
