@@ -33,8 +33,6 @@ public interface AttendanceItemDataGate {
 	public default void setNo(int idx) { }
 	
 	public default void setEnum(String enumText) { }
-	
-//	public default boolean enumNeedSet() { return false; }
 
 	public default int getNo() { return -1; }
 	
@@ -49,6 +47,6 @@ public interface AttendanceItemDataGate {
 	public default boolean isContainer() { return false; }
 	
 	public static enum PropType {
-		OBJECT, VALUE, IDX_LIST, ENUM_LIST, IDX_ENUM_LIST, ENUM_HAVE_IDX, IDX_IN_ENUM; 
+		OBJECT, VALUE, IDX_LIST, ENUM_LIST, IDX_ENUM_LIST, ENUM_HAVE_IDX, IDX_IN_ENUM, IDX_IN_IDX; 
 	}
 }

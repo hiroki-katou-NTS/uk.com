@@ -10,6 +10,7 @@ public interface ItemConst extends Cloneable {
 	public final int DEFAULT_MINUS = -1;
 	public final String DEFAULT_SEPERATOR = ".";
 	public final String DEFAULT_ENUM_SEPERATOR = "-";
+	public final String DEFAULT_IDX_SEPERATOR = "_";
 	public final String DEFAULT_INDEX_FIELD_NAME = "no";
 	public final String DEFAULT_ENUM_FIELD_NAME = "attr";
 	public final String DEFAULT_CHECK_ENUM_METHOD = "enumText";
