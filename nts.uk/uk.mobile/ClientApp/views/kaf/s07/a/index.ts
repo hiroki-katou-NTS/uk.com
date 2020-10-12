@@ -774,6 +774,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     });
                 }
             }
+        } else {
+            self.$updateValidator('valueWorkHours1', {
+                timeRange: false,
+                required: true
+            });
         }
         if (self.valueWorkHours2 != null) {
            
