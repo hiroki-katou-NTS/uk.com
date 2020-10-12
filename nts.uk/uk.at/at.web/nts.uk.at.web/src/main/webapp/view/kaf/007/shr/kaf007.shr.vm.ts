@@ -199,10 +199,13 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                         vm.model().setupType(res);
                     }
                 }).fail(fail => console.log(fail))
+                .always(() => {
+                    if(vm.isEdit() && vm.model().setupType() === 0 && ko.toJS(vm.model().reflectWorkChangeAppDto().whetherReflectAttendance) === 1) {
+                        $('#time1Start').focus();
+                    }
+                })
                 
-            }).always(() => {
-                    $('#time1Start').focus();
-            });;
+            });
         }
 
         // public conditionA14() {

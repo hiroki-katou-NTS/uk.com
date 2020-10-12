@@ -211,11 +211,15 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             let command = {
                 mode: false,
                 companyId: vm.$user.companyId,
-                applicationDto: ko.toJS(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.application),
+                applicationDto: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
                 appWorkChangeDto: ko.toJS(appWorkChangeDto),
                 isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
                 appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
             }
+
+            command.applicationDto.opAppReason = vm.application().opAppReason();
+            command.applicationDto.opAppStandardReasonCD = vm.application().opAppStandardReasonCD();
+            command.applicationDto.opReversionReason = vm.application().opReversionReason();
 
             vm.$blockui("show");
             return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
