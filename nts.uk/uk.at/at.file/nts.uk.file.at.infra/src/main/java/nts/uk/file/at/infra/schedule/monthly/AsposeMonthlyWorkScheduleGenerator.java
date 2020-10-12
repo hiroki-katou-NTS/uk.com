@@ -190,7 +190,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	/** The Constant CHUNK_SIZE. */
 //	private static final int CHUNK_SIZE = 16;
-	private static final int CHUNK_SIZE = MonthlyReportConstant.CHUNK_SIZE;
+	private static final int CHUNK_SIZE = 16;
 
 	/** The Constant DATA_COLUMN_INDEX. */
 //	private static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
