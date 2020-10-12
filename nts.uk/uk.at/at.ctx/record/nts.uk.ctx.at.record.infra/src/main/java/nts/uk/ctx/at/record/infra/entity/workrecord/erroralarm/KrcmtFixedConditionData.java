@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlarmAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
@@ -30,20 +31,20 @@ public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable
 	@Column(name = "INITIAL_MESSAGE")
 	public String message;
 	
-	@Column(name = "DIVISION")
-	public String division;
+	@Column(name = "ERALARM_ATR")
+	public Integer eralarmAtr;
 	
 	@Override
 	protected Object getKey() {
 		return fixConWorkRecordNo;
 	}
 
-	public KrcmtFixedConditionData(int fixConWorkRecordNo, String fixConWorkRecordName, String message, String division) {
+	public KrcmtFixedConditionData(int fixConWorkRecordNo, String fixConWorkRecordName, String message, Integer eralarmAtr) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
-		this.division = division;
+		this.eralarmAtr = eralarmAtr;
 	}
 	
 	public static KrcmtFixedConditionData toEntity(FixedConditionData domain) {
@@ -51,7 +52,7 @@ public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable
 				domain.getFixConWorkRecordNo().value,
 				domain.getFixConWorkRecordName().v(),
 				domain.getMessage().v(),
-				domain.getDivision()
+				domain.getEralarmAtr()!=null?domain.getEralarmAtr().value:2
 				);
 		
 	}
@@ -61,7 +62,7 @@ public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixConWorkRecordName(this.fixConWorkRecordName),
 				new FixedConditionWorkRecordName(this.message),
-				this.division
+				this.eralarmAtr!=null?ErAlarmAtr.values()[this.eralarmAtr]:ErAlarmAtr.OTHER
 				);
 		
 	}

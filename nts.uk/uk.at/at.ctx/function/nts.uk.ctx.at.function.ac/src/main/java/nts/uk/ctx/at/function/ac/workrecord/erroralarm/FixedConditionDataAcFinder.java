@@ -27,7 +27,8 @@ public class FixedConditionDataAcFinder implements FixedConditionDataAdapter  {
 		return new FixedConditionDataAdapterDto(
 				export.getFixConWorkRecordNo(),
 				export.getFixConWorkRecordName(),
-				export.getMessage()
+				export.getMessage(),
+				export.getEralarmAtr()
 				);
 	}
 

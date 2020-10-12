@@ -161,7 +161,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getAllFixedConData().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
+                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false, eralarmAtr: acc.eralarmAtr });
                         });
                         self.tabFixedCondition.listFixedConditionWorkRecord(_list);
                     }

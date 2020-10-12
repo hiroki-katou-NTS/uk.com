@@ -12,11 +12,15 @@ public class FixedConditionDataPubExport {
 	private String fixConWorkRecordName;
 	/** 初期メッセージ*/
 	private String message;
-	public FixedConditionDataPubExport(int fixConWorkRecordNo, String fixConWorkRecordName, String message) {
+	/** 区分*/
+	private Integer eralarmAtr;
+
+	public FixedConditionDataPubExport(int fixConWorkRecordNo, String fixConWorkRecordName, String message, Integer eralarmAtr) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
+		this.eralarmAtr = eralarmAtr;
 	}
 	
 	

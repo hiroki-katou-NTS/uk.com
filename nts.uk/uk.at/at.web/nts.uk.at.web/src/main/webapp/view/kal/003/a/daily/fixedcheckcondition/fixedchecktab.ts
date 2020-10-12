@@ -9,16 +9,21 @@ module nts.uk.at.view.kal003.a.tab {
 		listFixedConditionWorkRecord: KnockoutObservableArray<model.FixedConditionWorkRecord> = ko.observableArray([]);
 		isAllfixedCheck: KnockoutObservable<boolean> = ko.observable(false);
 
-		constructor(listFixedConditionWorkRecord?: Array<model.FixedConditionWorkRecord>) {
+		load(){
 			let self = this;
 			service.getAllFixedConData().done((data: Array<any>) => {
 				if (data && data.length) {
 					let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-						return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false, division: acc.division });
+						return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false, eralarmAtr: acc.eralarmAtr });
 					});
 					self.listFixedConditionWorkRecord(_list);
 				}
 			});
+		}
+
+		constructor(listFixedConditionWorkRecord?: Array<model.FixedConditionWorkRecord>) {
+			let self = this;
+			self.load();
 
 			if (listFixedConditionWorkRecord) {
 				self.listFixedConditionWorkRecord.removeAll();
@@ -44,6 +49,7 @@ module nts.uk.at.view.kal003.a.tab {
 				},
 				owner: self
 			});
+
 			$("#table-fixed").ntsFixedTable({ width: 512 });
 		}//end constructor
 	}//end FixedCheckConditionTab
