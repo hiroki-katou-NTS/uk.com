@@ -30,7 +30,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
-import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriod;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
@@ -292,7 +291,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					continue;
 				}
 				
-				List<AgreementTimeByPeriod> lstAgreementTimeByPeriod = new ArrayList<>();
+//				List<AgreementTimeByPeriod> lstAgreementTimeByPeriod = new ArrayList<>();
 				
 				Integer closureIdCheck = mapEmpIdClosureID.get(empId);
 				//Get base date 
@@ -318,56 +317,56 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 					}
 				}
 				// Check for list Error
-				for (AgreementTimeByPeriod agreementTimeByPeriod : lstAgreementTimeByPeriod) {
-					String upperLimit = "";
-					String exceptionLimitAlarmTime = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
-					String exceptionLimitErrorTime = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
-					// Convert AgreementTimeByPeriod to AgreementTimeByPeriodImport
-					AgreementTimeByPeriodImport agreementTimeByPeriodImport = new AgreementTimeByPeriodImport(
-							agreementTimeByPeriod.getStartMonth(), agreementTimeByPeriod.getEndMonth(), agreementTimeByPeriod.getAgreementTime(),
-							agreementTimeByPeriod.getLimitErrorTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
-							exceptionLimitErrorTime,exceptionLimitAlarmTime, agreementTimeByPeriod.getStatus());
-					
-					AgreementTimeStatusOfMonthly checkLimitTime = agreementTimeByPeriod.getStatus();
-					switch (checkLimitTime) {
-					case EXCESS_LIMIT_ERROR:
-						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
-							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-						}
-						break;
-					case EXCESS_LIMIT_ALARM:
-						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
-							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-						}
-						break;
-					case EXCESS_EXCEPTION_LIMIT_ALARM:
-						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-						}
-						break;
-					case EXCESS_EXCEPTION_LIMIT_ERROR:
-						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
-							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
-
-							// All 36協定チェック結果 to list return
-							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
-									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
-						}
-
-						break;
-					default:
-						break;
-					}
-				}
+//				for (AgreementTimeByPeriod agreementTimeByPeriod : lstAgreementTimeByPeriod) {
+//					String upperLimit = "";
+//					String exceptionLimitAlarmTime = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
+//					String exceptionLimitErrorTime = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
+//					// Convert AgreementTimeByPeriod to AgreementTimeByPeriodImport
+//					AgreementTimeByPeriodImport agreementTimeByPeriodImport = new AgreementTimeByPeriodImport(
+//							agreementTimeByPeriod.getStartMonth(), agreementTimeByPeriod.getEndMonth(), agreementTimeByPeriod.getAgreementTime(),
+//							agreementTimeByPeriod.getLimitErrorTime().toString(), agreementTimeByPeriod.getLimitAlarmTime().toString(),
+//							exceptionLimitErrorTime,exceptionLimitAlarmTime, agreementTimeByPeriod.getStatus());
+//					
+//					AgreementTimeStatusOfMonthly checkLimitTime = agreementTimeByPeriod.getStatus();
+//					switch (checkLimitTime) {
+//					case EXCESS_LIMIT_ERROR:
+//						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+//							upperLimit = agreementTimeByPeriod.getLimitErrorTime().toString();
+//							// All 36協定チェック結果 to list return
+//							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+//						}
+//						break;
+//					case EXCESS_LIMIT_ALARM:
+//						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
+//							upperLimit = agreementTimeByPeriod.getLimitAlarmTime().toString();
+//							// All 36協定チェック結果 to list return
+//							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+//						}
+//						break;
+//					case EXCESS_EXCEPTION_LIMIT_ALARM:
+//						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Alarm) {
+//							upperLimit = agreementTimeByPeriod.getExceptionLimitAlarmTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitAlarmTime().get().toString() : "";
+//							// All 36協定チェック結果 to list return
+//							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+//						}
+//						break;
+//					case EXCESS_EXCEPTION_LIMIT_ERROR:
+//						if (agreeConditionError.getErrorAlarm() == ErrorAlarm.Error) {
+//							upperLimit = agreementTimeByPeriod.getExceptionLimitErrorTime().isPresent() ? agreementTimeByPeriod.getExceptionLimitErrorTime().get().toString() : "";
+//
+//							// All 36協定チェック結果 to list return
+//							checkedAgreementResults.add(CheckedAgreementResult.builder().checkResult(true).upperLimit(upperLimit)
+//									.agreementTimeByPeriod(agreementTimeByPeriodImport).empId(empId).errorAlarm(agreeConditionError.getErrorAlarm()).build());
+//						}
+//
+//						break;
+//					default:
+//						break;
+//					}
+//				}
 			}
 		}
 		
