@@ -31,7 +31,6 @@ import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHisto
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.MasterInfoDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
@@ -137,19 +136,6 @@ public class ProcessExecutionWebService extends WebService {
 	@Path("getExecItemInfoList")
 	public List<ExecutionItemInfomationDto> getProcExecLogList() {
 		return this.execLogFinder.findAll();
-	}
-
-	@POST
-	@Path("getMasterInfo")
-	public MasterInfoDto getMasterInfo() {
-		return new MasterInfoDto(	
-				Collections.emptyList(),
-				Collections.emptyList(),
-//				this.stdOutputCondSetAtFinder.findAllStdOutputCondSetsByLoginCid(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList());
 	}
 
 	@POST

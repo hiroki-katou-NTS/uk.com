@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
@@ -10,6 +11,13 @@ import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
  * Repository インデックス再構成カテゴリ
  */
 public interface IndexReorgCatRepository {
+
+	/**
+	 * Finds all.
+	 * 
+	 * @return the <code>IndexReorgCat</code> domain list
+	 */
+	List<IndexReorgCat> findAll();
 
 	/**
 	 * Find one.

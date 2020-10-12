@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,7 +26,18 @@ public class JpaIndexReorgCatRepository extends JpaRepository implements IndexRe
 	// Select one
 	private static final String QUERY_SELECT_BY_ID = QUERY_SELECT_ALL
 			+ " WHERE f.pk.categoryNo = :categoryNo";
-		
+
+	/**
+	 * Finds all.
+	 * 
+	 * @return the <code>IndexReorgCat</code> domain list
+	 */
+	public List<IndexReorgCat> findAll() {
+		return this.queryProxy()
+				   .query(QUERY_SELECT_ALL, KfnctIndexReorgCat.class)
+				   .getList(IndexReorgCat::createFromMemento);
+	}
+
 	/**
 	 * Find one.
 	 *

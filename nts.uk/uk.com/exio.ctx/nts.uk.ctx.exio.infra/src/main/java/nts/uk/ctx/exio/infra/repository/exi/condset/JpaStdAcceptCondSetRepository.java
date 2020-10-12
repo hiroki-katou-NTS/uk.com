@@ -14,7 +14,24 @@ import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 @Stateless
 public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdAcceptCondSetRepository {
 
+	private static final String SELECT_ALL_BY_COMPANY_ID = "SELECT c FROM OiomtStdAcceptCondSet c "
+														 + "WHERE c.stdAcceptCondSetPk.cid = :companyId "
+														 + "ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
+
 	private static final String SELECT_ALL = "SELECT c FROM OiomtStdAcceptCondSet c WHERE c.stdAcceptCondSetPk.cid = :companyId AND c.stdAcceptCondSetPk.systemType = :systemType ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
+
+	/**
+	 * Find all standard acceptance condition settings by company id.
+	 * 
+	 * @param companyId the company id
+	 * @return the <code>StdAcceptCondSet</code> list
+	 */
+	@Override
+	public List<StdAcceptCondSet> findAllStdAcceptCondSetsByCompanyId(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_BY_COMPANY_ID, OiomtStdAcceptCondSet.class)
+								.setParameter("companyId", companyId)
+								.getList(OiomtStdAcceptCondSet::entityToDomain);
+	}
 
 	@Override
 	public List<StdAcceptCondSet> getStdAcceptCondSetBySysType(String cid, int sysType) {
