@@ -32,7 +32,6 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
@@ -101,12 +100,11 @@ public class ProcessExecutionWebService extends WebService {
 		return ExecItemEnumDto.init(i18n);
 	}
 
-	@POST
-	@Path("getProcExecList")
-	public List<ProcessExecutionDto> getProcExecList() {
+//	@POST
+//	@Path("getProcExecList")
+//	public List<ProcessExecutionDto> getProcExecList() {
 //		return this.procExecFinder.findAll();
-		return Collections.emptyList();
-	}
+//	}
 
 	@POST
 	@Path("saveProcExec")

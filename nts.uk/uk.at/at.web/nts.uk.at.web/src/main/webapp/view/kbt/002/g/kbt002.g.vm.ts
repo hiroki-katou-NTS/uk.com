@@ -8,6 +8,9 @@ module nts.uk.at.view.kbt002.g {
     modalLink = '';
     execItemCd = '';
     taskLogExecId = '';
+    overallError = '';
+    overallStatus = '';
+    taskLogList: any = {};
 
     // Start page
     created(params: any) {
@@ -19,6 +22,9 @@ module nts.uk.at.view.kbt002.g {
       if (sharedData) {
         self.taskLogExecId = sharedData.execId;
         self.execItemCd = sharedData.execItemCd;
+        self.overallStatus = sharedData.overallStatus;
+        self.overallError = sharedData.overallError;
+        self.taskLogList = sharedData.taskLogList;
       }
 
       dfd.resolve();
@@ -39,7 +45,7 @@ module nts.uk.at.view.kbt002.g {
         var taskId = data.taskId;
         self.createLinkAndSharedObject(taskId, logHistory);
 
-        setShared('inputDialogG', self.sharedObj);
+        nts.uk.ui.windows.setShared('inputDialogG', self.sharedObj);
         self.$window.modal(self.modalLink).always(() => self.$blockui('clear'));
       });
 
@@ -135,12 +141,14 @@ module nts.uk.at.view.kbt002.g {
         case 6: // 任意期間の集計
           // 任意期間の集計のエラー内容を表示する
           self.sharedObj = {
-            arbitraryPeriodAggrExecId: logHistory.execId, //・任意期間集計実行ログID
+            code: logHistory.execId, //・任意期間集計実行ログID
             execItemCd: self.execItemCd,
             isDaily: false,
-            nameObj: "任意期間の集計"
+            name: "任意期間の集計",
+            start: logHistory.schCreateStart,
+            end: logHistory.schCreateEnd
           };
-          nts.uk.ui.windows.setShared('inputDialogG', { sharedObj: self.sharedObj });
+          nts.uk.ui.windows.setShared('Kfp001gParams', { sharedObj: self.sharedObj });
           //画面「KFP001_任意期間の集計」の「G:エラー内容一覧」を起動する
           self.modalLink = "/view/kfp/001/g/index.xhtml";  
           break;
@@ -182,12 +190,13 @@ module nts.uk.at.view.kbt002.g {
         case 12: // データの削除
           break;
         case 13: // インデックス再構成
-          self.sharedObj = {
+          const params = {
             executionId: logHistory.execId,
             isDaily: false,
             nameObj: "インデックス再構成"
           };
-          self.$window.modal('/view/kbt/002/l/index.xhtml', self.sharedObj);
+          nts.uk.ui.windows.setShared('inputDialogL', { sharedObj: params });
+          self.$window.modal('/view/kbt/002/l/index.xhtml');
           break;
         default:
           break;

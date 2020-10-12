@@ -1,5 +1,10 @@
 module nts.uk.at.view.kbt002.c {
 
+  const API = {
+    getEnumDataList: 'at/function/processexec/getEnum',
+    getExecSetting: 'at/function/processexec/getExecSetting',
+    saveExecSetting: 'at/function/processexec/saveExecSetting/'
+  }
 
   @bean()
   export class KBT002CViewModel extends ko.ViewModel {
@@ -7,27 +12,27 @@ module nts.uk.at.view.kbt002.c {
     execItemName: KnockoutObservable<string> = ko.observable('');
     curExecSetting: KnockoutObservable<ExecutionSettingModel> = ko.observable(new ExecutionSettingModel(null));
     monthDays: KnockoutObservable<string> = ko.observable('');
-    executionTypes: KnockoutObservableArray<any>;
+    executionTypes: KnockoutObservableArray<any> = ko.observableArray([]);
     currentDate: string;
     currentTime: number;
     selectExec: KnockoutObservable<number> = ko.observable(1);
     isSelectExec: KnockoutObservable<boolean> = ko.observable(true);
-    timeRepeats: KnockoutObservableArray<any>;
+    timeRepeats: KnockoutObservableArray<any> = ko.observableArray([]);
     selectTimeRepeat: KnockoutObservable<number> = ko.observable(2);
     isSelectTimeRepeat: KnockoutObservable<boolean> = ko.observable(true);
-    endTimes: KnockoutObservableArray<any>;
+    endTimes: KnockoutObservableArray<any> = ko.observableArray([]);
     selectEndTime: KnockoutObservable<number> = ko.observable(2);
     isSelectEndTime: KnockoutObservable<boolean> = ko.observable(true);
-    endDates: KnockoutObservableArray<any>;
+    endDates: KnockoutObservableArray<any> = ko.observableArray([]);
     selectEndDate: KnockoutObservable<number> = ko.observable(2);
     isSelectEndDate: KnockoutObservable<boolean> = ko.observable(true);
-    isHiddenTime : KnockoutObservable<boolean> = ko.observable(false);
-    isHiddenWeek : KnockoutObservable<boolean> = ko.observable(false);
-    isHiddenMonth : KnockoutObservable<boolean> = ko.observable(false);
-    isHiddenTimeRepeat : KnockoutObservable<boolean> = ko.observable(false);
-    lstOneDayRepInterval: KnockoutObservableArray<OneDayRepIntervalModel>;
-  
-    created(){
+    isHiddenTime: KnockoutObservable<boolean> = ko.observable(false);
+    isHiddenWeek: KnockoutObservable<boolean> = ko.observable(false);
+    isHiddenMonth: KnockoutObservable<boolean> = ko.observable(false);
+    isHiddenTimeRepeat: KnockoutObservable<boolean> = ko.observable(false);
+    lstOneDayRepInterval: KnockoutObservableArray<OneDayRepIntervalModel> = ko.observableArray([]);
+
+    created(params: any) {
       const vm = this;
       let dfd = $.Deferred<void>();
       let today = moment();
@@ -35,13 +40,13 @@ module nts.uk.at.view.kbt002.c {
       vm.currentTime = today.hour() * 60 + today.minute();
 
       vm.lstOneDayRepInterval = ko.observableArray([
-        {code: 0, name: "1分"},
-        {code: 1, name: "5分"},
-        {code: 2, name: "10分"},
-        {code: 3, name: "15分"},
-        {code: 4, name: "20分"},
-        {code: 5, name: "30分"},
-        {code: 6, name: "60分"}
+        { code: 0, name: "1分" },
+        { code: 1, name: "5分" },
+        { code: 2, name: "10分" },
+        { code: 3, name: "15分" },
+        { code: 4, name: "20分" },
+        { code: 5, name: "30分" },
+        { code: 6, name: "60分" }
       ]);
 
       vm.executionTypes = ko.observableArray([
@@ -66,39 +71,72 @@ module nts.uk.at.view.kbt002.c {
         { code: 2, name: vm.$i18n('KBT002_72') }
       ]);
 
-      const dataStored = vm.$window.storage('inputDialogC');
-      if (dataStored){
-        dataStored.done((item: dataStoredDto) => {
-          vm.execItemCd(item.execItemCd);
-          vm.execItemName(item.execItemName);
-        } )
+      if (params) {
+        vm.execItemCd(params.execItemCd);
+        vm.execItemName(params.execItemName);
         vm.getExecSetting();
       }
+      
       dfd.resolve();
+      vm.execItemName('KBT002_C review');
 
       return dfd.promise();
     }
 
-    getExecSetting(){
+    getExecSetting() {
       const vm = this;
-      vm.$blockui('grayout');
-      service.getExecSetting('01').then((item: ExecutionSettingDto) => {
+      vm.execItemCd('01');
+
+      vm.$blockui('grayout')
+      .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
+      .then((item: ExecutionSettingDto) => {
         vm.$blockui('clear');
-        if (item){
+        if (item) {
           vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
           vm.monthDays(vm.buildMonthDaysStr());
         }
-      })
+      }) 
       .always(() => {
         vm.$blockui("clear");
       });
-      console.log(vm.curExecSetting());
     }
 
     decide() {
       const vm = this;
       if (vm.$validate()) {
-        return;
+        const params = {
+          executionTypes: vm.selectExec(), //実行タイプ
+          timeRepeats: vm.selectTimeRepeat(), //1日の繰り返し
+          endTimes: vm.selectEndTime(), //終了時刻
+          endDates: vm.selectEndDate(), //終了日
+          startDate: vm.curExecSetting().startDate(), //開始日時
+          startTime: vm.curExecSetting().startTime(),
+          monday: vm.curExecSetting().monday(),
+          tuesday: vm.curExecSetting().tuesday(),
+          wednesday: vm.curExecSetting().wednesday(),
+          thursday: vm.curExecSetting().thursday(),
+          friday: vm.curExecSetting().friday(),
+          saturday: vm.curExecSetting().saturday(),
+          sunday: vm.curExecSetting().sunday(),
+          january: vm.curExecSetting().january(),
+          february: vm.curExecSetting().february(),
+          march: vm.curExecSetting().march(),
+          april: vm.curExecSetting().april(),
+          may: vm.curExecSetting().may(),
+          june: vm.curExecSetting().june(),
+          july: vm.curExecSetting().july(),
+          august: vm.curExecSetting().august(),
+          september: vm.curExecSetting().september(),
+          october: vm.curExecSetting().october(),
+          november: vm.curExecSetting().november(),
+          december: vm.curExecSetting().december(),
+          lstOneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
+          endDate: vm.curExecSetting().endDate(),
+          endTime: vm.curExecSetting().endTime(),
+          repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() //日付選択
+        }
+        nts.uk.ui.windows.setShared('inputScreenB', { params: params });
+        vm.$window.close(params);
       }
 
     }
@@ -115,11 +153,10 @@ module nts.uk.at.view.kbt002.c {
       }
     }
 
-    optionEndDate(){
+    optionEndDate() {
       const vm = this;
-      if(vm.selectEndDate() == 1) {
+      if (vm.selectEndDate() == 1) {
         vm.curExecSetting().endDateCls(0);
-        vm.curExecSetting().repeatCls(false);
       } else {
         vm.curExecSetting().endDateCls(1);
         vm.curExecSetting().repeatCls(true);
@@ -128,7 +165,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionEndTime() {
       const vm = this;;
-      if (vm.selectEndTime() == 1 ) {
+      if (vm.selectEndTime() == 1) {
         vm.curExecSetting().endTimeCls(0);
       } else {
         vm.curExecSetting().endTimeCls(1);
@@ -136,16 +173,19 @@ module nts.uk.at.view.kbt002.c {
     }
 
     openDialogD() {
-      const vm = this;
-      vm.$blockui('grayout');
-      const openDialogD = {repeatMonthDateList: vm.curExecSetting().repeatMonthDateList};
-      vm.$window.modal('/view/kbt/002/d/index.xhtml',openDialogD).then((result:any) => {
-        vm.$blockui('clear');
-        vm.curExecSetting().repeatMonthDateList =  result.selectedDays;
-      })
-      .always(() => {
-        vm.$blockui('clear');
+    const vm = this;
+    vm.$blockui("grayout")
+    nts.uk.ui.windows.setShared('inputDialogD',
+      {
+        repeatMonthDateList: vm.curExecSetting().repeatMonthDateList()
       });
+      nts.uk.ui.windows.sub.modal("/view/kbt/002/d/index.xhtml").onClosed(function () {
+      var sharedDataD = nts.uk.ui.windows.getShared('outputDialogD');
+      vm.curExecSetting().repeatMonthDateList(sharedDataD.selectedDays);
+
+      vm.monthDays(vm.buildMonthDaysStr());
+      vm.$blockui("clear");
+    });
     }
 
     closeDialog() {
@@ -160,52 +200,42 @@ module nts.uk.at.view.kbt002.c {
       _.each(vm.curExecSetting().repeatMonthDateList(), (data, index) => {
         if (data == 32) {
           monthDaysText += '最終';
-        } else { 
+        } else {
           monthDaysText += data;
         }
         monthDaysText += '日';
-        if (index > listSize - 1) {
-          monthDaysText += ',';
+        if (index < listSize - 1) {
+          monthDaysText += ' + ';
         }
       });
       return monthDaysText;
     }
 
-    getEnumData() {
-      // const vm = this;
-      // vm.$blockui('grayout');
-      // service.getEnumDataList().then(() => {
-      //   vm.$blockui("clear");
-
-      // })
-      // .always(() => {
-      //   vm.$blockui("clear");
-      // })
-    }
-
-
     optionDialog() {
       const vm = this;
       const indexSelectExec = vm.selectExec();
-      if (indexSelectExec === 1 ) {
-        vm.isHiddenTime(false)
-        vm.isHiddenWeek(false)
-        vm.isHiddenMonth(false)
+
+      if (indexSelectExec === 1) {
+        vm.isHiddenTime(false);
+        vm.isHiddenWeek(false);
+        vm.isHiddenMonth(false);
       };
-      if (indexSelectExec === 2 ) {
-        vm.isHiddenTime(true)
-        vm.isHiddenWeek(false)
-        vm.isHiddenMonth(false)
-      }; 
-      if(indexSelectExec === 3 ) {
-        vm.isHiddenTime(true)
-        vm.isHiddenWeek(true)
-        vm.isHiddenMonth(false)
+      if (indexSelectExec === 2) {
+        vm.isHiddenTime(true);
+        vm.isHiddenWeek(false);
+        vm.isHiddenMonth(false);
       };
-      if(indexSelectExec === 4 ) {
-        vm.isHiddenTime(true)
-        vm.isHiddenWeek(false)
-        vm.isHiddenMonth(true)
+      if (indexSelectExec === 3) {
+        vm.isHiddenTime(true);
+        vm.isHiddenWeek(true);
+        vm.isHiddenMonth(false);
+        vm.curExecSetting().repeatContent(1);
+      };
+      if (indexSelectExec === 4) {
+        vm.isHiddenTime(true);
+        vm.isHiddenWeek(false);
+        vm.isHiddenMonth(true);
+        vm.curExecSetting().repeatContent(2);
       };
     }
 
@@ -214,11 +244,11 @@ module nts.uk.at.view.kbt002.c {
     code: number;
     name: string;
 
-    constructor (init?: Partial<OneDayRepIntervalModel>) {
+    constructor(init?: Partial<OneDayRepIntervalModel>) {
       $.extend(this, init)
-    } 
+    }
   }
-  
+
   export interface ExecutionSettingDto {
     companyId: string;
     execItemCd: string;
@@ -363,7 +393,7 @@ module nts.uk.at.view.kbt002.c {
     }
   }
 
-  export interface dataStoredDto {
+  export interface DataStoredDto {
     execItemCd: string;
     execItemName: string;
   }
@@ -625,7 +655,7 @@ module nts.uk.at.view.kbt002.c {
 //       }
 
 //       optionTimeRepeat(){
-        
+
 //       }
 
 //       private buildMonthDaysStr() {

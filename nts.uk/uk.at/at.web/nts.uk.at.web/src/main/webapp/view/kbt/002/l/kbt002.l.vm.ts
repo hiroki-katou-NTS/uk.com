@@ -23,16 +23,14 @@ module nts.uk.at.view.kbt002.l {
         { headerText: vm.$i18n('KBT002_330'), key: 'fragmentationRate', width: 150 },
         { headerText: vm.$i18n('KBT002_331'), key: 'fragmentationRateAfterProcessing', width: 150 }
       ]);
-
+      params = nts.uk.ui.windows.getShared('inputDialogL').sharedObj;
       if (params) {
         vm.execId(params.executionId);
         vm.getProExecIndex(vm.execId());
       }
-      this.getProExecIndex(vm.execId());
     }
 
     getProExecIndex(execId: string) {
-      debugger;
       const vm = this;
       vm.$blockui('grayout')
       .then(() => vm.$ajax(`${API.getExecItemInfoList}/${execId}`))
