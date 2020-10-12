@@ -7,8 +7,8 @@ import nts.uk.ctx.at.record.app.command.monthly.standardtime.company.RegisterTim
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.employment.*;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.RegisterAgreeOperationSetCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.operationsetting.RegisterAgreeOperationSetCommandHandler;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommand;
-import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.UpdateUnitSetOfApproveCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.RegisterUnitSetOfApproveCommand;
+import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitofapprove.RegisterUnitSetOfApproveCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.RegisterAgreeUnitSetCommand;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.unitsetting.RegisterAgreeUnitSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace.*;
@@ -59,83 +59,122 @@ public class AgreementTimeSettingService extends WebService {
     private RegisterAgreeUnitSetCommandHandler RegisterUnit;
 
     @Inject
-    private UpdateUnitSetOfApproveCommandHandler unitSetOfApproveCommandHandler;
+    private RegisterUnitSetOfApproveCommandHandler unitSetOfApproveCommandHandler;
 
+    /**
+     * Screen B
+     */
     @POST
     @Path("company/add")
     public void addCompany(RegisterTimeCompanyCommand command) {
         this.addCompany.handle(command);
     }
 
+    /**
+     * Screen C
+     */
     @POST
     @Path("employment/add")
     public void addEmployment(RegisterTimeEmploymentCommand command) {
         this.addEmployment.handle(command);
     }
 
+    /**
+     * Screen C
+     */
     @POST
     @Path("employment/copy")
     public void copyEmployment(CopyTimeEmploymentCommand command) {
         this.copyEmployment.handle(command);
     }
 
+    /**
+     * Screen C
+     */
     @POST
     @Path("employment/delete")
     public void deleteEmployment(DeleteTimeEmploymentCommand command) {
         this.deleteEloyment.handle(command);
     }
 
+    /**
+     * Screen D
+     */
     @POST
     @Path("workplace/add")
     public void addWorkplace(RegisterTimeWorkPlaceCommand command) {
         this.addWorkPlace.handle(command);
     }
 
+    /**
+     * Screen D
+     */
     @POST
     @Path("workplace/copy")
     public void copyWorkplace(CopyTimeWorkplaceCommand command) {
         this.copyWorkPlace.handle(command);
     }
 
+    /**
+     * Screen D
+     */
     @POST
     @Path("workplace/delete")
     public void deleteWorkplace(DeleteTimeWorkplaceCommand command) {
         this.deleteWorkPlace.handle(command);
     }
 
+    /**
+     * Screen E
+     */
     @POST
     @Path("classification/add")
     public void addClassification(RegisterTimeClassificationCommand command) {
         this.addClassification.handle(command);
     }
 
+    /**
+     * Screen E
+     */
     @POST
     @Path("classification/copy")
     public void copyClassification(CopyTimeClassificationCommand command) {
         this.copyClassification.handle(command);
     }
 
+    /**
+     * Screen E
+     */
     @POST
     @Path("classification/delete")
     public void deleteClassification(DeleteTimeClassificationCommand command) {
         this.deleteClassification.handle(command);
     }
 
+    /**
+     * Screen G
+     */
     @POST
     @Path("operationSet/register")
     public void updateOperationSet(RegisterAgreeOperationSetCommand command) {
         this.registerOperationSet.handle(command);
     }
 
+    /**
+     * Screen H
+     */
     @POST
     @Path("unit/Register")
     public void updateUnit(RegisterAgreeUnitSetCommand command) {
         this.RegisterUnit.handle(command);
     }
 
+    /**
+     * Screen I
+     */
     @POST
-    @Path("unitOfApprove/update")
-    public void updateUnit(UpdateUnitSetOfApproveCommand command) {
+    @Path("unitOfApprove/register")
+    public void updateUnit(RegisterUnitSetOfApproveCommand command) {
         this.unitSetOfApproveCommandHandler.handle(command);
     }
 

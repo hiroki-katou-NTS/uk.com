@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Path("screen/at/kmk008/f")
 @Produces("application/json")
@@ -19,13 +20,13 @@ public class Kmk008FWebservice {
 
     @POST
     @Path("getMonthSetting")
-    public AgreementMonthSettingDto getAgreeMonthSetting(Request request) {
+    public List<AgreementMonthSettingDto> getAgreeMonthSetting(Request request) {
         return this.agreeMonthSetScreenProcessor.find(request);
     }
 
     @POST
     @Path("getYearSetting")
-    public AgreementYearSettingDto getAgreeYearSetting(Request request) {
+    public List<AgreementYearSettingDto> getAgreeYearSetting(Request request) {
         return this.agreeYearSetScreenProcessor.find(request);
     }
 

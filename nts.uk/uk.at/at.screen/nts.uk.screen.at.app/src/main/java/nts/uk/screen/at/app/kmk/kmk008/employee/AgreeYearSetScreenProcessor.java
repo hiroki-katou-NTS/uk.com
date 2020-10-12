@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 社員の特例設定を取得する（年度）
@@ -20,12 +21,12 @@ public class AgreeYearSetScreenProcessor {
     @Inject
     private AgreementYearSettingRepository yearSettingRepository;
 
-    public AgreementYearSettingDto find(Request request) {
+    public List<AgreementYearSettingDto> find(Request request) {
 
         Year year = new Year(GeneralDate.today().addYears(-3).year());
         List<AgreementYearSetting> data = yearSettingRepository.find(AppContexts.user().employeeId());
-        Optional<AgreementYearSetting> agreementMonthSetting = data.stream().filter(x -> request.getEmployeeIds().contains(x.getEmployeeId())  && x.getYearValue().v() >= year.v() ).findFirst();
+        data = data.stream().filter(x -> x.getYearValue().v() >= year.v() ).collect(Collectors.toList());
 
-        return AgreementYearSettingDto.setData(agreementMonthSetting);
+        return AgreementYearSettingDto.setData(data);
     }
 }

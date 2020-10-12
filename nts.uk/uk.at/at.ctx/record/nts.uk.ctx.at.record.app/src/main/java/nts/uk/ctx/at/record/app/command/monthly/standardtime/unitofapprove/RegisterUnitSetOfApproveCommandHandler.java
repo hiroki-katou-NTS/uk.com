@@ -12,18 +12,24 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class UpdateUnitSetOfApproveCommandHandler extends CommandHandler<UpdateUnitSetOfApproveCommand> {
+public class RegisterUnitSetOfApproveCommandHandler extends CommandHandler<RegisterUnitSetOfApproveCommand> {
 
     @Inject
     private UnitOfApproverRepo unitOfApproverRepo;
 
     @Override
-    protected void handle(CommandHandlerContext<UpdateUnitSetOfApproveCommand> context) {
-        UpdateUnitSetOfApproveCommand command = context.getCommand();
-
-        UnitOfApprover unitOfApprover = new UnitOfApprover(AppContexts.user().companyId(),
+    protected void handle(CommandHandlerContext<RegisterUnitSetOfApproveCommand> context) {
+        RegisterUnitSetOfApproveCommand command = context.getCommand();
+        String cid = AppContexts.user().companyId();
+        UnitOfApprover unitOfApproverOld = unitOfApproverRepo.getByCompanyId(cid);
+        UnitOfApprover unitOfApprover = new UnitOfApprover(cid,
                 EnumAdaptor.valueOf(command.getUseWorkplace() ? 1 : 0, DoWork.class));
 
-        this.unitOfApproverRepo.update(unitOfApprover);
+        if (unitOfApproverOld != null){
+            this.unitOfApproverRepo.update(unitOfApprover);
+        }else {
+            this.unitOfApproverRepo.insert(unitOfApprover);
+        }
+
     }
 }

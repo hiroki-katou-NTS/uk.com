@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal;
+package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreement.management.oneMonth;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;

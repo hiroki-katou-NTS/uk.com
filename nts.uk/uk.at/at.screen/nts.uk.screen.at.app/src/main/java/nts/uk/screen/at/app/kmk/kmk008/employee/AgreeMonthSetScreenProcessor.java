@@ -8,8 +8,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 社員の特例設定を取得する（年月）
@@ -20,12 +22,12 @@ public class AgreeMonthSetScreenProcessor {
     @Inject
     private AgreementMonthSettingRepository monthSettingRepository;
 
-    public AgreementMonthSettingDto find(Request requestMonth) {
+    public List<AgreementMonthSettingDto> find(Request requestMonth) {
 
         YearMonth yearMonth = YearMonth.of(GeneralDate.today().addYears(-3).year(),GeneralDate.today().month());
-        List<AgreementMonthSetting> data = monthSettingRepository.find(AppContexts.user().employeeId());
-        Optional<AgreementMonthSetting> agreementMonthSetting = data.stream().filter(x -> requestMonth.getEmployeeIds().contains(x.getEmployeeId())  && x.getYearMonthValue().v() >= yearMonth.v() ).findFirst();
+        List<AgreementMonthSetting> data = monthSettingRepository.find(requestMonth.getEmployeeId());
+        data = data.stream().filter(x ->  x.getYearMonthValue().v() >= yearMonth.v() ).collect(Collectors.toList());
 
-        return AgreementMonthSettingDto.setData(agreementMonthSetting);
+        return AgreementMonthSettingDto.setData(data);
     }
 }
