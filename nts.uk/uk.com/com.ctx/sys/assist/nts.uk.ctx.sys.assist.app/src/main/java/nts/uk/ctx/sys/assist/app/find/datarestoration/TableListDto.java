@@ -150,4 +150,18 @@ public class TableListDto {
 				domain.getSurveyPreservation().value,
 				domain.getPatternCode());
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TableListDto) {
+			return ((TableListDto) obj).getCategoryId().equals(categoryId)
+					&& ((TableListDto) obj).getSystemType().equals(systemType);
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return categoryId.hashCode() + systemType.hashCode();
+	}
 }

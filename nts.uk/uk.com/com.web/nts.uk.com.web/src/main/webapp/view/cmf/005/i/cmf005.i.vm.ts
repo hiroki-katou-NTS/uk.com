@@ -149,6 +149,7 @@ module nts.uk.com.view.cmf005.i {
       });
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#I5")[0], {
         height: 800,
+        subHeight: 300,
         headerHeight: "40px",
         autoFitWindow: true,
         dataSource: vm.resultItems(),

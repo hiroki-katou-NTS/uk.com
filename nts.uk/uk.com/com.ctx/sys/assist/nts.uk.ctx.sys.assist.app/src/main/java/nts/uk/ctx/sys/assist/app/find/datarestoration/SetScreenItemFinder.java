@@ -43,6 +43,7 @@ public class SetScreenItemFinder {
 																		.collect(Collectors.toList());
 		//List<項目セット>を返す。
 		return categoryTableLists.stream()
+				.distinct()
 				.map(t -> {
 					////システム担当区分状態をチェックする。
 					if (checkSystemChargeStatus(pic, t.getSystemType())) {

@@ -615,6 +615,13 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.fieldAcqStartDate = fieldAcqStartDate;
 	}
 
-	
+	public boolean equals(Object obj) {
+		if (obj instanceof CategoryFieldMt) {
+			return ((CategoryFieldMt) obj).getCategoryId().equals(categoryId)
+					&& ((CategoryFieldMt) obj).getSystemType().value == systemType.value
+					&& ((CategoryFieldMt) obj).getTableNo() == tableNo;
+		}
+		return false;
+	}
 	
 }

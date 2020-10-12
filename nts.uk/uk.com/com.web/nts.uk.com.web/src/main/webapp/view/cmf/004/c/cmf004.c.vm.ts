@@ -28,7 +28,6 @@ module nts.uk.com.view.cmf004.c {
           fileName: self.fileName(),
           password: self.password()
         };
-        console.log(self.fromServerFile());
         if (self.fromServerFile()) {
           var param: any = { storeProcessingId: self.storeProcessingId(), password: self.password() }
           var data: any;
@@ -45,7 +44,7 @@ module nts.uk.com.view.cmf004.c {
             nts.uk.ui.windows.close();
           });
         } else {
-          setShared("CMF004_D_PARAMS", { fileInfo: fileInfo, continuteProcessing: true });
+          setShared("CMF004_D_PARAMS", { storeProcessingId: self.storeProcessingId(), fileInfo: fileInfo, continuteProcessing: true });
           nts.uk.ui.windows.close();
         }
       }

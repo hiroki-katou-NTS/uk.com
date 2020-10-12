@@ -198,7 +198,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		}).collect(Collectors.toList());
 
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
-		List<CategoryFieldMt> categoryFieldMts = repoCateField.getCategoryFieldMtByListId(categoryIds);
+		List<CategoryFieldMt> categoryFieldMts = targetCategories.stream()
+				.map(c -> repoCateField.findByCategoryIdAndSystemType(c.getCategoryId(), c.getSystemType().value))
+				.flatMap(List::stream)
+				.distinct()
+				.collect(Collectors.toList());
 		int countCategoryFieldMts = categoryFieldMts.stream()
 				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
 		if (categorys.size() != countCategoryFieldMts) {

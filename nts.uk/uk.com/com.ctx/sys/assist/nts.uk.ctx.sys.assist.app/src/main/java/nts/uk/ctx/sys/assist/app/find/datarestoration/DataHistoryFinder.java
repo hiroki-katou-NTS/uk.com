@@ -24,6 +24,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
+import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 
 /**
  * アルゴリズム「保存セットで検索する」
@@ -54,16 +55,15 @@ public class DataHistoryFinder {
 		}
 
 		if (!res.isEmpty()) {
-			Map<String, String> pool = new HashMap<String, String>();
+			Map<String, TargetEmployees> pool = new HashMap<String, TargetEmployees>();
 			res.forEach(data -> {
 				String sid = data.getPractitioner();
-				String businessName = pool.get(sid);
-				if (businessName == null) {
-					businessName = sysEmployeeStorageAdapter.getByListSid(Collections.singletonList(sid)).get(0)
-							.getBusinessname().v();
-					pool.put(sid, businessName);
+				TargetEmployees em = pool.get(sid);
+				if (em == null) {
+					em = sysEmployeeStorageAdapter.getByListSid(Collections.singletonList(sid)).get(0);
+					pool.put(sid, em);
 				}
-				data.setPractitioner(sid + " " + businessName);
+				data.setPractitioner(em.getSid() + " " + em.getBusinessname());
 			});
 		}
 		/**

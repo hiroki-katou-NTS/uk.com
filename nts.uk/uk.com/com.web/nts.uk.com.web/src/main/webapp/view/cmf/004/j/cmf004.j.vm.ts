@@ -147,6 +147,7 @@ module nts.uk.com.view.cmf004.j {
       }
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#J6")[0], {
         height: 800,
+        subHeight: 300,
         headerHeight: "40px",
         autoFitWindow: true,
         dataSource: vm.resultItems(),
@@ -160,6 +161,7 @@ module nts.uk.com.view.cmf004.j {
         useOptions: true,
         idGen: (id: any) => id + "_" + nts.uk.util.randomId(),
         columns: vm.columnHeadersRes,
+        virtualrecordsrender: (e: any, args: any) => vm.updateGridUI(),
         features: [
           {
             name: 'Paging',
@@ -186,6 +188,18 @@ module nts.uk.com.view.cmf004.j {
           },
         ]
       }).create();
+
+      $("#J6").ready(function () {
+        vm.updateGridUI();
+      });
+
+      $("#J6 .mgrid-free").scroll(function () {
+        vm.updateGridUI();
+      });
+    }
+
+    private updateGridUI() {
+      $("#J6 .mcell").addClass("halign-center");
     }
   }
 
