@@ -14,6 +14,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApplicationUseAtrFinderAppSet;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApproverRegisterSetDto;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.DeleteHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.HistoryCmm053Command;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.InsertHistoryCmm053CmdHandler;
@@ -68,6 +70,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Inject
 	private ApprovalRootCommonService appRootCm;
 	
+	@Inject
+	private ApplicationUseAtrFinderAppSet applicationUseAtrFinder;
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -194,5 +198,11 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("checkBfRegCMM053")
 	public OutputCheckRegCmm053 checkBfResCmm053(ParamCheckRegCmm053 param){
 		return comFinder.checkReg(param);
+	}
+	
+	@POST
+	@Path("appSet")
+	public ApproverRegisterSetDto getAppSet(){
+		return applicationUseAtrFinder.getAppSet(AppContexts.user().companyId());
 	}
 }
