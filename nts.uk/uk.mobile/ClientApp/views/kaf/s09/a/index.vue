@@ -10,7 +10,9 @@
               </button>
     </div>
     <div>
-      <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+      <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" 
+      v-on:kaf000BChangeDate="kaf000BChangeDate"
+      v-on:kaf000BChangePrePost="kaf000BChangePrePost"/>
     </div>
 
 
@@ -70,10 +72,13 @@
         <nts-switchbox v-model="model.bounce" v-bind:value="1">{{'KAFS09_9' | i18n}}</nts-switchbox>
         <nts-switchbox v-model="model.bounce" v-bind:value="2">{{'KAFS09_10' | i18n}}</nts-switchbox>
       </div>
+      <span v-if="model.straight == 2 && model.bounce == 2" class="textSize errorMSg uk-text-non-working-day">{{'Msg_1878' | i18n}}</span>
     </div>
    
     <div>
-      <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />
+      <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" 
+      v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
+      v-on:kaf000CChangeAppReason="kaf000CChangeAppReason"/>
     </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->
