@@ -88,12 +88,22 @@ public class SortSettingTest {
 	 */
 	@Test
 	public void createSortSettinng_success() {
-		val orderLists = Arrays.asList(new OrderedList(SortType.CLASSIFY, SortOrder.SORT_ASC));
+		val orderLists = Arrays.asList(
+				  new OrderedList(SortType.CLASSIFY, SortOrder.SORT_ASC)
+				, new OrderedList(SortType.POSITION, SortOrder.SORT_ASC)
+				, new OrderedList(SortType.LISENCE_ATR, SortOrder.SORT_ASC)
+				, new OrderedList(SortType.RANK, SortOrder.SORT_ASC)
+				, new OrderedList(SortType.SCHEDULE_TEAM, SortOrder.SORT_ASC));
 		val sortSetting = SortSetting.create("cid", orderLists);
 		
 		assertThat(sortSetting.getCompanyID()).isEqualTo("cid");
 		assertThat(orderLists).extracting(d -> d.getSortOrder(), d -> d.getType())
-				.containsExactly(tuple(SortOrder.SORT_ASC, SortType.CLASSIFY));
+				.containsExactly(
+						  tuple(SortOrder.SORT_ASC, SortType.CLASSIFY)
+						, tuple(SortOrder.SORT_ASC, SortType.POSITION)
+						, tuple(SortOrder.SORT_ASC, SortType.LISENCE_ATR)
+						, tuple(SortOrder.SORT_ASC, SortType.RANK)
+						, tuple(SortOrder.SORT_ASC, SortType.SCHEDULE_TEAM));
 		
 	}
 	
@@ -123,7 +133,7 @@ public class SortSettingTest {
 
 		new Expectations() {
 			{
-				require.get(sids);
+				require.getScheduleTeam(sids);
 				result = belongScheduleTeams;
 			}
 		};
@@ -143,13 +153,60 @@ public class SortSettingTest {
 									"emp6",
 									"emp8");
 	}
-	
 	/**
-	 * 並び替え設定: rank
+	 * 並び替え設定: rank priority = empty
 	 * 
 	 */
 	@Test
-	public void testSort_rank() {
+	public void testSort_testSort_rank_priority_empty() {
+		val baseDate = GeneralDate.today();
+		val sids = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5", "emp6", "emp7", "emp8", "emp9", "emp10");
+		val orderedLists = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC));
+		val sortSetting = new SortSetting("cid", orderedLists);
+		
+		val listEmployeeRank = Arrays.asList(
+				  new EmployeeRank("emp1", new RankCode("01"))
+				, new EmployeeRank("emp2", new RankCode("02"))
+				, new EmployeeRank("emp3", new RankCode("03"))
+				, new EmployeeRank("emp4", new RankCode("01"))
+				, new EmployeeRank("emp5", new RankCode("03"))
+				// emp6 empty
+				, new EmployeeRank("emp7", new RankCode("04"))
+				// emp8 empty
+				, new EmployeeRank("emp9", new RankCode("02"))
+				, new EmployeeRank("emp10", new RankCode("05")));
+		
+		new Expectations() {
+			{
+				require.getRankPriorities();
+
+				require.getEmployeeRanks(sids);
+				result = listEmployeeRank;
+			}
+		};
+
+		List<String> datas = sortSetting.sort(require, baseDate, sids);
+
+		assertThat(datas).extracting(d -> d)
+							.containsExactly(
+									 "emp1" 
+									,"emp2"
+									,"emp3"
+									,"emp4"
+									,"emp5"
+									,"emp6"
+									,"emp7"
+									,"emp8"
+									,"emp9" 
+									,"emp10");
+	}
+	
+	/**
+	 * 並び替え設定: rank priority not empty
+	 * 
+	 */
+	@Test
+	public void testSort_rank_priority_not_empty() {
 		val baseDate = GeneralDate.today();
 		val sids = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5", "emp6", "emp7", "emp8", "emp9", "emp10");
 		val orderedLists = Arrays.asList(new OrderedList(SortType.RANK, SortOrder.SORT_ASC));
@@ -177,10 +234,10 @@ public class SortSettingTest {
 		
 		new Expectations() {
 			{
-				require.getRankPriority();
+				require.getRankPriorities();
 				result = Optional.of(rankPriority);
 
-				require.getAll(sids);
+				require.getEmployeeRanks(sids);
 				result = listEmployeeRank;
 			}
 		};
@@ -287,7 +344,7 @@ public class SortSettingTest {
 		
 		new Expectations() {
 			{
-				require.getPositionEmp(baseDate, sids);
+				require.getPositionEmps(baseDate, sids);
 				result = employeePositions;
 
 				require.getCompanyPosition(baseDate);
@@ -334,7 +391,7 @@ public class SortSettingTest {
 		
 		new Expectations() {
 			{
-				require.get(baseDate, sids);
+				require.getEmpClassifications(baseDate, sids);
 				result = empClassImports;
 			}
 		};
@@ -409,10 +466,10 @@ public class SortSettingTest {
 		
 		new Expectations() {
 			{
-				require.get(sids);
+				require.getScheduleTeam(sids);
 				result = belongScheduleTeams;
 				
-				require.get(baseDate, sids);
+				require.getEmpClassifications(baseDate, sids);
 				result = empClassImports;
 			}
 		};
