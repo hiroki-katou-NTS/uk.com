@@ -28,6 +28,7 @@ module nts.uk.com.view.cmm024.a {
 		companyScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		companyScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		companyScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		companyLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		//Screen B
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,6 +41,7 @@ module nts.uk.com.view.cmm024.a {
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		workplaceLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		// KCP010
 		kcp010Model: kcp010.viewmodel.ScreenModel;
 		listComponentOption: service.ComponentOption;
@@ -125,8 +127,11 @@ module nts.uk.com.view.cmm024.a {
 
 			if (scheduleHistory.length > 0) {
 				value = (value === null) ? scheduleHistory[0].code : value;
-				isAllowSetting = scheduleHistory[0].code === value;
-				vm.resetSettingsScreenA(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
+				/*isAllowSetting = scheduleHistory[0].code === value;*/
+				if( scheduleHistory[0].code === value ) {
+					vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
+				} else 
+				vm.resetSettingsScreenA(true, false, true, true, ScreenModel.EDIT);
 				//highlight history that has selected	
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
@@ -269,11 +274,12 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this,
 				currentScheduleHistoryList: Array<ScheduleHistoryDto> = vm.companyScheduleHistoryList();
 
-			vm.$window.storage("scheduleHistorySelected", vm.companyScheduleHistoryObjSelected());
+			let params = (currentScheduleHistoryList.length > 0 ) ? currentScheduleHistoryList[0] : null;
+
+			vm.$window.storage("scheduleHistorySelected", params);
 			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: vm.$i18n('CMM024_92') }).then(function () {
 				//開始年月日テキストボックス
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
-
 					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
 						currentScheduleHistoryList = vm.updateScheduleHistoryListing(vm.companyScheduleHistoryList(), data);
 						//re-update the list
@@ -311,7 +317,7 @@ module nts.uk.com.view.cmm024.a {
 			vm.enableRegisterA(register);
 			vm.screenAModeAddNew(addnew);
 			vm.screenAModeEdit(edit);
-			vm.enableScheduleHistoryB(enablePeriodlist);
+			vm.enableScheduleHistoryA(enablePeriodlist);
 			vm.screenAMode(mode);
 			vm.allowSettingA(register);
 			//clear model
@@ -324,7 +330,66 @@ module nts.uk.com.view.cmm024.a {
 		/**
 		 * Display page D
 		 * */
-		screenShowDialogD(screen: string = 'A') {
+		screenShowDialogAD() {
+			let vm = this,
+				allowStartDate: string = null,
+				isAllowEdit: boolean = true,
+				scheduleHistory: Array<ScheduleHistoryDto> = [];
+			//get second item
+			let data: ScheduleHistoryModel = {};
+			
+			scheduleHistory = vm.companyScheduleHistoryList();
+		/* 	allowStartDate = (scheduleHistory.length > 1)
+				? scheduleHistory[1].startDate
+				: null; */
+			if (scheduleHistory.length > 1) {
+				allowStartDate = scheduleHistory[1].startDate;
+				isAllowEdit = (vm.companyScheduleHistoryObjSelected().code === scheduleHistory[0].code);
+			}
+			
+			data.allowStartDate = allowStartDate;
+			data.scheduleHistoryUpdate = vm.companyScheduleHistoryObjSelected();
+			data.workPlaceCompanyId =vm.company().id;
+			data.screen = 'A';
+
+			if (!isAllowEdit) {
+				vm.$dialog.error({ messageId: 'Msg_154' });
+				return;
+			}
+
+			//ScheduleHistoryModel
+			vm.$window.storage("CMM024_D_INPUT", data);
+			vm.$window.modal("/view/cmm/024/d/index.xhtml",
+				{ title: vm.$i18n('CMM024_93') }).then(function () {
+
+					vm.$window.storage("CMM024_D_RESULT").then((data: any) => {
+
+						if (!nts.uk.util.isNullOrEmpty(data)) {
+							if (data.RegistrationHistoryType === HistoryUpdate.HISTORY_EDIT) {
+								if (!nts.uk.util.isNullOrUndefined(data.newScheduleHistory)
+									&& (scheduleHistory.length > 0)) {
+									vm.updateHistoricalPeriod(scheduleHistory, data);
+								}
+							}
+
+							vm.companyScheduleHistoryListing();
+							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
+						} else {							
+							vm.resetSettingsScreenA(
+								vm.enableRegisterA(),
+								true, true,
+								vm.allowSettingA(),
+								vm.screenAMode()
+							);
+						}
+					});
+				});
+		}
+
+		/**
+		 * Display page D on B
+		 * */
+		screenShowDialogBD(screen: string = 'A') {
 			let vm = this,
 				allowStartDate: string = null,
 				scheduleHistory: Array<ScheduleHistoryDto> = [];
@@ -486,7 +551,7 @@ module nts.uk.com.view.cmm024.a {
 						//create schedule history listing
 						vm.companyScheduleHistoryList(tempScheduleList);
 						if (vm.companyScheduleHistoryList().length > 0) {
-							//get the first item of list
+							//get the first item of list							
 							selectedHistory = vm.companyScheduleHistoryList()[0];
 							vm.companyScheduleHistorySelected(selectedHistory.code);
 							vm.companyScheduleHistoryObjSelected(selectedHistory);
@@ -535,6 +600,8 @@ module nts.uk.com.view.cmm024.a {
 
 			if (employeesList.length <= 0) {
 				employeesList = vm.addEmptySetting();
+			} else {
+				employeesList = _.orderBy(employeesList, 'employeeCode', 'asc');
 			}
 
 			switch (model) {

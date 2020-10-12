@@ -37,6 +37,7 @@
     display: flex;
     align-items: center;
     margin-left: 21px;
+    margin-top: 10px;
 }
 .cmm024-d .end-date-label label {
     padding-left: 15px;

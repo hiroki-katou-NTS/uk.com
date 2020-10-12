@@ -10,7 +10,7 @@ module nts.uk.com.view.cmm024.c {
 
 		registrationHistory: KnockoutObservableArray<any> = ko.observableArray([]);
 		registrationHistoryType: KnockoutObservable<number> = ko.observable(0);
-		newStartDate: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
+		newStartDate: KnockoutObservable<Date> = ko.observable(null);
 
 		//set & get Share
 		scheduleHistorySelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
@@ -23,7 +23,7 @@ module nts.uk.com.view.cmm024.c {
 
 			vm.registrationHistory.push({ id: HistoryRes.HISTORY_TRANSFER, name: vm.$i18n('CMM024_26') });
 			vm.registrationHistory.push({ id: HistoryRes.HISTORY_NEW, name: vm.$i18n('CMM024_27') });
-
+		
 		}
 
 		created(params: any) {
@@ -41,6 +41,7 @@ module nts.uk.com.view.cmm024.c {
 			});
 
 			$('.ntsDatepicker').focus();
+			vm.enableSubmitButton(false);
 		}
 		/**
 		 * Process
@@ -114,7 +115,7 @@ module nts.uk.com.view.cmm024.c {
 
 			if (!nts.uk.util.isNullOrUndefined(scheduleHistory)) {
 				if (!nts.uk.util.isNullOrEmpty(scheduleHistory.startDate)) {
-					vm.newStartDate(moment(scheduleHistory.startDate, 'YYYY/MM/DD').toDate());
+					//vm.newStartDate(moment(scheduleHistory.startDate, 'YYYY/MM/DD').toDate());
 				}
 			}
 		}

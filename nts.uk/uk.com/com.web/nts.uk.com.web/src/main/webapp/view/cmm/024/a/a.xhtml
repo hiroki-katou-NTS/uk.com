@@ -20,7 +20,7 @@
                         <button class="left" tabindex="2"
                             data-bind="click: screenAShowDialogC, enable: screenAModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right" tabindex="3"
-                            data-bind="click: function() { screenShowDialogD('A') }, enable: screenAModeEdit">#{i18n.getText('CMM024_5')}</button>
+                            data-bind="click: function() { screenShowDialogAD() }, enable: screenAModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
                     <div class="ntsGrid" tabindex="1">
                         <table id="historyList" data-bind="ntsGridList: {
@@ -58,8 +58,7 @@
                                                     }, 
                                                     text: displayName,
                                                     css: {
-                                                        'link-setting' : (employeeCode == -1),
-                                                        'not-allow-setting' : !vm.allowSettingA()
+                                                        'link-setting' : (employeeCode == -1)
                                                     }"></a>
                                 </div>
                             </div>
@@ -81,8 +80,7 @@
                                                     }, 
                                                     text: displayName,
                                                     css: {
-                                                        'link-setting' : (employeeCode == -1),
-                                                        'not-allow-setting' : !vm.allowSettingA()
+                                                        'link-setting' : (employeeCode == -1)
                                                     }"></a>
                                 </div>
                             </div>

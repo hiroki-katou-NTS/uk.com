@@ -117,7 +117,9 @@
     margin-left: 0;
     margin-top: 0;
 }
-
+.workplace table#wkp_view .over_text {
+    overflow: hidden;
+}
 .contents-area .employee-lists .not-allow-setting {
     color: #B1B1B1 !important;
     cursor: default;
