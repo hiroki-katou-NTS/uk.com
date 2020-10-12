@@ -32,48 +32,50 @@ class KCP015ScreenModel {
     visibleA34: KnockoutObservable<boolean> = ko.observable(true);
     visibleA35: KnockoutObservable<boolean> = ko.observable(true);
     visibleA36: KnockoutObservable<boolean> = ko.observable(true);
+    
     constructor(param) {
         var self = this;
-
-        if (param.haveData() == false) {
+        
+        if (param.input.haveData == false) {
             console.log('no param');
             self.getSetting();
         } else {
-            if (!param.visibleA31() && !param.visibleA32() && !param.visibleA33() && !param.visibleA34() && !param.visibleA35() && !param.visibleA36()) {
+            if (!param.input.visibleA31 && !param.input.visibleA32 && !param.input.visibleA33 
+             && !param.input.visibleA34 && !param.input.visibleA35 && !param.input.visibleA36) {
                 $("#A1").addClass("hiddenBtn");
             }
 
-            if (param.visibleA31()) {
+            if (param.input.visibleA31) {
                 $("#A3_1").removeClass("hiddenBtn");
             } else {
                 $("#A3_1").addClass("hiddenBtn");
             }
 
-            if (param.visibleA32()) {
+            if (param.input.visibleA32) {
                 $("#A3_2").removeClass("hiddenBtn");
             } else {
                 $("#A3_2").addClass("hiddenBtn");
             }
 
-            if (param.visibleA33()) {
+            if (param.input.visibleA33) {
                 $("#A3_3").removeClass("hiddenBtn");
             } else {
                 $("#A3_3").addClass("hiddenBtn");
             }
 
-            if (param.visibleA34()) {
+            if (param.input.visibleA34) {
                 $("#A3_4").removeClass("hiddenBtn");
             } else {
                 $("#A3_4").addClass("hiddenBtn");
             }
 
-            if (param.visibleA35()) {
+            if (param.input.visibleA35) {
                 $("#A3_5").removeClass("hiddenBtn");
             } else {
                 $("#A3_5").addClass("hiddenBtn");
             }
 
-            if (param.visibleA36()) {
+            if (param.input.visibleA36) {
                 $("#A3_6").removeClass("hiddenBtn");
             } else {
                 $("#A3_6").addClass("hiddenBtn");
@@ -155,6 +157,25 @@ class KCP015ScreenModel {
         let dfd = $.Deferred<void>();
         dfd.resolve();
         return dfd.promise();
+    }
+}
+
+class Input {
+    haveData  : boolean; 
+    visibleA31: boolean; 
+    visibleA32: boolean;  
+    visibleA33: boolean; 
+    visibleA34: boolean; 
+    visibleA35: boolean; 
+    visibleA36: boolean; 
+    constructor(input: any) {
+        this.haveData = input.haveData;
+        this.visibleA31 = input.visibleA31;
+        this.visibleA32 = input.visibleA32;
+        this.visibleA33 = input.visibleA33;
+        this.visibleA34 = input.visibleA34;
+        this.visibleA35 = input.visibleA35;
+        this.visibleA36 = input.visibleA36;
     }
 }
 
