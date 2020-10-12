@@ -25,7 +25,7 @@ module nts.uk.ui.at.ksu002.a {
 				tabindex: $component.params.tabIndex
 			},
 			ntsComboBox: {
-				width: '200px',
+				width: '250px',
 				name: $component.$i18n('KSU002_22'),
 				value: $component.selectedRangeIndex,
 				options: $component.dateRanges,
@@ -69,11 +69,11 @@ module nts.uk.ui.at.ksu002.a {
 				display: block;
 			}
 			.title-date>div.title-label {
-				padding: 0 10px;
+				padding: 0 25px;
 				line-height: 32px;
 			}
 			.title-date .nts-switch-button {
-				min-width: 60px;
+				min-width: 90px;
 				min-height: 32px;
 			}
 			.title-date .nts-datepicker-wrapper>input,

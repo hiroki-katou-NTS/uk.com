@@ -168,7 +168,9 @@ module nts.uk.ui.calendar {
             .calendar .calendar-container .month .week .day .status span {
                 color: gray;
                 font-size: 9px;
-                font-weight: 600;
+				font-weight: 600;
+				display: block;
+    			line-height: 18px;
             }
             .calendar .calendar-container .month .week .day .status span+span.sakura {
 			    top: 0px;

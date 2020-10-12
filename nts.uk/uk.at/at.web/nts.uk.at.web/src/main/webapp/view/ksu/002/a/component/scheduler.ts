@@ -81,27 +81,37 @@ module nts.uk.ui.at.ksu002.a {
                             </div>
                         </div>
                     </div>
-                    <div class="month" data-bind="foreach: [1,2,3,4,5,6]">
+                    <div class="month">
                         <div class="week cf">
                             <div class="day">
                                 <div class="status">
-                                    <span data-bind="if: $index()">&nbsp;</span>
-                                    <span data-bind="if: !$index()">
-                                        <span data-bind="i18n: 'KSU002_25'"></span>
-                                    </span>
+                                    <span data-bind="i18n: 'KSU002_25'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
                             </div>
                             <div class="day">
-                                <div class="status">
-                                    <span data-bind="if: $index()">&nbsp;</span>
-                                    <span data-bind="if: !$index()">
-                                        <span data-bind="i18n: 'KSU002_26'"></span>
-                                    </span>
+                                <div class="status full-height">
+                                    <span data-bind="i18n: 'KSU002_26'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
                             </div>
                         </div>
+                        <!-- ko foreach: [1, 2, 3, 4, 5] -->
+                        <div class="week cf">
+                            <div class="day">
+                                <div class="status">
+                                    <span>&nbsp;</span>
+                                </div>
+                                <div class="data-info">&nbsp;</div>
+                            </div>
+                            <div class="day">
+                                <div class="status">
+                                    <span>&nbsp;</span>
+                                </div>
+                                <div class="data-info">&nbsp;</div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
                     </div>
                 </div>
             </div>
@@ -124,6 +134,7 @@ module nts.uk.ui.at.ksu002.a {
                     float: left;
                     width: 50%;
                     height: 24px;
+                    line-height: 23px;
                     font-size: 12px;
                     text-align: center;
                     box-sizing: border-box;
@@ -180,10 +191,16 @@ module nts.uk.ui.at.ksu002.a {
                     height: 86px !important;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status {
+                    display: block;
                     height: 38px;
-                    background: #ccc;
+                    background: #d9d9d9;
                     box-sizing: border-box;
                     border-bottom: 1px solid #808080;
+                    padding: 0 25px;
+                }
+                .scheduler .calendar+.calendar .month+.month .day .status.full-height>span {
+                    font-size: 12px;
+                    line-height: 37px;
                 }
             </style>`
     })

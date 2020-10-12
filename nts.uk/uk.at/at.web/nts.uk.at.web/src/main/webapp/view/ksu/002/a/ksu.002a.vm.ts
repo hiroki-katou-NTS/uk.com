@@ -124,6 +124,7 @@ module nts.uk.ui.at.ksu002.a {
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 
+		// event on click undo or redo button
 		undoOrRedo(action: 'undo' | 'redo') {
 			const vm = this;
 
@@ -134,7 +135,8 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		clickDayCell(type: c.CLICK_CELL, cell: c.DayData<ScheduleData>) {
+		// edit data on copy mode
+		clickDayCell(type: c.CLICK_CELL, dayData: c.DayData<ScheduleData>) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
 			const workData = ko.unwrap(vm.workData);
@@ -143,7 +145,7 @@ module nts.uk.ui.at.ksu002.a {
 				const { wtime, wtype } = workData;
 				const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
 
-				const exist = _.find(wrap, f => moment(f.date).isSame(cell.date, 'date'));
+				const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
 
 				if (exist) {
 					const { data } = exist;
@@ -162,7 +164,8 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		changeDayCell(dayData: c.DayData) {
+		// edit data on edit mode
+		changeDayCell(dayData: c.DayData<ScheduleData>) {
 			const vm = this;
 
 			const wrap: c.DayData[] = _.cloneDeep(ko.toJS(vm.schedules));
@@ -176,6 +179,17 @@ module nts.uk.ui.at.ksu002.a {
 			}
 
 			vm.schedules.memento(wrap);
+		}
+
+		openDialog() {
+			const vm = this;
+
+			vm.$window
+				.storage('CDL009Params', { selectedIds: [], baseDate: moment().toISOString(), target: 1 })
+				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
+				.then((data) => {
+					debugger;
+				});
 		}
 	}
 

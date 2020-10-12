@@ -64,7 +64,7 @@ module nts.uk.ui.at.ksu002.a {
 					tabindex: $component.data.tabIndex
 				},
 				ntsComboBox: {
-					width: '500px',
+					width: '430px',
 					name: $component.$i18n('KSU002_12'),
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
@@ -84,12 +84,12 @@ module nts.uk.ui.at.ksu002.a {
 			<div data-bind="
 					kcp013: $component.workTimeData.selected,
 					dataSources: $component.workTimeData.dataSources,
-					filter: false,
-					show-mode: 1,
+					filter: ko.observable(true),
+					show-mode: ko.observable(0),
 					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
 					tabindex: $component.data.tabIndex,
-					width: 570,
-					workplaceId: $component.data.workplaceId
+					width: 520,
+					workplace-id: $component.data.workplaceId
 				"></div>
 		</div>
 	</div>
@@ -104,19 +104,20 @@ module nts.uk.ui.at.ksu002.a {
 		}
 		.action-bar .btn-action {
 			float: left;
-		    padding-right: 5px;
+		    padding-right: 15px;
 			border-right: 2px solid #ccc;
 		}
 		.action-bar .btn-action>div:first-child {
-			margin-bottom: 3px;
+			margin-bottom: 5px;
 		}
 		.action-bar .btn-action>div>button {
 			float: left;
-		    width: 40px;
+		    width: 50px;
 			white-space: pre-line;
+			padding: 1px 10px;
 		}
 		.action-bar .btn-action>div>button:not(:first-child) {
-			margin-left: 3px;
+			margin-left: 5px;
 		}
 		.action-bar .btn-action>div:first-child>button {
 			height: 40px;
@@ -131,12 +132,12 @@ module nts.uk.ui.at.ksu002.a {
 		}
 		.action-bar .component-action {
 			float: left;
-			padding-left: 5px;			
+			padding-left: 15px;			
 		}
 		.action-bar .component-action>div:first-child {
 			padding-top: 4px;
 			padding-bottom: 4px;
-			margin-bottom: 3px;
+			margin-bottom: 5px;
 		}
 		.action-bar .component-action>div>label {
 			min-width: 100px;
