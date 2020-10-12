@@ -12,7 +12,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.JcmmtRootArp;
 
 
 @Stateless
-public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository implements HrApprovalRouteSettingWFRepository {
+public class JpaHrApprovalRouteSettingWFRepositoryImpl extends JpaRepository implements HrApprovalRouteSettingWFRepository {
 
 	@Override
 	public Optional<HrApprovalRouteSettingWF> getDomainByCid(String cid) {
