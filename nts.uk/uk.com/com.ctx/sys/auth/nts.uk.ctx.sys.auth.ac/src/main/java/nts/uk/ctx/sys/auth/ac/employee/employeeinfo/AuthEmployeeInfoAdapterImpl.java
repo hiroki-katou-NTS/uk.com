@@ -80,7 +80,7 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 		String positionName =employeeJobHistExport == null ? null : employeeJobHistExport.getJobTitleName();
 		String wkpDisplayName = sWkpHistExport == null ? null : sWkpHistExport.getWkpDisplayName();
 		boolean permision = false;
-		if(roleWhetherLoginPubExport.isEmployeeCharge() || roleWhetherLoginPubExport.isPersonalInformation() || roleWhetherLoginPubExport.isHumanResOfficer()){
+		if(roleWhetherLoginPubExport.isEmployeeCharge() || roleWhetherLoginPubExport.isSalaryProfessional() || roleWhetherLoginPubExport.isHumanResOfficer()){
 			permision = true;
 		}
 		return new EmployeeInformationImport(employeeId, permision, positionName, wkpDisplayName);
