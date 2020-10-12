@@ -72,6 +72,7 @@ module nts.uk.at.view.ksu001.u {
         }
         getDataToOneMonth(yearMonth: number): void {
             let self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let year = parseInt(yearMonth.toString().substr(0, 4));
             let month = parseInt(yearMonth.toString().substr(4, 2));
@@ -176,11 +177,13 @@ module nts.uk.at.view.ksu001.u {
                     } 
                 }                
                 self.optionDates(dates);
+                self.$blockui("hide");
             }
         }
 
         resetData(): void {
             const self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let publicDate = self.publicDate();
             let editDate = self.editDate();
@@ -254,6 +257,7 @@ module nts.uk.at.view.ksu001.u {
             } else {
                 self.yearMonthPicked(parseInt(year + "" + month));
             }
+            self.$blockui("hide");
             self.isMonthPast(true);
             self.isMonthFuture(true);
             $('#prev-btn').focus();
@@ -263,6 +267,7 @@ module nts.uk.at.view.ksu001.u {
             const self = this;
             let request = nts.uk.ui.windows.getShared('dataShareDialogU');            
             self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request).then((data: IPublicInfoOrg) => {
+                self.$blockui("show");
                 self.unit(data.unit);
                 self.workplaceId(data.workplaceId);
                 self.workplaceGroupId(data.workplaceGroupId);
@@ -333,15 +338,16 @@ module nts.uk.at.view.ksu001.u {
             }).fail((res) => {
                 self.$dialog.error({ messageId: res.messageId });
             }).always(() => {
-                self.$blockui('clear');
+                self.$blockui('hide');
             });
         }
 
         public clickCalendar(): void {
             const self = this;            
-            $('#prev-btn').blur();
+            $('#prev-btn').blur();            
             $("#calendar").ntsCalendar("init", {                
                 cellClick: function (dateClick) {     
+                    self.$blockui("show");
                     self.isEnableBtn(true);                
                     let basePubDate = self.publicDate();
                     let baseEditDate = self.editDate();
@@ -374,6 +380,7 @@ module nts.uk.at.view.ksu001.u {
                         self.isBtnClick(true);  
                         self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));  
                         self.isBtnClick(false);    
+                        self.$blockui("hide");
                         return;  
                     } else {
                         publicDateSplit = publicDate.split('-');
@@ -740,11 +747,13 @@ module nts.uk.at.view.ksu001.u {
                     self.optionDates(dates);
                     self.isBtnClick(true);  
                     self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));  
+                    self.$blockui("hide");
                     self.isBtnClick(false); 
                     $('#prev-btn').blur();
                     $('#next-btn').blur();
                 }        
             });
+            // self.$blockui("hide");
         }
         public Prev(): void {
             const self = this;
@@ -764,8 +773,9 @@ module nts.uk.at.view.ksu001.u {
             }
         }
 
-        public weekForward(): void {
+        public weekForward(): void {            
             const self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
             let basePubDateSplit = [];
@@ -806,6 +816,7 @@ module nts.uk.at.view.ksu001.u {
                 self.isBtnClick(true);
                 self.yearMonthPicked(parseInt(weekForwardSplit[0] + weekForwardSplit[1]));
                 self.isBtnClick(false);
+                self.$blockui("hide");
                 return;
             } else {
                 basePubDateSplit = basePubDate.split('-');
@@ -975,11 +986,13 @@ module nts.uk.at.view.ksu001.u {
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(forwardWeekPublicDateSplit[0] + forwardWeekPublicDateSplit[1]));
             self.isBtnClick(false);
+            self.$blockui("hide");
             $('#prev-btn').blur();
         }
 
         public weekPrev(): void {
             const self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
             let basePubDateSplit = [];
@@ -1061,6 +1074,7 @@ module nts.uk.at.view.ksu001.u {
                 }                
                 self.yearMonthPicked(parseInt(prevWeekEditDateSplit[0] + prevWeekEditDateSplit[1]));
                 self.isBtnClick(false);
+                self.$blockui("hide");
                 return;           
             }
 
@@ -1185,11 +1199,13 @@ module nts.uk.at.view.ksu001.u {
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(prevWeekEditDateSplit[0] + prevWeekEditDateSplit[1]));
             self.isBtnClick(false);
+            self.$blockui("hide");
             $('#prev-btn').blur();
         }
         
         public monthPrev(): void {
             const self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
             let basePubDateSplit = [];
@@ -1228,6 +1244,7 @@ module nts.uk.at.view.ksu001.u {
                 self.isBtnClick(true);
                 self.yearMonthPicked(parseInt(prevMonthPublicDateSplit[0] + prevMonthPublicDateSplit[1]));
                 self.isBtnClick(false);     
+                self.$blockui("hide");
                 return; 
             }
             if(self.newEditDate() && self.newEditDate() != ""){
@@ -1338,11 +1355,13 @@ module nts.uk.at.view.ksu001.u {
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(prevMonthPublicDateSplit[0] + prevMonthPublicDateSplit[1]));
             self.isBtnClick(false);
+            self.$blockui("hide");
             $('#prev-btn').blur();
         }
 
         public monthForward(): void {
             const self = this;
+            self.$blockui("show");
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
             let basePubDateSplit = [];
@@ -1382,6 +1401,7 @@ module nts.uk.at.view.ksu001.u {
                 self.isBtnClick(true);
                 self.yearMonthPicked(parseInt(nextMonthSplit[0] + nextMonthSplit[1]));
                 self.isBtnClick(false);     
+                self.$blockui("hide");
                 return;          
             }
             let numberDayOfNextMonth = 1;  
@@ -1509,6 +1529,7 @@ module nts.uk.at.view.ksu001.u {
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(nextMonthPublicDateSplit[0] + nextMonthPublicDateSplit[1]));
             self.isBtnClick(false);
+            self.$blockui("hide");
             $('#prev-btn').blur();
         }
  
@@ -1530,20 +1551,19 @@ module nts.uk.at.view.ksu001.u {
                 publicDateStr = self.publicDate();
             }
             command.publicDate = publicDateStr.replace('-', '/').replace('-', '/');
-
-            self.$blockui("invisible");
+            
             self.isBtnClick(true);
             self.$ajax(Paths.REGISTER, command).done(() => {
-                _.remove(self.optionDates());
-                self.$blockui("clear");
+                self.$blockui("show");
+                _.remove(self.optionDates());               
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                    self.loadPubDateInfo();
                     $('#prev-btn').focus();
-                });
-                self.loadPubDateInfo();
+                });                
             }).fail((res) => {
                 self.$dialog.error({ messageId: res.messageId });
             }).always(() => {
-                self.$blockui("clear");
+                self.$blockui("hide");
             });
             self.isBtnClick(false);
         }
