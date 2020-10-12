@@ -1051,7 +1051,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < PRESENT_APP_COL_SIZE; col++) {
                 String value;
-                if (row == 0 && col == 0) value = TextResource.localize("代行申請で利用できる申請");
+                if (row == 0 && col == 0) value = TextResource.localize("KAF022_764");
                 else if (col == 1) value = menu.getDisplayName();
                 else if (col == 2) value = setting == null ? NOT_CHECK : CHECK;
                 else value = "";
