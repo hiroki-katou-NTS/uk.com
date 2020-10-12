@@ -376,7 +376,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
-				List<String> ids = tableLists.stream().map(TableList::getCategoryId).distinct().collect(Collectors.toList());
 				int i = 0;
 				for (TableList tableList : tableLists) {
 					rowCsv = getDataTableListeCsv(rowCsv, headerCsv, tableList);
