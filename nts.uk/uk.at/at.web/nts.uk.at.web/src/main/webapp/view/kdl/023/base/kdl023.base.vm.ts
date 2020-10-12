@@ -417,8 +417,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          * Event when click apply button.
          */
         public onBtnApplySettingClicked(): void{
-            this.slideDays(0);
-            this.onBtnApplySetting(this.slideDays());
+        	const vm = this;
+			vm.slideDays(0);
+			vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
+			vm.onBtnApplySetting(vm.slideDays());
         }
 
         public onBtnApplySetting(slideDay: number): void {
