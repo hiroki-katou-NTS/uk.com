@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.HorizontalPageBreakCollection;
 
 import lombok.SneakyThrows;
 import lombok.val;
@@ -40,6 +39,8 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	private static final String TEMPLATE_FILE = "report/KDP011-打刻一覧表_帳票レイアウト（社員別）.xlsx";
 
 	private static final int START_ROW = 4;
+	
+	private static final int heightContentPage = 1536; //minimet 
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,
@@ -57,7 +58,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			printStyle.getStampStyle().setTextWrapped(false);
 			// 出退勤区分
 			printStyle.setClaStyle(cell.get(4, 2).getStyle());
-			printStyle.getClaStyle().setTextWrapped(false);
+			printStyle.getClaStyle().setTextWrapped(true);
 			// 打刻手段
 			printStyle.setMeanStyle(cell.get(4, 3).getStyle());
 			printStyle.getMeanStyle().setTextWrapped(false);
@@ -69,7 +70,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			printStyle.getInsStyle().setTextWrapped(false);
 			// 位置情報
 			printStyle.setLocStyle(cell.get(4, 6).getStyle());
-			printStyle.getLocStyle().setTextWrapped(false);
+			printStyle.getLocStyle().setTextWrapped(true);
 			// 応援カード
 			printStyle.setCardStyle(cell.get(4, 7).getStyle());
 			printStyle.getCardStyle().setTextWrapped(false);
@@ -119,6 +120,8 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		/* B1_1, B1_2 */
 		cell.get(0, 0).setStyle(cell.get(0, 0).getStyle());
 		cell.get(0, 0).setValue(TextResource.localize("KDP011_20") + " " + query.getHeader().getDatePeriodHead());
+		cell.get(0, 4).setStyle(cell.get(0, 4).getStyle());
+		cell.get(0, 4).setValue(TextResource.localize("KDP011_51"));
 
 		cell.get(1, 0).setValue(TextResource.localize("KDP011_21"));
 		cell.get(1, 1).setValue(TextResource.localize("KDP011_22"));
@@ -134,63 +137,34 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 	}
 
 	@SneakyThrows
-	private int generateDataCard(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
-			PrintStyle printStyle) {
+	private int generateDataCard(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor, PrintStyle printStyle) {
 		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-		int totalPage = employeeInfor.getStampList().size() / 32
-				+ (employeeInfor.getStampList().size() % 32 == 0 ? 0 : 1);
-		int start = 0;
-		List<StampList> stampList;
-		int rows = startRow;
-		for (int i = 1; i <= totalPage; i++) {
-			if (i == totalPage) {
-				stampList = employeeInfor.getStampList().subList(start, employeeInfor.getStampList().size());
-			} else {
-				stampList = employeeInfor.getStampList().subList(start, 32 * i);
-				start = 32 * i;
-			}
-			if (rows > 4) {
-				cell.copyRow(cell, 0, rows);
-				cell.copyRow(cell, 1, rows + 1);
-				cell.copyRow(cell, 2, rows + 2);
-				cell.copyRow(cell, 3, rows + 3);
-				// 職場名
-				cell.get(rows + 2, 0).setValue(employeeInfor.getWorkplace());
-				// 社員名
-				cell.get(rows + 3, 0).setValue(employeeInfor.getEmployee());
-				// カードNo.
-				cell.get(rows + 3, 3).setValue(employeeInfor.getCardNo());
-				rows += 4;
-			} else {
-				// 職場名
-				cell.get(2, 0).setValue(employeeInfor.getWorkplace());
-				// 社員名
-				cell.get(3, 0).setValue(employeeInfor.getEmployee());
-				// カードNo.
-				cell.get(3, 3).setValue(employeeInfor.getCardNo());
-			}
-
-			rows = printData(rows, cell, printStyle, stampList);
-
-			if (i == totalPage && stampList.size() < 32) {
-				rows = rows + 32 - stampList.size();
-			}
-			reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows);
+		if (startRow > 4) {
+			cell.copyRow(cell, 0, startRow);
+			cell.copyRow(cell, 1, startRow + 1);
+			cell.copyRow(cell, 2, startRow + 2);
+			cell.copyRow(cell, 3, startRow + 3);
+			// 職場名
+			cell.get(startRow + 2, 0).setValue(employeeInfor.getWorkplace());
+			// 社員名
+			cell.get(startRow + 3, 0).setValue(employeeInfor.getEmployee());
+			// カードNo.
+			cell.get(startRow + 3, 3).setValue(employeeInfor.getCardNo());
+			startRow += 4;
+		} else {
+			// 職場名
+			cell.get(2, 0).setValue(employeeInfor.getWorkplace());
+			// 社員名
+			cell.get(3, 0).setValue(employeeInfor.getEmployee());
+			// カードNo.
+			cell.get(3, 3).setValue(employeeInfor.getCardNo());
 		}
-		return rows;
-	}
-
-	private int generateDataEmp(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor,
-			PrintStyle printStyle) {
-		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-		Map<String, List<StampList>> cardGroup = employeeInfor.getStampList().stream()
-				.collect(Collectors.groupingBy(StampList::getCardNo));
-		Map<Integer, List<StampList>> pages = createPages(cardGroup);
-		
 		AtomicInteger rows = new AtomicInteger(startRow);
-		
-		pages.forEach((k, v) -> {
-			try {
+		int height = 0;
+		for (StampList data : employeeInfor.getStampList()) {
+			height = height + data.rowHeigth();
+			if(height > heightContentPage) {
+				reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 				if (rows.get() > 4) {
 					cell.copyRow(cell, 0, rows.get());
 					cell.copyRow(cell, 1, rows.get() + 1);
@@ -201,7 +175,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 					// 社員名
 					cell.get(rows.get() + 3, 0).setValue(employeeInfor.getEmployee());
 					// カードNo.
-					cell.get(rows.get() + 3, 3).setValue(v.get(0).getCardNo());
+					cell.get(rows.get() + 3, 3).setValue(employeeInfor.getCardNo());
 					rows.set(rows.get() + 4);
 				} else {
 					// 職場名
@@ -209,23 +183,71 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 					// 社員名
 					cell.get(3, 0).setValue(employeeInfor.getEmployee());
 					// カードNo.
-					cell.get(3, 3).setValue(v.get(0).getCardNo());
+					cell.get(3, 3).setValue(employeeInfor.getCardNo());
 				}
+				height = 0;
+			}
+			printData(rows.get(), cell, printStyle, data);
+			rows.set(rows.get() + 1);
+		}
+		reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
+		return rows.get();
+	}
 
-				rows.set(printData(rows.get(), cell, printStyle, v));
-				if (v.size() < 32) {
-					rows.set(rows.get() + (32 - v.size()));
+	private int generateDataEmp(int startRow, AsposeCellsReportContext reportContext, EmployeeInfor employeeInfor, PrintStyle printStyle) {
+		val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
+		Map<String, List<StampList>> cardGroup = employeeInfor.getStampList().stream()
+				.collect(Collectors.groupingBy(StampList::getCardNo));
+		
+		AtomicInteger rows = new AtomicInteger(startRow);
+		
+		cardGroup.forEach((k, v) -> {
+			int height = 0;
+			this.pageBreaks(rows, cell, employeeInfor, v.get(0));
+			for (StampList data : v) {
+				height = height + data.rowHeigth();
+				if(height > heightContentPage) {
+					reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
+					this.pageBreaks(rows, cell, employeeInfor, data);
+					height = 0;
 				}
-				reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
-			} catch (Exception ex) {
+				
+				printData(rows.get(), cell, printStyle, data);
+				rows.set(rows.get() + 1);
 			}
 		});
 		return rows.get();
 	}
+	
+	private void pageBreaks(AtomicInteger rows, Cells cell, EmployeeInfor employeeInfor, StampList data) {
+		try {
+			if (rows.get() > 4) {
+				cell.copyRow(cell, 0, rows.get());
+				cell.copyRow(cell, 1, rows.get() + 1);
+				cell.copyRow(cell, 2, rows.get() + 2);
+				cell.copyRow(cell, 3, rows.get() + 3);
+				// 職場名
+				cell.get(rows.get() + 2, 0).setValue(employeeInfor.getWorkplace());
+				// 社員名
+				cell.get(rows.get() + 3, 0).setValue(employeeInfor.getEmployee());
+				// カードNo.
+				cell.get(rows.get() + 3, 3).setValue(data.getCardNo());
+				rows.set(rows.get() + 4);
+			} else {
+				// 職場名
+				cell.get(2, 0).setValue(employeeInfor.getWorkplace());
+				// 社員名
+				cell.get(3, 0).setValue(employeeInfor.getEmployee());
+				// カードNo.
+				cell.get(3, 3).setValue(data.getCardNo());
+			}
+			
+		} catch (Exception ex) {
+		}
+	}
 
-	// print data for each rows
-	private int printData(int rows, Cells cell, PrintStyle printStyle, List<StampList> stampList) {
-		for (int j = 0; j < stampList.size(); j++) {
+	// print data 
+	private void printData(int rows, Cells cell, PrintStyle printStyle, StampList stampList) {
 			val dateStyle = printStyle.getDateStyle();
 
 			val stampStyle = printStyle.getStampStyle();
@@ -239,7 +261,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			val overStyle = printStyle.getOverStyle();
 			val nightStyle = printStyle.getNightStyle();
 			// Tạo màu background
-			Color bgColor = j % 2 != 0 ? Color.fromArgb(221, 235, 247) : Color.getWhite();
+			Color bgColor = rows % 2 == 0 ? Color.fromArgb(221, 235, 247) : Color.getWhite();
 			dateStyle.setForegroundColor(bgColor);
 			dateStyle.setPattern(BackgroundType.SOLID);
 			stampStyle.setForegroundColor(bgColor);
@@ -265,67 +287,36 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 
 			// 年月日
 			cell.get(rows, 0).setStyle(dateStyle);
-			cell.get(rows, 0).setValue(stampList.get(j).getDate());
+			cell.get(rows, 0).setValue(stampList.getDate());
 			// 時刻
 			cell.get(rows, 1).setStyle(stampStyle);
-			cell.get(rows, 1).setValue(stampList.get(j).getTime());
+			cell.get(rows, 1).setValue(stampList.getTime());
 			// 出退勤区分
 			cell.get(rows, 2).setStyle(claStyle);
-			cell.get(rows, 2).setValue(stampList.get(j).getClassification());
+			cell.get(rows, 2).setValue(stampList.getClassification());
 			// 打刻手段
 			cell.get(rows, 3).setStyle(meanStyle);
-			cell.get(rows, 3).setValue(stampList.get(j).getMean());
+			cell.get(rows, 3).setValue(stampList.getMean());
 			// 認証方法
 			cell.get(rows, 4).setStyle(methodStyle);
-			cell.get(rows, 4).setValue(stampList.get(j).getMethod());
+			cell.get(rows, 4).setValue(stampList.getMethod());
 			// 設置場所
 			cell.get(rows, 5).setStyle(insStyle);
-			cell.get(rows, 5).setValue(stampList.get(j).getInsLocation());
+			cell.get(rows, 5).setValue(stampList.getInsLocation());
 			// 位置情報
 			cell.get(rows, 6).setStyle(locStyle);
-			cell.get(rows, 6).setValue(stampList.get(j).getLocationInfor());
+			cell.get(rows, 6).setValue(stampList.getLocationInfor());
 			// 応援カード
 			cell.get(rows, 7).setStyle(cardStyle);
-			cell.get(rows, 7).setValue(stampList.get(j).getSupportCard());
+			cell.get(rows, 7).setValue(stampList.getSupportCard());
 			// 就業時間帯
 			cell.get(rows, 8).setStyle(wHourStyle);
-			cell.get(rows, 8).setValue(stampList.get(j).getWorkingHour());
+			cell.get(rows, 8).setValue(stampList.getWorkingHour());
 			// 残業時間
 			cell.get(rows, 9).setStyle(overStyle);
-			cell.get(rows, 9).setValue(stampList.get(j).getOvertimeHour());
+			cell.get(rows, 9).setValue(stampList.getOvertimeHour());
 			// 深夜時間
 			cell.get(rows, 10).setStyle(nightStyle);
-			cell.get(rows, 10).setValue(stampList.get(j).getNightTime());
-			rows += 1;
-		}
-		return rows;
+			cell.get(rows, 10).setValue(stampList.getNightTime());
 	}
-
-	// create page to print in case: employee
-	private Map<Integer, List<StampList>> createPages(Map<String, List<StampList>> cardGroup) {
-		AtomicInteger pages = new AtomicInteger(1);
-		Map<Integer, List<StampList>> employeeList = new HashMap<>();
-		cardGroup.forEach((k, v) -> {
-			if (v.size() > 32) {
-				int start = 0;
-				int totalPage = v.size() / 32 + (v.size() % 32 == 0 ? 0 : 1);
-				List<StampList> stampList;
-				for (int i = 1; i <= totalPage; i++) {
-					if (i == totalPage) {
-						stampList = v.subList(start, v.size());
-					} else {
-						stampList = v.subList(start, 32 * i);
-						start = 32 * i;
-					}
-					employeeList.put(pages.get(), stampList);
-					pages.getAndIncrement();
-				}
-			} else {
-				employeeList.put(pages.get(), v);
-				pages.getAndIncrement();
-			}
-		});
-		return employeeList;
-	}
-
 }

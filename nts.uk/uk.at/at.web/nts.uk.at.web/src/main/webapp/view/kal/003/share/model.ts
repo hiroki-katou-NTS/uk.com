@@ -2090,12 +2090,12 @@ module nts.uk.at.view.kal003.share.model {
         }
         //the same kdw007
         getAttendanceItemByCodes(codes): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", "at/record/divergencetime/AttendanceDivergenceName", codes);
+            return nts.uk.request.ajax("at", "at/record/divergencetime/setting/AttendanceDivergenceName", codes);
         }
 
         //the same kdw007
         getAttendanceItemMonthlyByCodes(codes): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", "at/record/divergencetime/getMonthlyAttendanceDivergenceName", codes);
+            return nts.uk.request.ajax("at", "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName", codes);
         }
     }
     // group condition

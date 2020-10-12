@@ -204,12 +204,14 @@ module nts.uk.at.view.ksu001.q {
 				command.unit = self.targetData.unit;
 				command.id = self.targetData.id;
 				command.itemCode = self.selectItemCode();
-				var dateValues = [];
+				var dateValues = [];				
 				self.listperiods().forEach((x) => {
-					dateValues.push({
-						date: x.date().slice(0, 10),
-						value: x.value()
-					});
+					if(x.date() != ''){
+						dateValues.push({
+							date: x.date().slice(0, 10),
+							value: x.value()
+						});
+					}					
 				});
 				command.dateAndValues = dateValues;				
 				command.type = self.labelQ32();
