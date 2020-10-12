@@ -502,7 +502,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else if(vm.reflectionMethod() === 0){
                 refOrder = [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK];
             } else{
-                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK];
+                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE];
             }
 
             if(refOrder.length < 3){
