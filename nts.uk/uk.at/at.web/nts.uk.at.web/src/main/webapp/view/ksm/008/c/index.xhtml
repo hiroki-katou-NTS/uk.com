@@ -19,11 +19,12 @@
                     data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_22")}
             </button>
             <!--C1_2-->
-            <button>#{i18n.getText("KSM008_23")}</button>
+            <button data-bind="click: newMode">#{i18n.getText("KSM008_23")}</button>
             <!--C1_3-->
             <button class="proceed">#{i18n.getText("KSM008_24")}</button>
             <!--C1_4-->
-            <button class="danger">#{i18n.getText("KSM008_25")}</button>
+            <button data-bind="click: removeData, enable: enableBtnDel"
+                    class="danger">#{i18n.getText("KSM008_25")}</button>
         </div>
         <div id="contents-area">
             <!--C2_1-->
@@ -51,19 +52,23 @@
             <div style="display: flex">
                 <div>
                     <!--C6_6-->
-                    <div data-bind="ntsPanel:{width: '265px', height: '505px', direction: 'right', visible: true}">
+                    <div data-bind="ntsPanel:{width: '365px', height: '505px', direction: 'right', visible: true}">
                         <!--C6_1-->
-                        <div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText("KSM008_30")}</div>
+                        <div class="label" style="display: inline">#{i18n.getText("KSM008_29")}</div>
                         <!--C6_2-->
+                        <div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText("KSM008_30")}</div>
+
                         <!--C6_3-->
                         <table id="single-list" data-bind="ntsGridList: {
                             height: 350,
                             dataSource: items,
-                             primaryKey: 'code',
-                             columns: columns,
-                             rows: 20,
-                              multiple: false,
-                             value: currentCode}">
+                            primaryKey: 'code',
+                            columns: columns,
+                            rows: 20,
+                            multiple: false,
+                            name: $i18n('KSM008_31'),
+                            value: currentSelected
+                            }">
                         </table>
                     </div>
                 </div>
@@ -76,9 +81,11 @@
                             </td>
                             <td>
                                 <!--C7_2-->
-                                <input name="#{i18n.getText('KSM008_36')}" data-bind="ntsTextEditor: {value: simpleValue}"/>
+                                <input style="width: 50px" class="save-error"
+                                       data-bind="ntsTextEditor: {enable: false, value: code, name: ['#KSM008_36']}"/>
                                 <!--C7_3-->
-                                <input name="#{i18n.getText('KSM008_37')}" data-bind="ntsTextEditor: {value: otherValue}"/>
+                                <input name="#{i18n.getText('KSM008_37')}"
+                                       data-bind="ntsTextEditor: {value: name}"/>
                             </td>
                         </tr>
                         <tr>
@@ -104,7 +111,7 @@
                             <td><!--C9_2-->
                                 <span class="label">#{i18n.getText("KSM008_43")}</span>
                                 <!--C9_3-->
-                                <input data-bind="ntsTextEditor: {value: simpleValue}"/><!--C9_4-->
+                                <input data-bind="ntsTextEditor: {value: code}"/><!--C9_4-->
                                 <span class="label">#{i18n.getText("KSM008_45")}</span></td>
                         </tr>
                     </table>

@@ -7,69 +7,75 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+        </com:ValidatorScript>
+        <com:stylefile path="./styles.css"/>
         <com:scriptfile path="./ksm008.a.vm.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
             <!--A1-->
-            <button class="proceed">#{i18n.getText('KSM008_12')}</button>
+            <button tabindex="1" data-bind="click: register" class="proceed">#{i18n.getText('KSM008_12')}</button>
         </div>
         <div id="contents-area">
             <!--A2-->
-            <table id="fixed-table">
-                <colgroup>
-                    <col width="100px"/>
-                    <col width="50px"/>
-                    <col width="900px"/>
-                </colgroup>
-                <thead>
-                <tr>
-                    <!--A3-->
-                    <th class="ui-widget-header">#{i18n.getText('KSM008_6')}</th>
-                    <!--A4-->
-                    <th class="ui-widget-header" colspan="2"> #{i18n.getText('KSM008_7')}</th>
-                </tr>
-                </thead>
-                <tbody data-bind="foreach: alarmList">
-                <!--                <tbody>-->
-                <tr>
-                    <!--A5_1-->
-                    <td rowspan="2">
-                        <button data-bind="click: $parent.toScreenB.bind($parent)">#{i18n.getText('KSM008_8')}</button>
-                    </td>
-                    <!--A5_2_1-->
-                    <!--A5_2_2-->
-                    <!--A5_2_3-->
-                    <td style="border-bottom: none" colspan="2">
-                        <span class="label" data-bind="text: code"></span>
-                        <span class="label" data-bind="text: name"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <!--A5_3-->
-                    <td style="border-top: none"></td>
-                    <td data-bind="foreach: subConditionList">
-                        <div>
-                            <div class="label" data-bind="text: subCode">
-                                A5_3_1
+            <div tabindex="2" class="table">
+                <table id="fixed-table">
+                    <colgroup>
+                        <col width="70px"/>
+                        <col width="50px"/>
+                        <col width="900px"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <!--A3-->
+                        <th class="ui-widget-header">#{i18n.getText('KSM008_6')}</th>
+                        <!--A4-->
+                        <th class="ui-widget-header" colspan="2"> #{i18n.getText('KSM008_7')}</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: {data: alarmList, as: 'alarm'}">
+                    <tr>
+                        <!--A5_1-->
+                        <td style="vertical-align: top; text-align: center" rowspan="2">
+                            <button class="setting"
+                                    data-bind="click: function(){ return $parent.toScreen(alarm.code)}, attr: {tabindex: $parent.getTabIndex()}">#{i18n.getText('KSM008_8')}</button>
+                        </td>
+                        <!--A5_2_1-->
+                        <!--A5_2_2-->
+                        <!--A5_2_3-->
+                        <td class="condition p5" colspan="2">
+                            <span class="label" data-bind="text: alarm.code"></span>
+                            <span class="label" data-bind="text: alarm.name"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!--A5_3-->
+                        <td style="border-top: none"></td>
+                        <td data-bind="foreach: subConditions">
+                            <div>
+                                <div class="label p5" data-bind="text: explanation">
+                                    A5_3_1
+                                </div>
+                                <div class="flex valign-center pb5">
+                                    <!--A5_3_2-->
+                                    <div data-bind="ntsFormLabel:{constraint:['MessageDisp'], required: true }">#{i18n.getText('KSM008_9')}</div>
+                                    <!--A5_3_3-->
+                                    <input class="message" data-bind="ntsTextEditor: {value:  message.message ,
+                                                            required: false,
+                                                             enable:true,
+                                                             readonly: false}, attr: {tabindex: $parents[1].getTabIndex()}, tabindex++"/>
+                                    <!--    A5_3_4-->
+                                    <button tabindex="5" data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)}, attr: {tabindex: $parents[1].getTabIndex()}, tabindex++"
+                                            style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
+                                </div>
                             </div>
-                            <div class="flex valign-center">
-                                <!--A5_3_2-->
-                                <div data-bind="ntsFormLabel: {contraint: 'wait', required: true }">#{i18n.getText('KSM008_9')}</div>
-                                <!--A5_3_3-->
-                                <!--                            <input data-bind="ntsTextEditor: {-->
-                                <!--                            value: description,-->
-                                <!--                            required: false,-->
-                                <!--                             enable:true,-->
-                                <!--                             readonly: false}"/>-->
-                                <!--A5_3_4-->
-                                <button style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

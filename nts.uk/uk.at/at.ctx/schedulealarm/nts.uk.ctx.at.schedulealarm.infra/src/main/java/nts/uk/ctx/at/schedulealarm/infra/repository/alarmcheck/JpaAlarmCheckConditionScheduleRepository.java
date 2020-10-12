@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedulealarm.infra.entity.alarmcheck.KscctAlchkCategory;
 import nts.uk.ctx.at.schedulealarm.infra.entity.alarmcheck.KscctAlchkCategorySub;
 import nts.uk.ctx.at.schedulealarm.infra.entity.alarmcheck.KscmtAlchkMessage;
 import nts.uk.ctx.at.schedulealarm.infra.entity.alarmcheck.KscmtAlchkMessagePk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -110,7 +111,9 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 	private List<KscmtAlchkMessage> toEntityMessage(String cid, AlarmCheckConditionSchedule domain) {
 		List<KscmtAlchkMessage> result = domain.getSubConditions().stream().map(c ->{
 			val pk = new KscmtAlchkMessagePk(cid, domain.getCode().v(), c.getSubCode().v());
-			return new KscmtAlchkMessage(pk, c.getMessage().getMessage().v());
+			KscmtAlchkMessage kscmtAlchkMessage = new KscmtAlchkMessage(pk, c.getMessage().getMessage().v());
+			kscmtAlchkMessage.setContractCd(AppContexts.user().contractCode());
+			return kscmtAlchkMessage;
 		}).collect(Collectors.toList());
 		return result;
 	}
