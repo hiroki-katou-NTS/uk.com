@@ -33,6 +33,11 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	public ShiftPeriodUnit getShiftPeriodUnit() {
 		return ShiftPeriodUnit.WEEKLY;
 	}
+	
+	@Override
+	public int getMaxFromNoticeDays() {
+		return 6;
+	}
 
 	@Override
 	public boolean isOverDeadline(GeneralDate expectingDate) {
@@ -50,7 +55,7 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	}
 	
 	@Override
-	public ShiftTableRuleInfo getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
+	public DeadlineAndPeriodOfExpectation getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
 		GeneralDate mostRecentDeadline = this.expectDeadLine.getMostRecentDeadlineIncludeTargetDate(baseDate);
@@ -65,7 +70,7 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 				nextDeadline : nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		DatePeriod period = new DatePeriod(startDate, startDate.addDays(6));
 		
-		return new ShiftTableRuleInfo(mostRecentDeadline, period);
+		return new DeadlineAndPeriodOfExpectation(mostRecentDeadline, period);
 	}
 
 	@Override
@@ -74,5 +79,5 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		return new DatePeriod(startDate, startDate.addDays(6));
 	}
-	
+
 }

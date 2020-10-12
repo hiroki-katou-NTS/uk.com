@@ -3,17 +3,19 @@ package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 import java.util.Optional;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Value
 public class NotificationInfo {
 	
+	/**
+	 * 通知するか
+	 */
 	private boolean notify;
 	
-	private Optional<GeneralDate> deadline;
-	
-	private Optional<DatePeriod> period;
+	/**
+	 * 	締切日と期間
+	 */
+	private Optional<DeadlineAndPeriodOfExpectation> deadlineAndPeriod;
 	
 	/**
 	 * 通知なしで作る
@@ -21,18 +23,17 @@ public class NotificationInfo {
 	 */
 	public static NotificationInfo createWithoutNotify() {
 		
-		return new NotificationInfo(false, Optional.empty(), Optional.empty());
+		return new NotificationInfo(false, Optional.empty());
 	}
 	
 	/**
-	 * 通知を作る
-	 * @param deadline 直近の締切日
-	 * @param period 締切日に応じる期間
+	 * 通知情報を作る
+	 * @param deadlineAndPeriod
 	 * @return
 	 */
-	public static NotificationInfo createNotification(GeneralDate deadline, DatePeriod period) {
+	public static NotificationInfo createNotification(DeadlineAndPeriodOfExpectation deadlineAndPeriod) {
 		
-		return new NotificationInfo(true, Optional.of(deadline), Optional.of(period));
+		return new NotificationInfo(true, Optional.of(deadlineAndPeriod));
 	}
 	
 }

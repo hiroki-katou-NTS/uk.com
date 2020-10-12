@@ -21,27 +21,39 @@ public interface ShiftTableSetting {
 	ShiftPeriodUnit getShiftPeriodUnit();
 	
 	/**
+	 * 何日前に通知するかの最大日数
+	 * @return
+	 */
+	int getMaxFromNoticeDays();
+	
+	/**
 	 * 締切日を過ぎているか
+	 * 過ぎる場合 return true
+	 * @param expectingDate 希望日
 	 * @return
 	 */
 	boolean isOverDeadline(GeneralDate expectingDate);
 	
 	/**
 	 * 休日日数の上限日数を超えているか
+	 * 超える場合 return true
+	 * @param workExpectList　一日の勤務希望リスト: 休日、シフト、時間帯の全部
 	 * @return
 	 */
 	boolean isOverHolidayMaxDays(List<WorkExpectationOfOneDay> workExpectList);
 	
 	/**
 	 * 基準日に対応する締切日と期間を取得する
+	 * @param baseDate 基準日
 	 * @return
 	 */
-	ShiftTableRuleInfo getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
+	DeadlineAndPeriodOfExpectation getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
 	
 	/**
 	* 希望日を含める期間を取得する
-	* @return
-	*/
+	 * @param expectingDate　希望日
+	 * @return
+	 */
 	DatePeriod getPeriodWhichIncludeExpectingDate(GeneralDate expectingDate);
 	
 }

@@ -33,11 +33,16 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	public ShiftPeriodUnit getShiftPeriodUnit() {
 		return ShiftPeriodUnit.MONTHLY;
 	}
+	
+	@Override
+	public int getMaxFromNoticeDays() {
+		return 15;
+	}
 
 	@Override
 	public boolean isOverDeadline(GeneralDate expectingDate) {
 		
-		GeneralDate startDate = this.closureDate.periodOf(expectingDate).start();
+		GeneralDate startDate = this.getPeriodWhichIncludeExpectingDate(expectingDate).start();
 		GeneralDate deadline = this.expectDeadLine.justBefore(startDate);
 		
 		return GeneralDate.today().after(deadline);
@@ -54,16 +59,16 @@ public class ShiftTableDateSetting implements ShiftTableSetting, DomainValue {
 	}
 	
 	@Override
-	public ShiftTableRuleInfo getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
+	public DeadlineAndPeriodOfExpectation getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
 		GeneralDate mostRecentDeadline = this.expectDeadLine.after(baseDate);
 		
 		// get period
 		GeneralDate nextDeadlineDate = mostRecentDeadline.addMonths(1);
-		DatePeriod period =  this.closureDate.periodOf(nextDeadlineDate);
+		DatePeriod period =  this.getPeriodWhichIncludeExpectingDate(nextDeadlineDate);
 		
-		return new ShiftTableRuleInfo(mostRecentDeadline, period);
+		return new DeadlineAndPeriodOfExpectation(mostRecentDeadline, period);
 	}
 
 	@Override

@@ -108,7 +108,7 @@ public class ShiftTableRuleTest {
 		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.NOT_USE, 
 				Optional.empty(), Collections.emptyList(), Optional.empty());
 		
-		NotificationInfo result = rule.isTodayTheNotify();
+		NotificationInfo result = rule.getTodayNotificationInfo();
 		
 		assertThat( result.isNotify()).isFalse();
 		assertThat( result.getDeadline()).isEmpty();
@@ -126,7 +126,7 @@ public class ShiftTableRuleTest {
 				Optional.of(new FromNoticeDays(3)));
 		
 		// Mock
-		ShiftTableRuleInfo ruleInfo = new ShiftTableRuleInfo(GeneralDate.ymd(2020, 10, 10), 
+		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 6, 0, 0, 0); // TODAY = 2020/10/6
 		
@@ -138,7 +138,7 @@ public class ShiftTableRuleTest {
         };
 
         // Act
-        NotificationInfo result = rule.isTodayTheNotify();
+        NotificationInfo result = rule.getTodayNotificationInfo();
         
         // Assert
         assertThat( result.isNotify()).isFalse();
@@ -157,7 +157,7 @@ public class ShiftTableRuleTest {
 				Optional.of(new FromNoticeDays(3)));
 		
 		// Mock
-		ShiftTableRuleInfo ruleInfo = new ShiftTableRuleInfo(GeneralDate.ymd(2020, 10, 10), 
+		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 7, 0, 0, 0); // TODAY = 2020/10/7
 		
@@ -169,7 +169,7 @@ public class ShiftTableRuleTest {
         };
 
         // Act
-        NotificationInfo result = rule.isTodayTheNotify();
+        NotificationInfo result = rule.getTodayNotificationInfo();
         
         // Assert
         assertThat( result.isNotify()).isTrue();
@@ -189,7 +189,7 @@ public class ShiftTableRuleTest {
 				Optional.of(new FromNoticeDays(3)));
 		
 		// Mock
-		ShiftTableRuleInfo ruleInfo = new ShiftTableRuleInfo(GeneralDate.ymd(2020, 10, 10), 
+		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 10, 0, 0, 0); // TODAY = 2020/10/10
 		
@@ -201,7 +201,7 @@ public class ShiftTableRuleTest {
         };
 
         // Act
-        NotificationInfo result = rule.isTodayTheNotify();
+        NotificationInfo result = rule.getTodayNotificationInfo();
         
         // Assert
         assertThat( result.isNotify()).isTrue();

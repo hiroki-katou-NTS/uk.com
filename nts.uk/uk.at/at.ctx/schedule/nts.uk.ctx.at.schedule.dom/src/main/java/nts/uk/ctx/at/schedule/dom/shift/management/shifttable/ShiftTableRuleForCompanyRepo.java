@@ -4,12 +4,29 @@ import java.util.Optional;
 
 public interface ShiftTableRuleForCompanyRepo {
 	
+	/**
+	 * insert
+	 * @param domain　会社のシフト表のルール
+	 */
 	public void insert(ShiftTableRuleForCompany domain);
 	
+	/**
+	 * update
+	 * @param domain　会社のシフト表のルール
+	 */
 	public void update(ShiftTableRuleForCompany domain);
 	
+	/**
+	 * delete
+	 * @param companyId
+	 */
 	public void delete(String companyId);
 	
-	public Optional<ShiftTableRuleForCompany> getShiftTableRuleForCompany(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return　会社のシフト表のルール
+	 */
+	public Optional<ShiftTableRuleForCompany> get(String companyId);
 
 }

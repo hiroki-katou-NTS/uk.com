@@ -63,9 +63,10 @@ public class ShiftTableRule implements DomainValue {
 				throw new BusinessException("Msg_1938");
 			}
 			
-			int maxFromNoticeDays = shiftTableSetting.get().getShiftPeriodUnit() == ShiftPeriodUnit.MONTHLY ? 15 : 6;
+			int maxFromNoticeDays = shiftTableSetting.get().getMaxFromNoticeDays();
+			
 			if ( fromNoticeDays.get().v() > maxFromNoticeDays) {
-				throw new BusinessException("Msg_1939", maxFromNoticeDays + "");
+				throw new BusinessException("Msg_1939", String.valueOf(maxFromNoticeDays));
 			}
 			
 		}
@@ -80,22 +81,22 @@ public class ShiftTableRule implements DomainValue {
 	}
 	
 	/**
-	 * 今日が通知をする日か
+	 * 今日の通知情報を取得する
 	 * @return
 	 */
-	public NotificationInfo isTodayTheNotify() {
+	public NotificationInfo getTodayNotificationInfo() {
 		
 		if ( this.useWorkExpectationAtr == NotUseAtr.NOT_USE) {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		ShiftTableRuleInfo ruleInfo = this.shiftTableSetting.get().getCorrespondingDeadlineAndPeriod(GeneralDate.today());
-		GeneralDate startNotifyDate = ruleInfo.getDeadline().addDays( - this.fromNoticeDays.get().v());
+		DeadlineAndPeriodOfExpectation deadlineAndPriod = this.shiftTableSetting.get().getCorrespondingDeadlineAndPeriod(GeneralDate.today());
+		GeneralDate startNotifyDate = deadlineAndPriod.getDeadline().addDays( - this.fromNoticeDays.get().v());
 		if (GeneralDate.today().before(startNotifyDate)) {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		return NotificationInfo.createNotification(ruleInfo.getDeadline(), ruleInfo.getPeriod());
+		return NotificationInfo.createNotification(deadlineAndPriod);
 	}
 	
 }

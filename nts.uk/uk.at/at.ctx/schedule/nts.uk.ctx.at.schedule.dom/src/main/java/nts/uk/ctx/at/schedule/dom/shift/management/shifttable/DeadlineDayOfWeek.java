@@ -38,6 +38,8 @@ public class DeadlineDayOfWeek implements DomainValue {
 	
 	/**
 	 * 対象日を含む直後
+	 * 締切曜日の週に関係なく、対象日の直後の年月日を返す。
+	 * 対象日の曜日が締切曜日と一緒だったら、対象日を返す。 															
 	 * @param targetDate
 	 * @return
 	 */

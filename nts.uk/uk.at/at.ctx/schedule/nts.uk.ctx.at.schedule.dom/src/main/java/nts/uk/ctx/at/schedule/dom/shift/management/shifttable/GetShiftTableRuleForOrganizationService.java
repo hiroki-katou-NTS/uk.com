@@ -12,6 +12,12 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 public class GetShiftTableRuleForOrganizationService {
 	
+	/**
+	 * 指定した組織のシフト表のルールを取得する。 できなければ会社のシフト表のルールを取得する。 会社のシフト表のルールがない場合、emptyを返す。 
+	 * @param require
+	 * @param targetOrg 対象組織識別情報
+	 * @return
+	 */
 	public static Optional<ShiftTableRule> get(Require require, TargetOrgIdenInfor targetOrg) {
 		
 		// get shift table rule of organization
@@ -31,8 +37,17 @@ public class GetShiftTableRuleForOrganizationService {
 	
 	public static interface Require {
 		
+		/**
+		 * 組織のシフト表のルールを取得する	
+		 * @param targetOrg 対象組織識別情報
+		 * @return
+		 */
 		Optional<ShiftTableRuleForOrganization> getOrganizationShiftTable(TargetOrgIdenInfor targetOrg);
 		
+		/**
+		 * 会社のシフト表のルールを取得する	
+		 * @return
+		 */
 		Optional<ShiftTableRuleForCompany> getCompanyShiftTable();
 		
 	}

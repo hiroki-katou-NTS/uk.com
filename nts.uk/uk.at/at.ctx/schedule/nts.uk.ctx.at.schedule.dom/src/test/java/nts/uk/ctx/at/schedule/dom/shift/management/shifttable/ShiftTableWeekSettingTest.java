@@ -118,7 +118,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
@@ -135,7 +135,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
@@ -152,7 +152,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
@@ -169,7 +169,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
@@ -186,7 +186,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
@@ -202,7 +202,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 25), GeneralDate.ymd(2020, 10, 31)));
@@ -218,7 +218,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.SUNDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
@@ -234,7 +234,7 @@ public class ShiftTableWeekSettingTest {
 		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.SUNDAY);
 		
-		ShiftTableRuleInfo ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
 		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
