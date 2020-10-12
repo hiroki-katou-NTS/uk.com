@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class HrApprovalRouteSetting {
+public class HrApprovalRouteSettingWF {
 	// 会社
 	public boolean comMode;
 	// 会社ID
@@ -21,7 +21,7 @@ public class HrApprovalRouteSetting {
 	// 部門
 	public boolean devMode;
 
-	public HrApprovalRouteSetting(boolean comMode, String cid, boolean empMode, boolean devMode) {
+	public HrApprovalRouteSettingWF(boolean comMode, String cid, boolean empMode, boolean devMode) {
 		super();
 		this.cid = cid;
 		this.comMode = comMode;
@@ -29,7 +29,7 @@ public class HrApprovalRouteSetting {
 		this.empMode = empMode;
 	}
 
-	public static HrApprovalRouteSetting createFromJavaType(boolean comMode, String cid, boolean empMode, boolean devMode) {
-		return new HrApprovalRouteSetting(comMode, cid, empMode, devMode);
+	public static HrApprovalRouteSettingWF createFromJavaType(boolean comMode, String cid, boolean empMode, boolean devMode) {
+		return new HrApprovalRouteSettingWF(comMode, cid, empMode, devMode);
 	}
 }

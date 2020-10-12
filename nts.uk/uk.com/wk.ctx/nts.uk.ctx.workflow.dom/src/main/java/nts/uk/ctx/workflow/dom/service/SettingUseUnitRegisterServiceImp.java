@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
 
@@ -17,12 +17,12 @@ public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterS
 	private ApprovalSettingRepository approvalSettingRepository;
 	
 	@Inject
-	private HrApprovalRouteSettingRepository hrApprovalRouteSettingRepository;
+	private HrApprovalRouteSettingWFRepository hrApprovalRouteSettingRepository;
 	
 	@Override
 	public void register(Integer systemCategory, SettingUseUnitOutput settingUseUnitOutput) {
 		Optional<ApprovalSetting> approvalSettingOp = settingUseUnitOutput.getApprovalSetting();
-		Optional<HrApprovalRouteSetting> hrApprovalRouteSettingOp = settingUseUnitOutput.getHrApprovalRouteSetting();
+		Optional<HrApprovalRouteSettingWF> hrApprovalRouteSettingOp = settingUseUnitOutput.getHrApprovalRouteSetting();
 		if (systemCategory == SettingUseUnitServiceImp.EMPLOYMENT) {
 			if (!approvalSettingOp.isPresent()) return;
 			ApprovalSetting approvalSetting = approvalSettingOp.get();
@@ -35,7 +35,7 @@ public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterS
 			}
 		} else if (systemCategory == SettingUseUnitServiceImp.HUMAN_RESOURCE) {
 			if (!hrApprovalRouteSettingOp.isPresent()) return;
-			HrApprovalRouteSetting hrApprovalRouteSetting = hrApprovalRouteSettingOp.get();
+			HrApprovalRouteSettingWF hrApprovalRouteSetting = hrApprovalRouteSettingOp.get();
 			if (settingUseUnitOutput.getMode()) {
 				// insert
 				hrApprovalRouteSettingRepository.insert(hrApprovalRouteSetting);

@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
@@ -21,11 +21,11 @@ public class SettingUseUnitServiceImp implements SettingUseUnitService{
 	private ApprovalSettingRepository approvalSettingRepository;
 	
 	@Inject
-	private HrApprovalRouteSettingRepository hrApprovalRouteSettingRepository;
+	private HrApprovalRouteSettingWFRepository hrApprovalRouteSettingRepository;
 	@Override
 	public SettingUseUnitOutput start(String companyId, Integer systemCategory) {
 		Optional<ApprovalSetting> approvalSettingOp = Optional.empty();
-		Optional<HrApprovalRouteSetting> hrApprovalOp = Optional.empty();
+		Optional<HrApprovalRouteSettingWF> hrApprovalOp = Optional.empty();
 		Boolean mode;
 		// INPUT.システム区分をチェックする
 		if (systemCategory == EMPLOYMENT) {

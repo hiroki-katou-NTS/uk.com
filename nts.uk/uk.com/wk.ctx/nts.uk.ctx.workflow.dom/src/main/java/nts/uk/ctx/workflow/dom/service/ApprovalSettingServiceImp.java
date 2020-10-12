@@ -11,8 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 @Stateless
 public class ApprovalSettingServiceImp implements ApprovalSettingService {
@@ -21,7 +21,7 @@ public class ApprovalSettingServiceImp implements ApprovalSettingService {
 	private ApprovalSettingRepository approvalSettingRepository;
 	
 	@Inject
-	private HrApprovalRouteSettingRepository hrApprovalRouteSettingRepository;
+	private HrApprovalRouteSettingWFRepository hrApprovalRouteSettingRepository;
 	@Override
 	public ApproverRegisterSet getSettingUseUnit(String companyId, Integer systemCategory) {
 		// 「承認単位の利用設定」の初期値を作成する
@@ -29,7 +29,7 @@ public class ApprovalSettingServiceImp implements ApprovalSettingService {
 				UseClassification.DO_NOT_USE,
 				UseClassification.DO_NOT_USE);
 		Optional<ApprovalSetting> approvalSettingOp = Optional.empty();
-		Optional<HrApprovalRouteSetting> hrApprovalOp = Optional.empty();
+		Optional<HrApprovalRouteSettingWF> hrApprovalOp = Optional.empty();
 		// INPUT.システム区分をチェックする
 		if (systemCategory == SettingUseUnitServiceImp.EMPLOYMENT) {
 			approvalSettingOp = approvalSettingRepository.getApprovalByComId(companyId);
@@ -43,7 +43,7 @@ public class ApprovalSettingServiceImp implements ApprovalSettingService {
 			if (systemCategory == SettingUseUnitServiceImp.EMPLOYMENT) {
 				approverRegsterSet = approvalSettingOp.get().getApproverRegsterSet();
 			} else {
-				HrApprovalRouteSetting hrApprovalRouteSetting = hrApprovalOp.get();
+				HrApprovalRouteSettingWF hrApprovalRouteSetting = hrApprovalOp.get();
 				approverRegsterSet = new ApproverRegisterSet(
 						EnumAdaptor.valueOf(BooleanUtils.toInteger(hrApprovalRouteSetting.comMode), UseClassification.class),
 						EnumAdaptor.valueOf(BooleanUtils.toInteger(hrApprovalRouteSetting.devMode), UseClassification.class),

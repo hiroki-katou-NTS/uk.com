@@ -6,16 +6,16 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.JcmmtRootArp;
 
 
 @Stateless
-public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository implements HrApprovalRouteSettingRepository {
+public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository implements HrApprovalRouteSettingWFRepository {
 
 	@Override
-	public Optional<HrApprovalRouteSetting> getDomainByCid(String cid) {
+	public Optional<HrApprovalRouteSettingWF> getDomainByCid(String cid) {
 		
 		if(StringUtil.isNullOrEmpty(cid, true))
 			return Optional.empty();
@@ -29,18 +29,18 @@ public class JpaHrApprovalRouteSettingRepositoryImpl extends JpaRepository imple
 		
 	}
 
-	private HrApprovalRouteSetting toDomain(JcmmtRootArp entity) {
-		return HrApprovalRouteSetting.createFromJavaType(entity.comMode == 1 ? true : false, entity.cid, entity.devMode == 1 ? true : false, entity.empMode == 1 ? true : false);
+	private HrApprovalRouteSettingWF toDomain(JcmmtRootArp entity) {
+		return HrApprovalRouteSettingWF.createFromJavaType(entity.comMode == 1 ? true : false, entity.cid, entity.devMode == 1 ? true : false, entity.empMode == 1 ? true : false);
 	}
 
 	@Override
-	public void insert(HrApprovalRouteSetting hrApprovalRouteSetting) {
+	public void insert(HrApprovalRouteSettingWF hrApprovalRouteSetting) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void update(HrApprovalRouteSetting hrApprovalRouteSetting) {
+	public void update(HrApprovalRouteSettingWF hrApprovalRouteSetting) {
 		// TODO Auto-generated method stub
 		
 	}

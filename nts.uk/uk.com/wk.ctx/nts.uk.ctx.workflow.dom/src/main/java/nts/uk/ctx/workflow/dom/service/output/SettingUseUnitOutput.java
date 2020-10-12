@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
 
 /**
  * Refactor5
@@ -24,5 +24,5 @@ public class SettingUseUnitOutput {
 	// 承認設定
 	Optional<ApprovalSetting> approvalSetting = Optional.empty();
 	// 人事承認ルート設定
-	Optional<HrApprovalRouteSetting> hrApprovalRouteSetting = Optional.empty();
+	Optional<HrApprovalRouteSettingWF> hrApprovalRouteSetting = Optional.empty();
 }
