@@ -104,7 +104,39 @@ module nts.uk.at.view.kbt002.c {
     decide() {
       const vm = this;
       if (vm.$validate()) {
-        return;
+        const params = {
+          executionTypes: vm.selectExec(), //実行タイプ
+          timeRepeats: vm.selectTimeRepeat(), //1日の繰り返し
+          endTimes: vm.selectEndTime(), //終了時刻
+          endDates: vm.selectEndDate(), //終了日
+          startDate: vm.curExecSetting().startDate(), //開始日時
+          startTime: vm.curExecSetting().startTime(),
+          monday: vm.curExecSetting().monday(),
+          tuesday: vm.curExecSetting().tuesday(),
+          wednesday: vm.curExecSetting().wednesday(),
+          thursday: vm.curExecSetting().thursday(),
+          friday: vm.curExecSetting().friday(),
+          saturday: vm.curExecSetting().saturday(),
+          sunday: vm.curExecSetting().sunday(),
+          january: vm.curExecSetting().january(),
+          february: vm.curExecSetting().february(),
+          march: vm.curExecSetting().march(),
+          april: vm.curExecSetting().april(),
+          may: vm.curExecSetting().may(),
+          june: vm.curExecSetting().june(),
+          july: vm.curExecSetting().july(),
+          august: vm.curExecSetting().august(),
+          september: vm.curExecSetting().september(),
+          october: vm.curExecSetting().october(),
+          november: vm.curExecSetting().november(),
+          december: vm.curExecSetting().december(),
+          lstOneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
+          endDate: vm.curExecSetting().endDate(),
+          endTime: vm.curExecSetting().endTime(),
+          repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() //日付選択
+        }
+        nts.uk.ui.windows.setShared('inputScreenB', { params: params });
+        vm.$window.close(params);
       }
 
     }
