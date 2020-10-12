@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.management;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,18 +51,19 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertFalse(dateInfo.getOptWorkplaceEventName().isPresent());
-		assertTrue(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.getOptWorkplaceEventName()).isEmpty();
+		assertThat(dateInfo.getListSpecDayNameWorkplace()).isEmpty();
 		
-		assertFalse(dateInfo.isSpecificDay());
-		assertFalse(dateInfo.getOptCompanyEventName().isPresent());
-		assertTrue(dateInfo.getListSpecDayNameCompany().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isFalse();
+		assertThat(dateInfo.getOptCompanyEventName()).isEmpty();
+		assertThat(dateInfo.getListSpecDayNameCompany()).isEmpty();
 		
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		assertFalse(dateInfo.isHoliday());
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isFalse();
 		/** ver2 */
-		assertFalse(dateInfo.getHolidayName().isPresent());
+		assertThat(dateInfo.isHoliday()).isFalse();
+		assertThat(dateInfo.getHolidayName()).isEmpty();
 	}
 	
 	/**
@@ -93,18 +91,19 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertFalse(dateInfo.getOptWorkplaceEventName().isPresent());
-		assertTrue(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.getOptWorkplaceEventName()).isEmpty();
+		assertThat(dateInfo.getListSpecDayNameWorkplace()).isEmpty();;
 		
-		assertFalse(dateInfo.isSpecificDay());
-		assertFalse(dateInfo.getOptCompanyEventName().isPresent());
-		assertTrue(dateInfo.getListSpecDayNameCompany().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isFalse();
+		assertThat(dateInfo.getOptCompanyEventName()).isEmpty();
+		assertThat(dateInfo.getListSpecDayNameCompany()).isEmpty();
 		
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		assertTrue(dateInfo.isHoliday());
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
 		/** ver2 */
-		assertTrue(dateInfo.getHolidayName().isPresent());
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
 		
 	}
 	
@@ -141,16 +140,16 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertTrue(dateInfo.isSpecificDay());
-		assertSame(dateInfo.getOptCompanyEventName().get(),companyEvent.getEventName());
-		assertTrue(dateInfo.getListSpecDayNameCompany().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isTrue();
+		assertThat(dateInfo.getOptCompanyEventName().get()).isEqualTo(companyEvent.getEventName());
+		assertThat(dateInfo.getListSpecDayNameCompany()).isEmpty();;
 		
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		assertTrue(dateInfo.isHoliday());
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
 		/** ver2 */
-		assertTrue(dateInfo.getHolidayName().isPresent());
-		
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
 	}
 	
 	/**
@@ -188,9 +187,9 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertTrue(dateInfo.isSpecificDay());
-		assertSame(dateInfo.getOptCompanyEventName().get(),companyEvent.getEventName());
-		assertFalse(dateInfo.getListSpecDayNameCompany().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isTrue();
+		assertThat(dateInfo.getOptCompanyEventName().get()).isEqualTo(companyEvent.getEventName());
+		assertThat(dateInfo.getListSpecDayNameCompany().isEmpty()).isFalse();
 		
 		assertThat(dateInfo.getListSpecDayNameCompany())
 		.extracting(d->d.v())
@@ -199,11 +198,12 @@ public class DateInformationTest {
 				dateItems.get(1).getSpecificName().v());
 		
 		
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		assertTrue(dateInfo.isHoliday());
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
 		/** ver2 */
-		assertTrue(dateInfo.getHolidayName().isPresent());
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
 		
 	}
 
@@ -230,15 +230,16 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertFalse(dateInfo.isSpecificDay());
-		assertFalse(dateInfo.getOptWorkplaceEventName().isPresent());
-		assertTrue(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isFalse();
+		assertThat(dateInfo.getOptWorkplaceEventName()).isEmpty();
+		assertThat(dateInfo.getListSpecDayNameWorkplace()).isEmpty();
 		
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		assertTrue(dateInfo.isHoliday());
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
 		/** ver2 */
-		assertTrue(dateInfo.getHolidayName().isPresent());
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
 	}
 	
 	/**
@@ -268,14 +269,15 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertFalse(dateInfo.isSpecificDay());
-		assertSame(dateInfo.getOptWorkplaceEventName().get(), workplaceEvent.getEventName());
-		assertTrue(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isFalse();
+		assertThat(dateInfo.getOptWorkplaceEventName().get()).isEqualTo(workplaceEvent.getEventName());
+		assertThat(dateInfo.getListSpecDayNameWorkplace()).isEmpty();
 		
-		assertTrue(dateInfo.isHoliday());
-		assertTrue(dateInfo.getHolidayName().isPresent());
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -311,13 +313,14 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertTrue(dateInfo.isSpecificDay());
-		assertTrue(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isTrue();
+		assertThat(dateInfo.getListSpecDayNameWorkplace()).isEmpty();
 		
-		assertTrue(dateInfo.isHoliday());
-		assertTrue(dateInfo.getHolidayName().isPresent());
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
+		assertThat(dateInfo.isHoliday()).isTrue();
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
 	}
 	
 	/**
@@ -354,8 +357,8 @@ public class DateInformationTest {
 		
 		DateInformation dateInfo = DateInformation.create(require, today, targetOrg);
 		
-		assertTrue(dateInfo.isSpecificDay());
-		assertFalse(dateInfo.getListSpecDayNameWorkplace().isEmpty());
+		assertThat(dateInfo.isSpecificDay()).isTrue();
+		assertThat(dateInfo.getListSpecDayNameWorkplace().isEmpty()).isFalse();
 		
 		assertThat(dateInfo.getListSpecDayNameWorkplace())
 		.extracting(d->d.v())
@@ -363,12 +366,10 @@ public class DateInformationTest {
 				dateItems.get(0).getSpecificName().v(),
 				dateItems.get(1).getSpecificName().v());
 		
-		assertTrue(dateInfo.isHoliday());
-		assertTrue(dateInfo.getHolidayName().isPresent());
-		assertSame(today, dateInfo.getYmd());
-		assertSame(today.dayOfWeekEnum(), dateInfo.getYmd().dayOfWeekEnum());
-		
+		assertThat(dateInfo.isHoliday()).isTrue();
+		assertThat(dateInfo.getHolidayName().isPresent()).isTrue();
+		assertThat(dateInfo.getHolidayName().get().v()).isEqualTo("holidayName");
+		assertThat(today).isEqualTo(dateInfo.getYmd());
+		assertThat(today.dayOfWeekEnum()).isEqualTo(dateInfo.getYmd().dayOfWeekEnum());
 	}
-	
-
 }
