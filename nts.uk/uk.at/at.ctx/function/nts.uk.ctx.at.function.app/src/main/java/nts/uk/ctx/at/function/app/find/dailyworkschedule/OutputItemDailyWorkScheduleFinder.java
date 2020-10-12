@@ -283,9 +283,8 @@ public class OutputItemDailyWorkScheduleFinder {
 												}).collect(Collectors.toList());
 		
 		
-		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
-				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
-										  OutputItemDailyWorkScheduleCopyCommand::getName));
+		Map<Integer, OutputItemDailyWorkScheduleCopyCommand> mapIdName =  lstCommandCopy.stream()
+				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, Function.identity()));
 		// compare data return from kdw008 to kwr001
 		// if item of kwr008 exist in kwr001, it will be save
 		int sizeData = dataInforReturnDtos.size();
@@ -295,7 +294,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		dataInforReturnDtos = dataInforReturnDtos.stream()
 				.filter(domain -> mapIdName.containsKey(domain.getId()))
 				.map(domain -> {
-					domain.setName(mapIdName.get(domain.getId()));
+					domain.setName(mapIdName.get(domain.getId()) != null ? mapIdName.get(domain.getId()).getName() : "");
+					domain.setCode(mapIdName.get(domain.getId()) != null ? mapIdName.get(domain.getId()).getCode() : "");
 					return domain;
 				}).collect(Collectors.toList());
 		

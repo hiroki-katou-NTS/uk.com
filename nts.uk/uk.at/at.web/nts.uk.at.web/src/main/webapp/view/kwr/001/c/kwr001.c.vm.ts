@@ -6,6 +6,8 @@ module nts.uk.at.view.kwr001.c {
     export module viewmodel {
 
         const DEFAULT_DATA_FIRST = 0;
+        const LIMIT_BIG_SIZE = 48;
+        const LIMIT_SMALL_SIZE = 60;
 
         export class ScreenModel {
             data: KnockoutObservable<number>;
@@ -76,7 +78,10 @@ module nts.uk.at.view.kwr001.c {
 
             // C7_13 label
             sizeClassificationLabel: KnockoutObservable<string>;
-            limitAttendanceItem: KnockoutObservable<number> = ko.observable(48);
+            limitAttendanceItem: any = {
+                right: LIMIT_BIG_SIZE
+            };
+            loadSwapLst: KnockoutObservable<boolean> = ko.observable(true);
 
             layoutId: string;
             selectionType: number;
@@ -177,13 +182,21 @@ module nts.uk.at.view.kwr001.c {
 
                 self.sizeClassificationLabel = ko.observable(nts.uk.resource.getText("KWR001_65"));
                 self.selectedSizeClassificationType.subscribe(value => {
+                    self.loadSwapLst(false);
                     if (value === FontSizeEnum.SMALL) {
-                        self.limitAttendanceItem(48);
+                        self.limitAttendanceItem = {
+                            right: LIMIT_SMALL_SIZE
+                        };
                         self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_142"));
                     } else {
-                        self.limitAttendanceItem(60);
+                        self.limitAttendanceItem = {
+                            right: LIMIT_BIG_SIZE
+                        };
                         self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_65"));
                     }
+                    setTimeout(() => {
+                        self.loadSwapLst(true);
+                    }, 10);
                 });
 
                 self.selectedProjectType.subscribe((value) => {
@@ -372,7 +385,7 @@ module nts.uk.at.view.kwr001.c {
                             nts.uk.ui.dialog.alertError(dataScrD.error);
                         } else {
                             self.currentCodeList('');
-                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose)) {
+                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose.dataInforReturnDtos)) {
                                 $('#C3_3').focus();
                             } else {
                                 $('#C3_2').focus();
@@ -380,10 +393,7 @@ module nts.uk.at.view.kwr001.c {
                             let arrTemp: any[] = [];
                             _.forEach(self.outputItemPossibleLst(), function(value) {
                                 arrTemp.push(value);
-                            })
-                            _.forEach(dataScrD.lstAtdChoose.dataInforReturnDtos, (value) => {
-                                value.code = self.mapIdCodeAtd[value.id];
-                            })
+                            });
                             self.currentCodeListSwap(dataScrD.lstAtdChoose.dataInforReturnDtos);
                             self.items(arrTemp);
                             self.C3_2_value(dataScrD.codeCopy);
