@@ -167,7 +167,7 @@ module nts.uk.com.view.cmf005.c {
       { headerText: '', key: 'id', hidden: true },
       { headerText: getText('CMF005_19'), key: 'categoryId', width: 70 },
       { headerText: getText('CMF005_226'), key: 'displayName', width: 180 },
-      { headerText: getText('CMF003_636'), key: 'retentionPeriod', width: 100 }
+      { headerText: getText('CMF005_25'), key: 'retentionPeriod', width: 100 }
     ]);
     currentCateSelected: KnockoutObservableArray<Category> = ko.observableArray([]);
     systemTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([

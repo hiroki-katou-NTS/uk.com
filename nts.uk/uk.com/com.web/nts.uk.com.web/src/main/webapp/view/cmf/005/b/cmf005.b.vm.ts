@@ -273,7 +273,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         systemType: self.systemTypes()
       };
       service.patternSettingSelect(param).done((res) => {
-        console.log(res);
         self.savedName(res.patternName);
         self.deleteSetName(res.patternName);
         self.isExistCompressPasswordFlg(res.withoutPassword === 1);
@@ -823,7 +822,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         self.yearValue().startDate, self.yearValue().endDate,
         Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
         Number(self.selectedTitleAtr()), self.selectedPatternId().substring(1), self.employeeDeletionList(), self.listDataCategory());
-      console.log(manualSetting);
       service.addManualSetDel(manualSetting).done(function (data: any) {
         self.delId(data);
         self.gotoscreenF();

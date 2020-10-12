@@ -764,6 +764,9 @@ module nts.uk.com.view.cmf003.b {
 
       private saveManualSetting(): void {
         let self = this;
+        if (self.employeeList().length !== self.selectedEmployeeCode().length) {
+          self.employeeList(_.filter(self.employeeList(), e => _.includes(self.selectedEmployeeCode(), e.code)));
+        }
         let manualSetting = new ManualSettingModal(Number(self.isCompressPass()), self.dataSaveSetName(),
           moment.utc(self.referenceDate(), 'YYYY/MM/DD').toISOString(), self.password(), moment.utc().toISOString(), moment.utc(self.dayValue().endDate, 'YYYY/MM/DD').toISOString(),
           moment.utc(self.dayValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.monthValue().endDate, 'YYYY/MM/DD').toISOString(),
@@ -824,7 +827,6 @@ module nts.uk.com.view.cmf003.b {
             };
             return category;
           }));
-          console.log(self.categorys());
 
           if (res.dailyReferMonth && res.dailyReferYear) {
             self.dayValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');

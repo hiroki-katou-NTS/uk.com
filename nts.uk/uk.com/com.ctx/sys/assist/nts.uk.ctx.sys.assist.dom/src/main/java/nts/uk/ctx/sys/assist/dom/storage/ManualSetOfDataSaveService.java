@@ -398,11 +398,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 						}
 					}
 				}
-				csv.destroy();
 				offset += NUM_OF_TABLE_EACH_PROCESS;
 				// テーブルをすべて書き出したか判定
-				if (tableLists.size() <= NUM_OF_TABLE_EACH_PROCESS)
+				if (tableLists.size() < NUM_OF_TABLE_EACH_PROCESS) {
+					csv.destroy();
 					break;
+				}
 			}
 
 			return ResultState.NORMAL_END;
