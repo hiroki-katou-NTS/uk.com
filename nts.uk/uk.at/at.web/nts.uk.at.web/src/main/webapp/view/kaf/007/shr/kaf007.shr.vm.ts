@@ -196,6 +196,11 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                 vm.appWorkChange.startTime2(null);
                                 vm.appWorkChange.endTime2(null)
                             }
+                        } else {
+                            vm.appWorkChange.startTime1(null);
+                            vm.appWorkChange.endTime1(null);
+                            vm.appWorkChange.startTime2(null);
+                            vm.appWorkChange.endTime2(null);
                         }
                     }
                 }).then(() => {
