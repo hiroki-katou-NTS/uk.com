@@ -11,14 +11,7 @@ import { component, Prop, Watch } from '@app/core/component';
 })
 export class KafS00AComponent extends Vue {
     @Prop({ default: () => ({}) })
-    public params: { 
-        companyID: string, 
-        employeeID: string,
-        employmentCD: string,
-        applicationUseSetting: any,
-        receptionRestrictionSetting: any,
-        opOvertimeAppAtr?: any,
-    };
+    public params: KAFS00AParams;
 
     public appMsg: string = '';
     public appMsgForCurrentMonth: string = '';
@@ -33,6 +26,20 @@ export class KafS00AComponent extends Vue {
 
     public created() {
         const self = this;
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', API.getRequestMsg, {  
             companyID: self.params.companyID,
@@ -63,6 +70,15 @@ export class KafS00AComponent extends Vue {
         });
     }
 
+}
+
+export interface KAFS00AParams {
+    companyID: string;
+    employeeID: string;
+    employmentCD: string;
+    applicationUseSetting: any;
+    receptionRestrictionSetting: any;
+    opOvertimeAppAtr?: any;
 }
 
 const API = {

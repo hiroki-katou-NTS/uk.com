@@ -1,8 +1,8 @@
-module nts.uk.at.view.kaf018.f.viewmodel {
+module nts.uk.at.view.kaf018_old.f.viewmodel {
     import text = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatText = nts.uk.text.format;
-    import shareModel = kaf018.share.model;
+    import shareModel = kaf018_old.share.model;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {

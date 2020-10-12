@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.la {
     import blockUI = nts.uk.ui.block;    
+    import getText = nts.uk.resource.getText;
     
     export module viewmodel {
         export class ScreenModel {
@@ -19,6 +20,7 @@ module nts.uk.at.view.ksu001.la {
             isEditing: KnockoutObservable<boolean> = ko.observable(false);
             baseDate: KnockoutObservable<string> = ko.observable("");
             exitStatus: KnockoutObservable<string> = ko.observable("Cancel");  
+            placeHolders: string = "";
             scheduleTeamModel: KnockoutObservable<ScheduleTeamModel> = ko.observable(new ScheduleTeamModel("", "", "", "",[]));
 
             constructor() {
@@ -37,7 +39,12 @@ module nts.uk.at.view.ksu001.la {
                     { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 90 },
                     { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 145 },
                     { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 65 }
-                ]);                
+                ]);      
+                
+                let holders = getText('KSU001_3208') + '・'
+                    + getText('KSU001_3209') + '・'
+                    + getText('KSU001_3215') + 'で検索…';                    
+                self.placeHolders = holders.replace("１", "");
                 self.selectedCode.subscribe((code: string) => {
                     let dfd = $.Deferred();
                     blockUI.invisible();
