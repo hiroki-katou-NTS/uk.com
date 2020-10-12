@@ -11,9 +11,11 @@ public class MonthlyReportConstant {
 	
 	/** The Constant TEMPLATE_DATE. */
 	public static final String TEMPLATE_DATE= "report/KWR006_Date.xlsx";
+	public static final String TEMPLATE_DATE_SMALL_SIZE= "report/KWR006_Date_Small_Size.xlsx";
 
 	/** The Constant TEMPLATE_EMPLOYEE. */
 	public static final String TEMPLATE_EMPLOYEE = "report/KWR006_Employee.xlsx";
+	public static final String TEMPLATE_EMPLOYEE_SMALL_SIZE = "report/KWR006_Employee_Small_Size.xlsx";
 	
 	/** The Constant CHUNK_SIZE. */
 	public static final int CHUNK_BIG_SIZE = 16;
