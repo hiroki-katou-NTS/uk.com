@@ -62,17 +62,17 @@
               </tr>
             </thead>
             <tbody>
-              <com:ko-foreach bind="listOvertimeByEmp">
+              <com:ko-foreach bind="listShowData">
                 <tr class="mw-200" >
                   <!-- A3_1 -->
-                  <td class="border-bot"><a href="#" data-bind="text: empName, click: function() { $vm.openKTG026($data) }"></a></td>
+                  <td class="border-bot"><a href="#" data-bind="text: businessName, click: function() { $vm.openKTG026($data) }"></a></td>
                   <!-- A3_2 -->
-                  <td class="border-bot text-right"><a href="#" data-bind="text: $parent.genTime(confirmed.limitAlarmTime), click:function() { $vm.openKDW003($data) } "></a></td>
+                  <td class="border-bot text-right"><a href="#" data-bind="text: $parent.genTime(agreementTime), click:function() { $vm.openKDW003($data) } "></a></td>
                   <td class="pl-20 inline-flex position-relative">
                     <!-- A3_3 -->
-                    <div class="label non-statutory-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div>
+                    <div class="label non-statutory-bg-color" data-bind="style: { width: $parent.genWidthByTime(agreementTime)}"></div>
                     <!-- A3_4 -->
-                    <div class="label time-outside-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div> 
+                    <div class="label time-outside-bg-color" data-bind="style: { width: $parent.genWidthByTime(legalUpperTime)}"></div> 
                     <!-- A2_5 -->
                     <div class="dashed45"></div>
                     <!-- A2_6 -->

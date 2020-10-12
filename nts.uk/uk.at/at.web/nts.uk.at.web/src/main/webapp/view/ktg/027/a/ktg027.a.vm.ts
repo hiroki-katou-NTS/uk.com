@@ -14,8 +14,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     year: KnockoutObservable<number> = ko.observable(0);
     currentOrNextMonth: KnockoutObservable<number> = ko.observable(0);
     listEmp: KnockoutObservableArray<PersonEmpBasicInfoImport> = ko.observableArray([]);
-    // data table
-    listOvertimeByEmp: KnockoutObservableArray<any> = ko.observableArray([]);
+    // list data for chart
+    listShowData: KnockoutObservableArray<AgreementTimeDetail> = ko.observableArray([]);
     // selected employee
     selectedEmp: any;
     closureId: KnockoutObservable<number> = ko.observable(0);
@@ -34,7 +34,20 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             vm.year(response.closingInformationForNextMonth.processingYm);
           }
           vm.listEmp(response.personalInformationOfSubordinateEmployees);
-          vm.listOvertimeByEmp(response.overtimeOfSubordinateEmployees);
+          let lstTemp: AgreementTimeDetail[] = [];
+          _.each(response.overtimeOfSubordinateEmployees, (item: any) => {
+            let dataItem: AgreementTimeDetail  = new AgreementTimeDetail();
+            dataItem.employeeId = item.employeeId;
+            dataItem.agreementTime = item.agreementTime.agreementTime;
+            dataItem.legalUpperTime = item.agreMax.agreementTime - item.agreementTime.agreementTime;
+            dataItem.status = item.state;
+            lstTemp.push(dataItem);
+          });
+          _.each(lstTemp, (item: any) => {
+            let itemData = _.find(vm.listEmp(), itemE => { return item.employeeId === itemE.employeeId; });
+            item.businessName = itemData.businessName;
+          });
+          vm.listShowData(lstTemp);
           vm.closureId(response.closureId);
         })
         .always(() => vm.$blockui("clear"));
@@ -99,6 +112,18 @@ module nts.uk.at.view.ktg027.a.viewmodel {
           }else {
             vm.listEmp(response.personalInformationOfSubordinateEmployees);
             vm.listOvertimeByEmp(response.overtimeOfSubordinateEmployees);
+            _.each(vm.listOvertimeByEmp(), (item: any) => {
+              let dataItem: AgreementTimeDetail  = new AgreementTimeDetail();
+              dataItem.employeeId = item.employeeId;
+              dataItem.agreementTime = item.agreementTime.agreementTime;
+              dataItem.legalUpperTime = item.agreMax.agreementTime - item.agreementTime.agreementTime;
+              dataItem.status = item.state;
+              vm.listShowData().push(dataItem);
+            });
+            _.each(vm.listShowData(), (item: any) => {
+              let itemData = _.find(vm.listEmp(), itemE => { return item.employeeId === itemE.employeeId; });
+              item.businessName = itemData.businessName;
+            });
           }
         })
         // .always(() => vm.$blockui("clear"))
@@ -110,9 +135,9 @@ module nts.uk.at.view.ktg027.a.viewmodel {
       const vm = this;
       let paramKTG026 = {
         companyId: companyID,
-        employeeId: item.employeeCD,
+        employeeId: item.employeeID,
         targetDate: vm.year(),
-        targetYear: "s",
+        targetYear: "",
         mode: "Superior",
       };
       vm.$window.storage("KTG026_PARAM", {
@@ -125,7 +150,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     public openKDW003(item: any) {
       const vm = this;
       let paramKDW003 = {
-        lstEmployeeShare: item.employeeCD,
+        lstEmployeeShare: item.employeeID,
         errorRefStartAtr: false,
         changePeriodAtr: true,
         screenMode: "Normal",
@@ -163,17 +188,15 @@ module nts.uk.at.view.ktg027.a.viewmodel {
   }
 
   export class AgreementTimeDetail {
-    employeeID: string;
+    employeeId: string;
     // 状態
     status: any;
     // 法定上限対象時間
     legalUpperTime: any;
     // 36協定対象時間
     agreementTime: any;
-    // 年月
-    yearMonth: number;
-    // 内訳
-    breakdown: any;
+    // name
+    businessName: string;
     constructor(init?: Partial<CurrentClosingPeriod>) {
       $.extend(this, init);
     }
@@ -184,6 +207,9 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     personalInformationOfSubordinateEmployees: any;
     // 配下社員の時間外時間
     OvertimeOfSubordinateEmployees: any;
+    constructor(init?: Partial<AcquisitionOfOvertimeHoursOfEmployeesDto>) {
+      $.extend(this, init);
+    }
   }
 
   //上長用の時間外時間表示
@@ -198,5 +224,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     overtimeOfSubordinateEmployees: AgreementTimeDetail[];
     // 翌月の締め情報
     closingInformationForNextMonth: CurrentClosingPeriod;
+    constructor(init?: Partial<OvertimedDisplayForSuperiorsDto>) {
+      $.extend(this, init);
+    }
   }
 }
