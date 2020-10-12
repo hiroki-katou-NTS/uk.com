@@ -188,13 +188,37 @@ export class KafS00BComponent extends Vue {
     @Watch('$input.newModeContent.initSelectMultiDay')
     public initSelectMultiDayWatcher(value: any) {
         const self = this;
-        if (value) {
-            self.$updateValidator('dateRange', { validate: true });
-            self.$updateValidator('date', { validate: false });
-        } else {
-            self.$updateValidator('dateRange', { validate: false });
-            self.$updateValidator('date', { validate: true });
-        }
+        new Promise((resolve) => {
+            self.$validate('clear');
+            setTimeout(() => {
+                resolve(true);
+            }, 300);
+        }).then(() => {
+            if (value) {
+                self.$updateValidator('dateRange', { validate: true });
+                self.$updateValidator('date', { validate: false });
+                self.$validate('dateRange');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.dateRange.start,
+                            endDate: self.dateRange.end
+                        }); 
+                }
+                 
+            } else {
+                self.$updateValidator('dateRange', { validate: false });
+                self.$updateValidator('date', { validate: true });
+                self.$validate('date');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.date,
+                            endDate: self.date
+                        }); 
+                }
+            }
+        });
     }
 
     @Watch('date')
