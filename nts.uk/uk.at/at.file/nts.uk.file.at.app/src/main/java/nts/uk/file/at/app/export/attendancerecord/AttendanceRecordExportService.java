@@ -1033,7 +1033,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			} else {
 
 				//	エラーリストに社員が入っているか判別する - Determine if an employee is in the error list
-				// TODO
+
 				
 				// If closure is wrong
 				String info = "\n " + employee.employeeCode + " " + employee.employeeName;

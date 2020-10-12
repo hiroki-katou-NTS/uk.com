@@ -12,11 +12,15 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.aspose.cells.BorderType;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Color;
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
+import com.aspose.cells.Style;
 import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -157,6 +161,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	
 	/** The font size. */
 	private int FONT_SIZE = 16;
+	
+	/** The report approval */
+	private String REPORT_APPROVAL = "AB7:AC7";
 
 	/*
 	 * (non-Javadoc)
@@ -199,6 +206,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			SEAL_COL_ADDR = Arrays
 					.asList(new String[] { "AV1", "AT1", "AR1", "AP1", "AN1", "AL1" });
 			
+			REPORT_APPROVAL = "AF7:AG7";
+			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
@@ -226,6 +235,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			SEAL_COL_ADDR = Arrays
 					.asList(new String[] { "BD1", "BB1", "AZ1", "AX1", "AV1", "AT1" });
+			
+			REPORT_APPROVAL = "AJ7:AK7";
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
@@ -452,6 +463,16 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
 			Range dailyRange;
 			AttendanceRecordReportDailyData data = dailyDatas.get(i - 1);
+//			if (data.isApprovalMonthly()) {
+				Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
+				approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
+				approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
+				approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THICK, Color.getRed());
+				approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
+				Style styleApprove = approvalRange.get(0, 0).getStyle();
+				approvalRange.get(0, 0).setStyle(styleApprove);
+				approvalRange.get(0, 0).setValue("123");
+//			}
 			if (!data.isSecondCol()) {
 				int row = dataRow.get(REPORT_LEFT_ROW);
 
