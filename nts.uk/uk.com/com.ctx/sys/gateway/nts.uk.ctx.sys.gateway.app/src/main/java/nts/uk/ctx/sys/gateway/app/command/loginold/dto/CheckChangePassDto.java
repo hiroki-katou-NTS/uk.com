@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login.dto;
+package nts.uk.ctx.sys.gateway.app.command.loginold.dto;
 
 import lombok.Setter;
 
@@ -53,4 +53,9 @@ public class CheckChangePassDto {
 		this.msgErrorId = msgErrorId;
 		this.spanDays = spanDays;
 	}
+	
+	public static CheckChangePassDto failedToAuthTenant() {
+		return new CheckChangePassDto(false, null, true);
+	}
+	
 }

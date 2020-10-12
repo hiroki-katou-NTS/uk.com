@@ -1,14 +1,18 @@
-package nts.uk.ctx.sys.gateway.app.command.login;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.sys.gateway.app.command.loginold;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicLoginCommand {
-	
-	/** The company code. */
-	private String companyCode;
+/**
+ * The Class SubmitLoginFormOneCommand.
+ */
+public class SubmitLoginFormOneCommand {
 
-	/** The employee code. */
-	private String employeeCode;
+	/** The login id. */
+	private String loginId;
 
 	/** The password. */
 	private String password;
@@ -18,46 +22,37 @@ public class BasicLoginCommand {
 
 	/** The contract password. */
 	private String contractPassword;
+
+	/** The is sign on. */
+	private boolean signOn;
 	
 	/** The request. */
 	private HttpServletRequest request;
-
+	
 	/**
-	 * Gets the company code.
-	 *
-	 * @return the company code
+	 * Instantiates a new submit login form one command.
 	 */
-	public String getCompanyCode() {
-		return companyCode.trim();
+	public SubmitLoginFormOneCommand() {
+		super();
 	}
 
 	/**
-	 * Sets the company code.
+	 * Gets the login id.
 	 *
-	 * @param companyCode
-	 *            the new company code
+	 * @return the login id
 	 */
-	public void setCompanyCode(String companyCode) {
-		this.companyCode = companyCode.trim();
+	public String getLoginId() {
+		return loginId.trim();
 	}
 
 	/**
-	 * Gets the employee code.
+	 * Sets the login id.
 	 *
-	 * @return the employee code
+	 * @param loginId
+	 *            the new login id
 	 */
-	public String getEmployeeCode() {
-		return employeeCode;
-	}
-
-	/**
-	 * Sets the employee code.
-	 *
-	 * @param employeeCode
-	 *            the new employee code
-	 */
-	public void setEmployeeCode(String employeeCode) {
-		this.employeeCode = employeeCode;
+	public void setLoginId(String loginId) {
+		this.loginId = loginId.trim();
 	}
 
 	/**
@@ -116,6 +111,24 @@ public class BasicLoginCommand {
 	public void setContractPassword(String contractPassword) {
 		this.contractPassword = contractPassword;
 	}
+	
+	/**
+	 * Checks if is sign on.
+	 *
+	 * @return true, if is sign on
+	 */
+	public boolean isSignOn() {
+        return signOn;
+    }
+
+    /**
+     * Sets the sign on.
+     *
+     * @param signOn the new sign on
+     */
+    public void setSignOn(boolean signOn) {
+        this.signOn = signOn;
+    }
 
 	/**
 	 * Gets the request.

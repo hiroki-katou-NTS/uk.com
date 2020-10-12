@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.login.dto;
+package nts.uk.ctx.sys.gateway.app.command.loginold.dto;
 
 import lombok.NoArgsConstructor;
 

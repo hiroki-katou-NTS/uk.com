@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login.dto;
+package nts.uk.ctx.sys.gateway.app.command.loginold.dto;
 
 /**
  * The Class LoginRecordInfor.

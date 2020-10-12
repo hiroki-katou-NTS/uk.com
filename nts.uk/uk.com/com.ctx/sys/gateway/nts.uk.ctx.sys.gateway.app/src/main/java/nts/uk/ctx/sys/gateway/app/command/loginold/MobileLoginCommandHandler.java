@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login;
+package nts.uk.ctx.sys.gateway.app.command.loginold;
 
 import javax.ejb.Stateless;
 
@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
  * The Class SubmitLoginFormThreeCommandHandler.
  */
 @Stateless
-public class MobileLoginWithNoChangePassCommandHandler extends MobileLoginCommonHandler {
+public class MobileLoginCommandHandler extends MobileLoginCommonHandler {
 
 	@Override
 	protected boolean needShowChangePass(){

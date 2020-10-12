@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login;
+package nts.uk.ctx.sys.gateway.app.command.loginold;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.SignonEmployeeInfoData;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.SignonEmployeeInfoData;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;

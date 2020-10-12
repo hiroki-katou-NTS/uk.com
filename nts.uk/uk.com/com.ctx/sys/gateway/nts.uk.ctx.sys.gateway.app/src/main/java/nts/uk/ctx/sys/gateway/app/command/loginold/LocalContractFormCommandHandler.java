@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.app.command.login;
+package nts.uk.ctx.sys.gateway.app.command.loginold;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.shr.com.context.AppContexts;

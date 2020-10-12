@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.login;
+package nts.uk.ctx.sys.gateway.app.command.loginold;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import com.google.common.base.Objects;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
