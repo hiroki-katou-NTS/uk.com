@@ -1,31 +1,68 @@
 package nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg;
 
 
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsAttOrgRepository;
+import lombok.AllArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecutiveattendance.ConsecutiveAttendanceOrgQuery;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsecutiveAttendanceOrganization;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
+import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
+import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
+import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Screen H : 初期起動
  */
 @Stateless
 public class StartupInfoOrgScreenQuery {
+    @Inject
+    private ConsecutiveAttendanceOrgQuery consecutiveAttendanceOrgQuery;
 
     @Inject
-    private MaxDaysOfConsAttOrgRepository MaxDaysOfConsAttOrgRepo;
+    private EmpOrganizationPub empOrganizationPub;
+
+    @Inject
+    private WorkplaceGroupAdapter workplaceGroupAdapter;
+
+    @Inject
+    private WorkplaceExportService workplaceExportService;
+
+    @Inject
+    private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
 
     /**
      * 初期起動の情報を取得する
      */
     public ConsecutiveAttendanceOrgDto getStartupInfoOrg() {
+        OrgInfoDto orgInfoDto = getOrgInfo();
 
+        Optional<MaxDaysOfConsecutiveAttendanceOrganization> maxConsDays = consecutiveAttendanceOrgQuery.getMaxConsDays(orgInfoDto.getTargeOrg());
 
-        TargetOrgIdenInfor targeOrg = GetTargetIdentifiInforService.get();
+        return new ConsecutiveAttendanceOrgDto(
+                orgInfoDto.getTargeOrg().getUnit().value,
+                orgInfoDto.getTargeOrg().getWorkplaceId().isPresent() ? orgInfoDto.getTargeOrg().getWorkplaceId().get() : null,
+                orgInfoDto.getTargeOrg().getWorkplaceGroupId().isPresent() ? orgInfoDto.getTargeOrg().getWorkplaceGroupId().get() : null,
+                orgInfoDto.getDisplayInfoOrganization().getCode(),
+                orgInfoDto.getDisplayInfoOrganization().getDisplayName(),
+                maxConsDays.isPresent() ? maxConsDays.get().getNumberOfDays().getNumberOfDays().v() : null
+        );
     }
 
     /**
@@ -33,22 +70,79 @@ public class StartupInfoOrgScreenQuery {
      *
      * @return 対象組織情報, 組織の表示情報
      */
-    public void getOrgInfo(){
+    public OrgInfoDto getOrgInfo() {
+        //1: 取得する(Require, 年月日, 社員ID): 対象組織識別情報
+        RequireImpl require = new RequireImpl(empOrganizationPub);
+        GeneralDate systemDate = GeneralDate.today();
+        String employeeId = AppContexts.user().employeeId();
+        TargetOrgIdenInfor targeOrg = GetTargetIdentifiInforService.get(require, systemDate, employeeId);
 
+        //2: 組織の表示情報を取得する(Require, 年月日): 組織の表示情報
+        RequireWorkPlaceImpl requireWorkPlace = new RequireWorkPlaceImpl(workplaceGroupAdapter, workplaceExportService, affWorkplaceGroupRepo);
+        DisplayInfoOrganization displayInfoOrganization = targeOrg.getDisplayInfor(requireWorkPlace, systemDate);
+
+        return new OrgInfoDto(
+                targeOrg,
+                displayInfoOrganization
+        );
     }
 
+    @AllArgsConstructor
+    private static class RequireImpl implements GetTargetIdentifiInforService.Require {
 
-    /**
-     * 組織の連続出勤できる上限日数を取得する
-     *
-     * @param targeOrg 対象組織
-     * @return Optional<組織の連続出勤できる上限日数>
-     */
-    public Optional<MaxDaysOfConsecutiveAttendanceOrganization> getMaxConsDays(TargetOrgIdenInfor targeOrg) {
-        String companyId = AppContexts.user().companyId();
+        @Inject
+        private EmpOrganizationPub empOrganizationPub;
 
-        Optional<MaxDaysOfConsecutiveAttendanceOrganization> maxDaysOfConsecutiveAttendanceOrg = MaxDaysOfConsAttOrgRepo.get(targeOrg, companyId);
+        @Override
+        public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
 
-        return maxDaysOfConsecutiveAttendanceOrg;
+            List<EmpOrganizationExport> exports = empOrganizationPub.getEmpOrganiztion(referenceDate, listEmpId);
+            List<EmpOrganizationImport> data = exports.stream().map(i -> {
+                return new EmpOrganizationImport(new EmployeeId(i.getEmpId()), i.getBusinessName(), i.getEmpCd(), i.getWorkplaceId(), i.getWorkplaceGroupId());
+            }).collect(Collectors.toList());
+            return data;
+        }
+    }
+
+    @AllArgsConstructor
+    private static class RequireWorkPlaceImpl implements TargetOrgIdenInfor.Require {
+
+        @Inject
+        private WorkplaceGroupAdapter workplaceGroupAdapter;
+        @Inject
+        private WorkplaceExportService workplaceExportService;
+        @Inject
+        private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
+
+        @Override
+        public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
+            List<WorkplaceGroupImport> data = workplaceGroupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
+            return data;
+        }
+
+        @Override
+        public List<WorkplaceInfo> getWorkplaceInforFromWkpIds(List<String> listWorkplaceId, GeneralDate baseDate) {
+            List<WorkplaceInforParam> data1 = workplaceExportService
+                    .getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), listWorkplaceId, baseDate);
+            if (data1.isEmpty()) {
+                return new ArrayList<WorkplaceInfo>();
+            }
+            List<WorkplaceInfo> data = data1.stream().map(item -> {
+                return new WorkplaceInfo(item.getWorkplaceId(),
+                        item.getWorkplaceCode() == null ? Optional.empty() : Optional.of(item.getWorkplaceCode()),
+                        item.getWorkplaceName() == null ? Optional.empty() : Optional.of(item.getWorkplaceName()),
+                        item.getHierarchyCode() == null ? Optional.empty() : Optional.of(item.getHierarchyCode()),
+                        item.getGenericName() == null ? Optional.empty() : Optional.of(item.getGenericName()),
+                        item.getDisplayName() == null ? Optional.empty() : Optional.of(item.getDisplayName()),
+                        item.getExternalCode() == null ? Optional.empty() : Optional.of(item.getExternalCode()));
+            }).collect(Collectors.toList());
+            return data;
+        }
+
+        @Override
+        public List<String> getWKPID(String WKPGRPID) {
+            List<String> data = affWorkplaceGroupRepo.getWKPID(AppContexts.user().companyId(), WKPGRPID);
+            return data;
+        }
     }
 }

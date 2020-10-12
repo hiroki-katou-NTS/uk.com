@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -9,8 +8,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,23 +20,12 @@ import java.util.Optional;
 
 public class SpecialProvisionsOfAgreementTest {
 
-	public static SpecialProvisionsOfAgreement createNewDomain() {
-		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
-		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
-
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
-
-		List<String> listConfirmSID = Arrays.asList("confirmerSID");
-		return SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
-				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
-	}
-
 	@Test
 	public void getters() {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
@@ -50,22 +39,22 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(EnumAdaptor.valueOf(ApprovalStatus.UNAPPROVED.value,ApprovalStatus.class),
+		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.UNAPPROVED,
 				Optional.of("approverSID"),Optional.of(new AgreementApprovalComments("approvalComment")),Optional.of(GeneralDate.today()));
 
 		target.approveApplication(approvalStatusDetails.getApproveSID().get(),approvalStatusDetails.getApprovalStatus(),
 				approvalStatusDetails.getApprovalComment());
 
-		Assert.assertEquals(approvalStatusDetails.getApproveSID(),target.getApprovalStatusDetails().getApproveSID());
-		Assert.assertEquals(approvalStatusDetails.getApprovalComment(),target.getApprovalStatusDetails().getApprovalComment());
-		Assert.assertEquals(approvalStatusDetails.getApprovalDate(),target.getApprovalStatusDetails().getApprovalDate());
-		Assert.assertEquals(approvalStatusDetails.getApprovalStatus(),target.getApprovalStatusDetails().getApprovalStatus());
+		assertThat(target.getApprovalStatusDetails().getApproveSID()).isEqualTo(approvalStatusDetails.getApproveSID());
+		assertThat(target.getApprovalStatusDetails().getApprovalComment()).isEqualTo(approvalStatusDetails.getApprovalComment());
+		assertThat(target.getApprovalStatusDetails().getApprovalDate()).isEqualTo(approvalStatusDetails.getApprovalDate());
+		assertThat(target.getApprovalStatusDetails().getApprovalStatus()).isEqualTo(approvalStatusDetails.getApprovalStatus());
 
 	}
 
@@ -74,19 +63,19 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails(EnumAdaptor.valueOf(1,ConfirmationStatus.class),
-				"confirmerSID",Optional.of(GeneralDate.today()));
+		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.RECOGNITION,
+				Optional.of(GeneralDate.today()));
 
 		target.confirmApplication(confirmationStatusDetails.getConfirmerSID(),confirmationStatusDetails.getConfirmationStatus());
 
-		Assert.assertEquals(Optional.of(GeneralDate.today()),target.getConfirmationStatusDetails().get(0).getConfirmDate());
-		Assert.assertEquals(confirmationStatusDetails.getConfirmationStatus(),target.getConfirmationStatusDetails().get(0).getConfirmationStatus());
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.of(GeneralDate.today()));
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus()).isEqualTo(confirmationStatusDetails.getConfirmationStatus());
 
 	}
 
@@ -95,7 +84,7 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
@@ -105,8 +94,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 		target.changeApplicationOneMonth(errorTimeInMonth,new ReasonsForAgreement("Reason"));
 
-		Assert.assertEquals("Reason",target.getReasonsForAgreement().v());
-		Assert.assertEquals(errorTimeInMonth,target.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth());
+		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
+		assertThat(target.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth()).isEqualTo(errorTimeInMonth);
 
 	}
 
@@ -115,7 +104,7 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
@@ -127,11 +116,11 @@ public class SpecialProvisionsOfAgreementTest {
 
 		target.changeApplicationOneMonth(errorTimeInMonth,new ReasonsForAgreement("Reason"));
 
-		Assert.assertEquals("Reason",target.getReasonsForAgreement().v());
-		Assert.assertEquals(errorTimeInMonth,target.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth());
-		Assert.assertEquals(ApprovalStatus.UNAPPROVED.value,target.getApprovalStatusDetails().getApprovalStatus().value);
-		Assert.assertEquals(ConfirmationStatus.UNCONFIRMED.value,target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value);
-		Assert.assertEquals(Optional.empty(),target.getConfirmationStatusDetails().get(0).getConfirmDate());
+		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
+		assertThat(target.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth()).isEqualTo(errorTimeInMonth);
+		assertThat(target.getApprovalStatusDetails().getApprovalStatus().value).isEqualTo(ApprovalStatus.UNAPPROVED.value);
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value).isEqualTo(ConfirmationStatus.UNCONFIRMED.value);
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.empty());
 	}
 
 	@Test
@@ -139,7 +128,7 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
@@ -149,8 +138,8 @@ public class SpecialProvisionsOfAgreementTest {
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 
-		Assert.assertEquals("Reason",target.getReasonsForAgreement().v());
-		Assert.assertEquals(errorTimeInYear,target.getApplicationTime().getOneYearTime().get().getErrorTimeInYear());
+		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
+		assertThat(target.getApplicationTime().getOneYearTime().get().getErrorTimeInYear()).isEqualTo(errorTimeInYear);
 
 	}
 
@@ -159,7 +148,7 @@ public class SpecialProvisionsOfAgreementTest {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
 		List<String> listConfirmSID = Arrays.asList("confirmerSID");
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
@@ -171,11 +160,11 @@ public class SpecialProvisionsOfAgreementTest {
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 
-		Assert.assertEquals("Reason",target.getReasonsForAgreement().v());
-		Assert.assertEquals(errorTimeInYear,target.getApplicationTime().getOneYearTime().get().getErrorTimeInYear());
-		Assert.assertEquals(ApprovalStatus.UNAPPROVED.value,target.getApprovalStatusDetails().getApprovalStatus().value);
-		Assert.assertEquals(ConfirmationStatus.UNCONFIRMED.value,target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value);
-		Assert.assertEquals(Optional.empty(),target.getConfirmationStatusDetails().get(0).getConfirmDate());
+		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
+		assertThat(target.getApplicationTime().getOneYearTime().get().getErrorTimeInYear()).isEqualTo(errorTimeInYear);
+		assertThat(target.getApprovalStatusDetails().getApprovalStatus().value).isEqualTo(ApprovalStatus.UNAPPROVED.value);
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value).isEqualTo(ConfirmationStatus.UNCONFIRMED.value);
+		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.empty());
 	}
 
 

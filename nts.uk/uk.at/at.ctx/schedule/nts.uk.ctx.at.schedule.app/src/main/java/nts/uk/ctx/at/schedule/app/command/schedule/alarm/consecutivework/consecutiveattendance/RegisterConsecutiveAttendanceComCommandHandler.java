@@ -30,6 +30,7 @@ public class RegisterConsecutiveAttendanceComCommandHandler extends CommandHandl
         MaxDaysOfConsecutiveAttendanceCompany newMaxConsDays = new MaxDaysOfConsecutiveAttendanceCompany(newConsDay);
 
         String companyId = AppContexts.user().companyId();
+
         Optional<MaxDaysOfConsecutiveAttendanceCompany> oldMaxConsDays = maxDaysOfConsAttComRepo.get(companyId);
 
         if (oldMaxConsDays.isPresent()) {

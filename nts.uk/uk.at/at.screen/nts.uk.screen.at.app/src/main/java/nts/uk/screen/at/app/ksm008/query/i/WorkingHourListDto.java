@@ -10,7 +10,7 @@ public class WorkingHourListDto {
 
     List<WorkTimeSettingDto> workTimeSetting;
 
-    MaxDaysOfContinuousWorkTimeCompanyDto MaxDaysOfContinuousWorkTimeCompany;
+    MaxDaysOfContinuousWorkTimeListDto MaxDaysOfContinuousWorkTimeCompany;
 }
 
 @AllArgsConstructor

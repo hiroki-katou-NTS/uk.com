@@ -34,6 +34,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	
 	private static final String FIND_BY_ID;
 
+	private static final String FIND_BY_SID;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -78,6 +80,13 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND_BY_ID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
+		FIND_BY_SID = builderString.toString();
 	}
 
 	@Override
@@ -153,6 +162,11 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	}
 
 	@Override
+	public void delete(AgreementMonthSetting agreementMonthSetting) {
+		this.commandProxy().remove(toEntity(agreementMonthSetting));
+	}
+
+	@Override
 	public boolean checkExistData(String employeeId, BigDecimal yearMonthValue) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
 				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
@@ -161,7 +175,7 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	@Override
 	public List<AgreementMonthSetting> getByEmployeeId(String employeeId) {
 		return this.queryProxy()
-				.query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+				.query(FIND_BY_SID, KmkmtAgreementMonthSet.class)
 				.setParameter("employeeId", employeeId).getList(x -> toDomain(x));
 	}
 

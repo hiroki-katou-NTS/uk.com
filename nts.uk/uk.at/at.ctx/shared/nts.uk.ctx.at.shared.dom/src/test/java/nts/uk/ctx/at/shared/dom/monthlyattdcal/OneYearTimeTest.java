@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OneYearTimeTest {
 
@@ -32,9 +34,9 @@ public class OneYearTimeTest {
 
 		OneYearTime target = OneYearTime.of(errorTimeInYear,new AgreementOneYearTime(40));
 
-		Assert.assertEquals(errorTimeInYear.getError(),target.getErAlTime().getError());
-		Assert.assertEquals(errorTimeInYear.getAlarm(),target.getErAlTime().getAlarm());
-		Assert.assertEquals(new AgreementOneYearTime(40),target.getUpperLimit());
+		assertThat(target.getErAlTime().getError()).isEqualTo(errorTimeInYear.getError());
+		assertThat(target.getErAlTime().getAlarm()).isEqualTo(errorTimeInYear.getAlarm());
+		assertThat(target.getUpperLimit()).isEqualTo(new AgreementOneYearTime(40));
 	}
 
 	@Test
@@ -43,8 +45,8 @@ public class OneYearTimeTest {
 				new AgreementOneYearTime(40));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(50));
 
-		Assert.assertEquals(true,result.getLeft());
-		Assert.assertEquals(new AgreementOneYearTime(30),result.getRight());
+		assertThat(result.getLeft()).isEqualTo(true);
+		assertThat(result.getRight()).isEqualTo(new AgreementOneYearTime(30));
 	}
 
 	@Test
@@ -53,8 +55,8 @@ public class OneYearTimeTest {
 				new AgreementOneYearTime(40));
 		Pair<Boolean, AgreementOneYearTime> result =  target.isErrorTimeOver(new AgreementOneYearTime(10));
 
-		Assert.assertEquals(false,result.getLeft());
-		Assert.assertEquals(new AgreementOneYearTime(30),result.getRight());
+		assertThat(result.getLeft()).isEqualTo(false);
+		assertThat(result.getRight()).isEqualTo(new AgreementOneYearTime(30));
 	}
 
 	@Test
@@ -63,7 +65,7 @@ public class OneYearTimeTest {
 				new AgreementOneYearTime(40));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(50));
 
-		Assert.assertEquals(new AgreementOneYearTime(40),result);
+		assertThat(result).isEqualTo(new AgreementOneYearTime(40));
 	}
 
 	@Test
@@ -72,6 +74,41 @@ public class OneYearTimeTest {
 				new AgreementOneYearTime(40));
 		AgreementOneYearTime result =  target.calcAlarmTime(new AgreementOneYearTime(10));
 
-		Assert.assertEquals(new AgreementOneYearTime(0),result);
+		assertThat(result).isEqualTo(new AgreementOneYearTime(0));
 	}
+
+	@Test
+	public void check_01() {
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+				new AgreementOneYearTime(40));
+		ExcessState excessState = target.check(new AgreementOneYearTime(50));
+		assertThat(excessState).isEqualTo(ExcessState.UPPER_LIMIT_OVER);
+	}
+	@Test
+	public void check_02() {
+
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+				new AgreementOneYearTime(40));
+		ExcessState excessState = target.check(new AgreementOneYearTime(35));
+		assertThat(excessState).isEqualTo(ExcessState.ERROR_OVER);
+	}
+
+	@Test
+	public void check_03() {
+
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+				new AgreementOneYearTime(40));
+		ExcessState excessState = target.check(new AgreementOneYearTime(25));
+		assertThat(excessState).isEqualTo(ExcessState.ALARM_OVER);
+	}
+
+	@Test
+	public void check_04() {
+
+		OneYearTime target = OneYearTime.of(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30),new AgreementOneYearTime(20)),
+				new AgreementOneYearTime(40));
+		ExcessState excessState = target.check(new AgreementOneYearTime(15));
+		assertThat(excessState).isEqualTo(ExcessState.NORMAL);
+	}
+
 }

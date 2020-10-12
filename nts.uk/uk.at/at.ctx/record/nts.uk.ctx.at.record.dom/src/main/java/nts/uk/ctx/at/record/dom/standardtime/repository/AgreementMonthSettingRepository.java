@@ -29,6 +29,11 @@ public interface AgreementMonthSettingRepository {
 	void updateById(AgreementMonthSetting agreementMonthSetting, Integer yearMonthValueOld);
 
 	/**
+	 * 	[3] Delete(３６協定年月設定)
+	 */
+	void delete(AgreementMonthSetting agreementMonthSetting);
+
+	/**
 	 * [4] get
 	 * 指定社員の全ての３６協定年月設定を取得する
 	 */
