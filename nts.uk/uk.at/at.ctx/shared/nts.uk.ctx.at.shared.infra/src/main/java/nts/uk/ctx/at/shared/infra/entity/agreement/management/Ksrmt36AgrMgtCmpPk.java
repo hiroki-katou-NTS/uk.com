@@ -1,8 +1,9 @@
-package nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours;
+package nts.uk.ctx.at.shared.infra.entity.agreement.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -12,20 +13,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Ksrmt36AgrMgtWkpPk implements Serializable {
+@Setter
+public class Ksrmt36AgrMgtCmpPk implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
-     * 職場ID
-     * 職場３６協定時間
+     * 会社ID
      */
-    @Column(name = "WKP_ID")
-    public String workplaceId;
+    @Column(name = "CID")
+    public String companyID;
     /**
      * ３６協定労働制
      * 0：一般労働制
      * 1：変形労働時間制
-     * 職場３６協定時間
+     * 会社３６協定時間
      */
     @Column(name = "LABOR_SYSTEM_ATR")
     public int laborSystemAtr;

@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 
 import lombok.val;
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
-import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
-import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmpPk;
+import nts.arc.layer.infra.data.JpaRepository;;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmp;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmpPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
