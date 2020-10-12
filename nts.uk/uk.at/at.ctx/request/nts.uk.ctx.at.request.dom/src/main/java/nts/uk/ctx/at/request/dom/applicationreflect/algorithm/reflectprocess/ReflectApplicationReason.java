@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ReflectApplicationReason {
 
 	private static List<ItemContent> ITEMCONTENT;
 	static {
+		ITEMCONTENT = new ArrayList<>();
 		// Map domain ReasonApplicationDailyResult to itemId
 		ITEMCONTENT.addAll(ItemContent.create(869, 0, 0));
 		ITEMCONTENT.addAll(ItemContent.create(870, 0, 1));
@@ -48,7 +50,7 @@ public class ReflectApplicationReason {
 
 	public static Optional<AtomTask> reflectReason(Require require, Application application, GeneralDate dateRefer) {
 
-		// 申請理由があるかのチェック
+		// 申請があるかのチェック
 		if (!application.getOpAppReason().isPresent() && !application.getOpAppStandardReasonCD().isPresent()) {
 			return Optional.empty();
 		}
@@ -137,7 +139,7 @@ public class ReflectApplicationReason {
 		}
 	}
 
-	private static ReasonApplicationDailyResult createReason(Application application, GeneralDate date) {
+	public static ReasonApplicationDailyResult createReason(Application application, GeneralDate date) {
 		// TODO: chua co don xin lam them Optional.empty
 		return new ReasonApplicationDailyResult(application.getEmployeeID(), date,
 				new ApplicationTypeReason(application.getAppType(), Optional.empty()), application.getPrePostAtr(),

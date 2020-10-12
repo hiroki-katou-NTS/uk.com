@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -31,10 +30,9 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class SCCreateDailyAfterApplicationeReflect {
 
-	public static DailyAfterAppReflectResult process(Require require, ApplicationShare application,
+	public static DailyAfterAppReflectResult process(Require require, String companyId, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
-		String companyId = AppContexts.user().employeeId();
-
+		
 		// TODO: typeDaikyu chua co domain
 		ApplicationReflect domainSetReflect = GetDomainReflectModelApp.process(require, companyId,
 				application.getAppType(), Optional.empty());

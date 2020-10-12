@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -44,7 +44,7 @@ public class CorrectDailyAttendanceService {
 
 		Pair<WorkTypeUnit, WorkTypeClassification> classifi = getClassifiAfter(workType.get().getDailyWork(),
 				workTypeAfter.get().getDailyWork());
-		if (workType.get().getDailyWork().getClassification() != WorkTypeClassification.Shooting
+		if (workType.get().getDailyWork().getClassification() == WorkTypeClassification.Shooting
 				&& classifi.getRight() != WorkTypeClassification.Holiday) {
 			/// 振出が含まれる
 			workInformationAfter.setNumberDaySuspension(Optional.of(new NumberOfDaySuspension(
@@ -52,7 +52,7 @@ public class CorrectDailyAttendanceService {
 
 		}
 
-		if (workType.get().getDailyWork().getClassification() != WorkTypeClassification.Pause
+		if (workType.get().getDailyWork().getClassification() == WorkTypeClassification.Pause
 				&& classifi.getRight() != WorkTypeClassification.Attendance) {
 			/// 振休が含まれる
 			workInformationAfter.setNumberDaySuspension(Optional.of(new NumberOfDaySuspension(
@@ -68,7 +68,7 @@ public class CorrectDailyAttendanceService {
 			return Pair.of(WorkTypeUnit.OneDay, after.getOneDay());
 		}
 
-		if (unitBefore.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon && unitBefore.getMorning() != null) {
+		if (unitBefore.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon && !unitBefore.getMorning().isHolidayType()) {
 			return Pair.of(WorkTypeUnit.MonringAndAfternoon, after.getMorning());
 		}
 

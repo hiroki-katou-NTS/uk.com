@@ -438,7 +438,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.oneDay;
 		}
 
-		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && this.morning != null) {
+		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && !this.morning.isHolidayType()) {
 			return this.morning;
 		}
 

@@ -22,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.CreateAp
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 /**
@@ -35,7 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, ApplicationShare application,
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId, ApplicationShare application,
 			GeneralDate date, ReflectStatusResultShare reflectStatus) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
@@ -53,13 +53,14 @@ public class ReflectApplicationWorkSchedule {
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
 
 		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily);
+		
 
 		// 日別勤怠(申請取消用Work）を作成して、日別勤怠(work）をコピーする
 		DailyRecordOfApplication dailyRecordApp = new DailyRecordOfApplication(new ArrayList<>(),
 				ScheduleRecordClassifi.SCHEDULE, createDailyDomain(require, domainDaily));
 
 		// TODO: 申請の反映（勤務予定）in processing reflect all application
-		DailyAfterAppReflectResult affterReflect = SCCreateDailyAfterApplicationeReflect.process(require, application,
+		DailyAfterAppReflectResult affterReflect = SCCreateDailyAfterApplicationeReflect.process(require, companyId, application,
 				dailyRecordApp, date);
 		dailyRecordApp.setDomain(affterReflect.getDomainDaily());
 
@@ -80,7 +81,7 @@ public class ReflectApplicationWorkSchedule {
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
-
+		
 		AtomTask atomTask = AtomTask.of(() -> {
 			// 勤務予定の更新 --- co update , thuoc tinh ConfirmedATR
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),

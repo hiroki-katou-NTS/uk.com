@@ -27,7 +27,10 @@ import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -220,11 +223,8 @@ public class ReflectApplicationHelper {
 						new AttendanceTime(111), new AttendanceTime(111)),
 				new IntervalExemptionTime(new AttendanceTime(111))));
 		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null,
-				ActualWorkingTimeOfDaily
-						.of(new TotalWorkingTime(null, null, null, null,
-								null, lateTimeOfDaily, leaveEarlyTimeOfDaily, null,
-								null, null, null, null,
-								null, null, null), 0, 0, 0, 0),
+				ActualWorkingTimeOfDaily.of(new TotalWorkingTime(null, null, null, null, null, lateTimeOfDaily,
+						leaveEarlyTimeOfDaily, null, null, null, null, null, null, null, null), 0, 0, 0, 0),
 				null, null, null, null);
 
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
@@ -353,5 +353,20 @@ public class ReflectApplicationHelper {
 	public static AppStampShare createAppStamp(PrePostAtrShare pre) {
 		return createAppStamp(TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, TimeZoneStampClassificationShare.BREAK,
 				pre);
+	}
+
+	public static WorkInfoOfDailyAttendance createWorkInfo(String workTypeCode, double useDay, FuriClassifi furiClass) {
+		Optional<NumberOfDaySuspension> opt = Optional.of(new NumberOfDaySuspension(new UsedDays(useDay), furiClass));
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
+				new WorkInformation("001", "001"), CalculationState.No_Calculated, NotUseAttribute.Not_use,
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
+		workInfo.setNumberDaySuspension(opt);
+		return workInfo;
+	}
+
+	public static WorkInfoOfDailyAttendance createWorkInfoDefault(String workTypeCode) {
+		return new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
+				new WorkInformation("001", "001"), CalculationState.No_Calculated, NotUseAttribute.Not_use,
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
 	}
 }

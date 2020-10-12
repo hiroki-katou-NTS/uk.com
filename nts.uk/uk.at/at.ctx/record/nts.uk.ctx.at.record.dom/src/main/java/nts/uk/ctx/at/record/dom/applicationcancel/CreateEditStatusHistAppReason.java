@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
  */
 public class CreateEditStatusHistAppReason {
 
-	public static void process(Require require, String employeeId, GeneralDate date, String appId,
+	public static List<AttendanceBeforeApplicationReflect> process(Require require, String employeeId, GeneralDate date, String appId,
 			ScheduleRecordClassifi classification, Map<Integer, String> mapValue) {
 		List<AttendanceBeforeApplicationReflect> lstAttBeforeReflect = new ArrayList<>();
 		// 日別実績から、該当する編集状態を取得する
@@ -53,6 +53,7 @@ public class CreateEditStatusHistAppReason {
 		require.insertAppReflectHist(new ApplicationReflectHistory(employeeId, date, appId, GeneralDateTime.now(),
 				classification, false, lstAttBeforeReflect));
 
+		return lstAttBeforeReflect;
 	}
 
 	public static interface Require {

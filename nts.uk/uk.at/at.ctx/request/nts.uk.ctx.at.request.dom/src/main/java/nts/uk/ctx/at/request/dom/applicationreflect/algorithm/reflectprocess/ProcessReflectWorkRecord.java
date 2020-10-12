@@ -47,10 +47,14 @@ public class ProcessReflectWorkRecord {
 
 		List<AtomTask> tasks = new ArrayList<>();
 		// 勤務実績に反映 -- in process
-		Pair<ReflectStatusResultShare, Optional<AtomTask>> result = require.process(application, targetDate,
-				new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkRecord.getReflectStatus().value),
-						ReasonNotReflectDailyShare.valueOf(statusWorkRecord.getReasonNotReflectWorkRecord().value),
-						ReasonNotReflectShare.valueOf(statusWorkRecord.getReasonNotReflectWorkSchedule().value)));
+		ReflectStatusResultShare reflectShare = new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkRecord.getReflectStatus().value),
+				statusWorkRecord.getReasonNotReflectWorkRecord() == null ? null
+						: ReasonNotReflectDailyShare
+								.valueOf(statusWorkRecord.getReasonNotReflectWorkRecord().value),
+				statusWorkRecord.getReasonNotReflectWorkSchedule() == null ? null
+						: ReasonNotReflectShare
+								.valueOf(statusWorkRecord.getReasonNotReflectWorkSchedule().value));
+		Pair<ReflectStatusResultShare, Optional<AtomTask>> result = require.process(application, targetDate, reflectShare);
 		result.getRight().ifPresent(x -> tasks.add(x));
 		// 申請理由の反映-- in process chua co don xin lam them
 		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate);

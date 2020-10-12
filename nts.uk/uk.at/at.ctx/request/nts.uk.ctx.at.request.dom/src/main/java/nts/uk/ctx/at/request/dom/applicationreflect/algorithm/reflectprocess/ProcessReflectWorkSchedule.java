@@ -72,8 +72,10 @@ public class ProcessReflectWorkSchedule {
 
 	public static ReflectStatusResult statusResult(ReflectStatusResultShare share) {
 		return new ReflectStatusResult(EnumAdaptor.valueOf(share.getReflectStatus().value, ReflectedState.class),
-				EnumAdaptor.valueOf(share.getReasonNotReflectWorkRecord().value, ReasonNotReflectDaily.class),
-				EnumAdaptor.valueOf(share.getReasonNotReflectWorkSchedule().value, ReasonNotReflect.class));
+				share.getReasonNotReflectWorkRecord() == null ? null
+						: EnumAdaptor.valueOf(share.getReasonNotReflectWorkRecord().value, ReasonNotReflectDaily.class),
+				share.getReasonNotReflectWorkSchedule() == null ? null
+						: EnumAdaptor.valueOf(share.getReasonNotReflectWorkSchedule().value, ReasonNotReflect.class));
 	}
 
 	public static interface Require extends PreCheckProcessWorkSchedule.Require {
