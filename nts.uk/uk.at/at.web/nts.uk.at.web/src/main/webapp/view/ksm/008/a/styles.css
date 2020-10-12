@@ -3,7 +3,7 @@ tr:hover > td {
 }
 
 .message {
-    width: 600px;
+    width: 850px !important;
 }
 
 .condition {

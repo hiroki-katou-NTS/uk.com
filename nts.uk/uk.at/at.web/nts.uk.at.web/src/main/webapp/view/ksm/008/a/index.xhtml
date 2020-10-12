@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
-            nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+            nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage
         </com:ValidatorScript>
         <com:stylefile path="./styles.css"/>
         <com:scriptfile path="./ksm008.a.vm.js"/>
@@ -25,7 +25,7 @@
                     <colgroup>
                         <col width="70px"/>
                         <col width="50px"/>
-                        <col width="900px"/>
+                        <col width="1080px"/>
                     </colgroup>
                     <thead>
                     <tr>
@@ -40,7 +40,7 @@
                         <!--A5_1-->
                         <td style="vertical-align: top; text-align: center" rowspan="2">
                             <button class="setting"
-                                    data-bind="click: function(){ return $parent.toScreen(alarm.code)}, attr: {tabindex: $parent.getTabIndex()}">#{i18n.getText('KSM008_8')}</button>
+                                    data-bind="click: function(){ return $parent.toScreen(alarm.code)}, attr: {tabindex:100 * $index() + 3}">#{i18n.getText('KSM008_8')}</button>
                         </td>
                         <!--A5_2_1-->
                         <!--A5_2_2-->
@@ -48,6 +48,9 @@
                         <td class="condition p5" colspan="2">
                             <span class="label" data-bind="text: alarm.code"></span>
                             <span class="label" data-bind="text: alarm.name"></span>
+                            <button tabindex="-1"
+                                    data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -60,14 +63,15 @@
                                 </div>
                                 <div class="flex valign-center pb5">
                                     <!--A5_3_2-->
-                                    <div data-bind="ntsFormLabel:{constraint:['MessageDisp'], required: true }">#{i18n.getText('KSM008_9')}</div>
+                                    <div data-bind="ntsFormLabel:{constraint:['AlarmCheckMessage'], required: true }">#{i18n.getText('KSM008_9')}</div>
                                     <!--A5_3_3-->
                                     <input class="message" data-bind="ntsTextEditor: {value:  message.message ,
+                                                            constraint: 'AlarmCheckMessage',
                                                             required: false,
                                                              enable:true,
-                                                             readonly: false}, attr: {tabindex: $parents[1].getTabIndex()}, tabindex++"/>
+                                                             readonly: false}, attr: {tabindex: 100 * (parseInt($parent.code()) - 1) + $index() + 4}"/>
                                     <!--    A5_3_4-->
-                                    <button tabindex="5" data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)}, attr: {tabindex: $parents[1].getTabIndex()}, tabindex++"
+                                    <button data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)}, attr: {tabindex:100 * (parseInt($parent.code()) - 1) + $index() + 5}"
                                             style="margin-left: 10px">#{i18n.getText('KSM008_11')}</button>
                                 </div>
                             </div>

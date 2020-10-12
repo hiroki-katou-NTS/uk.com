@@ -10,13 +10,7 @@ module nts.uk.at.ksm008.a {
     @bean()
     export class KSM008AViewModel extends ko.ViewModel {
         alarmList: KnockoutObservableArray<AlarmConditionKO> = ko.observableArray([]);
-        tabindex: KnockoutObservable<number> = ko.observable(2);
-
-        getTabIndex(){
-            const vm = this;
-            vm.tabindex(vm.tabindex() + 1);
-            return vm.tabindex();
-        }
+        tabindex: KnockoutObservable<number> = ko.observable(3);
 
         getDefaultMsg(code: string, subCode: string, message: MessageKO) {
             const vm = this;
@@ -59,28 +53,35 @@ module nts.uk.at.ksm008.a {
                     vm.$jump("../c/index.xhtml");
                     break;
                 case "03":
-                    vm.$jump("../d/index.xhtml");
+                    vm.$jump("../f/index.xhtml");
                     break;
                 case "04":
-                    vm.$jump("../e/index.xhtml");
+                    vm.$jump("../d/index.xhtml");
                     break;
                 case "05":
-                    vm.$jump("../f/index.xhtml");
+                    vm.$jump("../g/index.xhtml");
+                    break;
+                case "06":
+                    vm.$jump("../i/index.xhtml");
+                    break;
+                case "07":
+                    vm.$jump("../k/index.xhtml");
                     break;
             }
         }
 
         created() {
             const vm = this;
-            this.$ajax(PATH_API.getList).then(data => {
+            vm.$ajax(PATH_API.getList).then(data => {
                 data.forEach((item: any) => {
                     this.alarmList.push(ko.mapping.fromJS(item));
                 });
+                // if ($("#pg-name").text() == '') $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
             });
         }
 
         mounted() {
-            $("#fixed-table").ntsFixedTable({height: 680});
+            $("#fixed-table").ntsFixedTable({height: 480, width: 1200});
         }
     }
 
