@@ -87,7 +87,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 	 * @param criteriaDate 基準日
 	 * @return 次回起算日
 	 */
-	public  GeneralDate algorithm(
+	public  GeneralDate getNextStartMonthDay(
 			GeneralDate criteriaDate) {
 
 		// 「次回起算日」を求める
