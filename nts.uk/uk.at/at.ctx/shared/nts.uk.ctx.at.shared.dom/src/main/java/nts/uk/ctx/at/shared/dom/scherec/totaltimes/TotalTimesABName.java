@@ -8,7 +8,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class Priority.
+ * 回数集計略名
  */
 @StringMaxLength(4)
 public class TotalTimesABName extends StringPrimitiveValue<TotalTimesABName> {

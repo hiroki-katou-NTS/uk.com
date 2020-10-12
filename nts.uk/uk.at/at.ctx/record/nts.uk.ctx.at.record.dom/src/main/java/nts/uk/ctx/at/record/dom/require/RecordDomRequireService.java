@@ -262,12 +262,12 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepos
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeComRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
@@ -728,7 +728,8 @@ public class RecordDomRequireService {
 				monthlyWorkTimeSetRepo, executionLogRepo, 
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, dailyCalculationEmployeeService, 
-				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate);
+				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
+				roleOfOpenPeriodRepo);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -850,7 +851,7 @@ public class RecordDomRequireService {
 				BentoReservationRepository bentoReservationRepo,
 				BentoMenuRepository bentoMenuRepo, DailyCalculationEmployeeService dailyCalculationEmployeeService,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-				GetProcessingDate getProcessingDate) {
+				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -989,6 +990,7 @@ public class RecordDomRequireService {
 			this.weekRuleManagementRepo = weekRuleManagementRepo;
 			this.dailyCalculationEmployeeService = dailyCalculationEmployeeService;
 			this.getProcessingDate = getProcessingDate;
+			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 		}
 		private GetProcessingDate getProcessingDate;
 		
@@ -1332,11 +1334,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public Optional<WorkTypeOfDailyPerformance> dailyWorkType(String employeeId, GeneralDate ymd) {
-			return workTypeOfDailyPerforRepo.findByKey(employeeId, ymd);
-		}
-
-		@Override
 		public Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod) {
 			return attendanceTimeRepo.findByPeriodOrderByYmd(employeeId, datePeriod)
 					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime()));
@@ -1460,8 +1457,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public DailyRecordToAttendanceItemConverter createDailyConverter(Map<Integer, OptionalItem> optionalItems) {
-			return converterFactory.createDailyConverter(optionalItems);
+		public DailyRecordToAttendanceItemConverter createDailyConverter() {
+			return converterFactory.createDailyConverter();
 		}
 
 		@Override
@@ -1601,11 +1598,6 @@ public class RecordDomRequireService {
 		@Override
 		public ManagedExecutorService getExecutorService() {
 			return executorService;
-		}
-
-		@Override
-		public Optional<AffiliationInforOfDailyAttd> dailyAffiliationInfor(String employeeId, GeneralDate ymd) {
-			return affiliationInforOfDailyPerforRepo.findByKey(employeeId, ymd).map(c -> c.getAffiliationInfor());
 		}
 
 		@Override

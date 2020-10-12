@@ -10,17 +10,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class SummaryList.
+ * 集計対象一覧
  */
 @Getter
 @Setter
 public class SummaryList {
 
-	/** The work type codes. */
-	// 勤務種類一覧
+	/** 勤務種類一覧 */
 	private List<String> workTypeCodes;
 
-	/** The work time codes. */
-	// 就業時間帯一覧
+	/** 就業時間帯一覧 */
 	private List<String> workTimeCodes;
+	
 }
