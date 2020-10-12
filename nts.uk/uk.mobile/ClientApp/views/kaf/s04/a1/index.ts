@@ -26,7 +26,6 @@ export class KafS04A1Component extends Vue {
     public created() {
         const vm = this;
 
-        console.log(vm.mode);
         vm.initS00DComponent();
     }
 

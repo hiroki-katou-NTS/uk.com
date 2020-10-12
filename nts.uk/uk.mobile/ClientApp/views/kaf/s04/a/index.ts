@@ -16,6 +16,8 @@ import {
     ICheck,
     ILateOrLeaveEarlies,
     IResDetail,
+    IParamS00C,
+    IParamS00B,
 } from './define';
 
 @component({
@@ -42,8 +44,8 @@ import {
 export class KafS04AComponent extends KafS00ShrComponent {
     public title: string = 'KafS04A';
     public kafS00AParams: IParamS00A = null;
-    public kafS00BParams: any;
-    public kafS00CParams: any;
+    public kafS00BParams: IParamS00B;
+    public kafS00CParams: IParamS00C;
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
@@ -184,6 +186,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public initComponentA() {
         const vm = this;
+
         const { data } = vm;
         const { appDispInfoStartupOutput } = data;
 
@@ -210,8 +213,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public initComponetB() {
         const vm = this;
 
-        vm.kafS00BParams = null;
-        let paramb = {
+        vm.kafS00BParams = {
 
             input: {
                 mode: vm.mode ? 0 : 1,
@@ -233,39 +235,42 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
 
         if (!vm.mode) {
-            paramb.input.detailModeContent = {
+            vm.kafS00BParams.input.detailModeContent = {
                 prePostAtr: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
                 endDate: vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
                 employeeName: _.isEmpty(vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
-        vm.kafS00BParams = paramb;
     }
 
     public initComponentC() {
         const vm = this;
 
+        const {appDispInfoStartupOutput} = vm;
+        const {appDispInfoNoDateOutput} = appDispInfoStartupOutput;
+
+        const{displayStandardReason,displayAppReason,reasonTypeItemLst,applicationSetting} = appDispInfoNoDateOutput;
+        const {appLimitSetting} = applicationSetting;
+
         vm.kafS00CParams = {
             input: {
                 // 定型理由の表示
                 // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason,
+                displayFixedReason: displayStandardReason,
                 // 申請理由の表示
                 // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason,
+                displayAppReason,
                 // 定型理由一覧
                 // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
+                reasonTypeItemLst,
                 // 申請制限設定
                 // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+                appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                opAppStandardReasonCD: vm.mode ? null : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppReason: vm.mode ? null : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
             },
             output: {
                 // 定型理由
@@ -274,10 +279,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 opAppReason: vm.mode ? '' : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
         };
-        if (vm.kafS00CParams.output) {
-            vm.kafS00CParams.output.opAppReason = vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
-            vm.kafS00CParams.output.opAppStandardReasonCD = vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
-        }
     }
 
     public checkBeforeRegister() {
@@ -295,12 +296,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
-            vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                {
-                    lateOrEarlyClassification: 0,
-                    workNo: 1
-                }
-            );
+            if (vm.check.cbCancelLate.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 0,
+                        workNo: 1
+                    }
+                );
+            }
         }
 
         vm.infoOutPut.earlyInfos.push(
@@ -321,12 +324,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
-            vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                {
-                    lateOrEarlyClassification: 1,
-                    workNo: 1
-                }
-            );
+            if (vm.check.cbCancelEarlyLeave.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 1,
+                        workNo: 1
+                    }
+                );
+            }
         }
 
         vm.infoOutPut.earlyInfos.push(
@@ -347,12 +352,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 2,
                 }
             );
-            vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                {
-                    lateOrEarlyClassification: 0,
-                    workNo: 2
-                }
-            );
+            if (vm.check.cbCancelLate2) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 0,
+                        workNo: 2
+                    }
+                );
+            }
         }
 
         vm.infoOutPut.earlyInfos.push(
@@ -372,12 +379,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 2,
                 }
             );
-            vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                {
-                    lateOrEarlyClassification: 1,
-                    workNo: 2
-                }
-            );
+            if (vm.check.cbCancelEarlyLeave2.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 1,
+                        workNo: 2
+                    }
+                );
+            }
         }
 
         vm.infoOutPut.earlyInfos.push(
@@ -570,7 +579,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.application.prePostAtr = prePostAtr;
             vm.application.opAppStartDate = opAppStartDate;
             vm.application.opAppEndDate = opAppEndDate;
-            vm.application.appId = appID;
+            vm.application.appID = appID;
             vm.application.inputDate = inputDate;
             vm.application.reflectionStatus = reflectionStatus;
         }
@@ -611,7 +620,7 @@ const API = {
 
 const initAppData = (): IApplication => ({
     appDate: '',
-    appId: null,
+    appID: null,
     appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
     employeeID: '',
     enteredPerson: null,

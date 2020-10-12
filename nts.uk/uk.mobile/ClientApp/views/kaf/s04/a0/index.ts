@@ -87,7 +87,6 @@ export class KafS04A0Component extends Vue {
     public handleShowComponentA(mode, res) {
         const vm = this;
 
-        console.log(res);
         vm.paramsAComponent.res = res;
         vm.paramsAComponent.mode = mode;
         vm.showComponentA1 = false;

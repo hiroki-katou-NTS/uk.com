@@ -38,7 +38,7 @@ export interface IOutput {
 }
 
 export interface IInput {
-    mode: boolean;
+    mode: 0 | 1;
     appDisplaySetting: {
         prePostDisplayAtr: number | null,
         manualSendMailAtr: number | null
@@ -50,8 +50,8 @@ export interface IInput {
     };
     detailModeContent: {
         prePostAtr: number | null;
-        startDate: null;
-        endDate: null;
+        startDate: string;
+        endDate: string;
         employeeName: string;
     }
 }
@@ -81,11 +81,13 @@ export interface IInputCPrams {
         standardReasonRequired: boolean;
         canAppAchievementConfirm: boolean;
     }
+    opAppReason: string;
+    opAppStandardReasonCD: number | string | null;
 }
 
 export interface IOutPutCParams {
     opAppReason: string;
-    opAppStandardReasonCD: number | null;
+    opAppStandardReasonCD: number | string | null;
 }
 
 export interface IAppLimitSetting {
@@ -242,21 +244,21 @@ export interface IAppDispInfoStartupOutput {
         approvalFunctionSet: {
             appUseSetLst: IAppUseSetLst[]
         },
-        prePostAtr: 0 | 1,
-        baseDate: string,
-        empHistImport: IEmpHistImport,
-        appDeadlineUseCategory: number | null,
+        prePostAtr: 0 | 1;
+        baseDate: string;
+        empHistImport: IEmpHistImport;
+        appDeadlineUseCategory: number | null;
         opEmploymentSet: {
-            companyID: string,
-            employmentCD: '01',
-            targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[],
+            companyID: string;
+            employmentCD: string;
+            targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[];
         },
-        opListApprovalPhaseState: IOpListApprovalPhaseState[],
-        opErrorFlag: number | null,
-        opActualContentDisplayLst: null,
-        opPreAppContentDispDtoLst: null,
-        opAppDeadline: string,
-        opWorkTimeLst: IOpWorkTimeLst[],
+        opListApprovalPhaseState: IOpListApprovalPhaseState[];
+        opErrorFlag: number | null;
+        opActualContentDisplayLst: IOpActualContentDisplayLst[];
+        opPreAppContentDispDtoLst: null;
+        opAppDeadline: string;
+        opWorkTimeLst: IOpWorkTimeLst[];
     };
     appDetailScreenInfo: {
         application: {
@@ -274,7 +276,7 @@ export interface IAppDispInfoStartupOutput {
             opAppStartDate: string;
             opAppEndDate: string;
             opAppReason: string;
-            opAppStandardReasonCD: number | null;
+            opAppStandardReasonCD: 1;
         };
         approvalLst: any[];
         authorComment: string;
@@ -285,6 +287,16 @@ export interface IAppDispInfoStartupOutput {
         approvalATR: number | null;
         alternateExpiration: boolean;
     };
+}
+
+export interface IOpActualContentDisplayLst {
+    date: string;
+    opAchievementDetail: {
+        opWorkTime: number | null;
+        opWorkTime2: number | null;
+        opLeaveTime: number | null;
+        opDepartureTime2: number | null;
+    }
 }
 
 export interface IData {
@@ -309,14 +321,14 @@ export interface ITime {
 
 export interface IApplication {
     appDate: string,
-    appId: string;
+    appID: string;
     appType: number | null;
     employeeID: string;
     enteredPerson: string;
     inputDate: string;
     opAppEndDate: string;
     opAppReason: string;
-    opAppStandardReasonCD: number | null;
+    opAppStandardReasonCD: number | string | null;
     opAppStartDate: string;
     opReversionReason: null;
     opStampRequestMode: null;
