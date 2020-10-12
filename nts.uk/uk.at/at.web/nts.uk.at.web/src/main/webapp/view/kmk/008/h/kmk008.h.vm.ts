@@ -1,49 +1,72 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.at.view.kmk008.h {
+    import service = nts.uk.at.view.kmk008.h.service;
+    
+    export module viewmodel {        
+        export class ScreenModel {
+            useEmployment: KnockoutObservable<boolean>;
+            useWorkPlace: KnockoutObservable<boolean>;
+            useClasss: KnockoutObservable<boolean>;
+            constructor() {
+                var self = this;
+                self.useEmployment = ko.observable(true);
+                self.useWorkPlace = ko.observable(true);
+                self.useClasss = ko.observable(true);
+            }
 
-	const KMK008_CUUS_H: string = 'CloseUsageUnitSettings';
+            startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
 
-	@bean()
-	export class ScreenModel extends ko.ViewModel {
+                service.getData().done(function(item) {
+                    if (item) {
+                        self.useEmployment(item.employmentUseAtr);
+                        self.useWorkPlace(item.workPlaceUseAtr);
+                        self.useClasss(item.classificationUseAtr);
+                    } else {
+                        self.useEmployment(true);
+                        self.useWorkPlace(true);
+                        self.useClasss(true);
+                    }
+                    dfd.resolve();
+                });
 
-		useEmployment: KnockoutObservable<boolean>  = ko.observable(true);
-		useWorkPlace: KnockoutObservable<boolean>  = ko.observable(true);
-		useClass: KnockoutObservable<boolean>  = ko.observable(true);
 
-		constructor() {
-			super();
-			const vm = this;			
-		}
+                return dfd.promise();
+            }
 
-		created() {
-			const vm = this;
-			_.extend(window, { vm });
-		}
+            submitAndCloseDialog(): void {
+                var self = this;
+                
+                service.getData().done(function(item) {                    
+                    if (item) {
+                        service.updateData({
+                            employmentUseAtr: self.useEmployment() ? 1 : 0,// 雇用使用区分
+                            workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,// 職場使用区分
+                            classificationUseAtr: self.useClasss() ? 1 : 0 // 分類使用区分
+                        }).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.closeDialog();
+                            });    
+                        });
+                    } else {
+                        service.insertData({
+                            employmentUseAtr: self.useEmployment() ? 1 : 0,// 雇用使用区分
+                            workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,// 職場使用区分
+                            classificationUseAtr: self.useClasss() ? 1 : 0// 分類使用区分
+                        }).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.closeDialog();
+                            });    
+                        });
+                    }
+                })
+                //self.closeDialog();
+            }
 
-		mounted() {
-			let vm = this;
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
+        }
+    }
 
-			$('.chk_H13').focus();
-		}
-
-		submitAndCloseDialog() {
-			let vm = this;
-			//36申請登録単位設定
-			vm.$window.storage(KMK008_CUUS_H, {
-				Employment: vm.useEmployment(),
-				WorkPlace: vm.useWorkPlace(),
-				Class: vm.useWorkPlace(),
-			});
-			vm.$window.close();
-			return false;
-		}
-
-		closeDialog() {
-			let vm = this;
-			vm.$window.storage(KMK008_CUUS_H, null);
-			vm.$window.close();
-			return false;
-		}
-	}
 }

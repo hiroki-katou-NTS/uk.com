@@ -17,6 +17,8 @@
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kmk008.h.main.css" />
+        <com:scriptfile path="kmk008.h.service.js" />
+        <com:scriptfile path="kmk008.h.start.js" />
         <com:scriptfile path="kmk008.h.vm.js" />
       </ui:define>
 
@@ -29,30 +31,28 @@
               </div>
               <div class="head-title company">
                 <span data-itemno="H1_2"
-                  >#{i18n.getText('Com_Employment')}</span
+                  >#{i18n.getText('Com_Company')}</span
                 >
               </div>
               <div
-                class="chk_H13"
+                id="checkboxEmp"
+                data-bind="ntsCheckBox: { checked: useEmployment }"
                 data-itemno="H1_3"
                 tabindex="1"
-                data-bind="ntsCheckBox: { checked: useEmployment }"
               >
                 #{i18n.getText('Com_Employment')}
               </div>
               <div
-                class="chk_H14"
-                data-itemno="H1_4"
-                tabindex="2"
                 data-bind="ntsCheckBox: { checked: useWorkPlace }"
+                data-itemno="H1_3"
+                tabindex="2"
               >
                 #{i18n.getText('Com_Workplace')}
               </div>
               <div
-                class="chk_H15"
-                data-itemno="H1_5"
+                data-bind="ntsCheckBox: { checked: useClasss }"
+                data-itemno="H1_3"
                 tabindex="3"
-                data-bind="ntsCheckBox: { checked: useClass }"
               >
                 #{i18n.getText('Com_Class')}
               </div>
@@ -61,18 +61,13 @@
         </div>
         <div id="functions-area-bottom">
           <button
+            class="large proceed"
             tabindex="4"
-            class="x-large proceed"
-            data-itemno="H1_6"
             data-bind="click: submitAndCloseDialog"
           >
             #{i18n.getText('KMK008_37')}
           </button>
-          <button
-            tabindex="5"
-            data-itemno="H1_7"
-            data-bind="click: closeDialog"
-          >
+          <button data-bind="click: closeDialog" tabindex="5">
             #{i18n.getText('KMK008_38')}
           </button>
         </div>
