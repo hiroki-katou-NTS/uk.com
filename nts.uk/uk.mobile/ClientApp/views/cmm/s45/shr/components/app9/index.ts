@@ -6,6 +6,7 @@ import {
     IEarlyInfos,
     ITime
 } from '../../../../../kaf/s04/a/define';
+import * as _ from 'lodash';
 
 @component({
     name: 'cmms45componentsapp9',
@@ -23,6 +24,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
         leaveTime2: null,
     };
 
+    public showData: boolean = false;
     @Prop({
         default: () => ({
             appDispInfoStartupOutput: null,
@@ -47,6 +49,13 @@ export class CmmS45ComponentsApp9Component extends Vue {
             vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
                 vm.$mask('hide');
                 vm.params.appDetail = res.data;
+                // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
+                if (vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles == true && (_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2])) && (_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]))) {
+                    vm.showData = true;
+                } else {
+                    vm.showData = false;
+                }
+
                 if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
 
                     vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, index) => {

@@ -247,11 +247,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public initComponentC() {
         const vm = this;
 
-        const {appDispInfoStartupOutput} = vm;
-        const {appDispInfoNoDateOutput} = appDispInfoStartupOutput;
+        const { appDispInfoStartupOutput } = vm;
+        const { appDispInfoNoDateOutput } = appDispInfoStartupOutput;
 
-        const{displayStandardReason,displayAppReason,reasonTypeItemLst,applicationSetting} = appDispInfoNoDateOutput;
-        const {appLimitSetting} = applicationSetting;
+        const { displayStandardReason, displayAppReason, reasonTypeItemLst, applicationSetting } = appDispInfoNoDateOutput;
+        const { appLimitSetting } = applicationSetting;
 
         vm.kafS00CParams = {
             input: {
@@ -567,13 +567,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
         if (!vm.mode) {
             vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application;
-            const {res} = vm;
-            const {appDispInfoStartupOutput} = res;
-            
-            const {appDetailScreenInfo} = appDispInfoStartupOutput;
-            const {application} = appDetailScreenInfo;
+            const { res } = vm;
+            const { appDispInfoStartupOutput } = res;
 
-            const {reflectionStatus,inputDate,appID,appDate,prePostAtr,opAppStartDate,opAppEndDate} = application;
+            const { appDetailScreenInfo } = appDispInfoStartupOutput;
+            const { application } = appDetailScreenInfo;
+
+            const { reflectionStatus, inputDate, appID, appDate, prePostAtr, opAppStartDate, opAppEndDate } = application;
 
             vm.application.appDate = appDate;
             vm.application.prePostAtr = prePostAtr;
