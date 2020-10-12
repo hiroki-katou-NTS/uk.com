@@ -1,0 +1,46 @@
+.panelFirst {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: 0 5px rgb(192, 192, 192);
+    display: inline-table;
+    background-color: white;
+    margin-top:20px;
+    margin-left:20px;
+    width:350px !important;
+    height:400px !important;
+    text-align: center;
+    border-color: rgb(192, 192, 192)
+}
+.panelFirstJinji{
+	 border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: 0 5px rgb(192, 192, 192);
+    display: inline-table;
+    background-color: white;
+    margin-top:20px;
+    margin-left:20px;
+    width:350px !important;
+    height:250px !important;
+    text-align: center;
+    border-color: rgb(192, 192, 192)
+}
+.panelSecond {
+	border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: 0 5px rgb(192, 192, 192);
+	display: inline-table; 
+	background-color: white; 
+	margin-top:20px; 
+	margin-left:20px; 
+	width:350px !important; 
+	height:250px !important;
+	text-align: center;
+	border-color: rgb(192, 192, 192)
+}
+button.caret-right:after {
+    color: #92D050;
+    margin-left: 3px;
+}
