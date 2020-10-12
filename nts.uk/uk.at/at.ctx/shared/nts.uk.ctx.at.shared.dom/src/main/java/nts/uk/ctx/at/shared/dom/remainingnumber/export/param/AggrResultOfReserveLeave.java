@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.ReserveLeaveError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ReserveLeaveError;
 
 /**
  * 積立年休の集計結果

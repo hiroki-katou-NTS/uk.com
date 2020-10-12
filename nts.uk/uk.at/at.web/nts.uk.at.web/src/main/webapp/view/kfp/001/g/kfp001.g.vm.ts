@@ -19,7 +19,7 @@ module nts.uk.at.view.kfp001.g.viewmodel {
     aggrPeriod: KnockoutObservable<OptionalAggrPeriodDto>;
     periodTarget: KnockoutObservable<AggrPeriodTargetDto>;
     aggrPeriodErrorInfos: KnockoutObservableArray<MonthlyClosureErrorInfor>;
-    aggrPeriodDto: KnockoutObservable<AggrPeriodDto;
+    aggrPeriodDto: KnockoutObservable<AggrPeriodDto>;
 
     constructor() {
       var self = this;

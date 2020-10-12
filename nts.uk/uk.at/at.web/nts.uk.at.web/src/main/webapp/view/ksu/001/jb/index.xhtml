@@ -28,7 +28,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
-					data-bind=" click: saveData">#{i18n.getText('KSU001_105')}</button>
+				id = "buttonsave" data-bind=" click: saveData">#{i18n.getText('KSU001_105')}</button>
 				<button class="danger" tabindex="2"
 					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_106')}</button>
 				<button tabindex="3" data-bind="click: openJD, enable: isCopy">#{i18n.getText('KSU001_107')}</button>
@@ -37,8 +37,7 @@
 			<div id="contents-area">
 				<div id="h-50" >	
 					<span data-bind="text: Jb2_1Name" style = "margin-left: 35px;">#{i18n.getText('KSU001_926')}</span>				
-					<span id = "workplaceCode" data-bind="text: workplaceCode,visible: isVisibleWkpName" ></span>
-					<span id = "workplaceName" data-bind="text: workplaceName,visible: isVisibleWkpName"></span> <br />
+				    <br />
 					<hr />
 				</div>
 				<div id="group-link-button-ja"

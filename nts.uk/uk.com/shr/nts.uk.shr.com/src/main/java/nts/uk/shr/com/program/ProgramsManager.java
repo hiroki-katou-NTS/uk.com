@@ -2431,9 +2431,7 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cli/002/a/index.xhtml");
 
     /**     * CLI003     */
-    public static final Program CLI003I = new Program(WebAppId.COM, ProgramIdConsts.CLI003I, "CLI003_63",
-            "/view/cli/003/i/index.xhtml");
-    public static final Program CLI003G = new Program(WebAppId.COM, ProgramIdConsts.CLI003G, "CLI003_64",
+    public static final Program CLI003G = new Program(WebAppId.COM, ProgramIdConsts.CLI003G, "CLI003_72",
             "/view/cli/003/g/index.xhtml");
     public static final Program CLI003H = new Program(WebAppId.COM, ProgramIdConsts.CLI003H, "CLI003_47",
             "/view/cli/003/h/index.xhtml");
@@ -2441,12 +2439,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cli/003/a/index.xhtml");
     public static final Program CLI003B = new Program(WebAppId.COM, ProgramIdConsts.CLI003B, "CLI003_64",
             "/view/cli/003/b/index.xhtml");
-    public static final Program CLI003C = new Program(WebAppId.COM, ProgramIdConsts.CLI003C, "CLI003_64",
+    public static final Program CLI003C = new Program(WebAppId.COM, ProgramIdConsts.CLI003C, "CLI003_87",
             "/view/cli/003/c/index.xhtml");
-    public static final Program CLI003D = new Program(WebAppId.COM, ProgramIdConsts.CLI003D, "CLI003_64",
-            "/view/cli/003/d/index.xhtml");
-    public static final Program CLI003E = new Program(WebAppId.COM, ProgramIdConsts.CLI003E, "CLI003_64",
-            "/view/cli/003/e/index.xhtml");
     public static final Program CLI003F = new Program(WebAppId.COM, ProgramIdConsts.CLI003F, "CLI003_64",
             "/view/cli/003/f/index.xhtml");
 
@@ -2654,6 +2648,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/kaf/s05/a");
     public static final Program KAFS07A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS07A, "KAFS07A",
             "/kaf/s07/a");
+    public static final Program KAFS09A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS09A, "KAFS09A",
+            "/kaf/s09/a");
     public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
             "/kaf/s05/b");
     public static final Program CMMS45B = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45B, "CMMS45B",

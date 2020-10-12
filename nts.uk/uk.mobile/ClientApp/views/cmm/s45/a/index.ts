@@ -265,7 +265,7 @@ export class CmmS45AComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3],
+                            listAppType: [2, 3, 4],
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -351,7 +351,7 @@ export class CmmS45AComponent extends Vue {
         // });
         _.forEach(data.appLst, (app: ListOfApplication) => {
             if (self.selectedValue == '-1' || String(app.appType) == self.selectedValue) {
-                if (app.appType == 0 || app.appType == 2 || app.appType == 3) {
+                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4) {
                     self.lstApp.push(new AppInfo({
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -449,7 +449,7 @@ export class CmmS45AComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4) {
                 self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
             }
         });

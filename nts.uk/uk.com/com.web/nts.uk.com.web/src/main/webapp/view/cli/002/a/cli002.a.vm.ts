@@ -1,17 +1,15 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.cli002.a {
-
   const API = {
     findBySystem: "sys/portal/pginfomation/findBySystem",
-    updateLogSetting: "sys/portal/logsettings/update"
-  }
-
-  const mgrid = nts.uk.ui.mgrid as any;
-  const { MGrid, color } = mgrid as Mgrid;
+    updateLogSetting: "sys/portal/logsettings/update",
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    $grid!: JQuery;
+
     public systemList: KnockoutObservableArray<SystemTypeModel> = ko.observableArray([
       new SystemTypeModel({
         index: 0,
@@ -32,7 +30,7 @@ module nts.uk.com.view.cli002.a {
     ]);
 
     public dataSourceItem: KnockoutObservableArray<PGInfomationModel> = ko.observableArray([]);
-    public selectedSystemCode: KnockoutObservable<number> = ko.observable(null);
+    public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
     public systemColumns = [
       {
@@ -45,19 +43,22 @@ module nts.uk.com.view.cli002.a {
         headerText: this.$i18n("CLI002_3"),
         prop: "localizedName",
         width: 160,
-      }
+      },
     ];
 
     mounted() {
       const vm = this;
+
+      vm.$grid = $("#item-list");
+
       vm.selectedSystemCode.subscribe((newValue) => {
-        if ($("#item-list").data("mGrid")) {
-          $("#item-list").mGrid("destroy");
+        if (vm.$grid.data("igGrid")) {
+          vm.$grid.ntsGrid("destroy");
         }
         // アルゴリズム「ログ設定画面表示」を実行する
-        vm.getData(newValue);
+        vm.$nextTick(() => vm.getData(newValue));
       });
-      vm.selectedSystemCode(0);
+      vm.selectedSystemCode.valueHasMutated();
     }
 
     /**
@@ -65,24 +66,29 @@ module nts.uk.com.view.cli002.a {
      */
     public register() {
       const vm = this;
-      const logSettings: LogSettingSaveDto[] = _.map(vm.dataSourceItem(), item => new LogSettingSaveDto({
-        system: vm.selectedSystemCode(),
-        programId: item.programId,
-        menuClassification: item.menuClassification,
-        loginHistoryRecord: item.logLoginDisplay ? 1 : 0,
-        startHistoryRecord: item.logStartDisplay ? 1 : 0,
-        updateHistoryRecord: item.logUpdateDisplay ? 1 : 0,
-      }));
+      const logSettings: LogSettingSaveDto[] = _.map(
+        vm.dataSourceItem(),
+        (item) =>
+          new LogSettingSaveDto({
+            system: vm.selectedSystemCode(),
+            programId: item.programId,
+            menuClassification: item.menuClassification,
+            loginHistoryRecord: item.logLoginDisplay ? 1 : 0,
+            startHistoryRecord: item.logStartDisplay ? 1 : 0,
+            updateHistoryRecord: item.logUpdateDisplay ? 1 : 0,
+            programCd: item.programCd,
+          })
+      );
       const command = new LogSettingSaveCommand({
-        logSettings: logSettings
+        logSettings: logSettings,
       });
       // ログ設定更新
-      vm.$blockui('grayout');
+      vm.$blockui("grayout");
       vm.$ajax(API.updateLogSetting, command)
         .then(() => {
-          vm.$blockui('clear');
+          vm.$blockui("clear");
           // 情報メッセージ（Msg_15）を表示する
-          vm.$dialog.alert({ messageId: 'Msg_15' });
+          vm.$dialog.alert({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
     }
@@ -93,161 +99,158 @@ module nts.uk.com.view.cli002.a {
      */
     private getData(systemType: number) {
       const vm = this;
-      vm.$blockui("grayout");
-      vm.$ajax(`${API.findBySystem}/${systemType}`)
+      vm.$blockui("grayout")
+        .then(() => vm.$ajax(`${API.findBySystem}/${systemType}`))
         .then((response: PGListDto[]) => {
-          const listPG: PGInfomationModel[] = _.map(response, (item, index) => new PGInfomationModel({
-            rowNumber: index + 1,
-            functionName: item.functionName,
-            logLoginDisplay: item.loginHistoryRecord.usageCategory === 1,
-            logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
-            logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
-            programId: item.programId,
-            menuClassification: item.menuClassification
-          }));
+          const listPG: PGInfomationModel[] = _.map(
+            response,
+            (item, index) => new PGInfomationModel({
+              rowNumber: index + 1,
+              functionName: item.functionName,
+              logLoginDisplay: item.loginHistoryRecord.usageCategory === 1,
+              logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
+              logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
+              programId: item.programId,
+              menuClassification: item.menuClassification,
+              programCd: item.programCd,
+            })
+          );
           vm.dataSourceItem(listPG);
           vm.initGrid(response);
         })
         .always(() => vm.$blockui("clear"));
     }
 
-    public updateData(rowNumber: number, columnName: string, val: any) {
-      const vm = this;
-      const newArray = _.map(vm.dataSourceItem(), (item: PGInfomationModel) => {
-        if (item.rowNumber === rowNumber) {
-          if (columnName === 'logLoginDisplay') {
-            item.logLoginDisplay = val;
-          } else if (columnName === 'logStartDisplay') {
-            item.logStartDisplay = val;
-          } else if (columnName === 'logUpdateDisplay') {
-            item.logUpdateDisplay = val;
-          }
-        }
-        return item;
-      });
-      vm.dataSourceItem(newArray);
-    }
-
     private initGrid(response: PGListDto[]) {
       const vm = this;
-      const $mgrid = $("#item-list");
-      const statesTable = [];
+      const statesTable: CellStateModel[] = [];
+      const { color } = (nts.uk.ui.jqueryExtentions as any).ntsGrid;
+      const stateDisabled = [color.Disable];
+
       response.forEach((item: PGListDto, index) => {
         // ※１ PG一覧．PG情報．ログイン履歴の記録．活性区分　＝　True
         if (item.loginHistoryRecord.activeCategory === 0) {
-          statesTable.push(new CellStateModel({
-            rowId: index + 1,
-            columnKey: "logLoginDisplay",
-            state: [color.Lock],
-          }));
+          statesTable.push(
+            new CellStateModel({
+              rowId: index + 1,
+              columnKey: "logLoginDisplay",
+              state: stateDisabled,
+            })
+          );
         }
         // ※2 PG一覧．PG情報．起動履歴記録．活性区分　＝　True
         if (item.bootHistoryRecord.activeCategory === 0) {
-          statesTable.push(new CellStateModel({
-            rowId: index + 1,
-            columnKey: "logStartDisplay",
-            state: [color.Lock],
-          }));
+          statesTable.push(
+            new CellStateModel({
+              rowId: index + 1,
+              columnKey: "logStartDisplay",
+              state: stateDisabled,
+            })
+          );
         }
         // ※3 PG一覧．PG情報．起動履歴記録．活性区分　＝　True
         if (item.editHistoryRecord.activeCategory === 0) {
-          statesTable.push(new CellStateModel({
-            rowId: index + 1,
-            columnKey: "logUpdateDisplay",
-            state: [color.Lock],
-          }));
+          statesTable.push(
+            new CellStateModel({
+              rowId: index + 1,
+              columnKey: "logUpdateDisplay",
+              state: stateDisabled,
+            })
+          );
         }
       });
 
-      new MGrid($mgrid.get(0), {
-        height: "900px",
-        width: "600px",
-        headerHeight: '60px',
+      vm.$grid.ntsGrid({
         primaryKey: "rowNumber",
-        primaryKeyDataType: "number",
+        height: "445px",
+        dataSource: vm.dataSourceItem(),
         rowVirtualization: true,
         virtualization: true,
-        virtualizationMode: 'continuous',
-        enter: 'right',
-        dataSource: vm.dataSourceItem(),
+        virtualizationMode: "continuous",
         columns: [
-          { headerText: "", key: "rowNumber", dataType: "number", width: "30px" },
-          { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "365x", ntsControl: 'Label' },
+          {
+            headerText: "",
+            key: "rowNumber",
+            dataType: "number",
+            width: "30px",
+          },
+          {
+            headerText: this.$i18n("CLI002_7"),
+            key: "functionName",
+            dataType: "string",
+            width: "350x",
+          },
           {
             headerText: this.$i18n("CLI002_4"),
-            group: [
-              { headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
-            ]
+            key: "logLoginDisplay",
+            dataType: "boolean",
+            width: "200px",
+            ntsControl: "Checkbox",
+            showHeaderCheckbox: true,
           },
           {
             headerText: this.$i18n("CLI002_5"),
-            group: [
-              { headerText: "", key: "logStartDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
-            ]
+            key: "logStartDisplay",
+            dataType: "boolean",
+            width: "200px",
+            ntsControl: "Checkbox",
+            showHeaderCheckbox: true,
           },
           {
             headerText: this.$i18n("CLI002_6"),
-            group: [
-              { headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
-            ]
+            key: "logUpdateDisplay",
+            dataType: "boolean",
+            width: "200px",
+            ntsControl: "Checkbox",
+            showHeaderCheckbox: true,
           },
         ],
         features: [
           {
-            name: 'CellStyles',
-            states: statesTable
+            name: "Selection",
+            mode: "row",
+            multipleSelection: false,
+            activation: false,
+            rowSelectionChanged: function () { },
           },
-          // {
-          //     name: 'ColumnFixing',
-          //     fixingDirection: '',
-          //     showFixButtons: false,
-          //     columnSettings: [
-          //         { columnKey: 'rowNumber', isFixed: true }
-          //     ]
-          // }
         ],
-        ntsFeatures: [],
+        ntsFeatures: [
+          // { name: 'CopyPaste' },
+          {
+            name: "CellState",
+            rowId: "rowId",
+            columnKey: "columnKey",
+            state: "state",
+            states: statesTable,
+          },
+        ],
         ntsControls: [
           {
-            name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true,
-            onChange: (rowNumber: number, columnName: string, val: any) => vm.updateData(rowNumber, columnName, val)
-          }
+            name: "Checkbox",
+            options: { value: 1, text: "" },
+            optionsValue: "value",
+            optionsText: "text",
+            controlType: "CheckBox",
+            enable: true,
+          },
         ],
-      }).create();
+      });
     }
   }
 
-  interface Mgrid {
-    color: COLOR;
-    MGrid: { new(el: HTMLElement, option: any): { create: () => void } };
-  }
-
-  interface COLOR {
-    ALL: string[];
-    Alarm: "mgrid-alarm";
-    Calculation: "mgrid-calc";
-    Disable: "mgrid-disable";
-    Error: "mgrid-error";
-    HOVER: "ui-state-hover";
-    Hide: "mgrid-hide";
-    Lock: "mgrid-lock";
-    ManualEditOther: "mgrid-manual-edit-other";
-    ManualEditTarget: "mgrid-manual-edit-target";
-    Reflect: "mgrid-reflect";
-  }
-
   export interface TargetSettingDto {
-    usageCategory: number,
-    activeCategory: number
+    usageCategory: number;
+    activeCategory: number;
   }
 
   export interface PGListDto {
-    functionName: string,
-    loginHistoryRecord: TargetSettingDto,
-    bootHistoryRecord: TargetSettingDto,
-    editHistoryRecord: TargetSettingDto,
-    programId: string,
-    menuClassification: number,
+    functionName: string;
+    loginHistoryRecord: TargetSettingDto;
+    bootHistoryRecord: TargetSettingDto;
+    editHistoryRecord: TargetSettingDto;
+    programId: string;
+    menuClassification: number;
+    programCd: string;
   }
 
   export class PGInfomationModel {
@@ -258,6 +261,7 @@ module nts.uk.com.view.cli002.a {
     logUpdateDisplay: boolean;
     programId: string;
     menuClassification: number;
+    programCd: string;
 
     constructor(init?: Partial<PGInfomationModel>) {
       $.extend(this, init);
@@ -271,6 +275,7 @@ module nts.uk.com.view.cli002.a {
     loginHistoryRecord: number;
     startHistoryRecord: number;
     updateHistoryRecord: number;
+    programCd: string;
 
     constructor(init?: Partial<LogSettingSaveDto>) {
       $.extend(this, init);
