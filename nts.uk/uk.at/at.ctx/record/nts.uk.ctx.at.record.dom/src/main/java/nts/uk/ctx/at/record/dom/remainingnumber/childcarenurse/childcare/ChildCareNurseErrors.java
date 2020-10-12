@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
+
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 
 /**
  * 子の看護介護エラー情報
   * @author yuri_tamakoshi
  */
+@Getter
 public class ChildCareNurseErrors {
 	/** 子の看護介護使用数 */
 	private  ChildCareNurseUsedNumber usedNumber;
@@ -22,7 +24,7 @@ public class ChildCareNurseErrors {
 
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.limitDays =  new ChildCareNurseUpperLimit(0.0);
-		this.ymd = GeneralDate.min();
+		this.ymd =  GeneralDate.today();
 	}
 	/**
 	 * ファクトリー

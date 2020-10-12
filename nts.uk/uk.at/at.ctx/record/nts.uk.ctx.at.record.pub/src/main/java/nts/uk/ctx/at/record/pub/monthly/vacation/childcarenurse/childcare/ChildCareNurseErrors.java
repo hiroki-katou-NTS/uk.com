@@ -14,7 +14,7 @@ public class ChildCareNurseErrors {
 	/** 子の看護介護使用数 */
 	private  ChildCareNurseUsedNumber usedNumber;
 	/** 子の看護介護上限日数 */
-	private ChildCareNurseUpperLimit limitDays;
+	private Double limitDays;
 	/** 子の看護介護エラー対象年月日 */
 	private GeneralDate ymd;
 
@@ -24,8 +24,8 @@ public class ChildCareNurseErrors {
 public ChildCareNurseErrors(){
 
 	this.usedNumber = new ChildCareNurseUsedNumber();
-	this.limitDays =  new ChildCareNurseUpperLimit(0.0);
-	this.ymd = GeneralDate.min();
+	this.limitDays = new Double(0.0);
+	this.ymd = GeneralDate.today();
 }
 /**
  * ファクトリー
@@ -36,7 +36,7 @@ public ChildCareNurseErrors(){
  */
 public static ChildCareNurseErrors of(
 		ChildCareNurseUsedNumber usedNumber,
-		ChildCareNurseUpperLimit limitDays,
+		Double limitDays,
 		GeneralDate ymd) {
 
 	ChildCareNurseErrors domain = new ChildCareNurseErrors();

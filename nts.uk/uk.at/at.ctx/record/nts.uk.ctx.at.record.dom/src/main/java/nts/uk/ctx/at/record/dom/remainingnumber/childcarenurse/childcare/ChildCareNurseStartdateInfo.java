@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
-import java.util.Optional;
-
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 
 /**
  * 起算日から子の看護介護休暇情報

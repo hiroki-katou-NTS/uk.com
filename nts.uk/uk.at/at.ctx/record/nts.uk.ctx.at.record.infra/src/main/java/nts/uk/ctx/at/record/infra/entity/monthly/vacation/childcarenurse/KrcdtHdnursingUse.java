@@ -12,6 +12,7 @@ import javax.persistence.Version;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -44,11 +45,11 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
-	public double usedDays;
+	public Double usedDays;
 
 	/** 使用時間 */
 	@Column(name = "USED_MINUTES")
-	public Double usedMinutes;
+	public Integer usedMinutes;
 
 	/**
 	 * キー取得
@@ -64,7 +65,8 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	 */
 	public ChildCareNurseUsedNumber toDomain() {
 		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDays),
-																	Optional.ofNullable(usedMinutes == null ? null : new DayNumberOfUse(usedMinutes)));
+																	Optional.ofNullable(usedMinutes == null ? null : new TimeOfUse(usedMinutes)));
+//																	Optional.ofNullable(usedMinutes == null ? null : new Integer(usedMinutes)));
 	}
 
 	/**
@@ -73,7 +75,9 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	 */
 	public void fromDomainForPersist(String employeeId, ChildCareNurseUsedNumber domain) {
 
-		this.pk = new KrcdtHdnursingUsePK(employeeId, 1);
+		//this.pk = new KrcdtHdnursingUsePK(employeeId, 1);
+		//this.pk = new KrcdtHdnursingUsePK(employeeId, NursingCategory.Nursing.value);
+		this.pk = new KrcdtHdnursingUsePK();
 		this.fromDomainForUpdate(employeeId, domain);
 	}
 

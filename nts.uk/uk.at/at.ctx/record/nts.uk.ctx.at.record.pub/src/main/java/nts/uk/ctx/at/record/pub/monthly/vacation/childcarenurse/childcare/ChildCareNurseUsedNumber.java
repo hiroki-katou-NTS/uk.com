@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
+import java.util.Date;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
@@ -11,16 +12,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  */
 public class ChildCareNurseUsedNumber {
 
-	/** 子の看護介護休暇（使用日数） */
-	private DayNumberOfUse usedDay;
-	/** 子の看護介護休暇（使用時間） */
-	private Optional<TimeOfUse> usedTimes;
+	/** 日数（使用日数） */
+	private Double usedDay;
+	/** 時間（使用時間） */
+	private Optional<Integer> usedTimes;
 
 /**
  * コンストラクタ　AnnualLeaveRemainingNumber
  */
 public ChildCareNurseUsedNumber(){
-	this.usedDay = new DayNumberOfUse(0.0);
+	this.usedDay = new Double(0.0);
 	this.usedTimes = Optional.empty();
 }
 
@@ -31,8 +32,8 @@ public ChildCareNurseUsedNumber(){
  * @return 子の看護介護使用数
 */
 public static ChildCareNurseUsedNumber of(
-		DayNumberOfUse usedDay,
-		Optional<TimeOfUse> usedTimes){
+		Double usedDay,
+		Optional<Integer> usedTimes){
 
 	ChildCareNurseUsedNumber domain = new ChildCareNurseUsedNumber();
 	domain.usedDay = usedDay;

@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,38 +29,38 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KNLMT_NURSING_LEAVE_SET")
 public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The knlmtNursingLeaveSetPK. */
     @EmbeddedId
     private KnlmtNursingLeaveSetPK knlmtNursingLeaveSetPK;
-    
+
     /** The manage type. */
     @Column(name = "MANAGE_ATR")
     private Integer manageType;
-    
+
     /** The start md. */
     @Column(name = "STR_MD")
-    private Integer startMonthDay;
-    
+    private MonthDay startMonthDay;
+
     /** The nursing num leave day. */
     @Column(name = "NUM_LEAVE_DAY")
     private Integer nursingNumLeaveDay;
-    
+
     /** The nursing num person. */
     @Column(name = "NUM_PERSON")
     private Integer nursingNumPerson;
-    
+
     /** The special holiday frame. */
     @Column(name = "SPE_HOLIDAY")
     private Integer specialHolidayFrame;
-    
+
     /** The work absence. */
     @Column(name = "WORK_ABS")
     private Integer workAbsence;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "knlmtNursingLeaveSet", orphanRemoval = true)
     private List<KnlmtNursingWorkType> listWorkType;
 

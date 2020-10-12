@@ -27,6 +27,6 @@ public class KrcdtHdnursingUsePK implements Serializable {
 
 	/**介護看護区分 */
 	@Column(name = "NURSING_TYPE")
-	public int nursingType;
+	public Integer nursingType;
 
 }

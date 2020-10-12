@@ -2,13 +2,9 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.AnnualLeaveError;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
 /**
  * 子の看護介護休暇集計結果

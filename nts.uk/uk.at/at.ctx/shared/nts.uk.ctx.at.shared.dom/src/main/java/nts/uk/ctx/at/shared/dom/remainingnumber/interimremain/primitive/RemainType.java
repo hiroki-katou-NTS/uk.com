@@ -27,11 +27,16 @@ public enum RemainType {
 	PICKINGUP(6,"振出"),
 	/**
 	 * 休出
-	 */	
-	BREAK(7,"休出");
-	
+	 */
+	BREAK(7,"休出"),
+	/**	子の看護 */
+	CHILDCARE(10,"子の看護"),
+	/**	介護 */
+	CARE(11, "介護");
+
+
 	public final Integer value;
-	
+
 	public final String name;
 
 }

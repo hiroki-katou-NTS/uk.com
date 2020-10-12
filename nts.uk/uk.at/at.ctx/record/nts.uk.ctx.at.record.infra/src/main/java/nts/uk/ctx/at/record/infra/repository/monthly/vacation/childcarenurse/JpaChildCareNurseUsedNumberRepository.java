@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
  * リポジトリ実装：子の看護休暇使用数データ
  * @author yuri_tamakoshi
  */
-public class JpaChildCareUsedNumber extends JpaRepository implements ChildCareNurseUsedNumberRepository{
+public class JpaChildCareNurseUsedNumberRepository extends JpaRepository implements ChildCareNurseUsedNumberRepository{
 
 	/** 検索 */
 	@Override
@@ -52,7 +52,4 @@ public class JpaChildCareUsedNumber extends JpaRepository implements ChildCareNu
 		this.commandProxy().remove(KrcdtHdnursingUse.class, new KrcdtHdnursingUsePK(employeeId,
 				NursingCategory.ChildNursing.value));
 	}
-
-
-
 }

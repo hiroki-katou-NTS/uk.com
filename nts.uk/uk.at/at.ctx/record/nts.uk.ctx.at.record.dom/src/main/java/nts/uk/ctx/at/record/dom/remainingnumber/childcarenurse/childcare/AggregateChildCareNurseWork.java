@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.service.TempChild
 	private TempChildCareNurseManagement provisionalDate;
 	/** 期間終了後翌日 */
 	private NextDayAfterPeriodEndWork nextDayAfterPeriodEnd;
-	//private boolean nextDayAfterPeriodEnd;
 	/** 本年翌年の期間区分 */
 	private YearAtr yearAtr;
 	/** 集計結果（finally） */

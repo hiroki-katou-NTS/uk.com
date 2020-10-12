@@ -2,26 +2,27 @@ package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
 import java.util.Optional;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
+ * 子の看護介護残数
  * @author yuri_tamakoshi
 */
 @Getter
 public class ChildCareNurseRemainingNumber  implements Cloneable{
 
 	/** 子の看護休暇使用日数 */
-	private  DayNumberOfUse usedDays;
+	//private  DayNumberOfUse usedDays;
+	private  Double usedDays;
 	/** 子の看護休暇使用時間 */
-	private Optional<TimeOfUse> usedTime;
+	//private Optional<TimeOfUse> usedTime;
+	private Optional<Integer> usedTime;
 
 	/**
 	 * コンストラクタ
 	 */
 	public ChildCareNurseRemainingNumber(){
 
-		this.usedDays = new DayNumberOfUse(0.0);
+		this.usedDays = new Double(0.0);
 		this.usedTime = Optional.empty();
 	}
 
@@ -32,8 +33,8 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 	 * @return 子の看護介護残数
 	*/
 	public static ChildCareNurseRemainingNumber of (
-			DayNumberOfUse usedDays,
-			Optional<TimeOfUse> usedTime) {
+			Double usedDays,
+			Optional<Integer> usedTime) {
 
 		ChildCareNurseRemainingNumber domain = new ChildCareNurseRemainingNumber();
 		domain.usedDays = usedDays;
