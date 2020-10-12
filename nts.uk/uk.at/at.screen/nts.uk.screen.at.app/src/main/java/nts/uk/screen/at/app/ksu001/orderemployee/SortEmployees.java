@@ -124,7 +124,7 @@ public class SortEmployees {
 		}
 
 		@Override
-		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+		public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}

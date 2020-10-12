@@ -22,7 +22,7 @@ public class GetEmpLicenseClassificationService {
 		Map<NurseClassifiCode ,NurseClassification> map = new HashMap<>();
 
 		// $社員の看護区分Map = require.社員の医療勤務形態履歴項目を取得する(基準日, 社員リスト)
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem  = require.get(listEmp, referenceDate);
+		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem  = require.getEmpClassifications(listEmp, referenceDate);
 		
 		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream().filter(x-> x.getOptMedicalWorkFormInfor().isPresent()).collect(Collectors
 				.toMap(EmpMedicalWorkFormHisItem::getEmpID, item -> item.getOptMedicalWorkFormInfor().get().getNurseClassifiCode()));
@@ -65,7 +65,7 @@ public class GetEmpLicenseClassificationService {
 		 * @param referenceDate
 		 * @return
 		 */
-		List<EmpMedicalWorkFormHisItem> get(List<String> listEmp , GeneralDate referenceDate);
+		List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp , GeneralDate referenceDate);
 		//		看護区分Repository.会社の看護区分リストを取得する(会社ID)		
 		/**
 		 * [R-1] 会社の看護区分リストを取得する

@@ -204,7 +204,7 @@ public class SortEmpService {
 				}
 				break;
 			case CLASSIFY:
-				listEmpClassifiImport =  require.get(ymd, empIDs);
+				listEmpClassifiImport =  require.getEmpClassifications(ymd, empIDs);
 				listEmpClassifiImport.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				break;
 			}
@@ -293,7 +293,7 @@ public class SortEmpService {
 		 * @param lstEmpId
 		 * @return
 		 */
-		List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId);
+		List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId);
 	}
 
 }

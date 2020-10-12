@@ -407,7 +407,7 @@ public class SortEmpServiceTest {
 				require.get();
 				result = Optional.of(sortSetting);
 
-				require.get(ymd, lstEmpId);
+				require.getEmpClassifications(ymd, lstEmpId);
 			}
 		};
 		List<String> listData = SortEmpService.sortEmpTheirOrder(require, ymd, lstEmpId);
@@ -433,7 +433,7 @@ public class SortEmpServiceTest {
 				require.get();
 				result = Optional.of(sortSetting);
 
-				require.get(ymd, lstEmpId);
+				require.getEmpClassifications(ymd, lstEmpId);
 				result = listEmpClassifiImport;
 			}
 		};

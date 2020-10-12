@@ -39,7 +39,7 @@ public class GetEmpLicenseClassificationServiceTest {
 		listEmpMedicalWorkFormHisItem.add(results);
 		new Expectations() {
 			{
-				require.get(listEmp, GeneralDate.today());// dummy
+				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
 				result = listEmpMedicalWorkFormHisItem;
 			}
 		};
@@ -78,7 +78,7 @@ public class GetEmpLicenseClassificationServiceTest {
 		
 		new Expectations() {
 			{
-				require.get(listEmp, GeneralDate.today());// dummy
+				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
 				result = listEmpMedicalWorkFormHisItem;
 			}
 		};
@@ -112,7 +112,7 @@ public class GetEmpLicenseClassificationServiceTest {
 		
 		new Expectations() {
 			{
-				require.get(listEmp, GeneralDate.today());// dummy
+				require.getEmpClassifications(listEmp, GeneralDate.today());// dummy
 				result = listEmpMedicalWorkFormHisItem;
 			}
 		};

@@ -114,20 +114,20 @@ public class SortSetting implements DomainAggregate {
 		for (OrderedList condition : this.orderedList) {
 			switch (condition.getType()) {
 			case SCHEDULE_TEAM:
-				belongScheduleTeams = require.get(sids).stream()
+				belongScheduleTeams = require.getScheduleTeam(sids).stream()
 						.filter(x -> x.getScheduleTeamCd() != null).collect(Collectors.toList());
 				belongScheduleTeams.sort(Comparator.comparing(v-> sids.indexOf(v.getEmployeeID())));
 				break;
 			case RANK:
 				List<EmployeeRankDto> employeeRankDtos = new ArrayList<>();
-				List<EmployeeRank> employeeRanks = require.getAll(sids).stream()
+				List<EmployeeRank> employeeRanks = require.getEmployeeRanks(sids).stream()
 						.filter(x -> x.getEmplRankCode() != null).collect(Collectors.toList());
 				employeeRanks.sort(Comparator.comparing(v-> sids.indexOf(v.getSID())));
 				employeeRankDtos = employeeRanks.stream().map(m -> {
 					return new EmployeeRankDto(m.getSID(), m.getEmplRankCode().toString(),0);
 				}).collect(Collectors.toList());
 				
-				Optional<RankPriority> rankPriority = require.getRankPriority();
+				Optional<RankPriority> rankPriority = require.getRankPriorities();
 				if (rankPriority.isPresent()) {
 					List<String > listRankCode = rankPriority.get().getListRankCd().stream().map(i ->i.toString()).collect(Collectors.toList());
 					employeeRankDtos.forEach((EmployeeRankDto employeeRankDto) -> {
@@ -161,7 +161,7 @@ public class SortSetting implements DomainAggregate {
 			case POSITION:
 				List<EmployeePositionDto> listEmployeePositionDto = new ArrayList<>();
 				
-				List<EmployeePosition> listEmployeePosition =  require.getPositionEmp(baseDate, sids);
+				List<EmployeePosition> listEmployeePosition =  require.getPositionEmps(baseDate, sids);
 				listEmployeePosition.sort(Comparator.comparing(v-> sids.indexOf(v.getEmpID())));
 				
 				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
@@ -197,7 +197,7 @@ public class SortSetting implements DomainAggregate {
 				}
 				break;
 			case CLASSIFY:
-				empClassifiImports =  require.get(baseDate, sids);
+				empClassifiImports =  require.getEmpClassifications(baseDate, sids);
 				empClassifiImports.sort(Comparator.comparing(v-> sids.indexOf(v.getEmpID())));
 				break;
 			}
@@ -224,53 +224,46 @@ public class SortSetting implements DomainAggregate {
 	}
 
 	public static interface Require extends GetEmpLicenseClassificationService.Require {
-		/**
-		 * [R-1] 並び替え設定を取得する //Lấy "sort setting" 並び替え設定Repository.get（会社ID）
-		 * 
-		 * @param companyID
-		 * @return
-		 */
-		Optional<SortSetting> get();
 
 		/**
-		 * [R-2] 所属スケジュールチームを取得する //Lấy "schedule Team" trực thuộc
+		 * [R-1] 所属スケジュールチームを取得する //Lấy "schedule Team" trực thuộc
 		 * 所属スケジュールチームRepository.*get ( 会社ID, List<社員ID> )
 		 * 
 		 * @param companyID
 		 * @param empIDs
 		 * @return
 		 */
-		List<BelongScheduleTeam> get( List<String> empIDs);
+		List<BelongScheduleTeam> getScheduleTeam( List<String> empIDs);
 
 		/**
-		 * [R-3] 社員ランクを取得する //Lấy "Employee Rank" 社員ランクRepository.*get
+		 * [R-2] 社員ランクを取得する //Lấy "Employee Rank" 社員ランクRepository.*get
 		 * (List<社員ID> )
 		 * 
 		 * @param lstSID
 		 * @return
 		 */
-		List<EmployeeRank> getAll(List<String> lstSID);
+		List<EmployeeRank> getEmployeeRanks(List<String> lstSID);
 
 		/**
-		 * [R-4] ランクの優先順を取得する //Lấy rank priority RankRepository
+		 * [R-3] ランクの優先順を取得する //Lấy rank priority RankRepository
 		 * 
 		 * @param companyId
 		 * @return
 		 */
-		Optional<RankPriority> getRankPriority();
+		Optional<RankPriority> getRankPriorities();
 
 		/**
-		 * [R-5] 社員の職位を取得する //Lấy "job title" của employee
+		 * [R-4] 社員の職位を取得する //Lấy "job title" của employee
 		 * <Adapter>社員の職位.取得する(年月日, List<社員ID>)
 		 * 
 		 * @param ymd
 		 * @param lstEmp
 		 * @return
 		 */
-		List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp);
+		List<EmployeePosition> getPositionEmps(GeneralDate ymd, List<String> lstEmp);
 
 		/**
-		 * [R-6] 会社の職位を取得する //Lấy "job title" của company
+		 * [R-5] 会社の職位を取得する //Lấy "job title" của company
 		 * <Adapter>社員の職位.取得する(年月日) QA
 		 * --------------------------------http://192.168.50.4:3000/issues/110607
 		 *
@@ -279,14 +272,14 @@ public class SortSetting implements DomainAggregate {
 		List<PositionImport> getCompanyPosition(GeneralDate ymd);
 
 		/**
-		 * [R-7] 社員の分類を取得する //Lấy "classification" của employee
+		 * [R-6] 社員の分類を取得する //Lấy "classification" của employee
 		 * <Adapter>社員分類Adapter.取得する(年月日, List<社員ID>)
 		 * 
 		 * @param ymd
 		 * @param lstEmpId
 		 * @return
 		 */
-		List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId);
+		List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId);
 	}	
 
 }
