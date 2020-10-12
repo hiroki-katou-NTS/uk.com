@@ -495,21 +495,22 @@ public class DeductionTimeSheet {
 	/**
 	 * 固定勤務 時に就業時間帯orスケマスタから設定を取得する
 	 * 
-	 * @param restCalc
-	 *            固定給系の計算方法
+	 * @param restCalc 固定給系の計算方法
 	 * @return 休 時間帯
 	 */
 	public static List<TimeSheetOfDeductionItem> getFixedBreakTimeSheet(Optional<FixedRestCalculateMethod> calcRest,
 			List<BreakTimeOfDailyAttd> breakTimeOfDailyList) {
 		// 就業時間帯を参照
 		if (calcRest.get().isReferToMaster()) {
-			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferWorkTime()).findFirst().get()
-					.changeAllTimeSheetToDeductionItem();
+			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferWorkTime())
+					.findFirst().map(c ->  c.changeAllTimeSheetToDeductionItem())
+					.orElse(new ArrayList<>());
 		}
 		// スケを参照
 		else {
-			BreakTimeOfDailyAttd test = breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferSchedule()).findFirst().get();
-			return test.changeAllTimeSheetToDeductionItem();
+			return breakTimeOfDailyList.stream().filter(tc -> tc.getBreakType().isReferSchedule())
+					.findFirst().map(c ->  c.changeAllTimeSheetToDeductionItem())
+					.orElse(new ArrayList<>());
 		}
 	}
 
