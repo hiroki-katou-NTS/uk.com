@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.manageemploymenthours;
+package nts.uk.ctx.at.shared.infra.entity.agreement.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

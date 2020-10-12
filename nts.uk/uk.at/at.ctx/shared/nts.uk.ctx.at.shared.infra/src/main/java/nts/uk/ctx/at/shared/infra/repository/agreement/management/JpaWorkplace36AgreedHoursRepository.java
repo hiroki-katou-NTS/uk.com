@@ -1,16 +1,15 @@
-package nts.uk.ctx.at.record.infra.repository.manageworkplaceagreedhours;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
-import nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours.Ksrmt36AgrMgtWkp;
-import nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours.Ksrmt36AgrMgtWkpPk;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkp;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkpPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 職場３６協定時間Repository

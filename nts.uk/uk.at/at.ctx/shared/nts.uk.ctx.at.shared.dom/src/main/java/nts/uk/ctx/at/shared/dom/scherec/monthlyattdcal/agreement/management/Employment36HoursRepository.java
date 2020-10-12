@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.manageemploymenthours;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management;
 
 
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
