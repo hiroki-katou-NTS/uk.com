@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyTempo;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
  * 職場情報変更期間を求める
@@ -38,8 +40,10 @@ public class WkplaceInfoChangePeriod {
 			return result;
 		}
 		//ドメインモデル「日別実績の所属情報」を取得する
-		List<AffiliationInforOfDailyPerfor> listAffiliationInforOfDailyPerfor = affInforOfDailyPerforRepo.finds(Arrays.asList(employeeId) , datePeriod);
-		Map<String, List<AffiliationInforOfDailyPerfor>> mappedByWp = listAffiliationInforOfDailyPerfor.stream()
+		List<AffiliationInforOfDailyTempo> listAffiliationInforOfDailyPerfor = affInforOfDailyPerforRepo.finds(Arrays.asList(employeeId) , datePeriod)
+				.stream().map(x -> new AffiliationInforOfDailyTempo(x.getEmployeeId(), x.getYmd(), new EmploymentCode(x.getAffiliationInfor().getEmploymentCode().v()),
+						x.getAffiliationInfor().getJobTitleID(), x.getAffiliationInfor().getWplID(), new ClassificationCode(x.getAffiliationInfor().getClsCode().v()), new BonusPaySettingCode(x.getAffiliationInfor().getBonusPaySettingCode().v()))).collect(Collectors.toList());
+		Map<String, List<AffiliationInforOfDailyTempo>> mappedByWp = listAffiliationInforOfDailyPerfor.stream()
 				.collect(Collectors.groupingBy(c -> c.getWplID()));
 		Map<String, List<ExWorkplaceHistItemImport>> mapDateWpl = workplaceItems.stream()
 				.collect(Collectors.groupingBy(c -> c.getWorkplaceId()));
@@ -60,7 +64,7 @@ public class WkplaceInfoChangePeriod {
 			List<GeneralDate> lstDateNeedCheck = afterMerge.stream().flatMap(x -> x.datesBetween().stream())
 					.collect(Collectors.toList());
 			
-			List<AffiliationInforOfDailyPerfor> lstWplDate = mappedByWp.get(wpl);
+			List<AffiliationInforOfDailyTempo> lstWplDate = mappedByWp.get(wpl);
 			if (lstWplDate == null) {
 				lstDateAll.addAll(lstDateNeedCheck);
 				continue;

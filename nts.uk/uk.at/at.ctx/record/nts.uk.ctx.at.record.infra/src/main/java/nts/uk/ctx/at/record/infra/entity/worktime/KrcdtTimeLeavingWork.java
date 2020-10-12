@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.worktime;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -17,12 +18,15 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -68,6 +72,18 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	@Column(name = "ATD_NUMBER_STAMP")
 	public Integer attendanceNumberStamp;
 
+	@Column(name = "ATD_OVERTIME")
+	public Integer atdOvertime;
+	
+	@Column(name = "ATD_LATE_NIGHT_OVERTIME")
+	public Integer atdLateNightOvertime;
+	
+	@Column(name = "ATD_BREAK_START")
+	public Integer atdBreakStart;
+	
+	@Column(name = "ATD_BREAK_END")
+	public Integer atdBreakEnd;
+	
 	@Column(name = "LWK_ACTUAL_ROUDING_TIME_DAY")
 	public Integer leaveWorkActualRoundingTime;
 
@@ -94,6 +110,18 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 
 	@Column(name = "LWK_NUMBER_STAMP")
 	public Integer leaveWorkNumberStamp;
+	
+	@Column(name = "LWK_OVERTIME")
+	public Integer lwkOvertime;
+	
+	@Column(name = "LWK_LATE_NIGHT_OVERTIME")
+	public Integer lwkLateNightOvertime;
+	
+	@Column(name = "LWK_BREAK_START")
+	public Integer lwkBreakStart;
+	
+	@Column(name = "LWK_BREAK_END")
+	public Integer lwkBreakEnd;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
@@ -112,13 +140,27 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 								this.attendanceActualPlaceCode, this.attendanceActualSourceInfo) : null,
 						this.attendanceStampTime != null ? getWorkStamp(this.attendanceStampRoudingTime, this.attendanceStampTime,
 								this.attendanceStampPlaceCode, this.attendanceStampSourceInfo) : null,
-						this.attendanceNumberStamp),
+						this.attendanceNumberStamp,
+						(this.atdOvertime==null || this.atdLateNightOvertime==null)?null:
+						new OvertimeDeclaration(new AttendanceTime(this.atdOvertime),
+								new AttendanceTime(this.atdLateNightOvertime)) ,
+						(this.atdBreakStart==null || this.atdBreakEnd==null)?null:
+						new TimeZone(new TimeWithDayAttr(this.atdBreakStart),
+								new TimeWithDayAttr(this.atdBreakEnd))
+						),
 				new TimeActualStamp(
 						this.leaveWorkActualTime !=null ? getWorkStamp(this.leaveWorkActualRoundingTime, this.leaveWorkActualTime,
 								this.leaveWorkActualPlaceCode, this.leaveActualSourceInfo) : null,
 						this.leaveWorkStampTime != null ? getWorkStamp(this.leaveWorkStampRoundingTime, this.leaveWorkStampTime,
 								this.leaveWorkStampPlaceCode, this.leaveWorkStampSourceInfo) : null,
-						this.leaveWorkNumberStamp));
+						this.leaveWorkNumberStamp,
+						(this.lwkOvertime==null || this.lwkLateNightOvertime==null)?null:
+						new OvertimeDeclaration(new AttendanceTime(this.lwkOvertime),
+								new AttendanceTime(this.lwkLateNightOvertime)),
+						(this.lwkBreakStart==null || this.lwkBreakEnd==null)?null:
+						new TimeZone(new TimeWithDayAttr(this.lwkBreakStart),
+								new TimeWithDayAttr(this.lwkBreakEnd))
+						));
 		return domain;
 	}
 
@@ -127,7 +169,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
@@ -139,24 +181,6 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		toEntityAttendance(krcdtTimeLeavingWork, attendanceStamp);
 		toEntityLeave(krcdtTimeLeavingWork, leaveStamp);
 		return krcdtTimeLeavingWork;
-//		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, domain.getWorkNo().v(), ymd, type),
-//				domain.getAttendanceStamp().get().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-//				domain.getAttendanceStamp().get().getActualStamp().getTimeWithDay().valueAsMinutes(),
-//				domain.getAttendanceStamp().get().getActualStamp().getLocationCode().v(),
-//				domain.getAttendanceStamp().get().getActualStamp().getStampSourceInfo().value,
-//				attendanceStamp == null ? null : attendanceStamp.getAfterRoundingTime().valueAsMinutes(),
-//				attendanceStamp == null ? null : attendanceStamp.getTimeWithDay().valueAsMinutes(),
-//				attendanceStamp.getLocationCode().v(),
-//				attendanceStamp.getStampSourceInfo().value, domain.getAttendanceStamp().get().getNumberOfReflectionStamp(), 
-//				domain.getLeaveStamp().get().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-//				domain.getLeaveStamp().get().getActualStamp().getTimeWithDay().valueAsMinutes(),
-//				domain.getLeaveStamp().get().getActualStamp().getLocationCode().v(),
-//				domain.getLeaveStamp().get().getActualStamp().getStampSourceInfo().value,
-//				leaveStamp == null ? null : leaveStamp.getAfterRoundingTime().valueAsMinutes(),
-//				leaveStamp == null ? null : leaveStamp.getTimeWithDay().valueAsMinutes(),
-//				leaveStamp.getLocationCode().v(),
-//				leaveStamp.getStampSourceInfo().value, domain.getLeaveStamp().get().getNumberOfReflectionStamp());
-
 	}
 	
 	private static void toEntityAttendance(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp attendanceStamp){
@@ -165,19 +189,35 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				val actualStamp = attendanceStamp.getActualStamp().get();
 				krcdtTimeLeavingWork.attendanceActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
-				krcdtTimeLeavingWork.attendanceActualSourceInfo = actualStamp.getStampSourceInfo() != null ? actualStamp.getStampSourceInfo().value : null;
-				krcdtTimeLeavingWork.attendanceActualTime = actualStamp.getTimeWithDay() != null ? actualStamp.getTimeWithDay().v() : null;
+				krcdtTimeLeavingWork.attendanceActualSourceInfo = actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				krcdtTimeLeavingWork.attendanceActualTime = actualStamp.getTimeDay().getTimeWithDay().isPresent()? actualStamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 				krcdtTimeLeavingWork.attendanceActualTime = null;
 			}
+			if(attendanceStamp.getOvertimeDeclaration().isPresent()) {
+				krcdtTimeLeavingWork.atdOvertime = attendanceStamp.getOvertimeDeclaration().get().getOverTime().v();
+				krcdtTimeLeavingWork.atdLateNightOvertime = attendanceStamp.getOvertimeDeclaration().get().getOverLateNightTime().v();
+			}else {
+				krcdtTimeLeavingWork.atdOvertime = null;
+				krcdtTimeLeavingWork.atdLateNightOvertime = null;
+			}
+			
+			if(attendanceStamp.getTimeVacation().isPresent()) {
+				krcdtTimeLeavingWork.atdBreakStart = attendanceStamp.getTimeVacation().get().getStart().v();
+				krcdtTimeLeavingWork.atdBreakEnd = attendanceStamp.getTimeVacation().get().getEnd().v();
+			}else {
+				krcdtTimeLeavingWork.atdBreakStart = null;
+				krcdtTimeLeavingWork.atdBreakEnd = null;
+			}
+			
 			if (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent()) {
 				val stamp = attendanceStamp.getStamp().get();
 				krcdtTimeLeavingWork.attendanceStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.attendanceStampRoudingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
-				krcdtTimeLeavingWork.attendanceStampSourceInfo = stamp.getStampSourceInfo() != null ? stamp.getStampSourceInfo().value : null;
-				krcdtTimeLeavingWork.attendanceStampTime = stamp.getTimeWithDay() != null ? stamp.getTimeWithDay().v() : null;
+				krcdtTimeLeavingWork.attendanceStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				krcdtTimeLeavingWork.attendanceStampTime = stamp.getTimeDay().getTimeWithDay().isPresent()? stamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
 				krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
@@ -202,19 +242,34 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 				WorkStamp actualStamp = leaveStamp.getActualStamp().orElse(null);
 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
-				krcdtTimeLeavingWork.leaveActualSourceInfo = actualStamp.getStampSourceInfo() != null ? actualStamp.getStampSourceInfo().value : null;
-				krcdtTimeLeavingWork.leaveWorkActualTime = actualStamp.getTimeWithDay() != null ? actualStamp.getTimeWithDay().v() : null;
+				krcdtTimeLeavingWork.leaveActualSourceInfo = actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				krcdtTimeLeavingWork.leaveWorkActualTime = actualStamp.getTimeDay().getTimeWithDay().isPresent()? actualStamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
 				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = null;
 			}
+			if(leaveStamp.getOvertimeDeclaration().isPresent()) {
+				krcdtTimeLeavingWork.lwkOvertime = leaveStamp.getOvertimeDeclaration().get().getOverTime().v();
+				krcdtTimeLeavingWork.lwkLateNightOvertime = leaveStamp.getOvertimeDeclaration().get().getOverLateNightTime().v();
+			}else {
+				krcdtTimeLeavingWork.lwkOvertime = null;
+				krcdtTimeLeavingWork.lwkLateNightOvertime = null;
+			}
+			
+			if(leaveStamp.getTimeVacation().isPresent()) {
+				krcdtTimeLeavingWork.lwkBreakStart = leaveStamp.getTimeVacation().get().getStart().v();
+				krcdtTimeLeavingWork.lwkBreakEnd = leaveStamp.getTimeVacation().get().getEnd().v();
+			}else {
+				krcdtTimeLeavingWork.lwkBreakStart = null;
+				krcdtTimeLeavingWork.lwkBreakEnd = null;
+			}
 			if (leaveStamp.getStamp() != null && leaveStamp.getStamp().isPresent()) {
 				WorkStamp stamp = leaveStamp.getStamp().orElse(null);
 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
 				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
-				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = stamp.getStampSourceInfo() != null ? stamp.getStampSourceInfo().value : null;
-				krcdtTimeLeavingWork.leaveWorkStampTime = stamp.getTimeWithDay() != null ? stamp.getTimeWithDay().v() : null;
+				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				krcdtTimeLeavingWork.leaveWorkStampTime = stamp.getTimeDay().getTimeWithDay().isPresent() ? stamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
 				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;

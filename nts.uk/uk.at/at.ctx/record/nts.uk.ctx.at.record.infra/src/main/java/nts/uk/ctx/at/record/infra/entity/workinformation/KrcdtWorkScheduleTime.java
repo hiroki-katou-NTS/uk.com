@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

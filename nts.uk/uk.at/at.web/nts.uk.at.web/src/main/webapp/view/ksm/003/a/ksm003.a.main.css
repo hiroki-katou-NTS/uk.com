@@ -1,8 +1,4 @@
 @CHARSET "UTF-8";
-.separate-button {
-	margin-left: 10px;
-	margin-top: 10px;
-}
 
 .fix-button {
 	min-width: 75px;
@@ -19,19 +15,23 @@
 	float: left;
 	height: auto;
 }
+
 #right-content .upDown-container {
 	padding-left: 10px;
 }
+
 #right-content .daysWorking .nts-input {
 	width: auto !important;
-    max-width: 30px;
-    text-align: center;
+	max-width: 30px;
+	text-align: center;
 }
+
 #right-content .daysWorking1 {
 	width: 0;
 	position: relative;
 	overflow: initial;
 }
+
 #right-content .daysWorking1 span {
 	position: absolute;
 	left: -10px;
@@ -40,34 +40,41 @@
 	transform: translate(-50%, -50%);
 	width: 50px;
 }
+
 #right-content table.nts-grid tbody td:last-child,
 #right-content table.ui-iggrid-headertable thead td:last-child {
 	width: 0;
 }
+
 #right-content table td .nts-editor-wrapped {
 	width: auto !important;
 }
+
 #right-content .nts-fixed-table .scroll-header {
-    height: 30px !important;
+	height: 30px !important;
 }
 
 #nts-input-name {
 	width: 0px !important;
 }
+
 #right-content .nts-fixed-header-wrapper {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
+
 #right-content .nts-fixed-header-wrapper .fixed-table-list {
-    float: left;
+	float: left;
 }
+
 #right-content .nts-fixed-header-wrapper .up-down-button {
-    float: left;
-    width: 30px;
-    display: flex;
-    flex-wrap: wrap;
+	float: left;
+	width: 30px;
+	display: flex;
+	flex-wrap: wrap;
 	padding-left: 20px;
 }
+
 #right-content .nts-fixed-header-wrapper .up-down-button button {
 	margin: 5px 0;
 }
@@ -80,14 +87,12 @@
 #inpPattern {
 	width: 170px !important;
 }
+
 #single-list tr td {
 	white-space: nowrap;
 	nowrap: nowrap;
 }
-#inpCode{
-	width: 25px !important;
-	text-align: center;
-}
+
 .border-all td {
 	border: solid grey 1px;
 	text-align: center;
@@ -98,25 +103,34 @@
 	min-width: 100px;
 	max-width: 200px;
 }
+
 .tbl-monthly .ntsControl {
 	width: 50px !important;
 }
+
 .fixed-table thead tr th {
 	height: 29px;
 }
+
 #fixedTable tbody tr td button {
 	margin: 5px 0;
 }
+
 .work-cycle-header {
 	display: flex;
 	align-items: center;
 	padding-bottom: 10px;
 }
+
 .work-cycle-header .nts-editor-wrapped {
-    margin: 0 5px;
+	margin: 0 5px;
 }
 
 .ksm003-content-area {
-    overflow: hidden;
-    padding-bottom: 50px;
+	overflow: hidden;
+	padding-bottom: 50px;
+}
+
+.ui-iggrid-scrolldi.igscroll-touchscrollable {
+	transition: all .5s;
 }

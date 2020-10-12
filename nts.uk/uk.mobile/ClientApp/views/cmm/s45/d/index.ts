@@ -1,11 +1,11 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { ApprovedComponent } from '@app/components';
-import { IApprovalPhase, IApprovalFrame, IApplication } from 'views/cmm/s45/common/index.d';
-import { Phase } from 'views/cmm/s45/common/index';
-import { IOvertime } from 'views/cmm/s45/components/app1';
+import { IApprovalPhase, AppDetailScreenInfo } from 'views/cmm/s45/shr/index.d';
+import { Phase } from 'views/cmm/s45/shr/index';
 import { CmmS45EComponent } from 'views/cmm/s45/e';
 import { CmmS45FComponent } from 'views/cmm/s45/f';
+import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
     CmmS45ComponentsApp1Component,
@@ -13,7 +13,7 @@ import {
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component
-} from 'views/cmm/s45/components';
+} from 'views/cmm/s45/shr/components';
 
 @component({
     name: 'cmms45d',
@@ -58,7 +58,11 @@ export class CmmS45DComponent extends Vue {
         alternateExpiration: boolean 
     } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
     public authorComment: string = '';
-    public appOvertime: IOvertime = null;
+    public appType: number = 99;
+    public appTransferData: any = {
+        appDispInfoStartupOutput: null,
+        appDetail: null
+    };
     // 差し戻し理由
     public reversionReason: string = '';
 
@@ -77,10 +81,9 @@ export class CmmS45DComponent extends Vue {
                     case 0: return 'CMMS45_7'; // 反映状態 = 未反映
                     case 1: return 'CMMS45_8'; // 反映状態 = 反映待ち
                     case 2: return 'CMMS45_9'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_10'; // 反映状態 = 取消待ち
-                    case 4: return 'CMMS45_10'; // 反映状態 = 取消済
-                    case 5: return 'CMMS45_36'; // 反映状態 = 差し戻し
-                    case 6: return 'CMMS45_11'; // 反映状態 = 否認
+                    case 3: return 'CMMS45_10'; // 反映状態 = 取消済
+                    case 4: return 'CMMS45_36'; // 反映状態 = 差し戻し
+                    case 5: return 'CMMS45_11'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -92,10 +95,9 @@ export class CmmS45DComponent extends Vue {
                     case 0: return 'apply-unapproved'; // 反映状態 = 未反映
                     case 1: return 'apply-approved'; // 反映状態 = 反映待ち
                     case 2: return 'apply-reflected'; // 反映状態 = 反映済
-                    case 3: return 'apply-cancel'; // 反映状態 = 取消待ち
-                    case 4: return 'apply-cancel'; // 反映状態 = 取消済
-                    case 5: return 'apply-return'; // 反映状態 = 差し戻し
-                    case 6: return 'apply-denial'; // 反映状態 = 否認
+                    case 3: return 'apply-cancel'; // 反映状態 = 取消済
+                    case 4: return 'apply-return'; // 反映状態 = 差し戻し
+                    case 5: return 'apply-denial'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -107,10 +109,9 @@ export class CmmS45DComponent extends Vue {
                     case 0: return 'CMMS45_39'; // 反映状態 = 未反映
                     case 1: return 'CMMS45_37'; // 反映状態 = 反映待ち
                     case 2: return 'CMMS45_38'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_42'; // 反映状態 = 取消待ち
-                    case 4: return 'CMMS45_42'; // 反映状態 = 取消済
-                    case 5: return 'CMMS45_40'; // 反映状態 = 差し戻し
-                    case 6: return 'CMMS45_41'; // 反映状態 = 否認
+                    case 3: return 'CMMS45_42'; // 反映状態 = 取消済
+                    case 4: return 'CMMS45_40'; // 反映状態 = 差し戻し
+                    case 5: return 'CMMS45_41'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -128,25 +129,26 @@ export class CmmS45DComponent extends Vue {
         let self = this;
         self.selected = 0;
         self.$http.post('at', API.getDetailMob, self.currentApp)
-        .then((resApp: any) => {
-            let appData: IApplication = resApp.data;
-            self.createPhaseLst(appData.listApprovalPhaseStateDto);
-            self.appState.appStatus = appData.appStatus;
-            self.appState.reflectStatus = appData.reflectStatus;
-            self.appState.version = appData.version;
-            self.appState.authorizableFlags = appData.authorizableFlags;
-            self.appState.approvalATR = appData.approvalATR;
-            self.appState.alternateExpiration = appData.alternateExpiration;
-            self.authorComment = appData.authorComment; 
-            self.reversionReason = appData.reversionReason;
-            self.appOvertime = appData.appOvertime;
+        .then((successData: any) => {
+            self.appTransferData.appDispInfoStartupOutput = successData.data;
+            let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
+            self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
+            self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
+            self.appState.version = appDetailScreenInfoDto.application.version;
+            self.appState.authorizableFlags = appDetailScreenInfoDto.authorizableFlags;
+            self.appState.approvalATR = appDetailScreenInfoDto.approvalATR;
+            self.appState.alternateExpiration = appDetailScreenInfoDto.alternateExpiration;
+            self.authorComment = appDetailScreenInfoDto.authorComment;
+            self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
+            self.appType = appDetailScreenInfoDto.application.appType;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true;
             } else {
                 self.commentDis = false;
             }
-            self.commentColor = resApp.data.loginApprovalAtr == 2 ? 'uk-bg-dark-salmon' : 'uk-bg-alice-blue';
+            self.setCommentColor(self.phaseLst);
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -155,6 +157,36 @@ export class CmmS45DComponent extends Vue {
                     self.back();
                 });
         });
+    }
+
+    public setCommentColor(phaseLst: Array<Phase>) {
+        const self = this;
+        self.$auth.user.then((user) => {
+            for (let phase of phaseLst) {
+                let find = false;
+                for (let frame of phase.listApprovalFrame) {
+                    for (let approver of frame.listApprover) {
+                        if (user.employeeId != approver.approverID) {
+                            continue;
+                        }
+                        find = true;
+                        if (approver.approvalAtrValue == 2) {
+                            self.commentColor = 'uk-bg-dark-salmon';
+                        }
+                        if (approver.approvalAtrValue == 1) {
+                            self.commentColor = 'uk-bg-alice-blue';
+                        }
+                        break;
+                    }
+                    if (find) {
+                        break;    
+                    }
+                }
+                if (find) {
+                    break;    
+                }
+            }
+        });    
     }
 
     // tạo dữ liệu người phê duyệt
@@ -254,18 +286,13 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút giải phóng
     public releaseApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_248')
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
-                    self.$http.post('at', API.release, {
-                        memo: self.memo,
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp
-                        }
-                    }).then((resRelease: any) => {
+                    self.$http.post('at', API.release, self.appTransferData.appDispInfoStartupOutput)
+                    .then((resRelease: any) => {
                         self.$mask('hide');
                         if (resRelease.data.processDone) {
                             self.reflectApp(resRelease.data.reflectAppId);
@@ -291,27 +318,18 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút chấp nhận
     public approveApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_1549')
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
                     self.$http.post('at', API.approve, {
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp    
-                        },	
-                        memo: self.memo, 
-                        comboBoxReason: '',
-                        textAreaReason: '',
-                        holidayAppType: 0,
-                        user: 1,
-                        reflectPerState: self.appState.reflectStatus,
-                        mobileCall: true
+                        memo: self.memo,
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput
                     }).then((resApprove: any) => {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
-                            self.reflectApp(resApprove.data.reflectAppId);
+                            // self.reflectApp(resApprove.data.reflectAppId);
                             self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                             .then((resAfterApprove: any) => {
                                 self.controlDialog(resAfterApprove);        
@@ -337,19 +355,14 @@ export class CmmS45DComponent extends Vue {
 
     // kích hoạt nút từ chối
     public denyApp(): void {
-        let self = this;
+        const self = this;
         self.$modal.confirm('Msg_1550')
             .then((v) => {
                 if (v == 'yes') {
                     self.$mask('show');
                     self.$http.post('at', API.deny, {
                         memo: self.memo,
-                        applicationDto: {
-                            version: self.appState.version,
-                            applicationID: self.currentApp,
-                            prePostAtr: self.appOvertime.prePostAtr,
-                            applicantSID: self.appOvertime.applicant
-                        }   
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput     
                     }).then((resDeny: any) => {
                         self.$mask('hide');
                         if (resDeny.data.processDone) {
@@ -501,10 +514,178 @@ export class CmmS45DComponent extends Vue {
 
         return false;
     }
+
+    get applicant() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let applicantID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
+            employeeInfoLst = vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst,
+            empInfo = _.find(employeeInfoLst, (o: any) => o.sid == applicantID);
+        if (empInfo) {
+            return empInfo.bussinessName;
+        }
+
+        return '';
+    }
+
+    get representerDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+        let employeeID = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
+            enteredPerson = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.enteredPerson;
+        if (employeeID == enteredPerson) {
+            return false;
+        } else {
+            return true;
+        } 
+    }
+
+    get representer() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+        if (vm.representerDisp) {
+            return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;      
+        }
+
+        return '';
+    }
+
+    get appDate() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
+
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD(dd)');
+    }
+
+    get appTypeName() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        switch (vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.appType) {
+            case AppType.OVER_TIME_APPLICATION:
+                return AppTypeName.OVER_TIME_APPLICATION;
+                break;
+            case AppType.ABSENCE_APPLICATION:
+                return AppTypeName.ABSENCE_APPLICATION;
+                break;
+            case AppType.WORK_CHANGE_APPLICATION:
+                return AppTypeName.WORK_CHANGE_APPLICATION;
+                break;
+            case AppType.BUSINESS_TRIP_APPLICATION:
+                return AppTypeName.BUSINESS_TRIP_APPLICATION;
+                break;
+            case AppType.GO_RETURN_DIRECTLY_APPLICATION:
+                return AppTypeName.GO_RETURN_DIRECTLY_APPLICATION;
+                break;
+            case AppType.LEAVE_TIME_APPLICATION:
+                return AppTypeName.LEAVE_TIME_APPLICATION;
+                break;
+            case AppType.STAMP_APPLICATION:
+                return AppTypeName.STAMP_APPLICATION;
+                break;
+            case AppType.ANNUAL_HOLIDAY_APPLICATION:
+                return AppTypeName.ANNUAL_HOLIDAY_APPLICATION;
+                break;
+            case AppType.EARLY_LEAVE_CANCEL_APPLICATION:
+                return AppTypeName.EARLY_LEAVE_CANCEL_APPLICATION;
+                break;
+            case AppType.COMPLEMENT_LEAVE_APPLICATION:
+                return AppTypeName.COMPLEMENT_LEAVE_APPLICATION;
+                break;
+            case AppType.OPTIONAL_ITEM_APPLICATION:
+                return AppTypeName.OPTIONAL_ITEM_APPLICATION;
+                break;
+            default: 
+                return '';
+                break;
+        }
+    }
+
+    get prePost() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let prePostResource = [{
+            code: 0,
+            text: 'KAFS00_10'
+        }, {
+            code: 1,
+            text: 'KAFS00_11'
+        }];
+
+        return _.find(prePostResource, (o: any) => o.code == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr).text;
+    }
+
+    get inputDate() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
+
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm'); 
+    }
+
+    get comboReasonDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayStandardReason == 0 ? false : true;
+    }
+
+    get textReasonDisp() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return false;
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.displayAppReason == 0 ? false : true;
+    }
+
+    get comboReason() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+        let dropdownList = vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
+            opComboReason = _.find(dropdownList, (o: any) => {
+            return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
+        });
+        if (opComboReason) {
+            return opComboReason.reasonForFixedForm;
+        }
+        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '' + ' ' + vm.$i18n('CMMS45_87');
+        }
+
+        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');
+    }
+
+    get textReason() {
+        const vm = this;
+        if (!vm.appTransferData.appDispInfoStartupOutput) {
+            return '';
+        }
+
+        return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
+    }
 }
 
 const API = {
-    getDetailMob: 'at/request/application/getDetailMob',
+    getDetailMob: 'at/request/app/smartphone/getDetailMob',
     approve: 'at/request/application/approveapp',
     deny: 'at/request/application/denyapp',
     release: 'at/request/application/releaseapp',

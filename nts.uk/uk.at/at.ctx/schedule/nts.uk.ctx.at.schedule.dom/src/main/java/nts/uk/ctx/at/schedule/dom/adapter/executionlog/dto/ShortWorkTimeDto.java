@@ -20,6 +20,7 @@ public class ShortWorkTimeDto {
 	private DatePeriod period;
 
 	/** The child care atr. */
+	/** 育児介護区分 */
 	private ChildCareAtr childCareAtr;
 
 	/** The time slot. */

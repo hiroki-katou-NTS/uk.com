@@ -39,7 +39,7 @@
 					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_3')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty()),visible : removeFlg">#{i18n.getText('KSM004_4')}</button>
 					<button id="print-button_1" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
-					<button data-bind="click:  function(){openDialogF(0)}">#{i18n.getText('KSM004_106')}</button>
+					<button data-bind="click:  function(){openDialogF(0)}">#{i18n.getText('KSM004_117')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="rightExtend">
@@ -81,7 +81,8 @@
 								eventDisplay: eventDisplay,
 								eventUpdatable: eventUpdatable,
 								holidayDisplay: holidayDisplay,
-								cellButtonDisplay: cellButtonDisplay}"></div>
+								cellButtonDisplay: cellButtonDisplay,
+								reloadOnSameYM: reloadOnSameYM}"></div>
 							</div>
 						</div>
 					</div>
@@ -94,7 +95,7 @@
 					<button data-bind="click: function(){openDialogD(1)}">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(1)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 					<button id="print-button_2" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
-					<button data-bind="click:  function(){openDialogF(1)}">#{i18n.getText('KSM004_106')}</button>
+					<button data-bind="click:  function(){openDialogF(1)}">#{i18n.getText('KSM004_117')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="leftExtend">
@@ -153,7 +154,7 @@
 					<button data-bind="click: function(){openDialogD(2)}">#{i18n.getText('KSM004_2')}</button>
 					<button class="danger" data-bind="click: function(){removeCalendar(2)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
 					<button id="print-button_3" data-bind="click: opencdl028Dialog">#{i18n.getText('KSM004_100')}</button>
-					<button data-bind="click:  function(){openDialogF(2)}">#{i18n.getText('KSM004_106')}</button>
+					<button data-bind="click:  function(){openDialogF(2)}">#{i18n.getText('KSM004_117')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="leftExtend">

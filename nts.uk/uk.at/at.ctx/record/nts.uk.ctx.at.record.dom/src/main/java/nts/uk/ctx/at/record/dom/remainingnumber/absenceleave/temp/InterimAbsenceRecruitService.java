@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 /**
  * 暫定振休・振出管理データ

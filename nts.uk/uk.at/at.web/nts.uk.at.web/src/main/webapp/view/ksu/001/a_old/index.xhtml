@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="./style.css" />
+			<com:stylefile path="./grid-list.css" />
+			<com:scriptfile path="./bindings/icon.js" />
+			<com:scriptfile path="./bindings/date.js" />
+			<com:scriptfile path="./bindings/popup.js" />
+			<com:scriptfile path="./components/work-hope.js" />
+			<com:scriptfile path="./components/vacation-status.js" />
+			<com:scriptfile path="./components/setting-menu.js" />
+			<com:scriptfile path="./components/setting-display.js" />
+			<com:scriptfile path="./components/setting-period.js" />
+			<com:scriptfile path="./components/use-guide.js" />
+			<com:scriptfile path="./components/toolbar.js" />
+			<com:scriptfile path="./components/target-organization.js" />
+			<com:scriptfile path="./components/mode-edit-action.js" />
+			<com:scriptfile path="./components/shift-pallet.js" />
+			<com:scriptfile path="./components/mode.js" />
+			<com:scriptfile path="./components/grid-list.js" />
+			<com:scriptfile path="./viewmodel.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" data-bind="component: { name: 'ksu-toolbar' }"></div>
+			<div id="contents-area" class="ksu-001-a">
+				<div data-bind="component: { name: 'ksu-target-organization' }"></div>
+				<div data-bind="component: { name: 'ksu-mode' }"></div>
+				<div data-bind="component: { name: 'ksu-grid-list', params: { summaryDataSources: ko.observableArray([]) } }"></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -22,57 +22,57 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
-import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
@@ -309,8 +309,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									
 									// 特定日設定を取得する
 									// Reqlist 490
-									RecSpecificDateSettingImport specificDateSettingImport = this.recSpecificDateSettingAdapter
-											.specificDateSettingServiceByListWpl(companyId, workPlaceIdList, strDate);
+									List<RecSpecificDateSettingImport> specificDateSettingImport = this.recSpecificDateSettingAdapter
+											.getList(companyId, workPlaceIdList, periodTime);
 
 									// 会社職場個人の加給設定を取得する
 									Optional<BonusPaySetting> bonusPaySettingOpt = this.reflectBonusSetting(companyId,
@@ -328,8 +328,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									masterList.setBaseAutoCalSetting(baseAutoCalSetting);
 									masterList.setBonusPaySettingOpt(bonusPaySettingOpt);
 									masterList.setDatePeriod(datePeriod);
-									masterList.setSpecificDateSettingImport(
-											Optional.ofNullable(specificDateSettingImport));
+									masterList.setSpecificDateSettingImport(specificDateSettingImport);
 
 									masterLists.add(masterList);
 								}

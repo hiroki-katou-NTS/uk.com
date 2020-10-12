@@ -28,10 +28,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
@@ -39,6 +36,9 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -178,10 +178,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				int calcState = rec.getInt("CALCULATION_STATE"), goStraight = rec.getInt("GO_STRAIGHT_ATR"),
 						backStraight = rec.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = rec.getInt("DAY_OF_WEEK");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId,
-						new WorkInformation(rec.getString("RECORD_WORK_WORKTIME_CODE"),
-								rec.getString("RECORD_WORK_WORKTYPE_CODE")),
-						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTIME_CODE"),
-								rec.getString("SCHEDULE_WORK_WORKTYPE_CODE")),
+						new WorkInformation(rec.getString("RECORD_WORK_WORKTYPE_CODE"), rec.getString("RECORD_WORK_WORKTIME_CODE")),
+						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTYPE_CODE"), rec.getString("SCHEDULE_WORK_WORKTIME_CODE")),
 						calcState == CalculationState.Calculated.value ? CalculationState.Calculated
 								: CalculationState.No_Calculated,
 						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use,
@@ -232,10 +230,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				int calcState = rec.getInt("CALCULATION_STATE"), goStraight = rec.getInt("GO_STRAIGHT_ATR"),
 						backStraight = rec.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = rec.getInt("DAY_OF_WEEK");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId,
-						new WorkInformation(rec.getString("RECORD_WORK_WORKTIME_CODE"),
-								rec.getString("RECORD_WORK_WORKTYPE_CODE")),
-						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTIME_CODE"),
-								rec.getString("SCHEDULE_WORK_WORKTYPE_CODE")),
+						new WorkInformation(rec.getString("RECORD_WORK_WORKTYPE_CODE"), rec.getString("RECORD_WORK_WORKTIME_CODE")),
+						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTYPE_CODE"), rec.getString("SCHEDULE_WORK_WORKTIME_CODE")),
 						calcState == CalculationState.Calculated.value ? CalculationState.Calculated
 								: CalculationState.No_Calculated,
 						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use,
@@ -262,22 +258,27 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
 	private void internalUpdate(WorkInfoOfDailyPerformance domain, KrcdtDaiPerWorkInfo data) {
-		if (domain.getRecordInfo() != null) {
-			data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null ? null
-					: domain.getRecordInfo().getWorkTimeCode().v();
-			data.recordWorkWorktypeCode = domain.getRecordInfo().getWorkTypeCode().v();
+		if (domain.getWorkInformation().getRecordInfo() != null) {
+			WorkInformation record = domain.getWorkInformation().getRecordInfo();
+			
+			data.recordWorkWorktypeCode = record.getWorkTypeCode().v();
+			data.recordWorkWorktimeCode = record.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);
 		}
-		if (domain.getScheduleInfo() != null) {
-			data.scheduleWorkWorktimeCode = domain.getScheduleInfo().getWorkTimeCode() == null ? null
-					: domain.getScheduleInfo().getWorkTimeCode().v();
-			data.scheduleWorkWorktypeCode = domain.getScheduleInfo().getWorkTypeCode().v();
+		
+		if (domain.getWorkInformation().getScheduleInfo() != null) {
+			WorkInformation sched = domain.getWorkInformation().getScheduleInfo();
+			
+			data.scheduleWorkWorktypeCode = sched.getWorkTypeCode().v();
+			data.scheduleWorkWorktimeCode = sched.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);
 		}
-		data.calculationState = domain.getCalculationState().value;
-		data.backStraightAttribute = domain.getBackStraightAtr().value;
-		data.goStraightAttribute = domain.getGoStraightAtr().value;
-		data.dayOfWeek = domain.getDayOfWeek().value;
+		
+		data.calculationState = domain.getWorkInformation().getCalculationState().value;
+		data.backStraightAttribute = domain.getWorkInformation().getBackStraightAtr().value;
+		data.goStraightAttribute = domain.getWorkInformation().getGoStraightAtr().value;
+		data.dayOfWeek = domain.getWorkInformation().getDayOfWeek().value;
 		data.version = domain.getVersion();
-		if(domain.getScheduleTimeSheets().isEmpty()){
+		
+		if(domain.getWorkInformation().getScheduleTimeSheets().isEmpty()){
 			data.scheduleTimes.forEach(c -> {
 				this.commandProxy().remove(getEntityManager().merge(c));
 			});
@@ -285,7 +286,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 //				this.getEntityManager().flush();
 		} else {
 			if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
-				data.scheduleTimes = domain.getScheduleTimeSheets().stream()
+				data.scheduleTimes = domain.getWorkInformation().getScheduleTimeSheets().stream()
 						.map(c -> new KrcdtWorkScheduleTime(
 								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
 										c.getWorkNo().v()),
@@ -293,16 +294,40 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						.collect(Collectors.toList());
 			} else {
 				data.scheduleTimes.stream().forEach(st -> {
-					domain.getScheduleTimeSheets().stream()
+					domain.getWorkInformation().getScheduleTimeSheets().stream()
 							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
 							.ifPresent(dst -> {
 								st.attendance = dst.getAttendance().valueAsMinutes();
 								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
 							});
 				});
-			}        
-			
-			this.commandProxy().updateAll(data.scheduleTimes);
+			}   
+			List<KrcdtWorkScheduleTime> schedules = new ArrayList<>();
+			try (PreparedStatement stmtSche = this.connection().prepareStatement(
+					"select * from KRCDT_WORK_SCHEDULE_TIME"
+					+ " where SID = ? and YMD = ?")) {
+				stmtSche.setString(1, domain.getEmployeeId());
+				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
+				schedules = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
+					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
+					pks.employeeId = rs.getString("SID");
+					pks.ymd = rs.getGeneralDate("YMD");
+					pks.workNo = rs.getInt("WORK_NO");
+							
+					KrcdtWorkScheduleTime es = new KrcdtWorkScheduleTime();
+					es.krcdtWorkScheduleTimePK = pks;
+					es.attendance = rs.getInt("ATTENDANCE");
+					es.leaveWork = rs.getInt("LEAVE_WORK");
+					
+					return es;
+				});
+			} catch (SQLException e) {
+			}
+			if(schedules.isEmpty()) {
+				this.commandProxy().insertAll(data.scheduleTimes);
+			}else {
+				this.commandProxy().updateAll(data.scheduleTimes);
+			}
 		}
 
 		this.commandProxy().update(data);
@@ -458,8 +483,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				String sid = c.getString("SID");
 				GeneralDate ymd = c.getGeneralDate("YMD");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
-						new WorkInformation(c.getString("RECORD_WORK_WORKTIME_CODE"), c.getString("RECORD_WORK_WORKTYPE_CODE")), 
-						new WorkInformation(c.getString("SCHEDULE_WORK_WORKTIME_CODE"), c.getString("SCHEDULE_WORK_WORKTYPE_CODE")), 
+						new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
+						new WorkInformation(c.getString("SCHEDULE_WORK_WORKTYPE_CODE"), c.getString("SCHEDULE_WORK_WORKTIME_CODE")), 
 						calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
 						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
@@ -541,8 +566,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					String sid = c.getString("SID");
 					GeneralDate ymd = c.getGeneralDate("YMD");
 					WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
-							new WorkInformation(c.getString("RECORD_WORK_WORKTIME_CODE"), c.getString("RECORD_WORK_WORKTYPE_CODE")), 
-							new WorkInformation(c.getString("SCHEDULE_WORK_WORKTIME_CODE"), c.getString("SCHEDULE_WORK_WORKTYPE_CODE")), 
+							new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
+							new WorkInformation(c.getString("SCHEDULE_WORK_WORKTYPE_CODE"), c.getString("SCHEDULE_WORK_WORKTIME_CODE")), 
 							calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
 							goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 							backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 

@@ -11,6 +11,9 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class WorkScheduleTimeZoneImport {
+	/** The schedule cnt. */
+	// 予定勤務回数
+	private int scheduleCnt;
 	
 	/** The schedule start clock. */
 	// 予定開始時刻
@@ -20,4 +23,7 @@ public class WorkScheduleTimeZoneImport {
 	// 予定終了時刻
 	private int scheduleEndClock;
 	
+	/** The bounce atr. */
+	// 直行直帰区分
+	private int bounceAtr;
 }

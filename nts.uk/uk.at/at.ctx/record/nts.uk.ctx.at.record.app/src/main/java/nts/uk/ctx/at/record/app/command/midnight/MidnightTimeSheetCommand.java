@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.app.command.midnight;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

@@ -24,7 +24,8 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true
             }
             calendarPanel1: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -890,9 +891,9 @@ module nts.uk.at.view.ksm004.a {
                 const self = this;
                 if(value!=null) {
                     if (value == 1) {
-                        $('.button-sqr1').css("background-color","rgb(155,194,230)");
+                        $('.button-sqr1').css("background-color","#DCE6F2");
                     } else {
-                        $('.button-sqr'+value).css("background","lightgoldenrodyellow");
+                        $('.button-sqr'+value).css("background-color","#FDEADA");
                     }
                     self.currentWorkingDayAtr = value-1;
                 } else {
@@ -912,14 +913,15 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
-                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    .done(()=>{
-                        self.isShowDatepicker = true;
-                        nts.uk.ui.block.clear(); 
-                    })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    });      
+					self.yearMonthPicked.valueHasMutated();
+//                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+//                    .done(()=>{
+//                        self.isShowDatepicker = true;
+//                        nts.uk.ui.block.clear(); 
+//                    })
+//                    .fail((res) => {
+//                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+//                    });      
                 });  
             }
             
@@ -1101,6 +1103,7 @@ module nts.uk.at.view.ksm004.a {
             eventUpdatable: KnockoutObservable<boolean>;
             holidayDisplay: KnockoutObservable<boolean>;
             cellButtonDisplay: KnockoutObservable<boolean>;  
+			reloadOnSameYM?: boolean; 
         }
         
         interface ITreeGrid {
@@ -1147,15 +1150,15 @@ module nts.uk.at.view.ksm004.a {
                 this.backgroundColor = 'white';
                 switch(listText) {
                     case 1:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //RBG(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
@@ -1164,15 +1167,15 @@ module nts.uk.at.view.ksm004.a {
             changeListText(value: number){
                 switch(value) {
                     case 1:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //RBG(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }

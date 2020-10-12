@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -23,10 +25,13 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryTerm;
+import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -72,7 +77,50 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 			+ " INNER JOIN BsymtEmploymentHistItem eht ON eh.hisId = eht.hisId "
 			+ " WHERE eh.hisId IN :histIds";
 	
-	/**
+	private static final String DELETE_HIST = "DELETE FROM BsymtEmploymentHist a "
+			+ " WHERE a.companyId = :companyId "
+			+ " AND a.sid = :empId "
+			+ " AND a.hisId = :histId  ";
+	private static final String DELETE_HIST_ITEM = "DELETE FROM BsymtEmploymentHistItem a "
+			+ " WHERE a.hisId = :histId"
+			+ " AND a.sid = : empId";
+	private static final String DELETE_HIST_BY_SID = "DELETE FROM BsymtEmploymentHist a "
+			+ " WHERE a.companyId = :companyId "
+			+ " AND a.sid = :empId ";
+	private static final String DELETE_HIST_ITEM_BY_SID = "DELETE FROM BsymtEmploymentHistItem a "
+			+ " WHERE a.sid = : empId";
+	
+	private static final String GET_BY_CID_AND_EMPID = " SELECT a FROM BsymtEmploymentHist a " 
+														+ " WHERE a.companyId = :companyId"
+														+ " AND a.sid = :empId ";
+	private static final String GET_BY_CID_AND_EMPIDS = " SELECT a FROM BsymtEmploymentHist a " 
+			+ " WHERE a.companyId = :companyId "
+			+ " AND a.sid IN :empIds ";
+	private static final String GET_BY_KEY = " SELECT a FROM BsymtEmploymentHistItem a "
+											+ " WHERE a.hisId =:  histId "; 
+	
+	private static final String GET_BY_LIST_HISTID = " SELECT a FROM BsymtEmploymentHistItem a"
+			+ " WHERE a.hisId IN :listHistId "; 
+	
+	private static final String GET_BY_DATE = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId " ;
+	
+	private static final String SPECIFY_EMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId "
+			+ " AND h.sid =: empId  ";
+	
+	private static final String SPECIFY_LISTEMP_HISTORY = " SELECT i.hisId ,i.sid ,i.empCode , i.salarySegment FROM BsymtEmploymentHistItem i "
+			+ " JOIN BsymtEmploymentHist h ON h.hisId = i.hisId AND h.sid = i.sid "
+			+ " WHERE h.endDate >= ymd AND ymd >= h.strDate"
+			+ " AND h.companyId =: companyId "
+			+ " AND h.sid IN : listEmpId";
+
+	
+	/** 
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
 	 * 
 	 * @param sid
@@ -658,6 +706,179 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
         }
         return result;
     }
+
+	@Override
+	public void insert(EmploymentHistory employmentHistory, EmploymentHistoryItem employmentHistoryItem) {
+		this.commandProxy().insert(toEntityHist(employmentHistory));
+		this.commandProxy().insert(toEntityHistItem(employmentHistoryItem));
+		
+	}
+	
+	public List<BsymtEmploymentHist> toEntityHist(EmploymentHistory employmentHistory){
+		List<BsymtEmploymentHist> result = new ArrayList<>();
+		List<String> listHistId =  employmentHistory.getHistoryIds();
+		for(String item : listHistId){
+			Optional<BsymtEmploymentHist> optionData = this.queryProxy().find(item, BsymtEmploymentHist.class);
+			if(optionData.isPresent()){
+			result.add(optionData.get());
+			}
+		}
+		return result;
+	}
+	public BsymtEmploymentHistItem toEntityHistItem(EmploymentHistoryItem employmentHistoryItem){
+			BsymtEmploymentHistItem entity =  new BsymtEmploymentHistItem(employmentHistoryItem.getHistoryId(), employmentHistoryItem.getEmployeeId(), employmentHistoryItem.getEmploymentCode().v(), employmentHistoryItem.getSalarySegment().value);	
+		return entity;
+	}
+
+	@Override
+	public void update(EmploymentHistory employmentHistory, EmploymentHistoryItem employmentHistoryItem) {
+		this.commandProxy().update(toEntityHist(employmentHistory));
+		this.commandProxy().update(toEntityHistItem(employmentHistoryItem));
+		
+	}
+
+	@Override
+	public void delete(String companyId, String empId, String histId) {
+		this.getEntityManager().createQuery(DELETE_HIST)
+		.setParameter("companyId", companyId)
+		.setParameter("empId", empId)
+		.setParameter("histId", histId)
+		.executeUpdate();
+		this.getEntityManager().createQuery(DELETE_HIST_ITEM)
+		.setParameter("empId", empId)
+		.setParameter("histId", histId).executeUpdate();
+		
+		
+		
+	}
+
+	@Override
+	public void delete(String companyId, String empId) {
+		this.getEntityManager().createQuery(DELETE_HIST_BY_SID)
+		.setParameter("companyId", companyId)
+		.setParameter("empId", empId)
+		.executeUpdate();
+		this.getEntityManager().createQuery(DELETE_HIST_ITEM_BY_SID)
+		.setParameter("empId", empId)
+		.executeUpdate();
+		
+	}
+
+	@Override
+	public Optional<EmploymentHistory> getByCidAndEmpID(String companyId, String empId) {
+		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPID,BsymtEmploymentHist.class)
+				.setParameter("companyId", companyId)
+				.setParameter("empId", empId).getList();
+		
+		List<DateHistoryItem> listDateHistory = listEntity.stream().map( c -> new DateHistoryItem(c.hisId, new DatePeriod(c.strDate, c.endDate))).collect(Collectors.toList());
+		EmploymentHistory result = new EmploymentHistory(companyId, empId, listDateHistory);
+		return Optional.ofNullable(result);
+	}
+
+	@Override
+	public List<EmploymentHistory> getByCidAndListEmpID(String companyId, List<String> empIds) {
+		List<EmploymentHistory> lstEmpHis = new ArrayList<>();
+		if (empIds.isEmpty()) {
+			return lstEmpHis;
+		}
+		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPIDS,BsymtEmploymentHist.class)
+				.setParameter("companyId", companyId)
+				.setParameter("empIds", empIds).getList();
+		for(String empId : empIds){
+			List<DateHistoryItem> listDateHistory = listEntity.stream().filter(x-> x.sid.equals(empId)).map( c -> new DateHistoryItem(c.hisId, new DatePeriod(c.strDate, c.endDate))).collect(Collectors.toList());
+			EmploymentHistory history = new EmploymentHistory(companyId, empId, listDateHistory);
+			lstEmpHis.add(history);
+		}
+		return lstEmpHis;
+	}
+
+	@Override
+	public Optional<EmploymentHistoryItem> getEmploymentHistoryItem(String histId) {
+		Optional<BsymtEmploymentHistItem> entity = this.queryProxy().query(GET_BY_KEY, BsymtEmploymentHistItem.class)
+				.setParameter("hisId", histId).getSingle();
+		EmploymentHistoryItem result = new EmploymentHistoryItem(entity.get().hisId, entity.get().sid,
+				EnumAdaptor.valueOf(entity.get().salarySegment, SalarySegment.class),
+				new EmploymentCode(entity.get().empCode));
+		return Optional.of(result);
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId) {
+		List<EmploymentHistoryItem> historyItems = new ArrayList<>();
+		if(!listHistId.isEmpty()) {
+			historyItems = this.queryProxy().query(GET_BY_LIST_HISTID, BsymtEmploymentHistItem.class)
+					.setParameter("listHistId", listHistId).getList(x -> new EmploymentHistoryItem(x.hisId, x.sid,  
+							 x.salarySegment == null ? null : EnumAdaptor.valueOf(x.salarySegment, SalarySegment.class), new EmploymentCode(x.empCode)));
+		}
+		return historyItems;
+
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getEmploymentHistoryItemByDate(String companyId, GeneralDate ymd) {
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(GET_BY_DATE,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.getList();
+		return listEmploymentHistoryItem.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());	
+	}
+
+	@Override
+	public Optional<EmploymentHistoryItem> getByEmpIdAndDate(String companyId, GeneralDate ymd, String empId) {
+		EmploymentHistoryItem result = null;
+		Optional<BsymtEmploymentHistItem> employmentHistoryItem = this.queryProxy().query(SPECIFY_EMP_HISTORY,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.setParameter("empId", empId)
+				.getSingle();
+		if(employmentHistoryItem.isPresent()){
+		 result = new EmploymentHistoryItem(employmentHistoryItem.get().hisId, employmentHistoryItem.get().sid,  EnumAdaptor.valueOf(employmentHistoryItem.get().salarySegment, SalarySegment.class),
+					new EmploymentCode(employmentHistoryItem.get().empCode));
+				}
+		return 	Optional.ofNullable(result);
+	}
+
+	@Override
+	public List<EmploymentHistoryItem> getByListEmpIdAndDate(String companyId, GeneralDate ymd,
+			List<String> listEmpId) {
+		
+		List<BsymtEmploymentHistItem> listEmploymentHistoryItem = this.queryProxy().query(SPECIFY_LISTEMP_HISTORY,BsymtEmploymentHistItem.class)
+				.setParameter("ymd", ymd)
+				.setParameter("companyId", companyId)
+				.setParameter("listEmpId", listEmpId)
+				.getList();
+		return listEmploymentHistoryItem.stream().map(item -> toDomainEmploymentHistoryItem(item))
+				.collect(Collectors.toList());	
+	}
+
+	@Override
+	public List<EmploymentHistoryTerm> getEmploymentHistoryTerm(String companyId, List<String> lstEmpId,
+			DatePeriod datePeriod) {
+		List<EmploymentHistoryTerm> result = new ArrayList<>();
+		// $履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 会社ID, 社員IDリスト )
+		List<EmploymentHistory> lstEmpHist = getByCidAndListEmpID(companyId, lstEmpId);
+		List<DateHistoryItem> lstHistoryItems = lstEmpHist.stream()
+				.flatMap(mapper -> mapper.getHistoryItems().stream()
+						.filter(x -> datePeriod.contains(x.start()) || datePeriod.contains(x.end())
+								|| x.contains(datePeriod.start()) || x.contains(datePeriod.end())))
+				.collect(Collectors.toList());
+		//$履歴IDリスト = $汎用履歴項目リスト: map $.履歴ID															
+		List<String> lstHistId =  lstHistoryItems.stream().map(c ->c.identifier()).collect(Collectors.toList());
+		//$履歴項目リスト = [4-2] *履歴IDを指定して履歴項目を取得する ( $履歴IDリスト )
+		List<EmploymentHistoryItem> listHistItem = getAllEmploymentHistoryItem(lstHistId);
+		// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+		lstHistoryItems.stream().forEach(y -> {
+			// $履歴項目 = $履歴項目リスト: find $.履歴ID == $汎用履歴項目.履歴ID
+			Optional<EmploymentHistoryItem> dateHistoryItems = listHistItem.stream()
+					.filter(x -> x.getHistoryId().equals(y.identifier())).findFirst();
+			if (dateHistoryItems.isPresent()) {
+				EmploymentHistoryTerm data = new EmploymentHistoryTerm(y.span(), dateHistoryItems.get());
+				result.add(data);
+			}
+		});
+		return result;
+	}
 
 	
 
