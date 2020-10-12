@@ -98,15 +98,15 @@ module nts.uk.ui.at.ksu002.a {
 												begin: d.startTime,
 												finish: d.endTime
 											},
-											holiday: exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
-											event: exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
+											holiday: '', // exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
+											event: '', // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
 										};
 
 										exits.className = [
 											...(exits.className || []),
-											exits.date.getDate() === 5 ? c.COLOR_CLASS.EVENT : '',
-											exits.date.getDate() === 6 ? c.COLOR_CLASS.HOLIDAY : '',
-											exits.date.getDate() === 9 ? c.COLOR_CLASS.HOLIDAY : ''
+											// exits.date.getDate() === 5 ? c.COLOR_CLASS.EVENT : '',
+											// exits.date.getDate() === 6 ? c.COLOR_CLASS.HOLIDAY : '',
+											// exits.date.getDate() === 9 ? c.COLOR_CLASS.HOLIDAY : ''
 										].filter(c => !!c)
 									}
 								});

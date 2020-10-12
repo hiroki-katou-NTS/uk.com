@@ -33,7 +33,11 @@ module nts.uk.ui.calendar {
 		SPECIAL = 'special',
 		HOLIDAY = 'holiday',
 		SUNDAY = 'sunday',
-		SATURDAY = 'saturday'
+		SATURDAY = 'saturday',
+		CONFIRMED = 'confirmed',
+		SELF_ALTER = 'self-alter',
+		OTHER_ALTER = 'other-alter',
+		REFLECTED = 'reflected'
 	}
 
 	export interface DataInfo {
@@ -212,12 +216,25 @@ module nts.uk.ui.calendar {
                 min-height: 40px;
                 box-sizing: border-box;
             }
-            .calendar .calendar-container .month .week .day.diff-month .data-info {
-                background-color: #d9d9d9;
-            }
             .calendar .calendar-container .month .week .day.same-month .data-info {
                 background-color: #ffffff;
 			}
+            .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
+				background-color: #eccefb;
+			}
+            .calendar .calendar-container .month .week .day.same-month.self-alter .data-info {
+				background-color: #94B7FE;
+			}
+            .calendar .calendar-container .month .week .day.same-month.other-alter .data-info {
+				background-color: #CEE6FF;
+			}
+            .calendar .calendar-container .month .week .day.same-month.reflected .data-info {
+				background-color: #BFEA60;
+			}
+            .calendar .calendar-container .month .week .day.diff-month .data-info,
+            .calendar .calendar-container .month .week .day.same-month.readonly .data-info {
+                background-color: #d9d9d9;
+            }
 			.calendar .event-popper {
 				top: -999px;
 				left: -999px;

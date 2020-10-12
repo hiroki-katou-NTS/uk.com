@@ -126,7 +126,7 @@ module nts.uk.ui.at.ksu002.a {
 			height: 29px
 		}
 		.action-bar .btn-action>div:last-child>button.btn-help {
-			width: 24px;
+			width: 30px;
 			height: 24px;
 			margin-top: 5px;
 		}
@@ -197,8 +197,8 @@ module nts.uk.ui.at.ksu002.a {
 	export class ActionBarComponent extends ko.ViewModel {
 		workTypeData!: {
 			selected: KnockoutObservable<string>;
-			dataSources: KnockoutObservableArray<WorkType>;
-			currentItem: KnockoutComputed<WorkType | null>;
+			dataSources: KnockoutObservableArray<WorkTypeModel>;
+			currentItem: KnockoutComputed<WorkTypeModel | null>;
 		};
 
 		workTimeData!: {
@@ -265,7 +265,7 @@ module nts.uk.ui.at.ksu002.a {
 			const dataSourcesWtime: KnockoutObservableArray<k.WorkTimeModel> = ko.observableArray([]);
 
 			const selectedWtype: KnockoutObservable<string> = ko.observable('');
-			const dataSourcesWtype: KnockoutObservableArray<WorkType> = ko.observableArray([]);
+			const dataSourcesWtype: KnockoutObservableArray<WorkTypeModel> = ko.observableArray([]);
 
 			vm.workTypeData = {
 				selected: selectedWtype,
@@ -316,6 +316,7 @@ module nts.uk.ui.at.ksu002.a {
 							wtype: {
 								code: wtype ? wtype.workTypeCode : '',
 								name: wtype ? wtype.name : '',
+								type: wtype ? wtype.type : WORKTYPE_SETTING.NOT_REQUIRED
 							},
 							wtime: {
 								code: wtime ? wtime.code : '',
@@ -346,8 +347,8 @@ module nts.uk.ui.at.ksu002.a {
 				});
 
 			vm.$ajax('at', API.WTYPE)
-				.then((response: WorkType[]) => {
-					vm.workTypeData.dataSources(response.map((m) => ({ ...m, memo: vm.$i18n(m.memo) })));
+				.then((response: WorkTypeResponse[]) => {
+					vm.workTypeData.dataSources(response.map((m) => ({ ...m.workTypeDto, type: m.workTimeSetting, memo: vm.$i18n(m.workTypeDto.memo) })));
 				});
 		}
 
@@ -376,16 +377,34 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: KnockoutObservable<string>;
 	}
 
+	interface WorkTypeResponse {
+		workStyle: number;
+		workTimeSetting: WORKTYPE_SETTING;
+		workTypeDto: WorkType;
+	}
+
 	interface WorkType {
 		memo: string;
 		name: string;
 		workTypeCode: string;
 	}
 
+	interface WorkTypeModel extends WorkType {
+		type: WORKTYPE_SETTING;
+		memo: string;
+	}
+
+	export enum WORKTYPE_SETTING {
+		REQUIRED = 0,
+		OPTIONAL = 1,
+		NOT_REQUIRED = 2
+	}
+
 	export interface WorkData {
 		wtype: {
 			code: string;
 			name: string;
+			type: WORKTYPE_SETTING;
 		};
 		wtime: {
 			code: string;

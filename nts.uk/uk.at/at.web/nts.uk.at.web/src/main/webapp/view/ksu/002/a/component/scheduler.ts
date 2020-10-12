@@ -156,6 +156,7 @@ module nts.uk.ui.at.ksu002.a {
                     border-radius: 0 !important;
                     border: 0 !important;
                     cursor: pointer;
+                    background-color: transparent;
                 }
                 .scheduler .ntsControl input.state-1:focus {
                     color: #fff;
@@ -255,8 +256,8 @@ module nts.uk.ui.at.ksu002.a {
             name: COMPONENT_NAME,
             template: `
             <div class="work-type cf">
-                <div class="join" data-bind="text: text.wtype"></div>
-                <div class="leave" data-bind="text: text.wtime"></div>
+                <div class="join" data-bind="text: text.wtype, attr: { title: $component.$i18n(text.wtype) }"></div>
+                <div class="leave" data-bind="text: text.wtime, attr: { title: $component.$i18n(text.wtime) }"></div>
             </div>
             <div class="work-time cf">
                 <div class="join">
