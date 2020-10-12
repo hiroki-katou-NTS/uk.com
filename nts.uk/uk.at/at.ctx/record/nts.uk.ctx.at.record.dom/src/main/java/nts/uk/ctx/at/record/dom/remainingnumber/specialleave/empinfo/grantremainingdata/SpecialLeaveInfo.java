@@ -365,7 +365,7 @@ public class SpecialLeaveInfo implements Cloneable {
 					0.0, 0, 0.0,
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(),
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getTimes().v(),
-					0.0));
+					0.0, 0.0, 0.0, 0.0));
 			newRemainData.setDummyAtr(false);
 			
 			// 作成した「特休付与残数データ」を付与残数データリストに追加

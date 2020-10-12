@@ -58,6 +58,9 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant10Command> {
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
 					c.grantDateItemName, c.deadlineDateItemName);
 			insertLst.add(domain);
+			
+			
+			
 		});
 		if(!insertLst.isEmpty()) {
 			result.addAll(addSpeLeaveGrantCommandHandler.addHandler(insertLst));

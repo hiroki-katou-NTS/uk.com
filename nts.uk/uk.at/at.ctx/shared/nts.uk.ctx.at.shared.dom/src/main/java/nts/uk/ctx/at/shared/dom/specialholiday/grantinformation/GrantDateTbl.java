@@ -57,16 +57,16 @@ public class GrantDateTbl extends AggregateRoot {
 		super.validate();
 	}
 
-//	/**
-//	 * Validate input data
-//	 */
-//	public List<String> validateInput() {
-//		List<String> errors = new ArrayList<>();
-//		List<YearMonth> yearMonth = new ArrayList<>();
-//		
-//		for (int i = 0; i < this.elapseYear.size(); i++) {
-//			ElapseYear currentElapseYear = this.elapseYear.get(i);
-//			
+	/**
+	 * Validate input data
+	 */
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
+		List<YearMonth> yearMonth = new ArrayList<>();
+		
+		for (int i = 0; i < this.elapseYear.size(); i++) {
+			GrantElapseYearMonth currentElapseYear = this.elapseYear.get(i);
+			
 //			// 同じ経過年数の場合は登録不可
 //			YearMonth currentYearMonth = new YearMonth();
 //			currentYearMonth.setMonth(currentElapseYear.getMonths().v());
@@ -94,11 +94,11 @@ public class GrantDateTbl extends AggregateRoot {
 //							|| (currentElapseYear.getYears().v() != 0 && currentElapseYear.getMonths().v() != 0))) {
 //				errors.add("Msg_101");
 //			}
-//		}
-//		
-//		return errors;
-//	}
-//	
+		}
+		
+		return errors;
+	}
+	
 //	public GrantDateTbl(GrantDateCode grantDateCode, GrantDateName grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
 //		this.grantDateCode = grantDateCode;
 //		this.grantDateName = grantDateName;
@@ -106,11 +106,11 @@ public class GrantDateTbl extends AggregateRoot {
 //		this.fixedAssign = fixedAssign;
 //		this.numberOfDays = numberOfDays;
 //	}
-//
+
 //	public static GrantDateTbl createFromJavaType(String grantDateCode, String grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
 //		return new GrantDateTbl(new GrantDateCode(grantDateCode), new GrantDateName(grantDateName), isSpecified, fixedAssign, numberOfDays);
 //	}
-//	
+	
 //	/**
 //	 * Create from Java Type
 //	 * 

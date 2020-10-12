@@ -270,7 +270,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 			
 			// 未消化数を更新
-			val targetUndigestNumber = this.remainingNumber.getUndigestedNumber();
+			val targetUndigestNumber = this.remainingNumber.getＲeserveLeaveUndigestedNumber();
 			val remainingNumber = grantRemainingNumber.getDetails().getRemainingNumber();
 			targetUndigestNumber.addDays(remainingNumber.v());
 		}
@@ -366,7 +366,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 上限日数と積立年休残日数を比較
 		Integer maxDays = aggrPeriodWork.getMaxDays().v();
 		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
-		double totalRemain = noMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v();
+		double totalRemain = noMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
 		if (maxDays.doubleValue() < totalRemain){
 			
 			// 上限を超過した日数を計算　→　上限超過日数
@@ -507,7 +507,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		{
 			// 残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
-			if (withMinus.getRemainingNumberInfo().getTotalRemaining().getTotalRemainingDays().v() < 0.0){
+			if (withMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v() < 0.0){
 				if (this.afterGrantAtr){
 					
 					// 「積立年休不足エラー（付与後）」を追加

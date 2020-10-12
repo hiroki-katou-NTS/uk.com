@@ -30,15 +30,13 @@ public class GrantRegular extends DomainObject {
 	private Optional<GrantDate> grantDate;
 	
 	/** 指定日付与 */
-	private FixGrantDate fixGrantDate;
+	private Optional<FixGrantDate> fixGrantDate;
 	
 	/** 付与日テーブル参照付与 */
-	private GrantPeriodic grantPeriodic;
+	private Optional<GrantPeriodic> grantPeriodic;
 	
 	/** 期間付与 */
-	private PeriodGrantDate periodGrantDate;
-	
-
+	private Optional<PeriodGrantDate> periodGrantDate;
 	
 //	
 //	/** 会社ID */
@@ -58,23 +56,26 @@ public class GrantRegular extends DomainObject {
 		super.validate();
 	}
 	
-//	/**
-//	 * Create from Java Type
-//	 * 
-//	 * @param companyId
-//	 * @param specialHolidayCode
-//	 * @param typeTime
-//	 * @param grantDate
-//	 * @param allowDisappear
-//	 * @param grantTime
-//	 * @return
-//	 */
-//	public static GrantRegular createFromJavaType(String companyId, int specialHolidayCode, int typeTime, int grantDate, boolean allowDisappear, GrantTime grantTime) {
-//		return new GrantRegular(companyId, 
-//				new SpecialHolidayCode(specialHolidayCode),
-//				EnumAdaptor.valueOf(typeTime, TypeTime.class),
-//				EnumAdaptor.valueOf(grantDate, GrantDate.class),
-//				allowDisappear,
-//				grantTime);
-//	}
+	/**
+	 * Create from Java Type
+	 * @param typeTime
+	 * @param grantDate
+	 * @param fixGrantDate
+	 * @param grantPeriodic
+	 * @param periodGrantDate
+	 * @return
+	 */
+	public static GrantRegular createFromJavaType(
+			TypeTime typeTime, 
+			Optional<GrantDate> grantDate,
+			Optional<FixGrantDate> fixGrantDate,
+			Optional<GrantPeriodic> grantPeriodic,
+			Optional<PeriodGrantDate> periodGrantDate) {
+		return new GrantRegular(
+				typeTime,
+				grantDate,
+				fixGrantDate,
+				grantPeriodic,
+				periodGrantDate);
+	}
 }

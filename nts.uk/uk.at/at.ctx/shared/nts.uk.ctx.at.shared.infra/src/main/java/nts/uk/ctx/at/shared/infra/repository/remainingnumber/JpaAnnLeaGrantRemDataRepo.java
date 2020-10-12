@@ -381,7 +381,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-			sql = sql.replace("ANNLEAV_ID", "'" +  c.getAnnLeavID() + "'");
+			sql = sql.replace("ANNLEAV_ID", "'" +  c.getLeaveID() + "'");
 			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId()+ "'");
 			

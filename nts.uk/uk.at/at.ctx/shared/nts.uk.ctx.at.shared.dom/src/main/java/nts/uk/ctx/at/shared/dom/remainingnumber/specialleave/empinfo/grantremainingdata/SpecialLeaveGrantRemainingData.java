@@ -24,6 +24,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 // 特休付与残数
 public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 
+	/**
+	 * 特別休暇コード
+	 */
+	private int specialLeaveCode;
+	
+	
 //	private String annLeavID;
 //	
 //	private String cid;
@@ -57,145 +63,53 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 //	 * 明細
 //	 */
 //	private SpecialLeaveNumberInfo details;
-
 	
 	public static SpecialLeaveGrantRemainingData createFromJavaType(
-			String annLeavID, 
-			String cID, 
+			String specialId, 
+			String cid, 
 			String employeeId,
+			int specialLeaveCode, 
 			GeneralDate grantDate, 
-			GeneralDate deadline, 
-			int expirationStatus, 
+			GeneralDate deadlineDate, 
+			int expirationStatus,
 			int registerType, 
-			double grantDays,
-			Integer grantMinutes, 
-			double usedDays, 
-			Integer usedMinutes, 
-			Double stowageDays, 
-			double remainDays,
-			Integer remainMinutes, 
-			double usedPercent) {
+			BigDecimal dayNumberOfGrant, 
+			Integer timeOfGrant, 
+			BigDecimal dayNumberOfUse,
+			Integer timeOfUse, 
+			BigDecimal useSavingDays, 
+			BigDecimal numberOverdays, 
+			Integer timeOver,
+			BigDecimal dayNumberOfRemain, 
+			Integer timeOfRemain , 
+			String grantDateItemName , 
+			String deadlineDateItemName) {
 
+		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays,
+				dayNumberOfRemain , grantDateItemName , deadlineDateItemName);
+		if (check) {
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-			domain.cid = cID;
-			domain.leaveID = annLeavID;
+			domain.leaveID = specialId;
+			domain.cid = cid;
 			domain.employeeId = employeeId;
+			domain.specialLeaveCode = specialLeaveCode;
 			domain.grantDate = grantDate;
-			domain.deadline = deadline;
+			domain.deadline = deadlineDate;
 			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-
-			domain.details 
-				= new LeaveNumberInfo(
-					grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-					remainDays, remainMinutes, usedPercent);
-
-//			if (prescribedDays != null && deductedDays != null && workingDays != null) {
-//				domain.annualLeaveConditionInfo = Optional
-//						.of(SpecialLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
-//			} else {
-//				domain.annualLeaveConditionInfo = Optional.empty();
-//			}
+			domain.details = new SpecialLeaveNumberInfo(
+					dayNumberOfGrant.doubleValue(), timeOfGrant, dayNumberOfUse.doubleValue(), timeOfUse,
+					useSavingDays.doubleValue(), dayNumberOfRemain.doubleValue(), timeOfRemain, 0.0);
 			return domain;
+		} 
+		return null;
 	}
-	
-//	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
-//			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
-//			double remainDays, Integer remainMinutes, double usedPercent) {
-//		this.grantDate = grantDate;
-//		this.deadline = deadline;
-//		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-//		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-//		
-//		this.details = new SpecialLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-//				remainDays, remainMinutes, usedPercent);
-//		
-//	}
 
-//	/**
-//	 * 特休付与残数履歴データを特休付与残数データに変換
-//	 * @param history 特休付与残数履歴データ
-//	 * @return 特休付与残数データ
-//	 */
-//	// 2019.3.3 ADD shuichi_ishida
-//	public static SpecialLeaveGrantRemainingData createFromHistory(SpecialLeaveRemainingHistory history) {
-//		
-//		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-//		domain.cid = history.getCid();
-//		domain.annLeavID = IdentifierUtil.randomUniqueId();
-//		domain.employeeId = history.getEmployeeId();
-//		domain.grantDate = history.getGrantDate();
-//		domain.deadline = history.getDeadline();
-//		domain.expirationStatus = EnumAdaptor.valueOf(history.getExpirationStatus().value, LeaveExpirationStatus.class);
-//		domain.registerType = EnumAdaptor.valueOf(history.getRegisterType().value, GrantRemainRegisterType.class);
-//		domain.details = history.getDetails();
-//		domain.annualLeaveConditionInfo = history.getSpecialLeaveConditionInfo();
-//		return domain;
-//	}
-
-//	/**
-//	 * 特休を指定日数消化する
-//	 * @param usedDays 特休使用日数
-//	 * @param isForcibly 強制的に消化するか
-//	 * @return 特休使用残
-//	 */
-//	// 2018.4.23 add shuichi_ishida
-//	public double digest(double usedDays, boolean isForcibly){
-//		
-//		// 「特休使用日数」を所得
-//		if (usedDays <= 0.0) return 0.0;
-//		double remainingDays = usedDays;
-//		
-//		// 特休残数が足りているかチェック
-//		boolean isSubtractRemain = false;
-//		val remainingNumber = this.details.getRemainingNumber();
-//		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
-//		// 「強制的に消化する」をチェック
-//		else if (isForcibly) isSubtractRemain = true;
-//		
-//		if (isSubtractRemain){
-//			
-//			// 特休残数から減算
-//			double newRemain = remainingNumber.getDays().v() - remainingDays;
-//			this.details.setRemainingNumber(SpecialLeaveRemainingNumber.createFromJavaType(newRemain, null));
-//			
-//			// 特休使用数に加算
-//			double newUsed = this.details.getUsedNumber().getDays().v() + remainingDays;
-//			Double stowageDays = null;
-//			if (this.details.getUsedNumber().getStowageDays().isPresent()){
-//				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
-//			}
-//			this.details.setUsedNumber(SpecialLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//			
-//			// 特休使用残を0にする
-//			remainingDays = 0.0;
-//		}
-//		else {
-//			
-//			// 特休使用残から減算
-//			remainingDays -= remainingNumber.getDays().v();
-//			
-//			// 特休使用数に加算
-//			double newUsed = this.details.getUsedNumber().getDays().v() + remainingNumber.getDays().v();
-//			Double stowageDays = null;
-//			if (this.details.getUsedNumber().getStowageDays().isPresent()){
-//				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
-//			}
-//			this.details.setUsedNumber(SpecialLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//			
-//			// 特休残数を0にする
-//			this.details.setRemainingNumber(SpecialLeaveRemainingNumber.createFromJavaType(0.0, null));
-//		}
-//		
-//		// 特休使用残を返す
-//		return remainingDays;
-//	}
-	
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
-			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
-		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
-		if(isNull == false) return isNull;
-		if (grantDays != null || usedDays != null || remainDays != null) {
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
+			BigDecimal dayNumberOfRemain , String grantDateItemName ,String deadlineDateItemName) {
+		boolean isNull = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays, dayNumberOfRemain);
+		if (dayNumberOfGrant != null || dayNumberOfUse != null || dayNumberOfRemain != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
 					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
@@ -219,8 +133,12 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 		}
 		return isNull;
 	}
-	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays) {
-		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+	
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
+			BigDecimal dayNumberOfRemain) {
+		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && dayNumberOfUse == null
+				&& numberOverdays == null && dayNumberOfRemain == null)
 			return false;
 		return true;
 	}
@@ -230,32 +148,11 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 		SpecialLeaveGrantRemainingData cloned;
 		try {
 			cloned = (SpecialLeaveGrantRemainingData)super.clone();
+			cloned.specialLeaveCode = specialLeaveCode;
 		}
 		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemaining clone error.");
+			throw new RuntimeException("SpecialLeaveGrantRemainingData clone error.");
 		}
 		return cloned;
 	}
-
-//	/**
-//	 * コンストラクタ
-//	 * @param employeeId // 社員ID
-//	 * @param grantDate	// 付与日
-//	 * @param deadline	// 期限日
-//	 * @param expirationStatus //　期限切れ状態
-//	 * @param grantRemainRegisterType // 登録種別
-//	 * @param annualLeaveNumberInfo //　明細
-//	 */
-//	public SpecialLeaveGrantRemainingData(
-//			String employeeId, GeneralDate grantDate, GeneralDate deadline,
-//			LeaveExpirationStatus expirationStatus,
-//			GrantRemainRegisterType grantRemainRegisterType,
-//			SpecialLeaveNumberInfo spacialLeaveNumberInfo) {
-//		this.employeeId = employeeId;
-//		this.grantDate = grantDate;
-//		this.deadline = deadline;
-//		this.expirationStatus = expirationStatus;
-//		this.registerType = grantRemainRegisterType;
-//		this.details = spacialLeaveNumberInfo;
-//	}
 }

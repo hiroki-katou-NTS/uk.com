@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -18,7 +19,6 @@ public class AddSpeLeaGrant10CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant10Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant10Command> {
 
-		
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 
@@ -52,7 +52,7 @@ public class AddSpeLeaGrant10CommandHandler
 				command.getNumberDayRemain(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
 				command.grantDateItemName, command.deadlineDateItemName);
-
+		
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}
 }

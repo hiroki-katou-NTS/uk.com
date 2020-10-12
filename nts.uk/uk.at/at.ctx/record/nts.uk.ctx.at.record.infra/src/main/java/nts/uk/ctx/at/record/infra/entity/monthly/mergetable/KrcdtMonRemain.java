@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,7 +65,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.D
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
@@ -72,7 +72,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemainDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -1758,59 +1757,74 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.deleteMonAnnleaRemain();
 		if (domain == null) return;
 		
+		// 年休：使用数
+		
 		val normal = domain.getAnnualLeave();
-		val normalUsed = normal.getUsedNumber();
-		val real = domain.getRealAnnualLeave();
-		val realUsed = real.getUsedNumber();
-
+		val normalUsed = normal.getUsedNumberInfo().getUsedNumber();
+		val normalUsedBefore = normal.getUsedNumberInfo().getUsedNumberBeforeGrant();
+		val normalUsedAfterOpt = normal.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
+		
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getClosurePeriod().start();
 		this.endDate = domain.getClosurePeriod().end();
 
-		// 年休：使用数
-		this.annleaUsedDays = normalUsed.getUsedDays().getUsedDays().v();
-		this.annleaUsedDaysBefore = normalUsed.getUsedDays().getUsedDaysBeforeGrant().v();
-		if (normalUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
-			this.annleaUsedDaysAfter = normalUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
-		}
+		this.annleaUsedDays = normalUsed.getUsedDays().getUsedDayNumber().v();
 		if (normalUsed.getUsedTime().isPresent()) {
-			val normalUsedTime = normalUsed.getUsedTime().get();
-			this.annleaUsedMinutes = normalUsedTime.getUsedTime().v();
-			this.annleaUsedMinutesBefore = normalUsedTime.getUsedTimeBeforeGrant().v();
-			if (normalUsedTime.getUsedTimeAfterGrant().isPresent()) {
-				this.annleaUsedMinutesAfter = normalUsedTime.getUsedTimeAfterGrant().get().v();
-			}
-			this.annleaUsedTimes = normalUsedTime.getUsedTimes().v();
+			this.annleaUsedMinutes = normalUsed.getUsedTime().get().getUsedTime().v();
 		}
+		this.annleaUsedDaysBefore = normalUsedBefore.getUsedDays().getUsedDayNumber().v();
+		if (normalUsedBefore.getUsedTime().isPresent()){
+			this.annleaUsedMinutesBefore = normalUsedBefore.getUsedTime().get().getUsedTime().v();
+//			if (normalUsedTime.getUsedTimeAfterGrant().isPresent()) {
+//				this.annleaUsedMinutesAfter = normalUsedTime.getUsedTimeAfterGrant().get().v();
+//			}
+		}
+		
+		this.annleaUsedTimes = normal.getUsedNumberInfo().getAnnualLeaveUsedTimes().v();
+		if (normalUsedAfterOpt.isPresent()) {
+			this.annleaUsedDaysAfter = normalUsedAfterOpt.get().getUsedDays().getUsedDayNumber().v();
+			if (normalUsedAfterOpt.get().getUsedTime().isPresent()){
+				this.annleaUsedMinutesAfter = normalUsedAfterOpt.get().getUsedTime().get().getUsedTime().v();
+			}
+		}
+		
+		val real = domain.getRealAnnualLeave();
+		val realUsed = real.getUsedNumberInfo().getUsedNumber();
+		val realUsedBefore = real.getUsedNumberInfo().getUsedNumberBeforeGrant();
+		val realUsedAfterOpt = real.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
 
 		// 実年休：使用数
-		this.annleaFactUsedDays = realUsed.getUsedDays().getUsedDays().v();
-		this.annleaFactUsedDaysBefore = realUsed.getUsedDays().getUsedDaysBeforeGrant().v();
-		if (realUsed.getUsedDays().getUsedDaysAfterGrant().isPresent()) {
-			this.annleaFactUsedDaysAfter = realUsed.getUsedDays().getUsedDaysAfterGrant().get().v();
+		this.annleaFactUsedDays = realUsed.getUsedDays().getUsedDayNumber().v();
+		if (realUsed.getUsedTime().isPresent()){
+			this.annleaFactUsedMinutes = realUsed.getUsedTime().get().getUsedTime().v();
 		}
-		if (realUsed.getUsedTime().isPresent()) {
-			val realUsedTime = realUsed.getUsedTime().get();
-			this.annleaFactUsedMinutes = realUsedTime.getUsedTime().v();
-			this.annleaFactUsedMinutesBefore = realUsedTime.getUsedTimeBeforeGrant().v();
-			if (realUsedTime.getUsedTimeAfterGrant().isPresent()) {
-				this.annleaFactUsedMinutesAfter = realUsedTime.getUsedTimeAfterGrant().get().v();
+		this.annleaFactUsedDaysBefore = realUsedBefore.getUsedDays().getUsedDayNumber().v();
+		if (realUsedBefore.getUsedTime().isPresent()) {
+			this.annleaFactUsedMinutesBefore = realUsedBefore.getUsedTime().get().getUsedTime().v();
+		}
+		if (realUsedAfterOpt.isPresent()) {
+			this.annleaFactUsedDaysAfter = realUsedAfterOpt.get().getUsedDays().getUsedDayNumber().v();
+			if (realUsedAfterOpt.get().getUsedTime().isPresent()) {
+				this.annleaFactUsedMinutesAfter = realUsedAfterOpt.get().getUsedTime().get().getUsedTime().v();
 			}
-			this.annleaFactUsedTimes = realUsedTime.getUsedTimes().v();
 		}
-
+	
 		// 年休：残数
-		this.annleaRemainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
-		if (normal.getRemainingNumber().getTotalRemainingTime().isPresent()) {
-			this.annleaRemainingMinutes = normal.getRemainingNumber().getTotalRemainingTime().get().v();
+		val normalR = domain.getAnnualLeave();
+		val normalRemain = normalR.getRemainingNumberInfo().getRemainingNumber();
+		val normalRemainBefore = normalR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
+		val normalRemainAfterOpt = normalR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+		
+		this.annleaRemainingDays = normalRemain.getTotalRemainingDays().v();
+		if (normalRemain.getTotalRemainingTime().isPresent()) {
+			this.annleaRemainingMinutes = normalRemain.getTotalRemainingTime().get().v();
 		}
-		this.annleaRemainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
-			this.annleaRemainingMinutesBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingTime().get()
-					.v();
+		this.annleaRemainingDaysBefore = normalRemainBefore.getTotalRemainingDays().v();
+		if (normalRemainBefore.getTotalRemainingTime().isPresent()) {
+			this.annleaRemainingMinutesBefore = normalRemainBefore.getTotalRemainingTime().get().v();
 		}
-		if (normal.getRemainingNumberAfterGrant().isPresent()) {
-			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+		if (normalRemainAfterOpt.isPresent()) {
+			val normalRemainAfter = normalRemainAfterOpt.get();
 			this.annleaRemainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
 			if (normalRemainAfter.getTotalRemainingTime().isPresent()) {
 				this.annleaRemainingMinutesAfter = normalRemainAfter.getTotalRemainingTime().get().v();
@@ -1818,25 +1832,29 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 
 		// 実年休：残数
-		this.annleaFactRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
-		if (real.getRemainingNumber().getTotalRemainingTime().isPresent()) {
-			this.annleaFactRemainingMinutes = real.getRemainingNumber().getTotalRemainingTime().get().v();
+		val realR = domain.getRealAnnualLeave();
+		val realRemain = realR.getRemainingNumberInfo().getRemainingNumber();
+		val realRemainBefore = realR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
+		val realRemainAfterOpt = realR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+
+		this.annleaFactRemainingDays = realRemain.getTotalRemainingDays().v();
+		if (realRemain.getTotalRemainingTime().isPresent()){
+			this.annleaFactRemainingMinutes = realRemain.getTotalRemainingTime().get().v();
 		}
-		this.annleaFactRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (real.getRemainingNumberBeforeGrant().getTotalRemainingTime().isPresent()) {
-			this.annleaFactRemainingMinutesBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingTime().get()
-					.v();
+		this.annleaFactRemainingDaysBefore = realRemainBefore.getTotalRemainingDays().v();
+		if (realRemainBefore.getTotalRemainingTime().isPresent()) {
+			this.annleaFactRemainingMinutesBefore = realRemainBefore.getTotalRemainingTime().get().v();
 		}
-		if (real.getRemainingNumberAfterGrant().isPresent()) {
-			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
-			this.annleaFactRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
-			if (realRemainAfter.getTotalRemainingTime().isPresent()) {
-				this.annleaFactRemainingMinutesAfter = realRemainAfter.getTotalRemainingTime().get().v();
+		if (realRemainAfterOpt.isPresent()) {
+			this.annleaFactRemainingDaysAfter = realRemainAfterOpt.get().getTotalRemainingDays().v();
+			if (realRemainAfterOpt.get().getTotalRemainingTime().isPresent()) {
+				this.annleaFactRemainingMinutesAfter = realRemainAfterOpt.get().getTotalRemainingTime().get().v();
 			}
 		}
+		
 
 		// 年休：未消化数
-		val normalUndigest = normal.getUndigestedNumber();
+		val normalUndigest = domain.getUndigestedNumber();
 		this.annleaUnusedDays = normalUndigest.getUndigestedDays().getUndigestedDays().v();
 		if (normalUndigest.getUndigestedTime().isPresent()) {
 			this.annleaUnusedMinutes = normalUndigest.getUndigestedTime().get().getUndigestedTime().v();
@@ -1981,7 +1999,10 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (domain == null) return;
 		
 		val normal = domain.getReserveLeave();
-		val normalUsed = normal.getUsedNumber();
+		val normalUsed = normal.getUsedNumber().getUsedDays();
+		val normalUsedBefore = normal.getUsedNumber().getUsedDaysBeforeGrant();
+		val normalUsedAfter = normal.getUsedNumber().getUsedDaysAfterGrant();
+		
 		val real = domain.getRealReserveLeave();
 		val realUsed = real.getUsedNumber();
 
@@ -1990,10 +2011,10 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.endDate = domain.getClosurePeriod().end();
 		
 		// 積立年休：使用数
-		this.rsvleaUsedDays = normalUsed.getUsedDays().v();
-		this.rsvleaUsedDaysBefore = normalUsed.getUsedDaysBeforeGrant().v();
-		if (normalUsed.getUsedDaysAfterGrant().isPresent()) {
-			this.rsvleaUsedDaysAfter = normalUsed.getUsedDaysAfterGrant().get().v();
+		this.rsvleaUsedDays = normalUsed.v();
+		this.rsvleaUsedDaysBefore = normalUsedBefore.v();
+		if (normalUsedAfter.isPresent()) {
+			this.rsvleaUsedDaysAfter = normalUsedAfter.get().v();
 		}
 
 		// 実積立年休：使用数
@@ -2002,25 +2023,34 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (realUsed.getUsedDaysAfterGrant().isPresent()) {
 			this.rsvleaFactUsedDaysAfter = realUsed.getUsedDaysAfterGrant().get().v();
 		}
-
+		
 		// 積立年休：残数
-		this.rsvleaRemainingDays = normal.getRemainingNumber().getTotalRemainingDays().v();
-		this.rsvleaRemainingDaysBefore = normal.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (normal.getRemainingNumberAfterGrant().isPresent()) {
-			val normalRemainAfter = normal.getRemainingNumberAfterGrant().get();
+		val normalRemain = normal.getRemainingNumberInfo().getRemainingNumber();
+		val normalRemainBefore = normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
+		val normalRemainAfterOpt = normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+		
+		this.rsvleaRemainingDays = normalRemain.getTotalRemainingDays().v();
+		this.rsvleaRemainingDaysBefore = normalRemainBefore.getTotalRemainingDays().v();
+		if (normalRemainAfterOpt.isPresent()) {
+			val normalRemainAfter = normalRemainAfterOpt.get();
 			this.rsvleaRemainingDaysAfter = normalRemainAfter.getTotalRemainingDays().v();
 		}
 
 		// 実積立年休：残数
-		this.rsvleaFactRemainingDays = real.getRemainingNumber().getTotalRemainingDays().v();
-		this.rsvleaFactRemainingDaysBefore = real.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
-		if (real.getRemainingNumberAfterGrant().isPresent()) {
-			val realRemainAfter = real.getRemainingNumberAfterGrant().get();
+		val realR = domain.getRealReserveLeave();
+		val realRemain = real.getRemainingNumberInfo().getRemainingNumber();
+		val realRemainBefore = real.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
+		val realRemainAfterOpt = real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
+		
+		this.rsvleaFactRemainingDays = realRemain.getTotalRemainingDays().v();
+		this.rsvleaFactRemainingDaysBefore = realRemainBefore.getTotalRemainingDays().v();
+		if (realRemainAfterOpt.isPresent()) {
+			val realRemainAfter = realRemainAfterOpt.get();
 			this.rsvleaFactRemainingDaysAfter = realRemainAfter.getTotalRemainingDays().v();
 		}
 
 		// 積立年休：未消化数
-		val normalUndigest = normal.getUndigestedNumber();
+		val normalUndigest = domain.getUndigestedNumber();
 		this.rsvleaNotUsedDays = normalUndigest.getUndigestedDays().v();
 
 		// 付与区分
@@ -2157,21 +2187,30 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.endDate = domain.getClosurePeriod().end();
 		
 		// 特別休暇：使用数
-		val specialUseNumber = specialLeave.getUseNumber();
+		val specialUseNumber = specialLeave.getUsedNumberInfo().getUsedNumber();
+		val specialUseNumberBefore = specialLeave.getUsedNumberInfo().getUsedNumberBeforeGrant();
+		val specialUseNumberAfterOpt = specialLeave.getUsedNumberInfo().getUsedNumberAfterGrantOpt();
+		
 		result.useDays = specialUseNumber.getUseDays().getUseDays().v();
-		result.beforeUseDays = specialUseNumber.getUseDays().getBeforeUseGrantDays().v();
-		if (specialUseNumber.getUseDays().getAfterUseGrantDays().isPresent()){
-			result.afterUseDays = specialUseNumber.getUseDays().getAfterUseGrantDays().get().v();
+		result.beforeUseDays = specialUseNumberBefore.getUseDays().getUseDays().v();
+		if (specialUseNumberAfterOpt.isPresent()){
+			result.afterUseDays = specialUseNumberAfterOpt.get().getUseDays().getUseDays().v();
 		}
 		if (specialUseNumber.getUseTimes().isPresent()){
 			val specialUseTime = specialUseNumber.getUseTimes().get();
 			result.useMinutes = specialUseTime.getUseTimes().v();
-			result.beforeUseMinutes = specialUseTime.getBeforeUseGrantTimes().v();
-			if (specialUseTime.getAfterUseGrantTimes().isPresent()){
-				result.afterUseMinutes = specialUseTime.getAfterUseGrantTimes().get().v();
-			}
-			result.useTimes = specialUseTime.getUseNumber().v();
 		}
+		if (specialUseNumberBefore.getUseTimes().isPresent()){
+			result.beforeUseMinutes = specialUseNumberBefore.getUseTimes().get().getUseTimes().v();
+		}
+		if (specialUseNumberAfterOpt.isPresent()){
+			if (specialUseNumberAfterOpt.get().getUseTimes().isPresent()){
+				result.afterUseMinutes = specialUseNumberAfterOpt.get().getUseTimes().get().v();
+			}
+		}
+		domain.get
+		result.useTimes = specialUseTime.getUseNumber().v();
+		
 		
 		// 実特別休暇：使用数
 		val actualUseNumber = actualSpecial.getUseNumber();

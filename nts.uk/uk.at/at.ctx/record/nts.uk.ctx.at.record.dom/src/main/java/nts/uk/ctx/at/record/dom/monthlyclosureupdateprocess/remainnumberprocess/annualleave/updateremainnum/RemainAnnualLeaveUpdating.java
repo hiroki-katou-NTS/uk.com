@@ -144,7 +144,7 @@ public class RemainAnnualLeaveUpdating {
 			if (!found) {
 				// insert
 				AnnualLeaveGrantRemainingData addDomain = AnnualLeaveGrantRemainingData.createFromJavaType(
-						(data.getAnnLeavID() != null && !data.getAnnLeavID().isEmpty()) ? data.getAnnLeavID()
+						(data.getLeaveID() != null && !data.getLeaveID().isEmpty()) ? data.getLeaveID()
 								: IdentifierUtil.randomUniqueId(),
 						data.getCid(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
 						data.getExpirationStatus().value, data.getRegisterType().value,
