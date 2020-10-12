@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
+import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetWorkTypeKSU002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
@@ -36,6 +38,9 @@ public class Ksu002AWebService extends WebService {
 	@Inject
 	private GetWorkTypeKSU002 getWorkType;
 	
+	@Inject
+	private GetListWorkTypeAvailable getListWorkTypeAvailable;
+	
 	@POST
 	@Path("getListOfPeriodsClose")
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
@@ -54,8 +59,8 @@ public class Ksu002AWebService extends WebService {
 	
 	@POST
 	@Path("getWorkType")
-	public List<WorkTypeDto> getWorkType() {
-		return this.getWorkType.getWorkType();
+	public List<WorkTypeInfomation> getWorkType() {
+		return this.getListWorkTypeAvailable.getData();
 	}
 	
 //	@POST
