@@ -42,7 +42,7 @@ class KCP015ScreenModel {
         } else {
             if (!param.input.visibleA31 && !param.input.visibleA32 && !param.input.visibleA33 
              && !param.input.visibleA34 && !param.input.visibleA35 && !param.input.visibleA36) {
-                $("#A1").addClass("hiddenBtn");
+                $("#showPopup").addClass("hiddenBtn");
             }
 
             if (param.input.visibleA31) {
