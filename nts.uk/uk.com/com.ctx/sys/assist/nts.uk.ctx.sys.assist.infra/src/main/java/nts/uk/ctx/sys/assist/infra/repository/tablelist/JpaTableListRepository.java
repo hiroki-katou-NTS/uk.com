@@ -37,14 +37,12 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.tableListPk.dataStorageProcessingId =:storeProcessingId";
 	private static final String SELECT_COLUMN_NAME_MSSQL = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?tableName";
-	private static final String SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID = 
-	"SELECT t FROM SspmtTableList t "
-		+ "	WHERE t.tableListPk.systemType =:systemType "
+	private static final String SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID = "SELECT t FROM SspmtTableList t "
+			+ "	WHERE t.tableListPk.systemType =:systemType "
 			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
-	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = 
-			"SELECT t FROM SspmtTableList t "
-				+ "	WHERE t.tableListPk.systemType =:systemType "
-					+ "	AND t.dataRecoveryProcessId =:dataRecoveryProcessId	";
+	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = "SELECT t FROM SspmtTableList t "
+			+ "	WHERE t.tableListPk.systemType =:systemType "
+			+ "	AND t.dataRecoveryProcessId =:dataRecoveryProcessId	";
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
@@ -653,8 +651,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<TableList> getBySystemTypeAndStorageId(int systemType, String StorageId) {
-		// TODO Auto-generated method stub 	        
+	public List<TableList> getBySystemTypeAndStorageId(int systemType, String StorageId) {      
 		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID, SspmtTableList.class)
 				.setParameter("systemType", systemType)
 				.setParameter("dataStorageProcessingId", StorageId)
@@ -663,7 +660,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String recoverId) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID, SspmtTableList.class)
 				.setParameter("systemType", systemType)
 				.setParameter("dataRecoveryProcessId", recoverId)

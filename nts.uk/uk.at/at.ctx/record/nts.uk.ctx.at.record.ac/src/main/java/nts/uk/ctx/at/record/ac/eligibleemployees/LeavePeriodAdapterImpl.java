@@ -22,7 +22,7 @@ public class LeavePeriodAdapterImpl implements LeavePeriodAdapter {
     @Override
     public List<LeavePeriod> GetLeavePeriod(List<String> sids, DatePeriod datePeriod) {
 
-        val rs = employeeLeaveHistoryPublish.getHolidayPeriod(sids,datePeriod);
+        val rs = employeeLeaveHistoryPublish.getBySpecifyingPeriod(sids,datePeriod);
         val result = new ArrayList<LeavePeriod>();
         rs.stream().forEach(e->{
             result.add(new LeavePeriod(e.getDatePeriod(),e.getEmpID()));

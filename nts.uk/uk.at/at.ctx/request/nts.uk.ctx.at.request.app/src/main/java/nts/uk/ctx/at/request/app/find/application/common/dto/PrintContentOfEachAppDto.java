@@ -2,13 +2,11 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOutputCmd;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
@@ -27,7 +25,7 @@ public class PrintContentOfEachAppDto {
 	/**
 	 * 勤務変更申請の印刷内容
 	 */
-	public AppWorkChangeOutputDto opPrintContentOfWorkChange;
+	public AppWorkChangeOutputCmd opPrintContentOfWorkChange;
 	
 	/**
 	 * 時間休暇申請の印刷内容

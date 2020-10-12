@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 580 };</script>
+			<script>var dialogSize = { width: 490, height: 560 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -38,7 +38,7 @@
 						<td></td>
 						<td>
 							<!-- D1_8 -->
-							<div tabindex="2" style="margin-top: 3px"
+							<div tabindex="2"
 								data-bind="ntsCheckBox:{
 								checked: checkHoliday,
 								text: '#{i18n.getText('KSM004_53')}'
@@ -54,8 +54,12 @@
 					</colgroup>
 					<thead>
 					<tr>
-						<th class="ui-widget-header">#{i18n.getText('KSM004_105')}</th>
-						<th class="ui-widget-header">#{i18n.getText('KSM004_37')}</th>
+						<th class="ui-widget-header">
+							<span class="ui-iggrid-headertext">#{i18n.getText('KSM004_105')}</span>
+						</th>
+						<th class="ui-widget-header">
+							<span class="ui-iggrid-headertext">#{i18n.getText('KSM004_37')}</span>
+						</th>
 					</tr>
 					</thead>
 					<tbody>

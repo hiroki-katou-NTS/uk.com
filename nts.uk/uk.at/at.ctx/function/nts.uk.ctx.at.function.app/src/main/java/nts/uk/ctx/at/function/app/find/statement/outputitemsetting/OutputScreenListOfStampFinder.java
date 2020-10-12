@@ -1,12 +1,21 @@
 package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
@@ -26,6 +35,7 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
@@ -208,6 +218,7 @@ public class OutputScreenListOfStampFinder {
 				String optSupportCard = "";
 				String workLocationName = "";
 				String workTimeName = "";
+				Boolean isAddress = false;
 				
 				if (stamp.getRefActualResults().getWorkLocationCD().isPresent()) {
 					val workLocationCode = stamp.getRefActualResults().getWorkLocationCD().get();
@@ -224,15 +235,12 @@ public class OutputScreenListOfStampFinder {
 
 				// Local Infor
 				if (stamp.getLocationInfor().isPresent()) {
-					val localInfo = stamp.getLocationInfor().get();
-					if (localInfo.getPositionInfor() == null) {
-						local = "";
-
-					} else {
-						local = String.format("%.6f", localInfo.getPositionInfor().getLatitude()) + " "
-								+ String.format("%.6f", localInfo.getPositionInfor().getLongitude());
+					Map<String, Boolean> gLocation = this.getLocation(stamp.getLocationInfor().get());
+					if (!gLocation.isEmpty()) {
+						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
+						local = entry.getKey();
+						isAddress = entry.getValue();
 					}
-
 				}
 
 				// Support Card
@@ -277,6 +285,7 @@ public class OutputScreenListOfStampFinder {
 				employeEngravingInfor.setAuthcMethod(stamp.getRelieve().getAuthcMethod().name);
 				employeEngravingInfor.setInstallPlace(workLocationName);
 				employeEngravingInfor.setLocalInfor(local);
+				employeEngravingInfor.setAddress(isAddress);
 				employeEngravingInfor.setCardNo(stampInfoDisp.getStampNumber().v());
 				employeEngravingInfor.setSupportCard(optSupportCard);
 				employeEngravingInfor.setWorkTimeDisplayName(workTimeName);
@@ -294,6 +303,36 @@ public class OutputScreenListOfStampFinder {
 		}
 
 		return result;
+	}
+	
+	private Map<String, Boolean> getLocation(StampLocationInfor stampLocationInfor) {
+		Map<String, Boolean> result = new HashMap<>();
+		
+		if (stampLocationInfor.getPositionInfor() == null) {
+			result.put("", false);
+			return result;
+		} else {
+			try {
+				URL url = new URL("http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation"
+						+ "&x=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) 
+						+ "&y=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()));
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse(url.openStream());
+				NodeList nodelist = doc.getElementsByTagName("location");
+				if(nodelist.getLength() > 0) {
+					Element element = (Element) nodelist.item(0);
+					result.put(element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent(), true);		
+					return result;
+				}else {
+					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+					return result;
+				}
+			} catch (Exception e) {
+				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+				return result;
+			}
+		}
 	}
 
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod) {
@@ -339,6 +378,7 @@ public class OutputScreenListOfStampFinder {
 			String overtimeHours = "";
 			String lateNightTime = "";
 			String workLocationName = "";
+			Boolean isAddress = false;
 			// String latitude = "";
 			// longitude = "";
 
@@ -365,14 +405,12 @@ public class OutputScreenListOfStampFinder {
 
 				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
 				if (locationInfo.isPresent()) {
-					val positionInfo = locationInfo.get().getPositionInfor();
-					if (positionInfo == null) {
-						localInfor = "";
-					} else {
-						localInfor = String.format("%.6f", positionInfo.getLatitude()) + " "
-								+ String.format("%.6f", positionInfo.getLongitude());
+					Map<String, Boolean> gLocation = this.getLocation(locationInfo.get());
+					if (!gLocation.isEmpty()) {
+						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
+						localInfor = entry.getKey();
+						isAddress = entry.getValue();
 					}
-
 				}
 				if (refActualResults.getCardNumberSupport().isPresent()) {
 					supportCard = refActualResults.getCardNumberSupport().get();
@@ -409,6 +447,7 @@ public class OutputScreenListOfStampFinder {
 			cardNoStampInfo.setAuthcMethod(authcMethod);
 			cardNoStampInfo.setInstallPlace(workLocationName);
 			cardNoStampInfo.setLocalInfor(localInfor);
+			cardNoStampInfo.setAddress(isAddress);
 			cardNoStampInfo.setSupportCard(supportCard);
 			cardNoStampInfo.setWorkTimeDisplayName(workTimeDisplayName);
 			cardNoStampInfo.setOvertimeHours(overtimeHours);

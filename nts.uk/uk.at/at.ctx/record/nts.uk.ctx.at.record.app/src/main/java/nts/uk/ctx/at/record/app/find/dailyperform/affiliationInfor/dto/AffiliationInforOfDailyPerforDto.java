@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
@@ -47,10 +47,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	@AttendanceItemValue
 	private String classificationCode;
 
-//	@AttendanceItemLayout(layout = "E", jpPropertyName = "加給コード")
-//	@AttendanceItemValue
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = RAISING_SALARY)
+	@AttendanceItemValue
 	private String subscriptionCode;
-	
+
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = BUSINESS_TYPE)
+	@AttendanceItemValue
 	private String businessTypeCode;
 	
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){

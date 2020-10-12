@@ -30,13 +30,16 @@
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/007/a/kaf007.a.vm.js" />
+			<com:stylefile path="/view/kaf/007/a/kaf007.a.css" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+				<!-- A1_1 -->
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF007_54')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
+												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
 			</div>
@@ -73,7 +76,14 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf007-share', 
-											params: appWorkChange }"></div>
+											params: {
+												model: model,
+												mode: 0,
+												appWorkChange: appWorkChange,
+												reflectWorkChange: reflectWorkChange,
+												isStraightBack: isStraightBack,
+												isStraightGo: isStraightGo
+											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component5', 
 											params: {
 												appType: appType,
@@ -83,6 +93,7 @@
 				<div data-bind="component: { name: 'kaf000-a-component6', 
 											params: {
 												appType: appType,
+												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 			</div>

@@ -21,11 +21,11 @@ public class OneYearErrorAlarmTime {
 	}
 	
 	private OneYearErrorAlarmTime(AgreementOneYearTime error, AgreementOneYearTime alarm) {
-		this.error = error;
-		this.alarm = alarm;
+		this.error = alarm;
+		this.alarm = error;
 	}
 	
-	public static OneYearErrorAlarmTime from(AgreementOneYearTime error, AgreementOneYearTime alarm) {
+	public static OneYearErrorAlarmTime of(AgreementOneYearTime error, AgreementOneYearTime alarm) {
 
 		/** 不変条件: @エラー時間 >= @アラーム時間 */
 		if (alarm.greaterThan(error)) {

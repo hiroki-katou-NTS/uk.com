@@ -30,15 +30,15 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
-				+ " AND f.startDateTimeDel >=:startDateOperator "
-				+ " AND f.startDateTimeDel <=:endDateOperator ";
+			+ " AND f.startDateTimeDel >=:startDateOperator "
+			+ " AND f.startDateTimeDel <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
-				+ " AND f.startDateTimeDel =:startDateOperator "
-				+ " AND f.startDateTimeDel =:endDateOperator "
-				+ " AND f.sId =:practitioner ";
+			+ " AND f.startDateTimeDel =:startDateOperator "
+			+ " AND f.startDateTimeDel =:endDateOperator "
+			+ " AND f.sId IN :practitioner ";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {
@@ -100,15 +100,13 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 	List<ResultDeletion> list = new ArrayList<ResultDeletion>();
 		
 		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
-			for (String employeeId : listOperatorEmployeeId) {
-				list.addAll(
+			list.addAll(
 					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
-					.setParameter("practitioner", employeeId)
+					.setParameter("practitioner", listOperatorEmployeeId)
 					.getList(item -> item.toDomain()));
-			}
 		} else {
 			list.addAll(
 					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)

@@ -493,10 +493,9 @@ public class ReflectAttendanceClock {
 	public boolean isCanChangeTime(String cid,Optional<WorkStamp> workStamp,ReasonTimeChange reasonTimeChangeNew) {
 		//ドメインモデル「時刻の優先順位」を取得する
 		Optional<TimePriority> optTimePriority =  timePriorityRepository.getByCid(cid);
-		if(!optTimePriority.isPresent() || !workStamp.isPresent()) {
+		if(!workStamp.isPresent()) {
 			return false;
 		}
-		PriorityTimeReflectAtr priorityTimeReflectAtr = optTimePriority.get().getPriorityTimeReflectAtr();
 		//時刻変更手段と反映時刻優先もとに優先順位をチェックする
 		TimeChangeMeans timeChangeMeansNew = reasonTimeChangeNew.getTimeChangeMeans();
 		TimeChangeMeans timeChangeMeansOld = workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans();
@@ -515,7 +514,7 @@ public class ReflectAttendanceClock {
 		//true 3
 		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
 				&& 	timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
-				&& 	priorityTimeReflectAtr == PriorityTimeReflectAtr.ACTUAL_TIME) {
+				&& 	(optTimePriority.isPresent() && optTimePriority.get().getPriorityTimeReflectAtr() == PriorityTimeReflectAtr.ACTUAL_TIME)) {
 			return true;
 		}
 		//true 6
@@ -527,7 +526,7 @@ public class ReflectAttendanceClock {
 		//true 5
 		if(timeChangeMeansNew == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
 				&& (timeChangeMeansOld == TimeChangeMeans.REAL_STAMP || timeChangeMeansOld == TimeChangeMeans.SPR_COOPERATION)
-				&& priorityTimeReflectAtr == PriorityTimeReflectAtr.APP_TIME) {
+				&& (optTimePriority.isPresent() && optTimePriority.get().getPriorityTimeReflectAtr() == PriorityTimeReflectAtr.APP_TIME)) {
 			return true;
 		}
 		//true 7

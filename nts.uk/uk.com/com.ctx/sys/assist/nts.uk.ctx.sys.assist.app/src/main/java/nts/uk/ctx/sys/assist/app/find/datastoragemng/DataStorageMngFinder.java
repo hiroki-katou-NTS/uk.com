@@ -33,16 +33,4 @@ public class DataStorageMngFinder
     		return null;
     	}
     }
-
-	//step データ復旧の結果を取得
-//	public List<DataStorageMngDto> getDataStorageMng (LogDataParams logDataParams) {
-//		logDataParams.setCid(AppContexts.user().companyId());
-//		return finder.getDataStorageMng(
-//				logDataParams.getCid(),
-//				logDataParams.getStartDateOperator(),
-//				logDataParams.getEndDateOperator(),
-//				logDataParams.getListOperatorEmployeeId()
-//				).stream().map(item -> ResultOfSavingDto.fromDomain(item))
-//				.collect(Collectors.toList());
-//	}
 }
