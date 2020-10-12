@@ -10,7 +10,8 @@ import {
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
-    CmmS45ComponentsApp5Component
+    CmmS45ComponentsApp5Component,
+    CmmS45ComponentsApp9Component,
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -28,6 +29,7 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app9': CmmS45ComponentsApp9Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
