@@ -3,10 +3,13 @@ package nts.uk.ctx.sys.auth.dom.anniversary.service;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
+import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,38 +18,41 @@ import java.util.stream.Collectors;
 public class AnniversaryDomainService {
 
 
-    //@Inject
-    //個人の記念日情報Repository.今日の記念日を取得する(年月日) repo;
+    @Inject
+    AnniversaryRepository repository;
 
-    //TODO \\192.168.50.4\share\500_新構想開発\04_設計\40_ドメイン設計\ドメイン仕様書\UK\bs_基幹\person_個人\個人のインフォメーション\DS_新記念日があるか_ドメイン仕様書.xlsx
-      //DomainService 新記念日があるか
-//    public boolean isTodayNewAnniversary(){
-//        List<AnniversaryNotice> anniversaryNotices = new ArrayList<>();
-//        anniversaryNotices = repo.getTodayAnniversary(GeneralDate.today());
-//        anniversaryNotices.stream()
-//                .filter(item -> item.getAnniversary().compareTo(GeneralDate.today()) == 0)
-//                .collect(Collectors.toList());
-//        return !anniversaryNotices.isEmpty();
-//    }
+    //DomainService 新記念日があるか
+    public boolean isTodayHaveNewAnniversary() {
+        String loginPersonalId = AppContexts.user().personId();
+        List<AnniversaryNotice> anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today(), loginPersonalId).stream()
+                .filter(item -> item.isNewAnniversary(GeneralDate.today()))
+                .collect(Collectors.toList());
+        return !anniversaryNotices.isEmpty();
+    }
 
-    //TODO \\192.168.50.4\share\500_新構想開発\04_設計\40_ドメイン設計\ドメイン仕様書\UK\bs_基幹\person_個人\個人のインフォメーション\DS_期間で記念日情報を取得する_ドメイン仕様書.xlsx
     //DomainService 期間で記念日情報を取得する
-//    public Map<AnniversaryNotice, Boolean> setFlag(GeneralDate dateStart, GeneralDate dateEnd){
-//        List<AnniversaryNotice> anniversaryNotices = new ArrayList<>();
-//        if(dateStart.compareTo(dateEnd) == 0 && dateEnd.compareTo(GeneralDate.today()) == 0){
-//            anniversaryNotices = repo.getTodayAnniversary(GeneralDate.today());
-//        }
-//        if(dateStart.compareTo(GeneralDate.today()) != 0 || dateEnd.compareTo(GeneralDate.today()) != 0){
-//            if(dateStart.compareTo(dateEnd) == 0) {
-//                anniversaryNotices = repo.getAnniversaryByDatePeriod(new DatePeriod(dateStart,dateEnd));
-//            } else {
-//                GeneralDate date = GeneralDate.ymd(dateStart.year(),12,31);
-//                anniversaryNotices = repo.getAnniversaryByDatePeriod(new DatePeriod(dateStart,date));
-//                List<AnniversaryNotice> anniversaryNoticeList = repo.getAnniversaryByDatePeriod(new DatePeriod(date.addDays(1),dateEnd));
-//                anniversaryNotices.addAll(anniversaryNoticeList);
-//            }
-//        }
-//        return anniversaryNotices.stream().collect(Collectors.toMap()) //TODO
-//    }
-
+    public Map<AnniversaryNotice, Boolean> setFlag(DatePeriod datePeriod) {
+        GeneralDate dateStart = datePeriod.start();
+        GeneralDate dateEnd = datePeriod.end();
+        String loginPersonalId = AppContexts.user().personId();
+        List<AnniversaryNotice> anniversaryNotices = new ArrayList<>();
+        if (dateStart.compareTo(dateEnd) == 0 && dateEnd.compareTo(GeneralDate.today()) == 0) {
+            anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today(), loginPersonalId);
+        }
+        if (dateStart.compareTo(GeneralDate.today()) != 0 || dateEnd.compareTo(GeneralDate.today()) != 0) {
+            if (dateStart.compareTo(dateEnd) == 0) {
+                anniversaryNotices = repository.getByDatePeriod(new DatePeriod(dateStart, dateEnd), loginPersonalId);
+            } else {
+                GeneralDate date = GeneralDate.ymd(dateStart.year(), 12, 31);
+                anniversaryNotices = repository.getByDatePeriod(new DatePeriod(dateStart, date), loginPersonalId);
+                List<AnniversaryNotice> anniversaryNoticeList = repository.getByDatePeriod(new DatePeriod(date.addDays(1), dateEnd), loginPersonalId);
+                anniversaryNotices.addAll(anniversaryNoticeList);
+            }
+        }
+        Map<AnniversaryNotice, Boolean> anniversaryNoticeMap = new HashMap<>();
+        for (AnniversaryNotice anniversaryNotice : anniversaryNotices) {
+            anniversaryNoticeMap.put(anniversaryNotice, anniversaryNotice.isNewAnniversary(dateEnd));
+        }
+        return anniversaryNoticeMap;
+    }
 }

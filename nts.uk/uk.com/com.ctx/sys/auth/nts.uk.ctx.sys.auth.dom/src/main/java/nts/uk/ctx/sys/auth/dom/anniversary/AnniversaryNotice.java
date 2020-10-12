@@ -5,6 +5,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
+import java.time.MonthDay;
+
 /**
  * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
  */
@@ -28,7 +30,7 @@ public class AnniversaryNotice extends AggregateRoot {
     /**
      * 記念日
      */
-    private GeneralDate anniversary;
+    private MonthDay anniversary;
 
     /**
      * 記念日のタイトル
@@ -40,22 +42,23 @@ public class AnniversaryNotice extends AggregateRoot {
      */
     private NotificationMessage notificationMessage;
 
-    public AnniversaryNotice(String personalId, Integer noticeDay, GeneralDate anniversary, String anniversaryTitle, String notificationMessage) {
-        super();
-        this.personalId = personalId;
-        this.noticeDay = EnumAdaptor.valueOf(noticeDay, NoticeDay.class);
-        this.anniversary = anniversary;
-        this.anniversaryTitle = new AnniversaryTitle(anniversaryTitle);
-        this.notificationMessage = new NotificationMessage(notificationMessage);
-        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.month(), anniversary.day());
+    public static AnniversaryNotice createNewAnniversaryNotice(String personalId, Integer noticeDay, MonthDay anniversary, String anniversaryTitle, String notificationMessage) {
+        AnniversaryNotice anniversaryNotice = new AnniversaryNotice();
+        anniversaryNotice.personalId = personalId;
+        anniversaryNotice.noticeDay = EnumAdaptor.valueOf(noticeDay, NoticeDay.class);
+        anniversaryNotice.anniversary = anniversary;
+        anniversaryNotice.anniversaryTitle = new AnniversaryTitle(anniversaryTitle);
+        anniversaryNotice.notificationMessage = new NotificationMessage(notificationMessage);
+        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonth().getValue(), anniversary.getDayOfMonth());
         if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
-            this.seenDate = todayAnniversary;
+            anniversaryNotice.seenDate = todayAnniversary;
         } else {
-            this.seenDate = todayAnniversary.addYears(-1);
+            anniversaryNotice.seenDate = todayAnniversary.addYears(-1);
         }
+        return anniversaryNotice;
     }
 
-    public AnniversaryNotice() {
+    private AnniversaryNotice() {
         super();
     }
 
@@ -73,7 +76,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
     // 最後見た記念日をUpdateする
     public void updateSeenDate(GeneralDate date) {
-        GeneralDate todayAnniversary = GeneralDate.ymd(date.year(), this.anniversary.month(), this.anniversary.day());
+        GeneralDate todayAnniversary = GeneralDate.ymd(date.year(), this.anniversary.getMonth().getValue(), this.anniversary.getDayOfMonth());
         GeneralDate checkDate = todayAnniversary.addDays(-this.noticeDay.value);
         if (checkDate.compareTo(date) <= 0) {
             this.seenDate = todayAnniversary;
@@ -107,7 +110,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
         void setSeenDate(GeneralDate seenDate);
 
-        void setAnniversary(GeneralDate anniversary);
+        void setAnniversary(MonthDay anniversary);
 
         void setAnniversaryTitle(String anniversaryTitle);
 
@@ -121,7 +124,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
         GeneralDate getSeenDate();
 
-        GeneralDate getAnniversary();
+        MonthDay getAnniversary();
 
         String getAnniversaryTitle();
 

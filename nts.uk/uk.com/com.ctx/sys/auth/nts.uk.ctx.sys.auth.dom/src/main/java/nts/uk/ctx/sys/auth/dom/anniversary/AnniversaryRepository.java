@@ -52,13 +52,13 @@ public interface AnniversaryRepository {
      *
      * @param anniversary
      */
-    List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary);
+    List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary, String loginPersonalId);
 
     /**
      * Find List AnniversaryNotice by datePeriod
      *
      * @param datePeriod
      */
-    List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod);
+    List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod, String loginPersonalId);
 }
 

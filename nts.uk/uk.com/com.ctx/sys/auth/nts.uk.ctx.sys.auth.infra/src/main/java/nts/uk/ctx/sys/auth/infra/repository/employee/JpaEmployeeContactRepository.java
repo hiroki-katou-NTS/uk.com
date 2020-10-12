@@ -13,7 +13,7 @@ import java.util.Optional;
 public class JpaEmployeeContactRepository extends JpaRepository implements EmployeeContactRepository {
 
     //select by employee ID
-    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT m FROM BsymtContactAddrEmp m WHERE m.bsymtContactAddrEmpPK.employeeId =: employeeId AND m.bsymtContactAddrEmpPK.companyId =: companyId";
+    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT m FROM BsymtContactAddrEmp m WHERE m.bsymtContactAddrEmpPK.employeeId =: employeeId";
 
     private static BsymtContactAddrEmp toEntity(EmployeeContact domain) {
         BsymtContactAddrEmp entity = new BsymtContactAddrEmp();
@@ -24,6 +24,7 @@ public class JpaEmployeeContactRepository extends JpaRepository implements Emplo
     @Override
     public void insert(EmployeeContact employeeContact) {
         BsymtContactAddrEmp entity = JpaEmployeeContactRepository.toEntity(employeeContact);
+        entity.setCompanyId(AppContexts.user().companyId());
         this.commandProxy().insert(entity);
     }
 
@@ -50,11 +51,9 @@ public class JpaEmployeeContactRepository extends JpaRepository implements Emplo
 
     @Override
     public Optional<EmployeeContact> getByEmployeeId(String employeeId) {
-        String companyId = AppContexts.user().companyId();
         return this.queryProxy()
                 .query(SELECT_BY_EMPLOYEE_ID, BsymtContactAddrEmp.class)
                 .setParameter("employeeId", employeeId)
-                .setParameter("companyId", companyId)
                 .getSingle(EmployeeContact::createFromMemento);
     }
 }
