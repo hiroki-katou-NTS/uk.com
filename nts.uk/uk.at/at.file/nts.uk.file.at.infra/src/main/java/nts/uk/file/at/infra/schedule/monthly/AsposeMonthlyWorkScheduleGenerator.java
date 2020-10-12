@@ -99,6 +99,7 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
 import nts.uk.file.at.app.export.employee.jobtitle.EmployeeJobHistExport;
 import nts.uk.file.at.app.export.employee.jobtitle.JobTitleImportAdapter;
 import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
+import nts.uk.file.at.app.export.monthlyschedule.DisplayTypeEnum;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyReportConstant;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleCondition;
@@ -2826,15 +2827,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param rawValue the raw value
 	 * @return the time attr
 	 */
-	public String getTimeAttr(String rawValue, boolean isConvertAttr) {
+	public String getTimeAttr(String rawValue, boolean isConvertAttr, DisplayTypeEnum displayType) {
 		int value = Integer.parseInt(rawValue);
 		TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
 		if (isConvertAttr && value != 0) {
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
-		}
-		else {
-			return timeFormat.getTimeText();
+		} else {
+			return (displayType == DisplayTypeEnum.DISPLAY && timeFormat.isZero()) ? timeFormat.getTimeText() : "";
 		}
 	}
 
