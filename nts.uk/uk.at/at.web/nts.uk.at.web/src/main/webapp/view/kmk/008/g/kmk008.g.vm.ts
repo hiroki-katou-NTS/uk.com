@@ -32,18 +32,23 @@ module nts.uk.at.view.kmk008.g {
         created() {
             const vm = this;
 
-            vm.$ajax(PATH_API.getData).done(data => {
-                if (data) {
-                    vm.operationSetting(new OperationSettingModel(data));
-                }
-            });
+            // vm.$blockui("show");
+            vm.$ajax(PATH_API.getData)
+                .done(data => {
+                    if (data) {
+                        vm.operationSetting(new OperationSettingModel(data));
+                    }
+                })
+                .always(() => {
+                    $('#combo-box-month').focus();
+                    // vm.$blockui("hide");
+                });
 
             _.extend(window, {vm});
         }
 
 
         mounted() {
-            $("#combo-box-month").focus();
         }
 
         register() {
@@ -57,10 +62,7 @@ module nts.uk.at.view.kmk008.g {
                 })
                 .fail(res => {
                     vm.$dialog.error(res.message);
-                })
-                .always(() => {
-                    console.log("123213")
-                })
+                });
 
             // vm.$blockui("hide");
         }
@@ -93,10 +95,10 @@ module nts.uk.at.view.kmk008.g {
                 vm.specialConditionApplicationUse = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.specialConditionApplicationUse : true);
                 vm.yearSpecialConditionApplicationUse = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.yearSpecicalConditionApplicationUse : true);
             } else {
-                vm.startingMonthEnum = new Array();
+                vm.startingMonthEnum = [];
                 vm.startingMonth = ko.observable(1);
 
-                vm.closureDateEnum = new Array();
+                vm.closureDateEnum = [];
                 vm.closureDate = ko.observable(1);
 
                 vm.specialConditionApplicationUse = ko.observable(true);
@@ -120,7 +122,7 @@ module nts.uk.at.view.kmk008.g {
             vm.specialConditionApplicationUse = Boolean(data.specialConditionApplicationUse());
             vm.yearSpecicalConditionApplicationUse = Boolean(data.yearSpecialConditionApplicationUse());
 
-            vm.lastDayOfMonth = vm.closureDay === 30;
+            vm.lastDayOfMonth = vm.closureDay === data.closureDateEnum[data.closureDateEnum.length - 1].value;
         }
     }
 

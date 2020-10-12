@@ -16,7 +16,7 @@
 }
 
 #contents-area-label {
-	margin-left: 20px;
+	margin-left: 10px;
 	border-bottom: solid 1px #B1B1B1;
 	padding-bottom: 8px;
 }
@@ -54,4 +54,15 @@
 	width: 100px;
 	margin-bottom: 20px;
 	
+}
+.control-group-2 {
+	margin-bottom: 20px;
+}
+.control-group-2 .form-label,
+.control-group-2 .nts-editor {
+	margin-bottom: 0 !important;
+}
+
+.time-limit {
+	text-align: right;
 }

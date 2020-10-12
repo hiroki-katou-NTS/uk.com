@@ -15,12 +15,12 @@
 				};
 			</script>
 
-			<com:ValidatorScript>
+		<!-- 	<com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth
 					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth
 					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear
 					nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear
-			</com:ValidatorScript>
+			</com:ValidatorScript> -->
 
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk008.k.main.css" />
@@ -61,7 +61,7 @@
 							primaryKey: 'yearOrYearMonthValue',
 							columns: [
 								{ headerText: '', key: 'yearOrYearMonthValue',	 hidden: true },
-                    			{ headerText: yearLabel, key: 'yearOrYearMonthFormat', width: 150}
+                { headerText: yearLabel, key: 'yearOrYearMonthFormat', width: 150}
 							],
 							multiple: false,
 							value: currentCodeSelect,
@@ -71,7 +71,7 @@
 					<div id="contents-area-show-data-right"
 						data-bind="with: currentSelectItem">
 
-						<div class="valign-center control-group">
+						<div class="valign-center control-group control-group-1">
 							<div id="year-label" data-bind="ntsFormLabel: { required: true }">
 								<span data-bind="text: $parent.yearLabel"></span>
 							</div>
@@ -85,7 +85,7 @@
 						</div>
 
 
-						<div class="valign-center control-group">
+						<div class="valign-center control-group control-group-2">
 							<div id="year-error-time-label"
 								data-bind="ntsFormLabel: { required: true }">
 								<span data-bind="text: $parent.yearErrorTimeLabel"></span>
@@ -100,9 +100,13 @@
 								enable: true,
 								readonly: false,
 								required: true }" />
+								<div class="time-limit">
+									<label data-bind="text: '限度時間'"></label>
+									<label data-bind="text: '730:30'"></label>
+								</div>
 						</div>
 
-						<div class="valign-center control-group">
+						<div class="valign-center control-group control-group-3">
 							<div id="year-alarm-time-label"
 								data-bind="ntsFormLabel: { required: true }">
 								<span data-bind="text: $parent.yearAlarmTimeLabel"></span>

@@ -1,9 +1,9 @@
-module nts.uk.at.view.kmk008.j {
+module nts.uk.at.view.kmk008.h {
     export module service {
 
         var paths: any = {
-            getData: "at/record/agreementUnitSetting/getAgreementUnitSetting",
-            insertData: "at/record/agreementUnitSetting/addAgreementUnitSetting",
+            getData: 'screen/at/kmk008/h/getInitDisplay', //"at/record/agreementUnitSetting/getAgreementUnitSetting",
+            insertData: 'monthly/estimatedtime/unit/Register', //'"at/record/agreementUnitSetting/addAgreementUnitSetting",
             updateData: "at/record/agreementUnitSetting/updateAgreementUnitSetting",
         };
 

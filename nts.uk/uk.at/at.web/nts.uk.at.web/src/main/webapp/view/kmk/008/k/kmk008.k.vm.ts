@@ -74,6 +74,9 @@ module nts.uk.at.view.kmk008.k {
                     }, 100);
                 });
 
+                self.employeeCode = '000000000001';
+                self.employeeName = '社員 情報';
+
             }
 
             startPage(): JQueryPromise<any> {
@@ -95,12 +98,12 @@ module nts.uk.at.view.kmk008.k {
                             self.updateEnable(true);
                             self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
                         } else {
-                            self.setNewMode();
+                            self.setNewMode();                           
                         }
                         dfd.resolve();
                     });
                 } else {
-                    new service.Service().getDetailYear(self.employeeId).done(data => {
+                    /* new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
                             //                            data = _.sortBy(data, item => { return data.yearValue });
                             //                            data.reverse();
@@ -114,7 +117,13 @@ module nts.uk.at.view.kmk008.k {
                             self.setNewMode();
                         }
                         dfd.resolve();
-                    });
+                    }); */
+                    
+                    self.listItemDataGrid.push(new ShowListModel(2020, 350, 320));
+                    self.listItemDataGrid.push(new ShowListModel(2019, 450, 520));
+                    self.listItemDataGrid.push(new ShowListModel(2018, 250, 220));
+
+                    dfd.resolve();
                 }
 
                 return dfd.promise();
@@ -310,7 +319,7 @@ module nts.uk.at.view.kmk008.k {
                         dfd.resolve();
                     });
                 } else {
-                    new service.Service().getDetailYear(self.employeeId).done(data => {
+                    /* new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
@@ -325,7 +334,9 @@ module nts.uk.at.view.kmk008.k {
                             self.setNewMode();
                         }
                         dfd.resolve();
-                    });
+                    }); */
+
+                    dfd.resolve();
                 }
 
                 return dfd.promise();

@@ -13,11 +13,12 @@
 }
 
 .kmk008-h .wrapper .head-title {
-	margin-bottom: 25px;
+	margin-bottom: 15px;
 }
 .kmk008-h .wrapper .ntsCheckBox  {
 	margin-bottom: 10px;
 	margin-left: 30%;
+	display: block;
 }
 .kmk008-h {
 	padding: 0px !important;
@@ -25,5 +26,5 @@
 
 .kmk008-h .wrapper .company {
 	margin-left: 40%;
-	margin-bottom: 25px;
+	margin-bottom: 15px;
 }
