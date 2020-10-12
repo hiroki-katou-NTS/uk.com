@@ -60,7 +60,9 @@ public class ScheduleCreatorExecutionCommand {
 	@Setter
 	@Getter
 	private Object companySetting;
-
+	
+	private Boolean isReExecution; 
+ 
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -129,7 +131,6 @@ public class ScheduleCreatorExecutionCommand {
 	}
 
 
-
 //	public Boolean getIsDeleteBeforInsert() {
 //		return isDeleteBeforInsert;
 //	}
@@ -188,7 +189,13 @@ public class ScheduleCreatorExecutionCommand {
 		this.employeeIds = employeeIds;
 	}
 
-
+	public void setIsReExecution(Boolean isReExecution) {
+		this.isReExecution = isReExecution;
+	}
+	
+	public boolean getIsReExecution() {
+		return this.isReExecution;
+	}
 
 	/**
 	 * To base command.
