@@ -111,8 +111,7 @@ public class ShiftTableRuleTest {
 		NotificationInfo result = rule.getTodayNotificationInfo();
 		
 		assertThat( result.isNotify()).isFalse();
-		assertThat( result.getDeadline()).isEmpty();
-		assertThat( result.getPeriod()).isEmpty();
+		assertThat( result.getDeadlineAndPeriod()).isEmpty();
 	}
 	
 	@Test
@@ -142,8 +141,7 @@ public class ShiftTableRuleTest {
         
         // Assert
         assertThat( result.isNotify()).isFalse();
-		assertThat( result.getDeadline()).isEmpty();
-		assertThat( result.getPeriod()).isEmpty();
+		assertThat( result.getDeadlineAndPeriod()).isEmpty();
 	}
 	
 	@Test
@@ -173,9 +171,9 @@ public class ShiftTableRuleTest {
         
         // Assert
         assertThat( result.isNotify()).isTrue();
-		assertThat( result.getDeadline().get()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
-		assertThat( result.getPeriod().get().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
-		assertThat( result.getPeriod().get().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
+		assertThat( result.getDeadlineAndPeriod().get().getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
+		assertThat( result.getDeadlineAndPeriod().get().getPeriod().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
+		assertThat( result.getDeadlineAndPeriod().get().getPeriod().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
 	}
 	
 	@Test
@@ -205,9 +203,9 @@ public class ShiftTableRuleTest {
         
         // Assert
         assertThat( result.isNotify()).isTrue();
-		assertThat( result.getDeadline().get()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
-		assertThat( result.getPeriod().get().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
-		assertThat( result.getPeriod().get().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
+		assertThat( result.getDeadlineAndPeriod().get().getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
+		assertThat( result.getDeadlineAndPeriod().get().getPeriod().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
+		assertThat( result.getDeadlineAndPeriod().get().getPeriod().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
 	}
 
 }
