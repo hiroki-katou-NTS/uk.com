@@ -12,6 +12,22 @@ module nts.uk.at.view.ksu001.a {
         __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
             
+            setTimeout(() => {
+                // set backgound image icon header
+                let iconEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("120.png").serialize();
+                $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
+
+                let iconNoEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("121.png").serialize();
+                $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
+            }, 1);
+            
+            
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();

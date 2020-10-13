@@ -367,6 +367,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
                 
+                self.setIconEventHeader();
+                
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
@@ -1355,6 +1357,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
                 }
             });
+            
+            self.setIconEventHeader();
+            
             self.listColorOfHeader(detailHeaderDeco);
             result = {
                 leftmostDs: leftmostDs,
@@ -1381,6 +1386,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return result;
         }
 
+        setIconEventHeader() {
+            setTimeout(() => {
+                // set backgound image icon header
+                let iconEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("120.png").serialize();
+                $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
+
+                let iconNoEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("121.png").serialize();
+                $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
+            }, 1);
+        }
+            
         saveModeGridToLocalStorege(mode) {
             let self = this;
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {

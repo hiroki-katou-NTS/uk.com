@@ -1,20 +1,20 @@
+
 .header-image-no-event {
-    background-image: url(../image/121.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
 
 .header-image-event:hover {
-    background-image: url(../image/120.png);
     cursor: pointer;
 }
 
 .header-image-event {
-    background-image: url(../image/120.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
