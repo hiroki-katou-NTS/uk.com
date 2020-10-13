@@ -31,7 +31,7 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        val domainUpdate = Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+        val domainUpdate = Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),command.getPeriod().end()),
                 command.getApprovedList(),
                 command.getConfirmedList());
         repo.updateStartDate(domainUpdate,command.getStartDateBeforeChange());
