@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -8,8 +7,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EmployeeInformationDto;
@@ -32,8 +29,8 @@ public class EmployeeInformation {
 	@Inject
 	private PersonRepository personRepo;
 
-	@Inject
-	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
+//	@Inject
+//	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
 
 	public EmployeeInformationDto getEmployeeInfo(EmployeeInformationInput input) {
 
@@ -50,12 +47,12 @@ public class EmployeeInformation {
 			}
 		}
 
-		List<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = affWorkplaceHistoryItemRepo
-				.getAffWrkplaHistItemByEmpIdAndDate(input.getBaseDate(), input.getEmployeeId());
-
-		if (!affWorkplaceHistoryItem.isEmpty()) {
-			dto.setWorkplaceId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
-		}
+//		List<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = affWorkplaceHistoryItemRepo
+//				.getAffWrkplaHistItemByEmpIdAndDate(input.getBaseDate(), input.getEmployeeId());
+//
+//		if (!affWorkplaceHistoryItem.isEmpty()) {
+//			dto.setWorkplaceId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
+//		}
 
 		return dto;
 	}

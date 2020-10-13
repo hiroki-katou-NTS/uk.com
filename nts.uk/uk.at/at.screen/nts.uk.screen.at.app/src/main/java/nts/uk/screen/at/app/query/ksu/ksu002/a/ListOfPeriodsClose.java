@@ -21,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.EmployeeInformationInput;
@@ -55,6 +57,9 @@ public class ListOfPeriodsClose {
 	@Inject
 	private EmployeeInformation employeeInformation;
 	
+	@Inject
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
+	
 	public SystemDateDto get(ListOfPeriodsCloseInput input) {
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
@@ -84,6 +89,13 @@ public class ListOfPeriodsClose {
 			
 			periodsClose.setStartDate(period.start());
 			periodsClose.setEndDate(period.end());
+			
+			List<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = affWorkplaceHistoryItemRepo
+					.getAffWrkplaHistItemByEmpIdAndDate(period.start(), sid);
+
+			if (!affWorkplaceHistoryItem.isEmpty()) {
+				periodsClose.setWorkplaceId(affWorkplaceHistoryItem.get(0).getWorkplaceId());
+			}
 			
 			Optional<Closure> closure = closures.stream().filter(f -> f.getClosureId().value ==  closurePeriod.getClosureId().value).findFirst();
 			

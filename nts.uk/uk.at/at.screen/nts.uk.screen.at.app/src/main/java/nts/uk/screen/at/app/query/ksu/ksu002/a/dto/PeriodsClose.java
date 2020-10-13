@@ -18,4 +18,6 @@ public class PeriodsClose {
 	private GeneralDate startDate;
 
 	private GeneralDate endDate;
+	
+	private String workplaceId;
 }

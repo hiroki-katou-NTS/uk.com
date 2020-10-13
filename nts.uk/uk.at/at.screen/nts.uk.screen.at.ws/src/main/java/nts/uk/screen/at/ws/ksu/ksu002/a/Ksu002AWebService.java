@@ -16,7 +16,6 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkTypeDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 
@@ -35,8 +34,8 @@ public class Ksu002AWebService extends WebService {
 	@Inject
 	private GetScheduleActualOfWorkInfo002 getScheduleActualOfWorkInfo002;
 	
-	@Inject
-	private GetWorkTypeKSU002 getWorkType;
+//	@Inject
+//	private GetWorkTypeKSU002 getWorkType;
 	
 	@Inject
 	private GetListWorkTypeAvailable getListWorkTypeAvailable;
