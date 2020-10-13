@@ -24,24 +24,15 @@ module nts.uk.at.view.kdl051.screenModel {
         { id: '5', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
         { id: '6', date: '2020/10/07', periodDate: '10:00', classification: 'test' }
       ]);
-
-      tableColumns: KnockoutObservableArray<any> = ko.observableArray([
-        { headerText: '', width: 20 , template:'<div style = "background-color: #CFF1A5;">${id}</div>', key: 'id'},
-        { headerText: this.$i18n('KDL051_7'), prop: 'date', width: 150 },
-        { headerText: this.$i18n('KDL051_8'), prop: 'periodDate', width: 100 },
-        { headerText: this.$i18n('KDL051_9'), prop: 'classification', width: 100 }
-      ]);
+   
 
     created() {
       const vm =this;
-      // get Param
       let shareParam = getShared('KDL051A_PARAM');
       let startParam = {
         baseDate: shareParam.baseDate,
         employeeIds: shareParam.employeeIds
       }
-
-      // call API startPage
       vm.$ajax(API.startPage, startParam).then((res: any)=>{
         if(res && res.lstEmp) {
           let mappedList: any =
@@ -50,8 +41,11 @@ module nts.uk.at.view.kdl051.screenModel {
                         });
           vm.employeeList(mappedList);
           vm.selectedCode(mappedList[0].code);
-          if(res.nursingLeaveSt.manageType !== null && res.nursingLeaveSt.manageType ===0){
+              
+          if(res.nursingLeaveSt.manageType !== null){
+            if(res.nursingLeaveSt.manageType ===0) {
               vm.error(true);
+            }
           }
         }
       })
@@ -61,7 +55,6 @@ module nts.uk.at.view.kdl051.screenModel {
         { code: '2', isAlreadySetting: true }
       ]);
 
-      // KCP005
       vm.listComponentOption = {
         isShowAlreadySet: false,
         isMultiSelect: false,
@@ -75,7 +68,7 @@ module nts.uk.at.view.kdl051.screenModel {
         isShowWorkPlaceName: false,
         isShowSelectAllButton: false,
         maxRows: 15
-      };
+    };
 
       vm.selectedCode.subscribe(value =>{
         if(value){
@@ -83,7 +76,7 @@ module nts.uk.at.view.kdl051.screenModel {
         }
       });
       $('#component-items-list').ntsListComponent(vm.listComponentOption);
-      
+
     }
 
     public genDateTime(date: number, time: number) {
@@ -94,9 +87,8 @@ module nts.uk.at.view.kdl051.screenModel {
     }
 
     public close() {
-      const vm = this;
-      vm.$window.close();
-    }
+      nts.uk.ui.windows.close();
+  }
   }
   export class ListType {
     static EMPLOYMENT = 1;
