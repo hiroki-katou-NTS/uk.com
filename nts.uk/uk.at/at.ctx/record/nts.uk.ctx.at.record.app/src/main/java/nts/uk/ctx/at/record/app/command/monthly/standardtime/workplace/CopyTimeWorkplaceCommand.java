@@ -16,7 +16,10 @@ public class CopyTimeWorkplaceCommand {
 	// 会社ID 1
 	private  String workplaceId;
 
+	// 会社ID 1
+	private  String workplaceIdCoppy;
+
 	// 労働制 3
-	private int laborSystemAtr;
+	private Integer laborSystemAtr;
 
 }

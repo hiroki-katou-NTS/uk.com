@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
@@ -31,7 +32,7 @@ import java.util.Optional;
 public class RegisterTimeEmploymentCommandHandler extends CommandHandlerWithResult<RegisterTimeEmploymentCommand,List<String>> {
 
     @Inject
-    private AgreementTimeOfEmploymentRepostitory repo;
+    private Employment36HoursRepository repo;
 
     @Inject
     private AgreementTimeOfEmploymentDomainService agreementTimeOfEmploymentDomainService;
@@ -64,8 +65,7 @@ public class RegisterTimeEmploymentCommandHandler extends CommandHandlerWithResu
                 new AgreementMultiMonthAvg(errorTimeInMonth),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
-        Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment = this.repo.find(AppContexts.user().companyId(),command.getEmploymentCD(),
-                EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
+        Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment = this.repo.getByCidAndEmployCode(AppContexts.user().companyId(),command.getEmploymentCD());
 
         if (agreementTimeOfEmployment.isPresent()) {
             AgreementTimeOfEmployment agreementTimeOfEmployment1 = new AgreementTimeOfEmployment(AppContexts.user().companyId(),

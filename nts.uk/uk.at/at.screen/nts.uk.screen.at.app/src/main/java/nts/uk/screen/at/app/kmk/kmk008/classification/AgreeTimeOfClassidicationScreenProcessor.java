@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kmk.kmk008.classification;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
@@ -17,11 +18,11 @@ import java.util.Optional;
 public class AgreeTimeOfClassidicationScreenProcessor {
 
     @Inject
-    private AgreementTimeOfClassificationRepository timeOfEmploymentRepostitory;
+    private Classification36AgreementTimeRepository timeOfEmploymentRepostitory;
 
     public AgreementTimeClassificationDto findAgreeTimeOfClassidication(RequestClassification request) {
 
-        Optional<AgreementTimeOfClassification> data = timeOfEmploymentRepostitory.find(
+        Optional<AgreementTimeOfClassification> data = timeOfEmploymentRepostitory.getByCidAndClassificationCode(
                 AppContexts.user().companyId(),EnumAdaptor.valueOf(request.getLaborSystemAtr(), LaborSystemtAtr.class),request.getEmploymentCode());
 
         return AgreementTimeClassificationDto.setData(data);

@@ -2,14 +2,17 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -20,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfClassificationDomainServiceImp implements AgreementTimeOfClassificationDomainService {
 
 	@Inject
-	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
+	private Classification36AgreementTimeRepository agreementTimeOfClassificationRepository;
 
 	@Override
 	public List<String> add(AgreementTimeOfClassification agreementTimeOfClassification,
@@ -29,7 +32,7 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfClassification);
 
 		if (errors.isEmpty()) {
-			this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
+			this.agreementTimeOfClassificationRepository.insert(agreementTimeOfClassification);
 		}
 		return errors;
 	}
@@ -49,8 +52,10 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 	@Override
 	public void remove(String companyId, int laborSystemAtr, String classificationCode, String basicSettingId) {
 
-		this.agreementTimeOfClassificationRepository.remove(companyId,
-				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
+		Optional<AgreementTimeOfClassification> timeOfClassification =  agreementTimeOfClassificationRepository.getByCidAndClassificationCode(AppContexts.user().companyId(),classificationCode);
+
+		//1: delete(会社ID,雇用コード)
+		timeOfClassification.ifPresent(agreementTimeOfClassification -> agreementTimeOfClassificationRepository.delete(agreementTimeOfClassification));
 
 	}
 	

@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
@@ -31,7 +32,7 @@ import java.util.Optional;
 public class RegisterTimeClassificationCommandHandler extends CommandHandlerWithResult<RegisterTimeClassificationCommand,List<String>> {
 
     @Inject
-    private AgreementTimeOfClassificationRepository repo;
+    private Classification36AgreementTimeRepository repo;
 
     @Inject
     private AgreementTimeOfClassificationDomainService timeOfClassificationDomainService;
@@ -66,8 +67,7 @@ public class RegisterTimeClassificationCommandHandler extends CommandHandlerWith
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
 
-        Optional<AgreementTimeOfClassification> agreementTimeOfClassification = this.repo.find(AppContexts.user().companyId(),
-                EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),command.getClassificationCode());
+        Optional<AgreementTimeOfClassification> agreementTimeOfClassification = this.repo.getByCidAndClassificationCode(AppContexts.user().companyId(),command.getClassificationCode());
 
         if (agreementTimeOfClassification.isPresent()) {
             AgreementTimeOfClassification newAgreementTimeOfClassification= new AgreementTimeOfClassification(AppContexts.user().companyId(),

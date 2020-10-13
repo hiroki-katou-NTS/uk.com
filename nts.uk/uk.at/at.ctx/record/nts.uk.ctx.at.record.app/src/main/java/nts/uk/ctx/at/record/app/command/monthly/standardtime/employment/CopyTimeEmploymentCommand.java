@@ -13,10 +13,13 @@ import lombok.Getter;
 @Getter
 public class CopyTimeEmploymentCommand {
 
-	// 雇用コード 2
+	// 雇用コード
 	private String employmentCD;
 
+	// 雇用コード
+	private String employmentCDCoppy;
+
 	// 労働制 3
-	private int laborSystemAtr;
+	private Integer laborSystemAtr;
 
 }

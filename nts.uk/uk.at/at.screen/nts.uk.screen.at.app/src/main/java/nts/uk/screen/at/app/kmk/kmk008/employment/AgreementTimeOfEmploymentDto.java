@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 import java.util.Optional;
 
@@ -14,19 +12,68 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AgreementTimeOfEmploymentDto {
 
-    // 労働制 3
-    private LaborSystemtAtr laborSystemAtr;
-
     // 	３６協定基本設定
-    private BasicAgreementSetting basicAgreementSetting;
+    //C4_5
+    private int overMaxTimes;
+
+    //C4_13
+    private int limitOneMonth;
+
+    //C4_14
+    private int errorOneMonth;
+
+    //C4_15
+    private int alarmOneMonth;
+
+    //C4_18
+    private int limitTwoMonths;
+
+    //C4_19
+    private int errorTwoMonths;
+
+    //C4_20
+    private int alarmTwoMonths;
+
+    //C4_23
+    private int errorOneYear;
+
+    //C4_24
+    private int alarmOneYear;
+
+    //C4_27
+    private int limitOneYear;
+
+    //C4_28
+    private int errorTwoYear;
+
+    //C4_29
+    private int alarmTwoYear;
+
+    //C4_33,C3_34
+    private int errorMonthAverage;
+
+    //C4_35
+    private int alarmMonthAverage;
 
     public static AgreementTimeOfEmploymentDto setData(Optional<AgreementTimeOfEmployment> data){
         if (!data.isPresent()){
             return new AgreementTimeOfEmploymentDto();
         }
         return data.map(x -> new AgreementTimeOfEmploymentDto(
-                x.getLaborSystemAtr(),
-                x.getSetting()
+                x.getSetting().getOverMaxTimes().value,
+                x.getSetting().getOneMonth().getBasic().getUpperLimit().v(),
+                x.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
+                x.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
+                x.getSetting().getOneMonth().getSpecConditionLimit().getUpperLimit().v(),
+                x.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
+                x.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                x.getSetting().getOneYear().getBasic().getError().v(),
+                x.getSetting().getOneYear().getBasic().getAlarm().v(),
+                x.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
+                x.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
+                x.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+                x.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
+                x.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v()
         )).orElseGet(AgreementTimeOfEmploymentDto::new);
     }
 }

@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOfWorkPlaceDomainService {
 
 	@Inject
-	private AgreementTimeOfWorkPlaceRepository agreementTimeOfWorkPlaceRepository;
+	private Workplace36AgreedHoursRepository agreementTimeOfWorkPlaceRepository;
 
 	@Override
 	public List<String> add(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace,
@@ -24,7 +26,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfWorkPlace);
 
 		if (errors.isEmpty()) {
-			this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
+			this.agreementTimeOfWorkPlaceRepository.insert(agreementTimeOfWorkPlace);
 		}
 
 		return errors;
@@ -44,8 +46,9 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 	@Override
 	public void remove(String basicSettingId, String workPlaceId, int laborSystemAtr) {
 
-		this.agreementTimeOfWorkPlaceRepository.remove(workPlaceId,
-				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
+		Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  agreementTimeOfWorkPlaceRepository.getByWorkplaceId(workPlaceId);
+		//1: delete(会社ID,雇用コード)
+		timeOfWorkPlace.ifPresent(agreementTimeOfWorkPlace -> agreementTimeOfWorkPlaceRepository.delete(agreementTimeOfWorkPlace));
 	}
 	
 	/**

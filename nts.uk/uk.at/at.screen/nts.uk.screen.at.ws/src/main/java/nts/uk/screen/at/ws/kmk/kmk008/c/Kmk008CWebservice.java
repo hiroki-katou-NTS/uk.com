@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kmk.kmk008.c;
 
 import nts.uk.screen.at.app.kmk.kmk008.employment.AgreeTimeOfEmploymentScreenProcessor;
 import nts.uk.screen.at.app.kmk.kmk008.employment.AgreementTimeOfEmploymentDto;
+import nts.uk.screen.at.app.kmk.kmk008.employment.EmploymentListCodesDto;
 import nts.uk.screen.at.app.kmk.kmk008.employment.RequestEmployment;
 
 import javax.inject.Inject;
@@ -18,8 +19,14 @@ public class Kmk008CWebservice {
     private AgreeTimeOfEmploymentScreenProcessor employmentScreenProcessor;
 
     @POST
+    @Path("getEmploymentCodes/{laborSystemAtr}")
+    public EmploymentListCodesDto getEmploymentCodes(@PathParam("laborSystemAtr") int laborSystemAtr) {
+        return this.employmentScreenProcessor.findEmploymentCode(laborSystemAtr);
+    }
+
+    @POST
     @Path("get")
-    public AgreementTimeOfEmploymentDto getAgreeOpeSetting(RequestEmployment request) {
+    public AgreementTimeOfEmploymentDto getAgrEmployment(RequestEmployment request) {
         return this.employmentScreenProcessor.findAgreeTimeOfEmployment(request);
     }
 

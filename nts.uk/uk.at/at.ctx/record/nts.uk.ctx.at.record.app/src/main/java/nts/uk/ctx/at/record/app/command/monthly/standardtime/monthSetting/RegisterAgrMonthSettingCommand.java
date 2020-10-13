@@ -10,7 +10,7 @@ public class RegisterAgrMonthSettingCommand {
 
     private String employeeId;
 
-    private int YearMonth;
+    private int yearMonth;
 
     private int errorTime;
 

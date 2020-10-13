@@ -16,7 +16,10 @@ public class CopyTimeClassificationCommand {
 	// 分類コード
 	private  String classificationCode;
 
+	// 分類コード
+	private  String classificationCodeCoppy;
+
 	// 労働制 3
-	private int laborSystemAtr;
+	private Integer laborSystemAtr;
 
 }

@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfCompanyDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
@@ -30,7 +31,7 @@ import java.util.Optional;
 public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<RegisterTimeCompanyCommand, List<String>> {
 
     @Inject
-    private AgreementTimeCompanyRepository repo;
+    private Company36AgreedHoursRepository repo;
 
     @Inject
     private AgreementTimeOfCompanyDomainService agreementTimeOfCompanyDomainService;
@@ -64,8 +65,7 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<
                 new AgreementMultiMonthAvg(errorTimeInMonth),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
-        Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.find(AppContexts.user().companyId(),
-                EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
+        Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId());
 
         if (agreementTimeOfCompanyOpt.isPresent()) {
             AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),

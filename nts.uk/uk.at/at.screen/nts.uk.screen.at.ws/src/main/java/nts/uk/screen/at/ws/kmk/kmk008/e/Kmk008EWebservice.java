@@ -21,7 +21,7 @@ public class Kmk008EWebservice {
 
     @POST
     @Path("get")
-    public AgreementTimeClassificationDto getAgreeOpeSetting(RequestClassification request) {
+    public AgreementTimeClassificationDto getAgrClassification(RequestClassification request) {
         return this.findAgreeTimeOfWorkPlace.findAgreeTimeOfClassidication(request);
     }
 

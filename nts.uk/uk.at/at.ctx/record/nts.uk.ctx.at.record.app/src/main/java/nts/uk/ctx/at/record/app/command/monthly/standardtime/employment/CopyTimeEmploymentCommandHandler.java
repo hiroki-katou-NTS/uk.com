@@ -4,7 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
+import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmploymentCommand> {
 
     @Inject
-    private AgreementTimeOfEmploymentRepostitory repo;
+    private Employment36HoursRepository repo;
 
     @Override
     protected void handle(CommandHandlerContext<CopyTimeEmploymentCommand> context) {
@@ -27,20 +27,20 @@ public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmp
         CopyTimeEmploymentCommand command = context.getCommand();
         val cid = AppContexts.user().companyId();
 
-        //1: get(会社ID,雇用コード,３６協定労働制) : ３６協定基本設定
-        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.find(cid,command.getEmploymentCD(),
-                EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
+        //1: get(会社ID,雇用コード) : ３６協定基本設定
+        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(cid,command.getEmploymentCD());
         if(timeOfEmployment.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfEmployment.get().getSetting();
 
-            //2: delete(会社ID,雇用コード)
-            repo.remove(cid,command.getEmploymentCD(), EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
+            Optional<AgreementTimeOfEmployment> timeOfEmploymentCoppy =  repo.getByCidAndEmployCode(cid,command.getEmploymentCDCoppy());
+
+            //2: delete
+            timeOfEmploymentCoppy.ifPresent(x -> repo.delete(x));
 
             //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
             AgreementTimeOfEmployment agreementTimeOfEmployment = new AgreementTimeOfEmployment(cid, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-                    new EmploymentCode(command.getEmploymentCD()),basicAgreementSetting);
-            repo.add(agreementTimeOfEmployment);
+                    new EmploymentCode(command.getEmploymentCDCoppy()),basicAgreementSetting);
+            repo.insert(agreementTimeOfEmployment);
         }
-
     }
 }

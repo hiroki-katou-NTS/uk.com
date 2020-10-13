@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kmk.kmk008.company;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
@@ -17,11 +18,11 @@ import java.util.Optional;
 public class AgreeTimeOfCompanyScreenProcessor {
 
     @Inject
-    private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
+    private Company36AgreedHoursRepository agreementTimeCompanyRepository;
 
     public AgreementTimeOfCompanyDto findAgreeTimeOfCompany(RequestCompany requestCompany) {
-        Optional<AgreementTimeOfCompany> data = agreementTimeCompanyRepository.find(
-                AppContexts.user().companyId(), EnumAdaptor.valueOf(requestCompany.getLaborSystemAtr(), LaborSystemtAtr.class));
+        Optional<AgreementTimeOfCompany> data = agreementTimeCompanyRepository.getByCid(
+                AppContexts.user().companyId());
 
         return AgreementTimeOfCompanyDto.setData(data);
     }
