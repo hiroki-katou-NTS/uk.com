@@ -9,7 +9,7 @@ module nts.uk.ui.calendar {
 		date: Date;
 		inRange: boolean;
 		startDate: boolean;
-		data?: T & Record<string, any>;
+		data: T;
 		binding?: string | Record<BindingKey, string | null>;
 		className?: string[];
 	}
@@ -40,9 +40,9 @@ module nts.uk.ui.calendar {
 		REFLECTED = 'reflected'
 	}
 
-	export interface DataInfo {
-		holiday?: string;
-		event?: string;
+	export interface DataInfo<T = string> {
+		holiday: T;
+		event: T;
 	}
 
 	const D_FORMAT = 'YYYYMM';
@@ -333,7 +333,7 @@ module nts.uk.ui.calendar {
 
 			if (inRange) {
 				if (data) {
-					const { event } = data;
+					const { event } = ko.toJS(data);
 
 					ko.applyBindingsToNode(element, { icon: !!event ? 120 : 121 });
 					const boundind = element.getBoundingClientRect();
@@ -395,7 +395,7 @@ module nts.uk.ui.calendar {
 				element.innerHTML = '&nbsp;';
 			} else {
 				if (data) {
-					const { holiday } = data;
+					const { holiday } = ko.toJS(data);
 
 					if (holiday) {
 						element.innerHTML = holiday;

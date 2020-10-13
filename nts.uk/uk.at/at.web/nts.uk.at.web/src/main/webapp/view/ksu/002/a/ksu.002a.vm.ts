@@ -11,12 +11,23 @@ module nts.uk.ui.at.ksu002.a {
 
 	const memento: m.Options = {
 		size: 20,
-		/*replace: function (data: c.DayData[]) {
-			_.each(data, (d: c.DayData) => {
+		replace: function (data: c.DayData<ObserverScheduleData>[], replacer: c.DayData<ScheduleData>) {
+			const exist = _.find(data, f => moment(f.date).isSame(replacer.date, 'date'));
 
-				d.
-			});
-		}*/
+			if (exist) {
+				const { data } = exist;
+				const { wtime, wtype, value } = replacer.data;
+
+				data.wtime.code(wtime.code);
+				data.wtime.name(wtime.name);
+
+				data.wtype.code(wtype.code);
+				data.wtype.name(wtype.name);
+
+				data.value.begin(value.begin);
+				data.value.finish(value.finish);
+			}
+		}
 	};
 
 	@bean()
@@ -26,7 +37,7 @@ module nts.uk.ui.at.ksu002.a {
 
 		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
-		schedules: m.MementoObservableArray<c.DayData<ScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
+		schedules: m.MementoObservableArray<c.DayData<ObserverScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
 
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
@@ -78,7 +89,7 @@ module nts.uk.ui.at.ksu002.a {
 						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
-								const clones: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
+								const clones: c.DayData<ObserverScheduleData>[] = ko.toJS(vm.schedules);
 
 								_.each(response, (d) => {
 									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
@@ -87,19 +98,19 @@ module nts.uk.ui.at.ksu002.a {
 										exits.data = {
 											...exits.data,
 											wtype: {
-												code: d.workTypeCode,
-												name: d.workTypeName
+												code: ko.observable(d.workTypeCode),
+												name: ko.observable(d.workTypeName)
 											},
 											wtime: {
-												code: d.workTimeCode,
-												name: d.workTimeName
+												code: ko.observable(d.workTimeCode),
+												name: ko.observable(d.workTimeName)
 											},
 											value: {
-												begin: d.startTime,
-												finish: d.endTime
+												begin: ko.observable(d.startTime),
+												finish: ko.observable(d.endTime)
 											},
-											holiday: '', // exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
-											event: '', // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
+											holiday: ko.observable(''), // exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
+											event: ko.observable(''), // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
 										};
 
 										exits.className = [
@@ -111,7 +122,12 @@ module nts.uk.ui.at.ksu002.a {
 									}
 								});
 
-								vm.schedules.reset(clones);
+								vm.schedules.reset();
+								vm.schedules(clones);
+
+								vm.$nextTick(() => {
+									$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+								});
 							}
 						})
 						.always(() => vm.$blockui('hide'));
@@ -122,6 +138,8 @@ module nts.uk.ui.at.ksu002.a {
 			const vm = this;
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+			_.extend(window, { vm });
 		}
 
 		// event on click undo or redo button
@@ -136,66 +154,64 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		// edit data on copy mode
-		clickDayCell(type: c.CLICK_CELL, dayData: c.DayData<ScheduleData>) {
+		clickDayCell(type: c.CLICK_CELL, dayData: c.DayData<ObserverScheduleData>) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
 			const workData = ko.unwrap(vm.workData);
+			const preview: c.DayData<ScheduleData> = ko.toJS(dayData);
 
 			if (type === 'info' && mode === 'copy' && workData) {
 				const { wtime, wtype } = workData;
-				const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
+				const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
 
-				const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
+				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
-				if (exist) {
-					const { data } = exist;
+				if (current) {
+					$.Deferred()
+						.resolve(true)
+						.then(() => {
+							const { data } = current;
 
-					data.wtime = {
-						code: wtime.code,
-						name: wtime.name
-					};
+							data.wtime.code(wtime.code);
+							data.wtime.name(wtime.name);
 
-					data.wtype = wtype;
+							data.wtype.code(wtype.code);
+							data.wtype.name(wtype.name);
 
-					data.value = wtime.value;
+							data.value.begin(wtime.value.begin);
+							data.value.finish(wtime.value.finish);
+						})
+						.then(() => vm.schedules.memento({ current, preview }));
 				}
-
-				vm.schedules.memento(wrap);
 			}
 		}
 
 		// edit data on edit mode
-		changeDayCell(dayData: c.DayData<ScheduleData>) {
+		changeDayCell(current: c.DayData<ScheduleData>) {
 			const vm = this;
+			const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
 
-			const wrap: c.DayData[] = _.cloneDeep(ko.toJS(vm.schedules));
+			const preview = _.find(wrap, f => moment(f.date).isSame(current.date, 'date'));
 
-			const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
+			if (preview) {
+				$.Deferred()
+					.resolve(true)
+					.then(() => vm.schedules.memento({ current, preview }))
+					.then(() => {
+						const { data } = preview;
+						const { wtime, wtype, value } = current.data;
 
-			if (exist) {
-				const { data } = dayData;
+						data.wtime.code(wtime.code);
+						data.wtime.name(wtime.name);
 
-				exist.data = { ...data };
+						data.wtype.code(wtype.code);
+						data.wtype.name(wtype.name);
+
+						data.value.begin(value.begin);
+						data.value.finish(value.finish);
+					});
 			}
-
-			vm.schedules.memento(wrap);
 		}
-
-		openDialog() {
-			const vm = this;
-
-			vm.$window
-				.storage('CDL009Params', { selectedIds: [], baseDate: moment().toISOString(), target: 1 })
-				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
-				.then((data) => {
-					debugger;
-				});
-		}
-	}
-
-	interface ResponseData {
-		listWorkTypeInfo: WorkType[];
-		listWorkScheduleWorkInfor: WorkSchedule<string>[];
 	}
 
 	interface WorkSchedule<D = moment.Moment> {
