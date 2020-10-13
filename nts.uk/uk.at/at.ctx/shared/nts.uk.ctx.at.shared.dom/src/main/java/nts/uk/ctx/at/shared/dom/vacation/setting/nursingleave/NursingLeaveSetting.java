@@ -8,7 +8,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class NursingLeaveSetting.
@@ -27,14 +29,14 @@ public class NursingLeaveSetting extends AggregateRoot {
 	private NursingCategory nursingCategory;
 
 	/** 起算日 */
-	private Integer startMonthDay;
+	private MonthDay startMonthDay;
 
 	/** 上限人数設定 */
 	private MaxPersonSetting maxPersonSetting;
-	
+
 	/** 特別休暇枠NO */
 	private Optional<Integer> specialHolidayFrame;
-	
+
 	/** 欠勤枠NO */
 	private Optional<Integer> workAbsence;
 
@@ -77,5 +79,31 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setMaxPersonSetting(this.maxPersonSetting);
 		memento.setSpecialHolidayFrame(specialHolidayFrame);
 		memento.setWorkAbsence(workAbsence);
+	}
+
+	/**
+	 * 次回起算日を求める
+	 * @param companyId 会社ID
+	 * @param criteriaDate 基準日
+	 * @return 次回起算日
+	 */
+	public  GeneralDate getNextStartMonthDay(
+			GeneralDate criteriaDate) {
+
+		// 「次回起算日」を求める
+		GeneralDate nextStartMonthDay = null;
+
+		// 基準日の月日と起算日の月日を比較
+		if(criteriaDate.beforeOrEquals(this.startMonthDay.toDate(criteriaDate.year()))) { //基準日．月日　＜＝　起算日
+			// 基準日の年で次回起算日を求める
+			// --- 次回起算日 =｛年：基準日．年、月：起算日．月、日：起算日．日｝
+			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year(), this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		} else {
+			// 基準日の年に＋１年し次回起算日を求める
+			// --- 次回起算日 =｛年：基準日．年　＋　１、月：起算日．月、日：起算日．日｝
+			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year() + 1, this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		}
+		// 次回起算日を返す
+		return nextStartMonthDay;
 	}
 }
