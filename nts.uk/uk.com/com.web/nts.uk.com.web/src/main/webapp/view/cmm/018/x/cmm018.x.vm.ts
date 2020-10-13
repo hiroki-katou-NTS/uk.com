@@ -22,7 +22,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 				.modal('com', '/view/cmm/018/q/index.xhtml', param)
 				.then((result: any) => {
 					// bussiness logic after modal closed
-					location.reload();
+					// location.reload();
 				});
 		}
 		jumpToA() {
