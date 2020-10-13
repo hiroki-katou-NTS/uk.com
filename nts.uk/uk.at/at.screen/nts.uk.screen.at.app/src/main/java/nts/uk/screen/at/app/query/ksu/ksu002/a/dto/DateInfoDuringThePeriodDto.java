@@ -17,16 +17,22 @@ import lombok.NoArgsConstructor;
 @Data
 public class DateInfoDuringThePeriodDto {
 	
+	/** 祝日であるか **/
 	private boolean isHoliday;
 
+	/** 特定日であるか **/
 	private boolean isSpecificDay;
 
+	/** 職場行事名称 **/
 	private String optWorkplaceEventName;
 
+	/** 会社行事名称 **/
 	private String optCompanyEventName;
 
+	/** 職場の特定日名称リスト **/
 	private List<String> listSpecDayNameWorkplace;
 
+	/** 会社の特定日名称リスト **/
 	private List<String> listSpecDayNameCompany;
 
 }
