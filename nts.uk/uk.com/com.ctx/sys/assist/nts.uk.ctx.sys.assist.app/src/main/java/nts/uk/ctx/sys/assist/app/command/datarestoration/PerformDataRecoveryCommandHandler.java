@@ -40,7 +40,12 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		String recoveryDate = null;
 		int categoryCnt = 0;
 		int errorCount = 0;
-		int categoryTotalCount = performDataCommand.getRecoveryCategoryList().size();
+		int categoryTotalCount = performDataCommand.getRecoveryCategoryList()
+				.stream()
+				.map(RecoveryCategoryCommand::getCategoryId)
+				.distinct()
+				.collect(Collectors.toList())
+				.size();
 		String processTargetEmpCode = "";
 		int suspendedState = 0;
 		int numOfProcesses = 0;

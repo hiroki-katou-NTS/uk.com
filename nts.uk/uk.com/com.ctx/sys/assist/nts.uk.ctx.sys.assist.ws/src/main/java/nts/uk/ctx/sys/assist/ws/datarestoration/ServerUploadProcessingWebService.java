@@ -20,9 +20,10 @@ public class ServerUploadProcessingWebService {
 	private ServerPrepareManagementFinder serverPrepareManagementFinder;
 	@POST
 	@Path("extractData")
-	public AsyncTaskInfo uploadProcessing(SyncServerUploadProcessingCommand command) {
+	public ExtractDataDto uploadProcessing(SyncServerUploadProcessingCommand command) {
 		AsyncTaskInfo taskInfo = serverUploadProcessingCommandHandler.handle(command);
-		return taskInfo;
+		String dataStorageProcessId = SyncServerUploadProcessingCommandHandler.STORAGE_PROCESS_ID[0];
+		return new ExtractDataDto(taskInfo, dataStorageProcessId);
 	}
 	
 	@POST

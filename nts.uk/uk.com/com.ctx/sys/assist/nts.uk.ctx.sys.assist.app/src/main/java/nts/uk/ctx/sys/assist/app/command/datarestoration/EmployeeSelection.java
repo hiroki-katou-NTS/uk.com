@@ -1,20 +1,14 @@
-package nts.uk.ctx.sys.assist.dom.datarestoration;
+package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import nts.uk.ctx.sys.assist.app.find.datarestoration.TargetItemDto;
 
 /**
  * 社員選択
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class EmployeeSelection {
 	/**
 	 * 年次To
@@ -49,5 +43,5 @@ public class EmployeeSelection {
 	/**
 	 * 対象者
 	 */
-	private List<String> targetPerson = new ArrayList<>();
+	private List<TargetItemDto> targets;
 }

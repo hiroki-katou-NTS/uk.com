@@ -45,7 +45,9 @@ module nts.uk.com.view.cmf004.d {
           fileName: self.fileName(),
           password: self.password()
         };
-        service.extractData(fileInfo).done(function (result) {
+        service.extractData(fileInfo).done(function (data) {
+          self.storeProcessingId = data.storageProcessId;
+          const result = data.taskInfo;
           dfd.resolve();
           block.invisible();
           let taskId = result.id;
@@ -113,7 +115,6 @@ module nts.uk.com.view.cmf004.d {
           fileName: self.fileName(),
           password: self.password()
         };
-        console.log(self.storeProcessingId);
         setShared("CMF004_E_PARAMS", { storeProcessingId: self.storeProcessingId, processingId: self.dataRecoveryProcessId, fileInfo: fileInfo, continuteProcessing: true });
         close();
       }

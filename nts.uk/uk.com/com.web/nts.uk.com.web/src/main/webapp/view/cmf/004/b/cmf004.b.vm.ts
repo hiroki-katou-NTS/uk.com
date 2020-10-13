@@ -53,6 +53,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     explanationValue: KnockoutObservable<string> = ko.observable('');
     output: KnockoutObservableArray<Output> = ko.observableArray([]);
     pwdConstraint: KnockoutObservable<string> = ko.observable('');
+    itemSets: any;
     //Screen F
     changeDataRecoveryPeriod: KnockoutObservable<ChangeDataRecoveryPeriod> = ko.observable(new ChangeDataRecoveryPeriod([]));
     selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
@@ -289,7 +290,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     finished(fileInfo: any) {
       let self = this;
       if (fileInfo.id != null && fileInfo.originalName != null) {
-        console.log(fileInfo);
         setShared("CMF004lParams", {
           fileId: fileInfo.id,
           fileName: fileInfo.originalName,
@@ -393,10 +393,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     initScreenE(): void {
       let self = this;
       block.invisible();
-      console.log(self.dataRecoverySelection().selectedRecoveryFile());
       //Get Data TableList for Screen E
       service.setScreenItem(self.dataRecoverySelection().selectedRecoveryFile()).done((data) => {
-        console.log(data);
+        self.itemSets = data;
         let listCategory: Array<CategoryInfo> = [];
         if (data && data.length) {
           _.each(data, (c, i: number) => {
@@ -473,7 +472,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       let self = this;
       block.invisible();
       //Get Data PerformDataRecover for Screen KCP 005
-      service.findPerformDataRecover(self.recoveryProcessingId).done(function (data: any) {
+      const param = {
+        itemSets: self.itemSets,
+        dataRecoveryProcessId: self.recoveryProcessingId
+      };
+      service.findPerformDataRecover(param).done(function (data: any) {
         if (data.targets) {
           self.employeeListScreenG.removeAll();
           let employeeData: Array<any> = [];
@@ -485,6 +488,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
           $('#kcp005component .nts-gridlist').attr('tabindex', -1);
           self.updateKcp005ScreenG(self.dataContentConfirm().selectedRecoveryMethod() === 0);
         }
+        self.dateValue().dateRange({ startDate: data.dailyFrom, endDate: data.dailyTo });
+        self.dateValue().monthRange({ startDate: data.monthlyFrom, endDate: data.monthlyTo });
+        self.dateValue().yearRange({ startDate: data.annualFrom, endDate: data.annualTo });
+        self.dateValue.valueHasMutated();
       }).always(() => {
         block.clear();
       });
@@ -750,10 +757,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     createManualSettings(): ManualSettingModal {
       var self = this;
       var dateValue: DateValueDto = new DateValueDto();
-
-      //TODO: Kiểm tra sự đồng nhất của các item systemType và dateTime trong bảng TableList
       if (self.dataContentConfirm().selectedRecoveryMethod() === 0) {
-        //Refactor??
         _.each(self.periodValueArr, (item) => {
           var val = self.dataRecoverySummary().recoveryCategoryList().filter(data => data.recoveryPeriod() === item.period).pop();
           if (val) {

@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -57,6 +58,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	private EmployeeRestoration employeeRestoration;
 
 	private static final String STATUS = "status";
+	public static final String[] STORAGE_PROCESS_ID = new String[] {""};
 	
 
 	@SuppressWarnings("unchecked")
@@ -98,6 +100,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
 		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
 		List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
+		STORAGE_PROCESS_ID[0] = tableList.get(FIRST_LINE).getDataStorageProcessingId();
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (!checkNormalFile(serverPrepareMng))
 			return;
