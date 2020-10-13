@@ -96,16 +96,16 @@ module nts.uk.com.view.cmm024.a {
 			});
 
 			//Screen B			
-				vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
-					if(vm.isShowPanelB()) vm.dispplayInfoOnScreenB(value);
-				});
+			vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
+				if (vm.isShowPanelB()) vm.dispplayInfoOnScreenB(value);
+			});
 
-				vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
-					if (wkpId) {
-						vm.selectedWkpId(wkpId);
-						if( vm.isShowPanelB()) vm.workplaceScheduleHistoryListing();
-					}
-				});
+			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
+				if (wkpId) {
+					vm.selectedWkpId(wkpId);
+					if (vm.isShowPanelB()) vm.workplaceScheduleHistoryListing();
+				}
+			});
 			//responsive
 			if ($(window).width() < 1360) {
 				$('.contents-area').addClass('fix1280');
@@ -142,8 +142,9 @@ module nts.uk.com.view.cmm024.a {
 				vm.createEmployeesPanelList('A', 1, objFind.personalInfoApprove);
 				//従業員代表パネル
 				vm.createEmployeesPanelList('A', 2, objFind.personalInfoConfirm);
-				
-				$('#historyList tr:first-child').focus();
+
+				if (scheduleHistory[0].code === value)
+					$('#historyList tr:first-child').focus();
 
 			} else {
 				vm.resetSettingsScreenA(false, true, false, true, ScreenModel.ADDNEW);
@@ -176,7 +177,7 @@ module nts.uk.com.view.cmm024.a {
 					vm.registerScheduleHistoryByCompany();
 					break;
 			}
-			
+
 			//reset	
 			vm.resetSettingsScreenA(false, true, false, true, ScreenModel.EDIT);
 		}
@@ -211,7 +212,7 @@ module nts.uk.com.view.cmm024.a {
 			service.registerScheduleHistoryByCompany(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.companyScheduleHistoryListing();						
+						vm.companyScheduleHistoryListing();
 						vm.$blockui('hide');
 					});
 				}).fail((error) => {
@@ -252,8 +253,8 @@ module nts.uk.com.view.cmm024.a {
 			service.updateScheduleHistoryByCompany(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.companyScheduleHistoryListing();						
-						vm.$blockui('hide');						
+						vm.companyScheduleHistoryListing();
+						vm.$blockui('hide');
 					});
 				}).fail((error) => {
 					console.log(error);
@@ -679,7 +680,7 @@ module nts.uk.com.view.cmm024.a {
 			if (scheduleHistory.length > 0) {
 				value = (value === null) ? scheduleHistory[0].code : value;
 				vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
-		
+
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
@@ -694,7 +695,8 @@ module nts.uk.com.view.cmm024.a {
 				//従業員代表パネル
 				vm.createEmployeesPanelList('B', 2, objFind.personalInfoConfirm);
 
-				$('#historyListB tr:first-child').focus();
+				if (scheduleHistory[0].code === value)
+					$('#historyListB tr:first-child').focus();
 
 			} else {
 				vm.resetSettingsScreenB(false, true, false, true, ScreenModel.ADDNEW);
@@ -711,8 +713,8 @@ module nts.uk.com.view.cmm024.a {
 				if (data && data.workPlaceUseAtr !== 1) {
 					$("#sidebar").ntsSideBar("hide", 1);
 					$('.sidebar-content .disappear').html('');
-				} else 
-					vm.isShowPanelB(true); 
+				} else
+					vm.isShowPanelB(true);
 			});
 		}
 
@@ -899,7 +901,7 @@ module nts.uk.com.view.cmm024.a {
 			service.updateScheduleHistoryByWorlplace(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.workplaceScheduleHistoryListing();						
+						vm.workplaceScheduleHistoryListing();
 						vm.$blockui('hide');
 					});
 				}).fail((error) => {
