@@ -41,7 +41,7 @@ public class ShiftTableRuleTest {
 	
 	
 	@Test
-	public void testCreate_fail() {
+	public void testCreate_shiftTableSetting_isEmpty() {
 		
 		/**
 		 * useWorkExpectationAtr == USE
@@ -49,13 +49,27 @@ public class ShiftTableRuleTest {
 		 */
 		NtsAssert.systemError(() -> {
 			ShiftTableRule.create( 
-					NotUseAtr.USE, // 公開運用区分	
+					NotUseAtr.USE,
 					NotUseAtr.USE, // 勤務希望運用区分
 					Optional.empty(), // シフト表の設定
-					Collections.emptyList(), // 勤務希望の指定できる方法リスト
-					Optional.empty()); //	何日前に通知するかの日数	
+					Collections.emptyList(),
+					Optional.empty()); 
 		});
 		
+		/**
+		 * useWorkExpectationAtr == NOT_USE
+		 * shiftTableSetting.isEmpty
+		 */
+		ShiftTableRule.create( 
+					NotUseAtr.USE,
+					NotUseAtr.NOT_USE, // 勤務希望運用区分
+					Optional.empty(), // シフト表の設定
+					Collections.emptyList(),
+					Optional.empty());
+	}
+	
+	@Test
+	public void testCreate_expectationAssignMethodList_isEmpty() {
 		
 		/**
 		 * useWorkExpectationAtr == USE
@@ -64,12 +78,27 @@ public class ShiftTableRuleTest {
 		NtsAssert.businessException("Msg_1937", () -> {
 			
 			ShiftTableRule.create(
-					NotUseAtr.USE, // 公開運用区分	
+					NotUseAtr.USE,
 					NotUseAtr.USE, // 勤務希望運用区分
-					Optional.of(ShiftTableDateSettingHelper.defaultCreate()), // シフト表の設定
+					Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
 					Collections.emptyList(), // 勤務希望の指定できる方法リスト
-					Optional.empty()); // 何日前に通知するかの日数	
+					Optional.empty());
 		});
+		
+		/**
+		 * useWorkExpectationAtr == NOT_USE
+		 * expectationAssignMethodList.isEmpty
+		 */
+		ShiftTableRule.create(
+				NotUseAtr.USE,
+				NotUseAtr.NOT_USE, // 勤務希望運用区分
+				Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+				Collections.emptyList(), // 勤務希望の指定できる方法リスト
+				Optional.empty());
+	}
+	
+	@Test
+	public void testCreate_fromNoticeDays_isEmpty() {
 		
 		/**
 		 * useWorkExpectationAtr == USE
@@ -78,16 +107,27 @@ public class ShiftTableRuleTest {
 		NtsAssert.businessException("Msg_1938", () -> {
 			
 			ShiftTableRule.create( 
-					NotUseAtr.USE, // 公開運用区分	
+					NotUseAtr.USE,
 					NotUseAtr.USE, // 勤務希望運用区分
-					Optional.of(ShiftTableDateSettingHelper.defaultCreate()), // シフト表の設定
-					Arrays.asList(AssignmentMethod.HOLIDAY), // 勤務希望の指定できる方法リスト
+					Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+					Arrays.asList(AssignmentMethod.HOLIDAY),
 					Optional.empty()); // 何日前に通知するかの日数	
 		});
+		
+		/**
+		 * useWorkExpectationAtr == NOT_USE
+		 * fromNoticeDays.isEmpty
+		 */
+		ShiftTableRule.create( 
+				NotUseAtr.USE,
+				NotUseAtr.NOT_USE, // 勤務希望運用区分
+				Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+				Arrays.asList(AssignmentMethod.HOLIDAY),
+				Optional.empty()); // 何日前に通知するかの日数	
 	}
 	
 	@Test
-	public void testCreateSuccess() {
+	public void testCreate_success_useWorkExpectationAtr_isTrue() {
 		
 		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
 		FromNoticeDays days = new FromNoticeDays(3);
