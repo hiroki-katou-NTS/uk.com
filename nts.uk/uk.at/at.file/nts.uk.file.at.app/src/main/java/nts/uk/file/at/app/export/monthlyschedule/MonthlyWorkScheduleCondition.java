@@ -5,7 +5,6 @@
 package nts.uk.file.at.app.export.monthlyschedule;
 
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
 
 /**
@@ -20,7 +19,6 @@ public class MonthlyWorkScheduleCondition {
 	public static final int PAGE_BREAK_NOT_USE = 0;
 	public static final int PAGE_BREAK_EMPLOYEE = 1;
 	public static final int PAGE_BREAK_WORKPLACE = 2;
-	
 
 	/** The company id. */
 	// 会社ID
@@ -44,15 +42,15 @@ public class MonthlyWorkScheduleCondition {
 	
 	/** The display type. */
 	//  ゼロ表示区分
-	private DisplayTypeEnum displayType;
+	private Integer displayType;
 	
 	/** The item setting classify. */
 	//  項目設定区分
-	private ItemSelectionEnum itemSettingType;
+	private Integer itemSettingType;
 	
 	/** The item display switch. */
 	//  項目表示切替
-	private ItemDisplaySwitchEnum itemDisplaySwitch;
+	private Integer itemDisplaySwitch;
 	
 	/**
 	 * Checks if is show workplace.

@@ -8,7 +8,7 @@ public enum ItemDisplaySwitchEnum {
 	CODE(1);
 	
 	/** The indicator. */
-	private final int indicator;
+	public int indicator;
 
 	/**
 	 * Instantiates a new page break indicator.
