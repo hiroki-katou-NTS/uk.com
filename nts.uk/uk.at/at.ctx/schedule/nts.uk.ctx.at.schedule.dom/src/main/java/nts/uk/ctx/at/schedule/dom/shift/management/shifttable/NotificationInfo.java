@@ -4,6 +4,12 @@ import java.util.Optional;
 
 import lombok.Value;
 
+/**
+ * 通知情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.補助機能.シフト表.通知情報
+ * @author dan_pv
+ *
+ */
 @Value
 public class NotificationInfo {
 	

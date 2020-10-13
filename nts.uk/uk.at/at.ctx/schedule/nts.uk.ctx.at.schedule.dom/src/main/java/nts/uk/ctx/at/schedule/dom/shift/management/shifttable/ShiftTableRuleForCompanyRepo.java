@@ -8,13 +8,13 @@ public interface ShiftTableRuleForCompanyRepo {
 	 * insert
 	 * @param domain　会社のシフト表のルール
 	 */
-	public void insert(ShiftTableRuleForCompany domain);
+	public void insert(String companyId, ShiftTableRuleForCompany domain);
 	
 	/**
 	 * update
 	 * @param domain　会社のシフト表のルール
 	 */
-	public void update(ShiftTableRuleForCompany domain);
+	public void update(String companyId, ShiftTableRuleForCompany domain);
 	
 	/**
 	 * delete

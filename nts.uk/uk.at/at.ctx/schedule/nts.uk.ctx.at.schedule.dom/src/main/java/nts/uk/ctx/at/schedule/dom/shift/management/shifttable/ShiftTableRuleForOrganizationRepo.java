@@ -11,19 +11,20 @@ public interface ShiftTableRuleForOrganizationRepo {
 	 * insert
 	 * @param domain 組織別のシフト表のルール
 	 */
-	public void insert(ShiftTableRuleForOrganization domain);
+	public void insert(String companyId, ShiftTableRuleForOrganization domain);
 	
 	/**
 	 * update
 	 * @param domain 組織別のシフト表のルール
 	 */
-	public void update(ShiftTableRuleForOrganization domain);
+	public void update(String companyId, ShiftTableRuleForOrganization domain);
 	
 	/**
 	 * delete
 	 * @param companyId
+	 * @param targetOrg
 	 */
-	public void delete(String companyId);
+	public void delete(String companyId, TargetOrgIdenInfor targetOrg);
 	
 	/**
 	 * get
