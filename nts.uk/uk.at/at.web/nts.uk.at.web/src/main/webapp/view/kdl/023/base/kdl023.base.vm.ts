@@ -405,9 +405,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.onBtnApplySetting(vm.slideDays());
         }
 
-        public onBtnApplySetting(slideDay: number): void {
+        public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
             let vm = this;
             vm.$blockui('invisible');
+
+			let dfd = $.Deferred();
 
 			let holidayListsErrors = [];
 			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
@@ -437,8 +439,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			if(holidayListsErrors.length > 0){
 				nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
 				vm.$blockui('clear');
+				dfd.fail();
 
-				return;
+				return dfd.promise();
 			}
 
             let legalHolidayCd = '';
@@ -486,8 +489,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					$(focusElementId).focus();
 				});
                 vm.$blockui('clear');
+				dfd.fail();
 
-                return;
+                return dfd.promise();
             }
 
             let perStart	: number = vm.yearMonthPicked();
@@ -520,6 +524,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.setPatternRange().done(() => {
 				$('#component-calendar-kcp006').focus(); // Set focus control
 			});
+
+			dfd.resolve();
+
+			return dfd.promise();
         }
 
         /**
@@ -864,7 +872,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if(vm.promise()){
                 vm.$dialog.confirm({ messageId: "Msg_1738" }).then((result: 'yes' | 'no') => {
                     if(result === 'yes'){
-                        vm.register();
+						vm.onBtnApplySetting(vm.slideDays()).done(() => {
+							vm.register();
+						});
                     }
                 });
             }else{
