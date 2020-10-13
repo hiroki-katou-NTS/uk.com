@@ -8,7 +8,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkType = service.model.WorkType;
     import WorkTime = service.model.WorkTime;
     import DailyPatternSetting = service.model.DailyPatternSetting;
-    import DailyPatternValue = service.model.DailyPatternValue;
     import formatDate = nts.uk.time.formatDate;
     import WorkCycleReflectionDto = nts.uk.at.view.kdl023.base.service.model.WorkCycleReflectionDto;
     import GetStartupInfoParamDto = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
@@ -874,29 +873,37 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         }
 
-        private register(): void{
-            const vm = this;
-            let param : MonthlyPatternRegisterCommand = {
-                isOverWrite : vm.isOverWrite(),
-                workMonthlySetting: vm.workMonthlySetting()
-            };
-            // If calendar's setting is empty.
-            if (vm.isOptionDatesEmpty()) {
-                vm.$dialog.error({ messageId: "Msg_512" });
-                return;
-            }
-            service.registerMonthlyPattern(param).done(() => {
-                nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                    vm.closeDialog();
-                });
-            }).fail(() => {
-                vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
-                    vm.closeDialog();
-                });
-            });
-        }
+        private register(): void {
+			const vm = this;
+			let param: MonthlyPatternRegisterCommand = {
+				isOverWrite: vm.isOverWrite(),
+				workMonthlySetting: vm.workMonthlySetting()
+			};
+			// If calendar's setting is empty.
+			if (vm.isOptionDatesEmpty()) {
+				vm.$dialog.error({messageId: "Msg_512"});
+				return;
+			}
+			service.registerMonthlyPattern(param).done(() => {
+				nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
+				vm.$dialog.info({messageId: "Msg_15"}).then(function () {
+					vm.closeDialog();
+				});
+			}).fail((message: BussinessException) => {
+				const {messageId, parameterIds} = message;
+				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
+					vm.closeDialog();
+				});
+			});
+		}
     }
+
+	interface BussinessException {
+		atTime: string;
+		businessException: boolean;
+		messageId: string;
+		parameterIds: string[];
+	}
 
     export class ReflectionSetting {
         calendarStartDate: KnockoutObservable<string> = ko.observable(''); // 開始日
