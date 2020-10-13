@@ -402,7 +402,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         public onBtnApplySettingClicked(): void{
         	const vm = this;
 			vm.slideDays(0);
-			vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
+			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate.replace('/', '')));
 			vm.onBtnApplySetting(vm.slideDays());
         }
 
@@ -491,11 +491,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 return;
             }
 
+            let perStart	: number = vm.yearMonthPicked();
+			let perEnd	: number = vm.yearMonthPicked();
+			if (vm.isExecMode()) {
+				perStart	= vm.dateValue().startDate;
+				perEnd	= vm.dateValue().endDate;
+			}
+
 			vm.reflectionParam({
-				creationPeriodStartDate : moment(vm.dateValue().startDate, "YYYY-MM").startOf("month")
-					.format(CONST.MOMENT_DATE_FORMAT),
-				creationPeriodEndDate : moment(vm.dateValue().endDate, "YYYY-MM").endOf("month")
-					.format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodStartDate : moment(perStart, "YYYY-MM").startOf("month").format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodEndDate : moment(perEnd, "YYYY-MM").endOf("month").format(CONST.MOMENT_DATE_FORMAT),
 				workCycleCode : vm.reflectionSetting().selectedPatternCd(),
 				refOrder : refOrder,
 				numOfSlideDays : slideDay,
@@ -1220,6 +1225,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
         }
         private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
+        	const vm = this;
+
             let start = refImage.date;
             let textColor;
             if(refImage.workStyles === 0){
@@ -1230,16 +1237,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 textColor = '#FF7F27';
             }
 
+            let workTypeStr:string = '';
+			let workTimeStr:string = '';
+            if (refImage.workInformation.workTypeName) {
+				workTypeStr = refImage.workInformation.workTypeName;
+			} else {
+				workTypeStr = refImage.workInformation.workTypeCode + ' ' + vm.$i18n('KDL023_41');
+				textColor = '#000000';
+			}
+
+			if (refImage.workInformation.workTimeName) {
+				workTimeStr = refImage.workInformation.workTimeName;
+			} else {
+				workTimeStr = refImage.workInformation.workTimeCode + ' ' + vm.$i18n('KDL023_41');
+			}
+
             let backgroundColor = 'white';
-            let listText: Array<string> = [
-                refImage.workInformation.workTypeName ? refImage.workInformation.workTypeName : '',
-                refImage.workInformation.workTimeName ? refImage.workInformation.workTimeName : ''];
+            let listText: Array<string> = [workTypeStr, workTimeStr];
             let result:OptionDate = {
                 start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
                 backgroundColor: backgroundColor,
                 listText: listText
             };
+
             return result;
         }
 
