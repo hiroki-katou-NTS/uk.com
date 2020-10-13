@@ -10,15 +10,15 @@
         <span class="col-4">
         <i class="far fa-clock" aria-hidden="true" ></i>
         {{-240 | timewd}}</span>
-        <span class="col-8" v-if="time.attendanceTime != null">{{time.attendanceTime | timewd}} {{'KAFS04_19' | i18n}}</span>
-        <span v-else>{{'..:..'}}</span>
+        <span class="col-8" v-if="condition1">{{time.attendanceTime | timewd}} {{'KAFS04_19' | i18n}}</span>
+        <span v-else>{{time.attendanceTime | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
     </div>
     <div class="row pl-4 pb-2">
         <span class="col-4">
         <i class="far fa-clock" aria-hidden="true" ></i>
         {{-240 | timewd}}</span>
-        <span class="col-8" v-if="time.leaveTime != null">{{time.leaveTime | timewd}} {{'KAFS04_20' | i18n}}</span>
-        <span v-else>{{'..:..'}}</span>
+        <span class="col-8" v-if="condition2">{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}</span>
+        <span v-else>{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
     </div>
     <!-- B2 -->
     <div v-if="showData">
