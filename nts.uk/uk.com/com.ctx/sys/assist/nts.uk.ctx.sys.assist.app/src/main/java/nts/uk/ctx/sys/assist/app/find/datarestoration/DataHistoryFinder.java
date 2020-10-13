@@ -63,7 +63,7 @@ public class DataHistoryFinder {
 					em = sysEmployeeStorageAdapter.getByListSid(Collections.singletonList(sid)).get(0);
 					pool.put(sid, em);
 				}
-				data.setPractitioner(em.getSid() + " " + em.getBusinessname());
+				data.setPractitioner(em.getScd().v() + " " + em.getBusinessname());
 			});
 		}
 		/**

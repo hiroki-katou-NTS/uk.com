@@ -220,6 +220,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       self.initComponentCCG001();
       self.initComponnentKCP005();
 
+      self.selectedPatternId.subscribe(value => self.selectPattern(value));
+
       //E   
       this.columnEmployees = ko.observableArray([
         { headerText: getText('CMF005_56'), key: 'code', width: 150 },

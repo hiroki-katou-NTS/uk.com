@@ -276,9 +276,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             $('#data-recovery-wizard').ntsWizard("next");
             $('#E4_1').focus();
           } else {
+            self.recoveryProcessingId = nts.uk.util.randomId();
             if (passwordInfo.message) {
               dialog.alertError({ messageId: passwordInfo.message });
-              self.recoveryProcessingId = nts.uk.util.randomId();
             }
           }
         }
