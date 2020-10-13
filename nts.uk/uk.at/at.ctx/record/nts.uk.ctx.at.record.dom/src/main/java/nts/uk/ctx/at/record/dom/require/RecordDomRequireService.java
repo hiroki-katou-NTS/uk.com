@@ -31,7 +31,6 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.shift.pattern.GetPredWorkingDaysAdaptor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
@@ -74,7 +73,6 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymen
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
@@ -93,7 +91,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
@@ -392,8 +389,6 @@ public class RecordDomRequireService {
 	@Inject
 	private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
 	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepo;
-	@Inject
 	private AttendanceTimeRepository attendanceTimeRepo;
 	@Inject
 	private PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo;
@@ -466,8 +461,6 @@ public class RecordDomRequireService {
 	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
 	@Inject
 	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepo;
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
 	@Inject
@@ -686,8 +679,7 @@ public class RecordDomRequireService {
 				affWorkplaceAdapter, timeLeavingOfDailyPerformanceRepo, 
 				temporaryTimeOfDailyPerformanceRepo, specificDateAttrOfDailyPerforRepo,
 				employeeDailyPerErrorRepo, anyItemValueOfDailyRepo, 
-				pcLogOnInfoOfDailyRepo, workTypeOfDailyPerforRepo,
-				attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo,
+				pcLogOnInfoOfDailyRepo, attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo,
 				empConditionRepo, formulaRepo, formulaDispOrderRepo, 
 				actualLockRepo, legalTransferOrderSetOfAggrMonthlyRepo,
 				roleOvertimeWorkRepo, holidayAddtionRepo, monthlyAggrSetOfFlexRepo, 
@@ -702,7 +694,7 @@ public class RecordDomRequireService {
 				agreementUnitSetRepo, agreementTimeWorkPlaceRepo, 
 				affClassficationAdapter, syEmploymentAdapter, 
 				agreementTimeOfEmploymentRepo, agreementTimeOfClassificationRepo,
-				basicAgreementSettingRepo, agreementTimeCompanyRepo, remainMergeRepo,
+				agreementTimeCompanyRepo, remainMergeRepo,
 				agreementYearSettingRepo, agreementMonthSettingRepo, 
 				agreementTimeOfManagePeriodRepo, targetPersonRepo, errMessageInfoRepo,
 				interimRemainRepo, basicScheduleAdapter,
@@ -778,8 +770,7 @@ public class RecordDomRequireService {
 				SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo,
 				EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo,
 				AnyItemValueOfDailyRepo anyItemValueOfDailyRepo, PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo,
-				WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepo, AttendanceTimeRepository attendanceTimeRepo,
-				PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo, OptionalItemRepository optionalItemRepo,
+				AttendanceTimeRepository attendanceTimeRepo, PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo, OptionalItemRepository optionalItemRepo,
 				EmpConditionRepository empConditionRepo, FormulaRepository formulaRepo,
 				FormulaDispOrderRepository formulaDispOrderRepo, ActualLockRepository actualLockRepo,
 				LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo,
@@ -803,7 +794,6 @@ public class RecordDomRequireService {
 				AffClassificationAdapter affClassficationAdapter, SyEmploymentAdapter syEmploymentAdapter,
 				AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo,
 				AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo,
-				BasicAgreementSettingRepository basicAgreementSettingRepo,
 				AgreementTimeCompanyRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
 				AgreementYearSettingRepository agreementYearSettingRepo,
 				AgreementMonthSettingRepository agreementMonthSettingRepo,
@@ -894,7 +884,6 @@ public class RecordDomRequireService {
 			this.employeeDailyPerErrorRepo = employeeDailyPerErrorRepo;
 			this.anyItemValueOfDailyRepo = anyItemValueOfDailyRepo;
 			this.pcLogOnInfoOfDailyRepo = pcLogOnInfoOfDailyRepo;
-			this.workTypeOfDailyPerforRepo = workTypeOfDailyPerforRepo;
 			this.attendanceTimeRepo = attendanceTimeRepo;
 			this.payItemCountOfMonthlyRepo = payItemCountOfMonthlyRepo;
 			this.optionalItemRepo = optionalItemRepo;
@@ -931,7 +920,6 @@ public class RecordDomRequireService {
 			this.syEmploymentAdapter = syEmploymentAdapter;
 			this.agreementTimeOfEmploymentRepo = agreementTimeOfEmploymentRepo;
 			this.agreementTimeOfClassificationRepo = agreementTimeOfClassificationRepo;
-			this.basicAgreementSettingRepo = basicAgreementSettingRepo;
 			this.agreementTimeCompanyRepo = agreementTimeCompanyRepo;
 			this.remainMergeRepo = remainMergeRepo;
 			this.agreementYearSettingRepo = agreementYearSettingRepo;
@@ -1048,8 +1036,6 @@ public class RecordDomRequireService {
 	
 		private PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo;
 	
-		private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepo;
-	
 		private AttendanceTimeRepository attendanceTimeRepo;
 	
 		private PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo;
@@ -1121,8 +1107,6 @@ public class RecordDomRequireService {
 		private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
 	
 		private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-	
-		private BasicAgreementSettingRepository basicAgreementSettingRepo;
 	
 		private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
 	
@@ -1726,11 +1710,6 @@ public class RecordDomRequireService {
 		public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId,
 				LaborSystemtAtr laborSystemAtr) {
 			return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
-		}
-
-		@Override
-		public List<BasicAgreementSetting> basicAgreementSetting(List<String> basicSettingId) {
-			return basicAgreementSettingRepo.find(basicSettingId);
 		}
 
 		@Override
