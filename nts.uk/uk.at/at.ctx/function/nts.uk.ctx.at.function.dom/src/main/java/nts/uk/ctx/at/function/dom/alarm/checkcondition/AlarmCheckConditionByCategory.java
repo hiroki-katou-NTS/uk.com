@@ -81,4 +81,8 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		return this.category == AlarmCategory.SCHEDULE_4WEEK;
 	}
 	
+	public boolean isMasterCheck() {
+		return this.category == AlarmCategory.MASTER_CHECK;
+	}
+	
 }

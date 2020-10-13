@@ -8,6 +8,11 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmAtr;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedCheckItem;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -35,5 +40,15 @@ public class KrcmtMasterCheckFixedExtractItem extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return this.no;
+	}
+	
+	public MasterCheckFixedExtractItem toDomain() {
+		return new MasterCheckFixedExtractItem(
+				this.no,
+				new ErrorAlarmMessage(this.initMessage),
+				EnumAdaptor.valueOf(this.elAlAtr, ErrorAlarmAtr.class),
+				MasterCheckFixedCheckItem.fromName(name)
+				);
+		
 	}
 }

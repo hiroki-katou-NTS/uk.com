@@ -43,6 +43,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabAgreementHour: tab.AgreementHourTab;
         tabAnnualHolidaySubCon: tab.AnnualHolidaySubCon;
         tabAnnualHolidayCon: tab.AnnualHolidayCon;
+        tabMasterCheckFixedCon: tab.MasterCheckFixedConTab;
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
@@ -54,13 +55,14 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
-                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.MASTER_CHECK || self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.MASTER_CHECK || self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this) },
+                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
                 { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
                 { id: 'tab-9', title: getText('KAL003_212'), content: '.tab-content-9', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
-                { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) }
+                { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
+                { id: 'tab-11', title: getText('KAL003_67'), content: '.tab-content-11', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this) },
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -74,6 +76,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabAgreementHour = new tab.AgreementHourTab(self.selectedCategory());
             self.tabAnnualHolidaySubCon = new tab.AnnualHolidaySubCon();
             self.tabAnnualHolidayCon = new tab.AnnualHolidayCon();
+            self.tabMasterCheckFixedCon = new tab.MasterCheckFixedConTab();
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -184,7 +187,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                 });
                 self.tabCheckAlarm.listExtraResultMonthly([]);
-
             }
 
             if (self.selectedCategory() == model.CATEGORY._36_AGREEMENT) {
@@ -220,6 +222,18 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 self.tabAnnualHolidayCon.loadData();
                 self.tabAnnualHolidaySubCon.loadData();
             }
+
+            if (self.selectedCategory() == model.CATEGORY.MASTER_CHECK) {
+                service.getAllFixedMasterCheckItem().done((data: Array<any>) => {
+                    if (data && data.length) {
+                        let _list: Array<model.MasterCheckFixedCon> = _.map(data, acc => {
+                            return new model.MasterCheckFixedCon({ errorAlarmCheckId: "", name: acc.name, no: acc.no, message: acc.message, useAtr: false, erAlAtr: acc.erAlAtr });
+                        });
+                        self.tabMasterCheckFixedCon.listFixedMasterCheckCondition(_list);
+                    }
+                });
+            }
+
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -404,6 +418,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
             }
 
+            if(self.selectedCategory() == model.CATEGORY.MASTER_CHECK){
+                data.masterCheckAlarmCheckCondition().listFixedMasterCheckCondition(self.tabMasterCheckFixedCon.listFixedMasterCheckCondition());
+            }
+
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
             if ($("#A3_4").ntsError("hasError")) {
@@ -506,6 +524,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         self.tabAnnualHolidayCon.loadData();
                         self.tabAnnualHolidaySubCon.loadData();
                     }
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MASTER_CHECK) {
+                        self.tabMasterCheckFixedCon.listFixedMasterCheckCondition([]);
+                    }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -570,6 +591,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             return shareutils.getDefaultExtraResultMonthly(acc);
                         });
                         item.monAlarmCheckCon().arbExtraCon(_listExtraMon);
+                        let _masterCheckFixedList: Array<model.MasterCheckFixedCon> = _.map(result.masterCheckAlarmCheckConDto.listMasterCheckFixedCon, (fix: model.IMasterCheckFixedCon) => { return new model.MasterCheckFixedCon(fix); });
+                        item.masterCheckAlarmCheckCondition(
+                            new model.MasterCheckCondition(_masterCheckFixedList)
+                        );
+
                         self.selectedAlarmCheckCondition(item);
                         self.tabScopeCheck.targetCondition(item.targetCondition());
                         if (item.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
@@ -622,6 +648,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
                             item.mulMonCheckCond().listMulMonCheckConds(_listMulmonCheckCond);
                             self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
+                        }
+
+                        if (item.category() == model.CATEGORY.MASTER_CHECK) {
+                            self.tabMasterCheckFixedCon.listFixedMasterCheckCondition(item.masterCheckAlarmCheckCondition().listFixedMasterCheckCondition());
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);

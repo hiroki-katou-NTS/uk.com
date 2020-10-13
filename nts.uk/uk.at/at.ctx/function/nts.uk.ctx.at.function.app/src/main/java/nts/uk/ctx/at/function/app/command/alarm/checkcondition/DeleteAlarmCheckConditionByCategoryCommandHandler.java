@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepos
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.shr.com.context.AppContexts;
@@ -62,6 +63,8 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	@Inject
 	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
 	
+	@Inject
+	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -126,6 +129,12 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			alarmCheckSubConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 			alarmCheckConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 		}
+		
+		if (command.getCategory() == AlarmCategory.MASTER_CHECK.value) {
+			String errorAlarmCheckId =  command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition().get(0).getErrorAlarmCheckId();
+			this.fixedMasterCheckConditionRepo.deleteMasterCheckFixedCondition(errorAlarmCheckId);
+		}
+		
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 

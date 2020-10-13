@@ -8,6 +8,9 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -39,5 +42,22 @@ public class KrcmtMasterCheckFixedExtractCondition extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+	
+	public static KrcmtMasterCheckFixedExtractCondition toEntity(MasterCheckFixedExtractCondition domain) {
+		return new KrcmtMasterCheckFixedExtractCondition(
+				new KrcmtMasterCheckFixedExtractConditionPK(domain.getErrorAlarmCheckId(), domain.getNo()),
+				AppContexts.user().contractCode(),
+				domain.getMessage().v(), domain.isUseAtr()?1:0
+				);
+	}
+	
+	public MasterCheckFixedExtractCondition toDomain() {
+		return new MasterCheckFixedExtractCondition(
+					this.pk.getErAlId(),
+					this.pk.getNo(),
+					new ErrorAlarmMessage(this.message),
+					this.useAtr==1?true:false
+				);
 	}
 }

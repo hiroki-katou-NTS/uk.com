@@ -65,6 +65,7 @@ module nts.uk.at.view.kal003.share.model {
         //MinhVV add
         mulMonCheckCond: KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
         annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
+        masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -332,6 +333,14 @@ module nts.uk.at.view.kal003.share.model {
             this.alarmCheckSubConAgr = ko.observable(alarmCheckSubConAgr);
             this.alarmCheckConAgr = ko.observable(alarmCheckConAgr);
         } 
+    }
+
+    export class MasterCheckCondition {
+        listFixedMasterCheckCondition: KnockoutObservableArray<MasterCheckFixedCon>;//tab  fixed
+
+        constructor(listFixedMasterCheckCondition: Array<MasterCheckFixedCon>) {
+            this.listFixedMasterCheckCondition = ko.observableArray(listFixedMasterCheckCondition);
+        }
     }
 
     export enum CATEGORY {
@@ -2335,6 +2344,32 @@ module nts.uk.at.view.kal003.share.model {
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
 			this.eralarmAtr = ko.observable(data.eralarmAtr);
+        }
+    }
+
+    export interface IMasterCheckFixedCon {
+        errorAlarmCheckId: string;
+        name: string;
+        no: number;
+        message: string;
+        useAtr: boolean;
+		erAlAtr: number;
+    }
+
+    export class MasterCheckFixedCon {
+        errorAlarmCheckId: string;
+        no: KnockoutObservable<number>;
+        name: string;
+        message: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+		erAlAtr: KnockoutObservable<number>;
+        constructor(data: IMasterCheckFixedCon) {
+            this.errorAlarmCheckId = data.errorAlarmCheckId;
+            this.no = ko.observable(data.no);
+            this.message = ko.observable(data.message);
+            this.useAtr = ko.observable(data.useAtr);
+            this.name = data.name;
+			this.erAlAtr = ko.observable(data.erAlAtr);
         }
     }
 

@@ -981,8 +981,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.NumberOfTime, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
-            } else if (typeCheck == 0) {
-                //With type 時間 - Time
+            } else if (typeCheck == 0 || typeCheck == 4) {
+                //With type 時間 - Time , 連続期間 - ContinuousTime
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.Time, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });

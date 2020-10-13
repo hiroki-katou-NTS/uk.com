@@ -38,4 +38,6 @@ public class AlarmCheckConditionByCategoryDto {
 	private MulMonAlarmCheckConDto mulMonAlarmCheckConDto;
 	
 	private AnnualHolidayAlarmConditionDto annualHolidayAlConDto;
+	
+	private MasterCheckAlarmCheckConditionDto masterCheckAlarmCheckConDto;
 }
