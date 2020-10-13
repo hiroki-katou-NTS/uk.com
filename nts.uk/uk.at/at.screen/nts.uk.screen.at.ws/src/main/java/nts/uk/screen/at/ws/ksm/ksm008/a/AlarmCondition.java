@@ -23,13 +23,18 @@ public class AlarmCondition {
     @Inject
     RegisterAlarmCheckConditionCommandHandler commandHandler;
 
+    /**
+     * 勤務予定のアラームチェック条件一覧を取得する
+     */
     @POST
     @Path("list")
-    public List<AlarmCheckDto> getList() {
-        return alarmCheckConditions.getItems();
+    public List<AlarmCheckDto> getAlarmCheckConditionScheduleItems() {
+        return alarmCheckConditions.getAlarmCheckConditionScheduleItems();
     }
 
-
+    /**
+     * 勤務予定のアラームチェック条件を登録する
+     */
     @POST
     @Path("getMsg/{code}")
     public AlarmCheckDto getMsg(@PathParam("code") String alarmCode) {
@@ -37,6 +42,9 @@ public class AlarmCondition {
     }
 
 
+    /**
+     * コードとサブコードを指定してメッセージ内容を取得する
+     */
     @POST
     @Path("register")
     public void register(RegisterAlarmCheckConditionCommand command) {

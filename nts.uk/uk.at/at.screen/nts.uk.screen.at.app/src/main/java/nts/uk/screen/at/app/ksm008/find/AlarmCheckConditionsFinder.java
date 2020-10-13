@@ -18,7 +18,11 @@ public class AlarmCheckConditionsFinder {
     @Inject
     private AlarmCheckConditionScheduleRepository alarmCheckConditionScheduleRepository;
 
-    public List<AlarmCheckDto> getItems() {
+    /**
+     * 勤務予定のアラームチェック条件一覧を取得する
+     */
+
+    public List<AlarmCheckDto> getAlarmCheckConditionScheduleItems() {
         // Convert data to SampleDto
         // Return converted DTO list.
         String contractCd = AppContexts.user().contractCode();
@@ -27,6 +31,13 @@ public class AlarmCheckConditionsFinder {
                 .stream().map(alarmCheckConditionSchedule -> AlarmCheckDto.toDto(alarmCheckConditionSchedule)).collect(Collectors.toList());
     }
 
+    /**
+    * コードとサブコードを指定してメッセージ内容を取得する
+    */
+    /**
+     * @param alarmCode: コード
+     *  return AlarmCheckDto
+     * */
     public AlarmCheckDto getMsg(String alarmCode) {
         String contractCd = AppContexts.user().contractCode();
         String cid = AppContexts.user().companyId();

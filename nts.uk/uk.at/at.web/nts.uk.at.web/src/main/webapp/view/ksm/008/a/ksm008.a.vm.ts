@@ -1,6 +1,5 @@
 module nts.uk.at.ksm008.a {
 
-
     const PATH_API = {
         getList: 'screen/at/ksm008/alarm_contidion/list',
         getMsg: 'screen/at/ksm008/alarm_contidion/getMsg',
@@ -10,20 +9,21 @@ module nts.uk.at.ksm008.a {
     @bean()
     export class KSM008AViewModel extends ko.ViewModel {
         alarmList: KnockoutObservableArray<AlarmConditionKO> = ko.observableArray([]);
-        tabindex: KnockoutObservable<number> = ko.observable(3);
 
         getDefaultMsg(code: string, subCode: string, message: MessageKO) {
             const vm = this;
-            vm.$ajax(`${PATH_API.getMsg}/${code}`).then((res: any) => {
+            vm.$blockui('grayout');
+            vm.$ajax(`${PATH_API.getMsg}/${code}`).done((res: any) => {
                 const subCondition: { message: { defaultMsg: string, message: string } } = _.find(res.subConditions, {subCode});
                 if (subCondition != undefined) {
                     message.message(subCondition.message.defaultMsg);
                 }
-            });
+            }).always(() => vm.$blockui('hide'));
         }
 
         register() {
             const vm = this;
+            vm.$blockui('grayout');
             const data: RegisterData = {alarmCheckCondition: []};
             ko.mapping.toJS(vm.alarmList).forEach((item: AlarmCondition) => {
                 let msg: { code: string; msgLst: Array<any> };
@@ -33,9 +33,7 @@ module nts.uk.at.ksm008.a {
                 })
                 data.alarmCheckCondition.push(msg);
             });
-            vm.$ajax(PATH_API.register, data).then(() => {
-                console.log("ok")
-            });
+            vm.$ajax(PATH_API.register, data).always(() => vm.$blockui('hide'));
         }
 
         constructor(props: any) {
@@ -72,16 +70,19 @@ module nts.uk.at.ksm008.a {
 
         created() {
             const vm = this;
+            vm.$blockui('grayout');
             vm.$ajax(PATH_API.getList).then(data => {
                 data.forEach((item: any) => {
                     this.alarmList.push(ko.mapping.fromJS(item));
                 });
-                // if ($("#pg-name").text() == '') $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
-            });
+            }).always(() => vm.$blockui('hide'));
         }
 
         mounted() {
             $("#fixed-table").ntsFixedTable({height: 480, width: 1200});
+            setTimeout(() => {
+                $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
+            }, 300);
         }
     }
 
@@ -91,18 +92,25 @@ module nts.uk.at.ksm008.a {
 
     /*Knockout*/
     interface AlarmConditionKO {
+        /** コード */
         code: KnockoutObservable<string>,
+        /** 条件名 */
         name: KnockoutObservable<string>,
+        /** サブ条件リスト */
         subConditions: KnockoutObservableArray<SubConditionKO>
     }
 
     interface SubConditionKO {
+        /** サブコード */
         subCode: string,
+        /** 説明 */
         description: KnockoutObservable<string>,
+        /** 任意のメッセージ */
         message: MessageKO,
     }
 
     interface MessageKO {
+        /** 既定メッセージ */
         defaultMsg: KnockoutObservable<string>,
         message: KnockoutObservable<string>,
     }

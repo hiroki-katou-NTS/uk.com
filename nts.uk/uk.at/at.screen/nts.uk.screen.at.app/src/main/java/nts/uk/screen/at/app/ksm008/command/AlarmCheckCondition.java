@@ -8,6 +8,12 @@ import java.util.List;
 
 @Data
 public class AlarmCheckCondition {
+    /**
+     * コード
+     */
     private AlarmCheckConditionScheduleCode code;
+
+
+
     private List<MessageInfo> msgLst;
 }
