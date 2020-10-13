@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.command.outputexecutionhistory;
+package nts.uk.screen.at.app.command.kbt.outputexecutionhistory;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

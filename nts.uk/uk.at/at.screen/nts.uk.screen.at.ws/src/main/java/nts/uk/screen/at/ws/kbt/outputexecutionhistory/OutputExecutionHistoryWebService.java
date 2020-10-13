@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.function.ws.outputexecutionhistory;
+package nts.uk.screen.at.ws.kbt.outputexecutionhistory;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.outputexecutionhistory.GetDataToOutputCommand;
-import nts.uk.ctx.at.function.app.command.outputexecutionhistory.GetDataToOutputCommandHandler;
+import nts.uk.screen.at.app.command.kbt.outputexecutionhistory.GetDataToOutputCommand;
+import nts.uk.screen.at.app.command.kbt.outputexecutionhistory.GetDataToOutputCommandHandler;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
  */
-@Path("at/function/outputexechistory")
+@Path("screen/at/outputexechistory")
 @Produces(MediaType.APPLICATION_JSON)
 public class OutputExecutionHistoryWebService extends WebService {
 

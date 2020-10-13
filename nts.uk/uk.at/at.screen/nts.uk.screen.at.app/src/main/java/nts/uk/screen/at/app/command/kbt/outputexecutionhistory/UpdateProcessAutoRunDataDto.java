@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.find.processexecution.dto;
+package nts.uk.screen.at.app.command.kbt.outputexecutionhistory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

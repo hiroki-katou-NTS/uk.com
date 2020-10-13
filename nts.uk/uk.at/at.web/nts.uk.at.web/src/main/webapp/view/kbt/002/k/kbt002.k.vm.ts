@@ -47,8 +47,21 @@ module nts.uk.at.view.kbt002.k {
       });
 
       vm.$blockui('grayout');
+<<<<<<< Updated upstream
       vm.$ajax(API.exportCSV, command)
         .always(() => vm.$blockui('clear'));
+=======
+      nts.uk.request.exportFile(API.exportCSV, command).done(() => {
+        console.log('done');
+      })
+      // vm.$ajax(API.exportCSV, command)
+      //   .then((data: any) => {
+          
+      //   })
+      //   .always(() => {
+      //     vm.$blockui('clear');
+      //   })
+>>>>>>> Stashed changes
     }
 
     closeDialog() {

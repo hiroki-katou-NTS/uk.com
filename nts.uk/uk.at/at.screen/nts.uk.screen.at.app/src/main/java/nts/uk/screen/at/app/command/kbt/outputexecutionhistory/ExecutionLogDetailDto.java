@@ -1,6 +1,4 @@
-package nts.uk.ctx.at.function.app.find.processexecution.dto;
-
-import java.util.List;
+package nts.uk.screen.at.app.command.kbt.outputexecutionhistory;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +8,10 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyp
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.query.app.exi.ExacErrorLogQueryDto;
+import nts.uk.query.app.exo.ExternalOutLogQueryDto;
+
+import java.util.List;
 
 /** 実行ログ詳細 */
 
@@ -27,10 +29,10 @@ public class ExecutionLogDetailDto {
     private List<AggrPeriodInfor> aggrPeriodInfor;
 
     /** 外部出力エラー : 外部出力結果ログ */
-//    List<ExternalOutLogImport> externalOutLogImports;
-//
-//    /** 外部受入エラー : 外部受入エラーログ */
-//    private List<ExacErrorLogImport> exacErrorLogImports;
+    private List<ExternalOutLogQueryDto> externalOutLogImports;
+
+    /** 外部受入エラー : 外部受入エラーログ */
+    private List<ExacErrorLogQueryDto> exacErrorLogImports;
 
     /**承認ルート更新（日次）エラー : 承認中間データエラーメッセージ情報（月別実績） */
     private List<AppDataInfoMonthly> appDataInfoMonthlies;
