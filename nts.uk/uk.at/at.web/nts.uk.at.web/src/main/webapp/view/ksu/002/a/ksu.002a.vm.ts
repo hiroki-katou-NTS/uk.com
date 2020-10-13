@@ -108,11 +108,31 @@ module nts.uk.ui.at.ksu002.a {
 												begin: ko.observable(d.startTime),
 												finish: ko.observable(d.endTime)
 											},
-											holiday: ko.observable(''), // exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
-											event: ko.observable(''), // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
+											holiday: ko.observable(null),
+											event: ko.observable(null),
 										};
 
-										// exits.className.push('');
+										const { dateInfoDuringThePeriod } = d;
+
+										if (dateInfoDuringThePeriod) {
+											const {
+												holiday,
+												specificDay,
+												listSpecDayNameCompany,
+												listSpecDayNameWorkplace,
+												optCompanyEventName,
+												optWorkplaceEventName
+											} = dateInfoDuringThePeriod;
+
+											// What is this???
+											if (holiday) {
+												exits.data.holiday(`${listSpecDayNameCompany.join('\n')}\n${listSpecDayNameWorkplace.join('\n')}`);
+											}
+
+											if (specificDay || optCompanyEventName || optWorkplaceEventName) {
+												exits.data.event(`${optCompanyEventName || ''}\n${optWorkplaceEventName || ''}`);
+											}
+										}
 									}
 								});
 
@@ -237,23 +257,21 @@ module nts.uk.ui.at.ksu002.a {
 		workTypeCode: string;
 		workTypeEditStatus: null | string;
 		workTypeName: string;
+		dateInfoDuringThePeriod: DateInfoDuringThePeriod;
 	}
 
-	interface WorkType {
-		workStyle: WorkTypeRequired;
-		workTimeSetting: number;
-		workTypeDto: WorkTypeData;
-	}
-
-	interface WorkTypeData {
-		memo: string;
-		name: string;
-		workTypeCode: string;
-	}
-
-	enum WorkTypeRequired {
-		REQUIRED = 1,
-		OPTIONAL = 2,
-		NON_REQUIRED = 2
+	interface DateInfoDuringThePeriod {
+		// 祝日であるか
+		holiday: boolean;
+		// 会社の特定日名称リスト
+		listSpecDayNameCompany: string[];
+		// 職場の特定日名称リスト
+		listSpecDayNameWorkplace: string[];
+		// 会社行事名称
+		optCompanyEventName: string | null;
+		//  職場行事名称
+		optWorkplaceEventName: string | null;
+		// 特定日であるか
+		specificDay: boolean;
 	}
 }

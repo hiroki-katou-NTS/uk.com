@@ -40,7 +40,7 @@ module nts.uk.ui.calendar {
 		REFLECTED = 'reflected'
 	}
 
-	export interface DataInfo<T = KnockoutObservable<string>> {
+	export interface DataInfo<T = KnockoutObservable<string | null>> {
 		holiday: T;
 		event: T;
 	}
@@ -235,6 +235,18 @@ module nts.uk.ui.calendar {
             .calendar .calendar-container .month .week .day.same-month.readonly .data-info {
                 background-color: #d9d9d9;
             }
+            .calendar .calendar-container .month .week .day.same-month.holiday .data-info {
+                color: #f00;
+            }
+            .calendar .calendar-container .month .week .day.same-month.half-day .data-info {
+                color: #ff7f27;
+            }
+            .calendar .calendar-container .month .week .day.same-month.working .data-info {
+                color: #0000ff;
+            }
+            .calendar .calendar-container .month .week .day.same-month.worked .data-info {
+                color: #00cc00;
+            }
 			.calendar .event-popper {
 				top: -999px;
 				left: -999px;
@@ -357,9 +369,9 @@ module nts.uk.ui.calendar {
 
 					$(element)
 						.on('mouseover', () => {
-							const event = data.event();
+							const event = ko.unwrap(data.event);
 
-							if (!!event) {
+							if (event !== null) {
 								const { width, x, y } = element.getBoundingClientRect();
 
 								$$popper.innerHTML = `<div class="epc"><div class="data">${_.escape(event).replace(/\n/g, '<br />').replace(/\s/g, '&nbsp;')}</div></div>`;
