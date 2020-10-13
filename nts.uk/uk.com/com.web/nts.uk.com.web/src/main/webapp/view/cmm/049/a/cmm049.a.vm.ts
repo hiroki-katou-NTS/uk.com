@@ -98,6 +98,19 @@ module nts.uk.com.view.cmm049.a {
                 return dfd.promise();
             }
 
+            public openDialog() {
+                // set shared
+                nts.uk.ui.windows.setShared("KEY_OF_SHARED_DATA", {
+                    /* body of data */
+                });
+
+                nts.uk.ui.windows.sub.modal("/view/cmm/049/z/index.xhtml").onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared("KEY_OF_SHARED_DATA");
+
+                    // some logic after modal closed at here
+                });
+            }
+
             public bindEnums(data: any) {
                 let _self = this;
                 data.settingUseSendMail.forEach((item: any, index: number) => {
