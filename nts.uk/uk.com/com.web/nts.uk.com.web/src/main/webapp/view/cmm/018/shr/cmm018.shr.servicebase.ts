@@ -71,7 +71,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //HrApprovalRooteSetWs
         export function setDisHR(): JQueryPromise<any> {
-            return nts.uk.request.ajax("hr", paths.setDisHR);
+            return nts.uk.request.ajax("com", paths.setDisHR);
         }
         //EventManageWebservice
         export function settingJmm018(): JQueryPromise<any> {
