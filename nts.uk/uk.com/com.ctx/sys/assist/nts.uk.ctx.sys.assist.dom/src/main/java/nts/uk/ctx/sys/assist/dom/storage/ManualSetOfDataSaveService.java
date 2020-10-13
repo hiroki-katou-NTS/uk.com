@@ -159,10 +159,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					.map(TargetCategory::getCategoryId)
 					.distinct()
 					.collect(Collectors.toList());
-			if (!repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
-					OperatingCondition.SAVING)) {
-				return;
-			}
+//			if (!repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
+//					OperatingCondition.SAVING)) {
+//				return;
+//			}
 
 			// アルゴリズム「対象データの保存」を実行
 			resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
@@ -205,9 +205,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				.collect(Collectors.toList());
 		int countCategoryFieldMts = categoryFieldMts.stream()
 				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
-//		if (categorys.size() != countCategoryFieldMts) {
+		if (categorys.size() != countCategoryFieldMts) {
 //			return ResultState.ABNORMAL_END;
-//		}
+			repoDataSto.update(storeProcessingId, countCategoryFieldMts, 0,
+					OperatingCondition.SAVING);
+		} else repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
+				OperatingCondition.SAVING);
 
 		String cId = optManualSetting.getCid();
 

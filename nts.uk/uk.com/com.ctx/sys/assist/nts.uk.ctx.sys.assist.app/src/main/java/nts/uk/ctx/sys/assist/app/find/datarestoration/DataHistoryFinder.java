@@ -82,13 +82,13 @@ public class DataHistoryFinder {
 		 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
 		 */
 		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getPerformDataRecoverByIds(
-				rosList.stream().map(ResultOfSaving::getStoreProcessingId).collect(Collectors.toList()));
+				rosList.stream().map(ResultOfSaving::getStoreProcessingId).distinct().collect(Collectors.toList()));
 
 		/**
 		 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
 		 */
 		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList.stream()
-				.map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
+				.map(PerformDataRecovery::getDataRecoveryProcessId).distinct().collect(Collectors.toList()));
 		return pdrList
 				.stream().map(
 						pdr -> DataHistoryDto

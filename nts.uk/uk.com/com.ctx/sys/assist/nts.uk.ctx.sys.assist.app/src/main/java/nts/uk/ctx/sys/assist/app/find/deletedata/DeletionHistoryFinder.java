@@ -46,7 +46,7 @@ public class DeletionHistoryFinder {
 	private DeletionHistoryDto updatePractitioner(DeletionHistoryDto dto) {
 		List<TargetEmployees> list = sysEmployeeStorageAdapter.getByListSid(Collections.singletonList(dto.getPractitioner()));
 		if (!list.isEmpty()) {
-			dto.setPractitioner(String.format("%s %s", dto.getPractitioner(), list.get(0).getBusinessname().v()));
+			dto.setPractitioner(String.format("%s %s", list.get(0).getScd().v(), list.get(0).getBusinessname().v()));
 		}
 		return dto;
 	}

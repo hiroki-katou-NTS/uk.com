@@ -84,16 +84,18 @@ module nts.uk.com.view.cmf004.j {
             });
           });
         })
-        .then(() => {
-          vm.findData();
-        }).always(() => {
-          vm.$blockui("hide");
-        });
+        .then(() => vm.findData())
+        .always(() => vm.$blockui("clear"));
     }
 
-    public findData() {
+    public startFindData() {
       const vm = this;
       vm.$blockui("grayout");
+      vm.findData().always(() => vm.$blockui("clear"));
+    }
+
+    public findData(): JQueryPromise<any> {
+      const vm = this;
       let arr: FindDataHistoryDto[] = [];
       let searchValue: SaveSetHistoryDto;
       if (Number(vm.searchValue()) === 1) {
@@ -109,7 +111,7 @@ module nts.uk.com.view.cmf004.j {
         from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
         to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
-      service.findData(param).then((data: Array<DataDto>) => {
+      return service.findData(param).then((data: Array<DataDto>) => {
         console.log(data);
         const res: DataDto[] = [];
         if (data && data.length) {
@@ -127,12 +129,12 @@ module nts.uk.com.view.cmf004.j {
                 vm.states.push(new State(x.id, col.key, ["red-color"]));
               })
             }
-            x.executionResult = nts.uk.resource.getText(x.executionResult);
+            x.executionResult = nts.uk.resource.getText(x.executionResult);``
           });
         }
         vm.resultItems(res);
         vm.loadDataGrid();
-      }).always(() => vm.$blockui("hide"));
+      });
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {
