@@ -3,19 +3,19 @@ module nts.uk.at.ksm008.c {
     export class KSM008CViewModel extends ko.ViewModel {
         listComponentOption: any;
         enable: KnockoutObservable<boolean>;
+        enableBtnDel: KnockoutObservable<boolean> = ko.observable(false);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        simpleValue: KnockoutObservable<string> = ko.observable("C7_2");
-        otherValue: KnockoutObservable<string> = ko.observable("C7_3");
+        code: KnockoutObservable<string> = ko.observable("C7_2");
+        name: KnockoutObservable<string> = ko.observable("C7_222");
         columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
         switchOps: KnockoutObservableArray<any>;
-        selectedRuleCode: any = ko.observable(1);
-        currentCode: KnockoutObservable<any>;
+        selectedRuleCode: any = ko.observable(2);
+        currentSelected: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         switchOptions: KnockoutObservableArray<any>;
 
         constructor(params: any) {
             super();
-
         }
 
         created() {
@@ -23,11 +23,12 @@ module nts.uk.at.ksm008.c {
             vm.enable = ko.observable(true);
             vm.items = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
-                vm.items.push(new ItemModel('00' + i, "description " + i));
+                vm.items.push(new ItemModel('00' + i, "name " + i, vm.$i18n('KSM008_102')));
             }
             vm.columns = ko.observableArray([
                 {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
-                {headerText: vm.$i18n('KSM008_33'), key: 'description', width: 150},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
+                {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
             ]);
 
             vm.switchOptions = ko.observableArray([
@@ -35,7 +36,7 @@ module nts.uk.at.ksm008.c {
                 {code: "2", name: '切り上げ'},
                 {code: "3", name: '切り捨て'}
             ]);
-            vm.currentCode = ko.observable(100);
+            vm.currentSelected = ko.observable('001');
             vm.currentCodeList = ko.observableArray([]);
 
             vm.switchOps = ko.observableArray([
@@ -68,7 +69,22 @@ module nts.uk.at.ksm008.c {
         }
 
         mounted() {
+            const vm = this;
+            vm.currentSelected.subscribe((value) => {
+                console.log(_.find(vm.items(), {code: value}));
+            })
+        }
 
+        newMode(){
+            console.log("new mode");
+            const vm = this;
+            vm.selectedRuleCode(1);
+            vm.code("");
+            vm.name("");
+        }
+
+        removeData(){
+            console.log("remove");
         }
     }
 
@@ -97,11 +113,13 @@ module nts.uk.at.ksm008.c {
 
     class ItemModel {
         code: string;
-        description: string;
+        name: string;
+        nightShift: string;
 
-        constructor(code: string, description: string) {
+        constructor(code: string, name: string, nightShift: string) {
             this.code = code;
-            this.description = description;
+            this.name = name;
+            this.nightShift = nightShift;
         }
     }
 

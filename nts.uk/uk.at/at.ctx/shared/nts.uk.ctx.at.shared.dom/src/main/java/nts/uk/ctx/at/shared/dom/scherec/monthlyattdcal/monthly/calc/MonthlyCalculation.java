@@ -863,8 +863,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			return AgreementTimeResult.fail(this.errorInfos);
 		
 		/** ○ドメインモデル「管理期間の36協定時間」を作成 */
-		val result = AgreementTimeOfManagePeriod.aggregate(require, this.employeeId, 
-				procPeriod.end(), this.yearMonth, agreementCalc);
+		val result = AgreementTimeOfManagePeriod.aggregate(require, employeeId, 
+				procPeriod.end(), yearMonth, agreementCalc);
 		
 		/** 管理時間の36協定時間を返す */
 		return AgreementTimeResult.success(result);

@@ -37,7 +37,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_NAME")
 	public String categoryName;
-
+	
 	/**
 	 * データ復旧処理ID
 	 */
@@ -45,6 +45,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	@Column(name = "DATA_RECOVERY_PROCESS_ID")
 	public String dataRecoveryProcessId;
 
+	
 	/**
 	 * テーブル日本語名
 	 */
@@ -821,7 +822,7 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 
 	public TableList toDomain() {
 		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId,
-				dataRecoveryProcessId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
+				tableListPk.systemType, dataRecoveryProcessId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
 				fieldAcqDateTime, fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
 				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,
@@ -843,12 +844,12 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 
 	public static SspmtTableList toEntity(TableList domain) {
 		return new SspmtTableList(
-				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
+				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),
 				domain.getCategoryName(), domain.getDataRecoveryProcessId().orElse(null), domain.getTableJapaneseName(),
 				domain.getTableEnglishName(), domain.getFieldAcqCid().orElse(null),
 				domain.getFieldAcqDateTime().orElse(null), domain.getFieldAcqEmployeeId().orElse(null),
 				domain.getFieldAcqEndDate().orElse(null), domain.getFieldAcqStartDate().orElse(null),
-				domain.getSaveSetCode().orElse(null), domain.getSaveSetName(), domain.getSaveForm(),
+				domain.getPatternCode(), domain.getSaveSetName(), domain.getSaveForm(),
 				domain.getSaveDateFrom().orElse(null), domain.getSaveDateTo().orElse(null),
 				domain.getStorageRangeSaved().value, domain.getRetentionPeriodCls().value, domain.getInternalFileName(),
 				domain.getAnotherComCls().value, domain.getReferenceYear().orElse(null),

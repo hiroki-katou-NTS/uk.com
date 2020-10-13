@@ -240,6 +240,8 @@ public class ProgramIdConsts {
 	public static final String KML002L = "KML002L";
 
 	public static final String KML002M = "KML002M";
+	
+	public static final String KSU003A = "KSU003A";
 
 	public static final String KML004A = "KML004A";
 
@@ -839,6 +841,8 @@ public class ProgramIdConsts {
 	public static final String CMM001C = "CMM001C";
 	public static final String CMM001D = "CMM001D";
 	public static final String CMM001F = "CMM001F";
+	
+	public static final String CMM002A = "CMM002A";
 
 	public static final String KAL001A = "KAL001A";
 	public static final String KAL001B = "KAL001B";
@@ -1053,6 +1057,8 @@ public class ProgramIdConsts {
 	public static final String KDL034 = "KDL034";
 	//KDL034
 	public static final String KDL044 = "KDL044";
+	
+	public static final String KDL045A = "KDL045A";
 
 	/** CCG009 */
 	public static final String CCG009A = "CCG009A";
@@ -1066,14 +1072,11 @@ public class ProgramIdConsts {
 	/** CLI002 */
 	public static final String CLI002A = "CLI002A";
 	/** CLI003 */
-	public static final String CLI003I = "CLI003I";
 	public static final String CLI003G = "CLI003G";
 	public static final String CLI003H = "CLI003H";
 	public static final String CLI003A = "CLI003A";
 	public static final String CLI003B = "CLI003B";
 	public static final String CLI003C = "CLI003C";
-	public static final String CLI003D = "CLI003D";
-	public static final String CLI003E = "CLI003E";
 	public static final String CLI003F = "CLI003F";
 	//KDL029
 	public static final String KDL029A = "KDL029A";
@@ -1102,7 +1105,11 @@ public class ProgramIdConsts {
 	
 	/** KMP001 */
 	public static final String KMP001A = "KMP001A";
+	public static final String KMP001B = "KMP001B";
+	public static final String KMP001C = "KMP001C";
 	public static final String KMP001D = "KMP001D";
+	public static final String KMP001E = "KMP001E";
+	public static final String KMP001H = "KMP001H";
 
 	public static final String KDL020A = "KDL020A";
 	public static final String KDL020B = "KDL020B";
@@ -1145,6 +1152,7 @@ public class ProgramIdConsts {
 	//スマホ②
 	public static final String KAFS05A = "KAFS05A";
 	public static final String KAFS07A = "KAFS07A";
+	public static final String KAFS09A = "KAFS09A";
 	public static final String KAFS05B = "KAFS05B";
 	public static final String CMMS45B = "CMMS45B";
 	public static final String CMMS45C = "CMMS45C";
@@ -1364,6 +1372,13 @@ public class ProgramIdConsts {
 	/** KSM007A */
 	public static final String KSM007A = "KSM007A";
 	/** KSM007A */
+	/** KSM008*/
+	public static final String KSM008A = "KSM008A";
+	public static final String KSM008B = "KSM008B";
+	public static final String KSM008C = "KSM008C";
+	public static final String KSM008D = "KSM008D";
+	public static final String KSM008F = "KSM008F";
+
 	public static final String KDL048 = "KDL048";
 	/** KDL047 */
 	public static final String KDL047 = "KDL047";

@@ -68,9 +68,11 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 
 	@Override
 	public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
-		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
-				.setParameter("laborSystemAtr", laborSystemAtr.value)
-				.getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+//		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
+//				.setParameter("laborSystemAtr", laborSystemAtr.value)
+//				.getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+
+		return new ArrayList<>();
 	}
 
 	@Override

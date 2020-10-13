@@ -1,0 +1,26 @@
+#A1 {
+	width: 326px !important;
+	height: 73px;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+}
+
+#button-top {
+	
+}
+
+#button-bot {
+	margin-top: 15px;
+}
+
+.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
+	width: 105px;
+}
+
+.hiddenBtn {
+	visibility: hidden;
+}

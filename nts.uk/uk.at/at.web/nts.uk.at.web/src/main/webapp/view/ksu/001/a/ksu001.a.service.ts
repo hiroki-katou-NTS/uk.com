@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu001.a.service {
         getDataChangeMonth: "screen/at/schedule/change-month",
         getDataWhenChangeModePeriod: "screen/at/schedule/change-mode-period",
         orderEmployee: "screen/at/schedule/order-employee",
+        validWhenPaste: "screen/at/schedule/valid-when-paste"
     }
     
     export function getDataStartScreen(param): JQueryPromise<any> {
@@ -56,15 +57,13 @@ module nts.uk.at.view.ksu001.a.service {
     export function getListEmpIdSorted(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.orderEmployee, obj);
     }
+    
+    export function validWhenPaste(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.validWhenPaste, obj);
+    }
 
     
-    
 
-    
-    
-    
-    
-    
     
     
     

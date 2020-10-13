@@ -15,13 +15,9 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalcFlexTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.CalcMethodOfNoWorkingDayForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.FlexWithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WorkHour;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
@@ -62,6 +58,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyl
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.CalcFlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.CalcMethodOfNoWorkingDayForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.WorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
@@ -1214,7 +1214,7 @@ public class TotalWorkingTime {
 			List<OutingTimeOfDaily> outingTimeOfDailyPerformance,
 			RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor, WorkTimes workTimes,
 			TemporaryTimeOfDaily temporaryTime, ShortWorkTimeOfDaily shotrTimeOfDaily, HolidayOfDaily holidayOfDaily,
-			AttendanceTime vacationAddTime) {
+			AttendanceTime vacationAddTime, IntervalTimeOfDaily intervalTime) {
 		super();
 		this.totalTime = totalTime;
 		this.totalCalcTime = totalCalcTime;
@@ -1231,17 +1231,7 @@ public class TotalWorkingTime {
 		this.shotrTimeOfDaily = shotrTimeOfDaily;
 		this.holidayOfDaily = holidayOfDaily;
 		this.vacationAddTime = vacationAddTime;
-	}
-
-
-	public TotalWorkingTime(AttendanceTime attendanceTime, Object object, AttendanceTime attendanceTime2,
-			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily2,
-			ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily2, ArrayList<LateTimeOfDaily> arrayList,
-			ArrayList<LeaveEarlyTimeOfDaily> arrayList2, BreakTimeOfDaily breakTimeOfDaily2,
-			ArrayList<OutingTimeOfDaily> arrayList3, RaiseSalaryTimeOfDailyPerfor raiseSalaryTimeOfDailyPerfor2,
-			AttendanceTime attendanceTime3, Object object2, ShortWorkTimeOfDaily shotrTime,
-			HolidayOfDaily holidayOfDaily2, AttendanceTime attendanceTime4) {
-		// TODO Auto-generated constructor stub
+		this.intervalTime = intervalTime;
 	}
 	
 }
