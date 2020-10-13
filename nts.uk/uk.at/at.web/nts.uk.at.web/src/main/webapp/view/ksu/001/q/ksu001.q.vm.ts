@@ -97,7 +97,7 @@ module nts.uk.at.view.ksu001.q {
 									break;
 							};
 							
-							$("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
+							// $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
 							$("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
 							$("table tbody tr td:nth-child(1)").css("color", "#404040");

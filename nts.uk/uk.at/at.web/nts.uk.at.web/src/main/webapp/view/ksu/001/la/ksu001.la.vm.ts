@@ -106,7 +106,7 @@ module nts.uk.at.view.ksu001.la {
                             nts.uk.ui.dialog.error({ messageId: res.messageId});
                             blockUI.clear(); 
                         });
-                        //self.getEmpOrgInfo();
+                        self.getEmpOrgInfo();
                         blockUI.clear();
                         dfd.resolve();
                     }                    
@@ -291,14 +291,14 @@ module nts.uk.at.view.ksu001.la {
                 self.enableDelete(false);
                 self.isEditing(false);
                 self.scheduleTeamModel().resetData(); 
-                let temp = _.union(self.itemsLeft(), self.itemsRight());
-                self.itemsLeft(_.sortBy(temp, [function (o: { employeeCd: any; }) { return o.employeeCd; }]));
+                // let temp = _.union(self.itemsLeft(), self.itemsRight());
+                // self.itemsLeft(_.sortBy(temp, [function (o: { employeeCd: any; }) { return o.employeeCd; }]));
                 
                 self.itemsRight([]); 
                 self.currentCodeListLeft([]);
                 self.currentCodeListRight([]);
                 self.clearError(); 
-                // self.getEmpOrgInfo();
+                self.getEmpOrgInfo();
                 $('#scheduleTeamCd').focus();              
             }
 
