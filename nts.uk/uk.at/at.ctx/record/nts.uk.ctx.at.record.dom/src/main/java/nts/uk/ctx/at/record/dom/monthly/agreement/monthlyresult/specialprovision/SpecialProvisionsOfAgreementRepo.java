@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.arc.time.calendar.Year;
 
 import java.util.List;
 import java.util.Optional;
