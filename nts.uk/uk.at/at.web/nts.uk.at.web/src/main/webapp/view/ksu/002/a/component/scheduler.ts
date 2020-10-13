@@ -425,7 +425,7 @@ module nts.uk.ui.at.ksu002.a {
 
                 ko.computed({
                     read: () => {
-                        const readonly = ko.unwrap(click.begin) < 2;
+                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.begin) < 2 : true;
 
                         if ($begin.length) {
                             if (!readonly) {
@@ -435,12 +435,13 @@ module nts.uk.ui.at.ksu002.a {
                             }
                         }
                     },
-                    owner: vm
+                    owner: vm,
+                    disposeWhenNodeIsRemoved: vm.$el
                 });
 
                 ko.computed({
                     read: () => {
-                        const readonly = ko.unwrap(click.finish) < 2;
+                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.finish) < 2 : true;
 
                         if ($finish.length) {
                             if (!readonly) {
@@ -450,7 +451,8 @@ module nts.uk.ui.at.ksu002.a {
                             }
                         }
                     },
-                    owner: vm
+                    owner: vm,
+                    disposeWhenNodeIsRemoved: vm.$el
                 });
 
                 /*$begin
