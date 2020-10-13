@@ -74,5 +74,5 @@ public interface LateLeaveEarlyService {
 	 * @param arrivedLateLeaveEarly
 	 * @return
 	 */
-	ProcessResult update(String companyId, Application application, ArrivedLateLeaveEarly arrivedLateLeaveEarly);
+	ProcessResult update(String companyId, Application application, ArrivedLateLeaveEarly arrivedLateLeaveEarly, AppDispInfoStartupOutput infoStartupOutput);
 }

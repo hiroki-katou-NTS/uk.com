@@ -35,6 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
+ * ScreenQuery 表示する社員を並び替える
  *
  */
 @Stateless

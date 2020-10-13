@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunctio
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -12,10 +11,14 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class IntervalExemptionTime {
 	//免除時間
 	private AttendanceTime exemptionTime;
+	
+	public IntervalExemptionTime() {
+		super();
+		this.exemptionTime = new AttendanceTime(0);
+	}
 	
 	public static IntervalExemptionTime defaultValue() {
 		return new IntervalExemptionTime(new AttendanceTime(0));

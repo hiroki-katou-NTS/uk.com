@@ -4597,7 +4597,7 @@ input.nts-editor::-ms-clear {
 
 /* line 24, ../sass/components/_extable.scss */
 .extable div.xdet, .extable td.xdet {
-  background-color: #eccefb;
+  background-color: #ECCEFB;
 }
 
 /* line 27, ../sass/components/_extable.scss */
@@ -4607,7 +4607,7 @@ input.nts-editor::-ms-clear {
 
 /* line 30, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
-  background-color: #ddddd2;
+  background-color: #DDDDD2;
 }
 
 /* line 33, ../sass/components/_extable.scss */
@@ -4638,7 +4638,7 @@ input.nts-editor::-ms-clear {
 
 /* line 49, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
-  background-color: #FFFFCC;
+  background-color: #FFFFCC !important;
 }
 
 /* line 52, ../sass/components/_extable.scss */
@@ -4648,7 +4648,7 @@ input.nts-editor::-ms-clear {
 
 /* line 55, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
-  background-color: #3498DB;
+  background-color: #3498DB !important;
   color: #FFF;
 }
 

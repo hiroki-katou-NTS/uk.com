@@ -427,7 +427,7 @@ module nts.uk.at.view.kdp004.a {
 					//phat nhac
 					self.playAudio(button.audioType);
 
-					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
 						self.openScreenC(button, layout, loginInfo.em);
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);
