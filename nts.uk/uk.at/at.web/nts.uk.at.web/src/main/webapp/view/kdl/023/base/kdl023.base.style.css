@@ -118,6 +118,18 @@
 	height: unset !important;
 }
 
-#contents-area {
+#contents-area.kdl023-content-area {
 	height: unset !important;
+}
+
+#functions-area-bottom {
+	position: fixed !important;
+}
+
+#calendar-reflect-pattern.exec-mode {
+	height: 696px;
+}
+
+#calendar-reflect-pattern.ref-mode {
+	height: 665px;
 }

@@ -28,7 +28,7 @@
 				<ui:insert name="extended-header" />
 			</ui:define>
 			<ui:define name="content">
-				<div id="contents-area" class="kdl023-content-area" data-bind="visible: true" style="display: none">
+                <div id="contents-area" class="kdl023-content-area">
 					<div id="reflect-setting" class="pull-left bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
                         <div class="control-group cf">
@@ -213,7 +213,8 @@
 						</button>
 					</div>
 					<!-- Calendar function -->
-					<div id="calendar-reflect-pattern">
+					<div id="calendar-reflect-pattern"
+                         data-bind="css: {'exec-mode' : kdl023vm.isExecMode, 'ref-mode' : !kdl023vm.isExecMode()}">
 						<ui:insert name="period-calendar-header" />
 						<div class="pull-right kdl023">
 							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button><!--A2_1-->
@@ -239,9 +240,9 @@
 								cellButtonDisplay: cellButtonDisplay}"></div>
 						</div>
 					</div>
-				</div>
-				<div id="functions-area-bottom">
-					<ui:insert name="extended-function" />
+					<div id="functions-area-bottom">
+                        <ui:insert name="extended-function" />
+                    </div>
 				</div>
 			</ui:define>
 		</ui:composition>
