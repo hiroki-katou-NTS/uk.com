@@ -37,7 +37,7 @@
 //             self.currentCategorySelected = ko.observableArray([]);
 //             var systemIdSelected;
 //             self.systemTypes = ko.observableArray([]);
-            
+
 //             self.isEnable = ko.observable(true);
 //             self.isEditable = ko.observable(true);
 //             self.listCategory = ko.observableArray([]);
@@ -73,7 +73,7 @@
 //                     if (value && value.length > 0) {
 //                     self.currentItem = _.find(self.systemTypes(), a => a.code === value);
 //                         service.getConditionList(parseInt(self.selectedCode())).done(function(data: Array<any>) {
-                            
+
 //                             data = _.sortBy(data, ["categoryId"]);
 //                             if (systemTypeB != undefined) {
 //                                 _.forOwn(listCategoryB, function(index) {
@@ -85,7 +85,7 @@
 //                            }
 //                             self.listCategory(data);
 //                             $("#swap-list-grid1 tr:first-child").focus();
-                            
+
 //                         }).fail(function(error) {
 //                             alertError(error);
 //                         }).always(() => {
@@ -275,13 +275,13 @@ module nts.uk.com.view.cmf005.c {
           });
           vm.patternList(patternArr);
           vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
-  
+
           let arr: Category[] = [];
-          _.map(res.categories, (x :any) => {
+          _.map(res.categories, (x: any) => {
             let c = vm.convertToCategory(x);
             arr.push(c);
           });
-          vm.categoriesDefault(arr); 
+          vm.categoriesDefault(arr);
           _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
           vm.categoriesFiltered.valueHasMutated();
         })
@@ -332,7 +332,7 @@ module nts.uk.com.view.cmf005.c {
         param.patternCompressionPwd = vm.password();
         param.withoutPassword = Boolean(vm.usePasswordChecked()) ? 1 : 0;
         param.patternSuppleExplanation = vm.explanation();
-
+        
         service.addPattern(param).then(() => {
           vm.$dialog.info({ messageId: "Msg_15" });
           if (vm.screenMode() === ScreenMode.NEW) {
@@ -352,11 +352,10 @@ module nts.uk.com.view.cmf005.c {
             vm.patternList.valueHasMutated();
           }
         }).fail((err) => {
-          vm.$errors("#C7_2 input", err);
+          vm.$dialog.error({ messageId: 'Msg_3' });
+        }).always(() => {
+          vm.$blockui("clear");
         })
-          .always(() => {
-            vm.$blockui("clear");
-          })
       }
     }
 
@@ -486,7 +485,7 @@ module nts.uk.com.view.cmf005.c {
     }
 
     private getSystemText(type: number): string {
-      switch(type) {
+      switch (type) {
         case 0: return getText('Enum_SystemType_PERSON_SYSTEM');
         case 1: return getText('Enum_SystemType_ATTENDANCE_SYSTEM');
         case 2: return getText('Enum_SystemType_PAYROLL_SYSTEM');
