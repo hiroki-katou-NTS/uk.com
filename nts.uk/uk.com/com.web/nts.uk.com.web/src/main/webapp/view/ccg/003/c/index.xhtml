@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+      <com:ValidatorScript>
+        nts.uk.ctx.sys.auth.dom.anniversary.NotificationMessage
+        </com:ValidatorScript>
+      <script>var dialogSize = { width: 590, height: 560 };</script>
+      <com:stylefile path="ccg003.c.style.css" />
+      <com:scriptfile path="ccg003.c.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="contents-area">
+        <div class="message-group">
+          <!-- C1_1	メッセージ(ラベル) -->
+          <div id="C1_1" data-bind="ntsFormLabel: { constraint: 'NotificationMessage', required: true }">#{i18n.getText('CCG003_20')}</div>
+          <!-- C1_2	メッセージ -->
+          <textarea id="C1_2" tabindex="1" data-bind="ntsMultilineEditor: { name:'#[CCG003_20]', value: messageText, constraint: 'NotificationMessage' }" />
+        </div>
+        <div class="left w-p-15">
+          <!-- C2_1	宛先(ラベル) -->
+          <div id="C2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG003_21')}</div>
+        </div>
+        <div class="left w-p-15 ml-15">
+          <!-- C2_3 宛先 -->
+          <div id="C2_3" tabindex="2" class="radio-box-group" data-bind="ntsRadioBoxGroup: {
+            options: radioBoxItemList,
+            optionsValue: 'id',
+            optionsText: 'name',
+            value: radioBoxSelectedId,
+            enable: true}"></div>
+        </div>
+        <div class="left w-p-60 ml-15">
+          <div>
+            <!-- C2_3_2	職場選択 -->
+            <button id="C2_3_2" tabindex="3" class="small">#{i18n.getText('CCG003_25')}</button>
+            <!-- C2_3_3	社員選択 -->
+            <button id="C2_3_3" tabindex="4" class="small">#{i18n.getText('CCG003_25')}</button>
+          </div>
+          <div>
+          <!-- C2_4_2	職場リスト -->
+          <input id="C2_4_2" data-bind="ntsTextEditor: {value: workPlaceText, enable: false}" />
+          <!-- C2_4_3	社員リスト -->
+          <input id="C2_4_3" data-bind="ntsTextEditor: {value: employeeText, enable: false}" />
+          <!-- C2_5_2	対象職場 -->
+          <label id="C2_5_2">C2_5_2	対象職場</label>
+          </div>
+       </div>
+       <div>
+         <!-- C3_1	表示期間(ラベル) -->
+         <div id="C3_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG003_26')}</div>
+         <!-- C3_2	表示期間 -->
+         <div id="C3_2" tabindex="5" data-bind="ntsDateRangePicker: {
+           required: false,
+           enable: true,
+           showNextPrevious: false,
+           value: dateValue}"
+         ></div>
+         <!-- C4	更新日表示 -->
+         <label id="C4">C4	更新日表示</label>
+       </div>
+      </div>
+
+      <div id="functions-area-bottom">
+        <!-- C20_1 登録 -->
+        <button id="C20_1" class="proceed">#{i18n.getText('CCG003_28')}</button>
+        <!-- C20_2 削除 -->
+        <button id="C20_2" class="danger">#{i18n.getText('CCG003_29')}</button>
+        <!-- C20_3 戻る -->
+        <button id="C20_3">#{i18n.getText('CCG003_30')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>

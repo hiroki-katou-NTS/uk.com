@@ -3116,6 +3116,22 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "KDL047_1",
             "/view/kdl/047/a/index.xhtml");
 		
+	/**
+	 * CCG003B
+	 */
+	public static final Program CCG003B = new Program(WebAppId.AT, 
+            ProgramIdConsts.CCG003B,
+            "CCG003_2",
+            "/view/ccg/003/b/index.xhtml");
+	
+	/**
+	 * CCG003C
+	 */
+	public static final Program CCG003C = new Program(WebAppId.AT, 
+            ProgramIdConsts.CCG003C,
+            "CCG003_3",
+            "/view/ccg/003/c/index.xhtml");
+	
     /**
      * All programs map.
      */

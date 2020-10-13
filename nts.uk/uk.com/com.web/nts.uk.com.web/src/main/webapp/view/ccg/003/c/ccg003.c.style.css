@@ -1,0 +1,25 @@
+.radio-box-group {
+  width: 100px;
+}
+.radio-box-group > .ntsRadioBox {
+  margin-top: 10px;
+}
+.message-group {
+  display: flex;
+}
+#C1_2 {
+  width: 430px;
+  height: 225px;
+}
+.left {
+  float: left;
+}
+.w-p-15 {
+  width: 15%;
+}
+.ml-15 {
+  margin-left: 15px;
+}
+.w-p-60 {
+  width: 60%;
+}
