@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 314,
-					height : 314
+					height : 346
 				};
 			</script>
 			<com:scriptfile path="viewmodel.js" />
@@ -20,65 +20,85 @@
 
 		<ui:define name="content">
 
-			<div id="functions-area">
-				<!-- A1_1 -->
-				<div data-bind="ntsFormLabel: {},text:executionAppResult().name"></div>
-				<!-- A1_2 -->
-				<i data-bind="ntsIcon: { no: 10, width: 30, height: 30 }"></i>
-				<!-- A1_3 -->
-				<div class="label">#{i18n.getText('KTG005_1')}</div>
-				<!-- A1_4 -->
-				<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }"></i>
-			</div>
-			<div id="contents-area" data-bind="with:executionAppResult">
-				<div class="div_line" data-bind="if:displayDetail(0)">
-					<div class="col_line_1">
-						<!-- A2_1 -->
-						<div class="label">#{i18n.getText('KTG005_3')}</div>
-					</div>
+			<div id="contents-area">
+				<div id="top_title">
+					<!-- A1_1 -->
+
+					<div
+						style="display: inline-block; margin-left: 7px; vertical-align: middle; line-height: 45px;"
+						data-bind="text:executionAppResult().name"></div>
+
+
 					<div class="col_line_2">
-						<!-- A2_2 -->
-						<div class="label" data-bind="text:getText(approvedNumber)"></div>
+						<!-- A1_2 -->
+						<button style="margin-right: 10px;" class="button-group"
+							data-bind="icon: 10"></button>
+						<!-- A1_3 -->
+						<div
+							style="display: inline-block; margin-right: 15px; vertical-align: middle; line-height: 45px;">#{i18n.getText('KTG005_1')}</div>
+						<!-- A1_4 -->
+
+						<button class="button-group" data-bind="icon: 5"></button>
 					</div>
 				</div>
-				<div class="div_line" data-bind="if:displayDetail(1)">
-					<div class="col_line_1">
-						<!-- A3_1 -->
-						<div class="label">#{i18n.getText('KTG005_4')}</div>
+
+				<div data-bind="with:executionAppResult" style="padding: 0px 10px">
+					<div class="div_line" data-bind="if:$parent.displayDetail(0)">
+						<div class="col_line_1">
+							<!-- A2_1 -->
+							<div class="label">#{i18n.getText('KTG005_3')}</div>
+						</div>
+						<div class="col_line_2">
+							<!-- A2_2 -->
+							<div class="label"
+								data-bind="text:$parent.getText(approvedNumber)"></div>
+						</div>
+						<hr />
 					</div>
-					<div class="col_line_2">
-						<!-- A3_2 -->
-						<div class="label" data-bind="text:getText(unapprovedNumber)"></div>
+					<div class="div_line" data-bind="if:$parent.displayDetail(1)">
+						<div class="col_line_1">
+							<!-- A3_1 -->
+							<div class="label">#{i18n.getText('KTG005_4')}</div>
+						</div>
+						<div class="col_line_2">
+							<!-- A3_2 -->
+							<div class="label"
+								data-bind="text:$parent.getText(unapprovedNumber)"></div>
+						</div>
+						<hr />
 					</div>
-				</div>
-				<div class="div_line" data-bind="if:displayDetail(2)">
-					<div class="col_line_1">
-						<!-- A4_1 -->
-						<div class="label">#{i18n.getText('KTG005_5')}</div>
+					<div class="div_line" data-bind="if:$parent.displayDetail(2)">
+						<div class="col_line_1">
+							<!-- A4_1 -->
+							<div class="label">#{i18n.getText('KTG005_5')}</div>
+						</div>
+						<div class="col_line_2">
+							<!-- A4_2 -->
+							<div class="label" data-bind="text:$parent.getText(denialNumber)"></div>
+						</div>
+						<hr />
 					</div>
-					<div class="col_line_2">
-						<!-- A4_2 -->
-						<div class="label" data-bind="text:getText(denialNumber)"></div>
+					<div class="div_line" data-bind="if:$parent.displayDetail(3)">
+						<div class="col_line_1">
+							<!-- A5_1 -->
+							<div class="label">#{i18n.getText('KTG005_2')}</div>
+						</div>
+						<div class="col_line_2">
+							<!-- A5_2 -->
+							<div class="label" data-bind="text:$parent.getText(remandNumber)"></div>
+						</div>
+						<hr />
 					</div>
-				</div>
-				<div class="div_line" data-bind="if:displayDetail(3)">
-					<div class="col_line_1">
-						<!-- A5_1 -->
-						<div class="label">#{i18n.getText('KTG005_2')}</div>
-					</div>
-					<div class="col_line_2">
-						<!-- A5_2 -->
-						<div class="label" data-bind="text:getText(remandNumber)"></div>
-					</div>
-				</div>
-				<div class="div_line" data-bind="if:displayDetail(4)">
-					<div class="col_line_1">
-						<!-- A6_1 -->
-						<div class="label">#{i18n.getText('KTG005_6')}</div>
-					</div>
-					<div class="col_line_2">
-						<!-- A6_2 -->
-						<div class="label" data-bind="text:getDate(dueDate)"></div>
+					<div class="div_line" data-bind="if:$parent.displayDetail(4)">
+						<div class="col_line_1">
+							<!-- A6_1 -->
+							<div class="label">#{i18n.getText('KTG005_6')}</div>
+						</div>
+						<div class="col_line_2">
+							<!-- A6_2 -->
+							<div class="label" data-bind="text:$parent.getDate(dueDate)"></div>
+						</div>
+						<hr />
 					</div>
 				</div>
 			</div>

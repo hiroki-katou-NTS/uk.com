@@ -4,23 +4,24 @@
 module nts.uk.at.ktg005.a {
 
 	const requestUrl = {
-		getEmployeeStampData: 'at/record/stamp/employment_system/get_employee_stamp_data',
-		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
-		registerStampInput: 'at/record/stamp/employment_system/register_stamp_input'
 	}
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
 		executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
-			name: '',
-			approvedNumber: null,
-			unapprovedNumber: null,
-			denialNumber: null,
-			remandNumber: null,
-			dueDate: '',
+			name: 'タイトル',
+			approvedNumber: 9,
+			unapprovedNumber: 2,
+			denialNumber: 0,
+			remandNumber: 0,
+			dueDate: '2020/10/09 12:30:45',
 			useAppDeadLine: 0,
-			detailSettingAppStatus: []
+			detailSettingAppStatus: [{ appDisplayAtr: 1, item: 0 },
+									{ appDisplayAtr: 1, item: 1 },
+									{ appDisplayAtr: 1, item: 2 },
+									{ appDisplayAtr: 1, item: 3 },
+									{ appDisplayAtr: 1, item: 4 }]
 		});
 
 
@@ -58,8 +59,7 @@ module nts.uk.at.ktg005.a {
 
 			let vm = this,
 
-				detailSetting = _.find(vm.executionAppResult().detailSettingAppStatus, ['item', ApplicationStatusWidgetItem[formType]]);
-
+				detailSetting = _.find(vm.executionAppResult().detailSettingAppStatus, ['item', formType]);
 
 			return detailSetting ? detailSetting.appDisplayAtr === 1 : false;
 
