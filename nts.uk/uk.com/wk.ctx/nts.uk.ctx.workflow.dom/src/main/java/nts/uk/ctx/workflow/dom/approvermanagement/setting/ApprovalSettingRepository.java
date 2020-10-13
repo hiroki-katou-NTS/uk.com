@@ -28,4 +28,6 @@ public interface ApprovalSettingRepository {
 	 * @author yennth
 	 */
 	Optional<ApprovalSetting> getApprovalByComId(String companyId);
+	
+	void updateForUnit(ApprovalSetting appro);
 }

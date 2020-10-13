@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="JCMMT_ROOT_APR")
 @AllArgsConstructor
 @NoArgsConstructor
-public class JcmmtRootArp extends UkJpaEntity {
+public class JcmmtRootArpWF extends UkJpaEntity {
 	
 	@Id
 	@Column(name = "CID")

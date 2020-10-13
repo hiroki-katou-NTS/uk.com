@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.JcmmtRootArp;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.JcmmtRootArpWF;
 
 
 @Stateless
@@ -20,7 +20,7 @@ public class JpaHrApprovalRouteSettingWFRepositoryImpl extends JpaRepository imp
 		if(StringUtil.isNullOrEmpty(cid, true))
 			return Optional.empty();
 		
-		Optional<JcmmtRootArp> entity = this.queryProxy().find(cid, JcmmtRootArp.class);
+		Optional<JcmmtRootArpWF> entity = this.queryProxy().find(cid, JcmmtRootArpWF.class);
 		if (!entity.isPresent()) {
 			return Optional.empty();
 		}
@@ -29,7 +29,7 @@ public class JpaHrApprovalRouteSettingWFRepositoryImpl extends JpaRepository imp
 		
 	}
 
-	private HrApprovalRouteSettingWF toDomain(JcmmtRootArp entity) {
+	private HrApprovalRouteSettingWF toDomain(JcmmtRootArpWF entity) {
 		return HrApprovalRouteSettingWF.createFromJavaType(entity.comMode == 1 ? true : false, entity.cid, entity.devMode == 1 ? true : false, entity.empMode == 1 ? true : false);
 	}
 

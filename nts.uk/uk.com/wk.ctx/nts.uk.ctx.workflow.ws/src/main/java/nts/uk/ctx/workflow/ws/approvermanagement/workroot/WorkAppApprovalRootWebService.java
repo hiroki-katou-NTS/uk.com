@@ -14,6 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.StartQCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApplicationUseAtrFinderAppSet;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApproverRegisterSetDto;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.DeleteHistoryCmm053CmdHandler;
@@ -21,6 +22,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.HistoryCmm053
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.InsertHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommandHandler;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.SettingUseUnitDto;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
@@ -205,4 +207,18 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public ApproverRegisterSetDto getAppSet(){
 		return applicationUseAtrFinder.getAppSet(AppContexts.user().companyId());
 	}
+	// refactor5
+	@POST
+	@Path("appSetQ")
+	public SettingUseUnitDto getAppSetForQ(StartQCommand command){
+		return applicationUseAtrFinder.getStartQ(command);
+	}
+	
+	
+	@POST
+	@Path("registerQ")
+	public SettingUseUnitDto registerQ(StartQCommand command){
+		return applicationUseAtrFinder.getStartQ(command);
+	}
+	
 }
