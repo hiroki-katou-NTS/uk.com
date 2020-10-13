@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,7 +30,7 @@ public class Ksm008IStartupInfoScreenQuery {
     /**
      * 初期起動の情報を取得する
      */
-    public ConsecutiveAttendanceComDto getStartupInfoCom(String codeStr) {
+    public Ksm008IStartInfoDto getStartupInfoCom(String codeStr , List<MaxDaysOfContinuousWorkTimeDto> workTimeList) {
         AlarmCheckConditionScheduleCode code = new AlarmCheckConditionScheduleCode(codeStr);
         AlarmCheckConditionSchedule alarmCheckConditionSchedule = getComInfo(code);
 
@@ -45,11 +46,11 @@ public class Ksm008IStartupInfoScreenQuery {
             }
         }
 
-        return new ConsecutiveAttendanceComDto(
+        return new Ksm008IStartInfoDto(
                 code.v(),
                 conditionName,
                 explanation.toString(),
-                maxConsDays.isPresent() ? maxConsDays.get().getNumberOfDays().getNumberOfDays().v() : null
+                workTimeList
         );
     }
 

@@ -20,7 +20,7 @@ public class Ksm008IListOfContinuousWorkLimitsScreenQuery {
     @Inject
     MaxDaysOfContinuousWorkTimeCompanyRepository maxDaysOfContinuousWorkTimeCompanyRepository;
 
-    public List<MaxDaysOfContinuousWorkTimeListDto> get() {
+    /*public List<MaxDaysOfContinuousWorkTimeListDto> get() {
 
         List<MaxDaysOfContinuousWorkTimeCompany> MaxDaysOfContinuousWorkTimeCompanyList = maxDaysOfContinuousWorkTimeCompanyRepository.getAll(AppContexts.user().companyId());
         return MaxDaysOfContinuousWorkTimeCompanyList.stream()
@@ -30,7 +30,7 @@ public class Ksm008IListOfContinuousWorkLimitsScreenQuery {
                                 p -> new MaxDaysOfContinuousWorkTimeListDto(
                                         p.getCode().v(),
                                         p.getName().v(),
-                                        new MaxDaysOfConsecutiveWorkTimeDTO(
+                                        new WorkingHoursDTO(
                                                 p.getMaxDaysContiWorktime().getWorkTimeCodes()
                                                         .stream()
                                                         .map(item -> item.v())
@@ -39,5 +39,5 @@ public class Ksm008IListOfContinuousWorkLimitsScreenQuery {
                                         )
                                 ),
                                 Collectors.toList()));
-    }
+    }*/
 }

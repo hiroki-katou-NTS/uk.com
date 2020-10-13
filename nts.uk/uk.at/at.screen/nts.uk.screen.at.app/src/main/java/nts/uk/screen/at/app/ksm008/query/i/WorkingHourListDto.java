@@ -1,16 +1,19 @@
 package nts.uk.screen.at.app.ksm008.query.i;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.worktime.worktimeset.dto.WorkTimeSettingDto;
 
+import java.io.Serializable;
 import java.util.List;
 
+@Data
 @AllArgsConstructor
 public class WorkingHourListDto {
 
     List<WorkTimeSettingDto> workTimeSetting;
 
-    MaxDaysOfContinuousWorkTimeListDto MaxDaysOfContinuousWorkTimeCompany;
+    MaxDaysOfContinuousWorkTimeCompanyDto MaxDaysOfContinuousWorkTimeCompany;
 }
 
 @AllArgsConstructor

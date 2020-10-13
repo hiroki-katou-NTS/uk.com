@@ -9,6 +9,8 @@
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
             nts.uk.ctx.pereg.dom.person.layout.LayoutCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeName
         </com:ValidatorScript>
         <script>var dialogSize = {width: 900, height: 700};</script>
         <com:stylefile path="../j/ksm008.j.style.css"/>
@@ -31,20 +33,20 @@
                     <span class="title">#{i18n.getText('Com_Company')}</span>
                     <a class="goback" tabindex="2"
                        data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
-                    <button tabindex="3">#{i18n.getText('KSM008_186')}</button>
-                    <button class="proceed" tabindex="4">#{i18n.getText('KSM008_187')}</button>
-                    <button class="danger" tabindex="5">#{i18n.getText('KSM008_188')}</button>
+                    <button tabindex="3" data-bind="click:iScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
+                    <button class="proceed" data-bind="click:iregisterKScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
+                    <button class="danger"  data-bind="click:iScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_188')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
                     <div class="label" style="margin-bottom: 15px;"
-                         data-bind="text: scheduleAlarmCheckCond().code"><span
-                            data-bind="text: scheduleAlarmCheckCond().descriptions"></span></div>
+                         data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
+                    </div>
                     <div class="label warning"
                          style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
                     <div class="label warning" style="padding-top: 0;"
-                         data-bind="text: scheduleAlarmCheckCond().descriptions"></div>
+                         data-bind="text: vm.scheduleAlarmCheckCond().descriptions"></div>
                 </div>
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
@@ -66,40 +68,40 @@
                     <div class="cell valign-top">
                         <div class="table">
                             <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true }">#{i18n.getText('KSM008_194')}</div>
+                                <div data-bind="ntsFormLabel: { constraint: ['ConsecutiveWorkTimeCode','ConsecutiveWorkTimeName'], enable: true, required:true }">#{i18n.getText('KSM008_194')}</div>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I6_2 -->
-                                <input tabindex="7" class="input-lead"
-                                       data-bind="ntsTextEditor: {constraint: 'LayoutCode', value: simpleValue, required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px', background: '#f9efef'}"/>
+                                <input tabindex="7"  id="I6_2"
+                                       data-bind="hasFocus: initialFocus,ntsTextEditor: {value: iScreenWorkingHour.code, required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I6_3 -->
-                                <input tabindex="8"
-                                       data-bind="ntsTextEditor: {constraint: 'LayoutCode', value: simpleValue, required: true, name: '#[KSM008_196]'}"/>
+                                <input tabindex="8" id="I6_3" style="width: 180px;"
+                                       data-bind="ntsTextEditor: { value: iScreenWorkingHour.name, required: true, name: '#[KSM008_196]'}"/>
                             </div>
                         </div>
                         <div class="table">
                             <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_197')}</div>
+                                <div data-bind="ntsFormLabel: { enable: true, required:true}">#{i18n.getText('KSM008_197')}</div>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_2 -->
-                                <button  tabindex="4" data-bind="click: openModal" style="margin-right: 5px">#{i18n.getText('KSM008_198')}</button>
+                                <button id="I7_2" tabindex="4" data-bind="click: openModal" style="margin-right: 5px;margin-left: 85px">#{i18n.getText('KSM008_198')}</button>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->
-                                <input data-bind="ntsTextEditor: {value: simpleValue, required: true, name: '#[KSM008_199]'}"/>
+                                <input id="I7_3" data-bind="ntsTextEditor: {value: iScreenWorkingHour.workHour, required: true, name: '#[KSM008_199]'}"/>
                             </div>
                         </div>
-                        <div class="table">
+                        <div class="table" style="margin-top: 7px;">
                             <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_200')}</div>
+                                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveWorkTimeCode', enable: true, required:true}">#{i18n.getText('KSM008_200')}</div>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_2 -->
-                                <input tabindex="10" class="input-lead"
-                                       data-bind="ntsTextEditor: {value: simpleValue, required: true, name: '#[KSM008_200]'}, style: { width: '25px', marginRight: '5px'}"/>
+                                <input id="I8_2" tabindex="10" class="input-lead"
+                                       data-bind="ntsTextEditor: {value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_200]'}, style: { width: '25px', marginRight: '5px' ,marginLeft: '67px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_3 -->
