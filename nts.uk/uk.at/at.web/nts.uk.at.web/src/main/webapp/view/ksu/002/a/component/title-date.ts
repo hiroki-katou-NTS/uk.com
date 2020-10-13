@@ -47,10 +47,10 @@ module nts.uk.ui.at.ksu002.a {
 			},
 			ntsSwitchButton: {
 				name: $i18n('KSU002_6'),
-				value: ko.observable(1),
+				value: $component.mode,
 				options: [
 					{ code: 1, name: $i18n('KSU002_8') },
-					{ code: 2, name: $i18n('KSU002_9') }
+					{ code: 0, name: $i18n('KSU002_9') }
 				],
 				optionsText: 'name',
 				optionsValue: 'code'
@@ -137,6 +137,8 @@ module nts.uk.ui.at.ksu002.a {
 
 		public dateRanges: KnockoutObservableArray<DateOption> = ko.observableArray([]);
 
+		public mode: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
+
 		constructor(private params: Params) {
 			super();
 
@@ -157,7 +159,7 @@ module nts.uk.ui.at.ksu002.a {
 			const { mode, dateRange, workplaceId } = params;
 
 			if (mode === undefined) {
-				vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
+				vm.params.mode = ko.observable(ACHIEVEMENT.NO);
 			}
 
 			if (dateRange === undefined) {
@@ -171,10 +173,14 @@ module nts.uk.ui.at.ksu002.a {
 
 		created() {
 			const vm = this;
+			const cache: CacheData = {
+				yearMonth: null,
+				dateRange: null,
+				mode: 0
+			};
 			const proccesPeriod = (response: Period) => {
 				const MD_FORMAT = 'MM/DD';
 				const YMD_FORMAT = 'YYYY/MM/DD';
-				const oid = ko.unwrap(vm.selectedRangeIndex);
 
 				if (response) {
 					const { yearMonth, periodsClose, employeeInfo } = response;
@@ -183,53 +189,114 @@ module nts.uk.ui.at.ksu002.a {
 						vm.params.workplaceId(employeeInfo.workplaceId);
 					}
 
-					// vm.dateRanges([]);
-					vm.yearMonth(`${yearMonth}`);
+					if (vm.yearMonth() !== `${yearMonth}`) {
+						vm.yearMonth(`${yearMonth}`);
+					} else {
+						vm.yearMonth.valueHasMutated();
+					}
 
-					if (periodsClose && periodsClose.length) {
-						vm.dateRanges(periodsClose
-							.map((m, id) => {
-								const mb = moment.utc(m.startDate, YMD_FORMAT);
-								const me = moment.utc(m.endDate, YMD_FORMAT);
+					$.Deferred()
+						.resolve(true)
+						// clear old data sources of date range
+						.then(() => vm.dateRanges([]))
+						// load new data
+						.then(() => {
+							if (periodsClose && periodsClose.length) {
+								vm.dateRanges(periodsClose
+									.map((m, id) => {
+										const mb = moment.utc(m.startDate, YMD_FORMAT);
+										const me = moment.utc(m.endDate, YMD_FORMAT);
 
-								return {
-									id: id + 1,
-									title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
-									begin: mb.toDate(),
-									finish: me.toDate()
-								};
-							}));
-
-						vm.$nextTick(() => {
-							if (ko.unwrap(vm.selectedRangeIndex) === oid) {
-								vm.selectedRangeIndex.valueHasMutated();
+										return {
+											id: id + 1,
+											title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
+											begin: mb.toDate(),
+											finish: me.toDate()
+										};
+									}));
 							}
 						});
-					}
 				}
 			};
 
+			// first load
 			vm.$ajax('at', API.BASE_DATE).then(proccesPeriod);
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
 					const cmd = { yearMonth: Number(ym) };
 
-					vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+					// first load
+					if (cache.yearMonth === null) {
+						cache.yearMonth = cmd.yearMonth;
+						vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+					} else if (cache.yearMonth !== cmd.yearMonth) {
+						vm.$dialog
+							.confirm({ messageId: 'Msg_1732' })
+							.then((v) => {
+								if (v === 'yes') {
+									cache.yearMonth = cmd.yearMonth;
+									vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+								} else {
+									// rollback data
+									vm.yearMonth(`${cache.yearMonth}`);
+								}
+							});
+					}
 				});
 
 			vm.selectedRangeIndex
 				.subscribe(c => {
-					if (!!c && c > -1) {
+					if ([null, undefined].indexOf(c) > -1) {
+						cache.dateRange = null;
+					} else {
 						const dateRanges = ko.unwrap(vm.dateRanges);
 
 						const exist = _.find(dateRanges, (f) => f.id === c);
 
 						if (exist) {
-							const { finish, begin } = exist;
+							if (cache.dateRange === null) {
+								cache.dateRange = c;
 
-							vm.params.dateRange({ finish, begin });
+								const { finish, begin } = exist;
+
+								vm.params.dateRange({ finish, begin });
+							} else if (cache.dateRange !== c) {
+								vm.$dialog
+									.confirm({ messageId: 'Msg_1732' })
+									.then((v) => {
+										if (v === 'yes') {
+											cache.dateRange = c;
+											const { finish, begin } = exist;
+
+											vm.params.dateRange({ finish, begin });
+										} else {
+											// rollback data
+											vm.selectedRangeIndex(cache.dateRange);
+										}
+									});
+							}
 						}
+					}
+				});
+
+			vm.mode
+				.subscribe(c => {
+					if (cache.mode === null) {
+						cache.mode = c;
+						vm.params.mode(c);
+					} else if (cache.mode !== c) {
+						vm.$dialog
+							.confirm({ messageId: 'Msg_1732' })
+							.then((v) => {
+								if (v === 'yes') {
+									cache.mode = c;
+									vm.params.mode(c);
+								} else {
+									// rollback data
+									vm.mode(cache.mode);
+								}
+							});
 					}
 				});
 		}
@@ -265,8 +332,18 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: string;
 	}
 
-	enum ACHIEVEMENT {
-		SHOW = 1,
-		HIDE = 0
+	export enum ACHIEVEMENT {
+		YES = 1,
+		NO = 0
+	}
+
+	/**
+	 * Cache data for rollback
+	 * after choose no of comfirm message: Msg_1732
+	 */
+	interface CacheData {
+		yearMonth: number | null;
+		dateRange: number | null;
+		mode: number;
 	}
 }

@@ -40,6 +40,7 @@ module nts.uk.ui.at.ksu002.a {
 		schedules: m.MementoObservableArray<c.DayData<ObserverScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
 
 		workplaceId: KnockoutObservable<string> = ko.observable('');
+		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
 
 		created() {
