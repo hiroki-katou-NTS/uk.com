@@ -8,7 +8,7 @@
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 500, height: 300 };</script>
-				<com:stylefile path="kcp015.main.css" />
+				<com:stylefile  path="/view/kcp/015/component/kcp015.main.css" />
 				<com:scriptfile path="/view/kcp/015/component/test.start.js" />
 				<com:scriptfile path="/view/kcp/015/component/test.vm.js" />
 				<com:scriptfile path="/view/kcp/015/component/kcp015.vm.js" />
@@ -20,15 +20,7 @@
 					<button data-bind="click: close" style="float: right; margin-right: 20px;">Close Dialog</button>
 				</div>
 				<div id="contents-area">
-					<kcp015-component params="{
-							haveData  : haveData,
-							visibleA31: visibleA31,
-							visibleA32: visibleA32,
-							visibleA33: visibleA33,
-							visibleA34: visibleA34,
-							visibleA35: visibleA35,
-							visibleA36: visibleA36
-							}"></kcp015-component>
+					<kcp015-component params="input: input"></kcp015-component>
 				</div>
 			</ui:define>
 		</ui:composition>
