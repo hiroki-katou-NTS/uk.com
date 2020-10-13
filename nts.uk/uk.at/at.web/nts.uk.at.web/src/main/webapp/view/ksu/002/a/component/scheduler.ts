@@ -369,6 +369,7 @@ module nts.uk.ui.at.ksu002.a {
                 const vm = this;
                 const { data, model, text } = vm;
                 const { context, dayData } = data;
+                const cache: { begin: number | null; finish: number | null; } = { begin: null, finish: null };
 
                 if (dayData.data) {
                     const { data } = dayData;
@@ -393,7 +394,8 @@ module nts.uk.ui.at.ksu002.a {
 
                     model.begin
                         .subscribe((c: number) => {
-                            if (_.isNumber(c) && ko.unwrap(value.begin) !== c) {
+                            if (_.isNumber(c) && cache.begin !== c && ko.unwrap(value.begin) !== c) {
+                                cache.begin = c;
                                 const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
                                 clone.data.value.begin = c;
@@ -404,7 +406,8 @@ module nts.uk.ui.at.ksu002.a {
 
                     model.finish
                         .subscribe(c => {
-                            if (_.isNumber(c) && ko.unwrap(value.finish) !== c) {
+                            if (_.isNumber(c) && cache.finish !== c && ko.unwrap(value.finish) !== c) {
+                                cache.finish = c;
                                 const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
                                 clone.data.value.finish = c;
