@@ -79,7 +79,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     employeeListScreenH: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
     buttonProceed: KnockoutObservable<boolean> = ko.observable(true);
     categoryListOld: Array<any> = [];
-    recoveryProcessingId: string = nts.uk.util.randomId();
+    recoveryProcessingId: string;
     periodValueArr: Array<any> = [
       { period: PeriodValue.DAY, format: "YYYY/MM/DD" },
       { period: PeriodValue.MONTH, format: "YYYY/MM" },
@@ -201,6 +201,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       });
       //End new code
 
+      self.dataRecoverySelection().selectedRecoveryFile.subscribe(value => {
+        self.recoveryProcessingId = nts.uk.util.randomId();
+      })
+
       self.dataContentConfirm().dataContentcategoryList.subscribe(value => {
         self.setWidthScrollHeader('.contentE', value);
       });
@@ -236,7 +240,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         } else {
           self.pwdConstraint("");
           self.pwdConstraint.valueHasMutated();
-          $('.passwordInput').ntsError('clear');
+          self.pwdCompressEdt.value("");
+          self.pwdConfirmEdt.value("");
+          $('.password-input').ntsError('clear');
         }
       })
     }

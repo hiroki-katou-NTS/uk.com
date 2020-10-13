@@ -205,9 +205,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				.collect(Collectors.toList());
 		int countCategoryFieldMts = categoryFieldMts.stream()
 				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
-		if (categorys.size() != countCategoryFieldMts) {
-			return ResultState.ABNORMAL_END;
-		}
+//		if (categorys.size() != countCategoryFieldMts) {
+//			return ResultState.ABNORMAL_END;
+//		}
 
 		String cId = optManualSetting.getCid();
 
@@ -380,6 +380,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
+				List<String> ids = tableLists.stream().map(TableList::getCategoryId).distinct().collect(Collectors.toList());
 				int i = 0;
 				for (TableList tableList : tableLists) {
 					rowCsv = getDataTableListeCsv(rowCsv, headerCsv, tableList);
