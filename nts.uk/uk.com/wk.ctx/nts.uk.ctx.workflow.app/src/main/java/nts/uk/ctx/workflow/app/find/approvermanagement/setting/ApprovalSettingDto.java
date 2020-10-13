@@ -13,14 +13,14 @@ public class ApprovalSettingDto {
 	/**
 	 * 会社ID
 	 */
-	private String companyId;
+	public String companyId;
 	/**
 	 * 本人による承認
 	 */
-	private int prinFlg;
+	public int prinFlg;
 	
 	// 承認単位の利用設定
-	private ApproverRegisterSetDto approverSet;
+	public ApproverRegisterSetDto approverSet;
 	
 	public static ApprovalSettingDto fromDomain(ApprovalSetting approval) {
 		if (approval == null) return null;
