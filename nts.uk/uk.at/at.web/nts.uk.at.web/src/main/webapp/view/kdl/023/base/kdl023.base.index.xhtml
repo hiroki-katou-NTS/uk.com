@@ -28,7 +28,8 @@
 				<ui:insert name="extended-header" />
 			</ui:define>
 			<ui:define name="content">
-                <div id="contents-area" class="kdl023-content-area">
+                <div id="contents-area" class="kdl023-content-area"
+                    data-bind="css: {'exec-mode' : kdl023vm.isExecMode, 'ref-mode' : !kdl023vm.isExecMode()}">
 					<div id="reflect-setting" class="pull-left bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
                         <div class="control-group cf">
@@ -201,8 +202,6 @@
 												]}">
 									</div>
 								</div>
-
-								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
 						<!--A1_34-->
 						<div id="kdl023-holiday-warning-label" class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
@@ -213,8 +212,7 @@
 						</button>
 					</div>
 					<!-- Calendar function -->
-					<div id="calendar-reflect-pattern"
-                         data-bind="css: {'exec-mode' : kdl023vm.isExecMode, 'ref-mode' : !kdl023vm.isExecMode()}">
+					<div id="calendar-reflect-pattern">
 						<ui:insert name="period-calendar-header" />
 						<div class="pull-right kdl023">
 							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button><!--A2_1-->
