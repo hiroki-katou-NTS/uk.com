@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface NursingVacationSettingRepository.
  */
@@ -42,4 +44,13 @@ public interface NursingLeaveSettingRepository {
      * @return the list
      */
     List<String> findWorkTypeCodesByCompanyId(String companyId);
+    
+    /**
+     * ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
+     * 
+     * @param companyId 会社ID
+     * @param nursingCategory 介護看護区分
+     * @return
+     */
+    NursingLeaveSetting findManageDistinctByCompanyIdAndNusingCategory(String companyId, Integer nursingCategory);
 }

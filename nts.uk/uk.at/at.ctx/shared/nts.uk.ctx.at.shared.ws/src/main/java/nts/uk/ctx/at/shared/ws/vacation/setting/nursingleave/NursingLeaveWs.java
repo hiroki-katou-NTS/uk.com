@@ -14,8 +14,12 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.ChildNursingLeaveRequest;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.NursingLeaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.managementclassification.lstemployee.childnursing.nextstartdate.ChildNursingLeaveFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.managementclassification.lstemployee.childnursing.nextstartdate.ManagementClassificationLstEmployeeDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.NursingLeaveFinder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.absenceframe.AbsenceFrameDto;
@@ -46,6 +50,10 @@ public class NursingLeaveWs extends WebService {
     /** The absence frame finder. */
     @Inject
     private AbsenceFrameFinder absenceFrameFinder;
+    
+    /** 介護休暇ダイアログ起動. */
+    @Inject
+    private ChildNursingLeaveFinder ChildNursingLeaveFinder;
     
     /**
      * Find manage distinct.
@@ -112,4 +120,11 @@ public class NursingLeaveWs extends WebService {
     public List<AbsenceFrameDto> findAllAbsenceFrame() {
     	return this.absenceFrameFinder.findByCompanyIdWithoutEventAndSpecialHoliday();
     }
+    
+    @POST
+    @Path("find/childnursingleave")
+    public ManagementClassificationLstEmployeeDto findAllChildNursingLeave(ChildNursingLeaveRequest request) {
+    	return this.ChildNursingLeaveFinder.findByListEmployeeIdAndRef(request.getLstEmployees(), request.getBaseDate());
+    }
+    
 }
