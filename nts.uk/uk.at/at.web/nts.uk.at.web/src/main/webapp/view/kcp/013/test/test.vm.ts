@@ -13,6 +13,8 @@ module test.viewmodel {
         showDeferred: KnockoutObservable<boolean> = ko.observable( false );
         initiallySelected: KnockoutObservable<string> = ko.observable( '' );
         disabled: KnockoutObservable<boolean>;
+        widthValue: KnockoutObservable<number> = ko.observable( null );
+        option: any;
         constructor() {
             let self = this;
             self.fillter = ko.observable( false );
@@ -20,7 +22,10 @@ module test.viewmodel {
             self.input = [];
             self.baseDate = ko.observable( new Date() );
             self.selectedWorkplaceId = ko.observable( '' );
-
+            self.option = new nts.uk.ui.option.NumberEditorOption( {
+                width: "",
+                textalign: "left"
+            } );
             self.treeGrid = {
                 isMultipleUse: true,
                 isMultiSelect: false,
@@ -35,12 +40,12 @@ module test.viewmodel {
                 systemType: 2
 
             };
-            $( '#tree-grid' ).ntsTreeComponent( self.treeGrid ).done(function() {
-                let workplaceGridList = $('#tree-grid').getDataList();
-                if (workplaceGridList.length > 0) {
-                    self.selectedWorkplaceId(workplaceGridList[0].id);
+            $( '#tree-grid' ).ntsTreeComponent( self.treeGrid ).done( function() {
+                let workplaceGridList = $( '#tree-grid' ).getDataList();
+                if ( workplaceGridList.length > 0 ) {
+                    self.selectedWorkplaceId( workplaceGridList[0].id );
                 }
-            });
+            } );
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -52,7 +57,7 @@ module test.viewmodel {
             let self = this;
             let data: any = {};
 
-            data.width = 500;
+            data.width = self.widthValue() != null && self.widthValue().toString() != "" ? self.widthValue() : 500;
             data.tabIndex = 1;
             data.filter = self.fillter();
             data.disabled = self.disabled();
@@ -60,17 +65,17 @@ module test.viewmodel {
             data.selected = self.initiallySelected();
             data.dataSources = [];
             let showMode = 0;
-            if(self.showNone() && !self.showDeferred()) {
+            if ( self.showNone() && !self.showDeferred() ) {
                 showMode = 1;
             }
-            if(!self.showNone() && self.showDeferred()) {
+            if ( !self.showNone() && self.showDeferred() ) {
                 showMode = 2;
             }
-            if(self.showNone() && self.showDeferred()) {
+            if ( self.showNone() && self.showDeferred() ) {
                 showMode = 3;
             }
             data.showMode = showMode;
-            
+
             setShare( 'data', data );
 
 
