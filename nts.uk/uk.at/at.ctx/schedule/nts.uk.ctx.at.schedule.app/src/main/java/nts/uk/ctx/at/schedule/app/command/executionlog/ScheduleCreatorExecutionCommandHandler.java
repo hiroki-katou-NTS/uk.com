@@ -299,7 +299,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					Optional.empty(),							// マスタ参照先←optional.empty
 					Optional.empty());							// 月間パターンコード←optional.empty
 			ConditionEmployee conditionEmployee = new ConditionEmployee(
-					false,										// TODO: domain 「更新処理自動実行」  missing attribute
+					command.getRecreateTransfer(),				// 更新処理自動実行」.再実行条件.異動者を再作成する
 					false,										// TODO: domain 「更新処理自動実行」  missing attribute
 					false,										// 短時間勤務者←false
 					false);										// 労働条件変更者←false

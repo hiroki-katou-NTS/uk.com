@@ -859,6 +859,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							.build(() -> {
 								scheduleCommand.setCountDownLatch(countDownLatch);
 								scheduleCommand.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+								scheduleCommand.setRecreateTransfer(procExec
+										.getExecSetting()
+										.getDailyPerf()
+										.getTargetGroupClassification()
+										.isRecreateTransfer());
 								AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
 								dataToAsyn.setHandle(handle1);
 							});
@@ -930,6 +935,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 									.build(() -> {
 										scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
 										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+										scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
+												.getExecSetting()
+												.getDailyPerf()
+												.getTargetGroupClassification()
+												.isRecreateTransfer());
 										AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
 										dataToAsyn.setHandle(handle1);
 										
@@ -970,6 +980,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 										.build(() -> {
 											scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
 											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+											scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
+													.getExecSetting()
+													.getDailyPerf()
+													.getTargetGroupClassification()
+													.isRecreateTransfer());
 											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
 											dataToAsyn.setHandle(handle1);
 										});

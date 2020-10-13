@@ -61,7 +61,13 @@ public class ScheduleCreatorExecutionCommand {
 	@Getter
 	private Object companySetting;
 	
+	// 「更新処理自動実行」.実行種別
 	private Boolean isReExecution; 
+	
+	// 「更新処理自動実行」.再実行条件.異動者を再作成する
+	private Boolean recreateTransfer;
+	
+	// 「更新処理自動実行」.実行種別.休職者・休業者を再作成
  
 	public String getEmployeeId() {
 		return employeeId;
@@ -195,6 +201,14 @@ public class ScheduleCreatorExecutionCommand {
 	
 	public boolean getIsReExecution() {
 		return this.isReExecution;
+	}
+
+	public void setRecreateTransfer(Boolean recreateTransfer) {
+		this.recreateTransfer = recreateTransfer;
+	}
+	
+	public boolean getRecreateTransfer() {
+		return this.recreateTransfer;
 	}
 
 	/**
