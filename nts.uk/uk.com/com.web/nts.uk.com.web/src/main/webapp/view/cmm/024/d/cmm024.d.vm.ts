@@ -47,15 +47,18 @@ module nts.uk.com.view.cmm024.d {
 			})
 
 			vm.$window.storage('CMM024_D_INPUT').then((data: ScheduleHistoryModel) => {
-				let scheduleHistoryUpdate: ScheduleHistoryDto = null;
+				if (data) {
+					vm.scheduleHistoryModel(data); //getShared
+					vm.newStartDate(moment(data.scheduleHistoryUpdate.startDate).toDate());
 
-				vm.scheduleHistoryModel(data);
-
-				scheduleHistoryUpdate = vm.scheduleHistoryModel().scheduleHistoryUpdate;
-				vm.newStartDate(moment(scheduleHistoryUpdate.startDate).toDate());
-
-				let allowStartDate: Date = moment(vm.scheduleHistoryModel().allowStartDate).toDate();
-				vm.allowStartDate(allowStartDate);
+					let allowStartDate: Date = null;
+					allowStartDate = moment(vm.scheduleHistoryModel().allowStartDate).toDate();
+					//there is one item in the history period list
+					if (_.isNil(vm.scheduleHistoryModel().allowStartDate)) {
+						allowStartDate = moment(data.scheduleHistoryUpdate.startDate).toDate();
+					}
+					vm.allowStartDate(allowStartDate);
+				}
 			});
 		}
 
@@ -70,55 +73,52 @@ module nts.uk.com.view.cmm024.d {
 					allowDate: Date = vm.allowStartDate();
 
 				let dataModel = vm.scheduleHistoryModel();
+				let isBefore = moment(stDate).format('YYYYMMDD') <= moment(allowDate).format('YYYYMMDD');
 
-				if (moment(stDate).isBefore(allowDate)) {
-
+				if (isBefore && vm.registrationHistoryType() === service.HistoryUpdate.HISTORY_EDIT) {
 					let oldDate: string = moment(allowDate, 'YYYY/MM/DD').format('YYYY/MM/DD');
 					vm.$dialog.error({ messageId: "Msg_156", messageParams: [oldDate] });
-
 					return;
+				}
 
+
+				let status = false,
+					params = {
+						companyId: dataModel.workPlaceCompanyId,
+						workPlaceId: dataModel.workPlaceCompanyId,
+						startDate: moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD'),
+						endDate: moment.utc(dataModel.scheduleHistoryUpdate.endDate, 'YYYY-MM-DD'),
+						startDateBeforeChange: null,
+						screen: dataModel.screen
+					};
+
+				if (vm.registrationHistoryType() == service.HistoryUpdate.HISTORY_DELETE) {
+					vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: string) => {
+						if (result === 'yes') {
+							vm.deleteScheduleHistory(params);
+							vm.$window.storage("CMM024_D_RESULT", {
+								newScheduleHistory: null,
+								RegistrationHistoryType: vm.registrationHistoryType(),
+								status: true
+							});
+						}
+					});
 				} else {
-					let status = false,
-						params = {
-							companyId: dataModel.workPlaceCompanyId,
-							workPlaceId: dataModel.workPlaceCompanyId,
-							startDate: moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD'),
-							endDate: moment.utc(dataModel.scheduleHistoryUpdate.endDate, 'YYYY-MM-DD'),
-							startDateBeforeChange: null,
-							screen: dataModel.screen
-						};
 
-					if (vm.registrationHistoryType() == service.HistoryUpdate.HISTORY_DELETE) {
-						vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: string) => {
-							if (result === 'yes') {
-								vm.deleteScheduleHistory(params);
-								vm.$window.storage("CMM024_D_RESULT", {
-									newScheduleHistory: null,
-									RegistrationHistoryType: vm.registrationHistoryType()
-								});
-								vm.$window.close();
-							}
-						});
-					} else {
+					params.startDate = moment.utc(vm.newStartDate(), 'YYYY-MM-DD');
+					params.endDate = moment.utc(vm.newEndDate(), 'YYYY-MM-DD');
+					params.startDateBeforeChange = moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD');
 
-						params.startDate = moment.utc(vm.newStartDate(), 'YYYY-MM-DD');
-						params.endDate = moment.utc(vm.newEndDate(), 'YYYY-MM-DD');
-						params.startDateBeforeChange = moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD');
+					status = vm.updateScheduleHistory(params);
 
-						status = vm.updateScheduleHistory(params);
-
-						vm.$window.storage("CMM024_D_RESULT", {
-							newScheduleHistory: {
-								startDate: moment(vm.newStartDate()).format("YYYY/MM/DD"),
-								newEndDate: moment(vm.newStartDate()).subtract(1, "days").format("YYYY/MM/DD")
-							},
-							RegistrationHistoryType: vm.registrationHistoryType(),
-							status: status
-						});
-
-						vm.$window.close();
-					}
+					vm.$window.storage("CMM024_D_RESULT", {
+						newScheduleHistory: {
+							startDate: moment(vm.newStartDate()).format("YYYY/MM/DD"),
+							newEndDate: moment(vm.newStartDate()).subtract(1, "days").format("YYYY/MM/DD")
+						},
+						RegistrationHistoryType: vm.registrationHistoryType(),
+						status: status
+					});
 				}
 				return false;
 			}
@@ -149,11 +149,15 @@ module nts.uk.com.view.cmm024.d {
 					vm.$blockui('show');
 					service.deleteAScheduleHistoryByCompany(params)
 						.done((response) => {
-							vm.$dialog.info({ messageId: 'Msg_16' });
-							vm.$blockui('hide');
+							vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+								vm.$window.close();
+								vm.$blockui('hide');
+							});
 						})
 						.fail((error) => {
-							vm.$dialog.info({ messageId: error.messageId });
+							vm.$dialog.info({ messageId: error.messageId }).then(() => {
+								vm.$blockui('hide');
+							});
 						})
 						.always(() => vm.$blockui('hide'));
 					break;
@@ -162,11 +166,15 @@ module nts.uk.com.view.cmm024.d {
 					vm.$blockui('show');
 					service.deleteAScheduleHistoryByWorkplace(params)
 						.done((response) => {
-							vm.$dialog.info({ messageId: 'Msg_16' });
-							vm.$blockui('hide');
+							vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+								vm.$window.close();
+								vm.$blockui('hide');
+							});
 						})
 						.fail((error) => {
-							vm.$dialog.info({ messageId: error.messageId });
+							vm.$dialog.info({ messageId: error.messageId }).then(() => {
+								vm.$blockui('hide');
+							});
 						})
 						.always(() => vm.$blockui('hide'));
 					break;
@@ -180,26 +188,29 @@ module nts.uk.com.view.cmm024.d {
 			let vm = this,
 				status: boolean = false;
 
+			vm.$blockui('show');
 			switch (params.screen) {
 				case 'A':
-					vm.$blockui('show');
 					service.updateAScheduleHistoryByCompany(params)
 						.done((response) => {
-							vm.$dialog.info({ messageId: 'Msg_15' });
-							status = true;
-							vm.$blockui('hide');
+							vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+								status = true;
+								vm.$blockui('hide');
+								vm.$window.close();
+							});
 						})
 						.fail(() => vm.$blockui('hide'))
 						.always(() => vm.$blockui('hide'));
 					break;
 
 				case 'B':
-					vm.$blockui('show');
 					service.updateAScheduleHistoryByWorkplace(params)
 						.done((response) => {
-							vm.$dialog.info({ messageId: 'Msg_15' });
-							status = true;
-							vm.$blockui('hide');
+							vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+								status = true;
+								vm.$blockui('hide');
+								vm.$window.close();
+							});
 						})
 						.fail(() => vm.$blockui('hide'))
 						.always(() => vm.$blockui('hide'));

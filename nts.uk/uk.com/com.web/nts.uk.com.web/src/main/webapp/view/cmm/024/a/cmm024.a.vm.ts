@@ -28,6 +28,7 @@ module nts.uk.com.view.cmm024.a {
 		companyScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		companyScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		companyScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		companyLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		//Screen B
 		modelB: KnockoutObservable<Model> = ko.observable(new Model());
 		enableRegisterB: KnockoutObservable<boolean> = ko.observable(false);
@@ -40,6 +41,7 @@ module nts.uk.com.view.cmm024.a {
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
+		workplaceLatestPeriod: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
 		// KCP010
 		kcp010Model: kcp010.viewmodel.ScreenModel;
 		listComponentOption: service.ComponentOption;
@@ -57,7 +59,7 @@ module nts.uk.com.view.cmm024.a {
 				{ headerText: vm.$i18n('CMM024_7'), key: 'display', formatter: _.escape }
 			]);
 
-			//Screen B
+			//Screen B			
 			vm.selectedWkpId = ko.observable('');
 			// Initial listComponentOption
 			vm.listComponentOption = {
@@ -66,6 +68,8 @@ module nts.uk.com.view.cmm024.a {
 			};
 
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
+
+			vm.showPanelB();
 		}
 
 		// start point of object
@@ -91,18 +95,17 @@ module nts.uk.com.view.cmm024.a {
 				vm.dispplayInfoOnScreenA(value);
 			});
 
-			//Screen B
-			vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
-				vm.dispplayInfoOnScreenB(value);
-			});
+			//Screen B			
+				vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
+					if(vm.isShowPanelB()) vm.dispplayInfoOnScreenB(value);
+				});
 
-			vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
-				if (wkpId) {
-					vm.selectedWkpId(wkpId);
-					vm.workplaceScheduleHistoryListing();
-				}
-			});
-
+				vm.kcp010Model.workplaceId.subscribe(function (wkpId: string) {
+					if (wkpId) {
+						vm.selectedWkpId(wkpId);
+						if( vm.isShowPanelB()) vm.workplaceScheduleHistoryListing();
+					}
+				});
 			//responsive
 			if ($(window).width() < 1360) {
 				$('.contents-area').addClass('fix1280');
@@ -125,16 +128,13 @@ module nts.uk.com.view.cmm024.a {
 
 			if (scheduleHistory.length > 0) {
 				value = (value === null) ? scheduleHistory[0].code : value;
-				isAllowSetting = scheduleHistory[0].code === value;
-				vm.resetSettingsScreenA(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
-				//highlight history that has selected	
-				objFind = _.find(scheduleHistory, (x) => x.code === value);
+				vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 
+				objFind = _.find(scheduleHistory, (x) => x.code === value);
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
 					vm.companyScheduleHistoryObjSelected(objFind); //send to screen B, D
 				}
 
-				//vm.modelA().workPlaceCompanyId = vm.company().id;
 				vm.modelA().startDate(moment.utc(objFind.startDate, 'YYYY/MM/DD').toDate());
 				vm.modelA().endDate(moment.utc(objFind.endDate, 'YYYY/MM/DD').toDate());
 
@@ -142,6 +142,9 @@ module nts.uk.com.view.cmm024.a {
 				vm.createEmployeesPanelList('A', 1, objFind.personalInfoApprove);
 				//従業員代表パネル
 				vm.createEmployeesPanelList('A', 2, objFind.personalInfoConfirm);
+				
+				$('#historyList tr:first-child').focus();
+
 			} else {
 				vm.resetSettingsScreenA(false, true, false, true, ScreenModel.ADDNEW);
 			}
@@ -173,11 +176,9 @@ module nts.uk.com.view.cmm024.a {
 					vm.registerScheduleHistoryByCompany();
 					break;
 			}
-
-			//reset
-			vm.screenAModeAddNew(true);
-			vm.screenAModeEdit(true);
-			vm.enableScheduleHistoryA(true);
+			
+			//reset	
+			vm.resetSettingsScreenA(false, true, false, true, ScreenModel.EDIT);
 		}
 
 		/**
@@ -210,7 +211,7 @@ module nts.uk.com.view.cmm024.a {
 			service.registerScheduleHistoryByCompany(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.companyScheduleHistoryListing();
+						vm.companyScheduleHistoryListing();						
 						vm.$blockui('hide');
 					});
 				}).fail((error) => {
@@ -251,8 +252,8 @@ module nts.uk.com.view.cmm024.a {
 			service.updateScheduleHistoryByCompany(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.companyScheduleHistoryListing();
-						vm.$blockui('hide');
+						vm.companyScheduleHistoryListing();						
+						vm.$blockui('hide');						
 					});
 				}).fail((error) => {
 					console.log(error);
@@ -269,11 +270,13 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this,
 				currentScheduleHistoryList: Array<ScheduleHistoryDto> = vm.companyScheduleHistoryList();
 
-			vm.$window.storage("scheduleHistorySelected", vm.companyScheduleHistoryObjSelected());
+			let params = (currentScheduleHistoryList.length > 0) ? currentScheduleHistoryList[0] : null;
+
+			vm.companyScheduleHistorySelected(null);
+			vm.$window.storage("scheduleHistorySelected", params);
 			vm.$window.modal("/view/cmm/024/c/index.xhtml", { title: vm.$i18n('CMM024_92') }).then(function () {
 				//開始年月日テキストボックス
 				vm.$window.storage("newScheduleHistory").then((data: any) => {
-
 					if (!nts.uk.util.isNullOrUndefined(data.scheduleHistoryItem)) {
 						currentScheduleHistoryList = vm.updateScheduleHistoryListing(vm.companyScheduleHistoryList(), data);
 						//re-update the list
@@ -311,7 +314,7 @@ module nts.uk.com.view.cmm024.a {
 			vm.enableRegisterA(register);
 			vm.screenAModeAddNew(addnew);
 			vm.screenAModeEdit(edit);
-			vm.enableScheduleHistoryB(enablePeriodlist);
+			vm.enableScheduleHistoryA(enablePeriodlist);
 			vm.screenAMode(mode);
 			vm.allowSettingA(register);
 			//clear model
@@ -324,29 +327,25 @@ module nts.uk.com.view.cmm024.a {
 		/**
 		 * Display page D
 		 * */
-		screenShowDialogD(screen: string = 'A') {
+		screenShowDialogAD() {
 			let vm = this,
 				allowStartDate: string = null,
+				isAllowEdit: boolean = true,
 				scheduleHistory: Array<ScheduleHistoryDto> = [];
 			//get second item
 			let data: ScheduleHistoryModel = {};
-
-			scheduleHistory = (screen === 'A') ? vm.companyScheduleHistoryList() : vm.workplaceScheduleHistoryList();
-			allowStartDate = (scheduleHistory.length > 1)
-				? scheduleHistory[1].startDate
-				: null;
+			scheduleHistory = vm.companyScheduleHistoryList();
+			if (scheduleHistory.length > 1) {
+				allowStartDate = scheduleHistory[1].startDate;
+				isAllowEdit = (vm.companyScheduleHistoryObjSelected().code === scheduleHistory[0].code);
+			}
 
 			data.allowStartDate = allowStartDate;
-			data.scheduleHistoryUpdate = (screen === 'A')
-				? vm.companyScheduleHistoryObjSelected()
-				: vm.workplaceScheduleHistoryObjSelected();
-			data.workPlaceCompanyId = (screen === 'A') ? vm.company().id : vm.selectedWkpId();
-			data.screen = screen;
+			data.scheduleHistoryUpdate = vm.companyScheduleHistoryObjSelected();
+			data.workPlaceCompanyId = vm.company().id;
+			data.screen = 'A';
 
-			if (screen == 'A' && !vm.screenAModeEdit()) {
-				vm.$dialog.error({ messageId: 'Msg_154' });
-				return;
-			} else if (screen == 'B' && !vm.screenBModeEdit()) {
+			if (!isAllowEdit) {
 				vm.$dialog.error({ messageId: 'Msg_154' });
 				return;
 			}
@@ -366,29 +365,74 @@ module nts.uk.com.view.cmm024.a {
 								}
 							}
 
-							if (screen === 'A') {
-								vm.companyScheduleHistoryListing();
-								vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
-							} else {
-								vm.workplaceScheduleHistoryListing();
-								vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
-							}
+							vm.companyScheduleHistoryListing();
+							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 						} else {
-							if (screen === 'A') {
-								vm.resetSettingsScreenA(
-									vm.enableRegisterA(),
-									true, true,
-									vm.allowSettingA(),
-									vm.screenAMode()
-								);
-							} else {
-								vm.resetSettingsScreenB(
-									vm.enableRegisterB(),
-									true, true,
-									vm.allowSettingB(),
-									vm.screenBMode()
-								);
+							vm.resetSettingsScreenA(
+								vm.enableRegisterA(),
+								true, true,
+								vm.allowSettingA(),
+								vm.screenAMode()
+							);
+						}
+					});
+				});
+		}
+
+		/**
+		 * Display page D on B
+		 * */
+		screenShowDialogBD() {
+			let vm = this,
+				allowStartDate: string = null,
+				isAllowEdit: boolean = true,
+				scheduleHistory: Array<ScheduleHistoryDto> = [];
+			//get second item
+			let data: ScheduleHistoryModel = {};
+
+			scheduleHistory = vm.workplaceScheduleHistoryList();
+			if (scheduleHistory.length > 1) {
+				allowStartDate = scheduleHistory[1].startDate;
+				isAllowEdit = (vm.workplaceScheduleHistoryObjSelected().code === scheduleHistory[0].code);
+			}
+			/* allowStartDate = (scheduleHistory.length > 1)
+				? scheduleHistory[1].startDate
+				: null; */
+
+			data.allowStartDate = allowStartDate;
+			data.scheduleHistoryUpdate = vm.workplaceScheduleHistoryObjSelected();
+			data.workPlaceCompanyId = vm.selectedWkpId();
+			data.screen = 'B';
+
+			if (!isAllowEdit) {
+				vm.$dialog.error({ messageId: 'Msg_154' });
+				return;
+			}
+
+			//ScheduleHistoryModel
+			vm.$window.storage("CMM024_D_INPUT", data);
+			vm.$window.modal("/view/cmm/024/d/index.xhtml",
+				{ title: vm.$i18n('CMM024_93') }).then(function () {
+
+					vm.$window.storage("CMM024_D_RESULT").then((data: any) => {
+
+						if (!nts.uk.util.isNullOrEmpty(data)) {
+							if (data.RegistrationHistoryType === HistoryUpdate.HISTORY_EDIT) {
+								if (!nts.uk.util.isNullOrUndefined(data.newScheduleHistory)
+									&& (scheduleHistory.length > 0)) {
+									vm.updateHistoricalPeriod(scheduleHistory, data);
+								}
 							}
+							vm.workplaceScheduleHistoryListing();
+							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
+
+						} else {
+							vm.resetSettingsScreenB(
+								vm.enableRegisterB(),
+								true, true,
+								vm.allowSettingB(),
+								vm.screenBMode()
+							);
 						}
 					});
 				});
@@ -486,7 +530,7 @@ module nts.uk.com.view.cmm024.a {
 						//create schedule history listing
 						vm.companyScheduleHistoryList(tempScheduleList);
 						if (vm.companyScheduleHistoryList().length > 0) {
-							//get the first item of list
+							//get the first item of list							
 							selectedHistory = vm.companyScheduleHistoryList()[0];
 							vm.companyScheduleHistorySelected(selectedHistory.code);
 							vm.companyScheduleHistoryObjSelected(selectedHistory);
@@ -535,6 +579,8 @@ module nts.uk.com.view.cmm024.a {
 
 			if (employeesList.length <= 0) {
 				employeesList = vm.addEmptySetting();
+			} else {
+				employeesList = _.orderBy(employeesList, 'employeeCode', 'asc');
 			}
 
 			switch (model) {
@@ -632,8 +678,8 @@ module nts.uk.com.view.cmm024.a {
 
 			if (scheduleHistory.length > 0) {
 				value = (value === null) ? scheduleHistory[0].code : value;
-				isAllowSetting = (scheduleHistory[0].code === value);
-				vm.resetSettingsScreenB(isAllowSetting, isAllowSetting, isAllowSetting, true, ScreenModel.EDIT);
+				vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
+		
 				objFind = _.find(scheduleHistory, (x) => x.code === value);
 
 				if (!nts.uk.util.isNullOrEmpty(objFind)) {
@@ -647,6 +693,9 @@ module nts.uk.com.view.cmm024.a {
 				vm.createEmployeesPanelList('B', 1, objFind.personalInfoApprove);
 				//従業員代表パネル
 				vm.createEmployeesPanelList('B', 2, objFind.personalInfoConfirm);
+
+				$('#historyListB tr:first-child').focus();
+
 			} else {
 				vm.resetSettingsScreenB(false, true, false, true, ScreenModel.ADDNEW);
 			}
@@ -658,7 +707,13 @@ module nts.uk.com.view.cmm024.a {
 		showPanelB() {
 			let vm = this;
 
-			vm.isShowPanelB(true);
+			service.getWorkplaceSetting().done((data) => {
+				if (data && data.workPlaceUseAtr !== 1) {
+					$("#sidebar").ntsSideBar("hide", 1);
+					$('.sidebar-content .disappear').html('');
+				} else 
+					vm.isShowPanelB(true); 
+			});
 		}
 
 		/**
@@ -687,11 +742,9 @@ module nts.uk.com.view.cmm024.a {
 					vm.registerScheduleHistoryByWorkplace();
 					break;
 			}
-
 			//reset screen to nomal model
-			vm.screenBModeAddNew(true);
-			vm.screenBModeEdit(true);
-			vm.enableScheduleHistoryB(true);
+			vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
+
 		}
 
 		/**
@@ -846,7 +899,7 @@ module nts.uk.com.view.cmm024.a {
 			service.updateScheduleHistoryByWorlplace(params)
 				.done((response) => {
 					vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-						vm.workplaceScheduleHistoryListing();
+						vm.workplaceScheduleHistoryListing();						
 						vm.$blockui('hide');
 					});
 				}).fail((error) => {

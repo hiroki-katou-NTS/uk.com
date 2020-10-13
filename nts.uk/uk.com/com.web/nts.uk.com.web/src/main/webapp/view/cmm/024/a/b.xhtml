@@ -14,7 +14,7 @@
                 data-bind="click: RegisterB, enable: enableRegisterB">#{i18n.getText('CMM024_1')}</button>
         </div>
         <div class="contents-area">
-            <div class="workplace">
+            <div class="workplace" tabindex="-1">
                 <div id="wkp-component" tabindex="5"></div>
             </div>
             <div class="panel-content">
@@ -23,10 +23,10 @@
                         <button class="left" tabindex="2"
                             data-bind="click: screenBShowDialogC, enable: screenBModeAddNew">#{i18n.getText('CMM024_4')}</button>
                         <button class="danger right" tabindex="3"
-                            data-bind="click: function() { screenShowDialogD('B') }, enable: screenBModeEdit">#{i18n.getText('CMM024_5')}</button>
+                            data-bind="click: function() { screenShowDialogBD() }, enable: screenBModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
                     <div class="ntsGrid" tabindex="1">
-                        <table id="historyList" data-bind="ntsGridList: {
+                        <table id="historyListB" data-bind="ntsGridList: {
                                 height: 260,
                                 dataSource: workplaceScheduleHistoryList,
                                 primaryKey: 'code',
@@ -61,8 +61,7 @@
                                             },
                                             text: displayName,
                                             css: {
-                                                'link-setting' : (employeeCode == -1),
-                                                'not-allow-setting' : !vm.allowSettingB()
+                                                'link-setting' : (employeeCode == -1)
                                             }"></a>
                                 </div>
                             </div>
@@ -84,8 +83,7 @@
                                             },
                                             text: displayName,
                                             css: {
-                                                'link-setting' : (employeeCode == -1),
-                                                'not-allow-setting' : !vm.allowSettingB()
+                                                'link-setting' : (employeeCode == -1)
                                             }"></a>
                                 </div>
                             </div>

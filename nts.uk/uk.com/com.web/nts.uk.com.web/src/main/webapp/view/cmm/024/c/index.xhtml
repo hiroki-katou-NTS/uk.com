@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div id="functions-area-bottom" class="btn-click">
-                <button tabindex="4" data-bind="click: proceed"
+                <button tabindex="4" data-bind="click: proceed, enable: $root.errors.isEmpty"
                     class="proceed large">#{i18n.getText('CMM024_28')}</button>
                 <button tabindex="5" data-bind="click: cancel">#{i18n.getText('CMM024_29')}</button>
             </div>

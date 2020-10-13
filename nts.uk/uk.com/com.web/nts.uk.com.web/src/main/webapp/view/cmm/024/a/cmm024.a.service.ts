@@ -17,7 +17,8 @@ module nts.uk.com.view.cmm024.a {
 			screenD_DeleteScheduleHistoryByWorkplace: 'approve/byworkplace/screen/d/delete',
 			//Screen F
 			screenF_GetEmployeesList: 'show/inswap/employees',
-
+			//Workplace Setting
+			getAgreementUnitSetting: "at/record/agreementUnitSetting/getAgreementUnitSetting" //"screen/at/kmk008/h/getInitDisplay"
 		};
 
 		export const END_DATE = '9999/12/31';
@@ -279,6 +280,21 @@ module nts.uk.com.view.cmm024.a {
 		 */
 		export function getEmployeesListByWorkplace(params): JQueryPromise<any> {
 			return nts.uk.request.ajax('at', CMM024_API.screenF_GetEmployeesList, params);
+		}
+
+		/**
+		 * Workplace setting
+		*/
+
+		/**
+		 * return employees listing
+		 * params {
+		 * @workPlaceId string : 職場ID	
+		 * @baseDate date : 期間		
+		 * }
+		 */
+		export function getWorkplaceSetting(): JQueryPromise<any> {
+			return nts.uk.request.ajax('at', CMM024_API.getAgreementUnitSetting);
 		}
 	}
 }
