@@ -2,11 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
+package nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento;
 
-import java.util.Optional;
-
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 
 /**
  * The Interface TotalTimesGetMemento.
@@ -18,7 +22,7 @@ public interface TotalTimesGetMemento {
 	 *
 	 * @return the company id
 	 */
-	CompanyId getCompanyId();
+	String getCompanyId();
 
 	/**
 	 * Gets the total count no.
@@ -74,6 +78,6 @@ public interface TotalTimesGetMemento {
 	 *
 	 * @return the total subjects
 	 */
-	Optional<SummaryList> getSummaryList();
+	SummaryList getSummaryList();
 
 }

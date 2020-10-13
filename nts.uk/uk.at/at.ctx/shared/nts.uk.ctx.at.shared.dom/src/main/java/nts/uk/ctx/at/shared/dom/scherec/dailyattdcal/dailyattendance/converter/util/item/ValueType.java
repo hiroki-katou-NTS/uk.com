@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util.item;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item;
 
 public enum ValueType {
 

@@ -2,7 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
+package nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento;
+
+import java.util.Optional;
+
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 
 /**
  * The Interface TotalConditionGetMemento.
@@ -28,14 +33,14 @@ public interface TotalConditionGetMemento {
 	 *
 	 * @return the thresold upper limit
 	 */
-	ConditionThresholdLimit getThresoldUpperLimit();
+	Optional<ConditionThresholdLimit> getThresoldUpperLimit();
 
 	/**
 	 * Gets the thresold lower limit.
 	 *
 	 * @return the thresold lower limit
 	 */
-	ConditionThresholdLimit getThresoldLowerLimit();
+	Optional<ConditionThresholdLimit> getThresoldLowerLimit();
 	
 	
 	/**
@@ -43,5 +48,5 @@ public interface TotalConditionGetMemento {
 	 *
 	 * @return the attendance item id
 	 */
-	Integer getAttendanceItemId();
+	Optional<Integer> getAttendanceItemId();
 }

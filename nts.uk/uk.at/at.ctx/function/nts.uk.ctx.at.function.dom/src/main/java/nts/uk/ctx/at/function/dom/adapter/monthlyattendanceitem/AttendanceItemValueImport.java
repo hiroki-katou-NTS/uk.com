@@ -4,8 +4,7 @@ package nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem;
 
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-//import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 @Data
 public class AttendanceItemValueImport {
