@@ -18,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
+import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTrackRecordApprovalDay;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.checktrackrecord.CheckTargetItemDto;
@@ -39,13 +41,14 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.TopPageDisplayYearMo
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataExecutionResultDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataWidgetStartDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriod;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodImportDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.ユースケース.起動する.起動する
  * @author tutt
  *
  */
@@ -76,9 +79,24 @@ public class KTG001QueryProcessor_ver04 {
 
 	@Inject
 	private CheckTrackRecord checkTrackRecord;
+	
+	@Inject
+	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
 
 	/**
-	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.アルゴリズム.承認すべきデータのウィジェットを起動する
+	 * 「承認すべきデータ」ウィジェットを起動する
+	 */
+	public ApprovedDataWidgetStartDto getApprovedDataWidgetStart(Integer yearMonth, int closureId) {
+		ApprovedDataWidgetStartDto approvedDataWidgetStartDto = new ApprovedDataWidgetStartDto();
+		
+		approvedDataWidgetStartDto.setApprovalProcessingUseSetting(getApprovalProcessingUseSetting().orElse(null));
+		approvedDataWidgetStartDto.setApprovedDataExecutionResultDto(getApprovedDataExecutionResult(yearMonth, closureId));
+		
+		return approvedDataWidgetStartDto;
+	}
+
+	/**
+	 * 承認すべきデータのウィジェットを起動する
 	 * 
 	 * @param companyId
 	 * @param employeeId
@@ -206,6 +224,19 @@ public class KTG001QueryProcessor_ver04 {
 		return approvedDataExecutionResultDto;
 	}
 	
+	/**
+	 * ドメインモデル「３６協定運用設定」を取得する
+	 */
+	
+	
+	/**
+	 * 承認処理の利用設定を取得する
+	 */
+	public Optional<ApprovalProcessingUseSetting> getApprovalProcessingUseSetting(){
+		String companyId = AppContexts.user().companyId();
+		return approvalProcessingUseSettingRepo.findByCompanyId(companyId);
+	}
+		
 	/**
 	 * 
 	 * @param standardWidget

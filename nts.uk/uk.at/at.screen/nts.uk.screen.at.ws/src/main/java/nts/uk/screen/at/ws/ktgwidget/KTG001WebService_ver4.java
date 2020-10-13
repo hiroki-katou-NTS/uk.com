@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.screen.at.app.ktgwidget.KTG001QueryProcessor_ver04;
-import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataExecutionResultDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataWidgetStartDto;
 
 @Path("screen/at/ktg001")
 @Produces("application/json")
@@ -18,8 +18,8 @@ public class KTG001WebService_ver4 {
 
 	@POST
 	@Path("display")
-	public ApprovedDataExecutionResultDto checkDisplay(KTG001Param param) {
-		return this.queryProcessor.getApprovedDataExecutionResult(param.getYm(), param.getClosureId());
+	public ApprovedDataWidgetStartDto checkDisplay(KTG001Param param) {
+		return this.queryProcessor.getApprovedDataWidgetStart(param.getYm(), param.getClosureId());
 	}
 	
 	@POST
