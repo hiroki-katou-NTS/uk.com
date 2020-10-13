@@ -110,10 +110,15 @@ public class ShiftTableRuleTest {
 		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.NOT_USE, 
 				Optional.empty(), Collections.emptyList(), Optional.empty());
 		
-		NotificationInfo result = rule.getTodayNotificationInfo();
-		
-		assertThat( result.isNotify()).isFalse();
-		assertThat( result.getDeadlineAndPeriod()).isEmpty();
+		new Expectations(NotificationInfo.class) {
+            {
+            	NotificationInfo.createWithoutNotify();
+                times = 1; 
+            }
+        };
+        
+        rule.getTodayNotificationInfo();
+        // when execute getTodayNotificationInfo(), NotificationInfo.createWithoutNotify() must to call 1 times
 	}
 	
 	@Test
@@ -131,19 +136,19 @@ public class ShiftTableRuleTest {
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 6, 0, 0, 0); // TODAY = 2020/10/6
 		
-		new Expectations(setting) {
+		new Expectations(setting, NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
             	result = ruleInfo;
+            	
+            	NotificationInfo.createWithoutNotify();
+                times = 1; 
             }
         };
 
         // Act
-        NotificationInfo result = rule.getTodayNotificationInfo();
-        
-        // Assert
-        assertThat( result.isNotify()).isFalse();
-		assertThat( result.getDeadlineAndPeriod()).isEmpty();
+        rule.getTodayNotificationInfo();
+        // when execute getTodayNotificationInfo(), NotificationInfo.createWithoutNotify() must to call 1 times
 	}
 	
 	@Test
@@ -161,21 +166,19 @@ public class ShiftTableRuleTest {
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 7, 0, 0, 0); // TODAY = 2020/10/7
 		
-		new Expectations(setting) {
+		new Expectations(setting, NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
             	result = ruleInfo;
+            	
+            	NotificationInfo.createNotification(ruleInfo);
+                times = 1; 
             }
         };
 
         // Act
-        NotificationInfo result = rule.getTodayNotificationInfo();
-        
-        // Assert
-        assertThat( result.isNotify()).isTrue();
-		assertThat( result.getDeadlineAndPeriod().get().getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
-		assertThat( result.getDeadlineAndPeriod().get().getPeriod().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
-		assertThat( result.getDeadlineAndPeriod().get().getPeriod().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
+        rule.getTodayNotificationInfo();
+        // when execute getTodayNotificationInfo(), NotificationInfo.createNotification() must to call 1 times
 	}
 	
 	@Test
@@ -193,21 +196,19 @@ public class ShiftTableRuleTest {
 				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 10, 0, 0, 0); // TODAY = 2020/10/10
 		
-		new Expectations(setting) {
+		new Expectations(setting, NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
             	result = ruleInfo;
+            	
+            	NotificationInfo.createNotification(ruleInfo);
+                times = 1; 
             }
         };
 
         // Act
-        NotificationInfo result = rule.getTodayNotificationInfo();
-        
-        // Assert
-        assertThat( result.isNotify()).isTrue();
-		assertThat( result.getDeadlineAndPeriod().get().getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
-		assertThat( result.getDeadlineAndPeriod().get().getPeriod().start()).isEqualTo(GeneralDate.ymd(2020, 10, 16));
-		assertThat( result.getDeadlineAndPeriod().get().getPeriod().end()).isEqualTo(GeneralDate.ymd(2020, 11, 15));
+        rule.getTodayNotificationInfo();
+        // when execute getTodayNotificationInfo(), NotificationInfo.createNotification() must to call 1 times
 	}
 
 }
