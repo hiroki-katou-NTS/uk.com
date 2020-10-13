@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.record.infra.repository.managecompanyagreedhours;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.managecompanyagreedhours.Company36AgreedHoursRepository;
-import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
-import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCmp;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -17,6 +17,7 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
         builderString.append("SELECT");
         builderString.append("FROM Ksrmt36AgrMgtCmp a");
         builderString.append("WHERE a.ksrmt36AgrMgtCmpPk.companyID = :cid ");
+        builderString.append("AND a.ksrmt36AgrMgtCmpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID = builderString.toString();
     }
     @Override
@@ -31,9 +32,10 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     }
 
     @Override
-    public Optional<AgreementTimeOfCompany> getByCid(String cid) {
+    public Optional<AgreementTimeOfCompany> getByCid(String cid,LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtCmp.class)
                 .setParameter("cid",cid)
+                .setParameter("laborSystemAtr",laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtCmp::toDomain);
 
     }

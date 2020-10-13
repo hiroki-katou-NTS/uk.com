@@ -1,11 +1,12 @@
-package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
+package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
-import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCls;
+import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtClsPk;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         builderString.append("FROM Ksrmt36AgrMgtCls a");
         builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
         builderString.append("AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
+        builderString.append("AND a.ksrmt36AgrMgtClsPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID_AND_CLS_CD = builderString.toString();
     }
     @Override
@@ -60,10 +62,11 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
     }
 
     @Override
-    public Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode) {
+    public Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode,LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_BY_CID_AND_CLS_CD,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
+                .setParameter("laborSystemAtr",laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtCls::toDomain);
 
     }
