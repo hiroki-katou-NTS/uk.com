@@ -19,10 +19,14 @@
 				<!-- Q1_1 -->
 				<div class="label labelFirst">#{i18n.getText('CMM018_112')}</div>
 				<!-- Q1_2 -->
-				<div class="label labelSecond">#{i18n.getText('CMM018_113')}</div>
+				<div data-bind="if: param.systemAtr == 0" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Workplace')])}</div>
+				<div data-bind="if: param.systemAtr == 1" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Department')])}</div>
 				
+				<!-- Q1_3 -->
 				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.companyUnit, enable: true, text: $i18n('CMM018_75')}"></div>
-				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.workPlaceUnit, enable: true, text: $i18n('CMM018_76')}"></div>
+				<!-- Q1_4 -->
+				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.workPlaceUnit, enable: true, text: $i18n('CMM018_76', param.systemAtr == 0 ? [$i18n('Com_Workplace')] : [$i18n('Com_Department')])}"></div>
+				<!-- Q1_5 -->
 				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.personUnit, enable: true, text: $i18n('CMM018_78')}"></div>
 			</div>
 			<div id="functions-area-bottom">

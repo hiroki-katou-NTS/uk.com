@@ -1,7 +1,7 @@
 module nts.uk.com.view.cmm018.q.viewmodel {
 	@bean()
 	export class Cmm018QViewModel extends ko.ViewModel{
-		param: PARAM;
+		param: PARAM = new PARAM();
 		model: CheckBoxModel = new CheckBoxModel();
 		dataSource: SettingUseUnitDto;
 	    created(params: any) {
@@ -116,7 +116,7 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 	}
 	
 	class PARAM {
-		public systemAtr: number;
+		public systemAtr: number = 0;
 	}
 	class SettingUseUnitDto {
 		public mode: boolean;
