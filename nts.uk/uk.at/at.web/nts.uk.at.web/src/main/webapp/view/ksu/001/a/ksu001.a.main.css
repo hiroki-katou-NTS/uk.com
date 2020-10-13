@@ -1,20 +1,20 @@
+
 .header-image-no-event {
-    background-image: url(../image/121.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
 
 .header-image-event:hover {
-    background-image: url(../image/120.png);
     cursor: pointer;
 }
 
 .header-image-event {
-    background-image: url(../image/120.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
@@ -145,10 +145,6 @@
 	margin-top: 3px;
 }
 
-.setting-button {
-	background: url(../image/image008.png) no-repeat center;
-}
-
 #A5 {
 	background: url(../image/image099.png) no-repeat center;
 }
@@ -165,9 +161,8 @@
 }
 
 .size-image-button3 {
-	background-size: 20px 20px !important;
-	height: 24px !important;;
-	width: 24px;
+	height: 26px !important;;
+	width:  33px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -293,10 +288,9 @@
 
 #undo {
 	margin-top: 6px;
-	background: url(../image/image030.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 }
 
 button[disabled] {
@@ -307,20 +301,11 @@ button[disabled] {
 
 #redo {
 	margin-top: 6px;
-	background: url(../image/image031.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
-}
-
-#prevMonth {
-	background: url(../image/image050.png) no-repeat center;
-}
-
-#nextMonth {
-	background: url(../image/image053.png) no-repeat center;
 }
 
 #A4_4 > button.nts-switch-button{
@@ -362,7 +347,7 @@ button[disabled] {
 }
 
 #functon-area-row2-left {
-	width: 634px;
+	width: 615px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
@@ -534,7 +519,6 @@ html {
 }
 
 .settingHeightGrid {
-	background: url(../image/iconsetting.png) no-repeat center;
 	width: 27px;
 	height: 27px;
 }
