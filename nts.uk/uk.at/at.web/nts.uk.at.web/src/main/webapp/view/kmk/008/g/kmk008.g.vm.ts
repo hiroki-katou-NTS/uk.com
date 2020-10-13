@@ -32,16 +32,19 @@ module nts.uk.at.view.kmk008.g {
         created() {
             const vm = this;
 
-            // vm.$blockui("show");
+            vm.$blockui("invisible");
             vm.$ajax(PATH_API.getData)
                 .done(data => {
                     if (data) {
                         vm.operationSetting(new OperationSettingModel(data));
                     }
                 })
+                .fail(res => {
+                    vm.$dialog.error(res.message);
+                })
                 .always(() => {
                     $('#combo-box-month').focus();
-                    // vm.$blockui("hide");
+                    vm.$blockui("clear");
                 });
 
             _.extend(window, {vm});
@@ -54,17 +57,17 @@ module nts.uk.at.view.kmk008.g {
         register() {
             const vm = this;
 
-            // vm.$blockui("show");
+            vm.$blockui("invisible");
+
             vm.$ajax(PATH_API.registerData, new OperationSettingModelUpdate(vm.operationSetting()))
-                .done(res => {
+                .done(() => {
                     vm.$dialog.info({messageId: "Msg_15"});
                     vm.closeDialog();
                 })
                 .fail(res => {
                     vm.$dialog.error(res.message);
-                });
-
-            // vm.$blockui("hide");
+                })
+                .always(() => vm.$blockui("clear"));
         }
 
         closeDialog() {
@@ -74,14 +77,14 @@ module nts.uk.at.view.kmk008.g {
     }
 
     export class OperationSettingModel {
-        startingMonthEnum: any;
-        startingMonth: KnockoutObservable<number>;
+        startingMonthEnum: Array<ComboBoxModel>; //Enum: ３６協定起算月
+        startingMonth: KnockoutObservable<number>; //３６協定運用設定.起算月
 
-        closureDateEnum: any;
-        closureDate: KnockoutObservable<number>;
+        closureDateEnum: Array<ComboBoxModel>; //Enum: ３６協定締め日
+        closureDate: KnockoutObservable<number>; //３６協定運用設定.締め日
 
-        specialConditionApplicationUse: KnockoutObservable<boolean>;
-        yearSpecialConditionApplicationUse: KnockoutObservable<boolean>;
+        specialConditionApplicationUse: KnockoutObservable<boolean>; //３６協定運用設定.特別条項申請を使用する
+        yearSpecialConditionApplicationUse: KnockoutObservable<boolean>; //３６協定運用設定.年間の特別条項申請を使用する
 
         constructor(data: any) {
             const vm = this;
@@ -108,10 +111,10 @@ module nts.uk.at.view.kmk008.g {
     }
 
     export class OperationSettingModelUpdate {
-        startingMonth: number;
-        closureDay: number;
-        specialConditionApplicationUse: boolean;
-        yearSpecicalConditionApplicationUse: boolean;
+        startingMonth: number; //３６協定運用設定.起算月
+        closureDay: number; //３６協定運用設定.締め日
+        specialConditionApplicationUse: boolean; //３６協定運用設定.特別条項申請を使用する
+        yearSpecicalConditionApplicationUse: boolean; //３６協定運用設定.年間の特別条項申請を使用する
 
         lastDayOfMonth: boolean;
 
@@ -127,10 +130,10 @@ module nts.uk.at.view.kmk008.g {
     }
 
     export class ComboBoxModel {
-        value: string;
+        value: number;
         localizedName: string;
 
-        constructor(value: string, localizedName: string) {
+        constructor(value: number, localizedName: string) {
             this.value = value;
             this.localizedName = localizedName;
         }
