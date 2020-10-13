@@ -45,6 +45,7 @@ module nts.uk.ui.at.ksu002.a {
             const binding = bindingContext
                 .extend({
                     $change: changeCell,
+                    $currenttab: ko.observable(null),
                     $tabindex: tabIndex,
                     $editable: ko.computed({
                         read: () => {
@@ -52,6 +53,8 @@ module nts.uk.ui.at.ksu002.a {
                         }
                     })
                 });
+
+            _.extend(window, { binding });
 
             ko.applyBindingsToNode(element, { component }, binding);
 
@@ -118,6 +121,7 @@ module nts.uk.ui.at.ksu002.a {
                 }
                 .scheduler .data-info .work-type .join,
                 .scheduler .data-info .work-type .leave {
+                    overflow: hidden;
                     border-bottom: 1px dashed #b9b9b9;
                 }
                 .scheduler .data-info .work-type .join,
@@ -136,7 +140,6 @@ module nts.uk.ui.at.ksu002.a {
                     text-align: center;
                     box-sizing: border-box;
                     white-space: nowrap;
-                    overflow: hidden;
                 }
                 .scheduler .data-info .join *,
                 .scheduler .data-info .leave *{
@@ -154,19 +157,22 @@ module nts.uk.ui.at.ksu002.a {
                     border: 0 !important;
                     cursor: pointer;
                     background-color: transparent;
+                    position: relative;
+                    z-index: 9;
                 }
                 .scheduler .ntsControl input.state-1:focus {
                     color: #fff;
-                    box-shadow: 0px 0px 0px 1px #000 !important;
+                    box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #007fff !important;
                 }
+                .scheduler .ntsControl input.state-0:focus,
                 .scheduler .ntsControl input.state-2:focus {
                     color: #000;
-                    box-shadow: 0px 0px 0px 1px #000 !important;
+                    box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #fff !important;
                 }
                 .scheduler .ntsControl.error input {
-                    box-shadow: 0px 0px 0px 1px #ff6666 !important;
+                    box-shadow: 0px 0px 0px 2px #ff6666 !important;
                     background-color: rgba(255, 102, 102, 0.1) !important;
                 }
                 .scheduler .calendar {
@@ -260,7 +266,7 @@ module nts.uk.ui.at.ksu002.a {
                 <div class="join">
                     <input class="begin" data-bind="
                         css: {
-                            'state-0': ko.unwrap($component.click.begin) === 0,
+                            'state-0': [1, 2].indexOf(ko.unwrap($component.click.begin)) === -1,
                             'state-1': ko.unwrap($component.click.begin) === 1,
                             'state-2': ko.unwrap($component.click.begin) === 2,
                         },
@@ -275,13 +281,14 @@ module nts.uk.ui.at.ksu002.a {
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
-                            click: function() { $component.showInput.apply($component, ['begin']) }
+                            click: function() { $component.showInput.apply($component, ['begin']) },
+                            focus: function() { $component.registerTab.apply($component, ['begin']) }
                         }" />
                 </div>
                 <div class="leave">
                     <input class="finish" data-bind="
                         css: {
-                            'state-0': ko.unwrap($component.click.finish) === 0,
+                            'state-0': [1, 2].indexOf(ko.unwrap($component.click.finish)) === -1,
                             'state-1': ko.unwrap($component.click.finish) === 1,
                             'state-2': ko.unwrap($component.click.finish) === 2,
                         },
@@ -296,7 +303,8 @@ module nts.uk.ui.at.ksu002.a {
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
-                            click: function() { $component.showInput.apply($component, ['finish']) }
+                            click: function() { $component.showInput.apply($component, ['finish']) },
+                            focus: function() { $component.registerTab.apply($component, ['finish']) }
                         }" />
                 </div>
             </div>
@@ -394,6 +402,19 @@ module nts.uk.ui.at.ksu002.a {
 
             mounted() {
                 const vm = this;
+                const { data } = vm;
+                const { dayData, context } = data;
+                const $current = ko.unwrap(context.$currenttab);
+
+                if ($current) {
+                    if (moment($current.date).isSame(dayData.date)) {
+                        context.$currenttab(null);
+
+                        vm.showInput($current.input);
+
+                        $(vm.$el).find(`.${$current.input}`).focus();
+                    }
+                }
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
@@ -406,6 +427,8 @@ module nts.uk.ui.at.ksu002.a {
                 } else if (input === 'finish') {
                     vm.click.finish(0);
                 }
+
+                vm.data.context.$currenttab(null);
             }
 
             showInput(input: INPUT_TYPE) {
@@ -415,11 +438,57 @@ module nts.uk.ui.at.ksu002.a {
                     const i = vm.click.begin();
 
                     vm.click.begin(i + 1);
+
+                    setTimeout(() => {
+                        if (i >= 1) {
+                            $(vm.$el).find('input.begin').focus();
+                        }
+                    }, 1);
                 } else if (input === 'finish') {
                     const i = vm.click.finish();
 
                     vm.click.finish(i + 1);
+
+                    setTimeout(() => {
+                        if (i >= 1) {
+                            $(vm.$el).find('input.finish').focus();
+                        }                        
+                    }, 1);
                 }
+            }
+
+            registerTab(input: INPUT_TYPE) {
+                const vm = this;
+                const { data } = vm;
+
+                vm.data.context
+                    .$currenttab({
+                        date: data.dayData.date,
+                        input
+                    });
+            }
+
+            nextTab(input: INPUT_TYPE, evt: KeyboardEvent) {
+                const vm = this;
+
+                debugger;
+
+                if (evt.keyCode === 9) {
+                    if (input === 'begin') {
+                        vm.registerTab('finish');
+                    } else {
+                        const { data } = vm;
+                        const mm = moment(data.dayData.date).add(1, 'day');
+
+                        vm.data.context
+                            .$currenttab({
+                                date: mm.toDate(),
+                                input: 'begin'
+                            });
+                    }
+                }
+
+                return true;
             }
         }
 
@@ -434,6 +503,10 @@ module nts.uk.ui.at.ksu002.a {
             $vm: any,
             $change: Function,
             $tabindex: string | number;
+            $currenttab: KnockoutObservable<null | {
+                date: Date;
+                input: INPUT_TYPE;
+            }>;
             $editable: KnockoutReadonlyComputed<boolean>;
         }
     }
