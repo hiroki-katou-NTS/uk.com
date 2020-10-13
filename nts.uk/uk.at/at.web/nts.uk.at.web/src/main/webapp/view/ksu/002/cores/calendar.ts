@@ -11,7 +11,7 @@ module nts.uk.ui.calendar {
 		startDate: boolean;
 		data: T;
 		binding?: string | Record<BindingKey, string | null>;
-		className?: string[];
+		className: KnockoutObservableArray<string>;
 	}
 
 	export interface DateRange {
@@ -40,7 +40,7 @@ module nts.uk.ui.calendar {
 		REFLECTED = 'reflected'
 	}
 
-	export interface DataInfo<T = string> {
+	export interface DataInfo<T = KnockoutObservable<string>> {
 		holiday: T;
 		event: T;
 	}
@@ -205,10 +205,10 @@ module nts.uk.ui.calendar {
             .calendar .calendar-container .month .week .day.current .status {
                 background-color: #ffff00;
 			}
-            .calendar .calendar-container .month .week .day.holiday .status,
-            .calendar .calendar-container .month .week .day.current .status,
-            .calendar .calendar-container .month .week .day.holiday .status span,
-            .calendar .calendar-container .month .week .day.current .status span {
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
+            .calendar .calendar-container .month:not(.title) .week .day.current .status,
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span,
+            .calendar .calendar-container .month:not(.title) .week .day.current .status span {
                 color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
@@ -295,19 +295,13 @@ module nts.uk.ui.calendar {
 			const { date, inRange, className, binding } = dayData;
 
 			if (moment(date).isSame(new Date(), 'date')) {
-				element.classList.add('current');
+				className.push('current');
 			}
 
 			if (!inRange) {
-				element.classList.add('diff-month');
+				className.push('diff-month');
 			} else {
-				element.classList.add('same-month');
-
-				if (className && _.isArray(className)) {
-					className
-						.filter((c: string) => !!c)
-						.forEach((c: string) => element.classList.add(c));
-				}
+				className.push('same-month');
 			}
 
 			if (binding) {
@@ -318,7 +312,19 @@ module nts.uk.ui.calendar {
 				}
 			}
 
-			element.classList.add(moment(date).locale('en').format('dddd').toLowerCase());
+			className.push(moment(date).locale('en').format('dddd').toLowerCase());
+
+			ko.computed({
+				read: () => {
+					element.className = 'day';
+
+					ko.unwrap(className)
+						.filter((c: string) => !!c)
+						.forEach((c: string) => element.classList.add(c));
+				},
+				owner: dayData,
+				disposeWhenNodeIsRemoved: element
+			});
 		}
 	}
 
@@ -329,21 +335,34 @@ module nts.uk.ui.calendar {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext & { $$popper: HTMLElement }): void | { controlsDescendantBindings: boolean; } {
 			const dayData = valueAccessor();
 			const { $$popper } = bindingContext;
-			const { inRange, binding, data } = dayData;
+			const { inRange, binding, data, className } = dayData;
 
 			if (inRange) {
 				if (data) {
-					const { event } = ko.toJS(data);
+					ko.computed({
+						read: () => {
+							const event = ko.unwrap(data.event);
 
-					ko.applyBindingsToNode(element, { icon: !!event ? 120 : 121 });
-					const boundind = element.getBoundingClientRect();
+							if (event) {
+								className.push('event');
+							} else {
+								className.remove('event');
+							}
 
-					if (event) {
-						$(element)
-							.on('mouseover', () => {
-								const { width, x, y } = boundind;
+							ko.applyBindingsToNode(element, { icon: !!event ? 120 : 121 });
+						},
+						owner: dayData,
+						disposeWhenNodeIsRemoved: element
+					});
 
-								$$popper.innerHTML = `<div class="epc"><div class="data">${_.escape(data.event).replace(/\n/g, '<br />').replace(/\s/g, '&nbsp;')}</div></div>`;
+					$(element)
+						.on('mouseover', () => {
+							const event = data.event();
+
+							if (!!event) {
+								const { width, x, y } = element.getBoundingClientRect();
+
+								$$popper.innerHTML = `<div class="epc"><div class="data">${_.escape(event).replace(/\n/g, '<br />').replace(/\s/g, '&nbsp;')}</div></div>`;
 
 								const pbound = $$popper.getBoundingClientRect();
 
@@ -357,15 +376,15 @@ module nts.uk.ui.calendar {
 								$$popper.style.left = `${Math.min(left1, left2)}px`;
 
 								$$popper.classList.add('show');
-							})
-							.on('mouseleave', () => {
-								$$popper.innerHTML = '';
+							}
+						})
+						.on('mouseleave', () => {
+							$$popper.innerHTML = '';
 
-								$$popper.style.top = '-999px';
-								$$popper.style.left = '-999px';
-								$$popper.classList.remove('show');
-							});
-					}
+							$$popper.style.top = '-999px';
+							$$popper.style.left = '-999px';
+							$$popper.classList.remove('show');
+						});
 				}
 
 				if (binding) {
@@ -389,19 +408,27 @@ module nts.uk.ui.calendar {
 	export class CalendarHolidayBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = valueAccessor();
-			const { binding, inRange, data } = dayData;
+			const { binding, inRange, data, className } = dayData;
 
 			if (!inRange) {
 				element.innerHTML = '&nbsp;';
 			} else {
 				if (data) {
-					const { holiday } = ko.toJS(data);
+					ko.computed({
+						read: () => {
+							const holiday = ko.unwrap(data.holiday);
 
-					if (holiday) {
-						element.innerHTML = holiday;
-					} else {
-						element.innerHTML = '&nbsp;';
-					}
+							if (holiday) {
+								className.push('holiday');
+								element.innerHTML = holiday;
+							} else {
+								className.remove('holiday');
+								element.innerHTML = '&nbsp;';
+							}
+						},
+						owner: dayData,
+						disposeWhenNodeIsRemoved: element
+					});
 				} else {
 					element.innerHTML = '&nbsp;';
 				}
@@ -657,7 +684,8 @@ module nts.uk.ui.calendar {
 							inRange: false,
 							startDate: false,
 							data: null,
-							binding: null
+							binding: null,
+							className: ko.observableArray([])
 						}));
 
 					const start1 = moment(begin.date).startOf('week');
@@ -718,7 +746,8 @@ module nts.uk.ui.calendar {
 								inRange: true,
 								startDate: isStartDate(d),
 								data: null,
-								binding: null
+								binding: null,
+								className: ko.observableArray([])
 							}));
 
 						data.schedules(daysOfMonth);

@@ -89,14 +89,13 @@ module nts.uk.ui.at.ksu002.a {
 						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
-								const clones: c.DayData<ObserverScheduleData>[] = ko.toJS(vm.schedules);
+								const clones: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
 
 								_.each(response, (d) => {
 									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
 
 									if (exits) {
 										exits.data = {
-											...exits.data,
 											wtype: {
 												code: ko.observable(d.workTypeCode),
 												name: ko.observable(d.workTypeName)
@@ -113,17 +112,12 @@ module nts.uk.ui.at.ksu002.a {
 											event: ko.observable(''), // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
 										};
 
-										exits.className = [
-											...(exits.className || []),
-											// exits.date.getDate() === 5 ? c.COLOR_CLASS.EVENT : '',
-											// exits.date.getDate() === 6 ? c.COLOR_CLASS.HOLIDAY : '',
-											// exits.date.getDate() === 9 ? c.COLOR_CLASS.HOLIDAY : ''
-										].filter(c => !!c)
+										// exits.className.push('');
 									}
 								});
 
-								vm.schedules.reset();
 								vm.schedules(clones);
+								vm.schedules.reset();
 
 								vm.$nextTick(() => {
 									$(vm.$el).find('[data-bind]').removeAttr('data-bind');
@@ -163,12 +157,12 @@ module nts.uk.ui.at.ksu002.a {
 			if (type === 'info' && mode === 'copy' && workData) {
 				const { wtime, wtype } = workData;
 				const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
-
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
 				if (current) {
 					$.Deferred()
 						.resolve(true)
+						// change data
 						.then(() => {
 							const { data } = current;
 
@@ -181,6 +175,7 @@ module nts.uk.ui.at.ksu002.a {
 							data.value.begin(wtime.value.begin);
 							data.value.finish(wtime.value.finish);
 						})
+						// save after change data
 						.then(() => vm.schedules.memento({ current, preview }));
 				}
 			}
@@ -190,12 +185,12 @@ module nts.uk.ui.at.ksu002.a {
 		changeDayCell(current: c.DayData<ScheduleData>) {
 			const vm = this;
 			const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
-
 			const preview = _.find(wrap, f => moment(f.date).isSame(current.date, 'date'));
 
 			if (preview) {
 				$.Deferred()
 					.resolve(true)
+					// save to memento before change data
 					.then(() => vm.schedules.memento({ current, preview }))
 					.then(() => {
 						const { data } = preview;
