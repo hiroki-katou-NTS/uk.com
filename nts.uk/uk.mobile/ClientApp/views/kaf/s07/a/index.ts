@@ -743,6 +743,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 timeRange: false,
                 required: false
             });
+        } else {
+            if (self.isCondition1) {
+                self.$updateValidator('valueWorkHours1', {
+                    timeRange: true,
+                    required: true
+                });
+            }
         }
         if (self.valueWorkHours1 != null) {
             
@@ -774,12 +781,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     });
                 }
             }
-        } else {
-            self.$updateValidator('valueWorkHours1', {
-                timeRange: false,
-                required: true
-            });
-        }
+        } 
         if (self.valueWorkHours2 != null) {
            
             if (self.valueWorkHours2.start != undefined && self.valueWorkHours2.end == undefined) {
