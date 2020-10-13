@@ -13,6 +13,10 @@ public class EmployeeAgreementTimeDto {
      */
     private String employeeId;
     /**
+     * 申請状況
+     */
+    private Integer status;
+    /**
      * 社員コード
      */
     private String employeeCode;

@@ -11,6 +11,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -63,7 +65,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      * 抽出した社員情報を一覧表示する（当月の申請種類）
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForCurrentMonth(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 0);
+        return getAgreementTime(employees, 0, false);
         // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
@@ -71,7 +73,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      * 抽出した社員情報を一覧表示する（翌月の申請種類）
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForNextMonth(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 1);
+        return getAgreementTime(employees, 1, false);
         // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
@@ -79,11 +81,11 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      * 抽出した社員情報を一覧表示する（年間の申請種類）
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForYear(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 0);
+        return getAgreementTime(employees, 0, true);
         // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
-    private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd) {
+    private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd, boolean isYearMode) {
         if (CollectionUtil.isEmpty(employees)) return new ArrayList<>();
         String cid = AppContexts.user().companyId();
         String sid = employees.get(0).getEmployeeId();
@@ -115,7 +117,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
         // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
         Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeOfMngPeriodAll = GetAgreementTimeOfMngPeriod
-                .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, endYm.addMonths(-1)))
+                .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, currentYm.addMonths(-1)))
                 .stream().collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getSid));
 
         for (String employeeId : employeeIds) {
@@ -146,8 +148,26 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             agreMaxAverageTimeMultiOpt.ifPresent(agreMaxAverageTimeMulti -> agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti));
         }
 
-        return mappingEmployee(employees, startYm, endYm, agreementTimeOfMngPeriodAll, agreementTimeAll,
+        List<EmployeeAgreementTimeDto> empAgreementTimes = mappingEmployee(employees, startYm, endYm, agreementTimeOfMngPeriodAll, agreementTimeAll,
                 agreementTimeYearAll, agreMaxAverageTimeMultiAll, monthsExceededAll);
+
+        for (EmployeeAgreementTimeDto emp : empAgreementTimes) {
+            Optional<SpecialProvisionsOfAgreement> specialAgreementOpt;
+            if (isYearMode){
+                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYear(emp.getEmployeeId(), fiscalYear);
+            }
+            else {
+                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(),startYm);
+            }
+
+            if (specialAgreementOpt.isPresent()){
+                SpecialProvisionsOfAgreement specialAgreement = specialAgreementOpt.get();
+                ApprovalStatus status = specialAgreement.getApprovalStatusDetails().getApprovalStatus();
+                emp.setStatus(status.value);
+            }
+        }
+
+        return empAgreementTimes;
     }
 
     private List<EmployeeAgreementTimeDto> mappingEmployee(List<EmployeeBasicInfoDto> employees,
