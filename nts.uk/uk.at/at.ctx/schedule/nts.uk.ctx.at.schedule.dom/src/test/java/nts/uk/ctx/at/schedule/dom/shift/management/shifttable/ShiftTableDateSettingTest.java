@@ -10,6 +10,8 @@ import org.junit.Test;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.DateInMonth;
+import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
@@ -157,6 +159,45 @@ public class ShiftTableDateSettingTest {
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 11, 16) );
 		assertThat(ruleInfo.getPeriod().end()).isEqualTo( GeneralDate.ymd(2020, 12, 15) );
 	}
+	
+	/**
+	 * 締め日：末日、締切日：末日
+	 * 基準日の月の期間 (2020/01)　> 翌月の期間 (2020/02)　
+	 */
+	@Test
+	public void testGetcorrespondingDeadlineAndPeriod_case5() {
+		
+		ShiftTableDateSetting target = new ShiftTableDateSetting(
+				new OneMonth(DateInMonth.lastDay()),
+				DateInMonth.lastDay(), 
+				new HolidayExpectationMaxdays(0));
+		
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 1, 15));
+		
+		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 1, 31));
+		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 2, 1) );
+		assertThat(ruleInfo.getPeriod().end()).isEqualTo( GeneralDate.ymd(2020, 2, 29) );
+	}
+	
+	/**
+	 * 締め日：末日、締切日：末日
+	 * 基準日の月の期間 (2020/02)　< 翌月の期間 (2020/03)　
+	 */
+	@Test
+	public void testGetcorrespondingDeadlineAndPeriod_case6() {
+		
+		ShiftTableDateSetting target = new ShiftTableDateSetting(
+				new OneMonth(DateInMonth.lastDay()),
+				DateInMonth.lastDay(), 
+				new HolidayExpectationMaxdays(0));
+		
+		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 2, 15));
+		
+		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 2, 29));
+		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 3, 1) );
+		assertThat(ruleInfo.getPeriod().end()).isEqualTo( GeneralDate.ymd(2020, 3, 31) );
+	}
+	
 	
 	@Test
 	public void testGetPeriodWhichIncludeExpectingDate() {
