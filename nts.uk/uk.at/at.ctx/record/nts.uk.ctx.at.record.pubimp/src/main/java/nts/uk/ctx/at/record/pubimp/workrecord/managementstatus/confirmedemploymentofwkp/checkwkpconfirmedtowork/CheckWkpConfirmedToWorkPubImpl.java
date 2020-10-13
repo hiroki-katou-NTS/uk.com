@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pubimp.workrecord.managementstatus.confirmedemploym
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
+@Stateless
 public class CheckWkpConfirmedToWorkPubImpl implements CheckWkpConfirmedToWorkPub {
 	@Inject
 	private ClosureRepository closureRepository;
