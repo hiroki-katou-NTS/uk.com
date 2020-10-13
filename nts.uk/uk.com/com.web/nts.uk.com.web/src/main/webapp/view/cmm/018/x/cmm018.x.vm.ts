@@ -25,6 +25,20 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 					location.reload();
 				});
 		}
+		jumpToA() {
+			const self = this;
+			self.$jump('/view/cmm/018/a/index.xhtml?systemAtr='+ ko.toJS(self.systemAtr), {
+            
+        	});
+
+		}
+		jumpToCmm013H() {	
+			const self = this;
+			self.$jump('/view/cmm/013/h/index.xhtml', {
+            
+        	});
+		}
+		
 	}
 	export const SystemAtr = {
 		EMPLOYMENT: 0,
