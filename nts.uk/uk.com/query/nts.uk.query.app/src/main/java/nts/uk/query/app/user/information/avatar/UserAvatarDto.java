@@ -1,5 +1,6 @@
-package nts.uk.ctx.sys.auth.app.find.avatar;
+package nts.uk.query.app.user.information.avatar;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
 
@@ -7,6 +8,7 @@ import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
  * Dto 個人の顔写真
  */
 @Data
+@Builder
 public class UserAvatarDto implements UserAvatar.MementoSetter {
 
     /**

@@ -1,7 +1,8 @@
-package nts.uk.ctx.sys.auth.app.find.user;
+package nts.uk.query.app.user.information.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
 
@@ -10,7 +11,8 @@ import nts.uk.ctx.sys.auth.dom.user.User;
  */
 @Data
 @AllArgsConstructor
-public class UserFullDto {
+@NoArgsConstructor
+public class UserDto {
 
     /**
      * ユーザID
@@ -96,8 +98,8 @@ public class UserFullDto {
         );
     }
 
-    public UserFullDto toDto(User domain) {
-        return new UserFullDto(
+    public static UserDto toDto(User domain) {
+        return new UserDto(
                 domain.getUserID(),
                 domain.isDefaultUser(),
                 domain.getPassword().v(),

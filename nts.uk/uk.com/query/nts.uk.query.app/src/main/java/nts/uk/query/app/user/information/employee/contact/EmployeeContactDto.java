@@ -1,12 +1,14 @@
-package nts.uk.ctx.sys.auth.app.find.employee.contact;
+package nts.uk.query.app.user.information.employee.contact;
 
 import lombok.Data;
+import lombok.Builder;
 import nts.uk.ctx.sys.auth.dom.employee.contact.EmployeeContact;
 
 /**
  * Dto 社員連絡先
  */
 @Data
+@Builder
 public class EmployeeContactDto implements EmployeeContact.MementoSetter {
     /**
      * 社員ID

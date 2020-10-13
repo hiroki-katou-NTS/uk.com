@@ -1,6 +1,7 @@
-package nts.uk.ctx.sys.auth.app.find.personal.contact;
+package nts.uk.query.app.user.information.personal.contact;
 
 import lombok.Data;
+import lombok.Builder;
 import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
 import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
 import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
  * Dto 個人連絡先
  */
 @Data
+@Builder
 public class PersonalContactDto implements PersonalContact.MementoSetter {
 
     /**
