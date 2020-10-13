@@ -1,4 +1,5 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
+
 module nts.uk.at.view.kbt002.k {
 
   const API = {
@@ -41,27 +42,13 @@ module nts.uk.at.view.kbt002.k {
     getDataExportCsv() {
       const vm = this;
       const command: GetDataExportCSVModel = new GetDataExportCSVModel({
-        isExportEmployeeName: vm.selectEmpName() == 1 ? false : true,
+        isExportEmployeeName: vm.selectEmpName() === 2,
         startDate: moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
         endDate: moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD').toISOString()
       });
 
       vm.$blockui('grayout');
-<<<<<<< Updated upstream
-      vm.$ajax(API.exportCSV, command)
-        .always(() => vm.$blockui('clear'));
-=======
-      nts.uk.request.exportFile(API.exportCSV, command).done(() => {
-        console.log('done');
-      })
-      // vm.$ajax(API.exportCSV, command)
-      //   .then((data: any) => {
-          
-      //   })
-      //   .always(() => {
-      //     vm.$blockui('clear');
-      //   })
->>>>>>> Stashed changes
+      nts.uk.request.exportFile(API.exportCSV, command).then(() => {});
     }
 
     closeDialog() {
@@ -74,6 +61,7 @@ module nts.uk.at.view.kbt002.k {
     isExportEmployeeName: boolean;
     startDate: string;
     endDate: string;
+
     constructor(init?: Partial<GetDataExportCSVModel>) {
       $.extend(this, init)
     }

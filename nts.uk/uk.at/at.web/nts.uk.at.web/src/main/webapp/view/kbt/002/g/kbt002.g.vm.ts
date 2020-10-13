@@ -15,9 +15,7 @@ module nts.uk.at.view.kbt002.g {
     // Start page
     created(params: any) {
       let self = this;
-      var dfd = $.Deferred();
       var sharedData = params;
-      console.log(sharedData.taskLogList);
       sharedData.taskLogList = _.sortBy(sharedData.taskLogList, [function (o: any) { return o.taskId; }]);
       if (sharedData) {
         self.taskLogExecId = sharedData.execId;
@@ -26,9 +24,6 @@ module nts.uk.at.view.kbt002.g {
         self.overallError = sharedData.overallError;
         self.taskLogList = sharedData.taskLogList;
       }
-
-      dfd.resolve();
-      return dfd.promise();
     }
 
     // 閉じる button
@@ -111,7 +106,7 @@ module nts.uk.at.view.kbt002.g {
           self.sharedObj = {
             empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
             executionContentName: "承認結果反映", //・実施内容
-            executionContent: 2, //ExecutionContent = 承認結果反映 
+            executionContent: 2, //ExecutionContent = 承認結果反映
             listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況 ・対象者の人数
             executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
             objectPeriod: { startDate: null, endDate: null }, //・対象期間
@@ -150,7 +145,7 @@ module nts.uk.at.view.kbt002.g {
           };
           nts.uk.ui.windows.setShared('Kfp001gParams', { sharedObj: self.sharedObj });
           //画面「KFP001_任意期間の集計」の「G:エラー内容一覧」を起動する
-          self.modalLink = "/view/kfp/001/g/index.xhtml";  
+          self.modalLink = "/view/kfp/001/g/index.xhtml";
           break;
         case 7: // 外部出力
           // 外部出力のエラー内容を表示する
