@@ -145,13 +145,8 @@
 	margin-top: 3px;
 }
 
-#A5 {
-	background: url(../image/image099.png) no-repeat center;
-}
-
 .size-image-button1 {
 	background-size: 20px 20px !important;
-	width: 27px;
 }
 
 .size-image-button2 {
@@ -347,7 +342,7 @@ button[disabled] {
 }
 
 #functon-area-row2-left {
-	width: 615px;
+	width: 606px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
@@ -516,11 +511,6 @@ html {
 	height: 25px;
 	margin-left: 10px;
 	float: left;
-}
-
-.settingHeightGrid {
-	width: 27px;
-	height: 27px;
 }
 
 #A16 table td {
