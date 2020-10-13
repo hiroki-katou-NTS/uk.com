@@ -40,7 +40,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 
 	private static final int START_ROW = 4;
 	
-	private static final int heightContentPage = 1423; //minimet 
+	private static final int heightContentPage = 1536; //minimet 
 
 	@Override
 	public StampGeneratorExportDto generate(FileGeneratorContext fileGeneratorContext,
