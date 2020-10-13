@@ -635,4 +635,21 @@ public abstract class CalculationTimeSheet {
 		this.deductionTimeSheet.clear();
 		this.deductionTimeSheet.addAll(this.getDupliRangeTimeSheet(ded));
 	}
+	
+	/**
+	 * 外出の相殺時間を削除する
+	 */
+	public void deleteOffsetTimeOfGoOut() {
+		List<TimeSheetOfDeductionItem> rec = new ArrayList<>(this.recordedTimeSheet);
+		this.recordedTimeSheet.clear();
+		this.recordedTimeSheet = rec.stream()
+				.map(t->t.getAfterDeleteOffsetTime())
+				.collect(Collectors.toList());
+		
+		List<TimeSheetOfDeductionItem> ded = new ArrayList<>(this.deductionTimeSheet);
+		this.deductionTimeSheet.clear();
+		this.deductionTimeSheet = ded.stream()
+				.map(t->t.getAfterDeleteOffsetTime())
+				.collect(Collectors.toList());
+	}
 }

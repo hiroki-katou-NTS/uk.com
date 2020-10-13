@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -39,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemF
  *
  */
 @Getter
+@AllArgsConstructor
 public class IntegrationOfDaily {
 	//社員ID
 	@Setter

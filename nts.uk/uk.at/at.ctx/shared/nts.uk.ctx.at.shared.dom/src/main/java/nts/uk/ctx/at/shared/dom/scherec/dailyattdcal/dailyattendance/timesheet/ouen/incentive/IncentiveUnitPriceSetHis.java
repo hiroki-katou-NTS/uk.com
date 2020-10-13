@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
 @Getter
 /** インセンティブ単価の設定履歴 */

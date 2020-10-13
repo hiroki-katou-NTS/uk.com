@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepositor
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -81,6 +82,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	@Inject
 	private DeformLaborOTRepository deformLaborOTRepository;
 	
+	@Inject
+	/** 人件費計算設定 */
+	private PersonCostCalculationRepository personCostCalculationRepository;
+	
 //	@Inject
 //	private EmployeeWtSettingRepository employeeWtSettingRepository;
 	
@@ -108,6 +113,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  formulaOrderRepository.findAll(companyId),
 									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
 									  zeroTimeRepository.findByCId(companyId),
+									  personCostCalculationRepository.findByCompanyID(companyId),
 									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
 									  usageSetting,
 									// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)

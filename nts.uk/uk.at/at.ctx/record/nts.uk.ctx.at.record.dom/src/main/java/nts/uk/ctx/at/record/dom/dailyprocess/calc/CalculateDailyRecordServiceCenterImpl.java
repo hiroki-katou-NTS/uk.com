@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -81,6 +82,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	//割増計算用に追加
 	@Inject
 	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
+	@Inject
+	private PersonCostCalculationRepository personCostCalculationRepository;
 	
 	//計算を動かすための会社共通設定取得
 	@Inject
@@ -389,7 +392,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			companyCommonSetting.setShareContainer(shareContainer);
 		}
 		
-		companyCommonSetting.setPersonnelCostSettings(personnelCostSettingAdapter.findAll(comanyId, getDateSpan(integrationOfDailys)));
+		//ichioka見直し
+		companyCommonSetting.setPersonnelCostSettings(personCostCalculationRepository.findByCompanyID(comanyId));
 		
 
 		/***会社共通処理***/

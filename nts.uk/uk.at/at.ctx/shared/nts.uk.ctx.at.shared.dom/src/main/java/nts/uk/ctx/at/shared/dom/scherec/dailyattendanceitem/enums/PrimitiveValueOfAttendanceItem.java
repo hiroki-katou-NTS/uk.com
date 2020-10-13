@@ -67,7 +67,9 @@ public enum PrimitiveValueOfAttendanceItem {
 	COMPANY_ID(64, "会社ID"),
 	MOUNTHLY_AMOUNT(65, "勤怠月間金額"),
 	RESERVATION_NUM(66, "注文数"),
-	RESERVATION_AMOUNT(67, "注文金額");
+	RESERVATION_AMOUNT(67, "注文金額"),
+	ATTENDANCE_AMOUNT_DAILY(69, "勤怠日別金額"),
+	PRICE_UNIT(70, "単価");
 
 	public final int value;
 	public final String name;

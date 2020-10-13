@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
@@ -68,8 +70,10 @@ public class ManagePerCompanySet {
 	//0時跨ぎの設定
 	Optional<ZeroTime> zeroTime;
 	
+	/** 人件費計算設定 */
 	@Setter
-	List<PersonnelCostSettingImport> personnelCostSettings;
+	//List<PersonnelCostSettingImport> personnelCostSettings;
+	List<PersonCostCalculation> personnelCostSettings;
 
 	@Setter
 	Optional<UpperLimitTotalWorkingHour> upperControl;
@@ -98,6 +102,7 @@ public class ManagePerCompanySet {
 			List<FormulaDispOrder> formulaOrderList,
 			List<EmpCondition> empCondition,
 			Optional<ZeroTime> zeroTime,
+			List<PersonCostCalculation> personCostCalculations,
 			Optional<UpperLimitTotalWorkingHour> upperControl,
 			Optional<UsageUnitSetting> usageSetting,
 			MidNightTimeSheet midNightTimeSheet,
@@ -115,11 +120,22 @@ public class ManagePerCompanySet {
 		this.formulaOrderList = formulaOrderList;
 		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
-		this.personnelCostSettings = Collections.emptyList();
+		this.personnelCostSettings = personCostCalculations;
 		this.upperControl = upperControl;
 		this.usageSetting = usageSetting;
 		this.midNightTimeSheet = midNightTimeSheet;
 		this.flexSet = flexSet;
 		this.deformLaborOT = deformLaborOT;
+	}
+	
+	/**
+	 * 人件費計算設定を取得する
+	 * @param baseDate 基準日
+	 * @return 人件費計算設定
+	 */
+	public Optional<PersonCostCalculation> getPersonCostCalculation(GeneralDate baseDate) {
+		return this.personnelCostSettings.stream()
+			.filter(pcs -> pcs.getStartDate().afterOrEquals(baseDate) && pcs.getEndDate().beforeOrEquals(baseDate))
+			.findFirst();
 	}
 }

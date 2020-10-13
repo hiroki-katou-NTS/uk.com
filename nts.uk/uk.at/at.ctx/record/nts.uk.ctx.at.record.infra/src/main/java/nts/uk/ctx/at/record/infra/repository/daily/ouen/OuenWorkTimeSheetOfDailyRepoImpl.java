@@ -15,7 +15,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public List<OuenWorkTimeSheetOfDaily> find(String empId, GeneralDate ymd) {
-		return queryProxy().query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.ok.ymd = :ymd", 
+		return queryProxy().query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd = :ymd", 
 									KrcdtDayOuenTimeSheet.class)
 				.setParameter("sid", empId).setParameter("ymd", ymd)
 				.getList(e -> e.domain());

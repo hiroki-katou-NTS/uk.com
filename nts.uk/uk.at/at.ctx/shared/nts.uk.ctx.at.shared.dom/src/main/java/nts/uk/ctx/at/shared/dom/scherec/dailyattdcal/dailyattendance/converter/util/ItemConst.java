@@ -125,6 +125,9 @@ public interface ItemConst extends Cloneable {
 
 	public final String DAILY_REMARKS_CODE = LAYOUT_Q;
 	public final String DAILY_REMARKS_NAME = "日別実績の備考";
+	
+	public final String DAILY_SUPPORT_TIME_CODE = LAYOUT_R;
+	public final String DAILY_SUPPORT_TIME_NAME = "日別実績の応援時間";
 
 	public final String MONTHLY_AFFILIATION_INFO_CODE = LAYOUT_A;
 	public final String MONTHLY_AFFILIATION_INFO_NAME = "月別実績の所属情報";
@@ -303,4 +306,6 @@ public interface ItemConst extends Cloneable {
 	public final String STRAIGHT_GO_BACK = "直行直帰";
 	public final String TOPPAGE = "トップページ";
 	public final String TRANSFER_HOLIDAY = "振休";
+	public final String MOVE = "移動";
+	public final String PRICE_UNIT = "単価";
 }

@@ -1929,7 +1929,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//就業時間を計算
 		WorkHour workTime = this.calcWorkTime(
 				PremiumAtr.RegularWork, 
-				VacationClass.createAllZero(),
+				VacationClass.defaultValue(),
 				this.timeVacationAdditionRemainingTime.isPresent()?this.timeVacationAdditionRemainingTime.get():AttendanceTime.ZERO,
 				workType,
 				predetermineTimeSet,
@@ -1948,7 +1948,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				NotUseAtr.USE);
 		
 		//就業時間 >= 法定労働時間
-		if(workTime.getWorkTime().greaterThanOrEqualTo(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes()))
+		if(workTime.getWorkTime().greaterThanOrEqualTo(new AttendanceTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes())))
 			return AttendanceTime.ZERO;
 		
 		//法定労働時間不足時間を計算
@@ -1994,7 +1994,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//所定内割増合計時間の計算
 		WorkHour workTime = this.calcWorkTime(
 				PremiumAtr.RegularWork, 
-				VacationClass.createAllZero(),
+				VacationClass.defaultValue(),
 				this.timeVacationAdditionRemainingTime.isPresent()?this.timeVacationAdditionRemainingTime.get():AttendanceTime.ZERO,
 				workType,
 				predetermineTimeSet,
@@ -2066,5 +2066,23 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			return AttendanceTime.ZERO;
 		
 		return workTime.minusMinutes(dailyUnit.getDailyTime().valueAsMinutes());
+	}
+	
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		List<WithinWorkTimeFrame> frames = this.withinWorkTimeFrame.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		for(int i=0; i<frames.size(); i++) {
+			//就業時間内時間枠を指定した時間帯に絞り込む
+			frames.get(i).reduceRange(timeSpan);
+		}
+		
+		this.withinWorkTimeFrame.clear();
+		this.withinWorkTimeFrame.addAll(frames);
 	}
 }

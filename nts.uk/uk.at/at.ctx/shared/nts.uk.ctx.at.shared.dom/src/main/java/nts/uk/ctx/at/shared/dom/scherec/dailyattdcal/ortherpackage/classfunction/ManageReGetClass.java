@@ -9,6 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
@@ -260,8 +265,11 @@ public class ManageReGetClass {
 	 * 「遅刻早退を控除する」を取得する
 	 * @return 遅刻早退を控除する
 	 */
-	public Optional<DeductLeaveEarly> getLeaveLateSet() {
-		return Optional.of(this.personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
+	public DeductLeaveEarly getLeaveLateSet() {
+		if(!this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent())
+			return DeductLeaveEarly.defaultValue();
+			
+		return this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 	}
 	
 	/**
@@ -289,5 +297,13 @@ public class ManageReGetClass {
 	 */
 	public AddSetting getAddSetting() {
 		return this.personDailySetting.getAddSetting();
+	}
+	
+	/**
+	 * 1日の計算範囲を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		this.calculationRangeOfOneDay.reduceRange(timeSpan);
 	}
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -104,7 +105,7 @@ public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
 		return OuenWorkTimeSheetOfDaily.create(
 				pk.sid, pk.ymd, 
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						pk.ouenNo, 
+						new OuenFrameNo(pk.ouenNo), 
 						WorkContent.create(
 								cid, 
 								WorkplaceOfWorkEachOuen.create(workplaceId, new WorkLocationCD(workLocationCode)), 
@@ -130,7 +131,7 @@ public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
 		KrcdtDayOuenTimeSheet entity = new KrcdtDayOuenTimeSheet();
 		
 		entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
-				domain.getYmd(), domain.getOuenTimeSheet().getWorkNo());
+				domain.getYmd(), domain.getOuenTimeSheet().getWorkNo().v());
 		
 		entity.cid = domain.getOuenTimeSheet().getWorkContent().getCompanyId();
 		entity.workplaceId = domain.getOuenTimeSheet().getWorkContent().getWorkplace().getWorkplaceId();		

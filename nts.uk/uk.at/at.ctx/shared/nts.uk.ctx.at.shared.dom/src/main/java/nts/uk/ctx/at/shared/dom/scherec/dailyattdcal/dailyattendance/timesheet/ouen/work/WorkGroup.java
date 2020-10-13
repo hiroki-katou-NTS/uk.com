@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -52,5 +54,59 @@ public class WorkGroup implements DomainObject {
 
 	private static WorkCode workCode(String workCd2) {
 		return workCd2 == null ? null : new WorkCode(workCd2);
+	}
+	
+	public Integer getWorkCount() {
+		int count = 1;
+		if(this.workCD2.isPresent())
+			count++;
+		
+		if(this.workCD3.isPresent())
+			count++;
+		
+		if(this.workCD4.isPresent())
+			count++;
+		
+		if(this.workCD5.isPresent())
+			count++;
+		
+		return count;
+	}
+	
+	/**
+	 * 指定された作業枠までの作業グループに作り直す
+	 * @param workFrame
+	 * @return
+	 */
+	public WorkGroup reCreateUpToWorkFrame(Integer workFrame) {
+		Map<Integer, Optional<WorkCode>> newGroup = new HashMap<>();
+		for(int i = 0; i < workFrame; i++) {
+			newGroup.put(i, getWorkCode(i));
+		}
+		return WorkGroup.create(this.workCD1, newGroup.get(2), newGroup.get(3), newGroup.get(4), newGroup.get(5));
+	}
+	
+	/**
+	 * 指定された作業枠の作業CDを取得する
+	 * @param workFrame
+	 * @return
+	 */
+	public Optional<WorkCode> getWorkCode(Integer workFrame) {
+		if(workFrame == 1)
+			return Optional.of(this.workCD1);
+		
+		if(workFrame == 2)
+			return this.workCD2;
+		
+		if(workFrame == 3)
+			return this.workCD3;
+		
+		if(workFrame == 4)
+			return this.workCD4;
+		
+		if(workFrame == 5)
+			return this.workCD5;
+		
+		return Optional.empty();
 	}
 }

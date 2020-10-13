@@ -11,13 +11,14 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationCommand;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationDomainService;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculationDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumRate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.UnitPrice;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.UseAttribute;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -56,7 +57,8 @@ public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<Pe
 										new PremiumName(x.getName()), 
 										EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
 										x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
-								.collect(Collectors.toList())
+								.collect(Collectors.toList()),
+							PersonCostRoundingSetting.defaultValue() //画面が見直される為、今はデフォルト値を入れています。
 					)
 			);
 		} else {
@@ -68,7 +70,8 @@ public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<Pe
 							GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
 							EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
 							new Memo(command.getMemo()), 
-							null
+							null,
+							PersonCostRoundingSetting.defaultValue() //画面が見直される為、今はデフォルト値を入れています。
 					)
 			);
 		}

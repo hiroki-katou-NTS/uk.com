@@ -1,0 +1,63 @@
+package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem;
+
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Entity
+@Table(name="KMLMT_COST_CALC_SET")
+public class KmlmtPersonCostCalculation extends UkJpaEntity{
+	@EmbeddedId
+	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
+	
+	@Column(name="START_DATE")
+	public GeneralDate startDate;
+	
+	@Column(name="END_DATE")
+	public GeneralDate endDate;
+	
+	@Column(name="UNITPRICE_ATR")
+	public int unitPrice;
+	
+	@Column(name="MEMO")
+	public String memo;
+	
+	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation", orphanRemoval = true)
+	@JoinTable(name = "KMLST_PREMIUM_SET")
+	public List<KmlstPremiumSet> kmlstPremiumSets;
+
+	@Column(name="UNIT_PRICE_ROUNDING")
+	public int unitPriceRoungding;
+	
+	@Column(name="COST_UNIT")
+	public int costUnit;
+	
+	@Column(name="COST_ROUNDING")
+	public int costRounding;
+	
+	@Override
+	protected Object getKey() {
+		return kmlmpPersonCostCalculationPK;
+	}
+}

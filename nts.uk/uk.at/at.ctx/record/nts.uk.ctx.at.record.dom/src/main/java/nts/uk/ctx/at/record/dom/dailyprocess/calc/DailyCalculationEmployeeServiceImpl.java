@@ -41,6 +41,10 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
@@ -87,6 +91,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceand
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -182,6 +187,14 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	/** リポジトリ：日別実績の備考 */
 	@Inject
 	private RemarksOfDailyPerformRepo remarksRepository;
+	
+	/** リポジトリ：日別実績の応援作業別勤怠時間 */
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
+	
+	/** リポジトリ：日別実績の応援作業別勤怠時間帯 */
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
 	
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
@@ -457,8 +470,14 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					? Optional.of(new AnyItemValueOfDaily(value.getEmployeeId(), value.getYmd(),
 							value.getAnyItemValue().get()))
 					: Optional.empty();
+			List<OuenWorkTimeOfDaily> ouenTimes = new ArrayList<>();
+			if(!value.getOuenTime().isEmpty()) {
+				ouenTimes = value.getOuenTime().stream()
+						.map(o-> OuenWorkTimeOfDaily.create(value.getEmployeeId(), value.getYmd(), o))
+						.collect(Collectors.toList());
+			}
 			this.registAttendanceTime(value.getEmployeeId(),value.getYmd(),
-					attdTimeOfDailyPer,anyItem);
+					attdTimeOfDailyPer,anyItem,ouenTimes);
 		}
 		
 		if(value.getAffiliationInfor() != null) {
@@ -581,8 +600,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
-	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
-		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
+	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime,
+			Optional<AnyItemValueOfDaily> anyItem, List<OuenWorkTimeOfDaily> ouenTimes){
+		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem, ouenTimes);	
 	}
 	
 	/**
@@ -644,28 +664,33 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()?Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance()):Optional.empty();
 			
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
+			/** リポジトリ：日別実績の応援作業別勤怠時間 */
+			List<OuenWorkTimeOfDaily> ouenWorkTimeOfDaily = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd());
+			/** リポジトリ：日別実績の応援作業別勤怠時間帯 */
+			List<OuenWorkTimeSheetOfDaily> ouenWorkTimeSheetOfDaily = ouenWorkTimeSheetOfDailyRepo.find(employeeId, attendanceTime.getYmd());
+			
 			returnList.add(
-				new IntegrationOfDaily(
+			new IntegrationOfDaily(
 					attendanceTime.getEmployeeId(),
 					attendanceTime.getYmd(),
 					workInf.get().getWorkInformation(),
-					calAttr.getCalcategory(),
 					affiInfo.get().getAffiliationInfor(),
-					pCLogOnInfoOfDailyAttd,
-					employeeDailyPerErrorRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ:社員の日別実績エラー一覧 */
-					outingTimeOfDailyAttd,
-					listBreakTimeOfDailyPerformance.stream().map(c->c.getTimeZone()).collect(Collectors.toList()),
-					attendanceTimeOfDailyAttd,
-//					attendanceTimeByWorkOfDailyRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の作業別勤怠時間 */
+					calAttr.getCalcategory(),
 					timeLeavingOfDailyAttd,
+					listBreakTimeOfDailyPerformance.stream().map(c->c.getTimeZone()).collect(Collectors.toList()),
+					outingTimeOfDailyAttd,
 					shortTimeOfDailyAttd,
-					specificDateAttrOfDailyAttd,
-					attendanceLeavingGateOfDailyAttd,
-					anyItemValueOfDailyAttd,/** リポジトリ：日別実績の任意項目 */
-					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
-					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList())
-					));
+					attendanceLeavingGateOfDailyAttd,
+					attendanceTimeOfDailyAttd,
+					specificDateAttrOfDailyAttd,
+					employeeDailyPerErrorRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ:社員の日別実績エラー一覧 */
+					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
+					anyItemValueOfDailyAttd,/** リポジトリ：日別実績の任意項目 */
+					pCLogOnInfoOfDailyAttd,
+					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+					ouenWorkTimeOfDaily.stream().map(c->c.getOuenTime()).collect(Collectors.toList()),
+					ouenWorkTimeSheetOfDaily.stream().map(c->c.getOuenTimeSheet()).collect(Collectors.toList())));
 		}
 		return returnList;
 	}

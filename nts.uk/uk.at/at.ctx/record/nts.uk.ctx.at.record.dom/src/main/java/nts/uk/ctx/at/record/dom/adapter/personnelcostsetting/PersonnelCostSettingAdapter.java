@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction
 
 public interface PersonnelCostSettingAdapter {
 	
-	List<PersonnelCostSettingImport> findAll(String companyId, GeneralDate baseDate);
-
-	public List<PersonnelCostSettingImport> findAll(String companyId, DatePeriod period);
+//	List<PersonnelCostSettingImport> findAll(String companyId, GeneralDate baseDate);
+//
+//	public List<PersonnelCostSettingImport> findAll(String companyId, DatePeriod period);
 }

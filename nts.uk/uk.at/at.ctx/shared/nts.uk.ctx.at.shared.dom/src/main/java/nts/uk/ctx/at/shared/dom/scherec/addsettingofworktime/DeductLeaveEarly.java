@@ -41,6 +41,9 @@ public class DeductLeaveEarly extends DomainObject implements Serializable{
 	
 	private static final int TRUE_CONST = 1;
 	
+	public static DeductLeaveEarly defaultValue() {
+		return new DeductLeaveEarly(TRUE_CONST, TRUE_CONST);
+	}
 	
 	/**
 	 * 控除区分を「控除する」に変更するだけ

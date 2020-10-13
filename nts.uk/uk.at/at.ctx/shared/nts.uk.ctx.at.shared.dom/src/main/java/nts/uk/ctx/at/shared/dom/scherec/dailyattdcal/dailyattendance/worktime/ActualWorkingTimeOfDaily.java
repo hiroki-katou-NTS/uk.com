@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
@@ -237,10 +238,20 @@ public class ActualWorkingTimeOfDaily {
 		
 	}
 	
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(Optional<PersonCostCalculation> personCostCalculation,
+	 																				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTime(personCostCalculation.get(), dailyRecordDto);
+	}
 	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(List<PersonnelCostSettingImport> personnelCostSettingImport,
-	 																				Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(personnelCostSettingImport, dailyRecordDto);
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForOuen(Optional<PersonCostCalculation> personCostCalculation,
+				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTimeForOuen(personCostCalculation.get(), dailyRecordDto);
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

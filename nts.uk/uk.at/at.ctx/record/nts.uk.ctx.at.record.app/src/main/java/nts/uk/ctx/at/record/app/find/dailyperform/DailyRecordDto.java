@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificD
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.OuenWorkTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -143,6 +144,12 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
 	
+	/** 日別実績の応援作業時間 */
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIME_CODE, jpPropertyName = DAILY_SUPPORT_TIME_NAME, isOptional = true)
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
+	private List<OuenWorkTimeOfDailyDto> ouenWorkTime = new ArrayList<>();
+	
 	/** 備考: 日別実績の備考 */
 	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME,
 			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -174,6 +181,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
+			dto.setOuenWorkTime(domain.getOuenTime().stream().map(o -> OuenWorkTimeOfDailyDto.getDto(employeeId, ymd, o)).collect(Collectors.toList()));
 			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
@@ -206,6 +214,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
+			dto.setOuenWorkTime(domain.getOuenTime().stream().map(o -> OuenWorkTimeOfDailyDto.getDto(employeeId, ymd, o)).collect(Collectors.toList()));
 			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.exsistData();
 		}
@@ -428,28 +437,54 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this.date;
 	}
 
+//	@Override
+//	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
+//		return new IntegrationOfDaily(
+//				employeeId,
+//				date,
+//				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
+//				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
+//				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
+//				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
+//				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
+//				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
+//				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
+//				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
+////				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
+//				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)), 
+//				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
+//				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
+//				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
+//				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
+//				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
+//				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
+//				//this.ouenWorkTime.stream().map(o -> o.toDomain(employeeId, date)),
+//				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
+//				);
+//	}
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
 		return new IntegrationOfDaily(
 				employeeId,
 				date,
 				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
-				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
-				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
-				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
-				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
-				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
-//				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
+				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
 				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)), 
+				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
-				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
-				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
-				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
-				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
-				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
+				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
+				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
+				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
+				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
+				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
+				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.ouenWorkTime.stream().map(o -> o.toDomain(employeeId, date).getOuenTime()).collect(Collectors.toList()),
+				new ArrayList<>()
 				);
 	}
 

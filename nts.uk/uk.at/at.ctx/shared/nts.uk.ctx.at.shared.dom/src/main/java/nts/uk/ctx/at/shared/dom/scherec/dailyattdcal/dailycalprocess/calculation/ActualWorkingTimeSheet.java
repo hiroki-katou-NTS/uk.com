@@ -429,4 +429,29 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		ActualWorkingTimeSheet.getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, this.timeSheet, this.deductionTimeSheet, this.recordedTimeSheet);
 		ActualWorkingTimeSheet.getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, this.timeSheet, this.deductionTimeSheet, this.recordedTimeSheet, specificDateAttrSheets);
 	}
+	
+	/**
+	 * 加給時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfBonusPay(TimeSpanForDailyCalc timeSpan) {
+		this.bonusPayTimeSheet = this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, timeSpan);
+	}
+	
+	/**
+	 * 特定加給時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfSpecBonusPay(TimeSpanForDailyCalc timeSpan) {
+		this.specBonusPayTimesheet = this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, timeSpan);
+	}
+	
+	/**
+	 * 深夜時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfMidnight(TimeSpanForDailyCalc timeSpan) {
+		if(this.midNightTimeSheet.isPresent())
+			this.midNightTimeSheet = this.getDuplicateMidNightNotStatic(this.midNightTimeSheet.get(), timeSpan);
+	}
 }

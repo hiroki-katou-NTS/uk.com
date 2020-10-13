@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
@@ -31,6 +34,9 @@ public class ManagePerPersonDailySet {
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
 	
+	/** インセンティブ単価 <応援勤務枠No, 単価> */
+	private Map<OuenFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
 	 * 例1： 欠勤の場合は、フレックスを-8：00のような計算をする。　平日時の所定時間を使って計算する。
@@ -48,12 +54,23 @@ public class ManagePerPersonDailySet {
 			DailyUnit dailyUnit,
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
-			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay) {
+			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
+			Map<OuenFrameNo, PriceUnit> incentiveUnitPrice) {
 		super();
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
 		this.addSetting = addSetting;
 		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
+		this.incentiveUnitPrice = incentiveUnitPrice;
+	}
+	
+	/**
+	 * インセンティブ単価を取得する
+	 * @param no
+	 * @return インセンティブ単価
+	 */
+	public PriceUnit getIncentiveUnitPrice(OuenFrameNo no) {
+		return Optional.ofNullable(this.incentiveUnitPrice.get(no)).orElse(PriceUnit.ZERO);
 	}
 }

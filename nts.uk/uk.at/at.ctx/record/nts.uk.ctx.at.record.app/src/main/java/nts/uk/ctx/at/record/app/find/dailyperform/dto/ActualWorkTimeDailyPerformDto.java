@@ -99,9 +99,9 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
 		return domain == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
-								c.getPremitumTime().valueAsMinutes(),
-								c.getPremiumTimeNo(),
-								c.getPremiumAmount().v()));
+								c.getPremitumTime() == null ? 0 : c.getPremitumTime().valueAsMinutes(),
+								c.getPremiumAmount() == null ? 0 : c.getPremiumAmount().v(),
+								c.getPremiumTimeNo()));
 	}
 
 	public ActualWorkingTimeOfDaily toDomain() {
@@ -118,9 +118,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
 										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
 				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
-										c -> new PremiumTime(c.getNo(), 
-												toAttendanceTime(c.getPremitumTime()),
-												new AttendanceAmountDaily(c.getPremitumAmount())))));
+										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime()), toAttendanceAmountDaily(c.getPremiumAmount())))));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {
@@ -129,5 +127,9 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	private AttendanceTimeOfExistMinus toAttendanceTimeWithMinus(Integer value) {
 		return value == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(value);
+	}
+	
+	private AttendanceAmountDaily toAttendanceAmountDaily(Integer value) {
+		return value == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(value);
 	}
 }

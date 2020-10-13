@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,10 +24,13 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAd
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -93,13 +97,23 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(),
 					companySetting.getShareContainer());
 			
+			/*インセンティブ単価*/
+			Map<OuenFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+			incentiveUnitPrice = IncentiveUnitPriceService.getIncentiveUnitPrice(
+					requireService.createRequire(),
+					new CacheCarrier(),
+					daily.getYmd(),
+					companyId,
+					daily.getOuenTimeSheet());
+			
 			return Optional.of(
 					new ManagePerPersonDailySet(
 					nowWorkingItem,
 					dailyUnit,
 					addSetting,
 					bonusPaySetting,
-					predetermineTimeSetByPersonWeekDay)
+					predetermineTimeSetByPersonWeekDay,
+					incentiveUnitPrice)
 				);
 		}
 		catch(RuntimeException e) {

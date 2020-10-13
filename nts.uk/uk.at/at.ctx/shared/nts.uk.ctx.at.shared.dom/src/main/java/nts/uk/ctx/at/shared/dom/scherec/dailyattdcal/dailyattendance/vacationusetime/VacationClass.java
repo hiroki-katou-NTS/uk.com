@@ -36,11 +36,11 @@ public class VacationClass {
 	private HolidayOfDaily holidayOfDaily;
 	
 	/**
-	 * 全て0で作成する
+	 * デフォルト値で作成する
 	 * 
 	 * @return 休暇クラス
 	 */
-	public static VacationClass createAllZero() {
+	public static VacationClass defaultValue() {
 		return new VacationClass(
 				new HolidayOfDaily(
 						new AbsenceOfDaily(new AttendanceTime(0)),

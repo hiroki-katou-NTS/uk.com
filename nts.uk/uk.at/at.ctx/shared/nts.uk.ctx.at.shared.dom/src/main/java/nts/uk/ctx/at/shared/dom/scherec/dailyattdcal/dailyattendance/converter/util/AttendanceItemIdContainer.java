@@ -434,6 +434,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(433, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_8)));
 		temp.put(434, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_9)));
 		temp.put(435, join(attendActual, PREMIUM, joinNS(PREMIUM, NUMBER_1, NUMBER_0)));
+		temp.put(1295, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1)));
+		temp.put(1296, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_2)));
+		temp.put(1297, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_3)));
+		temp.put(1298, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_4)));
+		temp.put(1299, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_5)));
+		temp.put(1300, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_6)));
+		temp.put(1301, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_7)));
+		temp.put(1302, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_8)));
+		temp.put(1303, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_9)));
+		temp.put(1304, join(attendActual, PREMIUM, joinNS(PREMIUM + AMOUNT, NUMBER_1, NUMBER_0)));
 		temp.put(748, join(attendActual, RESTRAINT, LATE_NIGHT));
 		temp.put(749, join(attendActual, RESTRAINT, TOTAL));
 		String divergence = join(attendActual, DIVERGENCE);
@@ -911,6 +921,23 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(393, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_8)));
 		temp.put(394, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_9)));
 		temp.put(395, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_1, NUMBER_0)));
+		
+		String supportTime = join(DAILY_SUPPORT_TIME_NAME, TIME);
+		temp.put(1305, join(supportTime, WORKING_TIME + TIME, joinNS(TOTAL_LABOR + TIME, NUMBER_1)));
+		temp.put(1306, join(supportTime, WORKING_TIME + TIME, joinNS(WITHIN_STATUTORY + TIME, NUMBER_1)));
+		temp.put(1307, join(supportTime, WORKING_TIME + TIME, joinNS(BREAK + TIME, NUMBER_1)));
+		temp.put(1308, join(supportTime, joinNS(PRICE_UNIT, NUMBER_1)));
+		temp.put(1309, join(supportTime, joinNS(AMOUNT, NUMBER_1)));
+		temp.put(1310, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_1)));
+		temp.put(1311, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_2)));
+		temp.put(1312, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_3)));
+		temp.put(1313, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_4)));
+		temp.put(1314, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_5)));
+		temp.put(1315, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_6)));
+		temp.put(1316, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_7)));
+		temp.put(1317, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_8)));
+		temp.put(1318, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_9)));
+		temp.put(1319, join(supportTime, WORKING_TIME + TIME, PREMIUM + TIME, joinNS(PREMIUM, NUMBER_1, NUMBER_0)));
 	}
 	
 	private static void getMonthlyKey(Map<Integer, String> temp) {

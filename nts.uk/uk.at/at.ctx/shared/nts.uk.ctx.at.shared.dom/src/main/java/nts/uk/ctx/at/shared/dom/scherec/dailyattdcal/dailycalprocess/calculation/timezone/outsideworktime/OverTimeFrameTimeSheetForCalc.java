@@ -363,7 +363,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				if(isOOtsukaMode) {
 					workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(
 							createdWithinWorkTimeSheet,
-							VacationClass.createAllZero(),
+							VacationClass.defaultValue(),
 							todayWorkType,
 							integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
 							personDailySetting.getAddSetting(),
@@ -394,7 +394,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							:Optional.of(integrationOfWorkTime.getCommonSetting());
 					workTime = createdWithinWorkTimeSheet.calcWorkTime(
 							PremiumAtr.RegularWork,
-							VacationClass.createAllZero(),
+							VacationClass.defaultValue(),
 							AttendanceTime.ZERO,
 							todayWorkType,
 							predetermineTimeSetForCalc,
@@ -951,4 +951,22 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		return timeVacationAdditionRemainingTime.minusMinutes(allocateTime.valueAsMinutes());
 	}
 	
+	/**
+	 * 残業枠時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		//時間帯を変更する
+		this.shiftTimeSheet(duplicates.get());
+		//外出の相殺時間を削除する
+		this.deleteOffsetTimeOfGoOut();
+		//加給時間帯、特定加給時間帯、深夜時間帯を変更する
+		this.reduceRangeOfBonusPay(duplicates.get());
+		this.reduceRangeOfSpecBonusPay(duplicates.get());
+		this.reduceRangeOfMidnight(duplicates.get());
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +19,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -54,14 +57,16 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	/*日別実績の出退勤*/
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
-	
+	/*日別実績の応援作業別勤怠時間*/
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
 	/*任意項目ストアド*/
 	@Inject
 	private StoredProcedureFactory dbStoredProcess;
 	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
-							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
+							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem, List<OuenWorkTimeOfDaily> ouenTimes) {
 		workInfo.find(empId, ymd).ifPresent(wi -> {
 			Optional<PCLogOnInfoOfDaily> pc = pcLogon.find(empId, ymd);
 			Optional<AttendanceLeavingGateOfDaily> al = attendanceGate.find(empId, ymd);
@@ -71,21 +76,23 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					empId,
 					ymd,
 					wi.getWorkInformation(), //workInformation
-					null, //calAttr
 					null, //affiliationInfor
-					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
-					new ArrayList<>(),//employeeError
-					Optional.empty(),//outingTime
-					new ArrayList<>(),//breakTime
-					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
+					null, //calAttr
 					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
+					new ArrayList<>(),//breakTime
+					Optional.empty(),//outingTime
 					Optional.empty(), //shortTime
-					Optional.empty(), //specDateAttr
-					al.isPresent()?Optional.of(al.get().getTimeZone()):Optional.empty(),//attendanceLeavingGate
-					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
-					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
-					new ArrayList<>());//remarks
+					al.isPresent()?Optional.of(al.get().getTimeZone()):Optional.empty(),//attendanceLeavingGate
+					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
+					Optional.empty(), //specDateAttr
+					new ArrayList<>(),//employeeError
+					new ArrayList<>(),//editState
+					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
+					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
+					new ArrayList<>(),//remarks
+					ouenTimes.stream().map(o->o.getOuenTime()).collect(Collectors.toList()),//ouenTime
+					new ArrayList<>());//ouenTimeSheet
 			addAndUpdate(daily);
 		});
 	}
@@ -114,6 +121,12 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			d.getAnyItemValue().ifPresent(ai -> {
 				anyItemValueOfDailyRepo.persistAndUpdate(new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 			});
+			//応援作業別勤怠時間更新
+			if(!d.getOuenTime().isEmpty()) {
+				ouenWorkTimeOfDailyRepo.update(d.getOuenTime().stream()
+						.map(o-> OuenWorkTimeOfDaily.create(d.getEmployeeId(), d.getYmd(), o))
+						.collect(Collectors.toList()));
+			}
 			Optional<AttendanceTimeOfDailyPerformance> attdTimeOfDailyPer = d
 					.getAttendanceTimeOfDailyPerformance().isPresent()
 							? Optional.of(new AttendanceTimeOfDailyPerformance(d.getEmployeeId(), d.getYmd(),
