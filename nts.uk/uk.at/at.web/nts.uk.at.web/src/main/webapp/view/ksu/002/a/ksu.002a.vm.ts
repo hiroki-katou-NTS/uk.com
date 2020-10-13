@@ -11,6 +11,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	const memento: m.Options = {
 		size: 20,
+		// callback function raise when undo or redo
 		replace: function (data: c.DayData<ObserverScheduleData>[], replacer: c.DayData<ScheduleData>) {
 			const exist = _.find(data, f => moment(f.date).isSame(replacer.date, 'date'));
 

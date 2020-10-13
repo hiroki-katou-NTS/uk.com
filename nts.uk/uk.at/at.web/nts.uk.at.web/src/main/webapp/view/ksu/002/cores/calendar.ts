@@ -37,7 +37,9 @@ module nts.uk.ui.calendar {
 		CONFIRMED = 'confirmed',
 		SELF_ALTER = 'self-alter',
 		OTHER_ALTER = 'other-alter',
-		REFLECTED = 'reflected'
+		REFLECTED = 'reflected',
+		DIFF_MONTH = 'diff-month',
+		SAME_MONTH = 'same-month'
 	}
 
 	export interface DataInfo<T = KnockoutObservable<string | null>> {
@@ -307,13 +309,13 @@ module nts.uk.ui.calendar {
 			const { date, inRange, className, binding } = dayData;
 
 			if (moment(date).isSame(new Date(), 'date')) {
-				className.push('current');
+				className.push(COLOR_CLASS.CURRENT);
 			}
 
 			if (!inRange) {
-				className.push('diff-month');
+				className.push(COLOR_CLASS.DIFF_MONTH);
 			} else {
-				className.push('same-month');
+				className.push(COLOR_CLASS.SAME_MONTH);
 			}
 
 			if (binding) {
@@ -356,9 +358,9 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event) {
-								className.push('event');
+								className.push(COLOR_CLASS.EVENT);
 							} else {
-								className.remove('event');
+								className.remove(COLOR_CLASS.EVENT);
 							}
 
 							ko.applyBindingsToNode(element, { icon: !!event ? 120 : 121 });
@@ -431,10 +433,10 @@ module nts.uk.ui.calendar {
 							const holiday = ko.unwrap(data.holiday);
 
 							if (holiday) {
-								className.push('holiday');
+								className.push(COLOR_CLASS.HOLIDAY);
 								element.innerHTML = holiday;
 							} else {
-								className.remove('holiday');
+								className.remove(COLOR_CLASS.HOLIDAY);
 								element.innerHTML = '&nbsp;';
 							}
 						},
@@ -526,7 +528,7 @@ module nts.uk.ui.calendar {
 		virtual: false
 	})
 	export class CalendarComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+		init(element: any, valueAccessor: () => KnockoutObservableArray<DayData>, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
 			const schedules = valueAccessor();
 			const width = allBindingsAccessor.get('width');
