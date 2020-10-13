@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
