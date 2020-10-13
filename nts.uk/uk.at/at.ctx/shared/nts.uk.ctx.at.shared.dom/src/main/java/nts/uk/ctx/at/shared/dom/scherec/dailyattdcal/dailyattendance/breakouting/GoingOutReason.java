@@ -124,4 +124,15 @@ public enum GoingOutReason {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * @param goOutReasons 外出理由
+	 * @return true：一致している  false：一致していない
+	 */
+	public boolean anyMatch(GoingOutReason... goOutReasons) {
+		for(GoingOutReason reason : goOutReasons) {
+			if(reason.equals(this)) return true;
+		}
+		return false;
+	}
 }
