@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+
+    <!-- head -->
+    <ui:define name="htmlHead">
+      <script>
+        var dialogSize = { width: 1000, height: 550 };
+      </script>
+      <com:stylefile path="ccg034.d.style.css" />
+      <com:scriptfile path="ccg034.d.vm.js" />
+      <com:scriptfile set="IGNITE" />
+    </ui:define>
+
+    <!-- content -->
+    <ui:define name="content">
+      <!-- Header -->
+      <div id="functions-area">
+        <button id="D1_1" tabindex="1" class="proceed" data-bind="i18n: 'CCG034_37', click: test"></button>
+        <button id="D1_3" tabindex="2" data-bind="i18n: 'CCG034_39', click: test"></button>
+        <button id="D1_4" tabindex="3" data-bind="i18n: 'CCG034_40', click: test" style="margin-left: 150px;"></button>
+      </div>
+      <!-- Content -->
+      <div id="contents-area" class="contents-area">
+        <div id="menu-item-container">
+          <div class="menu-creation-option" data-bind="click: addNewItem">test1</div>
+          <div class="menu-creation-option" data-bind="click: addNewItem">test2</div>
+        </div>
+        <div id="menu-creation-layout"></div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>

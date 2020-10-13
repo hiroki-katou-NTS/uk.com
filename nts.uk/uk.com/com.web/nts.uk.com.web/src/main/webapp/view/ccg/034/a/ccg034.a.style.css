@@ -1,0 +1,12 @@
+.div-line {
+	margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+.column-label {
+	width: 150px;
+}
+.input-code {
+  width: 50px;
+  margin-right: 10px;
+}

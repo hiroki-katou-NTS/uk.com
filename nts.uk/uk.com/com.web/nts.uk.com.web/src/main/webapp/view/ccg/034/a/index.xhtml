@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/base.xhtml">
+
+    <script>
+      __viewContext.primitiveValueConstraints.ToppagePartCode = {
+        valueType: 'String',
+        charType: 'Numeric',
+        maxLength: 4,
+      };
+      __viewContext.primitiveValueConstraints.ToppagePartName = {
+        valueType: 'String',
+        maxLength: 200,
+      };
+    </script>
+
+    <!-- head -->
+    <ui:define name="htmlHead">
+      <com:stylefile path="ccg034.a.style.css" />
+      <com:scriptfile path="ccg034.a.vm.js" />
+      <com:scriptfile set="IGNITE" />
+    </ui:define>
+
+    <!-- content -->
+    <ui:define name="content">
+      <!-- Header -->
+      <div id="functions-area">
+        <div class="container">
+          <a class="goback" data-bind="ntsLinkButton: { jump: '/view/ccg/015/a/index.xhtml' }">#{i18n.getText('CCG034_15')}</a>
+          <button id="A1_2" tabindex="1" data-bind="i18n: 'CCG034_16', click: test"></button>
+          <button id="A1_3" tabindex="2" class="proceed" data-bind="i18n: 'CCG034_17', click: test"></button>
+          <button id="A1_4" tabindex="3" data-bind="i18n: 'CCG034_18', click: test"></button>
+          <button id="A1_5" tabindex="4" data-bind="i18n: 'CCG034_19', click: test"></button>
+        </div>
+      </div>
+      <!-- Content -->
+      <div id="contents-area">
+        <div class="container">
+          <div class="left-content">
+          </div>
+          <div class="right-content">
+            <div class="div-line">
+              <div id="A4_1" class="column-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG034_23')}</div>
+              <input id="A4_2" tabindex="6" class="input-code" data-bind="ntsTextEditor: {
+                name: '#[CCG034_21]',
+                required: true,
+                value: toppagePartCode,
+                constraint: 'ToppagePartCode'}" />
+              <input id="A4_3" tabindex="7" data-bind="ntsTextEditor: {
+                name: '#[CCG034_22]',
+                required: true,
+                value: toppagePartName,
+                constraint: 'ToppagePartName'}" />
+            </div>
+            <div class="div-line">
+              <div id="A5_1" class="column-label" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CCG034_24')}</div>
+              <button id="A5_2" tabindex="8" data-bind="i18n: 'CCG034_25', click: openDialogD"></button>
+            </div>
+            <div class="div-line">
+              <div class="column-label"></div>
+              <div id="A5_3" class="label">#{i18n.getText('CCG034_129')}</div>
+            </div>
+            <div class="div-line">
+              <button id="A6_1" tabindex="9" data-bind="i18n: 'CCG034_25', click: openDialogB"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>
