@@ -6,7 +6,7 @@ module nts.uk.ui.at.ksu002.a {
 
     interface WData {
         code: string;
-        name: string;        
+        name: string;
     }
 
     export interface ScheduleData extends c.DataInfo {
@@ -45,7 +45,6 @@ module nts.uk.ui.at.ksu002.a {
             const binding = bindingContext
                 .extend({
                     $change: changeCell,
-                    $currenttab: ko.observable(null),
                     $tabindex: tabIndex,
                     $editable: ko.computed({
                         read: () => {
@@ -53,8 +52,6 @@ module nts.uk.ui.at.ksu002.a {
                         }
                     })
                 });
-
-            _.extend(window, { binding });
 
             ko.applyBindingsToNode(element, { component }, binding);
 
@@ -179,7 +176,7 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar+.calendar {
                     width: 201px;
                 }
-                .scheduler .calendar+.calendar .calendar-container{
+                .scheduler .calendar+.calendar .calendar-container {
                     border-left: 0;
                 }
                 .scheduler .calendar+.calendar .filter {
@@ -267,10 +264,6 @@ module nts.uk.ui.at.ksu002.a {
                             'state-1': ko.unwrap($component.click.begin) === 1,
                             'state-2': ko.unwrap($component.click.begin) === 2,
                         },
-                        event: {
-                            blur: function() { $component.hideInput.apply($component, ['begin']) },
-                            click: function() { $component.showInput.apply($component, ['begin']) }
-                        },
                         ntsTimeEditor: {
                             name: 'Duration',
                             constraint: 'SampleTimeDuration',
@@ -279,6 +272,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.begin,
                             readonly: $component.readonly.begin,
                             enable: $editable
+                        },
+                        event: {
+                            blur: function() { $component.hideInput.apply($component, ['begin']) },
+                            click: function() { $component.showInput.apply($component, ['begin']) }
                         }" />
                 </div>
                 <div class="leave">
@@ -288,10 +285,6 @@ module nts.uk.ui.at.ksu002.a {
                             'state-1': ko.unwrap($component.click.finish) === 1,
                             'state-2': ko.unwrap($component.click.finish) === 2,
                         },
-                        event: {
-                            blur: function() { $component.hideInput.apply($component, ['finish']) },
-                            click: function() { $component.showInput.apply($component, ['finish']) }
-                        },
                         ntsTimeEditor: {
                             name: 'Duration',
                             constraint: 'SampleTimeDuration',
@@ -300,6 +293,10 @@ module nts.uk.ui.at.ksu002.a {
                             value: $component.model.finish,
                             readonly: $component.readonly.finish,
                             enable: $editable
+                        },
+                        event: {
+                            blur: function() { $component.hideInput.apply($component, ['finish']) },
+                            click: function() { $component.showInput.apply($component, ['finish']) }
                         }" />
                 </div>
             </div>
@@ -311,13 +308,11 @@ module nts.uk.ui.at.ksu002.a {
                 finish: ko.observable(null)
             };
 
-            // old design (not use)
             click: WorkTimeRange<number> = {
                 begin: ko.observable(0),
                 finish: ko.observable(0)
             };
 
-            // old design (not use)
             readonly: {
                 begin: KnockoutObservable<boolean>;
                 finish: KnockoutObservable<boolean>;
@@ -367,7 +362,9 @@ module nts.uk.ui.at.ksu002.a {
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.begin = c;
-                            context.$change.apply(context.$vm, [clone]);
+                            setTimeout(() => {
+                                context.$change.apply(context.$vm, [clone]);
+                            }, 0);
                         }
                     });
 
@@ -378,7 +375,9 @@ module nts.uk.ui.at.ksu002.a {
                             const clone = _.cloneDeep(dayData);
 
                             clone.data.value.finish = c;
-                            context.$change.apply(context.$vm, [clone]);
+                            setTimeout(() => {
+                                context.$change.apply(context.$vm, [clone]);
+                            }, 0);
                         }
                     });
 
@@ -395,22 +394,11 @@ module nts.uk.ui.at.ksu002.a {
 
             mounted() {
                 const vm = this;
-                const { data } = vm;
-                const { dayData, context } = data;
-                const $current = ko.unwrap(context.$currenttab);
-
-                if ($current) {
-                    if (moment($current.date).isSame(dayData.date)) {
-                        context.$currenttab(null);
-
-                        $(vm.$el).find(`.${$current.input}`).focus();
-                    }
-                }
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
 
-            hideInput(input: 'begin' | 'finish') {
+            hideInput(input: INPUT_TYPE) {
                 const vm = this;
 
                 if (input === 'begin') {
@@ -418,11 +406,9 @@ module nts.uk.ui.at.ksu002.a {
                 } else if (input === 'finish') {
                     vm.click.finish(0);
                 }
-
-                vm.data.context.$currenttab(null);
             }
 
-            showInput(input: 'begin' | 'finish') {
+            showInput(input: INPUT_TYPE) {
                 const vm = this;
 
                 if (input === 'begin') {
@@ -435,18 +421,9 @@ module nts.uk.ui.at.ksu002.a {
                     vm.click.finish(i + 1);
                 }
             }
-
-            registerTab(input: 'begin' | 'finish', evt: KeyboardEvent) {
-                const vm = this;
-                const { data } = vm;
-
-                vm.data.context
-                    .$currenttab({
-                        date: data.dayData.date,
-                        input
-                    });
-            }
         }
+
+        type INPUT_TYPE = 'begin' | 'finish';
 
         interface WorkTimeRange<T = number | null> {
             begin: KnockoutObservable<T>;
@@ -457,10 +434,6 @@ module nts.uk.ui.at.ksu002.a {
             $vm: any,
             $change: Function,
             $tabindex: string | number;
-            $currenttab: KnockoutObservable<null | {
-                date: Date;
-                input: 'begin' | 'finish';
-            }>;
             $editable: KnockoutReadonlyComputed<boolean>;
         }
     }
