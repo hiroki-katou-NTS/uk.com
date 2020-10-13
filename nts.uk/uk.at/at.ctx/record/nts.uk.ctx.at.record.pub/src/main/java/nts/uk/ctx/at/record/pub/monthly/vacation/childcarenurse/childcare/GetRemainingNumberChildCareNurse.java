@@ -31,7 +31,7 @@ public interface  GetRemainingNumberChildCareNurse {
 		 * @return 子の看護介護休暇集計結果
 		 */
 		 // RequestList206
-		List<ChildCareNursePeriodExport> algorithm(String employeeId,DatePeriod period,
+		List<ChildCareNursePeriodExport> getChildCareNurseRemNumWithinPeriod(String employeeId,DatePeriod period,
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
@@ -39,8 +39,6 @@ public interface  GetRemainingNumberChildCareNurse {
 				Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
 				Optional<CreateAtr> createAtr,
 				Optional<GeneralDate> periodOverWrite);
-
-
 
 		/**
 		 *暫定子の看護管理データを取得（社員ID: 社員ID, 期間: 期間, 上書きフラグ: boolean, 上書き暫定管理データ: 暫定子の看護管理データ, 実績のみ参照区分: boolean, 作成元区分: 作成元区分, 対象期間: 期間）
