@@ -106,13 +106,13 @@ public class ExtraHolidayManagementService {
 		}
 		if (!listLeaveData.isEmpty()) {
 			List<GeneralDate> lstDate = listLeaveData.stream().map(x -> {
-				return x.getComDayOffDate().getDayoffDate().get();
+				return x.getComDayOffDate().getDayoffDate().orElse(null);
 			}).collect(Collectors.toList());
 			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListDate(employeeId,lstDate));
 		}
 		if (!listCompensatoryData.isEmpty()) {
 			List<GeneralDate> listDate = listCompensatoryData.stream().map(x -> {
-				return x.getDayOffDate().getDayoffDate().get();
+				return x.getDayOffDate().getDayoffDate().orElse(null);
 			}).collect(Collectors.toList());
 			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListDate(employeeId, listDate));
 		}
@@ -196,13 +196,13 @@ public class ExtraHolidayManagementService {
 		List<GeneralDate> lstDigestDate = new ArrayList<GeneralDate>();
 		if (!listLeaveData.isEmpty()) {
 			lstOccDate = listLeaveData.stream()
-					.map(x -> x.getComDayOffDate().getDayoffDate().get())
+					.map(x -> x.getComDayOffDate().getDayoffDate().orElse(null))
 					.collect(Collectors.toList());
 		}
 		
 		if (!listCompensatoryData.isEmpty()) {
 			lstDigestDate = listCompensatoryData.stream()
-					.map(x -> x.getDayOffDate().getDayoffDate().get())
+					.map(x -> x.getDayOffDate().getDayoffDate().orElse(null))
 					.collect(Collectors.toList());
 		}
 		
@@ -348,7 +348,7 @@ public class ExtraHolidayManagementService {
 		for (LeaveManagementData leaveData : listLeaveData) {
 			// 「休出代休紐付け管理」を絞り込み Filter "Quản lý liên kết đi làm ngày nghỉ và nghỉ bù"
 			List<LeaveComDayOffManagement> lCOMSub = listLeaveComDayOffManagement.stream()
-				.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(leaveData.getComDayOffDate().getDayoffDate().get()))
+				.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(leaveData.getComDayOffDate().getDayoffDate().orElse(null)))
 				.collect(Collectors.toList());
 			
 			// 絞り込みした「休出代休紐付け管理」をチェック Check nội dung đã filter
@@ -381,7 +381,7 @@ public class ExtraHolidayManagementService {
 					.map(x -> x.getAssocialInfo().getDateOfUse())
 					.collect(Collectors.toList());
 			List<CompensatoryDayOffManaData> cdomSub = listCompensatoryData.stream()
-					.filter(item -> lstGeneralDate.contains(item.getDayOffDate().getDayoffDate().get()))
+					.filter(item -> lstGeneralDate.contains(item.getDayOffDate().getDayoffDate().orElse(null)))
 					.collect(Collectors.toList());
 			
 			// 絞り込みした「代休管理データ」をチェック Check dữ liệu đã filter

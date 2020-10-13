@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -47,9 +48,10 @@ public class DeletePaymentManagementDataCmdHandler extends CommandHandler<Delete
 		}
 		//	ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
 		if (command.getPayoutId() != null && command.getSubOfHDID() != null) {
-			this.payoutSubofHDManaRepository.delete(dataPayout.get().getSID(), dataSub.get().getSID(),
-					dataPayout.get().getPayoutDate().getDayoffDate().get(),
-					dataSub.get().getHolidayDate().getDayoffDate().get());
+			this.payoutSubofHDManaRepository.delete(dataPayout.map(PayoutManagementData::getSID).orElse(null),
+					dataSub.map(SubstitutionOfHDManagementData::getSID).orElse(null),
+					dataPayout.map(PayoutManagementData::getPayoutDate).orElse(new CompensatoryDayoffDate()).getDayoffDate().orElse(null),
+					dataSub.map(SubstitutionOfHDManagementData::getHolidayDate).orElse(new CompensatoryDayoffDate()).getDayoffDate().orElse(null));
 		}
 	}
 

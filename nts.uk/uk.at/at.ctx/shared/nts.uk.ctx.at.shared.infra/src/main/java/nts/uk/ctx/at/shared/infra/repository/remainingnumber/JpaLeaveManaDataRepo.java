@@ -495,11 +495,11 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 	
 	/**
-	 * 
-	 * @param cid
+	 * ドメイン「休出管理データ」を取得する
+	 * @param cid the company Id
 	 * @param sid 社員ID
 	 * @param state 消化区分
-	 * @return
+	 * @return List leave management data
 	 */
 	@Override
 	public List<LeaveManagementData> getBySidAndStateAtr(String cid, String sid, DigestionAtr state) {
@@ -514,11 +514,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 	
 	/**
-	 * Get by SidAndDatOff
-	 * @param cid
-	 * @param sid
-	 * @param state
-	 * @return
+	 * ドメインモデル「休出管理データ」を取得
+	 * @param sid 社員ID
+	 * @param dayOffs 振出データID
+	 * @return List<LeaveManagementData> List<休出管理データ＞
 	 */
 	@Override
 	public List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs) {

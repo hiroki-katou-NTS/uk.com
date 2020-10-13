@@ -6,11 +6,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 
 /**
- * The Class PresentClosingPeriodExport.
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業締め日.アルゴリズム.Query.処理年月と締め期間を取得する.クラス.現在の締め期間
  */
 @Builder
 @Data
-// 現在の締め期間
 public class PresentClosingPeriodExport {
 
 	/** The processing ym. */

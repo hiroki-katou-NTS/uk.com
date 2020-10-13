@@ -34,6 +34,7 @@ public class SubstitutionManagementDataFinder {
 	
 	public DisplayRemainingNumberDataInformation getExtraHolidayManagementDataUpdate(SubDataSearchConditionDto dto) {
 		String cid = AppContexts.user().companyId();
+		// メッセージ表示区分　＝　1: 表示する
 		return extraHolidayManagementService.dataExtractionProcessingUpdate(cid, dto.getEmployeeId(), dto.getSearchMode(), 1);
 	}
 }

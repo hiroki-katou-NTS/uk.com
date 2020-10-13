@@ -46,7 +46,7 @@ public class DayOffManagementFinder {
 					dayOffManaRemove.add(dayOffManaFree);
 				}
 			}
-			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getBycomDayOffID(dayOffMana.getComDayOffId(),dayOffMana.getDateHoliday());
+			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getBycomDayOffID(dayOffMana.getComDayOffId(), dayOffMana.getDateHoliday());
 			if(dayOffMana.getNumberDay().equals("0.0") && leaveComDayOffManagement.size() == 2) {
 				dayOffMana.setNumberDay("0.5");
 			} else if(dayOffMana.getNumberDay().equals("0.0") && leaveComDayOffManagement.size() == 1) {

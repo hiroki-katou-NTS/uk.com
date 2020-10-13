@@ -34,11 +34,11 @@ public interface LeaveComDayOffManaRepository {
 	void deleteByComDayOffId(String sid,  GeneralDate digestDate);
 	
 	/**
-	 * 
-	 * @param sid
-	 * @param lstOccDate
-	 * @param lstDigestDate
-	 * @return
+	 * ドメイン「休出代休紐付け管理」を取得する
+	 * @param sid 社員ID
+	 * @param lstOccDate 休出日
+	 * @param lstDigestDate 代休日
+	 * @return List leave company dayOff management 休出代休紐付け管理
 	 */
 	List<LeaveComDayOffManagement> getByListOccDigestDate(String sid, List<GeneralDate> lstOccDate, List<GeneralDate> lstDigestDate);
 }

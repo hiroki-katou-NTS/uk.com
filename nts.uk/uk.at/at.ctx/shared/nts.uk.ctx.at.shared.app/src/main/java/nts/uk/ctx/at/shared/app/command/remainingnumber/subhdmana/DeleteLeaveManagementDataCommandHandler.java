@@ -48,8 +48,8 @@ public class DeleteLeaveManagementDataCommandHandler extends CommandHandler<Leav
 		// ドメインモデル「休出代休紐付け管理」を削除
 		if (leaveMana.isPresent() && comDayOff.isPresent()) {
 			leaveComDayOffManaRepository.delete(leaveMana.get().getID(),
-					leaveMana.get().getComDayOffDate().getDayoffDate().get(),
-					comDayOff.get().getDayOffDate().getDayoffDate().get());
+					leaveMana.get().getComDayOffDate().getDayoffDate().orElse(null),
+					comDayOff.get().getDayOffDate().getDayoffDate().orElse(null));
 			
 			leaveComDayOffManaRepository.delete(comDayOff.get().getComDayOffID(),
 					leaveMana.get().getComDayOffDate().getDayoffDate().get(),
