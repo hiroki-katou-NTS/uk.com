@@ -23,6 +23,47 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 		
 		register() {
 			console.log('register');
+			const self = this;
+			self.$blockui("show");
+			let companyId = self.$user.companyId;;
+			let checkCommand = {} as ApproverRegisterSetDto;
+			checkCommand.companyUnit = ko.toJS(self.model.companyUnit);
+			checkCommand.workplaceUnit = ko.toJS(self.model.workPlaceUnit);
+			checkCommand.employeeUnit = ko.toJS(self.model.personUnit);
+			checkCommand.companyId = companyId;
+			
+			self.$ajax(API.checkRegister, checkCommand)
+				.then((res) => {
+					let registerCommand = self.dataSource;
+					if (self.param.systemAtr == SystemAtr.EMPLOYMENT) {
+						let approverSet = self.dataSource.approvalSetting.approverSet;
+						let approvalSetting = registerCommand.approvalSetting;
+						approvalSetting.companyId = companyId;
+						if (registerCommand.mode) {
+							approvalSetting.prinFlg = 0;						
+						}
+						approverSet.companyId = companyId;
+						approverSet.companyUnit = ko.toJS(self.model.companyUnit) ? 1 : 0;
+						approverSet.workplaceUnit = ko.toJS(self.model.workPlaceUnit) ? 1 : 0;
+						approverSet.employeeUnit = ko.toJS(self.model.personUnit) ? 1 : 0;
+					} else {
+						let hrApprovalRouteSetting = self.dataSource.hrApprovalRouteSetting;
+						hrApprovalRouteSetting.cid = companyId;
+						hrApprovalRouteSetting.comMode = ko.toJS(self.model.companyUnit);
+						hrApprovalRouteSetting.devMode = ko.toJS(self.model.workPlaceUnit);
+						hrApprovalRouteSetting.empMode = ko.toJS(self.model.personUnit);
+					}
+					return self.$ajax(API.register, registerCommand);
+				}).done(res => {
+					self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    	self.closeModal();
+                	}); 
+				}).fail((res) => {
+					self.showError(res);
+				}).always(() => {
+					self.$blockui("hide");
+				});		
+			
 		}
 		
 		
@@ -50,18 +91,25 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 						
 					}
 				}).fail(res => {
-					
+					self.showError(res);
 				}).always(() => {
 					self.$blockui("hide");
 				})
 			
 		}
+		
+		showError(res: any) {
+	        const self = this;
+	        if (res) {
+	            let  param = {
+	                     messageId: res.messageId,
+	                     messageParams: res.parameterIds
+	             }
+	            self.$dialog.error(param);
+	         }
+    	}
 	}
 	
-	const API = {
-		getSetting: 'workflow/approvermanagement/workroot/appSetQ',
-		register: ''
-	}
 	class PARAM {
 		public systemAtr: number;
 	}
@@ -76,6 +124,7 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 		public approverSet: ApproverRegisterSetDto;
 	}
 	class ApproverRegisterSetDto {
+		public companyId?: string;
 		public companyUnit: number;
 		public workplaceUnit: number;
 		public employeeUnit: number;
@@ -112,6 +161,11 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 	const SystemAtr = {
 		EMPLOYMENT: 0,
 		HUMAN_RESOURSE: 1
+	}
+	const API = {
+		getSetting: 'workflow/approvermanagement/workroot/appSetQ',
+		checkRegister: 'workflow/approvermanagement/workroot/checkRegisterQ',
+		register: 'workflow/approvermanagement/workroot/registerQ'
 	}
 	
 }

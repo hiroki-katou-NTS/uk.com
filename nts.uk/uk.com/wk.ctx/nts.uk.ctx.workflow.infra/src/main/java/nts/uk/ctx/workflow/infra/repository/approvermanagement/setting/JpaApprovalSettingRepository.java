@@ -31,6 +31,10 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 		val entity = new WwfstApprovalSetting();
 		entity.companyId = domain.getCompanyId();
 		entity.selfApprovalAtr = BooleanUtils.toInteger(domain.getPrinFlg());
+		ApproverRegisterSet approverRegsterSet = domain.getApproverRegsterSet();
+		entity.cmpUnitSet = approverRegsterSet.getCompanyUnit().value;
+		entity.wkpUnitSet = approverRegsterSet.getWorkplaceUnit().value;
+		entity.syaUnitSet = approverRegsterSet.getEmployeeUnit().value;
 		return entity;
 	}
 	/**

@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
@@ -10,7 +11,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSetting
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWFRepository;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 
-
+@Stateless
 public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterService {
 	
 	@Inject
@@ -31,7 +32,7 @@ public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterS
 				approvalSettingRepository.insert(approvalSetting);
 			} else {
 				// update
-				approvalSettingRepository.update(approvalSetting);
+				approvalSettingRepository.updateForUnit(approvalSetting);
 			}
 		} else if (systemCategory == SettingUseUnitServiceImp.HUMAN_RESOURCE) {
 			if (!hrApprovalRouteSettingOp.isPresent()) return;

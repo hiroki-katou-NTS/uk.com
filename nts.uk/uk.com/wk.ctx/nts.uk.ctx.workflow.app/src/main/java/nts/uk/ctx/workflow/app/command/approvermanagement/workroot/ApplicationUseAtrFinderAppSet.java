@@ -10,14 +10,18 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.RegisterQCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.SettingUseUnitCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.StartQCommand;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
+import nts.uk.ctx.workflow.dom.service.SettingUseUnitRegisterService;
 import nts.uk.ctx.workflow.dom.service.SettingUseUnitService;
+import nts.uk.ctx.workflow.dom.service.SettingUseUnitServiceImp;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 /**
+ * Refactor5 
  * change Setting kaf022 to workflow
  * @author hoangnd
  *
@@ -29,6 +33,9 @@ public class ApplicationUseAtrFinderAppSet {
 	
 	@Inject
 	private SettingUseUnitService settingUseUnitService;
+	
+	@Inject 
+	private SettingUseUnitRegisterService settingUseUnitRegisterService;
 	
 	
 	public ApproverRegisterSetDto getAppSet(String companyId){
@@ -43,11 +50,22 @@ public class ApplicationUseAtrFinderAppSet {
 		SettingUseUnitOutput setting = settingUseUnitService.start(command.companyId, command.systemAtr);
 		return SettingUseUnitDto.fromDomain(setting);
 	}
+	
 	public void checkRegisterQ(RegisterQCommand command) {
 		settingUseUnitService.checkBeforeRegister(
 				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.companyUnit), UseClassification.class), 
 				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.workplaceUnit), UseClassification.class), 
 				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.employeeUnit), UseClassification.class));
+	}
+	
+	public void registerQ(SettingUseUnitCommand command) {
+		SettingUseUnitOutput setting = command.toDomain();
+		// this is not description in excel 
+		Integer systemAtr = SettingUseUnitServiceImp.EMPLOYMENT;
+		if (setting.getHrApprovalRouteSetting().isPresent()) {
+			systemAtr = SettingUseUnitServiceImp.HUMAN_RESOURCE;
+		}
+		settingUseUnitRegisterService.register(systemAtr, setting);
 	}
 	
 }

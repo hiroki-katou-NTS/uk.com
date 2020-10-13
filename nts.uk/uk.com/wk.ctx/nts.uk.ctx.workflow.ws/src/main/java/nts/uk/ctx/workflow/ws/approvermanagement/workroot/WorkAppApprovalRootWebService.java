@@ -15,6 +15,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.RegisterQCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.SettingUseUnitCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.StartQCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApplicationUseAtrFinderAppSet;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.ApproverRegisterSetDto;
@@ -223,8 +224,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	
 	@POST
 	@Path("registerQ")
-	public void registerQ(RegisterQCommand command){
-		return;
+	public void registerQ(SettingUseUnitCommand command){
+		applicationUseAtrFinder.registerQ(command);
 	}
 	
 }
