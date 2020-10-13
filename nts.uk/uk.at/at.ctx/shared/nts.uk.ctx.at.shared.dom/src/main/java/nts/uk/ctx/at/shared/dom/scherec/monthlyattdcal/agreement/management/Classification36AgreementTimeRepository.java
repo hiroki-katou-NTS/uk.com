@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management;
 
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +13,5 @@ public interface Classification36AgreementTimeRepository {
     void update(AgreementTimeOfClassification domain);
     void delete(AgreementTimeOfClassification domain);
     List<AgreementTimeOfClassification> getByCid(String cid);
-    Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode);
+    Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode,LaborSystemtAtr laborSystemAtr);
 }
