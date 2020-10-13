@@ -67,6 +67,11 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     }
 
     @Override
+    public List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr) {
+        return null;
+    }
+
+    @Override
     public Optional<AgreementTimeOfEmployment> getByCidAndEmployCode(String cid, String employCode,LaborSystemtAtr laborSystemAtr) {
 
         return this.queryProxy().query(FIND_BY_CID_AND_CD, Ksrmt36AgrMgtEmp.class)

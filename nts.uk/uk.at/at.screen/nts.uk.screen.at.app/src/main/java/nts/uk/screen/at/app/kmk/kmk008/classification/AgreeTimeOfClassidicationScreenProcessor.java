@@ -1,9 +1,8 @@
 package nts.uk.screen.at.app.kmk.kmk008.classification;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,7 +22,7 @@ public class AgreeTimeOfClassidicationScreenProcessor {
     public AgreementTimeClassificationDto findAgreeTimeOfClassidication(RequestClassification request) {
 
         Optional<AgreementTimeOfClassification> data = timeOfEmploymentRepostitory.getByCidAndClassificationCode(
-                AppContexts.user().companyId(),EnumAdaptor.valueOf(request.getLaborSystemAtr(), LaborSystemtAtr.class),request.getEmploymentCode());
+                AppContexts.user().companyId(),request.getEmploymentCode(),EnumAdaptor.valueOf(request.getLaborSystemAtr(), LaborSystemtAtr.class));
 
         return AgreementTimeClassificationDto.setData(data);
     }

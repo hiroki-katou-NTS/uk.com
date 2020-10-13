@@ -4,11 +4,10 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationDomainService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -67,7 +66,8 @@ public class RegisterTimeClassificationCommandHandler extends CommandHandlerWith
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
 
-        Optional<AgreementTimeOfClassification> agreementTimeOfClassification = this.repo.getByCidAndClassificationCode(AppContexts.user().companyId(),command.getClassificationCode());
+        Optional<AgreementTimeOfClassification> agreementTimeOfClassification = this.repo.getByCidAndClassificationCode(AppContexts.user().companyId(),
+                command.getClassificationCode(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if (agreementTimeOfClassification.isPresent()) {
             AgreementTimeOfClassification newAgreementTimeOfClassification= new AgreementTimeOfClassification(AppContexts.user().companyId(),

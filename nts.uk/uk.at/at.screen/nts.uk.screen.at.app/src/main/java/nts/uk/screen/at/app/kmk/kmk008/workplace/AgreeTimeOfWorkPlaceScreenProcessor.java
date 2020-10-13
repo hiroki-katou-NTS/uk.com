@@ -1,9 +1,8 @@
 package nts.uk.screen.at.app.kmk.kmk008.workplace;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 import javax.ejb.Stateless;
@@ -32,7 +31,7 @@ public class AgreeTimeOfWorkPlaceScreenProcessor {
     }
 
     public AgreementTimeOfWorkPlaceDto findAgreeTimeOfWorkPlace(RequestWorkPlace requestWorkPlace) {
-        Optional<AgreementTimeOfWorkPlace> data = ofWorkPlaceRepository.getByWorkplaceId(requestWorkPlace.getWorkplaceId());
+        Optional<AgreementTimeOfWorkPlace> data = ofWorkPlaceRepository.getByWorkplaceId(requestWorkPlace.getWorkplaceId(),EnumAdaptor.valueOf(requestWorkPlace.getLaborSystemAtr(), LaborSystemtAtr.class));
 
         return AgreementTimeOfWorkPlaceDto.setData(data);
     }

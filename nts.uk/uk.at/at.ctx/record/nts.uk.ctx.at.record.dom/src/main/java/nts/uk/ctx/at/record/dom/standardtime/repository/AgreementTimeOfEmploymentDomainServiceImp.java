@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.standardtime.repository;
 
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 import javax.ejb.Stateless;
@@ -29,7 +31,7 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 	@Override
 	public void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId) {
 
-		Optional<AgreementTimeOfEmployment> timeOfEmployment =  agreementTimeOfEmploymentRepostitory.getByCidAndEmployCode(companyId,employmentCategoryCode);
+		Optional<AgreementTimeOfEmployment> timeOfEmployment =  agreementTimeOfEmploymentRepostitory.getByCidAndEmployCode(companyId,employmentCategoryCode, EnumAdaptor.valueOf(laborSystemtAtr,LaborSystemtAtr.class));
 		if(timeOfEmployment.isPresent()){
 			//2: delete
 			agreementTimeOfEmploymentRepostitory.delete(timeOfEmployment.get());

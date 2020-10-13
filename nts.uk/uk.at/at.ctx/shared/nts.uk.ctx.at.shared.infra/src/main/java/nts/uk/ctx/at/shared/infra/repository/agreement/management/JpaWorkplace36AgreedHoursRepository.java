@@ -65,6 +65,11 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     }
 
     @Override
+    public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
+        return null;
+    }
+
+    @Override
     public Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId,LaborSystemtAtr laborSystemAtr) {
 
         return this.queryProxy().query(FIND_BY_WKP, Ksrmt36AgrMgtWkp.class)

@@ -4,8 +4,8 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -28,11 +28,13 @@ public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmp
         val cid = AppContexts.user().companyId();
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
-        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(cid,command.getEmploymentCD());
+        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(cid,command.getEmploymentCD(),
+                EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         if(timeOfEmployment.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfEmployment.get().getSetting();
 
-            Optional<AgreementTimeOfEmployment> timeOfEmploymentCoppy =  repo.getByCidAndEmployCode(cid,command.getEmploymentCDCoppy());
+            Optional<AgreementTimeOfEmployment> timeOfEmploymentCoppy =  repo.getByCidAndEmployCode(cid,command.getEmploymentCDCoppy(),
+                    EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
             //2: delete
             timeOfEmploymentCoppy.ifPresent(x -> repo.delete(x));

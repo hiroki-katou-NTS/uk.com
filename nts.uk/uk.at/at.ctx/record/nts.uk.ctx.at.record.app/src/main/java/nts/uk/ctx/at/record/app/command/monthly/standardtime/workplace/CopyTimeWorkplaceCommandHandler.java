@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
@@ -24,11 +24,11 @@ public class CopyTimeWorkplaceCommandHandler extends CommandHandler<CopyTimeWork
         CopyTimeWorkplaceCommand command = context.getCommand();
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
-        Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceId());
+        Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         if(timeOfWorkPlace.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfWorkPlace.get().getSetting();
 
-            Optional<AgreementTimeOfWorkPlace> timeOfWorkPlaceCoppy =  repo.getByWorkplaceId(command.getWorkplaceIdCoppy());
+            Optional<AgreementTimeOfWorkPlace> timeOfWorkPlaceCoppy =  repo.getByWorkplaceId(command.getWorkplaceIdCoppy(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
             //2: delete(会社ID,雇用コード)
             timeOfWorkPlaceCoppy.ifPresent(x -> repo.delete(x));

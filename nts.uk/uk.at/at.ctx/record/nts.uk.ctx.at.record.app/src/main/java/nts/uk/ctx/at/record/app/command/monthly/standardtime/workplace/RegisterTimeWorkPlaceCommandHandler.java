@@ -4,10 +4,9 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceDomainService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -64,7 +63,7 @@ public class RegisterTimeWorkPlaceCommandHandler extends CommandHandlerWithResul
                 new AgreementOneYear(errorTimeInYearUpper,basicSettingYear),
                 new AgreementMultiMonthAvg(errorTimeInMonth), EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
-        Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace = this.repo.getByWorkplaceId(AppContexts.user().companyId());
+        Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace = this.repo.getByWorkplaceId(AppContexts.user().companyId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if (agreementTimeOfWorkPlace.isPresent()) {
             AgreementTimeOfWorkPlace agreementTimeOfEmployment1 = new AgreementTimeOfWorkPlace(AppContexts.user().companyId(),
