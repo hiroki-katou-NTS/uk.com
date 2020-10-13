@@ -326,6 +326,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     }else{
                         $('#cbb-daily-work-pattern').focus();
                     }
+
+					let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
+					if(holidayListsErrors.length > 0){
+						nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
+						vm.$blockui('clear');
+						dfd.fail();
+					}
                 }).fail(res => {
                     vm.$dialog.alert(res.message);
                     dfd.fail();
@@ -405,11 +412,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.onBtnApplySetting(vm.slideDays());
         }
 
-        public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
-            let vm = this;
-            vm.$blockui('invisible');
-
-			let dfd = $.Deferred();
+		private checkEmptyFor3HolidayLists(): any {
+			let vm = this;
 
 			let holidayListsErrors = [];
 			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
@@ -436,6 +440,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				});
 			}
 
+			return holidayListsErrors;
+		}
+
+        public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
+            let vm = this;
+            vm.$blockui('invisible');
+
+			let dfd = $.Deferred();
+
+			let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
 			if(holidayListsErrors.length > 0){
 				nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
 				vm.$blockui('clear');
