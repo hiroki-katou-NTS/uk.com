@@ -29,4 +29,9 @@ public class ApprovalSettingDto {
 				BooleanUtils.toInteger(approval.getPrinFlg()), 
 				ApproverRegisterSetDto.fromDomain(approval.getApproverRegsterSet()));
 	}
+	public ApprovalSettingDto(String companyId, Integer prinFlg) {
+		this.companyId = companyId;
+		this.prinFlg = prinFlg;
+	}
+	
 }

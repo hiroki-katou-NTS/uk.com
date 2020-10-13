@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
+
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.HrApprovalRouteSettingWF;
@@ -30,19 +33,34 @@ public class JpaHrApprovalRouteSettingWFRepositoryImpl extends JpaRepository imp
 	}
 
 	private HrApprovalRouteSettingWF toDomain(JcmmtRootArpWF entity) {
-		return HrApprovalRouteSettingWF.createFromJavaType(entity.comMode == 1 ? true : false, entity.cid, entity.devMode == 1 ? true : false, entity.empMode == 1 ? true : false);
+		return HrApprovalRouteSettingWF.createFromJavaType(
+				BooleanUtils.toBoolean(entity.comMode), 
+				entity.cid, 
+				BooleanUtils.toBoolean(entity.empMode), 
+				BooleanUtils.toBoolean(entity.devMode));
 	}
 
 	@Override
 	public void insert(HrApprovalRouteSettingWF hrApprovalRouteSetting) {
-		// TODO Auto-generated method stub
-		
+		JcmmtRootArpWF jcmmtRootArpWF = toEntity(hrApprovalRouteSetting);
+		this.commandProxy().insert(jcmmtRootArpWF);
 	}
 
 	@Override
 	public void update(HrApprovalRouteSettingWF hrApprovalRouteSetting) {
-		// TODO Auto-generated method stub
-		
+		JcmmtRootArpWF entity = toEntity(hrApprovalRouteSetting);
+		JcmmtRootArpWF entityUpdate = this.queryProxy().find(entity.cid, JcmmtRootArpWF.class).get();
+		entityUpdate.comMode = entity.comMode;
+		entityUpdate.devMode = entity.devMode;
+		entityUpdate.empMode = entity.empMode;
+	}
+	public JcmmtRootArpWF toEntity(HrApprovalRouteSettingWF hrApprovalRouteSettingWF) {
+		val entity = new JcmmtRootArpWF();
+		entity.cid = hrApprovalRouteSettingWF.cid;
+		entity.comMode = BooleanUtils.toInteger(hrApprovalRouteSettingWF.comMode);
+		entity.devMode = BooleanUtils.toInteger(hrApprovalRouteSettingWF.devMode);
+		entity.empMode = BooleanUtils.toInteger(hrApprovalRouteSettingWF.empMode);
+		return entity;
 	}
 
 }

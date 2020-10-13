@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.infra.entity.approvermanagement.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -17,7 +20,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="JCMMT_ROOT_APR")
 @AllArgsConstructor
 @NoArgsConstructor
-public class JcmmtRootArpWF extends UkJpaEntity {
+public class JcmmtRootArpWF extends UkJpaEntity implements Serializable{
+	
+	public  static final long serialVersionUID = 1L;
 	
 	@Id
 	@Column(name = "CID")

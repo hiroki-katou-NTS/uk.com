@@ -16,7 +16,7 @@ import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 @Stateless
 public class SettingUseUnitServiceImp implements SettingUseUnitService{
 	public static Integer EMPLOYMENT = 0;  // 就業の場合
-	public static Integer HUMAN_RESOURCE = 0; // 人事の場合
+	public static Integer HUMAN_RESOURCE = 1; // 人事の場合
 	@Inject
 	private ApprovalSettingRepository approvalSettingRepository;
 	

@@ -80,6 +80,9 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 						if (!self.dataSource.mode) {
 							let approverSet = self.dataSource.approvalSetting.approverSet;
 							self.model.changeValue(approverSet.companyUnit == 1, approverSet.workplaceUnit == 1, approverSet.employeeUnit == 1);
+						} else {
+							self.dataSource.approvalSetting = {} as ApprovalSettingDto;
+							self.dataSource.approvalSetting.approverSet = {} as ApproverRegisterSetDto;
 						}
 						
 					} else {
@@ -87,6 +90,8 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 						if (!self.dataSource.mode) {
 							let hrApprovalRouteSetting = self.dataSource.hrApprovalRouteSetting;
 							self.model.changeValue(hrApprovalRouteSetting.comMode, hrApprovalRouteSetting.devMode, hrApprovalRouteSetting.empMode);
+						} else {
+							self.dataSource.hrApprovalRouteSetting = {} as HrApprovalRouteSettingWFDto;
 						}
 						
 					}
