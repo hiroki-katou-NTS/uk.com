@@ -273,7 +273,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     return vm.$dialog.error({ messageId: messageId, messageParams: messageParams })
                     .then(() => {
                         if(messageId === "Msg_197") {
-                            vm.reload();
+                            location.reload();
                         }
                     });
                 })
