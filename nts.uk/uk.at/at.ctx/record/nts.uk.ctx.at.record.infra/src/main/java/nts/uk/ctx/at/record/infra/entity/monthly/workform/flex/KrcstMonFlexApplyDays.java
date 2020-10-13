@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.TimeSavDayRateApplyDays;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.TimeSavDayRateApplyDaysOfFlex;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.TimeSavDayRateApplyDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.TimeSavDayRateApplyDaysOfFlex;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

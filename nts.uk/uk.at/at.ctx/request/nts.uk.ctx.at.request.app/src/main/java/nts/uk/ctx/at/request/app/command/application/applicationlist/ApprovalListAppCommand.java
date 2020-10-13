@@ -6,5 +6,5 @@ import lombok.Value;
 public class ApprovalListAppCommand {
 
 	private String appId;
-	private Long version;
+	private int version;
 }

@@ -1,447 +1,338 @@
-module nts.uk.at.view.kaf000.shr{
-    import setShared = nts.uk.ui.windows.setShared;
-    import dialog = nts.uk.ui.dialog;
+module nts.uk.at.view.kaf000.shr.viewmodel {
+    export class Application {
+        appID: KnockoutObservable<string>;
+        prePostAtr: KnockoutObservable<number>;
+        employeeIDLst: KnockoutObservableArray<string>;
+        appType: number;
+        appDate: KnockoutObservable<string>;
+        opAppReason: KnockoutObservable<string>;
+        opAppStandardReasonCD: KnockoutObservable<number>;
+        opReversionReason: KnockoutObservable<string>;
+        opAppStartDate: KnockoutObservable<string>;
+        opAppEndDate: KnockoutObservable<string>;
+        opStampRequestMode: KnockoutObservable<number>
+        constructor(appType: number) {
+            this.appID = ko.observable(null);
+            this.prePostAtr = ko.observable(null);
+            this.employeeIDLst = ko.observableArray([]);
+            this.appType = appType;
+            this.appDate = ko.observable("");
+            this.opAppReason = ko.observable(null);
+            this.opAppStandardReasonCD = ko.observable(null);
+            this.opReversionReason = ko.observable(null);
+            this.opAppStartDate = ko.observable("");
+            this.opAppEndDate = ko.observable("");
+            this.opStampRequestMode = ko.observable(null);
+        }        
+    }
+    
+    export class ApplicationSub {
+        appID: string;
+        appType: number;
+        constructor(appID: string, appType: number) {
+            this.appID = appID;
+            this.appType = appType;
+        }      
+    }
+
+	export class ActualContentDisplayDto {
+		/** 年月日 */
+		date: string;
+		/** 実績詳細 */
+		opAchievementDetail: AchievementDetailDto;
+	}    
+	
+	export interface AchievementDetailDto {
+		/** 1勤務種類コード */
+		workTypeCD: string;
+		/** 3就業時間帯コード */
+		workTimeCD: string;
+		/** 休憩時間帯 */
+		breakTimeSheets: Array<any>;
+		/** 勤怠時間内容 */
+		timeContentOutput: any;
+		/** 実績スケ区分 */
+		trackRecordAtr: number;
+		/** 打刻実績 */
+		stampRecordOutput: any;
+		/** 短時間勤務時間帯 */
+		shortWorkTimeLst: Array<any>;
+		/** 遅刻早退実績 */
+		achievementEarly: any;
+		/** 10退勤時刻2 */
+		opDepartureTime2: number;
+		/** 2勤務種類名称 */
+		opWorkTypeName: string;
+		/** 4就業時間帯名称 */
+		opWorkTimeName: string;
+		/** 5出勤時刻 */
+		opWorkTime: number;
+		/** 6退勤時刻 */
+		opLeaveTime: number;
+		/** 8実績状態 */
+		opAchievementStatus: number;
+		/** 9出勤時刻2 */
+		opWorkTime2: number;
+		/** 残業深夜時間 */
+		opOvertimeMidnightTime: number;
+		/** 法内休出深夜時間 */
+		opInlawHolidayMidnightTime: number;
+		/** 法外休出深夜時間 */
+		opOutlawHolidayMidnightTime: number;
+		/** 祝日休出深夜時間 */
+		opPublicHolidayMidnightTime: number;
+		/** 7勤怠時間 */
+		opOvertimeLeaveTimeLst: Array<any>;	
+	}
+
+	export interface PrintContentOfEachAppDto {
+		/**
+		 * 休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 勤務変更申請の印刷内容
+		 */
+		opPrintContentOfWorkChange: any;
+		
+		/**
+		 * 時間休暇申請の印刷内容
+		 */
+		
+		/**
+		 * 打刻申請の印刷内容
+		 */
+		opAppStampOutput: any;
+		
+		/**
+		 * 遅刻早退取消申請の印刷内容
+		 */
+		opArrivedLateLeaveEarlyInfo: any;
+	
+		/**
+		 * 直行直帰申請の印刷内容
+		 */
+		opInforGoBackCommonDirectOutput: any;
+		
+		opBusinessTripInfoOutput: any;
+	}
+    
     export module model {
         // loại người đăng nhập
         // người đại diện tương đương người approver, người confirm có ưu tiên cao hơn
         export enum UserType { 
-                 APPLICANT_APPROVER = 0,
-                 APPROVER = 1,
-                 APPLICANT = 2,
-                 OTHER = 3,        
-            };
+            APPLICANT_APPROVER = 0, // 申請本人&承認者
+            APPROVER = 1, // 承認者
+            APPLICANT = 2, // 申請本人
+            OTHER = 3, // その他        
+        }; 
+        
         // trạng thái của phase chứa user
         export enum ApprovalAtr { 
-             UNAPPROVED = 0,   
-             APPROVED = 1,
-             DENIAL = 2,
-             REMAND = 3,
+            UNAPPROVED = 0, // 未承認   
+            APPROVED = 1, // 承認済
+            DENIAL = 2, // 否認
+            REMAND = 3, // 差し戻し
         };
+        
         export enum Status {
             NOTREFLECTED = 0, // 未反映
             WAITREFLECTION = 1, //反映待ち
             REFLECTED = 2, //反映済
-            WAITCANCEL = 3, //取消待ち
-            CANCELED = 4, //取消済
-            REMAND = 5,//差し戻し
-            DENIAL = 6, //否認
+            CANCELED = 3, //取消済
+            REMAND = 4,//差し戻し
+            DENIAL = 5, //否認
             PASTAPP = 99, //過去申請 
         };
         
-        export class ApplicationMetadata {
-                appID: string;
-                appType: number;
-                appDate: Date;
-                constructor(appID: string, appType: number, appDate: Date) {
-                    this.appID = appID;
-                    this.appType = appType;
-                    this.appDate = appDate;
-                }
-            } 
-        export class ApprovalRootOutput{
-            workplaceId : KnockoutObservable<string>;
-            approvalId : KnockoutObservable<string>;
-            employeeId : KnockoutObservable<string>;
-            historyId : KnockoutObservable<string>;
-            applicationType : KnockoutObservable<number>;
-            startDate :  KnockoutObservable<string>;
-            endDate : KnockoutObservable<string>;
-            branchId : KnockoutObservable<string>;
-            anyItemApplicationId : KnockoutObservable<string>;
-            confirmationRootType : KnockoutObservable<number>;
-            employmentRootAtr : KnockoutObservable<number>;
-            beforeApprovers : KnockoutObservableArray<ApprovalPhaseImport>;
-            afterApprovers : KnockoutObservableArray<ApprovalPhaseOutput>;
-            errorFlag : KnockoutObservable<number>;
-            constructor(workplaceId : string,approvalId : string,
-                        employeeId : string,historyId : string,
-                        applicationType : number,startDate : string,
-                        endDate: string,branchId: string,
-                        anyItemApplicationId : string,confirmationRootType : number,employmentRootAtr :number,
-                        beforeApprovers : Array<ApprovalPhaseImport>,afterApprovers : Array<ApprovalPhaseOutput>,
-                        errorFlag : number){
-                this.workplaceId = ko.observable(workplaceId);
-                this.approvalId = ko.observable(approvalId);
-                this.employeeId  = ko.observable(employeeId);
-                this.historyId = ko.observable(historyId); 
-                this.applicationType = ko.observable(applicationType);
-                this.startDate = ko.observable(startDate);
-                this.endDate = ko.observable(endDate);
-                this.branchId = ko.observable(branchId);
-                this.anyItemApplicationId = ko.observable(anyItemApplicationId);
-                this.confirmationRootType = ko.observable(confirmationRootType);
-                this.employmentRootAtr = ko.observable(employmentRootAtr);
-                this.beforeApprovers = ko.observableArray(beforeApprovers);
-                this.afterApprovers = ko.observableArray(afterApprovers);
-                this.errorFlag = ko.observable(errorFlag);
-            }
-        }//end class ApprovalRootOutput
+        export enum AppType {
+            OVER_TIME_APPLICATION = 0, // 残業申請
+            ABSENCE_APPLICATION = 1, // 休暇申請
+            WORK_CHANGE_APPLICATION = 2, // 勤務変更申請
+            BUSINESS_TRIP_APPLICATION = 3, // 出張申請
+            GO_RETURN_DIRECTLY_APPLICATION = 4, // 直行直帰申請
+            LEAVE_TIME_APPLICATION = 6, // 休出時間申請
+            STAMP_APPLICATION = 7, // 打刻申請
+            ANNUAL_HOLIDAY_APPLICATION = 8, // 時間休暇申請
+            EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請
+            COMPLEMENT_LEAVE_APPLICATION = 10, // 振休振出申請
+            OPTIONAL_ITEM_APPLICATION = 15, // 任意項目申請    
+        }
+    }
+    
+    export class CommonProcess {
+        public static initCommonSetting() {
+            return {
+                appDetailScreenInfo: {
+                    application: {},
+                    approvalLst: [],
+                    authorComment: "",
+                    user: 0, 
+                    reflectPlanState: 0,
+                    outputMode: 0,
+                    authorizableFlags: false,
+                    approvalATR: 0,
+                    alternateExpiration: false    
+                },
+                appDispInfoNoDateOutput: {
+                    employeeInfoLst: [],
+                    requestSetting: {},
+                    appReasonLst: []    
+                },
+                appDispInfoWithDateOutput: {
+                    approvalFunctionSet: {},
+                    employmentSet: {},
+                    workTimeLst: [],
+                    listApprovalPhaseState: [],
+                    errorFlag: 0,
+                    prePostAtr: 1,
+                    baseDate: "",
+                    achievementOutputLst: [],
+                    appDetailContentLst: [],
+                    empHistImport: {}
+                }  
+            }    
+        }    
         
-        //class ApprovalPhaseOutput
-        export class ApprovalPhaseOutput{
-            branchId : KnockoutObservable<string>;
-            approvalPhaseId : KnockoutObservable<string>;
-            approvalForm : KnockoutObservable<number>;
-            browsingPhase : KnockoutObservable<number>;
-            orderNumber : KnockoutObservable<number>;
-            approvers :  KnockoutObservableArray<ApproverInfo>;
-            constructor(branchId : string,approvalPhaseId : string,
-                        approvalForm : number,browsingPhase : number,
-                        orderNumber : number,approvers : Array<ApproverInfo>){
-                this.branchId = ko.observable(branchId);
-                this.approvalPhaseId = ko.observable(approvalPhaseId);
-                this.approvalForm  = ko.observable(approvalForm);
-                this.browsingPhase = ko.observable(browsingPhase); 
-                this.orderNumber = ko.observable(orderNumber);
-                this.approvers = ko.observableArray(approvers);
-                
-            }
-        }//end class ApprovalPhaseOutput
-        
-        //class ApproverInfo
-        export class ApproverInfo{
-            sid : KnockoutObservable<string>;
-            approvalPhaseId : KnockoutObservable<string>;
-            isConfirmPerson : KnockoutObservable<boolean>;
-            orderNumber : KnockoutObservable<number>;
-            name : KnockoutObservable<string>;
-            constructor(sid : string,approvalPhaseId : string,
-                        isConfirmPerson : boolean,orderNumber : number,name : string){
-                this.sid = ko.observable(sid);
-                this.approvalPhaseId = ko.observable(approvalPhaseId);
-                this.isConfirmPerson  = ko.observable(isConfirmPerson);
-                this.orderNumber = ko.observable(orderNumber); 
-                this.name = ko.observable(name); 
-                
-            }
-        }//end class ApproverInfo
-        
-        //class ApprovalPhaseImport
-        export class ApprovalPhaseImport{
-            branchId : KnockoutObservable<string>;
-            approvalPhaseId : KnockoutObservable<string>;
-            approvalForm : KnockoutObservable<number>;
-            browsingPhase : KnockoutObservable<number>;
-            orderNumber : KnockoutObservable<number>;
-            approverDtos :  KnockoutObservableArray<ApproverImport>;
-            constructor(branchId : string,approvalPhaseId : string,
-                        approvalForm : number,browsingPhase : number,
-                        orderNumber : number,approverDtos : Array<ApproverImport>){
-                this.branchId = ko.observable(branchId);
-                this.approvalPhaseId = ko.observable(approvalPhaseId);
-                this.approvalForm  = ko.observable(approvalForm);
-                this.browsingPhase = ko.observable(browsingPhase); 
-                this.orderNumber = ko.observable(orderNumber);
-                this.approverDtos = ko.observableArray(approverDtos);
-                
+        public static initDeadlineMsg(value: any, vm: any) {
+            vm.message(value.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].memo);
+            if(_.isEmpty(vm.message())) {
+                vm.displayMsg(false);         
+            } else {
+                vm.displayMsg(true);
             }
             
-        }//end class ApprovalPhaseImport
-        
-        //class ApproverImport
-        export class ApproverImport{
-            approvalPhaseId : KnockoutObservable<string>;
-            approverId : KnockoutObservable<string>;
-            jobTitleId : KnockoutObservable<string>;
-            employeeId : KnockoutObservable<string>;
-            orderNumber : KnockoutObservable<number>;
-            approvalAtr : KnockoutObservable<number>;
-            confirmPerson : KnockoutObservable<number>;
-            constructor(
-                        approvalPhaseId : string,
-                        approverId : string,jobTitleId : string,
-                        employeeId : string,orderNumber : number,
-                        approvalAtr : number,confirmPerson : number){
-                this.approvalPhaseId = ko.observable(approvalPhaseId);
-                this.approverId  = ko.observable(approverId);
-                this.jobTitleId = ko.observable(jobTitleId); 
-                this.employeeId = ko.observable(employeeId);
-                this.orderNumber = ko.observable(orderNumber);
-                this.approvalAtr = ko.observable(approvalAtr); 
-                this.confirmPerson = ko.observable(confirmPerson);
-                }
-        }//end class ApproverImport
-        
-        //class ObjApprovalRootInput    
-        export class ObjApprovalRootInput{
-            sid : string;
-            employmentRootAtr : number;
-            appType : number;
-            standardDate :  string;
-            constructor (
-                        sid : string,employmentRootAtr : number,
-                        appType : number,standardDate : string){
-                this.sid = sid; 
-                this.employmentRootAtr =employmentRootAtr;
-                this.appType = appType;
-                this.standardDate = standardDate; 
+            let advanceAppAcceptanceLimit = value.appDispInfoNoDateOutput.advanceAppAcceptanceLimit == 1;
+			let receptionRestrictionSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting, (o: any) => o.appType == vm.appType());
+            let allowFutureDay = receptionRestrictionSetting.afterhandRestriction.allowFutureDay;
+            let appDeadlineUseCategory = value.appDispInfoWithDateOutput.appDeadlineUseCategory == 1;
+            // 注意：申請表示情報(基準日関係なし)．事前申請の受付制限が利用しない && 申請表示情報．申請設定（基準日関係なし）．申請承認設定．申請設定．受付制限設定．事後の受付制限．未来日許可しないがfalse && 申請表示情報(基準日関係あり)．申請締め切り日利用区分が利用しない
+            if(!advanceAppAcceptanceLimit && !allowFutureDay && !appDeadlineUseCategory) {
+                // 締め切りエリア全体に非表示
+                vm.displayDeadline(false);        
+            } else {
+                vm.displayDeadline(true);     
             }
-        }//end class ObjApprovalRootInput
-        
-        
-        //class outputMessageDeadline
-        export class OutputMessageDeadline{
-            message : string;
-            deadline : string;
-            constructor(message : string,deadline : string){
-                this.message = message;
-                this.deadline = deadline;
+            // {1}事前受付日
+            let prePart = "";
+            if(advanceAppAcceptanceLimit) {
+                // ・申請表示情報(基準日関係なし)．事前受付時分がNull
+                if(_.isNull(value.appDispInfoNoDateOutput.opAdvanceReceptionHours)) {
+                    prePart = vm.$i18n('KAF000_38', [value.appDispInfoNoDateOutput.opAdvanceReceptionDate]);        
+                } 
+                // ・申請表示情報(基準日関係なし)．事前受付時分がNullじゃない
+                else {
+                    prePart = vm.$i18n('KAF000_41', [value.appDispInfoNoDateOutput.opAdvanceReceptionHours]);  
+                }             
             }
-        }// end class outputMessageDeadline
-        
-        export class AppApprovalPhase {
-            appID: string;
-            phaseID: string;
-            approvalForm: number;
-            dispOrder: number;
-            approvalATR: number;
-            listFrame : Array<ApprovalFrame>;
-            constructor(appID: string, phaseID: string, approvalForm: number, dispOrder: number, 
-                    approvalATR: number,
-                    listFrame : Array<ApprovalFrame>) {
-                this.appID = appID;
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR;
-                this.listFrame = listFrame;
-            }
-        }
-
-        // class ApprovalFrame
-        export class ApprovalFrame {
-            frameID : string;
-            dispOrder:number;
-            listApproveAccepted: Array<ApproveAccepted>;
-            constructor(frameID : string, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
-                this.frameID = frameID;
-                this.dispOrder = dispOrder;
-                this.listApproveAccepted = listApproveAccepted;
-                
-            }
-        }//end class frame  
-
-        //class ApproveAccepted
-        export class ApproveAccepted {
-            appAccedtedID : string;
-            approverSID: string;
-            approvalATR: number;
-            confirmATR: number;
-            approvalDate: string;
-            reason: string;
-            representerSID: string;
-            constructor(appAccedtedID : string,
-                    approverSID: string,
-                    approvalATR: number,
-                    confirmATR: number,
-                    approvalDate: string,
-                    reason: string,
-                    representerSID: string){
-                this.appAccedtedID = appAccedtedID;
-                this.approverSID = approverSID;
-                this.approvalATR = approvalATR;
-                this.confirmATR = confirmATR;
-                this.approvalDate = approvalDate;
-                this.reason = reason;
-                this.representerSID = representerSID;
-            }
+            // {2}事後受付日
+            let postPart = "";
+			if(allowFutureDay) {
+				postPart = vm.$i18n('KAF000_39', [moment(vm.$date.today()).format("YYYY/MM/DD")]);	
+			}
+            // {3}締め切り期限日
+            let deadlinePart = "";
+			if(appDeadlineUseCategory) {
+				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
+			}
+            vm.deadline(prePart + postPart + deadlinePart);    
         }
         
-        export class CommonProcess {
-            public static checkWorkTypeWorkTime(workTypeCD: string, workTimeCD: string, itemID: string): boolean{
-                let itemTarget = "#"+itemID;
-                let workTypeCDFlg = nts.uk.util.isNullOrUndefined(workTypeCD)||nts.uk.util.isNullOrEmpty(workTypeCD);
-                let workTimeCDFlg = nts.uk.util.isNullOrUndefined(workTimeCD)||nts.uk.util.isNullOrEmpty(workTimeCD);
-                if(workTypeCDFlg){
-                    $(itemTarget).ntsError('set', '勤務種類を選択ください');   
-                    $(itemTarget).css("border","1px solid red");
-                    return false;         
-                }
-                if(workTimeCDFlg){
-                    $(itemTarget).ntsError('set', '就業時間を選択ください');   
-                    $(itemTarget).css("border","1px solid red");
-                    return false;    
-                }        
+        public static checkUsage(
+            mode: boolean, // true: new, false: detail 
+            element: string, // element select to set error
+            vm: any
+        ) {
+            vm.$errors("clear", [element]);
+            let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
+                useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
+                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = "";
+            if(mode && useDivision == 0) {
+                vm.$errors(element, "Msg_323");
+                vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
+                    if(recordDate == 0) {
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
+                    }
+                });   
+				if(recordDate == 0) {
+					return false;
+				}
                 return true;
             }
             
-            public static getComboBoxReason(selectID: string, listID: Array<string>, displaySet: boolean): string{
-                if(!displaySet){
-                    return "";    
-                }
-                if(nts.uk.util.isNullOrEmpty(selectID)){
-                    return "";        
-                }         
-                let reasonValue = _.find(listID, o => { return o.reasonId == selectID; }).reasonName;
-                if(nts.uk.util.isNullOrUndefined(reasonValue)){
-                    return "";    
-                }
-                return reasonValue;
+            if(_.isNull(opErrorFlag)) {
+                return true;    
             }
-            
-            public static getTextAreaReason(reasonText: string, displaySet: boolean, enableSet: boolean): string{
-                if(!displaySet){
-                    return "";    
-                }
-                if(!enableSet){
-                    return "";    
-                }
-                if(nts.uk.util.isNullOrEmpty(reasonText)){
-                    return "";    
-                }
-                return reasonText;
-            }
-            
-            public static checkAppReason(appReasonRequired: boolean, inputReasonDisp: boolean, detailReasonDisp: boolean, appReason: string): boolean {
-                if(appReasonRequired == false) {
-                    return true;
-                }
-                if(inputReasonDisp == false){
-                    if(detailReasonDisp == false){
-                        return true;
-                    }
-                }
-                if(nts.uk.util.isNullOrEmpty(appReason)){
-                    // throw new BusinessException("Msg_115");
-                    return false;
-                }
+            switch(opErrorFlag){
+                case 1:
+                    msgID = "Msg_324";
+                    break;
+                case 2: 
+                    msgID = "Msg_238";
+                    break;
+                case 3:
+                    msgID = "Msg_237";
+                    break;
+                default: 
+                    break;
+            }  
+            if(_.isEmpty(msgID)) { 
                 return true;
-        
             }
-            public static checklenghtReason(reason :string,elementID : string) : boolean{
-                if(nts.uk.text.countHalf(reason.replace(":","\n")) > 400){
-                   nts.uk.ui.dialog.alertError({messageId : 'Msg_960'}).then(function(){nts.uk.ui.block.clear();});
-                   $(elementID).focus();
-                   return false;
-                }
-               return true;
-            }
-            
-            public static displayMailDeleteRs(data: ProcessResult): void {
-                let autoSuccessMail = "", autoFailMail = "";
-                data.autoSuccessMail.forEach((value, index) => { 
-                    autoSuccessMail += value;
-                    if(index != data.autoSuccessMail.length-1){
-                        autoSuccessMail += ",";        
-                    }     
-                });
-                data.autoFailMail.forEach((value, index) => { 
-                    autoFailMail += value;
-                    if(index != data.autoFailMail.length-1){
-                        autoFailMail += ",";        
-                    }     
-                });
-                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                            this.callCMM045();
-                        });
-                    });        
-                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        this.callCMM045();
-                    });    
-                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                        this.callCMM045();
-                    });    
-                } else {
-                    this.callCMM045();       
-                }
-            }
-            
-            public static displayMailResult(data: ProcessResult): void {
-                let autoSuccessMail = "", autoFailMail = "";
-                data.autoSuccessMail.forEach((value, index) => { 
-                    autoSuccessMail += value;
-                    if(index != data.autoSuccessMail.length-1){
-                        autoSuccessMail += ",";        
-                    }     
-                });
-                data.autoFailMail.forEach((value, index) => { 
-                    autoFailMail += value;
-                    if(index != data.autoFailMail.length-1){
-                        autoFailMail += ",";        
-                    }     
-                });
-                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                            location.reload();
-                        });
-                    });        
-                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        location.reload();
-                    });    
-                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                        location.reload();
-                    });    
-                } else {
-                    location.reload();        
-                }
-            }
-            
-            public static displayMailResultKAF000(data: ProcessResult): void {
-                let autoSuccessMail = "", autoFailMail = "";
-                data.autoSuccessMail.forEach((value, index) => { 
-                    autoSuccessMail += value;
-                    if(index != data.autoSuccessMail.length-1){
-                        autoSuccessMail += ",";        
-                    }     
-                });
-                data.autoFailMail.forEach((value, index) => { 
-                    autoFailMail += value;
-                    if(index != data.autoFailMail.length-1){
-                        autoFailMail += ",";        
-                    }     
-                });
-                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] });
-                    });        
-                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] });
-                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] });
-                }
-            }
-            
-            public static openDialogKDL030(data: string, self: any, appID: string): void {
-                let command = {appID: data};
-                setShared("KDL030_PARAM", command);
-                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
-                    location.reload();
-                });    
-            }
-            public static callCMM045(){
-                nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
-                    let paramUrl = 0;
-                    if (obj !== undefined && obj !== null){
-                        paramUrl = obj.appListAtr;
-                    }
-                    nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
-                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-                });
-            }
-            
-            public static showError(res) {
-                if (Array.isArray(res.errors)) {
-                    dialog.bundledErrors(res).then(function() { nts.uk.ui.block.clear(); });
-                } else {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                }
-            }
+            vm.$errors(element, msgID);
+            vm.$dialog.error({ messageId: msgID }).then(() => {
+                if(recordDate == 0) {
+                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
+                }    
+            });
+			if(recordDate == 0) {
+				return false;
+			}
+			return true;
         }
-        
-        interface ProcessResult {
-            isProcessDone: boolean,
-            isAutoSendMail: boolean,
-            autoSuccessMail: Array<string>,
-            autoFailMail: Array<string>,
-            appID: string    
-        }
+
+		public static showMailResult(mailResult: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(mailResult)) {
+					resolve(true);
+				}
+				let msg = mailResult[0].value,
+					type = mailResult[0].type;
+				if(type=='info') {
+					return vm.$dialog.info(msg).then(() => {
+		           		return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);	
+		        	});	
+				} else {
+					return vm.$dialog.error(msg).then(() => {
+		            	return CommonProcess.showMailResult(_.slice(mailResult, 1), vm);
+		        	});	
+				}
+	        });
+		}
+		
+		public static showConfirmResult(mailResult: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(mailResult)) {
+					resolve(true);
+				}
+				let msg = mailResult[0].value,
+					type = mailResult[0].type;
+				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
+					if (result === 'yes') {
+		            	return CommonProcess.showConfirmResult(_.slice(mailResult, 1), vm);
+		            }
+					resolve();
+	        	});	
+	        }).then((data: any) => {
+				if(data) {
+					alert('yes');
+				} else {
+					alert('no');
+				}		
+			});
+		}
     }
 }

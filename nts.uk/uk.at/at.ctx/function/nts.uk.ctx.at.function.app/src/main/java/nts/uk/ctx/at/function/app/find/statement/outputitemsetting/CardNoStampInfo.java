@@ -22,6 +22,8 @@ public class CardNoStampInfo {
  	private String installPlace;
  	//位置情報
  	private String localInfor;
+ 	//位置情報
+ 	private boolean isAddress = false;
  	//応援カード
  	private String supportCard;
  	//就業時間帯

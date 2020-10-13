@@ -14,12 +14,12 @@ import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetti
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 文字型データ形式設定
+ * 外部出力文字型データ形式設定（項目単位）
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CHARACTER_DFS")
+@Table(name = "OIOMT_EX_OUT_FM_CHAC")
 public class OiomtCharacterDfs extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,74 +30,11 @@ public class OiomtCharacterDfs extends UkJpaEntity implements Serializable {
 	public OiomtCharacterDfsPk characterDfsPk;
 
 	/**
-	 * NULL値置換
-	 */
-	@Basic(optional = false)
-	@Column(name = "NULL_VALUE_REPLACE")
-	public int nullValueReplace;
-
-	/**
-	 * コード編集
-	 */
-	@Basic(optional = false)
-	@Column(name = "CD_EDITTING")
-	public int cdEditting;
-
-	/**
-	 * コード編集方法
-	 */
-	@Basic(optional = false)
-	@Column(name = "CD_EDITTING_METHOD")
-	public int cdEdittingMethod;
-
-	/**
-	 * スペース編集
-	 */
-	@Basic(optional = false)
-	@Column(name = "SPACE_EDITTING")
-	public int spaceEditting;
-
-	/**
-	 * 固定値
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
-
-	/**
 	 * 有効桁数
 	 */
 	@Basic(optional = false)
 	@Column(name = "EFFECT_DIGIT_LENGTH")
 	public int effectDigitLength;
-
-	/**
-	 * NULL値置換の値
-	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
-
-	/**
-	 * コード変換コード
-	 */
-	@Basic(optional = true)
-	@Column(name = "CD_CONVERT_CD")
-	public String cdConvertCd;
-
-	/**
-	 * コード編集桁
-	 */
-	@Basic(optional = true)
-	@Column(name = "CD_EDIT_DIGIT")
-	public Integer cdEditDigit;
-
-	/**
-	 * NULL値置換の値
-	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_NULL_VALUE_REPLACE")
-	public String valueOfNullValueReplace;
 
 	/**
 	 * 有効桁数開始桁
@@ -113,6 +50,69 @@ public class OiomtCharacterDfs extends UkJpaEntity implements Serializable {
 	@Column(name = "END_DIGIT")
 	public Integer endDigit;
 
+	/**
+	 * コード編集
+	 */
+	@Basic(optional = false)
+	@Column(name = "CD_EDIT")
+	public int cdEditting;
+
+	/**
+	 * コード編集桁
+	 */
+	@Basic(optional = true)
+	@Column(name = "CD_EDIT_DIGIT")
+	public Integer cdEditDigit;
+
+	/**
+	 * コード編集方法
+	 */
+	@Basic(optional = false)
+	@Column(name = "CD_EDIT_METHOD")
+	public int cdEdittingMethod;
+
+	/**
+	 * スペース編集
+	 */
+	@Basic(optional = false)
+	@Column(name = "SPACE_EDIT")
+	public int spaceEditting;
+
+	/**
+	 * コード変換コード
+	 */
+	@Basic(optional = true)
+	@Column(name = "CONVERT_CD")
+	public String cdConvertCd;
+
+	/**
+	 * NULL値置換
+	 */
+	@Basic(optional = false)
+	@Column(name = "NULL_REPLACE_VAL_ATR")
+	public int nullValueReplace;
+
+	/**
+	 * NULL値置換の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "NULL_REPLACE_VAL")
+	public String valueOfNullValueReplace;
+
+	/**
+	 * 固定値
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
+
+	/**
+	 * NULL値置換の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
+
 	@Override
 	protected Object getKey() {
 		return characterDfsPk;
@@ -127,15 +127,21 @@ public class OiomtCharacterDfs extends UkJpaEntity implements Serializable {
 
 	public static OiomtCharacterDfs toEntity(CharacterDataFmSetting domain) {
 		return new OiomtCharacterDfs(
-				new OiomtCharacterDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+				new OiomtCharacterDfsPk(
+						domain.getCid(), 
+						domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueReplace().value, domain.getCdEditting().value, domain.getCdEdittingMethod().value,
-				domain.getSpaceEditting().value, domain.getFixedValue().value, domain.getEffectDigitLength().value,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getConvertCode().isPresent() ? domain.getConvertCode().get().v() : null,
-				domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null,
-				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
+				domain.getEffectDigitLength().value,
 				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
-				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null);
+				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null,
+				domain.getCdEditting().value, 
+				domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null,
+				domain.getCdEdittingMethod().value,
+				domain.getSpaceEditting().value, 
+				domain.getConvertCode().isPresent() ? domain.getConvertCode().get().v() : null,
+				domain.getNullValueReplace().value, 
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
+				domain.getFixedValue().value, 
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}
 }

@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,7 +32,7 @@ public class DivergenceTimeSettingFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// Get list divergence time
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
+		List<DivergenceTimeRoot> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
 
 		// Check list empty
 		if (listDivTime.isEmpty()) {

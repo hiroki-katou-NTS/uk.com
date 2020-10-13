@@ -44,8 +44,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
             }
@@ -116,8 +116,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -191,8 +191,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -266,8 +266,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getpHolidayWhileDate(startDate,endDate);
@@ -343,8 +343,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getpHolidayWhileDate(startDate,endDate);
@@ -421,8 +421,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -502,8 +502,8 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("102", "002")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1),  new WorkInformation("002", "102")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -581,11 +581,11 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("102", "002")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("103", "003")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("104", "004")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("105", "005")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("002", "102")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("003", "103")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("004", "104")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("005", "105")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -663,11 +663,11 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("102", "002")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("103", "003")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("104", "004")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("105", "005")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("002", "102")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("003", "103")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("004", "104")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("005", "105")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -749,11 +749,11 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("102", "002")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("103", "003")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("104", "004")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("105", "005")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("002", "102")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("003", "103")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("004", "104")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("005", "105")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();
@@ -832,11 +832,11 @@ public class CreateWorkCycleAppImageTest {
             {
                 require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = new ArrayList<>();
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("101", "001")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("102", "002")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("103", "003")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("104", "004")));
-                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("105", "005")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("001", "101")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("002", "102")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("003", "103")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("004", "104")));
+                infos.add(new WorkCycleInfo(new NumOfWorkingDays(1), new WorkInformation("005", "105")));
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
                 require.getWeeklyWorkSetting();

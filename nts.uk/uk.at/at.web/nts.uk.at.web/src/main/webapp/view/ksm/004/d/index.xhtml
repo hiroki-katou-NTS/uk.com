@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 600 };</script>
+			<script>var dialogSize = { width: 490, height: 560 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -15,47 +15,54 @@
 			<com:scriptfile path="ksm004.d.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div>
-				<div>
-					<table id="table-top">
-						<tr>
-							<td>
-								<!-- D1_1 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM004_36')}</div>
-							</td>
-							<td>
-								<div>
-									<!-- D1_4 -->
-									 <div tabindex="1" id="daterangepicker" 
-										data-bind="ntsDateRangePicker: {
-										name:'#[KSM004_36]',
-										valueFormat: 'YYYYMM',
-										required: true, 
-										value: dateValue,
-										maxRange: 'oneYear',
-										type:'yearmonth'}"></div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<!-- D1_8 -->
-								<div tabindex="2" style="margin-top: 3px"
-									data-bind="ntsCheckBox:{
-									checked: checkHoliday,
-									text: '#{i18n.getText('KSM004_53')}'
-									}">
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<table id="table-bottom">
+			<div id="contents-area">
+				<table id="table-top">
 					<tr>
-						<th>#{i18n.getText('KSM004_105')}</th>
-						<th>#{i18n.getText('KSM004_37')}</th>
+						<td>
+							<!-- D1_1 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM004_36')}</div>
+						</td>
+						<td>
+							<!-- D1_4 -->
+							 <div tabindex="1" id="daterangepicker"
+								data-bind="ntsDateRangePicker: {
+								name:'#[KSM004_36]',
+								valueFormat: 'YYYYMM',
+								required: true,
+								value: dateValue,
+								maxRange: 'oneYear',
+								type:'yearmonth'}"></div>
+						</td>
 					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<!-- D1_8 -->
+							<div tabindex="2"
+								data-bind="ntsCheckBox:{
+								checked: checkHoliday,
+								text: '#{i18n.getText('KSM004_53')}'
+								}">
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table id="table-bottom">
+					<colgroup>
+						<col width="60px"/>
+						<col width="310px"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th class="ui-widget-header">
+							<span class="ui-iggrid-headertext">#{i18n.getText('KSM004_105')}</span>
+						</th>
+						<th class="ui-widget-header">
+							<span class="ui-iggrid-headertext">#{i18n.getText('KSM004_37')}</span>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
 					<!-- Thu 2 -->
 					<tr>
 						<td class="tbDay">
@@ -210,20 +217,22 @@
 							</div>
 						</td>
 					</tr>
+					</tbody>
 				</table>
 				 <!-- style="margin-bottom: 150px;" -->
-				<div id="functions-area-bottom">
+			</div>
+			<div id="functions-area-bottom">
+				<div>
 					<!-- D4_1 -->
 					<div class="ntsCheckBox-label-bottom"  tabindex="10"
-						data-bind="ntsCheckBox:{
+						 data-bind="ntsCheckBox:{
 							checked: checkOverwrite,
+							style: 'warnpanel',
 							text: '#{i18n.getText('KSM004_49')}'}">
 					</div>
-					<div style='clear: both'></div>
-					<button tabindex="11" class="x-large proceed" data-bind="click: decition,enable: $root.errors.isEmpty">#{i18n.getText('KSM004_34')}</button>
-					<button tabindex="12" data-bind="click:closeDialog">#{i18n.getText('KSM004_35')}</button>
 				</div>
-
+				<button tabindex="11" class="x-large proceed" data-bind="click: decition,enable: $root.errors.isEmpty">#{i18n.getText('KSM004_34')}</button>
+				<button tabindex="12" data-bind="click:closeDialog">#{i18n.getText('KSM004_35')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

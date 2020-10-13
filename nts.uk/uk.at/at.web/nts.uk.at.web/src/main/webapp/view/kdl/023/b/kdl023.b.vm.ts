@@ -1,9 +1,13 @@
 module nts.uk.at.view.kdl023.b.viewmodel {
 
     import BaseScreenModel = kdl023.base.viewmodel.BaseScreenModel;
+    import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel extends BaseScreenModel {
-
+        dateValue: KnockoutObservable<any> = ko.observable({
+            startDate: formatDate( new Date(), 'yyyy/MM'),
+            endDate: formatDate( new Date(), 'yyyy/MM')
+        });
         /**
          * Event onclick button Decide.
          */

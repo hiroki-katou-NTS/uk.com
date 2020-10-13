@@ -166,6 +166,10 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 		return monthlyAttendanceItemsDisplays;
 	}
 
+	@Override
+	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
+		return this.isRemarkPrinted ? PrintSettingRemarksColumn.valueOf(1) : PrintSettingRemarksColumn.valueOf(0);
+	}
 
 	@Override
 	public RemarkInputContent getRemarkInputNo() {

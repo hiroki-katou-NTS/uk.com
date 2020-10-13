@@ -73,10 +73,12 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @param employeeId 社員ID
 	 */
 	void deleteBySelectionAndCidAndSidAndCode (ItemSelectionEnum itemSelectionEnum
-					,String companyId, String code, String employeeId); 
+					, String companyId
+					, String code
+					, String employeeId); 
 	
 	/**
-	   * ドメインモデル「月別勤務表の出力項目」を取得する (Acquire domain model "Output items of monthly work schedule")
+	 * ドメインモデル「月別勤務表の出力項目」を取得する (Acquire domain model "Output items of monthly work schedule")
 	 * @param itemSelectionEnum 定型選択の場合 or 自由設定の場合
 	 * @param companyId 会社ID 
 	 * @param code コード
@@ -84,6 +86,20 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @return
 	 */
 	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode (ItemSelectionEnum itemSelectionEnum
-			,String companyId, String code, String employeeId); 
+			, String companyId
+			, String code
+			, String employeeId); 
 
+	/**
+	 * パラメータ.出力項目一覧の件数をチェックする
+	 * @param itemSelectionEnum 定型選択の場合 or 自由設定の場合
+	 * @param code コード
+	 * * @param name 名称
+	 * @param employeeId 社員ID
+	 * @return the list
+	 */
+	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndSidAndNameAndCode (ItemSelectionEnum itemSelectionEnum
+			, String name
+			, String code
+			, String employeeId);
 }

@@ -14,9 +14,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHDOccUnit;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit;
 
 /**
  * The Class SuperHD60HConMedSaveDto.

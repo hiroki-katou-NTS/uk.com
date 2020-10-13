@@ -28,9 +28,6 @@ public class LogSetItemDetailDto {
 	/** The Frame */
 	private int frame;
 
-	// 使用区分
-	/** The Using Condition Flag */
-	private int isUseCondFlg;
 
 	// 条件
 	/** The Log Condition */
@@ -41,11 +38,8 @@ public class LogSetItemDetailDto {
 	private Integer sybol;
 
 	public static LogSetItemDetailDto fromDomain(LogSetItemDetail domain) {
-		int isUseCondFlg = domain.isUseCondFlg() ? 1 : 0;
-		String condition = domain.getCondition().isPresent() ? domain.getCondition().get().v() : null;
-		Integer sybol = domain.getSymbol().isPresent() ? domain.getSymbol().get().code : null;
-		return new LogSetItemDetailDto(domain.getLogSetId(), domain.getItemNo(), domain.getFrame(), isUseCondFlg,
-				condition, sybol);
+		return new LogSetItemDetailDto(domain.getLogSetId(), domain.getItemNo(), domain.getFrame(),
+				domain.getCondition().v(), domain.getSymbol().code);
 	}
 
 }

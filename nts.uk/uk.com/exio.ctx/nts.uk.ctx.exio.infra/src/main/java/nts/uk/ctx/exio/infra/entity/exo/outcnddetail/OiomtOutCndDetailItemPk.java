@@ -31,21 +31,21 @@ public class OiomtOutCndDetailItemPk implements Serializable {
 	 * 条件設定コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "CONDITION_SETTING_CD")
+	@Column(name = "CND_SET_CD")
 	public String conditionSettingCd;
 
 	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ID")
+	@Column(name = "CTG_ID")
 	public int categoryId;
 
 	/**
 	 * カテゴリ項目NO
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ITEM_NO")
+	@Column(name = "CTG_ITEM_NO")
 	public int categoryItemNo;
 
 	/**

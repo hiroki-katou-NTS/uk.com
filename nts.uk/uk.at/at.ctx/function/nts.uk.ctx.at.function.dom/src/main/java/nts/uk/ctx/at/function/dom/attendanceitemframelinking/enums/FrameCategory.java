@@ -75,7 +75,31 @@ public enum FrameCategory {
 
 	/** The Special holiday. */
 	// 特別休暇
-	SpecialHoliday(15);
+	SpecialHoliday(15),
+
+	/** 分類 */
+	Classification(16),
+
+	/** 職場 */
+	Workplace(17),
+
+	/** 雇用 */
+	Employment(18),
+
+	/** 職位 */
+	JobTittle(19),
+
+	/** 応援・作業 */
+	SupportWork(20),
+
+	/** 会社 */
+	Company(21),
+
+	/** 予約 */
+	Reservation(22),
+
+	/** 週次超過時間 */
+	Week_ExcessTime(23);
 
 	/** The value. */
 	public final int value;

@@ -1,712 +1,365 @@
-module nts.uk.at.view.kaf007.a.viewmodel {
-    import common = nts.uk.at.view.kaf007.share.common;
-    import service = nts.uk.at.view.kaf007.share.service;
-    import dialog = nts.uk.ui.dialog;
-    import appcommon = nts.uk.at.view.kaf000.shr.model;
-    import setShared = nts.uk.ui.windows.setShared;
-    import text = nts.uk.resource.getText;
-    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
-    export class ScreenModel {
-        multiDate: KnockoutObservable<boolean> = ko.observable(false);
-        screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
-        appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
-        recordWorkInfo: KnockoutObservable<common.RecordWorkInfo> = ko.observable(new common.RecordWorkInfo());
-        //A3 事前事後区分:表示/活性
-        prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
-        prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
-        requiredPrePost: KnockoutObservable<boolean> = ko.observable(false);
-        //A5 勤務を変更する:表示/活性
-        isWorkChange: KnockoutObservable<boolean> = ko.observable(true);
-        workChangeAtr: KnockoutObservable<boolean> = ko.observable(false);
-        //A8 勤務時間２
-        isMultipleTime: KnockoutObservable<boolean> = ko.observable(false);
-        //kaf000
-        kaf000_a: kaf000.a.viewmodel.ScreenModel;
-        employeeID: string = "";
-        employeeIDLst: Array<string> = [];
-        //申請者
-        employeeName: KnockoutObservable<string> = ko.observable("");
-        //comboBox 定型理由
-        typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(false);
-        displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(false);
-        reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
-        selectedReason: KnockoutObservable<string> = ko.observable('');
-        //MultilineEditor
-        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
-        multilContent: KnockoutObservable<string> = ko.observable('');
-        //A10_1 休日は除く
-        excludeHolidayAtr: KnockoutObservable<boolean> = ko.observable(true);
-        //Approval 
-        approvalSource: Array<common.AppApprovalPhase> = [];
-        //menu-bar 
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
-        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        dateFormat: string = 'YYYY/MM/DD';
-        //画面モード(表示/編集)
-        editable: KnockoutObservable<boolean> = ko.observable(true);
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        // Valid Period
-        datePeriod: KnockoutObservable<any> = ko.observable({});
-        appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
-        employeeList = ko.observableArray([]);
-        selectedEmployee = ko.observable(null);
-        totalEmployeeText = ko.observable("");
-        
-        dateSingle: KnockoutObservable<any> = ko.observable(null);
-        targetDate: any = moment(new Date()).format("YYYY/MM/DD");
-        requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
-        timeRequired: KnockoutObservable<boolean> = ko.observable(false);
-        showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
-        appWorkChangeDispInfoDto: any = null;
-        constructor() {
-            let self = this,
-                application = self.appWorkChange().application();
-            __viewContext.transferred.ifPresent(data => {
-                if(!nts.uk.util.isNullOrUndefined(data.appDate)){
-                    self.targetDate = moment(data.appDate).format("YYYY/MM/DD");
-                    self.dateSingle(self.targetDate);
-                }
-                if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
-                    self.employeeIDLst = data.employeeIds;
-                }
-                return null;
-            });
+module nts.uk.at.view.kaf007_ref.a.viewmodel {
+	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange;
+	import ModelDto = nts.uk.at.view.kaf007_ref.shr.viewmodel.ModelDto;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
 
-            // 申請日を変更する          
-            //Start Date
-            self.datePeriod.subscribe(value => {
-//                if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
-//                    return;
-//                }
-                $('#daterangepicker').find(".nts-input").trigger('validate');
-                if (nts.uk.ui.errors.hasError() || !value) {
-                    return;
-                }
-                let startDate, endDate;
-                startDate = value.startDate;
-                endDate = value.endDate;
-                if(!startDate && !endDate){
-                    return;
-                }
-                 nts.uk.ui.block.grayout();
-                self.changeApplicationDate(startDate, endDate).done(() => {
-                    nts.uk.ui.block.clear();
-                }).fail(() => {
-                    nts.uk.ui.block.clear();        
-                });
-            });
+	@bean()
+	export class Kaf007AViewModel extends Kaf000AViewModel {
 
-            self.dateSingle.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                let startDate, endDate;
-                $("#singleDate").trigger("validate");
-                if (nts.uk.ui.errors.hasError() || !value) {
-                    return;
-                }
-                startDate = endDate = value;
-                nts.uk.ui.block.grayout();
-                self.changeApplicationDate(startDate, endDate).done(() => {
-                    nts.uk.ui.block.clear();
-                }).fail(() => {
-                    nts.uk.ui.block.clear();        
-                });
-            });
+		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
+		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
+		model: KnockoutObservable<ModelDto> = ko.observable(null);
+		isSendMail: KnockoutObservable<Boolean>;
+		reflectWorkChange: ReflectWorkChangeApp;
+		appWorkChange: AppWorkChange;
+		setupType: number;
+		workTypeLst: any[];
+		comment1: KnockoutObservable<string> = ko.observable("");
+		comment2: KnockoutObservable<string> = ko.observable("");
+		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
+		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
 
-           
+		created(params: any) {
+			const vm = this;
+			vm.isSendMail = ko.observable(false);
+			vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
+			vm.setupType = null;
+			vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
 
-            self.employeeList.subscribe((datas) => {
-                if (datas.length) {
-                    self.totalEmployeeText(text('KAF011_79', [datas.length]));
-                    self.selectedEmployee(datas[0]);
-                }
-            });
-            
-            //KAF000_A
-            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            
-            self.startPage();
-        }
-        
-        showReasonText(){
-            let self =this;
-                if (self.screenModeNew()) {
-                return self.displayAppReasonContentFlg();
-            } else {
-                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
-            }    
-        }
-        showRightContent(){
-            let self =this;
-            return _.isEmpty(self.employeeIDLst) ? true : false;
-        }
-        /**
-         * 起動する
-         */
-        startPage(): JQueryPromise<any> {
+			vm.$blockui("show");
+			vm.loadData([], [], vm.appType())
+				.then((loadDataFlag: any) => {
+					if (loadDataFlag) {
+						let empLst: any = [],
+							dateLst: any = [],
+							appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+							command = { empLst, dateLst, appDispInfoStartupOutput };
+						return vm.$ajax(API.startNew, command);
+					}
+				}).then((successData: any) => {
+					if (successData) {
+						console.log(successData);
+						vm.fetchData(successData);
+					}
+				}).fail((failData: any) => {
+					console.log(failData);
+					if (failData.messageId === "Msg_43") {
+						vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 
-            let self = this,
-                dfd = $.Deferred(),
-                employeeIDs = isNullOrEmpty(self.employeeID)? []:[self.employeeID];
+					} else {
+						vm.$dialog.error(failData);
+					}
+				}).always(() => {vm.$blockui("hide"); $('#kaf000-a-component4-singleDate').focus();});
+		}
 
-            //get Common Setting
-            nts.uk.ui.block.invisible();
-            service.startNew({
-                empLst: [],
-                dateLst: [self.targetDate]
-            }).done(function(settingData: any) {
-                self.appWorkChangeDispInfoDto = settingData;
-                self.setData(settingData);
+		mounted() {
+			const vm = this;
 
-                //Focus process
-                self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
-                //phải để subscribe ở đây khi change multiDate focus mới ăn
-                self.registerEvent();
-               
-                dfd.resolve();
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
-                });
-                dfd.reject();
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-            return dfd.promise();
-        }
-        
-        registerEvent() {
-            let self = this;
+			vm.application.subscribe(app => {
+				if (app) {
+					let startDate = app.opAppStartDate();
+					let endDate = app.opAppEndDate();
+					let checkFormat = vm.validateAppDate(startDate, endDate);
 
-            self.multiDate.subscribe(value => {
-                nts.uk.ui.errors.clearAll();
-                if (value) {
-                    self.datePeriod({ startDate: self.dateSingle(), endDate: "" });
-                    $(".ntsStartDatePicker").focus();
-                } else {
-                    self.dateSingle(self.datePeriod().startDate);
-                    $("#singleDate").focus();
-                }
+					if (checkFormat) {
+						vm.changeAppDate();
+					}
+				}
+			});
+		}
 
-            });
-        }
+		validateAppDate(start: string, end: string) {
+			let startDate = moment(start);
+			let endDate = moment(end);
+			if (startDate.isValid() && endDate.isValid()) {
+				return true;
+			}
+			return false;
+		}
 
-        setData(settingData) {
-            let self = this,
-                appDispInfoNoDateOutput = settingData.appDispInfoStartupOutput.appDispInfoNoDateOutput,
-                appDispInfoWithDateOutput = settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput,
-                appWorkChangeSet = settingData.appWorkChangeSet,
-                listAppTypeSet = appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting,
-                appTypeSet = _.find(listAppTypeSet, o => o.appType == 2);
-            self.kaf000_a.initData({
-                errorFlag: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                listApprovalPhaseStateDto: settingData.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
-                isSystemDate: appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate       
-            });
-            if(!_.isEmpty(self.employeeIDLst)) {
-                self.employeeList(_.map(appDispInfoNoDateOutput.employeeInfoLst, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));             
-            } 
-            // A3_1
-            self.appWorkChange().application().prePostAtr(appDispInfoWithDateOutput.prePostAtr);
-            // A6_2
-            self.appWorkChange().workChange().workTypeCd(settingData.workTypeCD);
-            self.appWorkChange().workChange().workTypeName(self.getWorkTypeName(settingData.workTypeCD, settingData.workTypeLst));
-            // A6_4
-            self.appWorkChange().workChange().workTimeCd(settingData.workTimeCD);
-            self.appWorkChange().workChange().workTimeName(self.getWorkTimeName(settingData.workTimeCD, appDispInfoWithDateOutput.workTimeLst));
-            
-            if(!nts.uk.util.isNullOrUndefined(settingData.predetemineTimeSetting)){
-                let timeZone = settingData.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
-                // A7_1
-                self.appWorkChange().workChange().workTimeStart1(timeZone[0].start);    
-                // A7_3
-                self.appWorkChange().workChange().workTimeEnd1(timeZone[0].end); 
-            }
-            
-            self.checkBoxValue(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
-            
-            //A2_申請者 ID
-            self.employeeID = appDispInfoNoDateOutput.employeeInfoLst[0].sid;
-            //A2_1 申請者
-            self.employeeName(appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+		changeAppDate() {
+			const vm = this;
 
-            //A3 事前事後区分
-            //事前事後区分 ※A１
-            self.prePostDisp(appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
-            self.showExcludeHoliday(appWorkChangeSet.excludeHoliday);
-            //事前事後区分 Enable ※A２
-            self.prePostEnable(appTypeSet.canClassificationChange);
-            
-            //「申請種類別設定．定型理由の表示」  ※A10
-            self.typicalReasonDisplayFlg(appTypeSet.displayFixedReason == 1 ? true : false);
-            //「申請種類別設定．申請理由の表示」  ※A11
-            self.displayAppReasonContentFlg(appTypeSet.displayAppReason == 1 ? true : false);
-            //登録時にメールを送信する Visible
-            self.enableSendMail(!appTypeSet.sendMailWhenRegister);
-            //A5 勤務を変更する ※A4                    
-            //勤務変更申請設定.勤務時間を変更できる　＝　出来る
-            self.isWorkChange(appWorkChangeSet.workChangeTimeAtr == 1 ? true : false);
-            //定型理由
-            self.setReasonControl(appDispInfoNoDateOutput.appReasonLst);
-            //申請制限設定.申請理由が必須
-            self.requiredReason(appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
-            //A8 勤務時間２ ※A7
-            //共通設定.複数回勤務
-            self.isMultipleTime(settingData.isMultipleTime);
-            
-            self.requiredCheckTime(settingData.setupType == 0 && settingData.appWorkChangeSet.workChangeTimeAtr == 1);
-            self.timeRequired(settingData.setupType == 0);
-            self.appChangeSetting(settingData.appWorkChangeSet);
-            self.appWorkChange().dataWork().workTypeCodes = _.map(settingData.workTypeLst, o => o.workTypeCode);
-            self.appWorkChange().dataWork().workTimeCodes = _.map(appDispInfoWithDateOutput.workTimeLst, o => o.worktimeCode);
-        }
-        
-        getWorkTypeName(code, workTypeLst) {
-            let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
-            if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
-                return text("KAF007_79");
-            } else {
-                return currentWorkType.name;     
-            }      
-        }
-        
-        getWorkTimeName(code, workTimeLst) {
-            let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
-            if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
-                return text("KAF007_79");
-            } else {
-                return currentWorkTime.workTimeDisplayName.workTimeName;     
-            }      
-        }
-        
-        getName(code, name) {
-            let result = "";
-            if (code) {
-                result = name || text("KAL003_120");
-            }
-            return result;
-        }
+			vm.$errors("clear");
+			let startDate = vm.application().opAppStartDate(),
+				endDate = vm.application().opAppEndDate();
+			let appDates = []
+			appDates.push(startDate, endDate);
+			let command = {
+				empLst: ko.toJS(vm.application().employeeIDLst),
+				dateLst: appDates,
+				appWorkChangeDispInfo: ko.toJS(vm.model)
+			};
 
-        /**
-         * 「登録」ボタンをクリックする
-         * 勤務変更申請の登録を実行する
-         */
-        registerClick() {
-            let self = this;
-            nts.uk.ui.block.invisible();
-            let appReason: string;
-            if (!self.validateInputTime()) { return; }
-            
-            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
-            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true);
-            
-            if(!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason,"#inpReasonTextarea")){
-                return;
-            }
-            
-            //申請日付
-            self.appWorkChange().application().applicationDate(self.getStartDate());
+			vm.$validate([
+				'#kaf000-a-component4 .nts-input'
+			]).then((valid: boolean) => {
+				if (valid) {
+					return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
+				}
+			}).done((res: any) => {
+				vm.fetchData(res);
+				// $('#kaf000-a-component4-singleDate').focus();
+			}).fail(err => {
+				console.log(err)
+				if (err.messageId === "Msg_43") {
+					vm.$dialog.error(err).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 
-            self.appWorkChange().application().startDate(self.getStartDate());
-            self.appWorkChange().application().endDate(self.getEndDate());
-            //申請理由
-            self.appWorkChange().application().appReasonID = comboBoxReason;
-            self.appWorkChange().application().applicationReason(textAreaReason);
-            //勤務を変更する
-            self.appWorkChange().workChange().workChangeAtr(self.workChangeAtr() == true ? 1 : 0);
-            // 休日に関して
-            self.appWorkChange().workChange().excludeHolidayAtr(self.excludeHolidayAtr() == true ? 1 : 0);
-            self.appWorkChange().employeeID(self.employeeList()[0] ? self.employeeList()[0].sid : null);
-            //Change null to unregister value:
-            self.changeUnregisterValue();
+				} else {
+					vm.$dialog.error(err);
+				}
+			}).always(() => vm.$blockui("hide"));
+		}
 
-            let workChange = ko.toJS(self.appWorkChange());
-            workChange.appWorkChangeDispInfoCmd = self.appWorkChangeDispInfoDto;
-            
-            service.checkBeforeRegister(workChange).done((data) => {
-                self.processConfirmMsg(workChange, data, 0);
-            }).fail((res) => {
-                if(nts.uk.util.isNullOrEmpty(res.errors)){
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });       
-                } else {
-                    let errors = res.errors;
-                    nts.uk.ui.dialog.bundledErrors({ errors: errors })    
-                    .then(function() { nts.uk.ui.block.clear(); });      
-                }           
-            }); 
+		fetchData(params: any) {
+			const vm = this;
+			vm.model({
+				workTypeCD: ko.observable(params.workTypeCD),
+				workTimeCD: ko.observable(params.workTimeCD),
+				appDispInfoStartupOutput: ko.observable(params.appDispInfoStartupOutput),
+				reflectWorkChangeAppDto: ko.observable(params.reflectWorkChangeAppDto),
+				workTypeLst: params.workTypeLst,
+				setupType: ko.observable(params.setupType),
+				predetemineTimeSetting: ko.observable(params.predetemineTimeSetting),
+				appWorkChangeSet: params.appWorkChangeSet
+			});
+			// vm.reflectWorkChange = params.reflectWorkChangeAppDto;
+			vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
+			vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
+			vm.getWorkDispName(params.workTypeLst,
+				params.workTypeCD,
+				params.workTimeCD,
+				params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst);
+			if (params.appWorkChangeSet.initDisplayWorktimeAtr === 1) {
+				vm.appWorkChange.startTime1(null);
+				vm.appWorkChange.endTime1(null);
+				vm.appWorkChange.startTime2(null);
+				vm.appWorkChange.endTime2(null);
+			} else {
+				var lstTimezone = [];
 
-//            service.addWorkChange(workChange).done((data) => {
-//                workChange.checkOver1Year = false;
-//                self.sendMail(data);                
-//            }).fail((res) => {
-//                if(res.messageId == "Msg_1518"){//confirm
-//                    dialog.confirm({messageId: res.messageId}).ifYes(() => {
-//                        workChange.checkOver1Year = false;
-//                        service.addWorkChange(workChange).done((data) => {
-//                            self.sendMail(data);                
-//                        }).fail((res) => {
-//                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                            nts.uk.ui.block.clear();
-//                        });
-//                    }).ifNo(() => {
-//                        nts.uk.ui.block.clear();
-//                    });
-//                    
-//                }else{
-//                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-//                    nts.uk.ui.block.clear();
-//                }
-//            });
-        }
+				if(params.predetemineTimeSetting) {
+					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone
+				}
+				
+				var time1 = _.filter(lstTimezone, ['workNo', 1]);
+				var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
-        sendMail(data){
-            let self = this;
-            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    if (data.autoSendMail) {
-                        appcommon.CommonProcess.displayMailResult(data);
-                    } else {
-                        if (self.checkBoxValue()) {
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);
-                        } else {
-                            location.reload();
-                        }
-                    }
-                });
-        }
-        getStartDate() {
-            let self = this,
-                dateValue = self.multiDate() ? self.datePeriod().startDate : self.dateSingle();
+				vm.appWorkChange.startTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].start : null);
+				vm.appWorkChange.endTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].end : null);
+				vm.appWorkChange.startTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].start : null);
+				vm.appWorkChange.endTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].end : null);
+			}
+			vm.comment1(vm.model().appWorkChangeSet.comment1.comment);
+			$("#comment1")
+				.css("color", vm.model().appWorkChangeSet.comment1.colorCode)
+				.css("fontWeight", vm.model().appWorkChangeSet.comment1.bold == true ? "bold" : "");
+			vm.comment2(vm.model().appWorkChangeSet.comment2.comment);
+			$(".comment2")
+				.css("color", vm.model().appWorkChangeSet.comment2.colorCode)
+				.css("fontWeight", vm.model().appWorkChangeSet.comment2.bold == true ? "bold" : "");
+		}
 
-            return moment.utc(dateValue, self.dateFormat).toISOString();
-        }
+		getWorkDispName(workTypeLst: any, workTypeCode: string, workTimeCode: string, workTimeLst: any) {
+			const vm = this;
 
-        getEndDate() {
-            let self = this,
-                dateValue = self.multiDate() ? self.datePeriod().endDate : self.dateSingle();
-            return moment.utc(dateValue, self.dateFormat).toISOString();
-        }
-        enableTime() {
-            let self = this;
-            let result = self.editable() && self.requiredCheckTime();
-            if (!result) {
-                self.appWorkChange().workChange().workTimeStart1(null);
-                self.appWorkChange().workChange().workTimeEnd1(null);
-            }
-            return result;
-        }
+			vm.appWorkChange.workTimeCode(workTimeCode);
+			vm.appWorkChange.workTypeCode(workTypeCode);
+			var dataWorkType = _.filter(workTypeLst, (x) => { return workTypeCode === x.workTypeCode });
+			vm.appWorkChange.workTypeName(dataWorkType.length > 0 ? dataWorkType[0].name : vm.$i18n('KAF007_79'));
+			if(workTimeCode) {
+				var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
+				vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+			} else {
+				vm.appWorkChange.workTimeName(null);
+			}
+		}
 
+		register() {
+			const vm = this;
 
+			let holidayDateLst: any[] = [];
+			let timeZone1 = null;
+			if(vm.appWorkChange.startTime1() !== null && vm.appWorkChange.endTime1() !== null && ko.toJS(vm.appWorkChange.startTime1) !== "" && ko.toJS(vm.appWorkChange.endTime1) !== "") {
+				timeZone1 = {
+					workNo: 1,
+					timeZone: {
+						startTime: vm.appWorkChange.startTime1(),
+						endTime: vm.appWorkChange.endTime1()
+					}
+				}
+			}
 
+			let timeZone2 = null;
+			if (vm.appWorkChange.startTime2() !== null && vm.appWorkChange.endTime2() !== null && ko.toJS(vm.appWorkChange.startTime2) !== "" && ko.toJS(vm.appWorkChange.endTime2) !== "") {
+				timeZone2 = {
+					workNo: 2,
+					timeZone: {
+						startTime: vm.appWorkChange.startTime2(),
+						endTime: vm.appWorkChange.endTime2()
+					}
+				}
+			}
 
-        /**
-         * Validate input time
-         */
-        private validateInputTime(): boolean {
-            let self = this,
-                workchange = self.appWorkChange().workChange();
-            nts.uk.ui.errors.clearAll();
-            if (self.multiDate()) {
-                $('#daterangepicker').find(".nts-input").trigger('validate');
-            } else {
-                $("#singleDate").trigger("validate");
-            }
-            $("#inpStartTime1").trigger("validate");
-            $("#inpEndTime1").trigger("validate");
-            $("#pre-post").trigger("validate");
-            
+			let timeZoneWithWorkNoLst = [];
 
-            //return if has error
-            if (nts.uk.ui.errors.hasError()) {
-                nts.uk.ui.block.clear();
-                return false;
-            }
-//            //申請日付（開始日：終了日）大小チェック
-//            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
-//                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
-//                $('#inpStartTime1').focus();
-//                return false;
-//            }
-//
-//            //１．就業時間１（開始時刻：終了時刻） 大小チェック
-//            if (workchange.workTimeStart1() > workchange.workTimeEnd1()) {
-//                dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
-//                $('#inpStartTime1').focus();
-//                return false;
-//            }
-//            //２．就業時間２（開始時刻：終了時刻）
-//            //共通設定.複数回勤務　＝　利用する
-//            if (self.isMultipleTime()) {
-//                //has input time 2
-//                if (!nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
-//                    //開始時刻　＞　終了時刻
-//                    if (workchange.workTimeStart2() > workchange.workTimeEnd2()) {
-//                        dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
-//                        $('#inpStartTime2').focus();
-//                        return false;
-//                    }
-//                    //就業時間（終了時刻）　>　就業時刻２（開始時刻）
-//                    if (workchange.workTimeEnd1() > workchange.workTimeStart2()) {
-//                        dialog.alertError({ messageId: "Msg_581" }).then(function() { nts.uk.ui.block.clear(); });
-//                        $('#workTimeEnd1').focus();
-//                        return false;
-//                    }
-//                }
-//            }
-//            //３．休憩時間１（開始時刻：終了時刻）大小チェック
-//            if (!nts.uk.util.isNullOrEmpty(workchange.breakTimeStart1())) {
-//                //開始時刻　＞　終了時刻
-//                if (workchange.breakTimeStart1() > workchange.breakTimeEnd1()) {
-//                    dialog.alertError({ messageId: "Msg_582" }).then(function() { nts.uk.ui.block.clear(); });
-//                    $('#breakTimeStart1').focus();
-//                    return false;
-//                }
-//            }
-            return true;
-        }
-        /**
-         * 共通アルゴリズム「申請日を変更する」を実行する
-         * @param date: 申請日
-         * @param dateType (Start or End type)
-         */
-        private changeApplicationDate(startDate: any, endDate: any): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred(),
-                tmpStartDate: string = moment(startDate).format(self.dateFormat),
-                tmpEndDate: string = moment(endDate).format(self.dateFormat),
-                application = self.appWorkChange().application();
-            //申請日付開始日を基準に共通アルゴリズム「申請日を変更する」を実行する
-            //self.checkChangeAppDate(date);
-            //申請日付分　（開始日～終了日）
-            //基準日　≦　終了日
-//            while (moment(tmpStartDate, self.dateFormat).isSameOrBefore(moment(tmpEndDate, self.dateFormat))) {
-//                self.checkChangeAppDate(tmpStartDate);
-//                //基準日　＝　基準日　＋　１
-//                tmpStartDate = moment(tmpStartDate).add(1, 'day').format(self.dateFormat);
-//            }
-            
-            let momentStart = moment(startDate, self.dateFormat);
-            let momentEnd = moment(endDate, self.dateFormat);
-            let dateLst = [];
-            let loopDate = momentStart;
-            while(loopDate.isSameOrBefore(momentEnd)) {
-                dateLst.push(loopDate.format(self.dateFormat));
-                loopDate.add(1, 'days');                
-            }
-            
-            //実績の内容
-            service.changeAppDate({
-                empLst: [],
-                dateLst: dateLst,
-                appWorkChangeDispInfoCmd: self.appWorkChangeDispInfoDto
-            }).done((data) => {
-                self.appWorkChangeDispInfoDto = data;
-                self.kaf000_a.initData({
-                    errorFlag: data.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: data.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
-                    isSystemDate: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate         
-                });
-                //Binding data
-//                recordWorkInfo.workTypeName = self.getName(recordWorkInfo.workTypeCode, recordWorkInfo.workTypeName);
-//                recordWorkInfo.workTimeName = self.getName(recordWorkInfo.workTimeCode, recordWorkInfo.workTimeName);
-//                ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
-//                if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
-//                    self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
-//                    self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
-//                    //self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime2);
-//                    //self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
-//                }
-                let achievementOutput = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.achievementOutputLst[0];
-                self.recordWorkInfo().appDate(achievementOutput.date);
-                self.recordWorkInfo().workTypeCode(achievementOutput.workType.workTypeCode);
-                self.recordWorkInfo().workTypeName(achievementOutput.workType.name);
-                self.recordWorkInfo().workTimeCode(achievementOutput.workTime.workTimeCD);
-                self.recordWorkInfo().workTimeName(achievementOutput.workTime.workTimeName);
-                self.recordWorkInfo().startTime1(achievementOutput.startTime1);
-                self.recordWorkInfo().endTime1(achievementOutput.endTime1);
-                self.recordWorkInfo().startTime2(achievementOutput.startTime2);
-                self.recordWorkInfo().endTime2(achievementOutput.endTime2);    
-                
-                
-//                ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
-//                
-//                    self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
-//                    self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
-//                    //self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime2);
-//                    //self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
-//                }
-                
-                if(!nts.uk.util.isNullOrUndefined(data.predetemineTimeSetting)){
-                    let timeZone = data.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
-                    self.appWorkChange().workChange().workTimeStart1(timeZone[0].start);    
-                    self.appWorkChange().workChange().workTimeEnd1(timeZone[0].end); 
-                }
-                dfd.resolve();
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-        /**
-         * 申請日を変更する
-         * @param date in yyyy/MM/DD format
-         */
-        private checkChangeAppDate(date: string) {
-            let self = this;
-            date = moment(date).format(self.dateFormat);
-            self.kaf000_a.getAppDataDate(2, date, false, self.employeeID, null).done((data)=>{
-                if(!self.prePostDisp()){
-                    self.appWorkChange().application().prePostAtr(data.defaultPrePostAtr);       
-                }         
-            });
-        }
-        /**
-         * フォーカス制御
-         * @param element(申請日付/勤務時間直行)
-         */
-        private changeFocus(element: string) {
-            $(element).focus();
-        }
+			if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+				timeZoneWithWorkNoLst.push(timeZone1);
+			}
+			if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+			 && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+				timeZoneWithWorkNoLst.push(timeZone2);
+			}
 
-        /**
-         * Get application reason contains "CodeName + input reason"
-         */
-        private getReason(inputReasonDisp: boolean, inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReasonDisp: boolean, detailReason: string): string {
-            let appReason = '';
-            let inputReason: string = '';
-            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
-                inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;
-            }
-            if (inputReasonDisp == true && detailReasonDisp == true) {
-                if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
-                    appReason = inputReason + ":" + detailReason;
-                } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
-                    appReason = inputReason;
-                } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
-                    appReason = detailReason;
-                }
-            } else if (inputReasonDisp == true && detailReasonDisp == false) {
-                appReason = inputReason;
-            } else if (inputReasonDisp == false && detailReasonDisp == true) {
-                appReason = detailReason;
-            }
-            return appReason;
-        }
-        /**
-         * setting reason data to combobox
-         */
-        setReasonControl(data: Array<common.ReasonDto>) {
-            var self = this;
-            let comboSource: Array<common.ComboReason> = [];
-            _.forEach(data, function(value: common.ReasonDto) {
-                self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
-                if (value.defaultFlg === 1) {
-                    self.selectedReason(value.reasonID);
-                }
-            });
-        }
-        public convertIntToTime(data: any): string {
-            if(nts.uk.util.isNullOrUndefined(data)||nts.uk.util.isNullOrEmpty(data)){
-                return null;   
-            }
-            return nts.uk.time.format.byId("ClockDay_Short_HM", data);
-        }
-        private changeUnregisterValue() {
-            let self = this,
-                workchange = self.appWorkChange().workChange();
-            //
-            if (!self.isMultipleTime()
-                || nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
-                workchange.goWorkAtr2(null);
-                workchange.backHomeAtr2(null);
-                workchange.workTimeStart2(null);
-                workchange.workTimeEnd2(null);
-            }
-        }
-        /**
-         * 「勤務就業選択」ボタンをクリックする
-         * KDL003_勤務就業ダイアログを起動する
-         */
-        openKDL003Click(vm : any) {
-            let self = vm,
-                dataWork = vm.appWorkChange().dataWork(),
-                workChange = self.appWorkChange().workChange();
-            $("#inpStartTime1").ntsError('clear');
-            $("#inpEndTime1").ntsError('clear');
-            nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: dataWork.workTypeCodes,
-                selectedWorkTypeCode: dataWork.selectedWorkTypeCd,
-                workTimeCodes: dataWork.workTimeCodes,
-                selectedWorkTimeCode: dataWork.selectedWorkTimeCd,
-            }, true);
+			let appWorkChangeDto = {
+				straightGo: vm.isStraightGo() ? 1 : 0,
+				straightBack: vm.isStraightBack() ? 1 : 0,
+				opWorkTypeCD: vm.model().workTypeCD(),
+				opWorkTimeCD: vm.model().workTimeCD(),
+				timeZoneWithWorkNoLst: timeZoneWithWorkNoLst
+			}
 
-            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-                //view all code of selected item 
-                var childData = nts.uk.ui.windows.getShared('childData');
-                if (childData) {
-                    dataWork.selectedWorkTypeCd = childData.selectedWorkTypeCode;
-                    dataWork.selectedWorkTimeCd = childData.selectedWorkTimeCode;
-                    workChange.workTypeCd(childData.selectedWorkTypeCode);
-                    workChange.workTypeName(childData.selectedWorkTypeName);
-                    workChange.workTimeCd(childData.selectedWorkTimeCode);
-                    workChange.workTimeName(childData.selectedWorkTimeName);
-                    self.appWorkChangeDispInfoDto.workTypeCD = childData.selectedWorkTypeCode;
-                    self.appWorkChangeDispInfoDto.workTimeCD = childData.selectedWorkTimeCode;
-                    service.changeWorkSelection({
-                        appWorkChangeDispInfoCmd: self.appWorkChangeDispInfoDto             
-                    }).done((rs) =>{
-                        self.requiredCheckTime(rs.setupType == 0 && rs.appWorkChangeSet.workChangeTimeAtr == 1);    
-                        if(self.requiredCheckTime()){
-                            workChange.workTimeStart1(childData.first.start);
-                            workChange.workTimeEnd1(childData.first.end); 
-                        }
-                    });
-                }
-                //フォーカス制御
-                //self.changeFocus('#inpStartTime1');
-                $('#inpStartTime1').focus();
-            });
-        }
+			let applicationDto = {
+				appDate: vm.application().appDate(),
+				appID: vm.application().appID(),
+				appType: vm.application().appType,
+				employeeIDLst: vm.application().employeeIDLst(),
+				opAppEndDate: vm.application().opAppEndDate(),
+				opAppReason: vm.application().opAppReason(),
+				opAppStandardReasonCD: vm.application().opAppStandardReasonCD(),
+				opAppStartDate: vm.application().opAppStartDate(),
+				opReversionReason: vm.application().opReversionReason(),
+				opStampRequestMode: vm.application().opStampRequestMode(),
+				prePostAtr: vm.application().prePostAtr(),
+				inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
+				enteredPerson: vm.$user.employeeId
+			}
 
-        /**
-         * 「実績参照」ボタンをクリックする
-         * 「CMM018_承認者の登録（就業）」画面に遷移する
-         */
-        openCMM018Click() {
-            let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
-        }
-        /**
-         * 「承認者変更」ボタンをクリックする
-         * 「KDL004 実績参照」ダイアログを起動する
-         */
-        openKDL004Click() {
-            let self = this;
-            return;
-        }
-        
-        processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
-            let self = this;
-            let confirmMsgLst = result.confirmMsgLst;
-            let confirmMsg = confirmMsgLst[confirmIndex];
-            if(_.isUndefined(confirmMsg)) {
-                paramInsert.holidayDateLst = result.holidayDateLst;
-                service.addWorkChange(paramInsert).done((data) => {
-                    self.sendMail(data);
-                }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                });
-                return;
-            }
-            
-            dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
-                self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
-            }).ifNo(() => {
-                nts.uk.ui.block.clear();
-            });
-        }
-    }
+			let command = {
+				mode: true,
+				companyId: vm.$user.companyId,
+				applicationDto: ko.toJS(applicationDto),
+				appWorkChangeDto: ko.toJS(appWorkChangeDto),
+				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
+				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+			}
 
+			vm.$blockui("show");
+			// if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+			// 	vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
+			// }
+			
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+				.then(isValid => {
+					if (isValid) {
+						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+							return vm.$validate('.nts-input');
+						} 
+						return true;
+					}
+				})
+				.then((isValid) => {
+					if(isValid) {
+						if(!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2Start': {messageId: 'Msg_1956'}});
+							return false;
+						}
+						if(_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
+							vm.$errors({'#time2End': {messageId: 'Msg_1956'}});
+							return false;
+						}
+						return true;
+					}
+				})
+				.then(result => {
+					if (!result) return;
+					return vm.$ajax(API.checkBeforeRegister, command);
+				}).then(res => {
+					if (res == undefined) return;
+					if (!_.isEmpty(res.holidayDateLst)) {
+						holidayDateLst = res.holidayDateLst;
+					}
+					if (_.isEmpty(res.confirmMsgLst)) {
+						return vm.registerData(command);
+					} else {
+						let listTemp = _.clone(res.confirmMsgLst);
+						vm.handleConfirmMessage(listTemp, command);
+					}
+				}).done(result => {
+					if (result != undefined) {
+						if (_.isEmpty(holidayDateLst)) {
+							vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								location.reload();
+							});
+						} else {
+							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
+							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
+							dispMsg += x;
+							vm.$dialog.info(dispMsg).then(() => {
+								location.reload();
+							})
+						}
+					}
+				})
+				.fail(err => {
+					let messageId, messageParams;
+					if(err.errors) {
+						let errors = err.errors;
+						messageId = errors[0].messageId;
+					} else {
+						messageId = err.messageId;
+						messageParams = [err.parameterIds.join('、')];
+					}
+					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+				})
+				.always(() => vm.$blockui("hide"));
+		}
+
+		handleConfirmMessage(listMes: any, res: any): any {
+			let vm = this;
+			if (!_.isEmpty(listMes)) {
+				let item = listMes.shift();
+				return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst })
+					.then((value) => {
+						if (value == 'yes') {
+							if (_.isEmpty(listMes)) {
+								return vm.registerData(res);
+							} else {
+								return vm.handleConfirmMessage(listMes, res);
+							}
+
+						}
+					});
+			}
+		}
+
+		registerData(params: any): any {
+			let vm = this;
+
+			return vm.$ajax(API.register, params);
+		}
+
+		// public conditionA14() {
+		// 	const vm = this;
+
+		// 	return ko.computed(() => {
+		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
+		// 			return true;
+		// 		};
+		// 		return false;
+		// 	}, vm);
+		// }
+	}
+
+	const API = {
+		startNew: "at/request/application/workchange/startNew",
+		register: "at/request/application/workchange/addworkchange",
+		changeAppDate: "at/request/application/workchange/changeAppDate",
+		checkBeforeRegister: "at/request/application/workchange/checkBeforeRegisterPC"
+	}
 }
-

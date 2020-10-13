@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -29,7 +30,7 @@ public class WwfdtFullJoinState {
 	private Integer approvalAtr;
 	private Integer confirmAtr;
 	private String agentID;
-	private GeneralDate approvalDate;
+	private GeneralDateTime approvalDate;
 	private String approvalReason;
 	private GeneralDate appDate;
 	private Integer approverInListOrder;
@@ -48,7 +49,7 @@ public class WwfdtFullJoinState {
 					x.getInt("APPROVAL_ATR"), 
 					x.getInt("CONFIRM_ATR"), 
 					x.getString("AGENT_ID"), 
-					x.getGeneralDate("APPROVAL_DATE"), 
+					x.getGeneralDateTime("APPROVAL_DATE"), 
 					x.getString("APPROVAL_REASON"), 
 					x.getGeneralDate("APP_DATE"),
 					x.getInt("APPROVER_LIST_ORDER"));

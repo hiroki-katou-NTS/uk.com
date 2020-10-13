@@ -67,7 +67,7 @@
                               </span>
                             </td>
                             <td>
-                              <div v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
+                              <template v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
                                 <span class="text-break" v-if="frame.listApprover[0].agentID">
                                   <span>{{ frame.listApprover[0].representerName }}</span>
                                 </span>
@@ -75,14 +75,14 @@
                                   <span>{{ frame.listApprover[0].approverName }}</span>
                                 </span>
                                 <br/>
-                                <p class="text-break child-font-size mb-0 pl-2">{{ frame.listApprover[0].approvalReason }}</p>
-                              </div>  
-                              <div v-else>
+                                <p class="text-break child-font-size mb-0 pl-2" style="word-break: break-word">{{ frame.listApprover[0].approvalReason }}</p>
+                              </template>
+                              <template v-else>
                                 <span class="text-break">
                                   <span>{{ frame.listApprover[0].approverName }}</span>
                                   <span v-if="frame.listApprover[0].representerName">({{ frame.listApprover[0].representerName }})</span>
                                 </span>
-                              </div>    
+                              </template>    
                             </td>
                           </tr>
                         </template>
@@ -99,18 +99,18 @@
                               </span>
                             </td>
                             <td>
-                              <div v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
+                              <template v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
                                 <span class="text-break" v-if="approver.agentID"><span>{{ approver.representerName }}</span></span>
                                 <span class="text-break" v-else><span>{{ approver.approverName }}</span></span>
                                 <br/>
-                                <p class="text-break child-font-size mb-0 pl-2">{{ approver.approvalReason }}</p>
-                              </div>  
-                              <div v-else>
+                                <p class="text-break child-font-size mb-0 pl-2" style="word-break: break-word">{{ approver.approvalReason }}</p>
+                              </template>  
+                              <template v-else>
                                 <span class="text-break">
                                   <span>{{ approver.approverName }}</span>
                                   <span v-if="approver.representerName">({{ approver.representerName }})</span>
                                 </span>
-                              </div>    
+                              </template>    
                             </td>
                           </tr>
                         </template>
@@ -131,12 +131,31 @@
         </div>
       </div> 
     </div>
-    <div>
-      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-      <app2 v-if="false" />
-      <app3 v-if="false" />
+    <div class="row mt-1 content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_21' | i18n}}</div>
+    <div class="row content-div border-top uk-border-light-gray text-break">
+      <span>{{ applicant | i18n }}</span> 
+      <span v-if="representerDisp" class="uk-text-dark-gray child-font-size">{{ 'CMMS45_22' | i18n(representer) }}</span>
     </div>
-    
+    <div class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
+    <div class="row content-div border-top uk-border-light-gray">
+      <div class="col-12">
+        <div class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
+        <div class="row uk-text-dark-gray child-font-size">{{'CMMS45_25' | i18n(inputDate)}}</div>
+      </div>
+    </div>
+    <div>
+      <app1 v-if="appType==1" v-bind:params="{appOvertime: appDetail}" />
+      <app2 v-if="appType==2" v-bind:params="appTransferData" />
+      <app3 v-if="appType==3" v-bind:params="appTransferData"/>
+      <app4 v-if="appType==4" v-bind:params="appTransferData" />
+    </div>
+    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
+    <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
+      <div class="col-12">
+        <div v-if="comboReasonDisp" class="row"><div class="col-12 pl-0">{{ comboReason | i18n }}</div></div> 
+        <div v-if="textReasonDisp" class="row"><div class="col-12 pl-0" v-html="textReason"></div></div>
+      </div>
+    </div>
     <div
       class="fixed-action-btn" v-show="displayEditFloat"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"

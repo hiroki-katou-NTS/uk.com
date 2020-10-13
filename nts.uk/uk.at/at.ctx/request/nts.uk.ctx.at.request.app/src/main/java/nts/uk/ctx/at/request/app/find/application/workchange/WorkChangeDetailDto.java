@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.DetailedScreenPreBootModeDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.PrelaunchAppSettingDto;
@@ -16,11 +16,11 @@ public class WorkChangeDetailDto {
 	/**
 	* 勤務変更申請
 	*/
-	AppWorkChangeDto workChangeDto;
+	AppWorkChangeDto_Old workChangeDto;
 	/**
 	 * 申請
 	 */
-	ApplicationDto_New applicationDto;
+	ApplicationDto applicationDto;
 	/**
 	 * 申請者名
 	 */
@@ -56,15 +56,16 @@ public class WorkChangeDetailDto {
 	DataWorkDto dataWorkDto;
 	
 	public static WorkChangeDetailDto  formDomain(WorkChangeDetail domain){
-		return new WorkChangeDetailDto(AppWorkChangeDto.fromDomain(domain.getAppWorkChange()), 
-				ApplicationDto_New.fromDomain(domain.getApplication()), 
-				domain.getEmployeeName(), domain.getSID(), 
-				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
-				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
-				domain.getDetailScreenInitModeOutput().getOutputMode().value,
-				domain.getWorkTypeCodes(), domain.getWorkTimeCodes(),
-				domain.isTimeRequired(),
-				DataWorkDto.fromDomain(domain.getDataWork())
-				);
+//		return new WorkChangeDetailDto(AppWorkChangeDto_Old.fromDomain(domain.getAppWorkChange()), 
+//				ApplicationDto_New.fromDomain(domain.getApplication()), 
+//				domain.getEmployeeName(), domain.getSID(), 
+//				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
+//				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
+//				domain.getDetailScreenInitModeOutput().getOutputMode().value,
+//				domain.getWorkTypeCodes(), domain.getWorkTimeCodes(),
+//				domain.isTimeRequired(),
+//				DataWorkDto.fromDomain(domain.getDataWork())
+//				);
+		return null;
 	}
 }
