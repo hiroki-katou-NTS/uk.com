@@ -4539,7 +4539,11 @@ var nts;
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
                     "/view/kdw/003/a/index.xhtml",
-                    "/view/ccg/033/index.xhtml"
+                    "/view/ccg/033/index.xhtml",
+                    "/view/kdp/003/a/index.xhtml",
+                    "/view/kdp/003/f/index.xhtml",
+                    "/view/kdp/004/a/index.xhtml",
+                    "/view/kdp/005/a/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
