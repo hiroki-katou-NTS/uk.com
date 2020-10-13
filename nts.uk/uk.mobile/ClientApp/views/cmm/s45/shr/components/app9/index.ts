@@ -64,9 +64,12 @@ export class CmmS45ComponentsApp9Component extends Vue {
                     }
                     // check B1_6 show
                     if (!(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[1]))) {
-                        vm.condition2 = false;
-                    } else {
-                        vm.condition2 = true;
+                        if (vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[1].lateOrEarlyClassification == 0) {
+                            vm.condition1 = false;
+                        }
+                        if (vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[1].lateOrEarlyClassification == 1) {
+                            vm.condition2 = false;
+                        }
                     }
                 }
 
