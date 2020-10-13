@@ -193,6 +193,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
                 return true;
             } else {
+                vm.check.cbCancelLate.value = '';
+                vm.check.cbCancelEarlyLeave.value = '';
+                vm.check.cbCancelLate2.value = '';
+                vm.check.cbCancelEarlyLeave2.value = '';
 
                 return false;
             }
@@ -270,7 +274,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 prePostAtr,
                 startDate: opAppStartDate,
                 endDate: opAppEndDate,
-                employeeName: _.isEmpty(employeeInfoLst) ? 'empty' : employeeInfoLst[0].bussinessName
+                employeeName: _.isEmpty(employeeInfoLst) ? 'empty' : vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
     }
