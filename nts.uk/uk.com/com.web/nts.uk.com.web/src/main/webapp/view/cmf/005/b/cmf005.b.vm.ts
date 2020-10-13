@@ -810,7 +810,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
       setShared("CMF005_E_PARAMS", params);
       modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
-        self.backScreenA();
+        self.buttonEnable(false);
       });
     }
 
