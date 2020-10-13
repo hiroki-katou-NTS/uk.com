@@ -63,6 +63,9 @@ module nts.uk.at.view.kwr006.a {
                 outputType: number;
                 pageBreakIndicator: number;
                 totalOutputSetting: WorkScheduleSettingTotalOutputDto;
+                displayType: number;
+                itemSettingType: number;
+                itemDisplaySwitch: number;
             }
 
             export interface WorkScheduleSettingTotalOutputDto {

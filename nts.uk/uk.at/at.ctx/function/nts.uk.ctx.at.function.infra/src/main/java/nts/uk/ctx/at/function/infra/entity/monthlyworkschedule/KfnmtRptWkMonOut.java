@@ -167,11 +167,6 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	}
 
 	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		return this.isRemarkPrinted ? PrintSettingRemarksColumn.valueOf(1) : PrintSettingRemarksColumn.valueOf(0);
-	}
-
-	@Override
 	public RemarkInputContent getRemarkInputNo() {
 		return RemarkInputContent.valueOf(this.remarkInputNo);
 	}

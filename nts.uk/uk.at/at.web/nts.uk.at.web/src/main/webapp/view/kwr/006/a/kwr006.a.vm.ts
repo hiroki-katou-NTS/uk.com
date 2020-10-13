@@ -22,7 +22,6 @@ module nts.uk.at.view.kwr006.a {
 
             // switch button A6_2
             dataOutputType: KnockoutObservableArray<ItemModel>;
-            outputTypeSelection: KnockoutObservable<number>;
 
             // radio group A7_7
             itemSelection: KnockoutObservable<number>;
@@ -40,28 +39,9 @@ module nts.uk.at.view.kwr006.a {
 
             // switch button A13_2
             dataDisplaySwitching: KnockoutObservableArray<ItemModel>;
-            displaySwitchingSelection: KnockoutObservable<number>;
 
             // switch button A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
-            pageBreakSelection: KnockoutObservable<number>;
-
-            // checkboxes A10_2 - A11_11
-            checkedA10_2: KnockoutObservable<boolean>;
-            checkedA10_3: KnockoutObservable<boolean>;
-            enableA10_3: KnockoutObservable<boolean>;
-            checkedA10_4: KnockoutObservable<boolean>;
-            checkedA10_5: KnockoutObservable<boolean>;
-            checkedA10_6: KnockoutObservable<boolean>;
-            checkedA11_3: KnockoutObservable<boolean>;
-            checkedA11_4: KnockoutObservable<boolean>;
-            checkedA11_5: KnockoutObservable<boolean>;
-            checkedA11_6: KnockoutObservable<boolean>;
-            checkedA11_7: KnockoutObservable<boolean>;
-            checkedA11_8: KnockoutObservable<boolean>;
-            checkedA11_9: KnockoutObservable<boolean>;
-            checkedA11_10: KnockoutObservable<boolean>;
-            checkedA11_11: KnockoutObservable<boolean>;
 
             // Selected employee
             selectedEmployee: KnockoutObservableArray<string>;
@@ -96,33 +76,11 @@ module nts.uk.at.view.kwr006.a {
                 self.enableDatePicker = ko.observable(true);
                 self.requiredDatePicker = ko.observable(true);
 
-                self.outputTypeSelection = ko.observable(0);
-
                 self.itemSelection = ko.observable(0);
                 self.enableA7_3 = ko.observable(true);
                 self.enableA7_11 = ko.observable(false);
 
                 self.displayClassificationSelection = ko.observable(1);
-
-                self.displaySwitchingSelection = ko.observable(0);
-
-                self.pageBreakSelection = ko.observable(0);
-
-                self.checkedA10_2 = ko.observable(false);
-                self.checkedA10_3 = ko.observable(false);
-                self.enableA10_3 = ko.observable(true);
-                self.checkedA10_4 = ko.observable(false);
-                self.checkedA10_5 = ko.observable(false);
-                self.checkedA10_6 = ko.observable(false);
-                self.checkedA11_3 = ko.observable(false);
-                self.checkedA11_4 = ko.observable(false);
-                self.checkedA11_5 = ko.observable(false);
-                self.checkedA11_6 = ko.observable(false);
-                self.checkedA11_7 = ko.observable(false);
-                self.checkedA11_8 = ko.observable(false);
-                self.checkedA11_9 = ko.observable(false);
-                self.checkedA11_10 = ko.observable(false);
-                self.checkedA11_11 = ko.observable(false);
 
                 self.datepickerValue = ko.observable({});
                 self.startDatepicker = ko.observable("");
@@ -157,9 +115,6 @@ module nts.uk.at.view.kwr006.a {
                 self.itemSelection.subscribe((value) => {
                     self.enableA7_3(value == 0);
                     self.enableA7_11(value == 1);
-                });
-                self.outputTypeSelection.subscribe((value) => {
-                    self.enableA10_3(value == 0);
                 });
             }
 
@@ -666,7 +621,7 @@ module nts.uk.at.view.kwr006.a {
                 self.outputType(data.outputType);
                 self.pageBreakIndicator(data.pageBreakIndicator);
                 self.totalOutputSetting.updateData(data.totalOutputSetting);
-
+                self.displaySwitching(data.itemDisplaySwitch)
                 self.itemSelection = ko.observable(0);
             }
 
@@ -679,6 +634,8 @@ module nts.uk.at.view.kwr006.a {
                 dto.outputType = self.outputType();
                 dto.pageBreakIndicator = self.pageBreakIndicator();
                 dto.totalOutputSetting = self.totalOutputSetting.toDto();
+                dto.itemSettingType = self.itemSelection();
+                dto.itemDisplaySwitch = self.displaySwitching();
                 return dto;
             }
         }

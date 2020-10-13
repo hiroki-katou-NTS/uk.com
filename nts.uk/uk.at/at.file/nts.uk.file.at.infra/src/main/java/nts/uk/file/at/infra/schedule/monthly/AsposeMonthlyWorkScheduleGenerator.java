@@ -180,14 +180,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
 
-	/** The Constant TEMPLATE_DATE. */
-//	private static final String TEMPLATE_DATE= "report/KWR006_Date.xlsx";
-	private static final String TEMPLATE_DATE= MonthlyReportConstant.TEMPLATE_DATE;
-
-	/** The Constant TEMPLATE_EMPLOYEE. */
-//	private static final String TEMPLATE_EMPLOYEE = "report/KWR006_Employee.xlsx";
-	private static final String TEMPLATE_EMPLOYEE = MonthlyReportConstant.TEMPLATE_EMPLOYEE;
-
 	/** The Constant DATA_COLUMN_INDEX. */
 //	private static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
     private static final int[] DATA_COLUMN_INDEX = MonthlyReportConstant.DATA_COLUMN_INDEX;
@@ -224,11 +216,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, MonthlyWorkScheduleQuery query) {
 		MonthlyWorkScheduleCondition condition = query.getCondition();
 		AsposeCellsReportContext reportContext = null;
-		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
-			reportContext = this.createContext(TEMPLATE_EMPLOYEE);
-		} else {
-			reportContext = this.createContext(TEMPLATE_DATE);
-		}
 		// ドメインモデル「月別勤務表の出力項目」を取得する
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo
 				.findBySelectionAndCidAndSidAndCode(condition.getItemSettingType()
@@ -1762,10 +1749,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 //										} else {
 //											cell.setValue(getTimeAttr(value, true));
 //										}
-										cell.setValue(getTimeAttr(value, false));
+										cell.setValue(getTimeAttr(value, false, condition.getDisplayType()));
 									}
 									else{
-										cell.setValue(getTimeAttr("0", true));
+										cell.setValue(getTimeAttr("0", true, condition.getDisplayType()));
 									}	
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
@@ -1873,9 +1860,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            		}
 			            		else {
 			            			if (value != null)
-										cell.setValue(getTimeAttr(value,false));
+										cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 									else
-										cell.setValue(getTimeAttr("0",false));
+										cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
 			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
@@ -1959,9 +1946,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value,false));
+								cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 							else
-								cell.setValue(getTimeAttr("0",false));
+								cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2117,9 +2104,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            		}
 				            		else {
 				            			if (value != null)
-											cell.setValue(getTimeAttr(value,false));
+											cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 										else
-											cell.setValue(getTimeAttr("0",false));
+											cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
 				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -2443,9 +2430,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	String value = actualValue.getValue();
 			            	if (valueTypeEnum.isTime()) {
 								if (value != null)
-									cell.setValue(getTimeAttr(value,false));
+									cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 								else
-									cell.setValue(getTimeAttr("0",false));
+									cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
@@ -2546,7 +2533,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// B6_2
 			if (rootWorkplace.hasData)
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true, textSizeCommonEnum);
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true, textSizeCommonEnum, condition.getDisplayType());
 		}
 		
 		Map<String, MonthlyWorkplaceData> mapChildWorkplace = rootWorkplace.getLstChildWorkplaceData();
@@ -2633,7 +2620,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
 				
 				// B7_2 - B11_2
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, textSizeCommonEnum);
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, textSizeCommonEnum, condition.getDisplayType());
 			} while (levelIterator != null && levelIterator.hasNext());
 		}
 		
@@ -2655,7 +2642,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			, Worksheet sheet
 			, int dataRowCount
 			, boolean totalType
-			, TextSizeCommonEnum textSizeCommonEnum) {
+			, TextSizeCommonEnum textSizeCommonEnum
+			, DisplayTypeEnum zeroSetting) {
 		List<TotalValue> totalWorkplaceValue;
 		if (!totalType)
 			totalWorkplaceValue = rootWorkplace.getWorkplaceTotal().getTotalWorkplaceValue();
@@ -2694,9 +2682,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value,false));
+								cell.setValue(getTimeAttr(value,false, zeroSetting));
 							else
-								cell.setValue(getTimeAttr("0",false));
+								cell.setValue(getTimeAttr("0",false, zeroSetting));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
@@ -2772,9 +2760,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 	            		else {
 	            			if (value != null)
-								cell.setValue(getTimeAttr(value,false));
+								cell.setValue(getTimeAttr(value,false, condition.getDisplayType()));
 							else
-								cell.setValue(getTimeAttr("0",false));
+								cell.setValue(getTimeAttr("0",false, condition.getDisplayType()));
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
