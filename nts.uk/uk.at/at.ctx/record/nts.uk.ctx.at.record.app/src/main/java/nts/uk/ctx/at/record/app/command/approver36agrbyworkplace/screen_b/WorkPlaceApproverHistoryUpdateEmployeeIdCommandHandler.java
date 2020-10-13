@@ -23,7 +23,7 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommandHandler extends Comm
     @Override
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),new DatePeriod(command.getPeriod().start(), GeneralDate.max()),
+        val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),new DatePeriod(command.getPeriod().start(),command.getPeriod().end()),
                 command.getApprovedList()
                 ,command.getConfirmedList());
         repo.updateStartDate(domain,command.getStartDateBeforeChange());
