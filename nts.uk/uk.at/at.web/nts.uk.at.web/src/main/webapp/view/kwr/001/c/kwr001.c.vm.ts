@@ -130,6 +130,7 @@ module nts.uk.at.view.kwr001.c {
                             self.enableBtnDel(true);
                             self.enableCodeC3_2(false);
                             self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
+                            self.fillterByAttendanceType(self.selectedProjectType());
                             blockUI.clear();
                         })
                     } else {

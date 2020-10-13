@@ -51,8 +51,8 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	// 文字の大きさ
 	private FontSizeEnum fontSize;
 	
-	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "60";
-	private static final String MAX_ATTENDANCE_ITEM_SMALL_SIZE = "48";
+	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "48";
+	private static final String MAX_ATTENDANCE_ITEM_SMALL_SIZE = "60";
 
 	/**
 	 * Instantiates a new output item daily work schedule.
