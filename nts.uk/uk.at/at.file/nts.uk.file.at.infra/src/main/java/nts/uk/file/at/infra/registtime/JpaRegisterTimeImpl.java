@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
@@ -33,7 +34,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "START_MONTH, "
 			+ "MCLOSE_DATE, "
 			+ "APP_USE_ATR, "
-			+ "ANNUAL_UNIT_ATR, "
+			+ "ANNUAL_UNIT_ATR "
 			+ "FROM "
 			+ "KSRMT_36AGR_OPERATION "
 			+ "WHERE CID = ?1 ";
@@ -62,7 +63,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.SP_Y_ER_TIME, "
 			+ "aa.SP_Y_AL_TIME, "
 			+ "aa.MULTI_M_AVG_ER_TIME, "
-			+ "aa.MULTI_M_AVG_AL_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_CMP aa "
 			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
@@ -83,7 +84,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.SP_Y_ER_TIME, "
 			+ "aa.SP_Y_AL_TIME, "
 			+ "aa.MULTI_M_AVG_ER_TIME, "
-			+ "aa.MULTI_M_AVG_AL_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_EMP aa "
 			+ " LEFT JOIN BSYMT_EMPLOYMENT kk "
@@ -106,11 +107,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.SP_Y_ER_TIME, "
 			+ "aa.SP_Y_AL_TIME, "
 			+ "aa.MULTI_M_AVG_ER_TIME, "
-			+ "aa.MULTI_M_AVG_AL_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_WKP aa "
 			+ " JOIN BSYMT_WKP_INFO kk "
-			+ " ON aa.WKP_ID = kk.WKP_ID"
+			+ " ON aa.WKP_ID = kk.WKP_ID "
 			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
 
 	private static final String SQL_EXPORT_SHEET_7_11 = "SELECT "
@@ -129,7 +130,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.SP_Y_ER_TIME, "
 			+ "aa.SP_Y_AL_TIME, "
 			+ "aa.MULTI_M_AVG_ER_TIME, "
-			+ "aa.MULTI_M_AVG_AL_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_CLS aa "
 			+ " Left JOIN BSYMT_CLASSIFICATION kk ON aa.CLS_CD = kk.CLSCD AND kk.CID = ?cid "
@@ -717,7 +718,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i <= data.length; i++) {
+			for (int i = 0; i < data.length; i++) {
 				datas.add(toDataSheet1(data[i],i));
 			}
 		} catch (Exception e) {
@@ -759,16 +760,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE1)
-                .value(check == 0 ? RegistTimeColumn.S1KMK008_83 : check == 1 ? RegistTimeColumn.S1KMK008_84 : check == 3 ? RegistTimeColumn.S1KMK008_85 : check == 4 ? RegistTimeColumn.S1KMK008_86 : "")
+                .value(check == 0 ? RegistTimeColumn.S1KMK008_83 : check == 1 ? RegistTimeColumn.S1KMK008_84 : check == 2 ? RegistTimeColumn.S1KMK008_85 : check == 3 ? RegistTimeColumn.S1KMK008_86 : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
 		data.put(RegistTimeColumn.S1KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.S1KMK008_81)
-                .value(check == 0 ? EnumAdaptor.valueOf((int)object, StartingMonthType.class).value :
-						check == 1 ? EnumAdaptor.valueOf((int)object, ClosingDateType.class).value : check == 2 ? (boolean)object ? I18NText.getText("#KMK008_177") : I18NText.getText("#KMK008_178") :
-				check == 3 ? (boolean)object ? I18NText.getText("#KMK008_181") : I18NText.getText("#KMK008_182") : "")
-                .style(MasterCellStyle.build().horizontalAlign(check == 0 || check == 2 || check == 3 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
+                .value(check == 0 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), StartingMonthType.class)).getLocalizedName() :
+						check == 1 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), ClosingDateType.class)).getLocalizedName() :
+						check == 2 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("#KMK008_177") : I18NText.getText("#KMK008_178") :
+						check == 3 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("#KMK008_181") : I18NText.getText("#KMK008_182") : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -781,7 +783,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i <= data.length; i++) {
+			for (int i = 0; i < data.length; i++) {
 				datas.add(toDataSheet2(data[i],i));
 			}
 		} catch (Exception e) {
@@ -828,7 +830,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.S2KMK008_81, MasterCellData.builder()
 				.columnId(RegistTimeColumn.S2KMK008_81)
-				.value(EnumAdaptor.valueOf(((int)object),UseClassificationAtr.class).value)
+				.value(EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),UseClassificationAtr.class)).getLocalizedName())
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -841,10 +843,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
 		try {
-			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i < data.length; i++) {
-				datas.add(toDataSheet3(data[i]));
-			}
+			BigDecimal data = (BigDecimal) query.getSingleResult();
+			datas.add(toDataSheet3(data));
 		} catch (Exception e) {
 			for (int i = 0; i < 1; i++) {
 				datas.add(toDataEmptySheet3());
@@ -889,7 +889,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.S3KMK008_81, MasterCellData.builder()
 				.columnId(RegistTimeColumn.S3KMK008_81)
-				.value(object)
+				.value(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class).description)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -912,9 +912,19 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 		try {
-			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i < data.length; i++) {
-				datas.add(toDataSheet4(data[i],i));
+			List<Object[]> data =  query.getResultList();
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet4(objects,i,j));
+					if (j == 0){
+						j = j+1;
+					}else if (j == 7){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
 			}
 		} catch (Exception e) {
 			for (int i = 0; i <=5 ; i++) {
@@ -956,7 +966,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return MasterData.builder().rowData(data).build();
 	}
 
-	private MasterData toDataSheet4(Object object, int check) {
+	private MasterData toDataSheet4(Object[] objects,int check,int param) {
 		Map<String, MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_89)
@@ -967,22 +977,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(1, 4, 9, 12).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(1, 4, 9, 12).contains(param) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(2, 5, 7, 10, 13).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(2, 5, 7, 10, 12).contains(++param) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(3, 6, 8, 11, 13).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 8, 11, 13).contains(++param) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime((int)object) : "")
+				.value(param == 0 ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1063,22 +1073,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1173,22 +1183,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1251,6 +1261,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				for (int i = 0; i < objects.length; i++) {
 					datas.add(toDataSheet7(objects[i], i));
 				}
+
 			} catch (Exception e) {
 				for (int i = 0; i < 7; i++) {
 					datas.add(toDataEmptySheet7(i));
@@ -1282,22 +1293,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1409,22 +1420,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(RegistTimeColumn.S8KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.S8KMK008_92)
-				.value(Arrays.asList(1, 4, 9, 12).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(1, 4, 9, 12).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(2, 5, 7, 10, 13).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(2, 5, 7, 10, 12).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(3, 6, 8, 11, 13).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 8, 11, 13).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime((int)object) : "")
+				.value(check == 0 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1473,22 +1484,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1537,22 +1548,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1601,22 +1612,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_92)
-				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(3, 6, 11, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(4, 7, 9, 12, 14).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime((int)object) : "")
+				.value(Arrays.asList(5, 8, 10, 13,15).contains(check) ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
 				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 2 ? formatTime((int)object) : "")
+				.value(check == 2 ? formatTime(((BigDecimal)object).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
