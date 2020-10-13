@@ -102,28 +102,30 @@ public class SpecialProvisionOfAgreementSelectionQuery {
         // 年月を指定して、36協定期間の年月を取得する
         YearMonth startYm = setting.getYearMonthOfAgreementPeriod(closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd));
         YearMonth endYm = startYm.addMonths(11);
+        YearMonth currentYm = YearMonth.of(baseDate.year(), baseDate.month());
+        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(currentYm, endYm);
+        Map<String, Map<Integer, AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
+        for (String employeeId : employeeIds) {
+            Map<Integer, AgreementTimeOfManagePeriod> timeAll = new HashMap<>();
+            for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
+                timeAll.put(ymIndex.v(), null);
+            }
+            agreementTimeAll.put(employeeId, timeAll);
+        }
 
         // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
         Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeOfMngPeriodAll = GetAgreementTimeOfMngPeriod
-                .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, endYm))
+                .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, endYm.addMonths(-1)))
                 .stream().collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getSid));
 
-        Map<String, Map<Integer, AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
-        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYm, endYm);
         for (String employeeId : employeeIds) {
-            Map<Integer, AgreementTimeOfManagePeriod> timeAll = new HashMap<>();
+            Map<Integer, AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employeeId);
             for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
                 // 【NO.333】36協定時間の取得
                 AgreementTimeOfManagePeriod time = GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
                 if (time != null) {
                     timeAll.put(ymIndex.v(), time);
                 }
-            }
-            agreementTimeAll.put(employeeId, timeAll);
-        }
-        for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
-            for (String employeeId : employeeIds) {
-                GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
             }
         }
 

@@ -54,8 +54,6 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
     @Inject
     private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
     @Inject
-    private BasicAgreementSettingRepository basicAgreementSettingRepo;
-    @Inject
     private AffWorkplaceAdapter affWorkplaceAdapter;
     @Inject
     private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
@@ -71,7 +69,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
         String cid = AppContexts.user().companyId();
         RequireImpl require = new RequireImpl(cid, specialProvisionsOfAgreementRepo, syWorkplaceAdapter,
                 agreementUnitSettingRepository,
-                affClassificationAdapter, agreementTimeOfClassificationRepo, basicAgreementSettingRepo,
+                affClassificationAdapter, agreementTimeOfClassificationRepo,
                 affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
                 agreementTimeOfEmploymentRepo, agreementTimeCompanyRepo);
         List<RegisterAppSpecialProvisionYearCommand> commands = context.getCommand();
@@ -91,7 +89,6 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
         private AgreementUnitSettingRepository agreementUnitSettingRepository;
         private AffClassificationAdapter affClassificationAdapter;
         private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-        private BasicAgreementSettingRepository basicAgreementSettingRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
         private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
         private SyEmploymentAdapter syEmploymentAdapter;

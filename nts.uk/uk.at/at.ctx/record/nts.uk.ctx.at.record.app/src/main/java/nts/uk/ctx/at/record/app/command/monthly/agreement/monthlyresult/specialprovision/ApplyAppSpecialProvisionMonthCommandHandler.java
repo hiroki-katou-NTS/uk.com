@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppUpdate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
@@ -106,7 +107,7 @@ public class ApplyAppSpecialProvisionMonthCommandHandler extends CommandHandler<
         }
 
         @Override
-        public AgreementExcessInfo algorithm(String employeeId, Year year) {
+        public AgreementExcessInfo algorithm(CheckErrorApplicationMonthService.Require require, String employeeId, Year year) {
             return null;
         }
 

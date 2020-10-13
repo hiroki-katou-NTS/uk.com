@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kaf021.query.c_d;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -53,8 +54,9 @@ public class SpecialProvisionOfAgreementAppListQuery {
      */
     public SpecialProvisionOfAgreementAppListDto search(GeneralDate startDate, GeneralDate endDate, List<Integer> status) {
         String sid = AppContexts.user().employeeId();
-
-        specialProvisionsOfAgreementRepo.getByApproverSID(sid, startDate, endDate, new ArrayList<>());
+        List<ApprovalStatus> listApprove = status.stream().map(x -> EnumAdaptor.valueOf(x, ApprovalStatus.class)).collect(Collectors.toList());
+        specialProvisionsOfAgreementRepo.getByApproverSID(sid, startDate, endDate, listApprove);
+        // specialProvisionsOfAgreementRepo.getByConfirmerSID(sid, startDate, endDate, listApprove);
         // TODO Q&A
         List<SpecialProvisionsOfAgreement> agreements = new ArrayList<>();
 

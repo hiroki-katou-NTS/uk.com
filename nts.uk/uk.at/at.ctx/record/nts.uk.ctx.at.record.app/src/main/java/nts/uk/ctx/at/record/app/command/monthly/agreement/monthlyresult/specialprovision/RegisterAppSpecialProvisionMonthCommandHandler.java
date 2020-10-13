@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppCreate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
@@ -63,8 +64,6 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
     private AffClassificationAdapter affClassificationAdapter;
     @Inject
     private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
-    @Inject
-    private BasicAgreementSettingRepository basicAgreementSettingRepo;
     @Inject
     private AffWorkplaceAdapter affWorkplaceAdapter;
     @Inject
@@ -190,7 +189,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
         }
 
         @Override
-        public AgreementExcessInfo algorithm(String employeeId, nts.arc.time.calendar.Year year) {
+        public AgreementExcessInfo algorithm(CheckErrorApplicationMonthService.Require require, String employeeId, nts.arc.time.calendar.Year year) {
             return null;
         }
 
