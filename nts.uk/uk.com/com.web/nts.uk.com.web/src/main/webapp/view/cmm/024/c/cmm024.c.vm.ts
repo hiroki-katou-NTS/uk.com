@@ -77,7 +77,8 @@ module nts.uk.com.view.cmm024.c {
 					if (!nts.uk.util.isNullOrUndefined(currentDateHistory)) {
 						personalInfoApprove = currentDateHistory.personalInfoApprove;
 						personalInfoConfirm = currentDateHistory.personalInfoConfirm;
-					}
+					} else 
+						vm.registrationHistoryType(HistoryRes.HISTORY_NEW); //list is empty
 
 					newScheduleHistoryDto = new ScheduleHistoryDto(
 						startDate,
