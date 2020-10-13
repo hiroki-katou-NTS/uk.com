@@ -353,12 +353,12 @@
 							<div id="functon-area-row2-center">
 								<div id="A3_1">
 									<button id="prevMonth" class="size-image-button3"
-										data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57, width: 20, height: 20 }"></i> </button>
+										data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
 									<span id="date-time-prev" data-bind="text: dateTimePrev"></span>
 									<span id="special">#{i18n.getText('KSU001_66')}</span> <span
 										id="date-time-after" data-bind="text: dateTimeAfter"></span>
 									<button id="nextMonth" class="size-image-button3"
-										data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58, width: 20, height: 20 }"></i></button>
+										data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
 
 									<div id="A3_2" class="cf" style="margin-left: 5px"
 										data-bind="ntsSwitchButton: {
@@ -395,9 +395,9 @@
 											data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
 										<br />
 										<button id="undo" class="size-image-button2 A7_4"
-											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>
+											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"><i data-bind="ntsIcon: { no: 44 }"></i></button>
 										<button id="redo" class="size-image-button2 A7_5"
-											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"></button>
+											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"><i data-bind="ntsIcon: { no: 154 }"></i></button>
 										<button
 											data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
 											style="margin-top: 13px;">？</button>
@@ -433,7 +433,7 @@
 										<div id="extable"></div>
 									</div>
 									<div style="float: left; width: 27px; margin-left: -30px">
-										<button class="settingHeightGrid"></button>
+										<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3 }"></i> </button>
 									</div>
 								</div>
 							</div>

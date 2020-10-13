@@ -145,10 +145,6 @@
 	margin-top: 3px;
 }
 
-.setting-button {
-	background: url(../image/image008.png) no-repeat center;
-}
-
 #A5 {
 	background: url(../image/image099.png) no-repeat center;
 }
@@ -292,10 +288,9 @@
 
 #undo {
 	margin-top: 6px;
-	background: url(../image/image030.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 }
 
 button[disabled] {
@@ -306,10 +301,9 @@ button[disabled] {
 
 #redo {
 	margin-top: 6px;
-	background: url(../image/image031.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
 }
@@ -525,7 +519,6 @@ html {
 }
 
 .settingHeightGrid {
-	background: url(../image/iconsetting.png) no-repeat center;
 	width: 27px;
 	height: 27px;
 }
