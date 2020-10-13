@@ -231,7 +231,9 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             }
             _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
-
+        openScreenE() {
+          nts.uk.ui.windows.sub.modal("/view/ccg/008/e/index.xhtml");
+        }
         //for setting dialog
         openDialogB() {
             var self = this;
