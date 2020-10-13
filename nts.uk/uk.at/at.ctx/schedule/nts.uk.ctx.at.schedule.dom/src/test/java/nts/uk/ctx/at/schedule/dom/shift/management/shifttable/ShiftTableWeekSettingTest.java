@@ -121,7 +121,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 17) );
 		
 	}
 	
@@ -138,7 +139,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 17) );
 		
 	}
 	
@@ -155,7 +157,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 24) );
 		
 	}
 	
@@ -172,7 +175,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 24) );
 		
 	}
 	
@@ -189,7 +193,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 24) );
 	}
 	
 	/**
@@ -205,7 +210,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 25), GeneralDate.ymd(2020, 10, 31)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 25) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 31) );
 	}
 	
 	/**
@@ -221,7 +227,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 17) );
 	}
 	
 	/**
@@ -237,7 +244,8 @@ public class ShiftTableWeekSettingTest {
 		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
-		assertThat(ruleInfo.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 18), GeneralDate.ymd(2020, 10, 24)));
+		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
+		assertThat( ruleInfo.getPeriod().end() ).isEqualTo( GeneralDate.ymd(2020, 10, 24) );
 	}
 	
 	@Test
@@ -248,7 +256,8 @@ public class ShiftTableWeekSettingTest {
 		
 		DatePeriod period = target.getPeriodWhichIncludeExpectingDate(GeneralDate.ymd(2020, 10, 15));
 		
-		assertThat(period).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 10, 11), GeneralDate.ymd(2020, 10, 17)));
+		assertThat( period.start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
+		assertThat( period.end() ).isEqualTo( GeneralDate.ymd(2020, 10, 17) );
 	} 
 
 }

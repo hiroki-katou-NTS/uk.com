@@ -17,8 +17,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @RunWith(JMockit.class)
 public class GetShiftTableRuleForOrganizationServiceTest {
 	
-	GetShiftTableRuleForOrganizationService a;
-	
 	@Injectable
 	GetShiftTableRuleForOrganizationService.Require require;
 	
