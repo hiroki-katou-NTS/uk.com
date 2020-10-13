@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeSetDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
@@ -102,8 +101,8 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						data.put("他言語名称", timeLang.get().getTotalTimesNameEng());
 					}
 
-					List<String> lista= optTotalTimes.get().getSummaryList().get().getWorkTypeCodes();
-					List<String> listb= optTotalTimes.get().getSummaryList().get().getWorkTimeCodes();
+					List<String> lista= optTotalTimes.get().getSummaryList().getWorkTypeCodes();
+					List<String> listb= optTotalTimes.get().getSummaryList().getWorkTimeCodes();
 					
 					for(int n= 0;n<lista.size();n++){
 						// chua kt de add
@@ -148,7 +147,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					
 					List<Integer> listAtdtemId = new ArrayList<>();
-					listAtdtemId.add(c.getTotalCondition().getAtdItemId());
+					listAtdtemId.add(c.getTotalCondition().getAtdItemId().get());
 					
 					List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
 							.getDailyAttendanceItemName(listAtdtemId);
@@ -211,7 +210,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					if(c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件以上", "○");
 
-						ConditionThresholdLimit cond = new ConditionThresholdLimit(c.getTotalCondition().getThresoldLowerLimit().valueAsMinutes());
+						ConditionThresholdLimit cond = new ConditionThresholdLimit(c.getTotalCondition().getThresoldLowerLimit().get().valueAsMinutes());
 						String ThresholdLimit = "";
 						if(cond.minute()<10){
 							ThresholdLimit =  cond.hour() +":0"+ cond.minute();
@@ -226,7 +225,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件未満", "○");
-						ConditionThresholdLimit cond2 = new ConditionThresholdLimit(c.getTotalCondition().getThresoldUpperLimit().valueAsMinutes());
+						ConditionThresholdLimit cond2 = new ConditionThresholdLimit(c.getTotalCondition().getThresoldUpperLimit().get().valueAsMinutes());
 						String thresoldUpperLimit = "";
 						if(cond2.minute()<10){
 							thresoldUpperLimit =  cond2.hour() +":0"+ cond2.minute();

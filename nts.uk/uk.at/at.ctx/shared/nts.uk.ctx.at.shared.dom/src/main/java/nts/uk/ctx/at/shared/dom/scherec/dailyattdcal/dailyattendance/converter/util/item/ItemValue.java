@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util.item;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item;
 
 import java.time.format.DateTimeFormatter;
 //import java.time.format.DateTimeFormatterBuilder;
@@ -115,8 +115,8 @@ public class ItemValue {
 	}
 	
 	public <T> T valueOrDefault(T defaultVal) {
-		if(isHaveValue()){
-			return defaultVal;
+		if(!isHaveValue()){
+			return defaultVal; 
 		}
 		return value();
 	}

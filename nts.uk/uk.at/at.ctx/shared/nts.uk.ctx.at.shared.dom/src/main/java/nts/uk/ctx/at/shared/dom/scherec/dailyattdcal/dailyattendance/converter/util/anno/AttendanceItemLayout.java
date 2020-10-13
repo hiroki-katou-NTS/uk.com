@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util.anno;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance.util;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.MonthlyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.MonthlyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 public class AttendanceItemIdContainer implements ItemConst {
 

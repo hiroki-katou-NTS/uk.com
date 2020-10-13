@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.attendanceitem.util;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service;
 
 import java.util.Map;
 

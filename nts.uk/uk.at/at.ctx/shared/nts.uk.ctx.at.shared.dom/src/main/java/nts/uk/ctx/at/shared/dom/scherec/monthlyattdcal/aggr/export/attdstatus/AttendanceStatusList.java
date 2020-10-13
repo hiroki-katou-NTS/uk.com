@@ -119,7 +119,8 @@ public class AttendanceStatusList {
 	 */
 	public boolean isAttendanceDay(GeneralDate ymd){
 
-		if (this.map.containsKey(ymd)) return this.map.get(ymd).isExistAttendance();
+		if (this.map.containsKey(ymd)) 
+			return this.map.get(ymd).isExistAttendance();
 		return false;
 	}
 	
