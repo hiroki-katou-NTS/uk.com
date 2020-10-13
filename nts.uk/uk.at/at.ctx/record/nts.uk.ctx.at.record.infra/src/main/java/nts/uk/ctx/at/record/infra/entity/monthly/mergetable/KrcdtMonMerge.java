@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -2222,12 +2223,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.firstWorkplaceId = domain.getFirstInfo().getWorkplaceId().v();
 		this.firstJobTitleId = domain.getFirstInfo().getJobTitleId().v();
 		this.firstClassCd = domain.getFirstInfo().getClassCd().v();
-		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().v();
+		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		this.lastEmploymentCd = domain.getLastInfo().getEmploymentCd().v();
 		this.lastWorkplaceId = domain.getLastInfo().getWorkplaceId().v();
 		this.lastJobTitleId = domain.getLastInfo().getJobTitleId().v();
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
-		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().v();
+		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		
 		this.version = domain.getVersion();
 	}
@@ -2972,13 +2973,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new WorkplaceId(this.firstWorkplaceId),
 						new JobTitleId(this.firstJobTitleId),
 						new ClassificationCode(this.firstClassCd),
-						new BusinessTypeCode(this.firstBusinessTypeCd)),
+						Optional.ofNullable(this.firstBusinessTypeCd == null ? null : new BusinessTypeCode(this.firstBusinessTypeCd))),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.lastEmploymentCd),
 						new WorkplaceId(this.lastWorkplaceId),
 						new JobTitleId(this.lastJobTitleId),
 						new ClassificationCode(this.lastClassCd),
-						new BusinessTypeCode(this.lastBusinessTypeCd)));
+						Optional.ofNullable(this.lastBusinessTypeCd == null ? null : new BusinessTypeCode(this.lastBusinessTypeCd))));
 		
 		domain.setVersion(this.version);
 		

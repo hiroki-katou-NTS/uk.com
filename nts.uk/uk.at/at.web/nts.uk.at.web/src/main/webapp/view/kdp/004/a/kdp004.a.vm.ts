@@ -275,8 +275,8 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openScreenF({
 											mode: 'fingerVein',
-											companyId: vm.$user.companyId,
-											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode },
+											companyId: self.loginInfo.companyId,
+											employee: { id: self.loginInfo.employeeId, code: self.loginInfo.employeeCode },
 											passwordRequired: true
 										});
 									}
@@ -427,7 +427,7 @@ module nts.uk.at.view.kdp004.a {
 					//phat nhac
 					self.playAudio(button.audioType);
 
-					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
 						self.openScreenC(button, layout, loginInfo.em);
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);

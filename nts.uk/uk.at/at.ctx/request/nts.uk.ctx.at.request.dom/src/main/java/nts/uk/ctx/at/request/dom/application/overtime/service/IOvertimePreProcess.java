@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 

@@ -2,9 +2,9 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**

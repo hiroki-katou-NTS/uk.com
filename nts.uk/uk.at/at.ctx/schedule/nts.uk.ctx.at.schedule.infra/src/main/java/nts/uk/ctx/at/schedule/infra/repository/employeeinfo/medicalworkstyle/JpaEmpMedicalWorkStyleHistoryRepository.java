@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.medicalworkstyle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +45,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public List<EmpMedicalWorkFormHisItem> get(List<String> listEmpId, GeneralDate referenceDate) {
+		if(listEmpId.isEmpty())
+			return new ArrayList<EmpMedicalWorkFormHisItem>();
 		List<EmpMedicalWorkFormHisItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KscmtMedicalWorkStyle.class)
 																.setParameter("listEmpId", listEmpId)
 																.setParameter("referenceDate", referenceDate)
