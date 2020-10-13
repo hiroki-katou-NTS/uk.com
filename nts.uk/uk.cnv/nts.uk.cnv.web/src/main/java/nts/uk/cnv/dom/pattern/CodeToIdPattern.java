@@ -29,18 +29,20 @@ public class CodeToIdPattern extends ConversionPattern {
 
 	//TODO: 履歴あるテーブルどうしよう...
 	public enum CodeToIdType{
-		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "CODE", "ID"),
-		TO_SID("BSYMT_EMP_DTA_MNG_INFO", "SCD", "SID"),
-		TO_JOB_ID("BSYMT_JOB_INFO", "JOB_CD", "JOB_ID");
+		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "CODE", "ID", ""),
+		TO_SID("SCVMT_MAPPING_CODE_TO_SCD", "SCD", "SID", "CCD"),
+		TO_JOB_ID("SCVMT_MAPPING_CODE_TO_JOBID", "JOB_CD", "JOB_ID", "CCD");
 
 		private final String tableName;
 		private final String idColumnName;
 		private final String codeColumnName;
+		private final String ccd;
 
-		CodeToIdType(String tableName, String codeColumnName, String idColumnName){
+		CodeToIdType(String tableName, String codeColumnName, String idColumnName, String ccd){
 			this.tableName = tableName;
 			this.codeColumnName = codeColumnName;
 			this.idColumnName = idColumnName;
+			this.ccd = ccd;
 		}
 
 		public String getTableName() {
@@ -51,6 +53,9 @@ public class CodeToIdPattern extends ConversionPattern {
 		}
 		public String getCodeColumnName() {
 			return this.codeColumnName;
+		}
+		public String getCcdColumnName() {
+			return this.ccd;
 		}
 	}
 
@@ -86,7 +91,7 @@ public class CodeToIdPattern extends ConversionPattern {
 
 		if (this.sourceCcdColumnName.isPresent()) {
 			conversionSql.getWhere().add( new WhereSentence(
-					new ColumnName(idConvertJoin.getTableName().getAlias(), this.sourceCcdColumnName.get()),
+					new ColumnName(idConvertJoin.getTableName().getAlias(), this.codeToIdType.getCcdColumnName()),
 					RelationalOperator.Equal,
 					Optional.of(new ColumnExpression(
 							Optional.of(this.sourceJoin.getTableName().getAlias()),

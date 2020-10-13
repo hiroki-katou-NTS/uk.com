@@ -1,5 +1,7 @@
 package nts.uk.cnv.app.service;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionRecord;
@@ -41,16 +42,32 @@ public class CodeGenerator {
 	@Inject
 	CreateConversionCodeService service;
 
-	public String excecute(ConversionInfo info) {
+	public void excecute(ConversionInfo info, String filePath) {
 
-		val require = new RequireImpl(
+		CreateConversionCodeService.Require require = new RequireImpl(
 			categoryPriorityRepository,
 			conversionRecordRepository,
 			conversionSourceRepository,
 			conversionTableRepository,
 			conversionCategoryTableRepository);
 
-		return service.create(require, info);
+		String conversionCode = service.create(require, info);
+
+		File file = new File(filePath);
+
+		try {
+			FileWriter fileWriter = new FileWriter(file);
+
+			file.createNewFile();
+			fileWriter.write(conversionCode);
+
+			fileWriter.close();
+
+			System.out.println("ファイル[" + file.getName() + "]を出力しました。");
+		}
+		catch(Exception ex) {
+			System.out.println("ファイル[" + file.getName() + "]の出力に失敗しました。:" + ex.getMessage());
+		}
 	}
 
 	@RequiredArgsConstructor
@@ -65,6 +82,9 @@ public class CodeGenerator {
 		private final ConversionTableRepository conversionTableRepository;
 
 		private final ConversionCategoryTableRepository conversionCategoryTableRepository;
+
+		private String preProcessing = "";
+		private String postProcessing = "";
 
 		@Override
 		public List<String> getCategoryPriorities() {
@@ -91,6 +111,28 @@ public class CodeGenerator {
 		@Override
 		public ConversionSource getSource(String sourceId) {
 			return conversionSourceRepository.get(sourceId);
+		}
+
+		@Override
+		public void addPreProcessing(String sql) {
+			this.preProcessing += sql;
+
+		}
+
+		@Override
+		public void addPostProcessing(String sql) {
+			this.postProcessing += sql;
+		}
+
+		@Override
+		public String getPreProcessing() {
+			return this.preProcessing;
+
+		}
+
+		@Override
+		public String getPostProcessing() {
+			return this.postProcessing;
 		}
 
 	}

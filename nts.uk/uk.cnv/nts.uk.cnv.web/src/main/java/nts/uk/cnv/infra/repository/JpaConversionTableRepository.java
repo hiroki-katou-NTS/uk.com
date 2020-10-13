@@ -1,5 +1,6 @@
 package nts.uk.cnv.infra.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.conversionsql.Join;
+import nts.uk.cnv.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.dom.conversionsql.TableName;
 import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
@@ -91,8 +94,11 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 			.setParameter("recordNo", recordNo)
 			.getList();
 
+
 		return entities.stream()
-				.map(entity -> entity.toDomain(null, null))
+				.map(entity -> entity.toDomain(
+						ConversionInfo.createDummry(),
+						new Join(new TableName("", "", "", ""), JoinAtr.Main, new ArrayList<>())))
 				.collect(Collectors.toList());
 	}
 

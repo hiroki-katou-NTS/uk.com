@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * SELECT句
@@ -13,17 +14,18 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
+@Getter
 public class SelectSentence {
 	private ColumnExpression expression;
-	
+
 	private TreeMap<FormatType, String> formatTable;
-	
+
 	public String sql() {
 		String formatedExpression = this.expression.sql();
-		
+
 		for ( String format : formatTable.values() ) {
 				Object[] expressions = createParam(formatedExpression, format);
-				
+
 				formatedExpression = String.format(format, expressions);
 		}
 		return formatedExpression;
@@ -36,13 +38,13 @@ public class SelectSentence {
 		for ( int i=0; i<count; i++) expressions[i] = formatedExpression;
 		return expressions;
 	}
-	
+
 	public static String join(List<SelectSentence> sentences) {
 		return
 				" SELECT " + "\r\n    " +
 				String.join("," + "\r\n    " , sentences.stream().map(s -> s.sql()).collect(Collectors.toList()));
 	}
-	
+
 	public static SelectSentence createNotFormat(String alias, String column) {
 		return new SelectSentence(
 				new ColumnExpression(

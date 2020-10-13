@@ -52,11 +52,11 @@ public class ConversionPatternFactory {
 						param.getFixedValueWithCond());
 			case Parent:
 				List<OnSentence> onSentences = new ArrayList<>();
-				for (String parentColumn : param.getJoinParentColumns().split(",")) {
+				for (String pk : param.getJoinPKs().split(",")) {
 					onSentences.add(
 						new OnSentence(
-							new ColumnName("parent", parentColumn),
-							new ColumnName("couverted_source", parentColumn)
+							new ColumnName("parent", pk),
+							new ColumnName("couverted_source", pk)
 						)
 					);
 				}

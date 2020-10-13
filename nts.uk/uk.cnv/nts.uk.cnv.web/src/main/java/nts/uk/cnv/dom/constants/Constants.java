@@ -6,13 +6,13 @@ public final class Constants {
     public static final String BaseTableAlias = "base";
 
 	/** 契約コード **/
-    public static final String ContractCodeParamName = "ContractCode";
+    public static final String ContractCodeParamName = "CONTRACT_CD";
 
     /** CID変換テーブル名 **/
-    public static final String CidMappingTableName = "SCVMT_CCD_TO_CID";
+    public static final String CidMappingTableName = "SCVMT_MAPPING_CODE_TO_CID";
 
     /** 暗号化テーブル名 **/
-    public static final String EncryptionTableName = "SCVMT_ENCRYPTION_MAPPING";
+    public static final String EncryptionTableName = "SCVMT_MAPPING_PASSWORD";
     /** 暗号化テーブルエイリアス名 **/
     public static final String EncryptionTableAlias = "pass";
     /** 暗号化列名 **/

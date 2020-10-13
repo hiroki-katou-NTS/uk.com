@@ -16,7 +16,7 @@ public class InsertSentence {
 	private TableName table;
 	/** 列の式リスト **/
 	private List<ColumnExpression> expressions;
-	
+
 	public void addExpression(ColumnExpression value) {
 		expressions.add(value);
 	}
@@ -28,6 +28,6 @@ public class InsertSentence {
 				")" + "\r\n" +
 				"(" + "\r\n" +
 				select +
-				")";
+				");";
 	}
 }

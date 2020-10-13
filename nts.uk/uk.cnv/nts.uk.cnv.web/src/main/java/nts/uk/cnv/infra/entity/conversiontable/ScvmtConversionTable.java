@@ -181,6 +181,9 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 	private List<WhereSentence> createWhereSentence(ConversionInfo info, String sourceCondition) {
 
 		List<WhereSentence> where = new ArrayList<>();
+
+		if (sourceCondition == null || sourceCondition.isEmpty()) return where;
+
 		String[] conditions = sourceCondition.toUpperCase().split("AND");
 
 		for (String condition : conditions) {

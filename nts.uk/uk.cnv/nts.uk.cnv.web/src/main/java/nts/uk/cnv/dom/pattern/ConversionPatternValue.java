@@ -32,7 +32,7 @@ public interface ConversionPatternValue {
 	/** PARENT **/
 	String getParentTable();
 	String getSourceColumn_parent();
-	String getJoinParentColumns();
+	String getJoinPKs();
 
 	/** STRING_CONCAT **/
 	String getSourceColumn1();

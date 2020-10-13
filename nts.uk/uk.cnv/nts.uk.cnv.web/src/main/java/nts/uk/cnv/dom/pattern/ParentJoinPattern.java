@@ -15,11 +15,22 @@ public class ParentJoinPattern extends ConversionPattern {
 
 	private String parentColumn;
 
+	private String targetTable;
+
 	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join parentJoin, String parentColumn) {
 		super(info);
 		this.sourceJoin = sourceJoin;
 		this.parentJoin = parentJoin;
 		this.parentColumn = parentColumn;
+		this.targetTable = "";
+	}
+
+	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join parentJoin, String parentColumn, String targetTable) {
+		super(info);
+		this.sourceJoin = sourceJoin;
+		this.parentJoin = parentJoin;
+		this.parentColumn = parentColumn;
+		this.targetTable = targetTable;
 	}
 
 	@Override

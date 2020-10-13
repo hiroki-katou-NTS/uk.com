@@ -38,7 +38,7 @@ public class FindConversionTableResult {
 	/** PARENT **/
 	String parentTable;
 	String sourceColumn_parent;
-	String joinParentColumns;
+	String joinPKs;
 
 	/** STRING_CONCAT **/
 	String sourceColumn1;

@@ -148,7 +148,7 @@ public class ConversionTableService {
 			ParentJoinPattern parent = (ParentJoinPattern) domain.getPattern();
 			result.setParentTable(parent.getParentJoin().getTableName().getName());
 			result.setSourceColumn_parent(parent.getParentColumn());
-			result.setJoinParentColumns(
+			result.setJoinPKs(
 						String.join(
 							",",
 							parent.getParentJoin().onSentences.stream()

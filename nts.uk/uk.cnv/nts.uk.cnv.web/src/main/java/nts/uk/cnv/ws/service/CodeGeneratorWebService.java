@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.cnv.app.dto.CodeGeneratorExcecuteDto;
 import nts.uk.cnv.app.service.CodeGenerator;
 import nts.uk.cnv.dom.databasetype.DatabaseType;
 import nts.uk.cnv.dom.service.ConversionInfo;
@@ -16,20 +17,19 @@ public class CodeGeneratorWebService extends WebService{
 
 	@Inject
 	private CodeGenerator codeGeneratorService;
-	
+
 	@POST
 	@Path("excecute")
-	public String excecute(String dbtype, String sourceDbName, String sourceSchema,
-			 String targetDbName, String targetSchema, String contractCode) {
+	public void excecute(CodeGeneratorExcecuteDto param) {
 		ConversionInfo info = new ConversionInfo(
-				Enum.valueOf(DatabaseType.class, dbtype),
-				sourceDbName,
-				sourceSchema,
-				targetDbName,
-				targetSchema,
-				contractCode
+				Enum.valueOf(DatabaseType.class, param.getDbtype()),
+				param.getSourceDbName(),
+				param.getSourceSchema(),
+				param.getTargetDbName(),
+				param.getTargetSchema(),
+				param.getContractCode()
 			);
-		
-		return this.codeGeneratorService.excecute(info);
+
+		this.codeGeneratorService.excecute(info, param.getFilePath());
 	}
 }

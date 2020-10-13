@@ -11,32 +11,39 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.uk.cnv.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableTestHelper;
 import nts.uk.cnv.dom.databasetype.DatabaseType;
+import nts.uk.cnv.dom.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.dom.pattern.manager.ParentJoinPatternManager;
 
 @RunWith(JMockit.class)
 public class CreateConversionCodeServiceTest {
+	@Tested
+	CreateConversionCodeService target;
 
 	@Injectable
 	CreateConversionCodeService.Require require;
 
+	@Injectable
+	ParentJoinPatternManager manager;
+
 	@Test
 	public void test_methodCall() {
-		CreateConversionCodeService target = new CreateConversionCodeService();
-
 		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "000000000000");
 		List<String> dummyCategories = Arrays.asList("", "2_PERSON", "3_WEBMENU");
 		List<String> dummyTables = Arrays.asList("TABLE_1", "TABLE_2");
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
 		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
 
-
 		Optional<ConversionTable> dummyConversionTable =
 				Optional.of(ConversionTableTestHelper.create_emptyDummy());
+
+		AdditionalConversionCode dummyAdditionalConversionCode = new AdditionalConversionCode("<dummyPreProcessingSql>","<dummyPostProcessingSql>", null);
 
 		new Expectations() {{
 			require.getCategoryPriorities();
@@ -50,6 +57,9 @@ public class CreateConversionCodeServiceTest {
 
 			require.getConversionTable(info, (String) any, (String) any, 1, null);
 			result = dummyConversionTable;
+
+			manager.createAdditionalConversionCode(info, (String) any, dummyConversionTable.get());
+			result = dummyAdditionalConversionCode;
 		}};
 
 		String result = target.create(require, info);
@@ -85,7 +95,6 @@ public class CreateConversionCodeServiceTest {
 	@Test
 	public void test_sqlServer_simple() {
 		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "000000000000");
-		CreateConversionCodeService target = new CreateConversionCodeService();
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
 		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
 

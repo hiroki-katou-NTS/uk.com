@@ -1,7 +1,8 @@
 package nts.uk.cnv.infra.entity.pattern;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -16,11 +17,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.constants.Constants;
+import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
+import nts.uk.cnv.dom.conversionsql.OnSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
 import nts.uk.cnv.dom.pattern.ConversionPattern;
 import nts.uk.cnv.dom.pattern.ParentJoinPattern;
+import nts.uk.cnv.dom.pattern.manager.ParentJoinPatternManager;
 import nts.uk.cnv.dom.service.ConversionInfo;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
@@ -60,15 +65,22 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 	}
 
 	public ParentJoinPattern toDomain(ConversionInfo info, Join sourceJoin) {
-		//TODO:これじゃあだめ
+		List<String> col = Arrays.asList(this.joinParentColumns.split(","));
+		List<OnSentence> on  = col.stream()
+			.map(column -> new OnSentence(
+					new ColumnName("parent_" + parentColumnName, ParentJoinPatternManager.getSourcePkName(col.indexOf(column))),
+					new ColumnName(Constants.BaseTableAlias, column)
+				))
+			.collect(Collectors.toList());
 		return new ParentJoinPattern(
 				info,
 				sourceJoin,
 				new Join(
-					new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), parentName, "parent_" + parentColumnName),
+					new TableName("", "", ParentJoinPatternManager.parentMappingTable, "parent_" + parentColumnName),
 					JoinAtr.OuterJoin,
-					new ArrayList<>()),
-				parentColumnName
+					on),
+				parentColumnName,
+				this.pk.getTargetTableName()
 			);
 	}
 

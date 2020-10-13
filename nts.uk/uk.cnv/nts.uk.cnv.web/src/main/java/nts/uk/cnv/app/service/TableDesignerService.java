@@ -122,7 +122,7 @@ public class TableDesignerService {
 					inProcessingSql = ddl.get("CREATE TABLE");
 					UkTableDesignImportCommand command = new UkTableDesignImportCommand(ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType());
 
-					transactionService.execute(() -> {
+					TransactionService.newTran(() -> {
 						handler.handle(command);
 					});
 
@@ -269,6 +269,7 @@ public class TableDesignerService {
 				.replace("[int]", "[int(10)]")
 				.replace("[", "")
 				.replace("]", "")
+				.replaceAll("CHECK \\(( |[A-Z]|[a-z]|[0-9]|=|>|<|_)*?\\)", "")
 				.split("CREATE TABLE")
 			)
 			.filter(s -> !s.isEmpty())

@@ -2,20 +2,16 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.Join;
 import nts.uk.cnv.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.dom.conversionsql.TableName;
-import nts.uk.cnv.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
@@ -55,11 +51,14 @@ public class CodeToCodePattern extends ConversionPattern  {
 					mappingTableJoin.tableName.getAlias(),
 					Constants.MAPPING_OUT_COLUMN_NAME));
 
-		conversionSql.getWhere().add(new WhereSentence(
-				new ColumnName(mappingAlias(), Constants.MAPPING_TYPE_COLUMN_NAME),
-				RelationalOperator.Equal,
-				Optional.of(new ColumnExpression(Optional.empty(), this.mappingType))
-			));
+//		conversionSql.getWhere().add(new WhereSentence(
+//				new ColumnName(mappingAlias(), Constants.MAPPING_TYPE_COLUMN_NAME),
+//				RelationalOperator.Equal,
+//				Optional.of(new ColumnExpression(
+//						Optional.empty(),
+//						"'" + this.mappingType + "'"
+//					))
+//			));
 
 		return conversionSql;
 	}
@@ -67,14 +66,18 @@ public class CodeToCodePattern extends ConversionPattern  {
 	private Join mappingJoin() {
 		List<OnSentence> onSentences = new ArrayList<>();
 		onSentences.add(new OnSentence(
-				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName),
-				new ColumnName(mappingAlias(), Constants.MAPPING_IN_COLUMN_NAME)
+				new ColumnName(mappingAlias(), Constants.MAPPING_IN_COLUMN_NAME),
+				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName)
+			));
+		onSentences.add(new OnSentence(
+				new ColumnName(mappingAlias(), Constants.MAPPING_TYPE_COLUMN_NAME),
+				new ColumnName("", "'" + this.mappingType + "'")
 			));
 
 		return new Join(
 				new TableName(
-					info.getSourceDatabaseName(),
-					info.getSourceSchema(),
+					info.getTargetDatabaseName(),
+					info.getTargetSchema(),
 					Constants.MAPPING_TABLE_NAME,
 					this.mappingAlias()
 				),
@@ -84,6 +87,6 @@ public class CodeToCodePattern extends ConversionPattern  {
 	}
 
 	private String mappingAlias() {
-		return Constants.MAPPING_TABLE_NAME + "_" + this.mappingType;
+		return Constants.MAPPING_TABLE_NAME + "_" + this.sourceColumnName;
 	}
 }
