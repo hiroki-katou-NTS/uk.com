@@ -7,29 +7,36 @@ module nts.uk.com.view.ccg034.d {
     // ...
   }
 
+  const CELL_SIZE: number = 40;
+
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    $menuCreationLayout: JQuery = null;
+    $hoverHighlight: JQuery = null;
+
     toppagePartCode: KnockoutObservable<string> = ko.observable(null);
     toppagePartName: KnockoutObservable<string> = ko.observable(null);
 
     mounted() {
       const vm = this;
+      // Store creation layout as class variable for easier access
+      vm.$menuCreationLayout = $('#menu-creation-layout');
       // Init dragable item
       $(".menu-creation-option").draggable({
         appendTo: '#menu-creation-layout',
         helper: "clone",
         start: (event, ui) => {
-          ui.helper.addClass("menu-creation-item");
+          vm.startHoveringItem(ui, 160, 80);
         },
         drag: (event, ui) => {
-          vm.renderHoveringItem(ui);
+          vm.renderHoveringItem(ui, 160, 80);
         },
         stop: (event, ui) => {
-
+          vm.createItem(ui, 160, 80);
         },
       });
       // Init dropable layout
-      $('#menu-creation-layout').droppable({
+      vm.$menuCreationLayout.droppable({
         accept: ".menu-creation-item",
         drop: (event, ui) => {
 
@@ -37,22 +44,58 @@ module nts.uk.com.view.ccg034.d {
       });
     }
 
-    private renderHoveringItem(item: JQueryUI.DraggableEventUIParams) {
-      console.log(item);
+    /**
+     * Start drag item
+     * @param item
+     * @param width
+     * @param height
+     */
+    private startHoveringItem(item: JQueryUI.DraggableEventUIParams, width: number, height: number) {
+      // Init size + style for dragging item
+      item.helper.width(width);
+      item.helper.height(height);
+      item.helper.addClass("menu-creation-item");
     }
 
-    public addNewItem() {
-      // $('#menu-creation-layout').append(`<div class="menu-creation-item"></div>`);
-      // $(".menu-creation-item").draggable({
-      //   appendTo: '#menu-creation-layout',
-      //   containment: '#menu-creation-layout',
-      //   start: (event, ui) => {
+    /**
+     * Render hovering highlight effect on drag
+     * @param item
+     */
+    private renderHoveringItem(item: JQueryUI.DraggableEventUIParams, width: number, height: number) {
+      // Parent layout must have position: relative for item.position to be corrected
+      const vm = this;
+      // Calculate highlight div position
+      let positionTop: number = item.position.top > 0 ? Math.round(item.position.top / CELL_SIZE) * CELL_SIZE : 0;
+      let positionLeft: number = item.position.left > 0 ? Math.round(item.position.left / CELL_SIZE) * CELL_SIZE : 0;
+      // If not existed, create new highlight div
+      if (!vm.$hoverHighlight) {
+        vm.$hoverHighlight = $("<div>", { id: "item-highlight", "class": "menu-creation-item-highlight" });
+      }
+      // Set more attr (highlight width, height, position)
+      vm.$hoverHighlight.width(width);
+      vm.$hoverHighlight.height(height);
+      vm.$hoverHighlight.css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` });
+      // Append to creation layout
+      vm.$menuCreationLayout.append(vm.$hoverHighlight);
+    }
 
-      //   },
-      //   stop: (event, ui) => {
-
-      //   },
-      // });
+    /**
+     * Create new item on drop
+     * @param item
+     */
+    private createItem(item: JQueryUI.DraggableEventUIParams, width: number, height: number) {
+      const vm = this;
+      // Calculate new item div position
+      let positionTop: number = item.position.top > 0 ? Math.round(item.position.top / CELL_SIZE) * CELL_SIZE : 0;
+      let positionLeft: number = item.position.left > 0 ? Math.round(item.position.left / CELL_SIZE) * CELL_SIZE : 0;
+      // Create new item div
+      const newItem: JQuery = $("<div>", { "class": "menu-creation-item" });
+      // Set more attr (highlight width, height, position)
+      newItem.width(width);
+      newItem.height(height);
+      newItem.css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` });
+      // Append to creation layout
+      vm.$menuCreationLayout.append(newItem);
     }
 
     public test() {

@@ -10,25 +10,43 @@
   box-sizing: border-box;
 }
 
-#menu-creation-layout {
-  width: 100%;
-  height: 100%;
-  margin: 10px;
-  box-sizing: border-box;
-  background-size: 40px 40px;
-  background-image:
-    linear-gradient(to right, grey 1px, transparent 1px),
-    linear-gradient(to bottom, grey 1px, transparent 1px);
-}
-
 .menu-creation-option {
   width: 100%;
   height: 40px;
   border: 1px solid grey;
 }
 
-.menu-creation-item {
-  width: 160px;
-  height: 80px;
-  border: 1px solid grey;
+.menu-creation-layout-container {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#menu-creation-layout {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  background-attachment: local;
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, grey 1px, transparent 1px),
+    linear-gradient(to bottom, grey 1px, transparent 1px);
+}
+
+#menu-creation-layout > .menu-creation-item {
+  z-index: 3;
+  position: absolute;
+  box-sizing: border-box;
+  background-color: antiquewhite;
+  border: 2px solid black;
+}
+
+#menu-creation-layout > .menu-creation-item-highlight {
+  z-index: 2;
+  position: absolute;
+  background-color: aquamarine;
+  opacity: 0.5;
 }
