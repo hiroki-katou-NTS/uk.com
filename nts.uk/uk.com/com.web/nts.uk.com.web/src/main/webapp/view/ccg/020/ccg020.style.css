@@ -1,0 +1,10 @@
+#message {
+  display: inline-block;
+}
+
+.img {
+  width: 20px;
+  top: 3px;
+  position: relative;
+  padding-left: 10px;
+}
