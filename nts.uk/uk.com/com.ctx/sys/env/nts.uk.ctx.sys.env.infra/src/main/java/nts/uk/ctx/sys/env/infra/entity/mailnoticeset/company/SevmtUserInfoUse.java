@@ -2,10 +2,14 @@ package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingContactInformation;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Entity ユーザー情報の使用方法
@@ -14,7 +18,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "SEVMT_USER_INFO_USE")
 @EqualsAndHashCode(callSuper = true)
-public class SevmtUserInfoUse extends UkJpaEntity implements Serializable {
+public class SevmtUserInfoUse extends UkJpaEntity implements Serializable, UserInfoUseMethod_.MementoGetter, UserInfoUseMethod_.MementoSetter {
 
     /**
      *
@@ -249,5 +253,35 @@ public class SevmtUserInfoUse extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return this.cId;
+    }
+
+    @Override
+    public void setCompanyId(String companyId) {
+        this.setCId(companyId);
+    }
+
+    @Override
+    public void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions) {
+
+    }
+
+    @Override
+    public void setSettingContactInformation(SettingContactInformation settingContactInformation) {
+
+    }
+
+    @Override
+    public String getCompanyId() {
+        return this.cId;
+    }
+
+    @Override
+    public List<EmailDestinationFunction> getEmailDestinationFunctions() {
+        return null;
+    }
+
+    @Override
+    public SettingContactInformation getSettingContactInformation() {
+        return null;
     }
 }

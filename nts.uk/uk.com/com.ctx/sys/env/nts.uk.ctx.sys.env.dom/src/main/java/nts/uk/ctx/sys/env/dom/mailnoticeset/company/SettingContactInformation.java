@@ -10,7 +10,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class SettingContactInfomation {
+public class SettingContactInformation {
 
     /**
      * ダイヤルイン番号
