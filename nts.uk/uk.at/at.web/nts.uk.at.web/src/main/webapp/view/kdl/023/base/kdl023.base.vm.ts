@@ -23,7 +23,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM',
         MOMENT_DATE_FORMAT: 'YYYY-MM-DD'
-    }
+    };
 
     export abstract class BaseScreenModel extends ko.ViewModel{
         dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
@@ -44,7 +44,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         shared: ReflectionSettingDto;
 
         // Calendar component
-        calendarData: KnockoutObservable<any>;
         yearMonthPicked: KnockoutObservable<number>;
         cssRangerYM: any;
         optionDates: KnockoutObservableArray<OptionDate>;
@@ -83,11 +82,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         loadWindowsParam: GetStartupInfoParamDto;
         isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
         reflectionParam: KnockoutObservable<GetWorkCycleAppImageParamDto> = ko.observable();
-        selectedPatternCd: KnockoutObservable<string> = ko.observable();
 
-        pubHoliday: KnockoutObservable<string> = ko.observable();
-        satHoliday: KnockoutObservable<string> = ko.observable();
-        nonSatHoliday: KnockoutObservable<string> = ko.observable();
         refImageEachDayDto: KnockoutObservableArray<RefImageEachDayDto> = ko.observableArray([]);
         slideDays: KnockoutObservable<number> = ko.observable(0);
         workMonthlySetting: KnockoutObservableArray<WorkMonthlySetting> = ko.observableArray([]);
@@ -138,13 +133,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         public startPage(): JQueryPromise<any> {
             let vm = this;
-            vm.$blockui('invisible')
+            vm.$blockui('invisible');
             let dfd = $.Deferred();
 
             // Load data.
             $.when(vm.getParamFromCaller(), // Get param from parent screen.
                 vm.loadWindows(this.loadWindowsParam), // Load windows.
-                //vm.loadWorktimeList(),  Load worktime list.
                 vm.loadDailyPatternHeader(), // Load daily pattern header.
                 vm.loadWeeklyWorkSetting()) // Load weekly work setting.
                 .done(() => {
@@ -166,8 +160,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     // Load daily pattern detail.
                     vm.loadDailyPatternDetail(
                         vm.reflectionSetting().selectedPatternCd()).done(() => {
-                        // Xu ly hien thi calendar.
-                        //vm.optionDates(vm.getOptionDates());
                         dfd.resolve();
                     });
 
@@ -251,7 +243,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						}
 
 						vm.reflectionOrder1.valueHasMutated();
-					})
+					});
 
                     vm.reflectionOrder2.subscribe( val => {
 						vm.promise(true);
@@ -292,14 +284,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						}
 
 						vm.reflectionOrder2.valueHasMutated();
-					})
+					});
 
                     vm.reflectionOrder3.subscribe(val => {
 						vm.promise(true);
 
 						let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
 						vm.checkReflectionOrder(arrCheck);
-					})
+					});
 					
 					vm.workCycleEnable3.subscribe(isEnable => {
 						if (!isEnable) {
@@ -307,7 +299,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						}
 
 						vm.reflectionOrder3.valueHasMutated();
-					})
+					});
 
                     // Force change to set tab index.
                     vm.reflectionSetting().holidaySetting.useClassification.valueHasMutated();
@@ -336,7 +328,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         $('#cbb-daily-work-pattern').focus();
                     }
                 }).fail(res => {
-                    vm.$dialog.alert(res.message)
+                    vm.$dialog.alert(res.message);
                     dfd.fail();
                 }).always(() => {
                     // Show message Msg_37 then close dialog.
@@ -346,6 +338,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     }
                     vm.$blockui('clear')
                 });
+
             return dfd.promise();
         }
 
@@ -387,11 +380,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
             self.onBtnApplySetting(slideDays);
             self.slideDays(slideDays)
-            // // Subtract 1 day from pattern start date.
-            // self.patternStartDate.subtract(1, 'days');
-            //
-            // // Reload calendar
-            // self.optionDates(self.getOptionDates());
         }
 
         /**
@@ -406,24 +394,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
             self.onBtnApplySetting(slideDays);
             self.slideDays(slideDays)
-            // // Subtract 1 day from pattern start date.
-            // self.patternStartDate.subtract(1, 'days');
-            //
-            // // Reload calendar
-            // self.optionDates(self.getOptionDates());
         }
 
         /**
          * Event when click apply button.
          */
         public onBtnApplySettingClicked(): void{
-            this.slideDays(0);
-            this.onBtnApplySetting(this.slideDays());
+        	const vm = this;
+			vm.slideDays(0);
+			vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
+			vm.onBtnApplySetting(vm.slideDays());
         }
 
         public onBtnApplySetting(slideDay: number): void {
             let vm = this;
-            vm.$blockui('invisible')
+            vm.$blockui('invisible');
 
 			let holidayListsErrors = [];
 			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
@@ -457,24 +442,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				return;
 			}
 
-            let dateString = vm.yearMonthPicked().toString() + vm.startDate.toString();
-            let year:number = +dateString.substring(0,4);
-            let month = dateString.substring(4,6);
-            let day = dateString.substring(6,8);
-            let endDay = moment(new Date(year, +(month)-1, +(day))).endOf('month').toDate().getDate();
-            let startDate = year+'-'+month+'-'+day;
-            let endDate = year+'-'+month+'-'+endDay;
             let legalHolidayCd = '';
             let nonStatutoryHolidayCd = '';
             let holidayCd = '';
             let refOrder:Array<number> = [];
-            let defaultStartDate = startDate;
-            let defaultEndDate = endDate;
-
-            if(vm.isExecMode()){
-                defaultStartDate = vm.reflectionSetting().calendarStartDate();
-                defaultEndDate = vm.reflectionSetting().calendarEndDate();
-            }
 
             if(vm.reflectionSetting().statutorySetting.useClassification()){
                 legalHolidayCd = vm.reflectionSetting().statutorySetting.workTypeCode();
@@ -501,8 +472,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
             } else if(vm.reflectionMethod() === 0){
                 refOrder = [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK];
-            } else{
-                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK];
+            } else {
+                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE];
             }
 
             if(refOrder.length < 3){
@@ -514,7 +485,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					}]
 				}).then(() => {
 					$(focusElementId).focus();
-				}) ;
+				});
                 vm.$blockui('clear');
 
                 return;
@@ -531,25 +502,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				legalHolidayCd: legalHolidayCd,
 				nonStatutoryHolidayCd: nonStatutoryHolidayCd,
 				holidayCd: holidayCd
-			})
+			});
 
-			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done( (val) =>{
+			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done((val) => {
 				vm.refImageEachDayDto(val);
 				vm.setCalendarData(val);
 				vm.promise(false);
-			}).fail( () => {
+			}).always(() => {
+				vm.$blockui('clear');
+			});
 
-				}
-			).always(()=>{
-					vm.$blockui('clear');
-				}
-			);
-			vm.setPatternRange() // Set pattern's range
-				.done(() => {
-					//vm.optionDates(vm.getOptionDates()); // Reload calendar
-					$('#component-calendar-kcp006').focus(); // Set focus control
-				}).always(() => {
-
+			// Set pattern's range
+			vm.setPatternRange().done(() => {
+				$('#component-calendar-kcp006').focus(); // Set focus control
 			});
         }
 
@@ -723,11 +688,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     // Master data is unregistered.
                     else {
                         let dailyPatternValue = {
-                            dispOrder: undefined,
-                            workTypeSetCd: undefined,
-                            workingHoursCd: undefined,
+                            dispOrder: <any> undefined,
+                            workTypeSetCd: <any> undefined,
+                            workingHoursCd: <any> undefined,
                             days: range
-                        }
+                        };
                         result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
                     }
                 }
@@ -766,11 +731,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Master data is unregistered.
                 else {
                     let dailyPatternValue = {
-                        dispOrder: undefined,
-                        workTypeSetCd: undefined,
-                        workingHoursCd: undefined,
+                        dispOrder: <any> undefined,
+                        workTypeSetCd: <any> undefined,
+                        workingHoursCd: <any> undefined,
                         days: range
-                    }
+                    };
                     result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
                 }
             }
@@ -1233,17 +1198,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 creationPeriodStartDate : defaultStartDate,
                 creationPeriodEndDate : defaultEndDate,
                 workCycleCode : self.shared.selectedPatternCd,
-                refOrder : self.takeRefOrderList(mode),
+                refOrder : [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK],
                 numOfSlideDays : 0
-            }
-        }
-
-        private takeRefOrderList(bootMode: number): Array<number>{
-            if(bootMode === BootMode.REF_MODE){
-                return [WorkCreateMethod.WORK_CYCLE,WorkCreateMethod.PUB_HOLIDAY,WorkCreateMethod.WEEKLY_WORK];
-            }
-            if(bootMode === BootMode.EXEC_MODE){
-                return [WorkCreateMethod.WORK_CYCLE,WorkCreateMethod.PUB_HOLIDAY,WorkCreateMethod.WEEKLY_WORK];
             }
         }
 
@@ -1283,7 +1239,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 textColor: textColor,
                 backgroundColor: backgroundColor,
                 listText: listText
-            }
+            };
             return result;
         }
 
@@ -1291,12 +1247,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let workInformation:WorkInformationToRegis = {
                 workTypeCode: refImage.workInformation.workTypeCode,
                 workTimeCode: refImage.workInformation.workTimeCode
-            }
+            };
             let result:WorkMonthlySetting = {
                 workInformation: workInformation,
                 ymdk:  moment(refImage.date).format('YYYY-MM-DD'),
                 monthlyPatternCode: this.reflectionSetting().monthlyPatternCode()
-            }
+            };
             return result;
         }
         public decide(): void {
@@ -1318,7 +1274,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let param : MonthlyPatternRegisterCommand = {
                 isOverWrite : vm.isOverWrite(),
                 workMonthlySetting: vm.workMonthlySetting()
-            }
+            };
             // If calendar's setting is empty.
             if (vm.isOptionDatesEmpty()) {
                 vm.$dialog.error({ messageId: "Msg_512" });
@@ -1442,12 +1398,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         constructor(data: GetStartupInfoParamDto){
             const model = this;
-            model.bootMode = ko.observable(data.bootMode)
-            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)
-            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate)
-            model.workCycleCode = ko.observable(data.workCycleCode)
-            model.refOrder = ko.observableArray(data.refOrder)
-            model.numOfSlideDays = ko.observable(data.numOfSlideDays)
+            model.bootMode = ko.observable(data.bootMode);
+            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate);
+            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate);
+            model.workCycleCode = ko.observable(data.workCycleCode);
+            model.refOrder = ko.observableArray(data.refOrder);
+            model.numOfSlideDays = ko.observable(data.numOfSlideDays);
         }
     }
     export class GetWorkCycleAppImageParam{
@@ -1468,14 +1424,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         holidayCd: KnockoutObservable<string>;
         constructor(data: GetWorkCycleAppImageParamDto){
             const model = this;
-            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)
-            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate)
-            model.workCycleCode = ko.observable(data.workCycleCode)
-            model.refOrder = ko.observableArray(data.refOrder)
-            model.numOfSlideDays = ko.observable(data.numOfSlideDays)
-            model.legalHolidayCd = ko.observable(data.legalHolidayCd)
-            model.nonStatutoryHolidayCd = ko.observable(data.nonStatutoryHolidayCd)
-            model.holidayCd = ko.observable	(data.holidayCd)
+            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate);
+            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate);
+            model.workCycleCode = ko.observable(data.workCycleCode);
+            model.refOrder = ko.observableArray(data.refOrder);
+            model.numOfSlideDays = ko.observable(data.numOfSlideDays);
+            model.legalHolidayCd = ko.observable(data.legalHolidayCd);
+            model.nonStatutoryHolidayCd = ko.observable(data.nonStatutoryHolidayCd);
+            model.holidayCd = ko.observable	(data.holidayCd);
         }
     }
 }
