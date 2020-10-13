@@ -245,18 +245,21 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 					}
 				})
                 .then(result => {
-                    if (!result) return;
-                    return vm.$ajax(API.checkBeforeRegister, command);
-                }).then(res => {
-                    if (res == undefined) return;
-                    if (_.isEmpty(res.confirmMsgLst)) {
-                        return vm.registerData(command);
-                    } else {
-                        let listTemp = _.clone(res.confirmMsgLst);
-                        vm.handleConfirmMessage(listTemp, command);
+                    if(result) {
+                        return vm.$ajax(API.checkBeforeRegister, command);
                     }
+                }).then(res => {
+                    if(res) {
+                        return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), vm);
+                    }
+                    // if (_.isEmpty(res.confirmMsgLst)) {
+                    //     return vm.registerData(command);
+                    // } else {
+                    //     let listTemp = _.clone(res.confirmMsgLst);
+                    //     vm.handleConfirmMessage(listTemp, command);
+                    // }
                 }).done(result => {
-                    if (result != undefined) {
+                    if (result) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
                     }
                 })
@@ -280,22 +283,25 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                 .always(() => vm.$blockui("hide"));
         }
 
-        public handleConfirmMessage(listMes: any, res: any): any {
-            let vm = this;
-            if (!_.isEmpty(listMes)) {
-                let item = listMes.shift();
-                return vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
-                    if (value == 'yes') {
-                        if (_.isEmpty(listMes)) {
-                            return vm.registerData(res);
-                        } else {
-                            return vm.handleConfirmMessage(listMes, res);
-                        }
+        handleConfirmMessage(listMes: any, vmParam: any): any {
+			const vm = this;
 
-                    }
-                });
-            }
-        }
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(listMes)) {
+					resolve(true);
+				}
+				let msg = listMes[0].value;
+
+				return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+					.then((value) => {
+						if (value === 'yes') {
+							return vm.handleConfirmMessage(listMes, vmParam);
+						} else {
+							resolve(false);
+						}
+					})
+	        });
+		}
 
         registerData(params: any) {
             let vm = this;
