@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 				});
 		}
 	}
-	const SystemAtr = {
+	export const SystemAtr = {
 		EMPLOYMENT: 0,
 		HUMAN_RESOURSE: 1
 	}

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ApprovalSettingCommand {
+public class ApprovalSettingCommand_Old {
 	/**
 	 * 本人による承認
 	 */

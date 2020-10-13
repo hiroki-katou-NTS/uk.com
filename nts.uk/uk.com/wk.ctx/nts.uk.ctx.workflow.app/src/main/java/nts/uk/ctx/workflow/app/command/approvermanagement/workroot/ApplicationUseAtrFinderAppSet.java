@@ -6,10 +6,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.BooleanUtils;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.RegisterQCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.StartQCommand;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.service.SettingUseUnitService;
 import nts.uk.ctx.workflow.dom.service.output.SettingUseUnitOutput;
 /**
@@ -37,6 +42,12 @@ public class ApplicationUseAtrFinderAppSet {
 	public SettingUseUnitDto getStartQ(StartQCommand command) {
 		SettingUseUnitOutput setting = settingUseUnitService.start(command.companyId, command.systemAtr);
 		return SettingUseUnitDto.fromDomain(setting);
+	}
+	public void checkRegisterQ(RegisterQCommand command) {
+		settingUseUnitService.checkBeforeRegister(
+				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.companyUnit), UseClassification.class), 
+				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.workplaceUnit), UseClassification.class), 
+				EnumAdaptor.valueOf(BooleanUtils.toInteger(command.employeeUnit), UseClassification.class));
 	}
 	
 }
