@@ -25,8 +25,8 @@ public class ApprovalRootExport {
 	private GeneralDate startDate;
 	/** 完了日 */
 	private GeneralDate endDate;
-	/** 分岐ID */
-	private String branchId;
+//	/** 分岐ID */
+//	private String branchId;
 	/** 任意項目申請ID */
 	private String anyItemApplicationId;
 	/** 確認ルート種類 */
@@ -42,7 +42,8 @@ public class ApprovalRootExport {
 	private ErrorFlag errorFlag;
 
 	public ApprovalRootExport(String companyId, String workplaceId, String approvalId, String employeeId,
-			String historyId, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String historyId, GeneralDate startDate, GeneralDate endDate, 
+			// String branchId,
 			String anyItemApplicationId) {
 		super();
 		this.companyId = companyId;
@@ -52,7 +53,7 @@ public class ApprovalRootExport {
 		this.historyId = historyId;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.branchId = branchId;
+		// this.branchId = branchId;
 		this.anyItemApplicationId = anyItemApplicationId;
 	}
 

@@ -20,8 +20,8 @@ public class ApprovalRootCommonOutput {
 	private GeneralDate startDate;
 	/**完了日*/
 	private GeneralDate endDate;
-	/**分岐ID*/
-	private String branchId;
+//	/**分岐ID*/
+//	private String branchId;
 	/**任意項目申請ID*/
 	private String anyItemId;
 	/**確認ルート種類*/
@@ -34,7 +34,8 @@ public class ApprovalRootCommonOutput {
 	private String eventId;
 	
 	public ApprovalRootCommonOutput(String companyId, String approvalId, String employeeId, String workpalceId,
-			String historyId, Integer appType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String historyId, Integer appType, GeneralDate startDate, GeneralDate endDate, 
+			// String branchId,
 			String anyItemId, Integer confType, int employmentRootAtr, Integer noticeId, String eventId) {
 		super();
 		this.companyId = companyId;
@@ -45,7 +46,7 @@ public class ApprovalRootCommonOutput {
 		this.appType = appType;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.branchId = branchId;
+		// this.branchId = branchId;
 		this.anyItemId = anyItemId;
 		this.confType = confType;
 		this.employmentRootAtr = employmentRootAtr;

@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
@@ -28,8 +27,8 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
-	@Inject
-	private ApprovalBranchRepository repoBranch;
+//	@Inject
+//	private ApprovalBranchRepository repoBranch;
 	
 	@Inject
 	private CreateDailyApprover createDailyApprover;
@@ -56,7 +55,7 @@ public class DeleteHistoryCmm053Impl implements DeleteHistoryCmm053Service {
 					//Delete table Approver
 					this.repoAppPhase.deleteAllAppPhaseByApprovalId(approvalId);
 					//Delete table Branch
-					this.repoBranch.deleteBranch(companyId, deleteItem.getApprRoot().getBranchId());
+					// this.repoBranch.deleteBranch(companyId, deleteItem.getApprRoot().getBranchId());
 				}
 				// 「個人別就業承認ルート」を削除する
 				this.repoPerson.deletePsApprovalRoot(companyId, approvalId, employeeId, historyId);

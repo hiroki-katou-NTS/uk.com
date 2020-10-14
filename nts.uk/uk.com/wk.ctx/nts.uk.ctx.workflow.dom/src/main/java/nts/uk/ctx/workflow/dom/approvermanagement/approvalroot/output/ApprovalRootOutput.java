@@ -28,8 +28,8 @@ public class ApprovalRootOutput {
 	private GeneralDate startDate;
 	/** 完了日 */
 	private GeneralDate endDate;
-	/** 分岐ID */
-	private String branchId;
+//	/** 分岐ID */
+//	private String branchId;
 	/** 任意項目申請ID */
 	private String anyItemApplicationId;
 	/** 確認ルート種類 */
@@ -45,7 +45,8 @@ public class ApprovalRootOutput {
 	private ErrorFlag errorFlag;
 
 	public ApprovalRootOutput(String companyId, String workplaceId, String approvalId, String employeeId,
-			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, 
+			// String branchId,
 			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr,
 			List<ApprovalPhase> beforeApprovers, List<ApprovalPhaseOutput> afterApprovers) {
 		super();
@@ -57,7 +58,7 @@ public class ApprovalRootOutput {
 		this.applicationType = applicationType;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.branchId = branchId;
+		// this.branchId = branchId;
 		this.anyItemApplicationId = anyItemApplicationId;
 		this.confirmationRootType = confirmationRootType;
 		this.employmentRootAtr = employmentRootAtr;
@@ -68,7 +69,9 @@ public class ApprovalRootOutput {
 	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRoot x) {
 		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), x.getEmployeeId(), x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
-				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getHistoryItems().get(0).end(), 
+				// x.getApprRoot().getBranchId(), 
+				x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
@@ -76,7 +79,9 @@ public class ApprovalRootOutput {
 	public static ApprovalRootOutput convertFromWkpData(WorkplaceApprovalRoot x) {
 		return new ApprovalRootOutput(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(), null, x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
-				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getHistoryItems().get(0).end(), 
+				// x.getApprRoot().getBranchId(), 
+				x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
@@ -84,7 +89,9 @@ public class ApprovalRootOutput {
 	public static ApprovalRootOutput convertFromCompanyData(CompanyApprovalRoot x) {
 		return new ApprovalRootOutput(x.getCompanyId(), null, x.getApprovalId(), null, x.getApprRoot().getHistoryItems().get(0).getHistoryId(),
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
-				x.getApprRoot().getHistoryItems().get(0).end(), x.getApprRoot().getBranchId(), x.getApprRoot().getAnyItemApplicationId(),
+				x.getApprRoot().getHistoryItems().get(0).end(), 
+				// x.getApprRoot().getBranchId(), 
+				x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}

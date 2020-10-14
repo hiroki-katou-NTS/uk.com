@@ -45,7 +45,8 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 
 		return approvalData.stream().map(x -> {
 			ApprovalRootExport export = new ApprovalRootExport(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(),
-					x.getEmployeeId(), x.getHistoryId(), x.getStartDate(), x.getEndDate(), x.getBranchId(),
+					x.getEmployeeId(), x.getHistoryId(), x.getStartDate(), x.getEndDate(), 
+					// x.getBranchId(),
 					x.getAnyItemApplicationId());
 
 			export.addDataType(x.getApplicationType(), x.getConfirmationRootType(), x.getEmploymentRootAtr());

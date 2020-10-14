@@ -183,7 +183,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		private static final String FIND_BUS_EVENT;
 		static {
 			StringBuilder builder = new StringBuilder();
-			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, BRANCH_ID, ANYITEM_APP_ID, ");
+			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ANYITEM_APP_ID, ");
 			builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
 			builder.append("FROM WWFMT_PS_APPROVAL_ROOT WHERE CID = 'companyID' AND SID = 'employeeID' ");
 			builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
@@ -324,7 +324,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		x.setStartDate(a.startDate);
 		x.setEndDate(a.endDate);
 		x.setApplicationType(a.applicationType);
-		x.setBranchId(a.branchId);
+		// x.setBranchId(a.branchId);
 		x.setAnyItemAppId(a.anyItemAppId);
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
@@ -344,7 +344,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
-			x.setBranchId(a.branchId);
+			// x.setBranchId(a.branchId);
 			x.setAnyItemAppId(a.anyItemAppId);
 			x.setConfirmationRootType(a.confirmationRootType);
 			x.setEmploymentRootAtr(a.employmentRootAtr);
@@ -484,7 +484,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				record.getInt("APP_TYPE"), 
 				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
 				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
-				record.getString("BRANCH_ID"), 
+				// record.getString("BRANCH_ID"), 
 				record.getString("ANYITEM_APP_ID"), 
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
@@ -507,7 +507,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.applicationType,
 				entity.startDate,
 				entity.endDate,
-				entity.branchId,
+				// entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,
 				entity.employmentRootAtr,
@@ -528,7 +528,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
-		entity.branchId = domain.getApprRoot().getBranchId();
+		// entity.branchId = domain.getApprRoot().getBranchId();
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
 				domain.getApprRoot().getApplicationType().value : null;

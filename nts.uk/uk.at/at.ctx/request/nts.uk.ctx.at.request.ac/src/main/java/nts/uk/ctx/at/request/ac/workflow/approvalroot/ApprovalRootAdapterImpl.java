@@ -144,7 +144,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 				export.getApplicationType(),
 				export.getStartDate(),
 				export.getEndDate(),
-				export.getBranchId(),
+				// export.getBranchId(),
 				export.getAnyItemApplicationId(), 
 				export.getConfirmationRootType(),
 				export.getEmploymentRootAtr(), 

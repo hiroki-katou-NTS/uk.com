@@ -16,8 +16,8 @@ public class ApprovalWorkplaceSprExport {
 	public String approvalId;
 	/**履歴ID*/
 	private String workplaceId;
-	/**分岐ID*/
-	private String branchId;
+//	/**分岐ID*/
+//	private String branchId;
 	/**任意項目申請ID*/
 	private String anyItemApplicationId;
 	/**確認ルート種類*/
