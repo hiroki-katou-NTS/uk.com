@@ -24,7 +24,7 @@ public class WorkPlaceApproverHistoryDeleteDateCommandHandler extends CommandHan
     @Override
     protected void handle(CommandHandlerContext<WorkPlaceApproverHistoryDeleteDateCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val domainOpt = repo.getByWorkplaceIdAndEndDate(command.getWorkPlaceId(), command.getPeriod().end());
+        val domainOpt = repo.getByWorkplaceIdAndEndDate(command.getWorkPlaceId(), command.getEndDate());
         RequireImpl require = new RequireImpl(repo);
         if (domainOpt.isPresent()) {
             AtomTask persist = DeleteWorkplaceApproverHistoryDomainService.changeHistory(require,domainOpt.get());

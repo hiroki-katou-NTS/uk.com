@@ -33,10 +33,10 @@ public class CompanyApproverHistoryUpdateDateCommandHandler extends CommandHandl
         if(StringUtil.isNullOrEmpty(cid,true)){
             cid = AppContexts.user().companyId();
         }
-        RequireImpl require = new RequireImpl(repo,cid);
+        RequireImpl require = new RequireImpl(repo);
         val domainOpt = repo.getByCompanyIdAndDate(cid,GeneralDate.max());
         if(domainOpt.isPresent()){
-            val domain =  Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),GeneralDate.max()),
+            val domain =  Approver36AgrByCompany.create(cid,new DatePeriod(command.getStartDate(),GeneralDate.max()),
                     domainOpt.get().getApproverList()
                     ,domainOpt.get().getConfirmerList());
 
@@ -48,11 +48,10 @@ public class CompanyApproverHistoryUpdateDateCommandHandler extends CommandHandl
     @AllArgsConstructor
     private class RequireImpl implements CompanyApproverHistoryChangeDomainService.Require{
         private Approver36AgrByCompanyRepo byCompanyRepo;
-        private String cid;
 
         @Override
         public Optional<Approver36AgrByCompany> getPrevHistory(GeneralDate endDate) {
-            return byCompanyRepo.getByCompanyIdAndEndDate(cid,endDate);
+            return byCompanyRepo.getByCompanyIdAndEndDate(AppContexts.user().companyId(),endDate);
         }
 
         @Override

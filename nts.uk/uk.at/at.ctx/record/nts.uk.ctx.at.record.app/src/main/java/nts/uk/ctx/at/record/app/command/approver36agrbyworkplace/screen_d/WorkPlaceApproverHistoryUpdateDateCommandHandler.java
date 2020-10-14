@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ChangeWorkplaceApproverHistoryDomainService;
@@ -30,7 +31,7 @@ public class WorkPlaceApproverHistoryUpdateDateCommandHandler extends CommandHan
         RequireImpl require = new RequireImpl(repo);
         val domainOpt = repo.getByWorkplaceIdAndDate(command.getWorkPlaceId(),command.getStartDateBeforeChange());
         if(domainOpt.isPresent()){
-            val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),command.getPeriod()
+            val domain =  Approver36AgrByWorkplace.create(command.getWorkPlaceId(),new DatePeriod(command.getStartDate(),command.getEndDate())
                     ,domainOpt.get().getApproverIds(),domainOpt.get().getConfirmerIds());
             AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(require,command.getStartDateBeforeChange()
                     ,domain);

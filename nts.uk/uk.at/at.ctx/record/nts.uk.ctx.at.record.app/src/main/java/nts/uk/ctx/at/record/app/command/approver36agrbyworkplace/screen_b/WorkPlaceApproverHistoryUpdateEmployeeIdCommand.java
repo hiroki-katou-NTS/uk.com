@@ -22,7 +22,9 @@ public class WorkPlaceApproverHistoryUpdateEmployeeIdCommand {
      * 期間
      */
 
-    private DatePeriod period;
+    private GeneralDate startDate;
+
+    private GeneralDate endDate;
 
     /**
      * 承認者リスト
