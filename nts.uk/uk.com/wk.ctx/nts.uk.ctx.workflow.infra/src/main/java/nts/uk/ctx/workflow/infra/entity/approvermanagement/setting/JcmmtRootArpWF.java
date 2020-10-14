@@ -9,15 +9,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 
- * @author laitv
+ * Refactor5
+ * @author hoangnd
  *
  */
 @Entity
-@Table(name="JCMMT_ROOT_APR")
+@Table(name="WWFMT_APPROVAL_HR")
 @AllArgsConstructor
 @NoArgsConstructor
 public class JcmmtRootArpWF extends UkJpaEntity implements Serializable{
@@ -26,7 +25,7 @@ public class JcmmtRootArpWF extends UkJpaEntity implements Serializable{
 	
 	@Id
 	@Column(name = "CID")
-    public String cid;  //
+    public String cid;  
 	
 	@Column(name = "COM_MODE")
 	public int comMode;
