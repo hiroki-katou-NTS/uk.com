@@ -103,10 +103,10 @@ module nts.uk.at.kaf021.c {
                             }
                         ]
                     },
-                    // {
-                    //     name: 'CellStyles',
-                    //     states: vm.getCellStyles()
-                    // }
+                    {
+                        name: 'CellStyles',
+                        states: vm.getCellStyles()
+                    }
                 ]
             }).create();
         }
@@ -123,7 +123,7 @@ module nts.uk.at.kaf021.c {
             // C2_3
             columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_4
-            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '90px', ntsControl: "Label" });
             // C2_5
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -153,26 +153,26 @@ module nts.uk.at.kaf021.c {
                     // C2_15
                     { headerText: vm.$i18n("KAF021_27"), key: "currentMax", dataType: 'string', width: '75px', ntsControl: "Label" },
                     // C2_16
-                    { headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px', ntsControl: "Label" }
+                    { headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px' }
                 ]
             });
 
             // C2_17
             columns.push({ headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '300px' });
             // C2_18
-            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '150px' });
+            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '180px', ntsControl: "Label" });
             // C2_19
-            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'app', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_20
-            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'appDate', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'appDate', dataType: 'string', width: '100px', ntsControl: "Label" });
             // C2_21
-            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_22
-            columns.push({ headerText: vm.$i18n("KAF021_34"), key: 'approverStatus', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_34"), key: 'approverStatus', dataType: 'string', width: '80px', ntsControl: "Label" });
             // C2_23
-            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'representative', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'representative', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_24
-            columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'confirmStatus', dataType: 'string', width: '100px' });
+            columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'confirmStatus', dataType: 'string', width: '80px', ntsControl: "Label" });
             return columns;
         }
 
@@ -181,16 +181,22 @@ module nts.uk.at.kaf021.c {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
-                cellStates.push(new common.CellState(data.employeeId, 'currentTime', ["center-align"]));
-                cellStates.push(new common.CellState(data.employeeId, 'yearStr', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'appType', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'month', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'year', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage2Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage3Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage4Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage5Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage6Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'exceededNumber', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'newMax', ["center-align", "cell-edit"]));
                 cellStates.push(new common.CellState(data.employeeId, 'reason', ["cell-edit"]));
+                cellStates.push(new common.CellState(data.employeeId, 'appDate', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'approverStatus', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'confirmStatus', ["center-align"]));
+                
             })
             return cellStates;
         }
@@ -212,15 +218,31 @@ module nts.uk.at.kaf021.c {
                 data.checked = i % 2 == 0 ? true : false;
                 data.wkpName = "wkpName " + i;
                 data.employeeName = "employeeName " + i;
-                data.appType = "appType " + i;
-                data.month = "month " + i;
-                data.year = "year " + i;
+                if (i % 2 == 0){
+                    data.appType = i + "月度";
+                }
+                else{
+                    data.appType = 2020 + "年度";
+                }
+                data.month = parseTime(i + 20000, true).format();
+                data.year = parseTime(i + 10000, true).format();
                 data.monthAverage2Str = parseTime(i, true).format();
-                data.monthAverage3Str = parseTime(i + 2, true).format();
-                data.monthAverage4Str = parseTime(i + 4, true).format();
-                data.monthAverage5Str = parseTime(i + 5, true).format();
-                data.monthAverage6Str = parseTime(i + 10, true).format();
+                data.monthAverage3Str = parseTime(i + 20000, true).format();
+                data.monthAverage4Str = parseTime(i + 1000, true).format();
+                data.monthAverage5Str = parseTime(i + 5000, true).format();
+                data.monthAverage6Str = parseTime(i + 1000, true).format();
                 data.exceededNumber = i;
+                data.currentMax = parseTime(i + 10, true).format();
+                data.newMax = parseTime(i + 12, true).format();
+                data.reason = "reason " + i;
+                data.comment = "comment " + i;
+                data.applicant = "申請者 " + i;
+                data.appDate = "2020/10/20 ";
+                data.approver = "承認者 " + i;
+                data.approverStatus = "承認済み";
+                data.representative = "従業員代表 " + i;
+                data.confirmStatus = "確認済み";
+                
                 datas.push(data);
             }
 
