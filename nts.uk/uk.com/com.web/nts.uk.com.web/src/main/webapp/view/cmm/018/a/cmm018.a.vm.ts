@@ -102,6 +102,10 @@ module nts.uk.com.view.cmm018.a {
             //emp info: TH goi tu man application
             empInfoLabel: KnockoutObservable<string> = ko.observable("");
             items: KnockoutObservableArray<any> = ko.observableArray([]);
+			public jumpToX(param: any) {
+				const self = this;
+				nts.uk.request.jump('/view/cmm/018/x/index.xhtml?systemAtr=' + ko.toJS(self.systemAtr));
+			}
             constructor() {
                 let self = this;
                 // clear localStorage , bug that is width's appName

@@ -38,10 +38,14 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<!-- A1_16 ver10 -->
+					<a data-bind="ntsLinkButton: { action: jumpToX.bind($data, '❤')}">#{i18n.getText('CMM018_126')}</a>
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- A1_6: Button 未登録社員リスト - Dialog L -->
-					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<!-- ver10 -->
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_124')}</button>
+					
 					<!-- A1_7: Button 承認者一覧 - Dialog N -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
