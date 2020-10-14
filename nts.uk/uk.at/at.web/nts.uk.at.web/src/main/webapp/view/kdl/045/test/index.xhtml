@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="test.service.js" />
+			<com:scriptfile path="test.start.js" />
+			<com:scriptfile path="test.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button style="margin-left: 100px;" data-bind="click : openDialog">Open
+					KDL 045</button>
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
