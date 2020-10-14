@@ -373,6 +373,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             if (col == 3 && row == 1) return TextResource.localize("KAF022_469");
             if (col == 3 && row == 2) return TextResource.localize("KAF022_470");
             if (col == 3 && row == 3) return TextResource.localize("KAF022_472");
+            if (col == 3 && row == lastRow) return TextResource.localize("KAF022_477");
 
             if (col == 4 && row == 2) return TextResource.localize("KAF022_471");
             if (col == 4 && row == 3) return TextResource.localize("KAF022_473");
@@ -1051,7 +1052,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < PRESENT_APP_COL_SIZE; col++) {
                 String value;
-                if (row == 0 && col == 0) value = TextResource.localize("KAF022_764");
+                if (row == 0 && col == 0) value = TextResource.localize("KAF022_668");
                 else if (col == 1) value = menu.getDisplayName();
                 else if (col == 2) value = setting == null ? NOT_CHECK : CHECK;
                 else value = "";
@@ -1242,23 +1243,24 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         }
                         data.add(MasterData.builder().rowData(rowData).build());
                     }
-                } else {
-                    Map<String, MasterCellData> rowData = new HashMap<>();
-                    for (int col = 0; col < 3; col++) {
-                        String value;
-                        if (col == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
-                        else if (col == 1) value = ot.name;
-                        else value = "";
-                        rowData.put(
-                                COLUMN_NO_HEADER + col,
-                                MasterCellData.builder()
-                                        .columnId(COLUMN_NO_HEADER + col)
-                                        .value(value)
-                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                                        .build());
-                    }
-                    data.add(MasterData.builder().rowData(rowData).build());
                 }
+//                else {
+//                    Map<String, MasterCellData> rowData = new HashMap<>();
+//                    for (int col = 0; col < 3; col++) {
+//                        String value;
+//                        if (col == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
+//                        else if (col == 1) value = ot.name;
+//                        else value = "";
+//                        rowData.put(
+//                                COLUMN_NO_HEADER + col,
+//                                MasterCellData.builder()
+//                                        .columnId(COLUMN_NO_HEADER + col)
+//                                        .value(value)
+//                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+//                                        .build());
+//                    }
+//                    data.add(MasterData.builder().rowData(rowData).build());
+//                }
             });
         });
         return data;
@@ -1503,7 +1505,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 else if (col == 3 && row == 1) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() == NotUseAtr.USE
                         ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
                 else if (col == 3 && row == 2) value = applySetting.get().getCalcStampMiss() == CalcStampMiss.CAN_NOT_REGIS
-                        ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                        ? TextResource.localize("KAF022_173") : TextResource.localize("KAF022_175");
                 else if (col == 3 && row == 3) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting() == NotUseAtr.USE
                         ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
                 else if (col == 3 && row == 4) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr() == AppDateContradictionAtr.NOTCHECK
@@ -1774,7 +1776,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
                             if (row == 0) value = reflectSetting.get().getSupportReflectAtr() == NotUseAtr.USE
                                     ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-                            if (row == 0) value = applySetting.get().getSupportFrameDispNO().v() + TextResource.localize("KAF022_755");
+                            else if (row == 1) value = applySetting.get().getSupportFrameDispNO().v() + " " + TextResource.localize("KAF022_755");
                             else value = "";
                         } else if (stamp == StampAtr.OUT_OF_CARE_RETURN_OF_CARE) {
                             if (row == 0) value = reflectSetting.get().getCareReflectAtr() == NotUseAtr.USE
