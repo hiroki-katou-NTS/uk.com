@@ -27,11 +27,21 @@
       <!-- Content -->
       <div id="contents-area" class="contents-area">
         <div id="menu-item-container">
-          <div class="menu-creation-option">test1</div>
-          <div class="menu-creation-option">test2</div>
+          <div data-part-type="1" class="menu-creation-option">test1</div>
+          <div data-part-type="2" class="menu-creation-option">test2</div>
+          <div data-part-type="3" class="menu-creation-option">test3</div>
+          <div data-part-type="4" class="menu-creation-option">test4</div>
+          <div data-part-type="5" class="menu-creation-option">test5</div>
+          <div data-part-type="6" class="menu-creation-option">test6</div>
         </div>
-        <div class="menu-creation-layout-container">
-          <div id="menu-creation-layout"></div>
+        <div class="menu-right-container">
+          <div>
+            <span id="D5_1" class="label">#{i18n.getText('CCG034_49')}</span>
+            <span id="D5_2" class="label" data-bind="text: layoutSizeText"></span>
+          </div>
+          <div class="menu-creation-layout-container">
+            <div id="menu-creation-layout"></div>
+          </div>
         </div>
       </div>
     </ui:define>
