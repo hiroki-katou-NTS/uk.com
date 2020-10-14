@@ -7,6 +7,7 @@ module nts.uk.ui.at.ksu002.a {
 	type DayData = c.DayData<ScheduleData>;
 	type DayDataRawObsv = c.DayData<ObserverScheduleData>;
 	type DayDataMementoObsv = c.DayData<ObserverScheduleData<WorkSchedule<Date>>>;
+	type Save2Memento = DayData | DayDataRawObsv | DayDataMementoObsv;
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
@@ -245,15 +246,6 @@ module nts.uk.ui.at.ksu002.a {
 							// change data
 							.then(() => {
 								const { data } = current;
-								const old: ScheduleData = ko.toJS(data);
-
-								// prevent if copy twice or more
-								if (old.wtype.code === wtype.code
-									&& old.wtime.code === wtime.code
-									&& old.value.begin === wtime.value.begin
-									&& old.value.finish === wtime.value.finish) {
-									return false;
-								}
 
 								data.wtype.code(wtype.code);
 								data.wtype.name(wtype.name);
@@ -272,15 +264,9 @@ module nts.uk.ui.at.ksu002.a {
 									data.value.begin(wtime.value.begin);
 									data.value.finish(wtime.value.finish);
 								}
-
-								return true
 							})
-							// save after change data
-							.then((change: boolean) => {
-								if (change) {
-									vm.schedules.memento({ current, preview });
-								}
-							});
+							// save to memento after change data
+							.then(() => vm.memento(current, preview));
 					}
 				}
 			}
@@ -296,7 +282,7 @@ module nts.uk.ui.at.ksu002.a {
 				$.Deferred()
 					.resolve(true)
 					// save to memento before change data
-					.then(() => vm.schedules.memento({ current, preview }))
+					.then(() => vm.memento(current, preview))
 					.then(() => {
 						const { data } = preview;
 						const { wtime, wtype, value } = current.data;
@@ -310,6 +296,21 @@ module nts.uk.ui.at.ksu002.a {
 						data.value.begin(value.begin);
 						data.value.finish(value.finish);
 					});
+			}
+		}
+
+		// check state & memento data
+		private memento(current: Save2Memento, preview: Save2Memento) {
+			const vm = this;
+			const c: DayData = ko.toJS(current);
+			const p: DayData = ko.toJS(preview);
+
+			// prevent if save data twice time
+			if (c.data.wtype.code !== p.data.wtype.code
+				|| c.data.wtime.code !== p.data.wtime.code
+				|| c.data.value.begin !== p.data.value.begin
+				|| c.data.value.finish !== p.data.value.finish) {
+				vm.schedules.memento({ current, preview });
 			}
 		}
 	}
