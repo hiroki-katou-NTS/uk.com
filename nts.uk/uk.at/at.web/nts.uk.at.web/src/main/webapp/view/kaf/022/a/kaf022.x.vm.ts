@@ -3,15 +3,15 @@ module nts.uk.at.view.kaf022.x {
         export class ScreenModel {
 
             public goToCompanySettings(): void {
-                nts.uk.request.jump("/view/kaf/022/company/index.xhtml");
+                nts.uk.request.jump("/view/kaf/022/b/index.xhtml");
             }
 
             public goToEmploymentSettings(): void {
-                nts.uk.request.jump("/view/kaf/022/employment/index.xhtml");
+                nts.uk.request.jump("/view/kaf/022/c/index.xhtml");
             }
 
             public goToWorkplaceSettings(): void {
-                nts.uk.request.jump("/view/kaf/022/workplace/index.xhtml");
+                nts.uk.request.jump("/view/kaf/022/d/index.xhtml");
             }
 
             exportExcel() {
