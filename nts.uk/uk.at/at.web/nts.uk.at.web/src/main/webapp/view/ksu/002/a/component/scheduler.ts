@@ -311,7 +311,7 @@ module nts.uk.ui.at.ksu002.a {
                             inputFormat: 'time',
                             value: $component.model.begin,
                             readonly: false,
-                            enable: $editable
+                            enable: $component.enable
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
@@ -335,7 +335,7 @@ module nts.uk.ui.at.ksu002.a {
                             inputFormat: 'time',
                             value: $component.model.finish,
                             readonly: false,
-                            enable: $editable
+                            enable: $component.enable
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
@@ -363,6 +363,8 @@ module nts.uk.ui.at.ksu002.a {
                     wtime: ko.observable(''),
                     wtype: ko.observable('')
                 };
+
+            enable!: KnockoutComputed<boolean>;
 
             constructor(private data: { dayData: c.DayData<ObserverScheduleData>; context: BindingContext }) {
                 super();
@@ -418,6 +420,13 @@ module nts.uk.ui.at.ksu002.a {
                                 context.$change.apply(context.$vm, [clone]);
                             }
                         });
+
+                    vm.enable = ko.computed({
+                        read: () => {
+                            return context.$editable() && !(data.comfirmed() || data.achievement());
+                        },
+                        owner: vm
+                    })
                 }
             }
 
@@ -492,6 +501,12 @@ module nts.uk.ui.at.ksu002.a {
 
             showInput(input: INPUT_TYPE) {
                 const vm = this;
+                const { dayData } = vm.data;
+                const { data } = dayData;
+
+                if (!data || ko.unwrap(data.comfirmed) || ko.unwrap(data.achievement)) {
+                    return;
+                }
 
                 if (input === 'begin') {
                     const i = vm.click.begin();
