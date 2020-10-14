@@ -12,16 +12,19 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppCreate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.*;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYM;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
@@ -30,10 +33,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Agre
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -55,9 +57,17 @@ import java.util.Optional;
 public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandler<List<RegisterAppSpecialProvisionMonthCommand>> {
 
     @Inject
+    private RecordDomRequireService requireService;
+    @Inject
     private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
     @Inject
+    private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
+    @Inject
+    private UnitOfApproverRepo unitOfApproverRepo;
+    @Inject
     private SyWorkplaceAdapter syWorkplaceAdapter;
+    @Inject
+    private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
     @Inject
     private AgreementUnitSettingRepository agreementUnitSettingRepository;
     @Inject
@@ -79,7 +89,9 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
     protected void handle(CommandHandlerContext<List<RegisterAppSpecialProvisionMonthCommand>> context) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        RequireImpl require = new RequireImpl(cid, specialProvisionsOfAgreementRepo, syWorkplaceAdapter,
+        RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
+                specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
+                unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
                 agreementUnitSettingRepository,
                 affClassificationAdapter, agreementTimeOfClassificationRepo,
                 affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
@@ -96,8 +108,12 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
     private class RequireImpl implements OneMonthAppCreate.Require {
 
         private String companyId;
+        private RecordDomRequireService.Require require;
         private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+        private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
+        private UnitOfApproverRepo unitOfApproverRepo;
         private SyWorkplaceAdapter syWorkplaceAdapter;
+        private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AgreementUnitSettingRepository agreementUnitSettingRepository;
         private AffClassificationAdapter affClassificationAdapter;
         private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
@@ -107,6 +123,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
         private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
         private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
 
+
         @Override
         public void addApp(SpecialProvisionsOfAgreement app) {
             specialProvisionsOfAgreementRepo.insert(app);
@@ -114,12 +131,13 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
 
         @Override
         public Optional<ApproverItem> getApproverHistoryItem(GeneralDate baseDate) {
+            // return approver36AgrByCompanyRepo.getByCompanyIdAndDate(cid, baseDate);
             return Optional.empty();
         }
 
         @Override
         public UnitOfApprover getUsageSetting() {
-            return null;
+            return unitOfApproverRepo.getByCompanyId(companyId);
         }
 
         @Override
@@ -129,7 +147,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
 
         @Override
         public Optional<Approver36AgrByWorkplace> getApproveHistoryItem(String workplaceId, GeneralDate baseDate) {
-            return Optional.empty();
+            return approver36AgrByWorkplaceRepo.getByWorkplaceIdAndDate(workplaceId, baseDate);
         }
 
         @Override
@@ -179,33 +197,54 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
 
 
         @Override
-        public AgreMaxAverageTimeMulti getMaxAverageMulti(String sid, GeneralDate baseDate, YearMonth ym, Map<YearMonth, AgreementOneMonthTime> agreementTimes) {
-            return null;
+        public AgreMaxAverageTimeMulti getMaxAverageMulti(String sid, GeneralDate baseDate, YearMonth ym, Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
+            return AggregateAgreementTimeByYM.aggregate(this.require, sid, baseDate, ym, agreementTimes);
         }
 
         @Override
-        public AgreementTimeYear timeYear(String sid, GeneralDate baseDate, nts.arc.time.calendar.Year year, Map<YearMonth, AgreementOneMonthTime> agreementTimes) {
-            return null;
+        public AgreementTimeYear timeYear(String sid, GeneralDate baseDate, nts.arc.time.calendar.Year year, Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
+            return AggregateAgreementTimeByYear.aggregate(createRequireY(), sid, baseDate, year, agreementTimes);
         }
 
         @Override
         public AgreementExcessInfo algorithm(CheckErrorApplicationMonthService.Require require, String employeeId, nts.arc.time.calendar.Year year) {
-            return null;
+            return GetExcessTimesYear.get(this.require, employeeId, year);
         }
 
         @Override
         public Optional<AgreementOperationSetting> agreementOperationSetting(String cid) {
-            return Optional.empty();
+            return this.require.agreementOperationSetting(cid);
         }
 
         @Override
         public List<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(List<String> sids, List<YearMonth> yearMonths) {
-            return null;
+            return this.require.agreementTimeOfManagePeriod(sids, yearMonths);
         }
 
         @Override
         public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
-            return Optional.empty();
+            return this.require.workingConditionItem(employeeId, baseDate);
+        }
+
+        private AggregateAgreementTimeByYear.RequireM1 createRequireY() {
+
+            return new AggregateAgreementTimeByYear.RequireM1() {
+
+                @Override
+                public Optional<AgreementOperationSetting> agreementOperationSetting(String cid) {
+                    return require.agreementOperationSetting(cid);
+                }
+
+                @Override
+                public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, nts.arc.time.calendar.Year year) {
+                    return require.basicAgreementSetting(cid, sid, baseDate, year);
+                }
+
+                @Override
+                public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String sid, YearMonth ym) {
+                    return require.agreementTimeOfManagePeriod(sid, ym);
+                }
+            };
         }
     }
 }

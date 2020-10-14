@@ -11,12 +11,12 @@ import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AnnualAppCreate;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ApproverItem;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.*;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
@@ -44,9 +44,17 @@ import java.util.Optional;
 public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandler<List<RegisterAppSpecialProvisionYearCommand>> {
 
     @Inject
+    private RecordDomRequireService requireService;
+    @Inject
     private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
     @Inject
+    private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
+    @Inject
+    private UnitOfApproverRepo unitOfApproverRepo;
+    @Inject
     private SyWorkplaceAdapter syWorkplaceAdapter;
+    @Inject
+    private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
     @Inject
     private AgreementUnitSettingRepository agreementUnitSettingRepository;
     @Inject
@@ -67,7 +75,9 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
     @Override
     protected void handle(CommandHandlerContext<List<RegisterAppSpecialProvisionYearCommand>> context) {
         String cid = AppContexts.user().companyId();
-        RequireImpl require = new RequireImpl(cid, specialProvisionsOfAgreementRepo, syWorkplaceAdapter,
+        RequireImpl require = new RequireImpl(cid, requireService.createRequire(), specialProvisionsOfAgreementRepo,
+                approver36AgrByCompanyRepo,
+                unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
                 agreementUnitSettingRepository,
                 affClassificationAdapter, agreementTimeOfClassificationRepo,
                 affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
@@ -84,8 +94,12 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
     private class RequireImpl implements AnnualAppCreate.Require {
 
         private String companyId;
+        private RecordDomRequireService.Require require;
         private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+        private Approver36AgrByCompanyRepo approver36AgrByCompanyRepo;
+        private UnitOfApproverRepo unitOfApproverRepo;
         private SyWorkplaceAdapter syWorkplaceAdapter;
+        private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AgreementUnitSettingRepository agreementUnitSettingRepository;
         private AffClassificationAdapter affClassificationAdapter;
         private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
@@ -107,7 +121,8 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
 
         @Override
         public UnitOfApprover getUsageSetting() {
-            return null;
+            // // return approver36AgrByCompanyRepo.getByCompanyIdAndDate(cid, baseDate);
+            return unitOfApproverRepo.getByCompanyId(companyId);
         }
 
         @Override
@@ -117,7 +132,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
 
         @Override
         public Optional<Approver36AgrByWorkplace> getApproveHistoryItem(String workplaceId, GeneralDate baseDate) {
-            return Optional.empty();
+            return approver36AgrByWorkplaceRepo.getByWorkplaceIdAndDate(workplaceId, baseDate);
         }
 
         @Override
@@ -139,11 +154,6 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
         public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
             return agreementTimeOfClassificationRepo.find(companyId, laborSystemAtr, classificationCode);
         }
-
-//        @Override
-//        public Optional<BasicAgreementSetting> basicAgreementSetting(String basicSettingId) {
-//            return basicAgreementSettingRepo.find(basicSettingId);
-//        }
 
         @Override
         public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
@@ -172,7 +182,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler extends CommandHandle
 
         @Override
         public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
-            return Optional.empty();
+            return this.require.workingConditionItem(employeeId, baseDate);
         }
     }
 }

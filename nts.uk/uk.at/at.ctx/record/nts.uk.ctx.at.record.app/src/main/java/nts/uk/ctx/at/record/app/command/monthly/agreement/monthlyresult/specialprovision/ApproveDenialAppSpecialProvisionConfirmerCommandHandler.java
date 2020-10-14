@@ -8,10 +8,12 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ConfirmationStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +25,13 @@ import java.util.Optional;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ApproveDenialAppSpecialProvisionConfirmerCommandHandler extends CommandHandler<List<ApproveDenialAppSpecialProvisionConfirmerCommand>> {
+
+    @Inject
+    private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+
     @Override
     protected void handle(CommandHandlerContext<List<ApproveDenialAppSpecialProvisionConfirmerCommand>> context) {
-        RequireImpl require = new RequireImpl();
+        RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo);
         List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
         for (ApproveDenialAppSpecialProvisionConfirmerCommand command : commands) {
             AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), command.getConfirmerId(),
@@ -37,14 +43,16 @@ public class ApproveDenialAppSpecialProvisionConfirmerCommandHandler extends Com
     @AllArgsConstructor
     private class RequireImpl implements AppConfirmation.Require {
 
+        private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+
         @Override
         public Optional<SpecialProvisionsOfAgreement> getApp(String applicantId) {
-            return Optional.empty();
+            return specialProvisionsOfAgreementRepo.getByAppId(applicantId);
         }
 
         @Override
         public void updateApp(SpecialProvisionsOfAgreement app) {
-
+            specialProvisionsOfAgreementRepo.update(app);
         }
     }
 }
