@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class GeneralSearchHistory.
@@ -56,7 +57,7 @@ public class GeneralSearchHistory extends AggregateRoot {
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setCompanyID(companyID);
+		memento.setCompanyID(AppContexts.user().companyId());
 		memento.setUserID(userID);
 		memento.setContents(contents.v());
 		memento.setSearchDate(searchDate);
