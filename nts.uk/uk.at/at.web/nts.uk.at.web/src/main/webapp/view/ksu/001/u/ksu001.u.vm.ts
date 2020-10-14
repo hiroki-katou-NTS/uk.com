@@ -36,6 +36,7 @@ module nts.uk.at.view.ksu001.u {
         workplaceName: KnockoutObservable<string> = ko.observable('');
         lstStep: KnockoutObservableArray<any>;
         stepSelected: any;
+        baseDate: KnockoutObservable<string> = ko.observable("");
         publicDate: KnockoutObservable<string> = ko.observable("");
         editDate: KnockoutObservable<string> = ko.observable("");
         newPublicDate: KnockoutObservable<string> = ko.observable("");
@@ -80,15 +81,15 @@ module nts.uk.at.view.ksu001.u {
             let editDateSplit = [];
             let numberDayOfMonth = self.getNumberOfDays(year, month);;
             let startDate = self.formatDate(new Date(year, month - 1, 1));
-            let endDate = self.formatDate(new Date(year, month - 1, numberDayOfMonth));       
-            if (self.newPublicDate()) {
+            let endDate = self.formatDate(new Date(year, month - 1, numberDayOfMonth));      
+            if(self.publicDate()) {
                 self.isEnableBtn(true);
-                publicDateSplit = self.newPublicDate().split('-');
-                if(self.newEditDate()){
-                    editDateSplit = self.newEditDate().split('-');
+                publicDateSplit = self.publicDate().split('-');
+                if(self.editDate()){
+                    editDateSplit = self.editDate().split('-');
                     if (year == parseInt(publicDateSplit[0])) {
                         if (month < parseInt(publicDateSplit[1])) {
-                            if (self.newEditDate() >= endDate) {
+                            if (self.editDate() >= endDate) {
                                 for (let i = 1; i <= numberDayOfMonth; i++) {
                                     let date = self.formatDate(new Date(year, month - 1, i));
                                     let existDate = self.checkExistDate(date);                                    
@@ -96,20 +97,20 @@ module nts.uk.at.view.ksu001.u {
                                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
                                     }                                    
                                 }
-                            } else if (self.newEditDate() >= startDate) {
+                            } else if (self.editDate() >= startDate) {
                                 for (let i = 1; i <= numberDayOfMonth; i++) {
                                     let date = self.formatDate(new Date(year, month - 1, i));
                                     let existDate = self.checkExistDate(date);
                                     if (existDate) {
                                         self.removeExistDate(existDate);
                                     }
-                                    if (date < self.ednewEditDateitDate()) {
+                                    if (date < self.editDate()) {
                                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
                                     } else {
                                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
                                     }
                                 }
-                            } else if (self.newEditDate() < startDate) {
+                            } else if (self.editDate() < startDate) {
                                 for (let i = 1; i <= numberDayOfMonth; i++) {
                                     let date = self.formatDate(new Date(year, month - 1, i));
                                     let existDate = self.checkExistDate(date);
@@ -121,7 +122,7 @@ module nts.uk.at.view.ksu001.u {
                             }
                         }                   
                     } else if (year < parseInt(publicDateSplit[0])) {
-                        if (self.newEditDate() >= endDate) {
+                        if (self.editDate() >= endDate) {
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
                                 let existDate = self.checkExistDate(date);                                
@@ -129,7 +130,7 @@ module nts.uk.at.view.ksu001.u {
                                     dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
                                 }  
                             }
-                        } else if (self.newEditDate() >= startDate) {
+                        } else if (self.editDate() >= startDate) {
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
                                 let existDate = self.checkExistDate(date);
@@ -142,7 +143,7 @@ module nts.uk.at.view.ksu001.u {
                                     dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
                                 }
                             }
-                        } else if (self.newEditDate() < startDate) {
+                        } else if (self.editDate() < startDate) {
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
                                 let existDate = self.checkExistDate(date);
@@ -178,6 +179,34 @@ module nts.uk.at.view.ksu001.u {
                 }                
                 self.optionDates(dates);
                 self.$blockui("hide");
+            } else {
+                if (self.newPublicDate()) {
+                    self.isEnableBtn(true);
+                    publicDateSplit = self.newPublicDate().split('-');
+                    if (year == parseInt(publicDateSplit[0])) {
+                        if (month < parseInt(publicDateSplit[1])) {
+                            numberDayOfMonth = self.getNumberOfDays(year, month);
+                            for (let i = 1; i <= numberDayOfMonth; i++) {
+                                let date = self.formatDate(new Date(year, month - 1, i));
+                                let existDate = self.checkExistDate(date);
+                                if (!existDate) {
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
+                                }
+                            }
+                        }
+                    } else if (year < parseInt(publicDateSplit[0])) {
+                        let numberDayOfMonth = self.getNumberOfDays(year, month);
+                        for (let i = 1; i <= numberDayOfMonth; i++) {
+                            let date = self.formatDate(new Date(year, month - 1, i));
+                            let existDate = self.checkExistDate(date);
+                            if (!existDate) {
+                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
+                            }
+                        }
+                    }
+                }
+                self.optionDates(dates);
+                self.$blockui("hide");
             }
         }
 
@@ -187,6 +216,7 @@ module nts.uk.at.view.ksu001.u {
             let dates = self.optionDates();
             let publicDate = self.publicDate();
             let editDate = self.editDate();
+            let baseDateSplit = self.baseDate().split("/");   
             let publicDateSplit = [];
             let editDateSplit = [];
             let publicDateInt = 0;
@@ -235,9 +265,13 @@ module nts.uk.at.view.ksu001.u {
                 if(self.newPublicDate()){
                     newPublicDateSplit = newPublicDate.split('-'); 
                 }            
-                let today = new Date();
-                year = today.getFullYear();
-                month = today.getMonth() + 1;  
+                // let today = new Date();
+                // year = today.getFullYear();
+                // month = today.getMonth() + 1;  
+                year = parseInt(baseDateSplit[0]);
+                month = parseInt(baseDateSplit[1]);
+                self.optionDates([]);
+                self.isEnableBtn(false);
                 let numberDayOfMonth = self.getNumberOfDays(year, month);
                 for (let i = 1; i <= numberDayOfMonth; i++) {  
                     let date = self.formatDate(new Date(year,month -1, i)); 
@@ -265,13 +299,15 @@ module nts.uk.at.view.ksu001.u {
 
         loadPubDateInfo(): void {
             const self = this;
-            let request = nts.uk.ui.windows.getShared('dataShareDialogU');            
+            let request = nts.uk.ui.windows.getShared('dataShareDialogU');     
+            self.baseDate(request.endDate);    
+            let baseDateSplit = request.endDate.split("/");             
             self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request).then((data: IPublicInfoOrg) => {
                 self.$blockui("show");
                 self.unit(data.unit);
                 self.workplaceId(data.workplaceId);
                 self.workplaceGroupId(data.workplaceGroupId);
-                self.workplaceName(data.displayName);
+                self.workplaceName(data.displayName);                
                 self.publicDate(data.publicDate);
                 self.editDate(data.editDate);
                 self.newPublicDate(data.publicDate);
@@ -291,9 +327,11 @@ module nts.uk.at.view.ksu001.u {
                     self.publicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
                     self.newPublicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
                 } else {
-                    let today = new Date();
-                    year = today.getFullYear();
-                    month = today.getMonth() + 1;
+                    // let today = new Date();
+                    // year = today.getFullYear();
+                    // month = today.getMonth() + 1;
+                    year = parseInt(baseDateSplit[0]);
+                    month = parseInt(baseDateSplit[1]);
                     self.optionDates([]);
                     self.isEnableBtn(false);
                 }
@@ -368,12 +406,19 @@ module nts.uk.at.view.ksu001.u {
                     let existDate = self.checkExistDate(dateClick);         
                              
                     if (!self.publicDate()) {
-                        for (let i = 0; i < parseInt(dateClickSplit[2]); i++) {
-                            let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
+                        if(self.newPublicDate() && self.newPublicDate() != ''){
+                            size = self.daysDifference(dateClick, self.newPublicDate()) + parseInt(dateClickSplit[2])
+                        } else {
+                            size = parseInt(dateClickSplit[2]);
+                        }
+                        for (let i = 1; i <= size; i++) {
+                            let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1,  i));
                             if (self.checkExistDate(date)) {
                                 self.removeExistDate(self.checkExistDate(date));
                             }
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));                                              
+                            if(date <= dateClick){
+                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));   
+                            }                                                                       
                         }
                         self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
                         self.optionDates(dates);    
@@ -470,6 +515,7 @@ module nts.uk.at.view.ksu001.u {
                                 // set new edit date is date click cell calendar
                                 if(dateClick == self.publicDate()){
                                     self.newEditDate("");
+                                    self.newPublicDate(self.publicDate());
                                 } else if(dateClick < self.publicDate()) {
                                     self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
                                     // self.newPublicDate(self.publicDate());
@@ -495,15 +541,11 @@ module nts.uk.at.view.ksu001.u {
                                 self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
                             }
                             
-                        } else if (parseInt(basePublicDateSplit[1]) > parseInt(dateClickSplit[1])) {
-                            if(self.newEditDate() && self.newEditDate() != ""){
-                                size = self.daysDifference(self.newPublicDate(), dateClick) >= self.daysDifference(self.newEditDate(), dateClick) ? self.daysDifference(self.newPublicDate(), dateClick) :self.daysDifference(self.newEditDate(), dateClick) ;
-                            } else {
-                                size = self.daysDifference(self.newPublicDate(), dateClick);
-                            }                            
+                        } else if (parseInt(basePublicDateSplit[1]) > parseInt(dateClickSplit[1])) {  
+                            size = self.daysDifference(self.newPublicDate(), dateClick);
                             if (existDate.textColor === Ksu001u.TEXT_COLOR_PUB && existDate.backgroundColor === Ksu001u.BG_COLOR_PUB) {
-                                for (let i = 0; i < size; i++) {
-                                    let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
+                                for (let i = 0; i < size ; i++) {
+                                    let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) + offset - i));
                                     if (self.checkExistDate(date)) {
                                         self.removeExistDate(self.checkExistDate(date));
                                     }
@@ -679,6 +721,7 @@ module nts.uk.at.view.ksu001.u {
                         // set new edit date is date click cell calendar
                         if(dateClick == self.publicDate()){
                             self.newEditDate("");
+                            self.newPublicDate(self.publicDate());
                         } else if(dateClick < self.publicDate()) {
                             self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
                             self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
@@ -720,6 +763,7 @@ module nts.uk.at.view.ksu001.u {
                             // set new edit date is date click cell calendar
                             if(dateClick == self.publicDate()){
                                 self.newEditDate("");
+                                self.newPublicDate(self.publicDate());
                             } else if(dateClick < self.publicDate()) {
                                 self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
                                 self.newPublicDate(self.publicDate());
@@ -1545,11 +1589,16 @@ module nts.uk.at.view.ksu001.u {
                 let editDateStr = self.newEditDate();
                 command.editDate = editDateStr.replace('-', '/').replace('-', '/')
             }
-            if (self.newPublicDate() > self.publicDate()) {
-                publicDateStr = self.newPublicDate();                
+            if(self.publicDate()){
+                if (self.newPublicDate() > self.publicDate()) {
+                    publicDateStr = self.newPublicDate();                
+                } else {
+                    publicDateStr = self.publicDate();
+                }
             } else {
-                publicDateStr = self.publicDate();
+                publicDateStr = self.newPublicDate();
             }
+            
             command.publicDate = publicDateStr.replace('-', '/').replace('-', '/');
             
             self.isBtnClick(true);

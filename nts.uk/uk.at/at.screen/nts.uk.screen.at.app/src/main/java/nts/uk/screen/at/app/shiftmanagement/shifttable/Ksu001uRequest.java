@@ -14,10 +14,14 @@ public class Ksu001uRequest {
 	private int unit;
 	private String workplaceId;
 	private String workplaceGroupId;
-	private String baseDate;
+	private String startDate;
+	private String endDate;
 	
-	public GeneralDate toDate() {
-		return GeneralDate.fromString(baseDate, "yyyy/MM/dd");
+	public GeneralDate startDate() {
+		return GeneralDate.fromString(startDate, "yyyy/MM/dd");
 	}
 
+	public GeneralDate endDate() {
+		return GeneralDate.fromString(endDate, "yyyy/MM/dd");
+	}
 }
