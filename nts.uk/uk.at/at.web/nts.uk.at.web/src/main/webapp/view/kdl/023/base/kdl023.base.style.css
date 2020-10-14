@@ -115,9 +115,17 @@
 }
 
 #contents-area.kdl023-content-area .fc-day-grid-container {
-	height: unset !important;
+	height: 510px !important;
 }
 
-#contents-area {
-	height: unset !important;
+#contents-area.kdl023-content-area.exec-mode {
+	height: 696px !important;
+}
+
+#contents-area.kdl023-content-area.ref-mode {
+	height: 665px !important;
+}
+
+#functions-area-bottom {
+	position: fixed !important;
 }

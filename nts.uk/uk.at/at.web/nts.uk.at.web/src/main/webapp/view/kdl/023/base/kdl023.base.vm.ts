@@ -8,7 +8,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkType = service.model.WorkType;
     import WorkTime = service.model.WorkTime;
     import DailyPatternSetting = service.model.DailyPatternSetting;
-    import DailyPatternValue = service.model.DailyPatternValue;
     import formatDate = nts.uk.time.formatDate;
     import WorkCycleReflectionDto = nts.uk.at.view.kdl023.base.service.model.WorkCycleReflectionDto;
     import GetStartupInfoParamDto = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
@@ -327,6 +326,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     }else{
                         $('#cbb-daily-work-pattern').focus();
                     }
+
+					let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
+					if(holidayListsErrors.length > 0){
+						nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
+						vm.$blockui('clear');
+						dfd.fail();
+					}
                 }).fail(res => {
                     vm.$dialog.alert(res.message);
                     dfd.fail();
@@ -402,13 +408,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         public onBtnApplySettingClicked(): void{
         	const vm = this;
 			vm.slideDays(0);
-			vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
+			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate.replace('/', '')));
 			vm.onBtnApplySetting(vm.slideDays());
         }
 
-        public onBtnApplySetting(slideDay: number): void {
-            let vm = this;
-            vm.$blockui('invisible');
+		private checkEmptyFor3HolidayLists(): any {
+			let vm = this;
 
 			let holidayListsErrors = [];
 			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
@@ -435,11 +440,22 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				});
 			}
 
+			return holidayListsErrors;
+		}
+
+        public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
+            let vm = this;
+            vm.$blockui('invisible');
+
+			let dfd = $.Deferred();
+
+			let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
 			if(holidayListsErrors.length > 0){
 				nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
 				vm.$blockui('clear');
+				dfd.fail();
 
-				return;
+				return dfd.promise();
 			}
 
             let legalHolidayCd = '';
@@ -487,15 +503,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					$(focusElementId).focus();
 				});
                 vm.$blockui('clear');
+				dfd.fail();
 
-                return;
+                return dfd.promise();
             }
 
+            let perStart	: number = vm.yearMonthPicked();
+			let perEnd	: number = vm.yearMonthPicked();
+			if (vm.isExecMode()) {
+				perStart	= vm.dateValue().startDate;
+				perEnd	= vm.dateValue().endDate;
+			}
+
 			vm.reflectionParam({
-				creationPeriodStartDate : moment(vm.dateValue().startDate, "YYYY-MM").startOf("month")
-					.format(CONST.MOMENT_DATE_FORMAT),
-				creationPeriodEndDate : moment(vm.dateValue().endDate, "YYYY-MM").endOf("month")
-					.format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodStartDate : moment(perStart, "YYYY-MM").startOf("month").format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodEndDate : moment(perEnd, "YYYY-MM").endOf("month").format(CONST.MOMENT_DATE_FORMAT),
 				workCycleCode : vm.reflectionSetting().selectedPatternCd(),
 				refOrder : refOrder,
 				numOfSlideDays : slideDay,
@@ -516,6 +538,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.setPatternRange().done(() => {
 				$('#component-calendar-kcp006').focus(); // Set focus control
 			});
+
+			dfd.resolve();
+
+			return dfd.promise();
         }
 
         /**
@@ -632,333 +658,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Load work time list.
-         */
-        private loadWorktimeList(): JQueryPromise<void> {
-            let self = this;
-            let dfd = $.Deferred<void>();
-            service.getAllWorkTime().done(function(list: Array<WorkTime>) {
-                self.listWorkTime(list);
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get option dates for calendar.
-         * @param: startDate (YYYYMM)
-         */
-        private getOptionDates(): Array<OptionDate> {
-            let self = this;
-            // Update pattern start date value of reflection setting.
-            self.reflectionSetting().patternStartDate(self.patternStartDate.format(CONST.DATE_FORMAT));
-
-            // Get calendar's range.
-            let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
-
-            // Reset flag.
-            self.isMasterDataUnregisterd(false);
-
-            let currentDate = moment(self.patternStartDate);
-            let result: Array<OptionDate> = [];
-
-            // Backward processing
-            if (currentDate.isAfter(self.calendarStartDate, 'day')) {
-                // Previous day on calendar.
-                currentDate = currentDate.subtract(1, 'days');
-
-                while (currentDate.isSameOrAfter(self.calendarStartDate, 'day')) { // Loop until reach calendar start date.
-                    // Reversed list dailyPatternValue loop.
-                    let listDailyPatternVal;
-                    if (self.dailyPatternSetting.dailyPatternVals) {
-                        listDailyPatternVal = self.dailyPatternSetting.dailyPatternVals.slice().reverse();
-                    }
-
-                    // Master data is registered.
-                    if (listDailyPatternVal && listDailyPatternVal.length > 0) {
-                        listDailyPatternVal.some(dailyPatternValue => {
-                            result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
-
-                            // Break loop condition.
-                            let isLoopEnd = currentDate.isBefore(self.calendarStartDate, 'day');
-                            return isLoopEnd;
-                        });
-                    }
-
-                    // Master data is unregistered.
-                    else {
-                        let dailyPatternValue = {
-                            dispOrder: <any> undefined,
-                            workTypeSetCd: <any> undefined,
-                            workingHoursCd: <any> undefined,
-                            days: range
-                        };
-                        result = result.concat(self.loopBackwardPatternDays(dailyPatternValue, currentDate));
-                    }
-                }
-                // Reset current date to pattern start date.
-                currentDate = moment(self.patternStartDate);
-            }
-
-            // Forward processing
-            while (currentDate.isSameOrBefore(self.calendarEndDate, 'day')) { // Loop until reach calendar end date.
-                // List dailyPatternValue loop.
-                let listDailyPatternVal = self.dailyPatternSetting.dailyPatternVals;
-
-                // Set is out of calendar's range observable.
-                self.setIsOutOfCalendarRange(listDailyPatternVal);
-
-                // Master data is registered.
-                if (listDailyPatternVal && listDailyPatternVal.length > 0) {
-                    listDailyPatternVal.some(dailyPatternValue => {
-                        result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
-
-                        // Break loop condition.
-                        let isLoopEnd = false;
-
-                        // Break loop if current date reach calendar's end date.
-                        isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
-
-                        // If pattern's total days is out of calendar's range.
-                        if (!self.isExecMode() && self.isOutOfCalendarRange()) {
-                            isLoopEnd = false; // continue to loop.
-                        }
-
-                        return isLoopEnd;
-                    });
-                }
-
-                // Master data is unregistered.
-                else {
-                    let dailyPatternValue = {
-                        dispOrder: <any> undefined,
-                        workTypeSetCd: <any> undefined,
-                        workingHoursCd: <any> undefined,
-                        days: range
-                    };
-                    result = result.concat(self.loopForwardPatternDays(dailyPatternValue, currentDate));
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Loop backward daily pattern days.
-         */
-        private loopBackwardPatternDays(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): Array<OptionDate> {
-            let self = this;
-            let result = [];
-            let dayOfPattern = 1;
-
-            // Day of pattern loop.
-            while (dayOfPattern <= dailyPatternValue.days) {
-
-                // Break loop if current date reach calendar's start date.
-                if (currentDate.isBefore(self.calendarStartDate, 'day')) {
-                    break;
-                }
-
-                // Get display text and push to option date list.
-                let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
-                result.push(optionDate);
-
-                // Next day of pattern.
-                dayOfPattern++;
-
-                // Reserve dayOfPattern if reflection method = fill in the blank
-                if (optionDate.textColor == '#ff0000' // Is holiday
-                    && self.isFillInTheBlankChecked()) {
-                    dayOfPattern--;
-                }
-
-                //  When is on screen B: only process in calendar's range.
-                if (self.isExecMode()) {
-                    // Skip to previous day if current date is after calendar's end date.
-                    if (currentDate.isAfter(self.calendarEndDate, 'day')) {
-                        _.remove(result, item => item === optionDate);
-                        // reset flag because today does not count (out of calendar's range)
-                        self.isMasterDataUnregisterd(false);
-                    }
-                }
-
-                // Previous day on calendar.
-                currentDate = currentDate.subtract(1, 'days');
-
-            }
-            return result;
-        }
-
-        /**
-         * Get total days of pattern.
-         */
-        private getTotalDaysOfPattern(listDailyPatternVal: Array<DailyPatternValue>): number {
-            let sum = 0;
-            _.forEach(listDailyPatternVal, i => {
-                sum += i.days;
-            });
-            return sum;
-        }
-
-        /**
-         * Loop forward daily pattern days.
-         */
-        private loopForwardPatternDays(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): Array<OptionDate> {
-            let self = this;
-            let result = [];
-            let dayOfPattern = 1;
-
-            // Day of pattern loop.
-            while (dayOfPattern <= dailyPatternValue.days) {
-
-                // Get display text and push to option date list.
-                let optionDate = self.getDisplayText(dailyPatternValue, currentDate);
-                result.push(optionDate);
-
-                // Next day of pattern.
-                dayOfPattern++;
-
-                // Reserve dayOfPattern if reflection method = fill in the blank
-                if (optionDate.textColor == '#ff0000' // Is holiday
-                    && self.isFillInTheBlankChecked()) {
-                    dayOfPattern--;
-                }
-
-                // Next day on calendar.
-                currentDate = currentDate.add(1, 'days');
-
-                // Current date reach calendar's end date.
-                if (currentDate.isAfter(self.calendarEndDate, 'day')) {
-                    // Break loop if is on screen B
-                    if (self.isExecMode()) {
-                        break;
-                    }
-                    // Break loop if is on screen A and pattern's total days is in calendar's range.
-                    if (!self.isExecMode() && !self.isOutOfCalendarRange()) {
-                        break;
-                    }
-                    // Or else continue loop.
-                }
-
-                //  When is on screen B: only process in calendar's range.
-                if (self.isExecMode()) {
-                    // Skip to next day if current date is before calendar's start date.
-                    if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
-                        _.remove(result, item => item === optionDate);
-                        // reset flag because today does not count (out of calendar's range)
-                        self.isMasterDataUnregisterd(false);
-                    }
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Get display text.
-         */
-        private getDisplayText(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): OptionDate {
-            let self = this;
-
-            // Is holiday
-            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: '#ff0000',
-                    backgroundColor: 'white',
-                    listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting().holidaySetting.workTypeCode())
-                    ]
-                }
-            }
-
-            // Is statutory holiday
-            if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: '#ff0000',
-                    backgroundColor: 'white',
-                    listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting().statutorySetting.workTypeCode())
-                    ]
-                }
-            }
-
-            // Is non-statutory holiday
-            if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: '#ff0000',
-                    backgroundColor: 'white',
-                    listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting().nonStatutorySetting.workTypeCode())
-                    ]
-                }
-            }
-
-            // Is working day.
-            let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
-            let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-            if (!worktype) {
-                self.isMasterDataUnregisterd(true);
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: '#0000ff',
-                    backgroundColor: 'white',
-                    listText: [
-                        nts.uk.resource.getText('KSM005_43') // display no master data
-                    ]
-                }
-            } else if (worktime) { // work time is set => work day
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: '#0000ff',
-                    backgroundColor: 'white',
-                    listText: [
-                        worktype,
-                        worktime
-                    ]
-                }
-            } else { // worktime not set => day off
-                return {
-                    start: currentDate.format(CONST.DATE_FORMAT),
-                    textColor: 'red',
-                    backgroundColor: 'white',
-                    listText: [
-                        worktype
-                    ]
-                }
-            }
-        }
-
-        /**
-         * Get worktype name by code.
-         */
-        private getWorktypeNameByCode(code: string): string {
-            let self = this;
-            let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
-            if (result) {
-                return result.name;
-            }
-            return '';
-        }
-
-        /**
-         * Get worktime name by code.
-         */
-        private getWorktimeNameByCode(code: string): string {
-            let self = this;
-            if (code) {
-                // worktime is set => work day
-                let result = _.find(self.listWorkTime(), wt => wt.code == code);
-                if (result) {
-                    return result.name;
-                }
-                return nts.uk.resource.getText('KSM005_43'); // display this if no data found
-            }
-            // worktime not set => off day
-            return '';
-        }
-
-        /**
          * Get list date displaying on calendar.
          */
         private getListDateOnCalendar(): Array<string> {
@@ -973,87 +672,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Get work day division.
-         */
-        private getWorkDayDivision(dayOfWeek: number): WorkDayDivision {
-            let self = this;
-            switch (dayOfWeek) {
-                case 0:
-                    return self.weeklyWorkSetting.sunday;
-                case 1:
-                    return self.weeklyWorkSetting.monday;
-                case 2:
-                    return self.weeklyWorkSetting.tuesday;
-                case 3:
-                    return self.weeklyWorkSetting.wednesday;
-                case 4:
-                    return self.weeklyWorkSetting.thursday;
-                case 5:
-                    return self.weeklyWorkSetting.friday;
-                case 6:
-                    return self.weeklyWorkSetting.saturday;
-                default:
-                    return WorkDayDivision.WorkingDay;
-            }
-        }
-
-        /**
-         * Get isStatutorySetting checkbox value
-         */
-        private isStatutorySettingChecked(): boolean {
-            let self = this;
-            return self.reflectionSetting().statutorySetting.useClassification();
-        }
-
-        /**
-         * Get isNonStatutorySetting checkbox value
-         */
-        private isNonStatutorySettingChecked(): boolean {
-            let self = this;
-            return self.reflectionSetting().nonStatutorySetting.useClassification();
-        }
-
-        /**
-         * Get isHolidaySetting checkbox value
-         */
-        private isHolidaySettingChecked(): boolean {
-            let self = this;
-            return self.reflectionSetting().holidaySetting.useClassification();
-        }
-
-        /**
          * Check option dates data
          */
         public isOptionDatesEmpty(): boolean {
             let self = this;
             return nts.uk.util.isNullOrEmpty(self.optionDates());
-        }
-
-        /**
-         * Check if isFillInTheBlank radio is selected.
-         */
-        private isFillInTheBlankChecked(): boolean {
-            let self = this;
-            return ReflectionMethod.FillInTheBlank == self.reflectionSetting().reflectionMethod();
-        }
-
-        /**
-         * Set is out of calendar's range observable.
-         */
-        private setIsOutOfCalendarRange(listDailyPatternVal: Array<DailyPatternValue>): void {
-            let self = this;
-
-            // Get calendar's range.
-            let calendarRange = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
-
-            // Get total days.
-            let totalDays = self.getTotalDaysOfPattern(listDailyPatternVal);
-
-            // Set value
-            self.isOutOfCalendarRange(false);
-            if (totalDays > calendarRange) {
-                self.isOutOfCalendarRange(true);
-            }
         }
 
         /**
@@ -1096,19 +719,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
 
             return dfd.promise();
-        }
-
-        /**
-         * Check if the day is holiday
-         * @param: day
-         */
-        private isHoliday(day: moment.Moment): boolean {
-            let self = this;
-            let result = _.find(self.listHoliday, d => d.date == parseInt(day.format('YYYYMMDD')));
-            if (result) {
-                return true;
-            }
-            return false;
         }
 
         /**
@@ -1220,6 +830,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
         }
         private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
+        	const vm = this;
+
             let start = refImage.date;
             let textColor;
             if(refImage.workStyles === 0){
@@ -1230,16 +842,30 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 textColor = '#FF7F27';
             }
 
+            let workTypeStr:string = '';
+			let workTimeStr:string = '';
+            if (refImage.workInformation.workTypeName) {
+				workTypeStr = refImage.workInformation.workTypeName;
+			} else {
+				workTypeStr = refImage.workInformation.workTypeCode + ' ' + vm.$i18n('KDL023_41');
+				textColor = '#000000';
+			}
+
+			if (refImage.workInformation.workTimeName) {
+				workTimeStr = refImage.workInformation.workTimeName;
+			} else {
+				workTimeStr = refImage.workInformation.workTimeCode + ' ' + vm.$i18n('KDL023_41');
+			}
+
             let backgroundColor = 'white';
-            let listText: Array<string> = [
-                refImage.workInformation.workTypeName ? refImage.workInformation.workTypeName : '',
-                refImage.workInformation.workTimeName ? refImage.workInformation.workTimeName : ''];
+            let listText: Array<string> = [workTypeStr, workTimeStr];
             let result:OptionDate = {
                 start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
                 backgroundColor: backgroundColor,
                 listText: listText
             };
+
             return result;
         }
 
@@ -1260,7 +886,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if(vm.promise()){
                 vm.$dialog.confirm({ messageId: "Msg_1738" }).then((result: 'yes' | 'no') => {
                     if(result === 'yes'){
-                        vm.register();
+						vm.onBtnApplySetting(vm.slideDays()).done(() => {
+							vm.register();
+						});
                     }
                 });
             }else{
@@ -1269,29 +897,37 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         }
 
-        private register(): void{
-            const vm = this;
-            let param : MonthlyPatternRegisterCommand = {
-                isOverWrite : vm.isOverWrite(),
-                workMonthlySetting: vm.workMonthlySetting()
-            };
-            // If calendar's setting is empty.
-            if (vm.isOptionDatesEmpty()) {
-                vm.$dialog.error({ messageId: "Msg_512" });
-                return;
-            }
-            service.registerMonthlyPattern(param).done(() => {
-                nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                    vm.closeDialog();
-                });
-            }).fail(() => {
-                vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
-                    vm.closeDialog();
-                });
-            });
-        }
+        private register(): void {
+			const vm = this;
+			let param: MonthlyPatternRegisterCommand = {
+				isOverWrite: vm.isOverWrite(),
+				workMonthlySetting: vm.workMonthlySetting()
+			};
+			// If calendar's setting is empty.
+			if (vm.isOptionDatesEmpty()) {
+				vm.$dialog.error({messageId: "Msg_512"});
+				return;
+			}
+			service.registerMonthlyPattern(param).done(() => {
+				nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
+				vm.$dialog.info({messageId: "Msg_15"}).then(function () {
+					vm.closeDialog();
+				});
+			}).fail((message: BussinessException) => {
+				const {messageId, parameterIds} = message;
+				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
+					vm.closeDialog();
+				});
+			});
+		}
     }
+
+	interface BussinessException {
+		atTime: string;
+		businessException: boolean;
+		messageId: string;
+		parameterIds: string[];
+	}
 
     export class ReflectionSetting {
         calendarStartDate: KnockoutObservable<string> = ko.observable(''); // 開始日

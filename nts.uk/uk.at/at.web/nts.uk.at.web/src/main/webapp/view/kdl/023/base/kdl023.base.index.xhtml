@@ -28,7 +28,8 @@
 				<ui:insert name="extended-header" />
 			</ui:define>
 			<ui:define name="content">
-				<div id="contents-area" class="kdl023-content-area" data-bind="visible: true" style="display: none">
+                <div id="contents-area" class="kdl023-content-area"
+                    data-bind="css: {'exec-mode' : kdl023vm.isExecMode, 'ref-mode' : !kdl023vm.isExecMode()}">
 					<div id="reflect-setting" class="pull-left bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
                         <div class="control-group cf">
@@ -201,8 +202,6 @@
 												]}">
 									</div>
 								</div>
-
-								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
 						<!--A1_34-->
 						<div id="kdl023-holiday-warning-label" class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
@@ -239,9 +238,9 @@
 								cellButtonDisplay: cellButtonDisplay}"></div>
 						</div>
 					</div>
-				</div>
-				<div id="functions-area-bottom">
-					<ui:insert name="extended-function" />
+					<div id="functions-area-bottom">
+                        <ui:insert name="extended-function" />
+                    </div>
 				</div>
 			</ui:define>
 		</ui:composition>
