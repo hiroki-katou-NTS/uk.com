@@ -39,12 +39,14 @@ module nts.uk.ui.calendar {
 		OTHER_ALTER = 'other-alter',
 		REFLECTED = 'reflected',
 		DIFF_MONTH = 'diff-month',
-		SAME_MONTH = 'same-month'
+		SAME_MONTH = 'same-month',
+		READONLY = 'readonly'
 	}
 
 	export interface DataInfo<T = KnockoutObservable<string | null>> {
 		holiday: T;
 		event: T;
+		achievement: KnockoutObservable<boolean | null>;
 	}
 
 	const D_FORMAT = 'YYYYMM';
@@ -306,7 +308,7 @@ module nts.uk.ui.calendar {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 
-			const { date, inRange, className, binding } = dayData;
+			const { date, data, inRange, className, binding } = dayData;
 
 			if (moment(date).isSame(new Date(), 'date')) {
 				className.push(COLOR_CLASS.CURRENT);
@@ -316,6 +318,22 @@ module nts.uk.ui.calendar {
 				className.push(COLOR_CLASS.DIFF_MONTH);
 			} else {
 				className.push(COLOR_CLASS.SAME_MONTH);
+
+				if (data) {
+					ko.computed({
+						read: () => {
+							const achie = ko.unwrap(data.achievement);
+
+							if (achie) {
+								className.push(COLOR_CLASS.READONLY);
+							} else {
+								className.remove(COLOR_CLASS.READONLY);
+							}
+						},
+						owner: dayData,
+						disposeWhenNodeIsRemoved: element
+					});
+				}
 			}
 
 			if (binding) {

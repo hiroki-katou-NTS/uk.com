@@ -28,7 +28,7 @@ module nts.uk.ui.at.ksu002.a {
         }
     }
 
-    export interface ObserverScheduleData<R = any> extends c.DataInfo<KnockoutObservable<string>> {
+    export interface ObserverScheduleData<R = any> extends c.DataInfo {
         $raw: R;
         wtype: WData<KnockoutObservable<string>>;
         wtime: WData<KnockoutObservable<string>>;

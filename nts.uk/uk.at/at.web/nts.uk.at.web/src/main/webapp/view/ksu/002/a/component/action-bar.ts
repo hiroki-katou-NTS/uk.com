@@ -323,14 +323,14 @@ module nts.uk.ui.at.ksu002.a {
 								name: wtype ? wtype.name : '',
 								type: wtype ? wtype.type : WORKTYPE_SETTING.NOT_REQUIRED
 							},
-							wtime: {
-								code: wtime ? wtime.code : '',
-								name: wtime ? wtime.name : '',
+							wtime: wtime ? {
+								code: wtime.code,
+								name: wtime.name,
 								value: {
-									begin: wtime ? wtime.tzStart1 : null,
-									finish: wtime ? wtime.tzEnd1 : null
+									begin: wtime.tzStart1,
+									finish: wtime.tzEnd1
 								}
-							}
+							} : null
 						});
 					}
 				},
@@ -411,13 +411,13 @@ module nts.uk.ui.at.ksu002.a {
 			name: string;
 			type: WORKTYPE_SETTING;
 		};
-		wtime: {
+		wtime: null | {
 			code: string;
 			name: string;
 			value: {
 				begin: number | null;
 				finish: number | null;
 			}
-		}
+		};
 	}
 }

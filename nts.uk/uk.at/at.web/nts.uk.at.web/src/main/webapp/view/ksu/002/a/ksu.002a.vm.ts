@@ -95,6 +95,8 @@ module nts.uk.ui.at.ksu002.a {
 						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
+								const { NO } = ACHIEVEMENT;
+								const arch = ko.unwrap(vm.achievement);
 								const clones: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
 								_.each(response, ($raw) => {
@@ -120,6 +122,7 @@ module nts.uk.ui.at.ksu002.a {
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
+											achievement: ko.observable(arch === NO ? null : $raw.achievements)
 										};
 
 										const { dateInfoDuringThePeriod } = $raw;
@@ -157,25 +160,39 @@ module nts.uk.ui.at.ksu002.a {
 						.always(() => vm.$blockui('hide'));
 				});
 
-			// UI-4-2 実績表示を「しない」に選択する
+			// UI-4
 			vm.achievement
 				.subscribe((c) => {
 					const { NO } = ACHIEVEMENT;
-					const schedules = ko.unwrap(vm.schedules);
+					const undo = vm.schedules.undoAble();
+					const redo = vm.schedules.redoAble();
 
-					if (c === NO) {
-						_.each(schedules, (sc: DayDataMementoObsv) => {
-							const { data } = sc;
-							const { $raw, value, wtime, wtype } = data;
+					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-						});
-					} else {
-						_.each(schedules, (sc: DayDataMementoObsv) => {
-							const { data } = sc;
-							const { $raw, value, wtime, wtype } = data;
+					// soft reset (only undo, redo)
+					vm.schedules.reset(!(undo || redo));
 
-						});
-					}
+					// reset data
+					_.each(schedules, (sc) => {
+						const { data } = sc;
+						const { $raw, wtype, wtime, value } = data;
+
+						// UI-4-1 実績表示を「する」に選択する
+						// UI-4-2 実績表示を「しない」に選択する
+						if (!!$raw.achievements || c === NO) {
+							wtype.code($raw.workTypeCode);
+							wtype.name($raw.workTypeName);
+
+							wtime.code($raw.workTimeCode);
+							wtime.name($raw.workTimeName);
+
+							value.begin($raw.startTime);
+							value.finish($raw.endTime);
+						}
+
+						// state of achievement (both data & switch select)
+						data.achievement(c === NO ? null : $raw.achievements);
+					});
 				});
 		}
 
@@ -187,7 +204,7 @@ module nts.uk.ui.at.ksu002.a {
 			_.extend(window, { vm });
 		}
 
-		// event on click undo or redo button
+		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
 			const vm = this;
 
@@ -211,23 +228,29 @@ module nts.uk.ui.at.ksu002.a {
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
 				if (current) {
-					$.Deferred()
-						.resolve(true)
-						// change data
-						.then(() => {
-							const { data } = current;
+					// UI-5: 不正な勤務情報の貼り付けのチェック
+					if (wtype.type === WORKTYPE_SETTING.REQUIRED && !wtime) {
+						vm.$dialog.error({ messageId: 'Msg_1809' });
+					} else {
+						// UI-5: エラーがならない場合は、常に勤務情報を勤務予定セルに反映する。
+						$.Deferred()
+							.resolve(true)
+							// change data
+							.then(() => {
+								const { data } = current;
 
-							data.wtime.code(wtime.code);
-							data.wtime.name(wtime.name);
+								data.wtime.code(wtime.code);
+								data.wtime.name(wtime.name);
 
-							data.wtype.code(wtype.code);
-							data.wtype.name(wtype.name);
+								data.wtype.code(wtype.code);
+								data.wtype.name(wtype.name);
 
-							data.value.begin(wtime.value.begin);
-							data.value.finish(wtime.value.finish);
-						})
-						// save after change data
-						.then(() => vm.schedules.memento({ current, preview }));
+								data.value.begin(wtime.value.begin);
+								data.value.finish(wtime.value.finish);
+							})
+							// save after change data
+							.then(() => vm.schedules.memento({ current, preview }));
+					}
 				}
 			}
 		}

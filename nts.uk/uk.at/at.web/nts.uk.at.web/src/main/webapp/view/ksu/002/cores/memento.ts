@@ -4,11 +4,11 @@ module nts.uk.ui.memento {
 	export interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
 		undo(): void;
 		redo(): void;
-		reset(): void;
+		reset(hard?: boolean): void;
 		memento(state: StateMemento): void;
 		undoAble: KnockoutComputed<boolean>;
 		redoAble: KnockoutComputed<boolean>;
-		hasChange: KnockoutComputed<boolean>;
+		hasChange: KnockoutReadonlyObservable<boolean>;
 	}
 
 	export interface Options {
@@ -42,6 +42,8 @@ module nts.uk.ui.memento {
 			options.replace = function () { };
 		}
 
+		const hasChange = ko.observable(false);
+
 		const $memento: Memento = {
 			undo: ko.observableArray([]),
 			redo: ko.observableArray([])
@@ -60,11 +62,17 @@ module nts.uk.ui.memento {
 
 		// extends memento methods to observable
 		_.extend(target, {
-			reset: function $$reset() {
+			reset: function $$reset(hard?: boolean) {
 				$memento.undo([]);
 				$memento.redo([]);
+
+				if (hard !== false) {
+					hasChange(false);
+				}
 			},
 			memento: function $$memento(state: StateMemento) {
+				hasChange(true);
+				
 				$memento.redo([]);
 
 				// push old data to memories			
@@ -98,7 +106,7 @@ module nts.uk.ui.memento {
 				}
 			},
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),
-			hasChange: ko.computed(() => !!ko.unwrap($memento.undo).length || ko.unwrap($memento.redo).length)
+			hasChange
 		});
 
 		return target;
