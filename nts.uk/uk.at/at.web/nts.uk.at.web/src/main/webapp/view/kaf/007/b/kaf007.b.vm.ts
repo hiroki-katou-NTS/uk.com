@@ -109,10 +109,10 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             var time1 = _.filter(lstTimezone, ['workNo', 1]);
             var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
-            vm.appWorkChange.startTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].start : null);
-			vm.appWorkChange.endTime1((time1.length > 0 && time1[0].useAtr === true) ? time1[0].end : null);
-			vm.appWorkChange.startTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].start : null);
-			vm.appWorkChange.endTime2((time2.length > 0 && time2[0].useAtr === true) ? time2[0].end : null);
+            vm.appWorkChange.startTime1((time1.length > 0) ? time1[0].timeZone.startTime : null);
+			vm.appWorkChange.endTime1((time1.length > 0) ? time1[0].timeZone.endTime : null);
+			vm.appWorkChange.startTime2((time2.length > 0) ? time2[0].timeZone.startTime : null);
+			vm.appWorkChange.endTime2((time2.length > 0) ? time2[0].timeZone.endTime : null);
             vm.isStraightGo(appWorkChangeParam.straightGo == 1);
             vm.isStraightBack(appWorkChangeParam.straightBack == 1);
         }
@@ -211,11 +211,15 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             let command = {
                 mode: false,
                 companyId: vm.$user.companyId,
-                applicationDto: ko.toJS(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.application),
+                applicationDto: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
                 appWorkChangeDto: ko.toJS(appWorkChangeDto),
                 isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
                 appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
             }
+
+            command.applicationDto.opAppReason = vm.application().opAppReason();
+            command.applicationDto.opAppStandardReasonCD = vm.application().opAppStandardReasonCD();
+            command.applicationDto.opReversionReason = vm.application().opReversionReason();
 
             vm.$blockui("show");
             return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
@@ -241,51 +245,63 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 					}
 				})
                 .then(result => {
-                    if (!result) return;
-                    return vm.$ajax(API.checkBeforeRegister, command);
-                }).then(res => {
-                    if (res == undefined) return;
-                    if (_.isEmpty(res.confirmMsgLst)) {
-                        return vm.registerData(command);
-                    } else {
-                        let listTemp = _.clone(res.confirmMsgLst);
-                        vm.handleConfirmMessage(listTemp, command);
+                    if(result) {
+                        return vm.$ajax(API.checkBeforeRegister, command);
                     }
+                }).then(res => {
+                    if(res) {
+                        return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), vm);
+                    }
+                    // if (_.isEmpty(res.confirmMsgLst)) {
+                    //     return vm.registerData(command);
+                    // } else {
+                    //     let listTemp = _.clone(res.confirmMsgLst);
+                    //     vm.handleConfirmMessage(listTemp, command);
+                    // }
                 }).done(result => {
-                    if (result != undefined) {
+                    if (result) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
                     }
                 })
                 .fail(err => {
-                    let messageId, messageParams;
+                    let messageId: any, messageParams: any;
                     if (err.errors) {
                         let errors = err.errors;
                         messageId = errors[0].messageId;
+                        
                     } else {
                         messageId = err.messageId;
                         messageParams = [err.parameterIds.join('、')];
                     }
-                    vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+                    return vm.$dialog.error({ messageId: messageId, messageParams: messageParams })
+                    .then(() => {
+                        if(messageId === "Msg_197") {
+                            location.reload();
+                        }
+                    });
                 })
                 .always(() => vm.$blockui("hide"));
         }
 
-        public handleConfirmMessage(listMes: any, res: any): any {
-            let vm = this;
-            if (!_.isEmpty(listMes)) {
-                let item = listMes.shift();
-                return vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
-                    if (value == 'yes') {
-                        if (_.isEmpty(listMes)) {
-                            return vm.registerData(res);
-                        } else {
-                            return vm.handleConfirmMessage(listMes, res);
-                        }
+        handleConfirmMessage(listMes: any, vmParam: any): any {
+			const vm = this;
 
-                    }
-                });
-            }
-        }
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(listMes)) {
+					resolve(true);
+				}
+				let msg = listMes[0].value;
+
+				return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+					.then((value) => {
+						if (value === 'yes') {
+							return vm.handleConfirmMessage(listMes, vmParam);
+						} else {
+							resolve(false);
+						}
+					})
+	        });
+		}
 
         registerData(params: any) {
             let vm = this;

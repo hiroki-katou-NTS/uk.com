@@ -46,6 +46,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Workp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.WorkPlaceConfigImport;
@@ -72,9 +73,6 @@ import nts.uk.shr.com.context.AppContexts;
  * @author dat.lh
  */
 public class ApprovalStatusFinder {
-
-//	@Inject
-//	private ClosureService closureService;
 
 	/** The repository. */
 	@Inject
@@ -567,5 +565,71 @@ public class ApprovalStatusFinder {
 			listApplicationDetail.add(detail);
 		}
 		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync, appList.isDisplayPrePostFlg());
+	}
+	
+	// refactor 5
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.A:状況照会条件入力.アルゴリズム.A:承認状況起動.A:承認状況起動
+	 */
+	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId) {
+		String companyID = AppContexts.user().companyId();
+		// 「新規起動」か「戻り起動」か判別
+		// xử lý trên UI
+		// ドメインモデル「就業締め日」を取得する　<shared>(Lấy domain 「就業締め日」)
+		List<Closure> closureList = this.repository.findAllActive(companyID, UseClassification.UseClass_Use);
+		// アルゴリズム「承認状況指定締め日取得」を実行する(Thực hiện thuật toán[lấy ngày chốt chỉ định trạng thái approval])
+		ApprSttSpecDeadlineDto apprSttSpecDeadlineDto = this.getApprovalStatusSpecDeadline(selectClosureId, closureList);
+		// アルゴリズム「承認状況日別実績利用確認」を実行する(Thực hiện[confirm sử dụng 日別実績 trạng thái approval ])
+		// not yet
+		// ユーザ固有情報「承認状況照会の初期表示」をチェックする
+		// xử lý trên UI
+		return apprSttSpecDeadlineDto;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.A:状況照会条件入力.アルゴリズム.A:承認状況指定締め日取得.A:承認状況指定締め日取得
+	 * @return
+	 */
+	public ApprSttSpecDeadlineDto getApprovalStatusSpecDeadline(Integer selectClosureId, List<Closure> closureList) {
+		// ユーザー固有情報「選択中の就業締め」を取得する(lấy thông tin user đã có 「選択中の就業締め」)
+		// 締めIDが取得ができた(Lấy được closeID)
+		Closure closure = null;
+		if(selectClosureId!=null) {
+			// 就業締め日（リスト）より取得した締めIDと同じ締めID内容を選択(Chọn nội dung closeID ứng với closeID đã lấy từ list close Date)
+			closure = closureList.stream().filter(x -> x.getClosureId().value==selectClosureId).findAny().orElse(closureList.get(0));
+		} else {
+			// 就業締め日（リスト）の先頭の締めIDを選択(Chọn closeID trên cùng trong list CloseDate)
+			closure = closureList.get(0);
+		}
+		// アルゴリズム「承認状況指定締め期間設定」を実行する(Thực hiện thuật toán[setting thời gian close chỉ định trạng thái approval])
+		ApprSttSpecDeadlineSetDto apprSttSpecDeadlineSetDto = this.getApprovalStatusSpecDeadlineSet(closure.getClosureId().value, closure);
+		return new ApprSttSpecDeadlineDto(
+				closureList.stream().map(x -> ClosureDto.fromDomain(x)).collect(Collectors.toList()), 
+				apprSttSpecDeadlineSetDto.getStartDate(),
+				apprSttSpecDeadlineSetDto.getEndDate(),
+				apprSttSpecDeadlineSetDto.getListEmployeeCD());
+	}
+	
+	/**
+	 * refactor 5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.A:状況照会条件入力.アルゴリズム.A:承認状況指定締め期間設定.A:承認状況指定締め期間設定
+	 * @param closureId 締めID
+	 * @param closure 就業締め日（ドメインモデル）
+	 * @return
+	 */
+	public ApprSttSpecDeadlineSetDto getApprovalStatusSpecDeadlineSet(int closureId, Closure closure) {
+		String companyId = AppContexts.user().companyId();
+		// アルゴリズム「当月の期間を算出する」を実行する(Thực hiện[tính thời gian this month])
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+				ClosureService.createRequireM1(repository, closureEmpRepo),
+				closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
+		// ドメインモデル「雇用に紐づく就業締め」より、雇用コードと締めIDを取得する
+		List<String> listEmployeeCD = closureEmpRepo.findByClosureId(companyId, closureId)
+				.stream().map(x -> x.getEmploymentCD()).collect(Collectors.toList());
+		return new ApprSttSpecDeadlineSetDto(
+				datePeriodClosure.start().toString(),
+				datePeriodClosure.end().toString(),
+				listEmployeeCD);
 	}
 }
