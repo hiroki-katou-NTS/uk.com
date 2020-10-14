@@ -1,7 +1,10 @@
 package nts.uk.query.app.user.information;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -41,6 +44,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class UserInformationScreenQuery {
@@ -94,6 +98,13 @@ public class UserInformationScreenQuery {
         Boolean isInCharge = employeeInformation.isEmployeeCharge();
 
         //TODO SQ3 - Handle ユーザ情報の使用方法.Empty (pending because of CMM049)
+//        if(ユーザ情報の使用方法.Empty) {
+//            if(isInCharge) {
+//                throw new BusinessException("Msg_1775");
+//            } else {
+//                throw new BusinessException("Msg_1774");
+//            }
+//        }
 
         //SQ4 - get ユーザ
         Optional<User> loginUser = userRepository.getByUserID(loginUserId);
@@ -105,16 +116,24 @@ public class UserInformationScreenQuery {
 
         //SQ6 - get 社員データ管理情報
         Optional<EmployeeDataMngInfo> employeeInfo = employeeDataMngInfoRepository.findByEmpId(loginEmployeeId);
-        EmployeeDataMngInfoDto employeeDataMngInfoDto = employeeInfo.map(EmployeeDataMngInfoDto::toDto).orElse(new EmployeeDataMngInfoDto());
+        EmployeeDataMngInfoDto employeeDataMngInfoDto = employeeInfo
+                .map(EmployeeDataMngInfoDto::toDto)
+                .orElse(new EmployeeDataMngInfoDto());
 
-        //SQ7 - get 個人連絡先 dang chet o day
+        //SQ7 - get 個人連絡先
         Optional<PersonalContact> personalContact = personalContactRepository.getByPersonalId(loginPersonalId);
         PersonalContactDto personalContactDto = PersonalContactDto.builder().build();
         personalContact.ifPresent(contact -> contact.setMemento(personalContactDto));
 
-        //TODO SQ8 - call 所属会社履歴
+        //SQ8 - call 所属会社履歴
         AffCompanyHist affCompanyHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(loginEmployeeId);
-        GeneralDate hireDate = GeneralDate.ymd(1999,10,7);
+        List<AffCompanyHistByEmployee> affCompanyHistByEmployees = affCompanyHist.getLstAffCompanyHistByEmployee();
+        List<AffCompanyHistItem> affCompanyHistItems = affCompanyHistByEmployees.stream()
+                .map(AffCompanyHistByEmployee::getLstAffCompanyHistoryItem)
+                .flatMap(List::stream)
+                .filter(item -> this.checkHireDate(item.getDatePeriod()))
+                .collect(Collectors.toList());
+        GeneralDate hireDate = affCompanyHistItems.get(affCompanyHistItems.size()-1).start();
 
         //SQ9 - get 個人の記念日情報
         List<AnniversaryNotice> anniversaryNoticeList = anniversaryRepository.getByPersonalId(loginPersonalId);
@@ -131,8 +150,11 @@ public class UserInformationScreenQuery {
         PasswordChangeLogDto passwordChangeLogDto = PasswordChangeLogDto.toDto(passwordChangeLog);
 
         //SQ11 - get パスワードポリシー
-        Optional<PasswordPolicy> passwordPolicy = passwordPolicyRepository.getPasswordPolicy(new ContractCode(loginContractCode));
-        PasswordPolicyDto passwordPolicyDto = passwordPolicy.map(PasswordPolicyDto::toDto).orElse(new PasswordPolicyDto());
+        Optional<PasswordPolicy> passwordPolicy = passwordPolicyRepository
+                .getPasswordPolicy(new ContractCode(loginContractCode));
+        PasswordPolicyDto passwordPolicyDto = passwordPolicy
+                .map(PasswordPolicyDto::toDto)
+                .orElse(new PasswordPolicyDto());
 
         //SQ12 - get 社員連絡先
         Optional<EmployeeContact> employeeContact = employeeContactRepository.getByEmployeeId(loginEmployeeId);
@@ -160,5 +182,11 @@ public class UserInformationScreenQuery {
                 .positionName(positionName)
                 .wkpDisplayName(wkpDisplayName)
                 .build();
+    }
+
+    private boolean checkHireDate(DatePeriod datePeriod) {
+        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0  &&
+                datePeriod.end().compareTo(GeneralDate.today()) >= 0
+        );
     }
 }
