@@ -5,6 +5,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmp;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmpPk;
 
@@ -27,6 +28,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         builderString.append("FROM Ksrmt36AgrMgtEmp a");
         builderString.append("WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
         builderString.append("AND a.ksrmt36AgrMgtEmpPk.employmentCode = :cd ");
+        builderString.append("AND a.ksrmt36AgrMgtEmpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID_AND_CD = builderString.toString();
 
          builderString = new StringBuilder();
@@ -65,11 +67,12 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     }
 
     @Override
-    public Optional<AgreementTimeOfEmployment> getByCidAndEmployCode(String cid, String employCode) {
+    public Optional<AgreementTimeOfEmployment> getByCidAndEmployCode(String cid, String employCode,LaborSystemtAtr laborSystemAtr) {
 
         return this.queryProxy().query(FIND_BY_CID_AND_CD, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .setParameter("cd", employCode)
+                .setParameter("laborSystemAtr", laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtEmp::toDomain);
     }
 

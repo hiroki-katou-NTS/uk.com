@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkp;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkpPk;
 
@@ -31,6 +32,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         builderString.append("SELECT a");
         builderString.append("FROM Ksrmt36AgrMgtWkp a");
         builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
+        builderString.append("AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_WKP = builderString.toString();
     }
 
@@ -63,10 +65,11 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     }
 
     @Override
-    public Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId) {
+    public Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId,LaborSystemtAtr laborSystemAtr) {
 
         return this.queryProxy().query(FIND_BY_WKP, Ksrmt36AgrMgtWkp.class)
                 .setParameter("workplaceId", workplaceId)
+                .setParameter("laborSystemAtr", laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtWkp::toDomain);
     }
 }
