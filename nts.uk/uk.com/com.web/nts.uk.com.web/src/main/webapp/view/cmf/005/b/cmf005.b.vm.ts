@@ -798,9 +798,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       $("#E6_2_2").html(self.systemTypeCbb.name);
     }
 
-    private gotoscreenF(): void {
+    public gotoscreenF(): void {
       let self = this;
       let params = {};
+      console.log(self.employeeDeletionList());
       params.delId = self.delId();
       params.deleteSetName = self.deleteSetName();
       params.dateValue = self.dateValue();
@@ -808,8 +809,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       params.yearValue = self.yearValue();
       params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
       params.modal = self.saveManualSetting();
-      debugger;
-      console.log(self.isSaveBeforeDeleteFlg());
       if (Number(self.isSaveBeforeDeleteFlg()) === 1) {
         service.addMalSet(self.createManualSettings()).then((res) => {
           if (res && res != "") {
@@ -861,15 +860,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         self.yearValue().startDate, self.yearValue().endDate,
         Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
         Number(self.selectedTitleAtr()), self.selectedPatternId().substring(1), self.employeeDeletionList(), self.listDataCategory());
-      // service.addManualSetDel(manualSetting).done(function (data: any) {
-      //   self.delId(data);
-      //   self.gotoscreenF();
-      // }).fail(function (error) {
-      //   alertError(error);
-
-      // }).always(() => {
-      // });
-
     }
 
     /**
@@ -1011,7 +1001,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     endYear: number;
     startYear: number;
     presenceOfEmployee: number;
-    employees: EmployeeDeletion[];
+    employees: Employee[];
     category: Category[];
     patternCode: string;
 
@@ -1032,7 +1022,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       this.endYear = endYear ? endYear : null;
       this.startYear = startYear ? startYear : null;
       this.presenceOfEmployee = presenceOfEmployee;
-      this.employees = employees;
+      this.employees = _.map(employees, e => new Employee(e.employeeId, e.employeeCode, e.businessName));
       this.category = category;
       this.patternCode = patternCode;
     }
@@ -1070,5 +1060,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     storeRange: number;
     displayName: string;
     id: string;
+  }
+
+  export class Employee {
+    sid: string;
+    scd: string;
+    businessname: string;
+
+    constructor(sid: string, scd: string, businessname: string) {
+      this.sid = sid;
+      this.scd = scd;
+      this.businessname = businessname;
+    }
   }
 }

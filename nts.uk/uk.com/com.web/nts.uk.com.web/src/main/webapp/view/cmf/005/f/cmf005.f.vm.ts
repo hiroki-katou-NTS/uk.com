@@ -140,8 +140,10 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            service.addManualSetDel(self.modal).then(data => self.delId(data));
-            self.interval = setInterval(() => self.confirmProcess(), 1000);
+            service.addManualSetDel(self.modal).then(data => {
+              self.delId(data);
+              self.interval = setInterval(() => self.confirmProcess(), 1000);
+            });
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
@@ -162,7 +164,6 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.timeOver(result);
           
             // get information managerment Deletion
-            debugger;
             service.findManagementDel(delId).done(function(res: any) {
                 var managementDel = res;
                 

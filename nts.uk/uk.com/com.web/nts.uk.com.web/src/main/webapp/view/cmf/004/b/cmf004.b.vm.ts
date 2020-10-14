@@ -262,6 +262,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
               if (recoveryInfo) {
                 let self = this;
                 if (recoveryInfo.continuteProcessing) {
+                  console.log(recoveryInfo.storeProcessingId);
                   self.recoveryProcessingId = recoveryInfo.processingId;
                   self.dataRecoverySelection().selectedRecoveryFile(recoveryInfo.storeProcessingId);
                   self.initScreenE();

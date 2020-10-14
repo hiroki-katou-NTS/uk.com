@@ -434,7 +434,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 				for (CategoryFieldMtForDelete category : categoryMts) {
 					if (!oldId.equals(category.getCategoryId())) {
 						categoryCount++;
-						
+						oldId = category.getCategoryId();
 						// ドメインモデル「データ削除動作管理」を更新する
 						repoManagementDel.updateCatCount(delId, categoryCount);
 					}
@@ -827,7 +827,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 				for (CategoryFieldMtForDelete category : categoryMts) {
 					if (!oldId.equals(category.getCategoryId())) {
 						categoryCount++;
-						
+						oldId = category.getCategoryId();
 						// ドメインモデル「データ削除動作管理」を更新する
 						repoManagementDel.updateCatCount(delId, categoryCount);
 					}
