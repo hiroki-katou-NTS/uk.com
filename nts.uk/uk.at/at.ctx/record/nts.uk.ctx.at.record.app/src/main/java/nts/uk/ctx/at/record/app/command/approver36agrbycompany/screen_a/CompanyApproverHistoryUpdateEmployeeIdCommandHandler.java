@@ -28,15 +28,12 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommandHandler extends Comman
     protected void handle(CommandHandlerContext<CompanyApproverHistoryUpdateEmployeeIdCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         String cid = command.getCompanyId();
-        if(StringUtil.isNullOrEmpty(cid,true)){
+        if (StringUtil.isNullOrEmpty(cid, true)) {
             cid = AppContexts.user().companyId();
         }
-        val domainUpdate = Approver36AgrByCompany.create(cid,new DatePeriod(command.getPeriod().start(),command.getPeriod().end()),
+        val domainUpdate = Approver36AgrByCompany.create(cid, new DatePeriod(command.getStartDate(), command.getEndDate()),
                 command.getApprovedList(),
                 command.getConfirmedList());
-        repo.updateStartDate(domainUpdate,command.getStartDateBeforeChange());
-
+        repo.updateStartDate(domainUpdate, command.getStartDateBeforeChange());
     }
-
-
 }

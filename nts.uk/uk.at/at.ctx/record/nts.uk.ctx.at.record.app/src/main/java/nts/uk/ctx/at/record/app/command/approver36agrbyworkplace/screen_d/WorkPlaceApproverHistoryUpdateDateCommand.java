@@ -19,7 +19,9 @@ public class WorkPlaceApproverHistoryUpdateDateCommand {
      * 期間
      */
 
-    private DatePeriod period;
+    private GeneralDate startDate;
+
+    private GeneralDate endDate;
 
     /**
      * 更新前の履歴開始日

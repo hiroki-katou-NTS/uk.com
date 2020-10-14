@@ -27,13 +27,13 @@ public class WorkPlaceApproverHistoryAddEmployeeIdCommandHandler extends Command
         val command = commandHandlerContext.getCommand();
         val domain =  Approver36AgrByWorkplace.create(
                 command.getWorkPlaceId(),
-                command.getPeriod(),
+                new DatePeriod(command.getStartDate(),command.getEndDate()),
                 command.getApprovedList(),
                 command.getConfirmedList());
         val domainPrevOpt =repo.getByWorkplaceIdAndEndDate(domain.getWorkplaceId(),GeneralDate.max());
         if(domainPrevOpt.isPresent()){
             val domainPrev = domainPrevOpt.get();
-            DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getPeriod().start().addDays(-1));
+            DatePeriod period = new DatePeriod(domainPrev.getPeriod().start(),command.getStartDate().addDays(-1));
             val domainPrevUpdate = Approver36AgrByWorkplace.create( domainPrev.getWorkplaceId(),period,  domainPrev.getApproverIds(),domainPrev.getConfirmerIds()
             );
             repo.updateStartDate(domainPrevUpdate,period.start());

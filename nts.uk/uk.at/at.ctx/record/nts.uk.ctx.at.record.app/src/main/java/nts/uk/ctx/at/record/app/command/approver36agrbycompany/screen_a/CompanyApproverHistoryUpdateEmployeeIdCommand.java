@@ -21,8 +21,11 @@ public class CompanyApproverHistoryUpdateEmployeeIdCommand {
     /**
      * 期間
      */
-    @Setter
-    private DatePeriod period;
+
+    private GeneralDate startDate;
+
+
+    private GeneralDate endDate;
 
     /**
      * 承認者リスト

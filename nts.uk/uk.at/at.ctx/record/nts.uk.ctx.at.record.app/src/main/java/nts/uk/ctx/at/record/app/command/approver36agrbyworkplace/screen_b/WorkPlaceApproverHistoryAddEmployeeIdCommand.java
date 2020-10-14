@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
@@ -21,7 +22,11 @@ public class WorkPlaceApproverHistoryAddEmployeeIdCommand {
     /**
      * 期間
      */
-    private DatePeriod period;
+
+    private GeneralDate startDate;
+
+    private GeneralDate endDate;
+
     /**
      * 承認者リスト
      */
