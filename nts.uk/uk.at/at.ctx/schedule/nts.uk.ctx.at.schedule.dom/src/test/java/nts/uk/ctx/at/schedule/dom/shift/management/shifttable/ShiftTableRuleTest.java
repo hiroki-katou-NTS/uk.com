@@ -31,6 +31,12 @@ public class ShiftTableRuleTest {
 				Optional.empty());
 	}
 	
+	private DeadlineAndPeriodOfExpectation creatWithDeadline(GeneralDate deadline) {
+		
+		return new DeadlineAndPeriodOfExpectation(deadline, 
+				new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+	}
+	
 	@Test
 	public void getters() {
 		
@@ -147,8 +153,11 @@ public class ShiftTableRuleTest {
 	@Test
 	public void testIsTodayTheNotify_NOT_USE() {
 		
-		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.NOT_USE, 
-				Optional.empty(), Collections.emptyList(), Optional.empty());
+		// Arrange
+		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
+				NotUseAtr.NOT_USE, // 勤務希望運用
+				Optional.empty(), 
+				Optional.empty() );
 		
 		new Expectations(NotificationInfo.class) {
             {
@@ -166,20 +175,19 @@ public class ShiftTableRuleTest {
 		
 		// Arrange
 		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
-		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.USE, 
-				Optional.of( setting), 
-				Arrays.asList(AssignmentMethod.HOLIDAY), 
-				Optional.of(new FromNoticeDays(3)));
+		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
+				NotUseAtr.USE, // 勤務希望運用
+				Optional.of(setting), 
+				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
-				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
+		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 6, 0, 0, 0); // TODAY = 2020/10/6
 		
-		new Expectations(setting, NotificationInfo.class) {
+		new Expectations( setting , NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
-            	result = ruleInfo;
+            	result = deadlineAndPeriod;
             	
             	NotificationInfo.createWithoutNotify();
                 times = 1; 
@@ -196,22 +204,21 @@ public class ShiftTableRuleTest {
 		
 		// Arrange
 		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
-		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.USE, 
-				Optional.of( setting), 
-				Arrays.asList(AssignmentMethod.HOLIDAY), 
-				Optional.of(new FromNoticeDays(3)));
+		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
+				NotUseAtr.USE, // 勤務希望運用
+				Optional.of(setting), 
+				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
-				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
+		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 7, 0, 0, 0); // TODAY = 2020/10/7
 		
 		new Expectations(setting, NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
-            	result = ruleInfo;
+            	result = deadlineAndPeriod;
             	
-            	NotificationInfo.createNotification(ruleInfo);
+            	NotificationInfo.createNotification(deadlineAndPeriod);
                 times = 1; 
             }
         };
@@ -226,22 +233,21 @@ public class ShiftTableRuleTest {
 		
 		// Arrange
 		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
-		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.USE, 
-				Optional.of( setting), 
-				Arrays.asList(AssignmentMethod.HOLIDAY), 
-				Optional.of(new FromNoticeDays(3)));
+		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
+				NotUseAtr.USE, // 勤務希望運用
+				Optional.of(setting), 
+				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation ruleInfo = new DeadlineAndPeriodOfExpectation(GeneralDate.ymd(2020, 10, 10), 
-				new DatePeriod(GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15)));
+		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 10, 0, 0, 0); // TODAY = 2020/10/10
 		
 		new Expectations(setting, NotificationInfo.class) {
             {
             	setting.getCorrespondingDeadlineAndPeriod( (GeneralDate) any);
-            	result = ruleInfo;
+            	result = deadlineAndPeriod;
             	
-            	NotificationInfo.createNotification(ruleInfo);
+            	NotificationInfo.createNotification(deadlineAndPeriod);
                 times = 1; 
             }
         };

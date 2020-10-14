@@ -22,9 +22,9 @@ public class DeadlineDayOfWeekTest {
 		
 		DeadlineDayOfWeek setting = new DeadlineDayOfWeek(DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		GeneralDate result = setting.getLastDeadlineWithWeekAtr(GeneralDate.ymd(2020, 10, 11));
+		GeneralDate result = setting.getLastDeadlineWithWeekAtr(GeneralDate.ymd(2020, 10, 4));
 		
-		assertThat(result).isEqualTo(GeneralDate.ymd(2020, 10, 8));
+		assertThat(result).isEqualTo(GeneralDate.ymd(2020, 10, 1));
 	}
 	
 	@Test
@@ -32,9 +32,9 @@ public class DeadlineDayOfWeekTest {
 		
 		DeadlineDayOfWeek setting = new DeadlineDayOfWeek(DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		GeneralDate result = setting.getLastDeadlineWithWeekAtr(GeneralDate.ymd(2020, 10, 11));
+		GeneralDate result = setting.getLastDeadlineWithWeekAtr(GeneralDate.ymd(2020, 10, 4));
 		
-		assertThat(result).isEqualTo(GeneralDate.ymd(2020, 10, 1));
+		assertThat(result).isEqualTo(GeneralDate.ymd(2020, 9, 24));
 	}
 	
 	@Test
