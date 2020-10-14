@@ -2,8 +2,8 @@
 
 module nts.uk.com.view.cmm024.f {
 
-	import service = nts.uk.com.view.cmm024.a.service;
-	import EmployeeDto = nts.uk.com.view.cmm024.a.service.EmployeeDto;
+	import common = nts.uk.com.view.cmm024.a.common;
+	import EmployeeDto = common.EmployeeDto;
 	import TreeComponentOption = kcp.share.tree.TreeComponentOption;
 	import StartMode = kcp.share.tree.StartMode;
 	import SelectType = kcp.share.tree.SelectionType;
@@ -111,9 +111,8 @@ module nts.uk.com.view.cmm024.f {
 
 			if (!nts.uk.util.isNullOrEmpty(wpId)) {
 
-				vm.$blockui('show');
-
-				service.getEmployeesListByWorkplace(ko.toJS(params))
+				vm.$blockui('show');				
+				vm.$ajax('at', common.CMM024_API.screenF_GetEmployeesList, ko.toJS(params))
 					.done((response) => {
 						if (!nts.uk.util.isNullOrEmpty(response)) {
 							response.forEach((element) => {

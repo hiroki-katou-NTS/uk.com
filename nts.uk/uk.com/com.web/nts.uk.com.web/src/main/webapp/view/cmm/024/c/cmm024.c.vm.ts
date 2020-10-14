@@ -1,9 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.cmm024.c {
-	import service = nts.uk.com.view.cmm024.a.service;
-	import ScheduleHistoryDto = nts.uk.com.view.cmm024.a.service.ScheduleHistoryDto;
-	import HistoryRes = nts.uk.com.view.cmm024.a.service.HistoryRes;
+	import common = nts.uk.com.view.cmm024.a.common;
+	import ScheduleHistoryDto = common.ScheduleHistoryDto;
+	import HistoryRes = common.HistoryRes;
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -41,7 +41,6 @@ module nts.uk.com.view.cmm024.c {
 			});
 
 			$('.ntsDatepicker').focus();
-			vm.enableSubmitButton(false);
 		}
 		/**
 		 * Process
