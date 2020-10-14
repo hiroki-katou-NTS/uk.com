@@ -550,7 +550,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 										.attendanceItems(new ArrayList<ItemValue>()).build();
 								for (int i = 1; i <= 6; i++) {
 									valueSingleUpper.getAttendanceItems().add(new ItemValue());
-
 								}
 							}
 
@@ -755,6 +754,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 							dailyData.setColumnDatas(columnDatas);
 							dailyData.setSecondCol(flag <= 15 ? false : true);
+//							dailyData.setAttribute(attribute);
 							dailyDataList.add(dailyData);
 							// Check end of week
 							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
@@ -973,7 +973,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									.getMonthlyConfirmedDisplay() == MonthlyConfirmedDisplay.DISPLAY) {
 								//	表示  - if display 
 								//	月の承認済状況を編集する - Edit the approved status of the month
-								
+								attendanceRecRepEmpData.setApprovalStatus(true);
 							}
 
 							// build param
@@ -1015,7 +1015,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						}
 						// Next monthly
 						yearMonth = yearMonth.addMonths(1);
-
 					}
 
 				} else {

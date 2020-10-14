@@ -284,7 +284,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					Worksheet worksheet = worksheetCollection.get(sheetName);
 					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page,
 							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
-					page++;
+//					page++;
 
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
@@ -313,6 +313,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 					if (dataSource.getMode() == EXPORT_EXCEL) {
 						pageSetup.setZoom(100);
+						pageSetup.setFitToPagesTall(1);
+						pageSetup.setFitToPagesWide(1);
 					} else if (dataSource.getMode() == EXPORT_PDF) {
 						pageSetup.setFitToPagesTall(1);
 						pageSetup.setFitToPagesWide(1);
@@ -427,13 +429,21 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 		}
 
+		if (employeeData.isApprovalStatus()) {
+			Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
+			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THICK, Color.getRed());
+			approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
+			approvalRange.get(0, 0).setValue("確認済");
+		}
 		// update start page row value
 		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
 
 		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
-		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
+//		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
+//		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
 
 		return startNewPage;
 	}
@@ -463,16 +473,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
 			Range dailyRange;
 			AttendanceRecordReportDailyData data = dailyDatas.get(i - 1);
-			if (data.isApprovalMonthly()) {
-				Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
-				approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
-				approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
-				approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THICK, Color.getRed());
-				approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
-				Style styleApprove = approvalRange.get(0, 0).getStyle();
-				approvalRange.get(0, 0).setStyle(styleApprove);
-				approvalRange.get(0, 0).setValue("確認済");
-			}
 			if (!data.isSecondCol()) {
 				int row = dataRow.get(REPORT_LEFT_ROW);
 
