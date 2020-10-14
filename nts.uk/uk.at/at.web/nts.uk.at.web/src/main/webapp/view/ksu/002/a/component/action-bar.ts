@@ -321,6 +321,8 @@ module nts.uk.ui.at.ksu002.a {
 						if (!wtype || !wtime) {
 							data.selected(null);
 						} else {
+							const noD = ['none', 'deferred'].indexOf(wtimec) > -1;
+
 							data.selected({
 								wtype: {
 									code: wtypec,
@@ -331,8 +333,8 @@ module nts.uk.ui.at.ksu002.a {
 									code: wtimec,
 									name: wtime.name,
 									value: {
-										begin: wtime.tzStart1,
-										finish: wtime.tzEnd1
+										begin: noD ? null : wtime.tzStart1,
+										finish: noD ? null : wtime.tzEnd1
 									}
 								}
 							});
