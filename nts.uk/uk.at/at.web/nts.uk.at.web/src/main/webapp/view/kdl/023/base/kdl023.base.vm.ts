@@ -438,6 +438,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					messageId: "MsgB_2",
 					supplements: {}
 				});
+
+				// let errorItem: nts.uk.ui.errors.ErrorListItem = {
+				// 	tab: " ",
+				// 	location: "",
+				// 	message: ""
+				// };
+				// nts.uk.ui.errors.add(errorItem);
+
+				nts.uk.ui.errors.add({
+					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_8')]),
+					messageId: "MsgB_2",
+					supplements: {}
+				})
 			}
 
 			return holidayListsErrors;
@@ -498,6 +511,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else {
                 refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE];
             }
+
+
+			vm.$errors({
+				"#cbb-reflection-order-1": { messageId: "MsgB_2", messageParams: [vm.$i18n('KDL023_3')] },
+				"#cbb-reflection-order-2": { messageId: "MsgB_2", messageParams: [vm.$i18n('KDL023_3')] }
+			}).then((valid: boolean) => {
+					// some logic after set error
+				}
+			);
 
             if(refOrder.length < 3){
 				nts.uk.ui.dialog.bundledErrors({
