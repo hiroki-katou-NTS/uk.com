@@ -9,6 +9,11 @@ module nts.uk.at.view.kdl023.a.viewmodel {
             super();
         }
 
+		created() {
+			const kdl023vm = this;
+			_.extend(window, {kdl023vm});
+		}
+
         mounted(){
             const vm = this;
             vm.startPage().done(() => {
