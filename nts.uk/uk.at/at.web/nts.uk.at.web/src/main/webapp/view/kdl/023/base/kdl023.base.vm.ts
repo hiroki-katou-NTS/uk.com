@@ -543,7 +543,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			// Set pattern's range
 			vm.setPatternRange().done(() => {
-				$('#component-calendar-kcp006').focus(); // Set focus control
 			});
 
 			dfd.resolve();
