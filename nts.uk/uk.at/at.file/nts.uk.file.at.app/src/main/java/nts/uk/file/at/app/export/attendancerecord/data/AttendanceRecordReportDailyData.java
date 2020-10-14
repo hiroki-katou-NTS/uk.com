@@ -45,6 +45,4 @@ public class AttendanceRecordReportDailyData {
 	/** The day of week. */
 	private String dayOfWeek;
 	
-	/** The approval monthly B9_1 report*/
-	private boolean approvalMonthly;
 }

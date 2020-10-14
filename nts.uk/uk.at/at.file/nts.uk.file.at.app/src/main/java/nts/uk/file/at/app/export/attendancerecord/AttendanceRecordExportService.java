@@ -974,6 +974,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								//	表示  - if display 
 								//	月の承認済状況を編集する - Edit the approved status of the month
 								attendanceRecRepEmpData.setApprovalStatus(true);
+							} else {
+								attendanceRecRepEmpData.setApprovalStatus(false); 
 							}
 
 							// build param

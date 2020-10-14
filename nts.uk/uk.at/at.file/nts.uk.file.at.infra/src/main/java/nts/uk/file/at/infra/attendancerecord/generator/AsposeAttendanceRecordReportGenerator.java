@@ -164,6 +164,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	
 	/** The report approval */
 	private String REPORT_APPROVAL = "AB7:AC7";
+	
+	private static final String APPROVAL = "確認済";
 
 	/*
 	 * (non-Javadoc)
@@ -429,13 +431,13 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 		}
 
-		if (employeeData.isApprovalStatus()) {
+		if ( employeeData.isApprovalStatus()) {
 			Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
 			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THICK, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
-			approvalRange.get(0, 0).setValue("確認済");
+			approvalRange.get(0, 0).setValue(APPROVAL);
 		}
 		// update start page row value
 		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
