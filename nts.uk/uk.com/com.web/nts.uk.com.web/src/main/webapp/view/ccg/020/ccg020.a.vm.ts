@@ -1,6 +1,6 @@
 /// <reference path='../../../lib/nittsu/viewcontext.d.ts' />
 
-module nts.uk.com.view.ccg020 {
+module nts.uk.com.view.ccg020.a {
 
   @bean()
   export class CCG020Screen extends ko.ViewModel {
