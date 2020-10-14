@@ -251,7 +251,7 @@ module nts.uk.ui.at.kcp013.shared {
                         if ([SHOW_MODE.DEFFERED, SHOW_MODE.BOTTLE].indexOf(showMode) > -1) {
                             items.push({
                                 id: 'deferred',
-                                code: '',
+                                code: ' ',
                                 name: vm.$i18n('KCP013_6'),
                                 remark: '',
                                 tzEnd1: 0,
@@ -282,7 +282,12 @@ module nts.uk.ui.at.kcp013.shared {
                             .then(() => {
                                 if (items.map(m => m.code).indexOf(selected) > -1) {
                                     if (ko.isObservable(vm.data.selected)) {
-                                        vm.data.selected(selected);
+                                        if(selected == ' '){
+                                            vm.data.selected('deferred');
+                                        }else{
+                                            vm.data.selected(selected);
+                                        }
+                                        
                                     }
                                 }
                             });
