@@ -4,14 +4,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(400)
-public class ErrorAlarmMessage extends StringPrimitiveValue<ErrorAlarmMessage> {
+public class ErrorAlarmMessageMSTCHK extends StringPrimitiveValue<ErrorAlarmMessageMSTCHK> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public ErrorAlarmMessage(String rawValue) {
+	public ErrorAlarmMessageMSTCHK(String rawValue) {
 		super(rawValue);
 	}
 

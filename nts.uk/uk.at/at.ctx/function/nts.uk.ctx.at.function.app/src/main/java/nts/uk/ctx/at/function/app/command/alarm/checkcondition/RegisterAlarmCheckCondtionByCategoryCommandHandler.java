@@ -47,7 +47,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.ErrorAlarmMessage;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
@@ -422,7 +422,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
 								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
@@ -430,7 +430,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
 								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.updateMasterCheckFixedCondition(fixedMasterCheckExtCon);
@@ -617,7 +617,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
 								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
 								fixedMasterCheckExtConDto.getNo(),
-								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								new ErrorAlarmMessageMSTCHK(fixedMasterCheckExtConDto.getMessage()),
 								fixedMasterCheckExtConDto.isUseAtr()
 								);
 						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);

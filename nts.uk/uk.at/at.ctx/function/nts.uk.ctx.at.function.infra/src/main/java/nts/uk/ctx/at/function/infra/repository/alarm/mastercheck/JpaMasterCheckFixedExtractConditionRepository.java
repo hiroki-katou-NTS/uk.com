@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckFixedExtractCondition;
@@ -36,7 +36,7 @@ public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 		});
 		
 		return results.stream().map(a -> new MasterCheckFixedExtractCondition(
-					a.getPk().getErAlId(), a.getPk().getNo(), new ErrorAlarmMessage(a.getMessage()), 
+					a.getPk().getErAlId(), a.getPk().getNo(), new ErrorAlarmMessageMSTCHK(a.getMessage()), 
 					a.getUseAtr() == 0 ? false : true))
 				.collect(Collectors.toList());
 	}

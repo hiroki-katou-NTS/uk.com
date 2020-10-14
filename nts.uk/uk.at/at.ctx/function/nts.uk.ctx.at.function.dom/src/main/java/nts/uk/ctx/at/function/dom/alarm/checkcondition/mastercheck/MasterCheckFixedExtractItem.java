@@ -11,13 +11,13 @@ public class MasterCheckFixedExtractItem extends AggregateRoot {
 
 	private int no;
 	
-	private ErrorAlarmMessage initMessage;
+	private ErrorAlarmMessageMSTCHK initMessage;
 	
 	private ErrorAlarmAtr erAlAtr;
 	
 	private MasterCheckFixedCheckItem name;
 
-	public MasterCheckFixedExtractItem(int no, ErrorAlarmMessage initMessage, ErrorAlarmAtr erAlAtr,
+	public MasterCheckFixedExtractItem(int no, ErrorAlarmMessageMSTCHK initMessage, ErrorAlarmAtr erAlAtr,
 			MasterCheckFixedCheckItem name) {
 		this.no = no;
 		this.initMessage = initMessage;

@@ -16,11 +16,11 @@ public class MasterCheckFixedExtractCondition extends AggregateRoot {
 	
 	private int no;
 	
-	private ErrorAlarmMessage message;
+	private ErrorAlarmMessageMSTCHK message;
 	
 	private boolean useAtr;
 
-	public MasterCheckFixedExtractCondition(String errorAlarmCheckId, int no, ErrorAlarmMessage message,
+	public MasterCheckFixedExtractCondition(String errorAlarmCheckId, int no, ErrorAlarmMessageMSTCHK message,
 			boolean useAtr) {
 		this.errorAlarmCheckId = errorAlarmCheckId;
 		this.no = no;
