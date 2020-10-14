@@ -134,8 +134,8 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const data: any = {};
             data["applicationSetting"] = {
                 appLimitSetting: dataA.appLimitSetting,
-                appTypeSettings: dataA.appTypeSettings.map(setting => {
-                    const s = _.find(dataY.appTypeSettings, i => i.appType == setting.appType);
+                appTypeSettings: dataA.appTypeSettings.map((setting: any) => {
+                    const s = _.find(dataY.appTypeSettings, (i: any) => i.appType == setting.appType);
                     if (s) {
                         setting["sendMailWhenApproval"] = s.sendMailWhenApproval;
                         setting["sendMailWhenRegister"] = s.sendMailWhenRegister;
@@ -182,11 +182,18 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                     //Load data setting
                     self.loadData();
                 });
+            }).fail(error => {
+                nts.uk.ui.dialog.alertError(error).then(() => {
+                    if (error.messageId == "Msg_1751") {
+                        self.viewmodelA.openScreenS();
+                    }
+                });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
             $('.tab-content-1').scrollTop(postion);
         }
+
     }
 
     interface NtsTabPanelModel {

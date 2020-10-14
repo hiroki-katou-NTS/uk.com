@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf022.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
-    let __viewContext: any = window["__viewContext"] || {};
+    const __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModelA {
         /*A4 - Deadline Settings Table*/
@@ -320,12 +320,14 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
                 nightOvertimeReflectAtr: self.nightOvertimeReflect(),
 
-                reasonDisplaySettings: ko.toJS(self.listDataA8).filter(r => r.appType != 1 || r.holidayAppType != null).map(r => ({
-                    appType: r.appType,
-                    displayAppReason: r.displayAppReason ? 1 : 0,
-                    displayFixedReason: r.displayFixedReason ? 1 : 0,
-                    holidayAppType: r.holidayAppType
-                })),
+                reasonDisplaySettings: ko.toJS(self.listDataA8)
+                    .filter((r: any) => r.appType != 1 || r.holidayAppType != null)
+                    .map((r: any) => ({
+                        appType: r.appType,
+                        displayAppReason: r.displayAppReason ? 1 : 0,
+                        displayFixedReason: r.displayFixedReason ? 1 : 0,
+                        holidayAppType: r.holidayAppType
+                    })),
 
                 appReflectCondition: ko.toJS(self.appReflectCondition)
             };
@@ -411,29 +413,8 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 } else {
                     nts.uk.ui.errors.clearAll();
                     this.requiredA7_23(true);
-                    // $('#a7_23').trigger("validate");
-                    // $('#a7_23_2').trigger("validate");
-                    // $('#a7_23_3').trigger("validate");
                 }
             });
-            // this.earlyOvertime.subscribe((value) => {
-            //     if (value) {
-            //         $('#a7_23').ntsError('clear');
-            //         this.requiredA7_23.valueHasMutated();
-            //     }
-            // });
-            // this.normalOvertime.subscribe((value) => {
-            //     if (value) {
-            //         $('#a7_23_2').ntsError('clear');
-            //         this.requiredA7_23.valueHasMutated();
-            //     }
-            // });
-            // this.earlyNormalOvertime.subscribe((value) => {
-            //     if (value) {
-            //         $('#a7_23_3').ntsError('clear');
-            //         this.requiredA7_23.valueHasMutated();
-            //     }
-            // });
         }
     }
 
