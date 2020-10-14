@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.ManagementClassificationByEmployeeDto;
@@ -37,25 +38,23 @@ public class ChildNursingLeaveFinder {
 						.build()
 		).collect(Collectors.toList());
 		NursingLeaveSetting childNursingLeave = nursingLeaveRepo.findByCompanyIdAndNursingCategory(cId, NursingCategory.ChildNursing.value);
-		if(childNursingLeave != null) {
-			NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
-					.manageType(childNursingLeave.getManageType().value)
-					.nursingCategory(childNursingLeave.getNursingCategory().value)
-					.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay().intValue() : 0)
-					.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-					.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
-					.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
-					.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
-					.build();
-			return ManagementClassificationByEmployeeDto.builder()
-			.lstEmp(lstEmpRs)
-			.nursingLeaveSt(childNursingLeaveDt)
-			.build();
+		if(childNursingLeave == null) {
+			throw new BusinessException("Msg_1962");
 		}
-		return ManagementClassificationByEmployeeDto.builder()
-				.lstEmp(lstEmpRs)
-				.nursingLeaveSt(null)
+		NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
+				.manageType(childNursingLeave.getManageType().value)
+				.nursingCategory(childNursingLeave.getNursingCategory().value)
+				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : 0)
+				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
+				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
+				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
+				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 				.build();
+		return ManagementClassificationByEmployeeDto.builder()
+		.lstEmp(lstEmpRs)
+		.nursingLeaveSt(childNursingLeaveDt)
+		.nextStartMonthDay(childNursingLeave.getNextStartMonthDay(baseDate).toString())
+		.build();
 	}
 }
 

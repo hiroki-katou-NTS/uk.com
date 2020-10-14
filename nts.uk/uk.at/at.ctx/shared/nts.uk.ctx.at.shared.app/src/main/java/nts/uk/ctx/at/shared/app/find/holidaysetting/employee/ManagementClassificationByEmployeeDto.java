@@ -10,6 +10,10 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.EmployeeBasic
 @Data
 @Builder
 public class ManagementClassificationByEmployeeDto {
+	//	取得したList<社員情報>
 	private List<EmployeeBasicInfoDto> lstEmp;
+	//	取得した管理区分
 	private NursingLeaveSettingDto nursingLeaveSt;
+	//	次回起算日
+	private String nextStartMonthDay;
 }
