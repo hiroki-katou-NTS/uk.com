@@ -13,15 +13,20 @@ import nts.arc.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 public class CompanyApproverHistoryUpdateDateCommand {
     /**
-     * 会社ID
+     * 職場ID
      */
     private String companyId;
 
     /**
      * 期間
      */
-    private DatePeriod period;
 
+    private GeneralDate startDate;
 
+    private GeneralDate endDate;
+
+    /**
+     * 更新前の履歴開始日
+     */
     private GeneralDate startDateBeforeChange;
 }

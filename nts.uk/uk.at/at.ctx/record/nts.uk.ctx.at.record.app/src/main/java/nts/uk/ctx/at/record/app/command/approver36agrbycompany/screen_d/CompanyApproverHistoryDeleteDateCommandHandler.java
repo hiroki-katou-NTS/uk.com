@@ -32,8 +32,8 @@ public class CompanyApproverHistoryDeleteDateCommandHandler extends CommandHandl
         if(StringUtil.isNullOrEmpty(command.getCompanyId(),true)){
              cid = AppContexts.user().companyId();
         }
-        RequireImpl require = new RequireImpl(repo,cid);
-        val optDomain = repo.getByCompanyIdAndEndDate(cid,command.getPeriod().end());
+        RequireImpl require = new RequireImpl(repo);
+        val optDomain = repo.getByCompanyIdAndEndDate(cid,command.getEndDate());
         if(optDomain.isPresent()){
             AtomTask persist = CompanyApproverHistoryDeleteDomainService.deleteApproverHistory(require,optDomain.get());
             transaction.execute(persist::run);
@@ -43,11 +43,10 @@ public class CompanyApproverHistoryDeleteDateCommandHandler extends CommandHandl
     @AllArgsConstructor
     private class RequireImpl implements CompanyApproverHistoryDeleteDomainService.Require{
         private Approver36AgrByCompanyRepo byCompanyRepo;
-        private String cid;
 
         @Override
         public Optional<Approver36AgrByCompany> getPrevHistory(GeneralDate endDate) {
-            return byCompanyRepo.getByCompanyIdAndEndDate(cid,endDate);
+            return byCompanyRepo.getByCompanyIdAndEndDate(AppContexts.user().companyId(),endDate);
         }
 
         @Override
