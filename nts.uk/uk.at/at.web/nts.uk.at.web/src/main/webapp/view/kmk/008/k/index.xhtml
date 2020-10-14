@@ -73,6 +73,7 @@
                             value: yearOrYearMonthValue,
                             dateFormat: $parent.dateFormat,
                             valueFormat: $parent.inputFormatYearOrYearMonth,
+                            disabled: $parent.updateEnable,
                             required: true} ">
                         </div>
                     </div>
@@ -94,7 +95,7 @@
                             required: true }"/>
                         <div class="time-limit">
                             <label data-bind="text: '限度時間'"></label>
-                            <label data-bind="text: $parent.oneMonthOrYearUpperLimit"></label>
+                            <label data-bind="text: $parent.oneMonthOrYearUpperLimitString"></label>
                         </div>
                     </div>
 

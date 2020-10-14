@@ -34,7 +34,10 @@ module nts.uk.at.view.kmk008.k {
         listItemDataGrid: KnockoutObservableArray<ShowListModel> = ko.observableArray([]);
         deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
 
-        oneMonthOrYearUpperLimit: KnockoutObservable<string> = ko.observable();
+        //３６協定基本設定.３６協定1年間.特例条項による上限.上限時間
+        //３６協定基本設定.３６協定1ヶ月.特例条項による上限.上限時間
+        oneMonthOrYearUpperLimit: KnockoutObservable<Number> = ko.observable();
+        oneMonthOrYearUpperLimitString: KnockoutObservable<string> = ko.observable();
 
         constraintTime: string;
 
@@ -79,10 +82,9 @@ module nts.uk.at.view.kmk008.k {
                 vm.newMode(false);
                 vm.updateEnable(true);
                 vm.deleteEnable(true);
-                setTimeout(function () {
-                    nts.uk.ui.errors.clearAll();
-                }, 100);
+                vm.$errors("clear");
             });
+
 
             vm.listItemDataGrid([]);
             let data = getShared("KMK_008_DATA") || null;
@@ -99,11 +101,13 @@ module nts.uk.at.view.kmk008.k {
 
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.getDetailYearMonth, {employeeId: vm.employeeId}).done(data => {
-                    vm.oneMonthOrYearUpperLimit(nts.uk.time.parseTime(data.oneMonthUpperLimit, true).format());
+                    vm.oneMonthOrYearUpperLimit(data.oneMonthUpperLimit);
+                    vm.oneMonthOrYearUpperLimitString(nts.uk.time.parseTime(data.oneMonthUpperLimit, true).format());
                 });
             } else {
                 vm.$ajax(PATH_API.getDetailYear, {employeeId: vm.employeeId}).done(data => {
-                    vm.oneMonthOrYearUpperLimit(nts.uk.time.parseTime(data.oneYearUpperLimit, true).format());
+                    vm.oneMonthOrYearUpperLimit(data.oneYearUpperLimit);
+                    vm.oneMonthOrYearUpperLimitString(nts.uk.time.parseTime(data.oneYearUpperLimit, true).format());
                 });
             }
         }
@@ -111,15 +115,12 @@ module nts.uk.at.view.kmk008.k {
         created() {
             const vm = this;
 
-            $('#txt-year-error-time').trigger("validate");
-            $('#txt-year-alarm-time').trigger("validate");
-            $('#txt-year').trigger("validate");
-
             _.extend(window, {vm});
         }
 
         mounted() {
             const vm = this;
+
             if (vm.isUpdate) {
                 $("#txt-year-error-time").focus();
             } else {
@@ -135,23 +136,24 @@ module nts.uk.at.view.kmk008.k {
             vm.currentSelectItem(new SettingModel(null, vm.employeeId));
             vm.currentCodeSelect(null);
             vm.updateEnable(false);
-            $('input.nts-input').trigger("validate");
+            vm.$validate('input.nts-input');
             $("#txt-year").focus();
         }
 
         addOrUpdateClick() {
             const vm = this;
-            $('input.nts-input').trigger("validate");
+            vm.$validate('input.nts-input');
 
-            setTimeout(() => {
-                if (!$('.nts-editor').ntsError("hasError")) {
-                    if (vm.isUpdate) {
-                        vm.updateData();
-                        return;
-                    } else
-                        vm.register();
-                }
-            }, 100);
+            vm.$validate('.nts-editor')
+                .then((valid: boolean) => {
+                    if (valid) {
+                        if (vm.isUpdate) {
+                            vm.updateData();
+                            return;
+                        } else
+                            vm.register();
+                    }
+                });
         }
 
         register() {
@@ -166,16 +168,9 @@ module nts.uk.at.view.kmk008.k {
 
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.addAgreementMonthSetting, new AddUpdateMonthSettingModel(vm.currentSelectItem()))
-                    .done(listError => {
-                        if (listError.length > 0) {
-                            let errorCode = _.split(listError[0], ',');
-                            vm.$dialog.error({
-                                messageId: errorCode[0],
-                                messageParams: [vm.$i18n(errorCode[1]), vm.$i18n(errorCode[2])]
-                            });
-                            return;
-                        }
+                    .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"});
+
                         vm.reloadData(yearOrYearMonth);
                     })
                     .fail(res => {
@@ -184,16 +179,9 @@ module nts.uk.at.view.kmk008.k {
                     .always(() => vm.$blockui("clear"));
             } else {
                 vm.$ajax(PATH_API.addAgreementYearSetting, new AddUpdateYearSettingModel(vm.currentSelectItem()))
-                    .done(listError => {
-                        if (listError.length > 0) {
-                            let errorCode = _.split(listError[0], ',');
-                            vm.$dialog.error({
-                                messageId: errorCode[0],
-                                messageParams: [vm.$i18n(errorCode[1]), vm.$i18n(errorCode[2])]
-                            });
-                            return;
-                        }
+                    .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"});
+
                         vm.reloadData(yearOrYearMonth);
                     })
                     .fail(res => {
@@ -213,17 +201,18 @@ module nts.uk.at.view.kmk008.k {
 
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.updateAgreementMonthSetting, new AddUpdateMonthSettingModel(vm.currentSelectItem()))
-                    .done(listError => {
-                        if (listError.length > 0) {
-                            let errorCode = _.split(listError[0], ',');
-                            vm.$dialog.error({
-                                messageId: errorCode[0],
-                                messageParams: [vm.$i18n(errorCode[1]), vm.$i18n(errorCode[2])]
-                            });
-                            return;
-                        }
+                    .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"});
-                        vm.reloadData(vm.currentCodeSelect(), true);
+
+                        vm.listItemDataGrid.replace(
+                            _.find(vm.listItemDataGrid(), item => {
+                                return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
+                            }),
+                            new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
+                                vm.currentSelectItem().errorOneYearOrYearMonth(),
+                                vm.currentSelectItem().alarmOneYearOrYearMonth()
+                            )
+                        );
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -231,18 +220,18 @@ module nts.uk.at.view.kmk008.k {
                     .always(() => vm.$blockui("clear"));
             } else {
                 vm.$ajax(PATH_API.updateAgreementYearSetting, new AddUpdateYearSettingModel(vm.currentSelectItem()))
-                    .done(listError => {
-                        if (listError.length > 0) {
-                            let errorCode = _.split(listError[0], ',');
-                            vm.$dialog.error({
-                                messageId: errorCode[0],
-                                messageParams: [vm.$i18n(errorCode[1]), vm.$i18n(errorCode[2])]
-                            });
-                            return;
-                        }
+                    .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"});
-                        vm.reloadData(vm.currentCodeSelect(), true);
 
+                        vm.listItemDataGrid.replace(
+                            _.find(vm.listItemDataGrid(), item => {
+                                return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
+                            }),
+                            new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
+                                vm.currentSelectItem().errorOneYearOrYearMonth(),
+                                vm.currentSelectItem().alarmOneYearOrYearMonth()
+                            )
+                        );
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -261,8 +250,8 @@ module nts.uk.at.view.kmk008.k {
                     if (vm.isYearMonth) {
                         vm.$ajax(PATH_API.removeAgreementMonthSetting, new DeleteMonthSettingModel(vm.employeeId, vm.currentSelectItem().yearOrYearMonthValue()))
                             .done(function () {
-                                vm.$dialog.info(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
-                                    vm.reloadData(Number(vm.currentSelectItem().yearOrYearMonthValue().toString().replace("/", "")), true);
+                                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                                    vm.reloadData(vm.currentSelectItem().yearOrYearMonthValue(), true);
                                 });
                             })
                             .fail(res => {
@@ -272,7 +261,7 @@ module nts.uk.at.view.kmk008.k {
                     } else {
                         vm.$ajax(PATH_API.removeAgreementYearSetting, new DeleteYearSettingModel(vm.employeeId, vm.currentSelectItem().yearOrYearMonthValue()))
                             .done(function () {
-                                vm.$dialog.info(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
+                                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.reloadData(vm.currentSelectItem().yearOrYearMonthValue(), true);
                                 });
                             })
@@ -286,45 +275,33 @@ module nts.uk.at.view.kmk008.k {
         }
 
 
-        reloadData(oldSelectCode: number, isRemove?: boolean) {
-            // const vm = this;
-            // let oldSelectIndex = _.findIndex(vm.listItemDataGrid(), item => { return item.yearOrYearMonthValue == oldSelectCode; });
-            //
-            // vm.listItemDataGrid([]);
-            // if (vm.isYearMonth) {
-            //     vm.$ajax(PATH_API.getDetailYearMonth, { employeeId: vm.employeeId }).done(data => {
-            //         if (data && data.length > 0) {
-            //             _.forEach(data, item => {
-            //                 vm.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
-            //             });
-            //             vm.isUpdate = true;
-            //             if (isRemove && isRemove == true) {
-            //                 vm.currentCodeSelect(vm.getNewSelectRemove(oldSelectIndex));
-            //             } else {
-            //                 vm.currentCodeSelect(oldSelectCode);
-            //             }
-            //
-            //         } else {
-            //             vm.setNewMode();
-            //         }
-            //     });
-            // } else {
-            //     vm.$ajax(PATH_API.getDetailYear, { employeeId: vm.employeeId }).done(data => {
-            //         if (data && data.length) {
-            //             _.forEach(data, item => {
-            //                 vm.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
-            //             });
-            //             vm.isUpdate = true;
-            //             if (isRemove && isRemove == true) {
-            //                 vm.currentCodeSelect(vm.getNewSelectRemove(oldSelectIndex));
-            //             } else {
-            //                 vm.currentCodeSelect(oldSelectCode);
-            //             }
-            //         } else {
-            //             vm.setNewMode();
-            //         }
-            //     });
-            // }
+        reloadData(oldSelectCode: number, isRemove: boolean = false) {
+            const vm = this;
+            let oldSelectIndex = _.findIndex(vm.listItemDataGrid(), item => {
+                return item.yearOrYearMonthValue == oldSelectCode;
+            });
+
+            if (vm.listItemDataGrid().length) {
+                vm.isUpdate = true;
+                if (isRemove) {
+                    vm.listItemDataGrid.remove(
+                        vm.listItemDataGrid()[oldSelectIndex]
+                    );
+
+                    vm.currentCodeSelect(vm.getNewSelectRemove(oldSelectIndex));
+                } else {
+                    vm.listItemDataGrid.push(new ShowListModel(
+                        vm.currentSelectItem().yearOrYearMonthValue(),
+                        vm.currentSelectItem().errorOneYearOrYearMonth(),
+                        vm.currentSelectItem().alarmOneYearOrYearMonth()
+                    ));
+                    vm.listItemDataGrid(_.orderBy(vm.listItemDataGrid(), ['yearOrYearMonthValue'], ['desc']));
+
+                    vm.currentCodeSelect(oldSelectCode);
+                }
+            } else {
+                vm.setNewMode();
+            }
         }
 
         getNewSelectRemove(oldSelectIndex: number): number {
@@ -360,23 +337,23 @@ module nts.uk.at.view.kmk008.k {
 
     export class ShowListModel {
         yearOrYearMonthValue: number;
-        errorOneYearOrYearMonth: number = null;
-        alarmOneYearOrYearMonth: number = null;
+        errorOneYearOrYearMonth: number;
+        alarmOneYearOrYearMonth: number;
         yearOrYearMonthFormat: string;
 
         constructor(yearOrYearMonthValue: number, errorOneYearOrYearMonth: number, alarmOneYearOrYearMonth: number) {
             this.yearOrYearMonthValue = yearOrYearMonthValue;
-            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth || null;
-            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth || null;
+            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth;
+            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth;
             this.yearOrYearMonthFormat = yearOrYearMonthValue.toString().length > 4 ? nts.uk.time.parseYearMonth(yearOrYearMonthValue).format() : yearOrYearMonthValue.toString();
         }
     }
 
     export class SettingModel {
         employeeId: KnockoutObservable<string> = ko.observable("");
-        yearOrYearMonthValue: KnockoutObservable<number> = ko.observable(null);
-        errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(null);
-        alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable(null);
+        yearOrYearMonthValue: KnockoutObservable<number> = ko.observable();
+        errorOneYearOrYearMonth: KnockoutObservable<number> = ko.observable();
+        alarmOneYearOrYearMonth: KnockoutObservable<number> = ko.observable();
 
         constructor(data: ShowListModel, employeeId: string) {
             this.employeeId(employeeId);
@@ -397,7 +374,6 @@ module nts.uk.at.view.kmk008.k {
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
-            // this.YearMonth = Number(data.yearOrYearMonthValue().toString().replace("/", ""));
             this.yearMonth = data.yearOrYearMonthValue();
             this.errorTime = data.errorOneYearOrYearMonth();
             this.alarmTime = data.alarmOneYearOrYearMonth();
@@ -413,7 +389,7 @@ module nts.uk.at.view.kmk008.k {
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
-            this.year = Number(data.yearOrYearMonthValue());
+            this.year = data.yearOrYearMonthValue();
             this.errorTime = data.errorOneYearOrYearMonth();
             this.alarmTime = data.alarmOneYearOrYearMonth();
         }
