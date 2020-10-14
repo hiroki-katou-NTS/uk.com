@@ -73,20 +73,7 @@ public class GoOutOfMonthly implements Serializable{
 		// 日別実績の「外出時間・回数」を集計する
 		for (val outingTime : outingTimeList){
 			if (outingTime.getReason() == null) continue;
-			GoingOutReason goingOutReason = GoingOutReason.PRIVATE;
-			switch (outingTime.getReason()){
-			case UNION:
-				goingOutReason = GoingOutReason.PUBLIC;
-				break;
-			case CHARGE:
-				goingOutReason = GoingOutReason.COMPENSATION;
-				break;
-			case OFFICAL:
-				goingOutReason = GoingOutReason.UNION;
-				break;
-			default:
-				break;
-			}
+			GoingOutReason goingOutReason = outingTime.getReason();
 			val recordTotal = outingTime.getRecordTotalTime();
 			if (recordTotal == null) continue;
 			
