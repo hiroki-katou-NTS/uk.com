@@ -2858,9 +2858,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor : IUserInfor = JSON.parse(item.get());
 
-            setShared('dataShareDialogU', {
-                strDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                endDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+             setShared('dataShareDialogU', {                
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 unit: userInfor.unit,
                 workplaceId: userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId,
