@@ -33,7 +33,6 @@ public class ObtainDeadlineDatePubImpl implements ObtainDeadlineDatePub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public GeneralDate obtainDeadlineDate(GeneralDate targetDate, Integer specDayNo, String workplaceID,
 			String companyID) {
-		if(specDayNo == 0) return targetDate;
 		GeneralDate deadlineDate = targetDate;
 		//営業日カレンダー日次　＝　ドメインモデル「職場営業日カレンダー日次」を取得する
 		List<CalendarWorkplace> lstWkp = repoCalendarWkp.getLstByDateWorkAtr(workplaceID, targetDate, UseSet.workingDay.value);
@@ -47,11 +46,11 @@ public class ObtainDeadlineDatePubImpl implements ObtainDeadlineDatePub {
 		for (GeneralDate date : lstDate) {
 			//締切日　＝　ループ中の営業日カレンダー日次．年月日
 			deadlineDate = date;
+			if(specDayNo == 0){
+				break;
+			}
 			//Input．指定日数　-＝　1
 			specDayNo -= 1;
-			if(specDayNo == 0){
-				return date;
-			}
 		}
 		return deadlineDate;
 	}

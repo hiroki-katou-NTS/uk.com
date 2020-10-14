@@ -1,0 +1,29 @@
+#maxDisplaySelect {
+	width: 85px; 
+	margin-right: 7px;
+	padding-left: 25px;
+}
+
+/* #maxDisplaySelect > option {
+	direction: rtl;
+	text-align: right;
+} */
+
+.kaf018-b-header-wkpName {
+	vertical-align: middle !important;
+}
+
+.kaf018-b-header-numberPeople {
+	vertical-align: middle !important;	
+}
+
+.kaf018-b-header-appInfo {
+	text-align: center !important;
+	vertical-align: bottom !important;
+}
+
+.kaf018-b-header-mailButton {
+	vertical-align: middle !important;
+	height: 33px;
+	text-align: inherit !important;
+}
