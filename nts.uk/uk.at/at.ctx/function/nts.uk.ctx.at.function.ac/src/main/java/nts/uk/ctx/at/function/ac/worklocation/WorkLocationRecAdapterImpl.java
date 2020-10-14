@@ -11,7 +11,7 @@ import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkLocationImport;
 import nts.uk.ctx.at.record.pub.worklocation.WorkLocationPub;
 
 @Stateless
-public class WorkLocationAdapterImpl implements WorkLocationAdapter {
+public class WorkLocationRecAdapterImpl implements WorkLocationAdapter {
 
 	@Inject
 	private WorkLocationPub workLocationPub;

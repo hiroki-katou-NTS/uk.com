@@ -16,6 +16,8 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AlarmChkCond
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.annualholiday.AlarmCheckConAgrDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.annualholiday.AlarmCheckSubConAgrDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.annualholiday.AnnualHolidayAlarmConditionDto;
+import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
+import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractItemDto;
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
@@ -50,6 +52,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractItemRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
@@ -115,6 +120,12 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private AppApprovalFixedExtractItemRepository appApprovalFixedExtractItemRepository;
+	
+	@Inject
+	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
+	
+	@Inject
+	private MasterCheckFixedExtractItemRepository fixedMasterCheckItemRepo;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -186,7 +197,10 @@ public class AlarmCheckConditionByCategoryFinder {
 		List<MulMonCheckCondDomainEventDto> mulMonCheckCondDomainEventDtos = new ArrayList<>();
 		List<String> listEralCheckMulMonIDOld = new ArrayList<>();
 		AnnualHolidayAlarmConditionDto annualHolidayAlConDto = new AnnualHolidayAlarmConditionDto();
-
+		//master check
+		MasterCheckAlarmCheckCondition masterCheckCon = new MasterCheckAlarmCheckCondition();
+		List<MasterCheckFixedExtractConditionDto> listMasterCheckFixedCon = new ArrayList<>();
+		
 		// AgreeConditionErrorFinder
 		List<AgreeConditionError> listConError = errorRep.findAll(domain.getCode().v(), domain.getCategory().value);
 		List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
@@ -325,6 +339,34 @@ public class AlarmCheckConditionByCategoryFinder {
 							alSubConAgr.getPeriodUntilNext().isPresent() ? alSubConAgr.getPeriodUntilNext().get().v()
 									: null));
 		}
+		
+		if (domain.getCategory() == AlarmCategory.MASTER_CHECK && domain.getExtractionCondition() != null) {
+			masterCheckCon = (MasterCheckAlarmCheckCondition) domain.getExtractionCondition();
+			String alarmCheckId = masterCheckCon.getAlarmCheckId();
+			List<MasterCheckFixedExtractItemDto> listFixedMasterCheckItem = 
+					fixedMasterCheckItemRepo.getAllFixedMasterCheckItem().stream()
+					.map(c->MasterCheckFixedExtractItemDto.fromDomain(c)).collect(Collectors.toList());
+			List<MasterCheckFixedExtractConditionDto> listFixedMasterCheckCon = 
+					fixedMasterCheckConditionRepo.getAllFixedMasterCheckConById(alarmCheckId).stream()
+					.map(c->MasterCheckFixedExtractConditionDto.fromDomain(c)).collect(Collectors.toList());
+			for(MasterCheckFixedExtractItemDto i : listFixedMasterCheckItem) {
+				boolean check = true;
+				if(listFixedMasterCheckCon != null && !listFixedMasterCheckCon.isEmpty()) {
+					for (MasterCheckFixedExtractConditionDto e : listFixedMasterCheckCon) {
+						if(e.getNo() == i.getNo()) {
+							MasterCheckFixedExtractConditionDto dto = new MasterCheckFixedExtractConditionDto(e.getErrorAlarmCheckId(), i.getName(), i.getNo(), e.getMessage(), e.isUseAtr(), i.getErAlAtr());
+							listMasterCheckFixedCon.add(dto);
+							check = false;
+							break;
+						}
+					}
+				}
+				if(check) {
+					MasterCheckFixedExtractConditionDto dto = new MasterCheckFixedExtractConditionDto("", i.getName(), i.getNo(), i.getMessage(), false, i.getErAlAtr());
+					listMasterCheckFixedCon.add(dto);
+				}
+			}
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
@@ -346,11 +388,12 @@ public class AlarmCheckConditionByCategoryFinder {
 				new MonAlarmCheckConDto(listFixedExtraMonFun, arbExtraCon, listEralCheckIDOld),
 				new AlarmChkCondAgree36Dto(listCondError, listCondOt),
 				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos, listEralCheckMulMonIDOld),
-				annualHolidayAlConDto);
+				annualHolidayAlConDto,
+				new MasterCheckAlarmCheckConditionDto(listMasterCheckFixedCon));
 	}
 
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
-				domain.getCategory().value, null, null, 0, null, null, null, null, null, null);
+				domain.getCategory().value, null, null, 0, null, null, null, null, null, null, null);
 	}
 }

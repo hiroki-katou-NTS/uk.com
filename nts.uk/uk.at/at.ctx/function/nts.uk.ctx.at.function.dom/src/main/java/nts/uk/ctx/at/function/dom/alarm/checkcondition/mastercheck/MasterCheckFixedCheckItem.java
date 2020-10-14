@@ -35,4 +35,12 @@ public enum MasterCheckFixedCheckItem {
 		
 		return null;
 	}
+	
+	public static MasterCheckFixedCheckItem fromName(String name) {
+		for (MasterCheckFixedCheckItem item : MasterCheckFixedCheckItem.values()) {
+			if (item.name.equals(name)) return item;
+		}
+		
+		return null;
+	}
 }

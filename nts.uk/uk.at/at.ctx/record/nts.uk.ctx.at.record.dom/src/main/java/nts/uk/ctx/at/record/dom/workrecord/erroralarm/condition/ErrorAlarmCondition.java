@@ -344,7 +344,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 			processCompareRange();
 		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_WORK.value) {
-			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+//			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
 			this.displayMessage 	= errorAlarmCondition.displayMessage;
 			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
 

@@ -13,10 +13,17 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckFixedExtractConditionPK;
 
 @Stateless
 public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 	implements MasterCheckFixedExtractConditionRepository {
+	
+	private static final String DELETE_MASTER_CHECK_FIXED_CON_BY_ID =  "DELETE FROM KrcmtMasterCheckFixedExtractCondition c "
+			+ " WHERE c.pk.erAlId = :erAlId ";
+	
+	private static final String SELECT_MASTER_CHECK_FIXED_CON_BY_ID =  "SELECT c FROM KrcmtMasterCheckFixedExtractCondition c "
+			+ " WHERE c.pk.erAlId = :erAlId ";
 
 	@Override
 	public List<MasterCheckFixedExtractCondition> findAll(List<String> extractConditionIds, boolean useAtr) {
@@ -34,4 +41,36 @@ public class JpaMasterCheckFixedExtractConditionRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<MasterCheckFixedExtractCondition> getAllFixedMasterCheckConById(String errorAlarmCheckId) {
+		List<MasterCheckFixedExtractCondition> data = this.queryProxy().query(SELECT_MASTER_CHECK_FIXED_CON_BY_ID, KrcmtMasterCheckFixedExtractCondition.class)
+				.setParameter("erAlId", errorAlarmCheckId)
+				.getList(c->c.toDomain());
+		return data;
+	}
+
+	@Override
+	public void addMasterCheckFixedCondition(MasterCheckFixedExtractCondition masterCheckFixedCondition) {
+		this.commandProxy().insert(KrcmtMasterCheckFixedExtractCondition.toEntity(masterCheckFixedCondition));
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void updateMasterCheckFixedCondition(MasterCheckFixedExtractCondition masterCheckFixedCondition) {
+		KrcmtMasterCheckFixedExtractCondition newEntity = KrcmtMasterCheckFixedExtractCondition.toEntity(masterCheckFixedCondition);
+		KrcmtMasterCheckFixedExtractCondition updateEntity = this.queryProxy().find(
+				new KrcmtMasterCheckFixedExtractConditionPK(
+						newEntity.getPk().getErAlId(), 
+						newEntity.getPk().getNo()),
+				KrcmtMasterCheckFixedExtractCondition.class).get();
+		updateEntity.setMessage(newEntity.getMessage());
+		updateEntity.setUseAtr(newEntity.getUseAtr());
+		this.commandProxy().update(updateEntity);
+	}
+
+	@Override
+	public void deleteMasterCheckFixedCondition(String errorAlarmCheckId) {
+		this.getEntityManager().createQuery(DELETE_MASTER_CHECK_FIXED_CON_BY_ID)
+		.setParameter("erAlId", errorAlarmCheckId).executeUpdate();
+	}
 }

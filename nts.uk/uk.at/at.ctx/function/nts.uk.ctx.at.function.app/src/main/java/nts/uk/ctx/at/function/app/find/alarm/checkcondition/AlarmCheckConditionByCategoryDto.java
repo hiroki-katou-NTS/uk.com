@@ -41,5 +41,5 @@ public class AlarmCheckConditionByCategoryDto {
 	
 	private AnnualHolidayAlarmConditionDto annualHolidayAlConDto;
 	
-//	private List<ApprovalAlarmCheckConDto> listApprovalAlarmCheckConDto;
+	private MasterCheckAlarmCheckConditionDto masterCheckAlarmCheckConDto;
 }

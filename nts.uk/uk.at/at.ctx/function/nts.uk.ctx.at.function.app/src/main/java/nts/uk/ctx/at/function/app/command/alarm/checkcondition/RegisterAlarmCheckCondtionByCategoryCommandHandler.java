@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCond
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
+import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
@@ -46,6 +47,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.ErrorAlarmMessage;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
@@ -93,7 +98,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 	@Inject
 	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
-
+	
+	@Inject
+	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
@@ -401,6 +409,34 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						: new AnnualHolidayAlarmCondition(alarmCheckConAgr, alarmCheckSubConAgr);
 
 				break;
+				
+			case MASTER_CHECK:
+				MasterCheckAlarmCheckCondition masterCheckAlarmCheckCondition = (MasterCheckAlarmCheckCondition) domain.getExtractionCondition();
+				
+				extractionCondition = command.getMasterCheckAlarmCheckCondition() == null ? null
+						: new MasterCheckAlarmCheckCondition(IdentifierUtil.randomUniqueId());
+				
+				for(MasterCheckFixedExtractConditionDto fixedMasterCheckExtConDto : command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition()) {
+					if(fixedMasterCheckExtConDto.getErrorAlarmCheckId() == null || fixedMasterCheckExtConDto.getErrorAlarmCheckId().equals("")) {
+						fixedMasterCheckExtConDto.setErrorAlarmCheckId(masterCheckAlarmCheckCondition.getAlarmCheckId());
+						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
+								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
+								fixedMasterCheckExtConDto.getNo(),
+								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								fixedMasterCheckExtConDto.isUseAtr()
+								);
+						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
+					}else {
+						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
+								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
+								fixedMasterCheckExtConDto.getNo(),
+								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								fixedMasterCheckExtConDto.isUseAtr()
+								);
+						fixedMasterCheckConditionRepo.updateMasterCheckFixedCondition(fixedMasterCheckExtCon);
+					}
+				}
+				break;
 			default:
 				break;
 			}
@@ -569,6 +605,23 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				alarmCheckSubConAgr = new AlarmCheckSubConAgr(alarmCheckSubConAgr.isNarrowUntilNext(),
 						alarmCheckSubConAgr.isNarrowLastDay(), numberDayAward, periodUntilNext);
 				extractionCondition = new AnnualHolidayAlarmCondition(alarmCheckConAgr, alarmCheckSubConAgr);
+				break;
+			case MASTER_CHECK:	
+				String errorAlarmCheckId = IdentifierUtil.randomUniqueId();
+				
+				extractionCondition = command.getMasterCheckAlarmCheckCondition() == null ? null
+						: new MasterCheckAlarmCheckCondition(errorAlarmCheckId);
+				
+				for(MasterCheckFixedExtractConditionDto fixedMasterCheckExtConDto : command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition()) {
+						fixedMasterCheckExtConDto.setErrorAlarmCheckId(errorAlarmCheckId);
+						MasterCheckFixedExtractCondition fixedMasterCheckExtCon = new MasterCheckFixedExtractCondition(
+								fixedMasterCheckExtConDto.getErrorAlarmCheckId(),
+								fixedMasterCheckExtConDto.getNo(),
+								new ErrorAlarmMessage(fixedMasterCheckExtConDto.getMessage()),
+								fixedMasterCheckExtConDto.isUseAtr()
+								);
+						fixedMasterCheckConditionRepo.addMasterCheckFixedCondition(fixedMasterCheckExtCon);
+				}
 				break;
 			default:
 				break;
