@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
  * ON句
@@ -20,11 +21,11 @@ public class OnSentence {
 	/** 右辺 */
 	private ColumnName right;
 
-	private String sql() {
-		return left.sql() + " = " + right.sql();
+	private String sql(ConversionInfo info) {
+		return left.sql() + " = " + right.sql() + " " + info.getDatebaseType().spec().collate();
 	}
 
-	public static String join(List<OnSentence> sentences) {
-		return " ON " + String.join(" AND" + "\r\n    ", sentences.stream().map(s -> s.sql()).collect(Collectors.toList()));
+	public static String join(List<OnSentence> sentences, ConversionInfo info) {
+		return " ON " + String.join(" AND" + "\r\n    ", sentences.stream().map(s -> s.sql(info)).collect(Collectors.toList()));
 	}
 }

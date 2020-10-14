@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.cnv.dom.service.ConversionInfo;
 
 @Getter
 @AllArgsConstructor
@@ -15,10 +16,10 @@ public class Join {
 	/** 結合条件 */
 	public List<OnSentence> onSentences;
 
-	public String sql() {
+	public String sql(ConversionInfo info) {
 		return
 				" " + joinAtr.getSql() + " " + tableName.fullName() + " AS " + tableName.getAlias() + "\r\n" +
-				OnSentence.join(onSentences);
+				OnSentence.join(onSentences, info);
 	}
 
 }

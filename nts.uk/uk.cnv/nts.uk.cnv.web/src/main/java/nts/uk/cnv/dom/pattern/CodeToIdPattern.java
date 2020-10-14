@@ -30,7 +30,7 @@ public class CodeToIdPattern extends ConversionPattern {
 	//TODO: 履歴あるテーブルどうしよう...
 	public enum CodeToIdType{
 		TO_CID("SCVMT_MAPPING_CODE_TO_CID", "CODE", "ID", ""),
-		TO_SID("SCVMT_MAPPING_CODE_TO_SCD", "SCD", "SID", "CCD"),
+		TO_SID("SCVMT_MAPPING_CODE_TO_SID", "SCD", "SID", "CCD"),
 		TO_JOB_ID("SCVMT_MAPPING_CODE_TO_JOBID", "JOB_CD", "JOB_ID", "CCD");
 
 		private final String tableName;

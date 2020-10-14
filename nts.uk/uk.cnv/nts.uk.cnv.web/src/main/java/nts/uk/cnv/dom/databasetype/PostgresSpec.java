@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostgresSpec implements DataBaseSpec{
 
+	/** 照合順序 **/
+    public static final String collateType = "default";
+
 	public String dataType(DataType type, Integer... length) {
 		switch (type) {
 		case BOOL:
@@ -111,6 +114,11 @@ public class PostgresSpec implements DataBaseSpec{
 		}
 
 		throw new IllegalArgumentException();
+	}
+
+	@Override
+	public String collate() {
+		return "COLLATE " + collateType;
 	}
 
 }

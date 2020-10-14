@@ -31,6 +31,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
 public class ParentJoinPatternManager {
 
 	private static String sourcePkName = "SOURCE_PK";
+	public static String parentValueColumnName = "PARENT_VALUE";
 	public static String parentMappingTable = "SCVMT_MAPPING_PARENT";
 	public static List<ColumnExpression> mappingTableColumns = Arrays.asList(
 			new ColumnExpression(Optional.empty(), "CATEGORY_NAME"),
@@ -48,7 +49,7 @@ public class ParentJoinPatternManager {
 			new ColumnExpression(Optional.empty(), "SOURCE_PK10"),
 			new ColumnExpression(Optional.empty(), "PARENT_VALUE")
 		);
-	private static String[] pk = {
+	public static String[] pk = {
 		"CATEGORY_NAME", "PARENT_TBL_NAME", "TARGET_COLUMN_NAME",
 		"SOURCE_PK1","SOURCE_PK2","SOURCE_PK3","SOURCE_PK4","SOURCE_PK5",
 		"SOURCE_PK6","SOURCE_PK7","SOURCE_PK8","SOURCE_PK9","SOURCE_PK10"
@@ -65,7 +66,7 @@ public class ParentJoinPatternManager {
 
 		String preProcessing = "";
 		String postProcessing = "";
-		Map<String, Set<String>> referencedColumnList = new HashMap<>();
+		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
 
 		List<ParentJoinPattern> children = repo.get(info, category, ct.getTargetTableName().getName());
 		if (children.isEmpty()) {
@@ -86,7 +87,6 @@ public class ParentJoinPatternManager {
 		Set<String> referencedColumns = children.stream()
 			.map(c -> c.getParentColumn())
 			.collect(Collectors.toSet());
-		referencedColumnList.put(ct.getTargetTableName().getName(), referencedColumns);
 
 		for (String parentColumn : referencedColumns) {
 			ParentJoinPattern child = children.stream()
@@ -97,6 +97,10 @@ public class ParentJoinPatternManager {
 			List<String> columns = child.getParentJoin().onSentences.stream()
 				.map(c -> c.getRight().getName())
 				.collect(Collectors.toList());
+
+			Map<String, List<String>> value = new HashMap<>();
+			value.put(parentColumn, columns);
+			referencedColumnList.put(ct.getTargetTableName().getName(), value);
 
 			ConversionSQL cnvSql = new ConversionSQL(
 					new InsertSentence(mappingTableName, new ArrayList<>()),
@@ -149,7 +153,7 @@ public class ParentJoinPatternManager {
 				preProcessing += "\r\n\r\n";
 			}
 
-			preProcessing += cnvSql.build() + ";";
+			preProcessing += cnvSql.build(info);
 		}
 
 		return new AdditionalConversionCode(
@@ -199,4 +203,5 @@ public class ParentJoinPatternManager {
 			);
 		return "DROP TABLE " + mappingTableName.fullName() + ";";
 	}
+
 }

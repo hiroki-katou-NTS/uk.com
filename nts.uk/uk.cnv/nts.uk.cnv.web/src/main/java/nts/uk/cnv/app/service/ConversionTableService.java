@@ -105,7 +105,7 @@ public class ConversionTableService {
 
 		ConversionSQL sql = conversonTable.createConversionSql();
 
-		return sql.build();
+		return sql.build(info);
 	}
 
 	private FindConversionTableResult mappingData(OneColumnConversion domain) {

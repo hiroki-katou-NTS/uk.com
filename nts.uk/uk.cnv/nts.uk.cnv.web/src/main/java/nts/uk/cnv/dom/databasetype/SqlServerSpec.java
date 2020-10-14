@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SqlServerSpec implements DataBaseSpec{
 
+	/** 照合順序 **/
+    public static final String collateType = "Japanese_XJIS_100_BIN2";
+
 	public String dataType(DataType type, Integer... length) {
 		switch (type) {
 		case BOOL:
@@ -123,6 +126,11 @@ public class SqlServerSpec implements DataBaseSpec{
 		}
 
 		throw new IllegalArgumentException("[" + type + "] is undefined.");
+	}
+
+	@Override
+	public String collate() {
+		return "COLLATE " + collateType;
 	}
 
 }

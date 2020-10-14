@@ -36,7 +36,7 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 			+ "   WHEN 0 THEN " + this.timeColumn
 			+ "   WHEN 1 THEN " + this.timeColumn + " + 1440 "
 			+ "   WHEN 2 THEN " + this.timeColumn + " + 2880 "
-			+ "   WHEN 9 THEN 1440 - " + this.timeColumn
+			+ "   WHEN 9 THEN " + this.timeColumn + " - 1440 "
 			+ "   ELSE 0 "
 			+ " END";
 

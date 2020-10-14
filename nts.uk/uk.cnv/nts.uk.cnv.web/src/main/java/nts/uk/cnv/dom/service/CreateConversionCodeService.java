@@ -1,11 +1,9 @@
 package nts.uk.cnv.dom.service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,6 +16,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.databasetype.DataType;
+import nts.uk.cnv.dom.pattern.ReferencedParentPattern;
 import nts.uk.cnv.dom.pattern.manager.AdditionalConversionCode;
 import nts.uk.cnv.dom.pattern.manager.ParentJoinPatternManager;
 
@@ -73,7 +72,7 @@ public class CreateConversionCodeService {
 			.collect(Collectors.toList());
 
 		// 親テーブル参照関連の処理 - マッピングテーブルへの事前insertの追加など
-		Map<String, Set<String>> referencedColumnList = new HashMap<>();
+		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
 		conversionTables.stream()
 			.forEach(ct -> {
 				AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct);
@@ -81,13 +80,13 @@ public class CreateConversionCodeService {
 				require.addPostProcessing(additional.getPostProcessing());
 				additional.getReferencedColumnList().keySet().stream()
 					.forEach(key -> {
-						Set<String> value = new HashSet<>();
-						value.addAll(additional.getReferencedColumnList().get(key));
+						Map<String, List<String>> value = new HashMap<>();
+						value = additional.getReferencedColumnList().get(key);
 						if(referencedColumnList.isEmpty() || !referencedColumnList.containsKey(key)) {
 							referencedColumnList.put(key, value);
 						}
 						else {
-							referencedColumnList.get(key).addAll(value);
+							referencedColumnList.get(key).putAll(value);
 						}
 					});
 			});
@@ -98,12 +97,21 @@ public class CreateConversionCodeService {
 				if (!referencedColumnList.containsKey(ct.getTargetTableName().getName())) {
 					return ct;
 				}
-				Set<String> columns = referencedColumnList.get(ct.getTargetTableName().getName());
+				Map<String, List<String>> columns = referencedColumnList.get(ct.getTargetTableName().getName());
 
 				List<OneColumnConversion> newConversionMap = ct.getConversionMap().stream()
 					.map(oneColumnCt -> {
-						if (!columns.contains(oneColumnCt.getTargetColumn())) return oneColumnCt;
-						oneColumnCt.setReferenced(true);
+						if (!columns.containsKey(oneColumnCt.getTargetColumn())) return oneColumnCt;
+
+						ReferencedParentPattern refParentPattern = new ReferencedParentPattern(
+								info,
+								category,
+								table,
+								oneColumnCt.getTargetColumn(),
+								columns.get(oneColumnCt.getTargetColumn())
+							);
+
+						oneColumnCt.setReferenced(true, refParentPattern);
 						return oneColumnCt;
 					})
 					.collect(Collectors.toList());
@@ -116,7 +124,7 @@ public class CreateConversionCodeService {
 
 		List<String> convertCodes = conversionTables.stream()
 			.map(ct -> ct.createConversionSql())
-			.map(conversionSql -> conversionSql.build())
+			.map(conversionSql -> conversionSql.build(info))
 			.collect(Collectors.toList());
 
 		return String.join("\r\n\r\n", convertCodes);
@@ -183,7 +191,6 @@ public class CreateConversionCodeService {
 
 		// 各変換処理で追加された事前処理を追記
 		sb.append(require.getPreProcessing());
-		sb.append("\r\n");
 
 		return sb.toString();
 	}

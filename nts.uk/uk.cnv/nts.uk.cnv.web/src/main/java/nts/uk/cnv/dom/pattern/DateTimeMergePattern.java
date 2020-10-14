@@ -116,7 +116,7 @@ public class DateTimeMergePattern extends ConversionPattern {
 			String ymd = createYmd();
 			String time = createTime();
 			datetime.add(ymd);
-			datetime.add(" ");
+			datetime.add("' '");
 			datetime.add(time);
 		}
 
@@ -206,8 +206,8 @@ public class DateTimeMergePattern extends ConversionPattern {
 			mi = spec.mod(this.minutes, "60");
 		}
 		else {
-			hh = spec.cast(this.hh, DataType.NVARCHAR, 20);
-			mi = spec.cast(this.mi, DataType.NVARCHAR, 20);
+			hh = (this.hh == null || this.hh.isEmpty()) ? "'00'" : spec.cast(this.hh, DataType.NVARCHAR, 20);
+			mi = (this.mi == null || this.mi.isEmpty()) ? "'00'" : spec.cast(this.mi, DataType.NVARCHAR, 20);
 		}
 		date.add(hh);
 		date.add("':'");

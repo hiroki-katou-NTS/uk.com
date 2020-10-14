@@ -43,7 +43,7 @@ public class CodeToIdPatternTest {
 				null);
 
 		ConversionSQL result = target.apply(cs);
-		String sql = result.build();
+		String sql = result.build(info);
 
         //assertTrue(result);
 	}

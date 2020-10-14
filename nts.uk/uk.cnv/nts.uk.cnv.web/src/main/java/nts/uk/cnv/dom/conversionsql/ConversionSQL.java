@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.cnv.dom.service.ConversionInfo;
 
 /**
  * コンバートSQL
@@ -22,11 +23,11 @@ public class ConversionSQL {
 
 	private List<WhereSentence> where;
 
-	public String build() {
+	public String build(ConversionInfo info) {
 		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? WhereSentence.join(where) : "";
 		return insert.sql(
 				SelectSentence.join(select) + "\r\n" +
-				from.sql() +
+				from.sql(info) +
 				whereString
 			);
 	}

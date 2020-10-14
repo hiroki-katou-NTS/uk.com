@@ -24,4 +24,6 @@ public interface DataBaseSpec extends DataTypeDefine {
 	public String cast(String expression, DataType type, Integer... length);
 
 	public String newUuid();
+
+	public String collate();
 }

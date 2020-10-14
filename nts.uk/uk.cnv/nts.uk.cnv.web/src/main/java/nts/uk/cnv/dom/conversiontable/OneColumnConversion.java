@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.pattern.ConversionPattern;
+import nts.uk.cnv.dom.pattern.ReferencedParentPattern;
 
 /**
  * １列分の変換表
@@ -21,7 +22,7 @@ public class OneColumnConversion {
 	private ConversionPattern pattern;
 
 	private boolean isReferenced;
-
+	private ReferencedParentPattern referencedPattern;
 
 	public OneColumnConversion(String targetColumn, String conversionType, ConversionPattern pattern) {
 		super();
@@ -33,14 +34,21 @@ public class OneColumnConversion {
 	}
 
 	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql = this.pattern.apply(conversionSql);
+
+		if (this.isReferenced) {
+			conversionSql = this.referencedPattern.apply(conversionSql);
+		}
+		else {
+			conversionSql = this.pattern.apply(conversionSql);
+		}
 
 		conversionSql.getInsert().addExpression(new ColumnExpression(Optional.empty(), targetColumn));
 
 		return conversionSql;
 	}
 
-	public void setReferenced(boolean isReferenced) {
+	public void setReferenced(boolean isReferenced, ReferencedParentPattern referencedPattern) {
 		this.isReferenced = isReferenced;
+		this.referencedPattern = referencedPattern;
 	}
 }

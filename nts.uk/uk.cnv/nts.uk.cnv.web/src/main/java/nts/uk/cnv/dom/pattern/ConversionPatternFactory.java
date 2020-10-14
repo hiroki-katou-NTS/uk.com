@@ -71,7 +71,7 @@ public class ConversionPatternFactory {
 				return new StringConcatPattern(info, join,
 						param.getSourceColumn1(),
 						param.getSourceColumn2(),
-						Optional.of(param.getDelimiter()));
+						(param.getDelimiter().isEmpty()) ? Optional.empty() : Optional.of(param.getDelimiter()));
 			case TimeWithDayAttr:
 				return new TimeWithDayAttrPattern(info, join,
 						param.getSourceColumn_timeWithDayAttr_time(),

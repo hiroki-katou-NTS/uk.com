@@ -35,8 +35,8 @@ public class StringConcatPattern extends ConversionPattern {
 		String source1 = sourceJoin.tableName.getAlias() + "." + column1;
 		String source2 = sourceJoin.tableName.getAlias() + "." + column2;
 
-		if(delimiter.isPresent()) {
-			source1 = info.getDatebaseType().spec().concat(source1, "'" + delimiter + "'");
+		if(delimiter.isPresent() && !delimiter.get().isEmpty()) {
+			source1 = info.getDatebaseType().spec().concat(source1, "'" + delimiter.get() + "'");
 		}
 
 		String concatString = info.getDatebaseType().spec().concat(source1, source2);
