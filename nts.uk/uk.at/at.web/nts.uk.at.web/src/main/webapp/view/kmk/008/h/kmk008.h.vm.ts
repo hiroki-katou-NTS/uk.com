@@ -19,11 +19,6 @@ module nts.uk.at.view.kmk008.h {
             super();
             const vm = this;
 
-        }
-
-        created() {
-            const vm = this;
-
             vm.$blockui("invisible");
             vm.$ajax(PATH_API.getData)
                 .done(data => {
@@ -39,6 +34,10 @@ module nts.uk.at.view.kmk008.h {
                 .always(() => {
                     vm.$blockui("clear");
                 });
+        }
+
+        created() {
+            const vm = this;
 
             _.extend(window, {vm});
         }
