@@ -314,24 +314,28 @@ module nts.uk.ui.at.ksu002.a {
 					if (!d) {
 						data.selected(null);
 					} else {
-						const wtime = _.find(wtimed, w => w.code === wtimec);
+						const wtime = _.find(wtimed, w => w.id === wtimec);
 						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-						data.selected({
-							wtype: {
-								code: wtype ? wtype.workTypeCode : '',
-								name: wtype ? wtype.name : '',
-								type: wtype ? wtype.type : WORKTYPE_SETTING.NOT_REQUIRED
-							},
-							wtime: wtime ? {
-								code: wtime.code,
-								name: wtime.name,
-								value: {
-									begin: wtime.tzStart1,
-									finish: wtime.tzEnd1
+						if (!wtype || !wtime) {
+							data.selected(null);
+						} else {
+							data.selected({
+								wtype: {
+									code: wtypec,
+									name: wtype.name,
+									type: wtype.type
+								},
+								wtime: {
+									code: wtimec,
+									name: wtime.name,
+									value: {
+										begin: wtime.tzStart1,
+										finish: wtime.tzEnd1
+									}
 								}
-							} : null
-						});
+							});
+						}
 					}
 				},
 				owner: vm
@@ -369,6 +373,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	export type EDIT_MODE = 'edit' | 'copy';
+	export type WTIME_CODE = 'none' | 'deferred' | string;
 
 	interface Parameter {
 		selected: KnockoutObservable<null | WorkData>;
@@ -411,8 +416,8 @@ module nts.uk.ui.at.ksu002.a {
 			name: string;
 			type: WORKTYPE_SETTING;
 		};
-		wtime: null | {
-			code: string;
+		wtime: {
+			code: WTIME_CODE;
 			name: string;
 			value: {
 				begin: number | null;

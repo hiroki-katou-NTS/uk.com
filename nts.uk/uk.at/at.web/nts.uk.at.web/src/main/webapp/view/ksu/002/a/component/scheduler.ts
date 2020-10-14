@@ -35,6 +35,7 @@ module nts.uk.ui.at.ksu002.a {
         value: {
             begin: KnockoutObservable<number | null>;
             finish: KnockoutObservable<number | null>;
+            required: KnockoutObservable<WORKTYPE_SETTING>;
         };
     }
 

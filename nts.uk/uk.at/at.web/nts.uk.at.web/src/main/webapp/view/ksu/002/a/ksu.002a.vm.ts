@@ -118,10 +118,12 @@ module nts.uk.ui.at.ksu002.a {
 											},
 											value: {
 												begin: ko.observable($raw.startTime),
-												finish: ko.observable($raw.endTime)
+												finish: ko.observable($raw.endTime),
+												required: ko.observable(WORKTYPE_SETTING.NOT_REQUIRED)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
+											comfirmed: ko.observable($raw.confirmed),
 											achievement: ko.observable(arch === NO ? null : $raw.achievements)
 										};
 
@@ -219,6 +221,7 @@ module nts.uk.ui.at.ksu002.a {
 		clickDayCell(type: c.CLICK_CELL, dayData: DayDataRawObsv) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
+			const { REQUIRED } = WORKTYPE_SETTING;
 			const workData = ko.unwrap(vm.workData);
 			const preview: DayData = ko.toJS(dayData);
 
@@ -227,9 +230,13 @@ module nts.uk.ui.at.ksu002.a {
 				const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
-				if (current) {
+				if (current && !current.data.achievement()) {
+					/**
+					 * Required & deferred & wtime exist ?
+					 */
+
 					// UI-5: 不正な勤務情報の貼り付けのチェック
-					if (wtype.type === WORKTYPE_SETTING.REQUIRED && !wtime) {
+					if (wtype.type === REQUIRED && wtime.code === 'none') {
 						vm.$dialog.error({ messageId: 'Msg_1809' });
 					} else {
 						// UI-5: エラーがならない場合は、常に勤務情報を勤務予定セルに反映する。
@@ -239,14 +246,23 @@ module nts.uk.ui.at.ksu002.a {
 							.then(() => {
 								const { data } = current;
 
-								data.wtime.code(wtime.code);
-								data.wtime.name(wtime.name);
-
 								data.wtype.code(wtype.code);
 								data.wtype.name(wtype.name);
+								data.value.required(wtype.type);
 
-								data.value.begin(wtime.value.begin);
-								data.value.finish(wtime.value.finish);
+								if (wtime.code === 'none') {
+									data.wtime.code('');
+									data.wtime.name('');
+
+									data.value.begin(null);
+									data.value.finish(null);
+								} else if (wtime.code !== 'deferred') {
+									data.wtime.code(wtime.code);
+									data.wtime.name(wtime.name);
+
+									data.value.begin(wtime.value.begin);
+									data.value.finish(wtime.value.finish);
+								}
 							})
 							// save after change data
 							.then(() => vm.schedules.memento({ current, preview }));
