@@ -40,7 +40,8 @@ module nts.uk.ui.calendar {
 		REFLECTED = 'reflected',
 		DIFF_MONTH = 'diff-month',
 		SAME_MONTH = 'same-month',
-		READONLY = 'readonly'
+		READONLY = 'readonly',
+		ACHIEVEMENT = 'achievement'
 	}
 
 	export interface DataInfo<T = KnockoutObservable<string | null>> {
@@ -236,7 +237,8 @@ module nts.uk.ui.calendar {
 				background-color: #BFEA60;
 			}
             .calendar .calendar-container .month .week .day.diff-month .data-info,
-            .calendar .calendar-container .month .week .day.same-month.readonly .data-info {
+			.calendar .calendar-container .month .week .day.same-month.readonly .data-info,
+			.calendar .calendar-container .month .week .day.same-month.achievement .data-info {
                 background-color: #d9d9d9;
             }
             .calendar .calendar-container .month .week .day.same-month.holiday .data-info {
@@ -248,7 +250,10 @@ module nts.uk.ui.calendar {
             .calendar .calendar-container .month .week .day.same-month.working .data-info {
                 color: #0000ff;
             }
-            .calendar .calendar-container .month .week .day.same-month.worked .data-info {
+			.calendar .calendar-container .month .week .day.same-month.worked .data-info,
+			.calendar .calendar-container .month .week .day.same-month.achievement .data-info,
+			.calendar .calendar-container .month .week .day.same-month.worked .data-info input,
+			.calendar .calendar-container .month .week .day.same-month.achievement .data-info input {
                 color: #00cc00;
             }
 			.calendar .event-popper {
@@ -322,12 +327,12 @@ module nts.uk.ui.calendar {
 				if (data) {
 					ko.computed({
 						read: () => {
-							const achie = ko.unwrap(data.achievement);
+							const achievement = ko.unwrap(data.achievement);
 
-							if (achie) {
-								className.push(COLOR_CLASS.READONLY);
+							if (achievement) {
+								className.push(COLOR_CLASS.ACHIEVEMENT);
 							} else {
-								className.remove(COLOR_CLASS.READONLY);
+								className.remove(COLOR_CLASS.ACHIEVEMENT);
 							}
 						},
 						owner: dayData,
