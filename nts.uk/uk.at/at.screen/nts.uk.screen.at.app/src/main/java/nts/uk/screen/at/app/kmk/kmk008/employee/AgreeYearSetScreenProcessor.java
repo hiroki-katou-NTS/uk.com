@@ -24,7 +24,7 @@ public class AgreeYearSetScreenProcessor {
     public List<AgreementYearSettingDto> find(Request request) {
 
         Year year = new Year(GeneralDate.today().addYears(-3).year());
-        List<AgreementYearSetting> data = yearSettingRepository.find(AppContexts.user().employeeId());
+        List<AgreementYearSetting> data = yearSettingRepository.find(request.getEmployeeId());
         data = data.stream().filter(x -> x.getYearValue().v() >= year.v() ).collect(Collectors.toList());
 
         return AgreementYearSettingDto.setData(data);
