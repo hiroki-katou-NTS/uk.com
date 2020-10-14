@@ -130,7 +130,6 @@ module nts.uk.at.view.kwr001.c {
                             self.enableBtnDel(true);
                             self.enableCodeC3_2(false);
                             self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
-                            self.fillterByAttendanceType(self.selectedProjectType());
                             blockUI.clear();
                         })
                     } else {
@@ -253,7 +252,7 @@ module nts.uk.at.view.kwr001.c {
                 } else {
                     self.setRemarksContentDefault();
                 }
-
+                self.fillterByAttendanceType(self.selectedProjectType());
             }
 
             public startPage(): JQueryPromise<void> {
@@ -598,27 +597,31 @@ module nts.uk.at.view.kwr001.c {
                 const CODE = 0;         // 日次勤怠項目の属性=0:コード
                 const NUMBEROFTIME = 2; // 日次勤怠項目の属性=2:回数
                 const TIME = 5;         //日次勤怠項目の属性=5:時間
-                let lstResult = vm.outputItemPossibleLst();
+                let lstResult: any[] = [];
+                let lstTemp: any[] = [];
+                _.forEach(vm.outputItemPossibleLst(), function(value) {
+                    lstTemp.push(value);
+                });
                 switch (code) {
                     case -1:
                         // 「全件」⓪の場合は、絞り込み不要とする。
-                        lstResult = vm.outputItemPossibleLst();
+                       lstResult = lstTemp;
                         break;
                     case -2:
                         // 「その他」④の場合は、「全体」⓪から時間①、回数②、計算項目③を除いたものを表示する。
-                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt !== NUMBEROFTIME
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt !== NUMBEROFTIME
                                                                                   || item.attendanceItemAtt !== TIME 
                                                                                   || item.attendanceItemAtt !== CODE);
                         break;
                     case CODE:
                         //「計算項目」③の場合は、日次勤怠項目の属性=0:コード　かつ　日次の勤怠項目に関連するマスタの種類=9:するしない区分
-                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === CODE
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt === CODE
                                                                                   && item.masterType
                                                                                   && item.masterType === NOT_USE_ATR);
                     default:
                         //「時間」①の場合は、日次勤怠項目の属性=5:時間
                         //「回数」②の場合は、日次勤怠項目の属性=2:回数
-                        lstResult = vm.outputItemPossibleLst().filter((item: any) => item.attendanceItemAtt === code);
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt === code);
                         break;
                 }
                 vm.items(lstResult);
