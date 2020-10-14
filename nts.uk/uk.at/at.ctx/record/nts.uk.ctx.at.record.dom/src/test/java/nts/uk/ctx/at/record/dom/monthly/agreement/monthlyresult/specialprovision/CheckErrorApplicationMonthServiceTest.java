@@ -11,6 +11,7 @@ import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -91,8 +92,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -124,8 +125,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -157,8 +158,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -190,8 +191,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -223,8 +224,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -256,8 +257,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(), agreementTimes);
             result = agreMaxAverageTimeMulti;
 
@@ -288,8 +289,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreementTimeOfYear recordTime = AgreementTimeOfYear.of(new AgreementOneYearTime(20),new OneYearTime());
             AgreementTimeYear agreementTimeYear = AgreementTimeYear.of( limitTime,recordTime, AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.timeYear(monthlyAppContent.getApplicant(), GeneralDate.today(), new Year(monthlyAppContent.getYm().year()), agreementTimes);
             result = agreementTimeYear;
 
@@ -320,9 +321,8 @@ public class CheckErrorApplicationMonthServiceTest {
             AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
             agreMaxAverageTimeMulti.getAverageTimes().add(agreMaxAverageTime);
 
-            val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-            agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
-
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
             require.getMaxAverageMulti(monthlyAppContent.getApplicant(), GeneralDate.today(), monthlyAppContent.getYm(),agreementTimes);
             result = agreMaxAverageTimeMulti;
 
