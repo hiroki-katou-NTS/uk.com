@@ -100,7 +100,9 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		List<Object> restoreTableResult = tableListRestorationService.restoreTableList(serverPrepareMng);
 		serverPrepareMng = (ServerPrepareMng) restoreTableResult.get(0);
 		List<TableList> tableList = (List<TableList>) (restoreTableResult.get(1));
-		STORAGE_PROCESS_ID[0] = tableList.get(FIRST_LINE).getDataStorageProcessingId();
+		if (!tableList.isEmpty()) {
+			STORAGE_PROCESS_ID[0] = tableList.get(FIRST_LINE).getDataStorageProcessingId();
+		}
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		if (!checkNormalFile(serverPrepareMng))
 			return;

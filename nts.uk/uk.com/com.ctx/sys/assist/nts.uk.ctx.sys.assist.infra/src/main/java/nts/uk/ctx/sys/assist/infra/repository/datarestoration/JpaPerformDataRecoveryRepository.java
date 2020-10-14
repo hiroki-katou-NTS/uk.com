@@ -600,6 +600,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 	
 	@Override
+	public List<PerformDataRecovery> getAbridgedPerformDataRecoverByIds(List<String> dataStorageProcessIds) {
+		return this.queryProxy().query(SELECT_BY_STORAGE_PROCESS_ID, SspmtPerformDataRecovery.class)
+				.setParameter("storageProcessIds", dataStorageProcessIds)
+				.getList(e -> e.toDomain(null, null));
+	}
+	
+	@Override
 	public List<PerformDataRecovery> findAll() {
 		return null;
 	}

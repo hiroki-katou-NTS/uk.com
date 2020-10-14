@@ -81,7 +81,7 @@ public class DataHistoryFinder {
 		/**
 		 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
 		 */
-		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getPerformDataRecoverByIds(
+		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getAbridgedPerformDataRecoverByIds(
 				rosList.stream().map(ResultOfSaving::getStoreProcessingId).distinct().collect(Collectors.toList()));
 
 		/**

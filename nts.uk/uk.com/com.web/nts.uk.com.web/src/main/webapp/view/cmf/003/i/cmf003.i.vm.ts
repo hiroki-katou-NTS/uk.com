@@ -87,16 +87,25 @@ module nts.uk.com.view.cmf003.i {
               $(this).css('background-color', '#cff1a5');
             });
           })
-        }).then(() => {
-          vm.findData();
-        }).then(() => {
-          service.getFreeSpace().then((val: number) => vm.storageSize(Math.round(val)));
-        }).always(() => vm.$blockui("clear"));
+        })
+        .then(() => vm.findData())
+        .then(() => vm.getFreeSpace())
+        .always(() => vm.$blockui("clear"));
     }
 
-    public findData() {
+    public startFindData() {
       const vm = this;
       vm.$blockui("grayout");
+      vm.findData().always(() => vm.$blockui("clear"));
+    }
+
+    public getFreeSpace(): JQueryPromise<any> {
+      const vm = this;
+      return service.getFreeSpace().then((val: number) => vm.storageSize(Math.round(val)));
+    }
+
+    public findData(): JQueryPromise<any> {
+      const vm = this;
       let arr: FindDataHistoryDto[] = [];
       let searchValue: SaveSetHistoryDto;
       if (Number(vm.searchValue()) === 1) {
@@ -110,7 +119,7 @@ module nts.uk.com.view.cmf003.i {
         from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
         to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
-      service.findData(param).then((data: DataDto[]) => {
+      return service.findData(param).then((data: DataDto[]) => {
         const res: DataDto[] = [];
         if (data && data.length) {
           _.each(data, (x, i) => {
@@ -129,7 +138,7 @@ module nts.uk.com.view.cmf003.i {
         }
         vm.resultItems(res);
         vm.loadDataGrid();
-      }).always(() => vm.$blockui("hide"));
+      });
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {
