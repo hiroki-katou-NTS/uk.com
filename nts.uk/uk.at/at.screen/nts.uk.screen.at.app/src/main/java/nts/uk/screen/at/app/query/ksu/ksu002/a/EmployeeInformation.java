@@ -42,7 +42,7 @@ public class EmployeeInformation {
 
 			Optional<Person> person = personRepo.getByPersonId(employeeDataMngInfo.get().getPersonId());
 
-			if (!person.isPresent()) {
+			if (person.isPresent()) {
 				dto.setEmployeeName(person.get().getPersonNameGroup().getBusinessName().v());
 			}
 		}
