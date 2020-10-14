@@ -13,8 +13,12 @@ export module viewmodel {
         // Options
         baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
+		selectedEmployeeKCP005: KnockoutObservableArray<UnitModel>;
         sysAtr: number;
         lstAppName : Array<any> = [];
+		isShow: KnockoutObservable<Boolean> = ko.observable(false);
+		// get selected code in KCP005
+		multiSelectedCode: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
             var self = this;
             let param = nts.uk.ui.windows.getShared('CMM018N_PARAM');
@@ -40,7 +44,7 @@ export module viewmodel {
             if(self.sysAtr == 0){
                 self.start();
             }else{
-                self.lstAppDis.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
+                self.lstAppDis.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0} as any);
                 _.each(self.lstAppName, app => {
                     self.lstAppDis.push({id: app.id, code: app.code, name: app.name, 
                         empRoot: app.empRoot, lowerApprove: app.lowerApprove});
@@ -48,7 +52,43 @@ export module viewmodel {
                 self.loadGrid();
             }
         }
-
+		initKCP005() {
+			const self = this;
+			let isShowAlreadySet = ko.observable(false);
+			let isDialog = ko.observable(true);
+			let isShowNoSelectRow = ko.observable(false);
+			let isMultiSelect = ko.observable(true);
+			let isShowWorkPlaceName = ko.observable(true);
+			let isShowSelectAllButton = ko.observable(false);
+			let disableSelection = ko.observable(false);
+			let dataSource = ko.toJS(self.selectedEmployee) as Array<vmbase.EmployeeSearchDto>;
+			let dataList = [] as Array<UnitModel>;
+			_.map(dataSource, (i: vmbase.EmployeeSearchDto) => {
+				let um = {} as UnitModel;
+				um.id = i.employeeCode;
+				um.code = i.employeeCode;
+				um.name = i.employeeName;
+				um.workplaceName = 'do not found';
+				dataList.push(um);
+			});
+			let employeeList = ko.observableArray<UnitModel>(dataList);
+			self.selectedEmployeeKCP005 = employeeList;
+			let listComponentOption = {
+				isShowAlreadySet: isShowAlreadySet(),
+				isMultiSelect: isMultiSelect(),
+				listType: ListType.EMPLOYEE,
+				employeeInputList: employeeList,
+				selectType: SelectType.SELECT_BY_SELECTED_CODE,
+				selectedCode: self.multiSelectedCode,
+				isDialog: isDialog(),
+				isShowNoSelectRow: isShowNoSelectRow(),
+				isShowWorkPlaceName: isShowWorkPlaceName(),
+				isShowSelectAllButton: isShowSelectAllButton(),
+				disableSelection : disableSelection()
+			} as any;
+			
+			$('#component-items-list').ntsListComponent(listComponentOption);
+		}
         loadGrid() {
             var self = this;
             self.ccgcomponent = {
@@ -84,7 +124,7 @@ export module viewmodel {
                 showJobTitle: false, // 職位条件
                 showWorktype: false, // 勤種条件
                 isMutipleCheck: true,
-                isInDialog:true,
+                isInDialog: true,
                    /**  
                    * @param dataList: list employee returned from component.
                    * Define how to use this list employee by yourself in the function's body.
@@ -103,21 +143,29 @@ export module viewmodel {
             var dfd = $.Deferred();
             service.getRightList().done(function(data: any) {
                 let items : ItemModel[] = [];
-                items.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0});
+                items.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0} as any);
                 _.forEach(data, function(value: any){
                     if(value.value !== 14){
-                        items.push({id: '1' + value.value, code: value.value, name: value.localizedName, empRoot: 1});
+                        items.push({id: '1' + value.value, code: value.value, name: value.localizedName, empRoot: 1} as any);
                     }
                 })
                 service.getConfirmName().done(function(confirm: any){
                     _.forEach(confirm, function(obj){
-                        items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 1});
+                        items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 1} as any);
                     });
                      self.lstAppDis(items);
                     self.loadGrid();
                 });
                 dfd.resolve();
             });
+			self.selectedEmployee.subscribe(value => {
+				if (value) {
+					self.initKCP005();
+					if (!ko.toJS(self.isShow)) {
+						self.isShow(true);
+					}
+				}
+			});
             return dfd.promise();
         }
         //閉じるボタン
@@ -126,20 +174,31 @@ export module viewmodel {
         }
         //Exceｌ出力
         printExcel(){
-            var self = this;
+            const self = this;
+			// get employees in KCP005
+			let selectedEmployeeKCP = [] as Array<vmbase.EmployeeSearchDto>;
+			_.map(ko.toJS(self.multiSelectedCode), (i: any) => {
+				let list = _.filter(self.selectedEmployee(), (item: vmbase.EmployeeSearchDto) => {
+					return item.employeeCode == i;
+				});
+				if (!_.isEmpty(list)) {
+					selectedEmployeeKCP.push(list[0]);
+				}
+			})
+			
             //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
             //対象者未選択(chưa chọn nhân viên)
-            if(self.selectedEmployee().length <= 0){
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
+            if(selectedEmployeeKCP.length <= 0){
+                nts.uk.ui.dialog.alert({ messageId: "Msg_184"});
                 return;
             }
             //出力対象申請を選択したかチェックする(check đã chọn đơn xin để xuất ra chưa?)
             //出力対象未選択(chưa chọn đối tượng output)
-            if(self.currentAppType().length <= 0){
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
+            if(selectedEmployeeKCP.length <= 0){
+                nts.uk.ui.dialog.alert({ messageId: "Msg_199"});
                 return;    
             }
-            let lstApp = []
+            let lstApp = [] as any;
             _.each(self.currentAppType(), function(code){
                 let a = self.findTypeSelected(code);
                 lstApp.push({code: a.code,
@@ -149,18 +208,18 @@ export module viewmodel {
             });
             
             //xuat file
-            let data = new service.model.appInfor(self.baseDate(), self.selectedEmployee(), lstApp, self.sysAtr);
+            let data = new service.model.appInfor(self.baseDate(), selectedEmployeeKCP, lstApp, self.sysAtr);
             nts.uk.ui.block.invisible();
             service.saveAsExcel(data).done(()=>{
                  nts.uk.ui.block.clear();   
             }).fail(function(res: any){
-                nts.uk.ui.dialog.alertError(res.messageId);
+                nts.uk.ui.dialog.alert({ messageId: res.messageId || res.message});
                  nts.uk.ui.block.clear();
             });
         }
         findTypeSelected(id: number){
             let self = this;
-            return _.find(self.lstAppDis(), function(app){
+            return _.find(self.lstAppDis(), function(app: any){
                 return app.id == id;
             });
         }
@@ -172,5 +231,35 @@ export module viewmodel {
             empRoot: number;
             lowerApprove: number;
         }
+
+		export class ListType {
+			static EMPLOYMENT = 1;
+			static Classification = 2;
+			static JOB_TITLE = 3;
+			static EMPLOYEE = 4;
+		}
+	
+		export interface UnitModel {
+			id?: string;
+	        code: string;
+	        name?: string;
+	        workplaceName?: string;
+	        isAlreadySetting?: boolean;
+	        optionalColumn?: any;
+		}
+		
+		export class SelectType {
+			static SELECT_BY_SELECTED_CODE = 1;
+			static SELECT_ALL = 2;
+			static SELECT_FIRST_ITEM = 3;
+			static NO_SELECT = 4;
+		}
+		
+		export interface UnitAlreadySettingModel {
+			code: string;
+			isAlreadySetting: boolean;
+		}
+
+
     }
 }
