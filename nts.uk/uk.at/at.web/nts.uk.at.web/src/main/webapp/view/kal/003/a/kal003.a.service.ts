@@ -17,7 +17,8 @@ module nts.uk.at.view.kal003.a.service {
           //monthly
         getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
         
-        getName: "at/function/alarm/checkcondition/agree36/findName"
+        getName: "at/function/alarm/checkcondition/agree36/findName",
+
     }
         
     export function getName(): JQueryPromise<Array<any>>{

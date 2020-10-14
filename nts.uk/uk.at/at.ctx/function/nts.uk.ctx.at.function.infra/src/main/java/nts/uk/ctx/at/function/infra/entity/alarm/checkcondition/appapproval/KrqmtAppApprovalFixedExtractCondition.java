@@ -29,6 +29,7 @@ public class KrqmtAppApprovalFixedExtractCondition extends UkJpaEntity {
 	@Column(name = "USE_ATR")
 	private int useAtr;
 	
+	
 	public KrqmtAppApprovalFixedExtractCondition(KrqmtAppApprovalFixedExtractConditionPK pk, String contractCode,
 			String message, int useAtr) {
 		this.pk = pk;

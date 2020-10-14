@@ -15,6 +15,7 @@
 			<com:scriptfile path="common/checkconditiontab.js" />
 			<com:scriptfile path="monthly/checkalarmcommon.js" />
 			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
+			<com:scriptfile path="approval/fixedcheckcondition/appfixedchecktab.js" />
 			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
 			<com:scriptfile path="monthly/alarmchecktab.js" />
 			<com:scriptfile path="agreement/agreementerror/agreementerror.js" />
@@ -158,6 +159,9 @@
 							</div>
 							<div class="tab-content-10" data-bind="with: tabAnnualHolidayCon">
 								<ui:include src="annualholiday/checkconagreement/checkconagr.xhtml" />
+							</div>
+							<div class="tab-content-12" data-bind="with: tabAppFixCondition">
+								<ui:include src="approval/fixedcheckcondition/appfixedcheck.xhtml" />
 							</div>
 						</div>
 					</div>

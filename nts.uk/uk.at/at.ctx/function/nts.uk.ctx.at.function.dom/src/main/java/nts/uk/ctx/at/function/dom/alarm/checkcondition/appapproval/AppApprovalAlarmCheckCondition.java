@@ -10,11 +10,17 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
  */
 @Getter
 public class AppApprovalAlarmCheckCondition extends ExtractionCondition {
+	
+	private String approvalAlarmConID;
 
 	private List<String> errorAlarmCheckId;
 
 	public AppApprovalAlarmCheckCondition(List<String> errorAlarmCheckId) {
 		this.errorAlarmCheckId = errorAlarmCheckId;
+	}
+	
+	public AppApprovalAlarmCheckCondition(String approvalAlarmConID) {
+		this.approvalAlarmConID = approvalAlarmConID;
 	}
 
 	@Override
