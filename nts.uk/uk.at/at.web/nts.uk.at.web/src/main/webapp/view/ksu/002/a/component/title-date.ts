@@ -183,11 +183,7 @@ module nts.uk.ui.at.ksu002.a {
 				const YMD_FORMAT = 'YYYY/MM/DD';
 
 				if (response) {
-					const { yearMonth, periodsClose, employeeInfo } = response;
-
-					if (employeeInfo) {
-						vm.params.workplaceId(employeeInfo.workplaceId);
-					}
+					const { yearMonth, periodsClose } = response;
 
 					if (vm.yearMonth() !== `${yearMonth}`) {
 						vm.yearMonth(`${yearMonth}`);
@@ -211,7 +207,8 @@ module nts.uk.ui.at.ksu002.a {
 											id: id + 1,
 											title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
 											begin: mb.toDate(),
-											finish: me.toDate()
+											finish: me.toDate(),
+											wpId: m.workplaceId
 										};
 									}));
 							}
@@ -258,8 +255,9 @@ module nts.uk.ui.at.ksu002.a {
 							if (cache.dateRange === null) {
 								cache.dateRange = c;
 
-								const { finish, begin } = exist;
+								const { finish, begin, wpId } = exist;
 
+								vm.params.workplaceId(wpId);
 								vm.params.dateRange({ finish, begin });
 							} else if (cache.dateRange !== c) {
 								vm.$dialog
@@ -267,8 +265,10 @@ module nts.uk.ui.at.ksu002.a {
 									.then((v) => {
 										if (v === 'yes') {
 											cache.dateRange = c;
-											const { finish, begin } = exist;
 
+											const { finish, begin, wpId } = exist;
+			
+											vm.params.workplaceId(wpId);
 											vm.params.dateRange({ finish, begin });
 										} else {
 											// rollback data
@@ -312,12 +312,14 @@ module nts.uk.ui.at.ksu002.a {
 	interface DateOption extends c.DateRange {
 		id: number;
 		title: string;
+		wpId: string;
 	}
 
 	interface Closure {
 		closureName: string;
 		endDate: string;
 		startDate: string;
+		workplaceId: string;
 	}
 
 	interface Period {
@@ -329,7 +331,6 @@ module nts.uk.ui.at.ksu002.a {
 	interface EmployeeInfo {
 		employeeCd: string;
 		employeeName: string;
-		workplaceId: string;
 	}
 
 	export enum ACHIEVEMENT {

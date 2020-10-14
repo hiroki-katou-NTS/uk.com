@@ -101,13 +101,13 @@ module nts.uk.ui.at.ksu002.a {
                     <div class="month">
                         <div class="week cf">
                             <div class="day">
-                                <div class="status">
+                                <div class="status wk-hours">
                                     <span data-bind="i18n: 'KSU002_25'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
                             </div>
                             <div class="day">
-                                <div class="status full-height">
+                                <div class="status wk-hours full-height">
                                     <span data-bind="i18n: 'KSU002_26'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
@@ -223,10 +223,13 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar+.calendar .month+.month .day .status {
                     display: block;
                     height: 38px;
-                    background: #d9d9d9;
+                    background-color: #d9d9d9;
                     box-sizing: border-box;
                     border-bottom: 1px solid #808080;
                     padding: 0 25px;
+                }
+                .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
+                    background-color: #FFC91D;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.full-height>span {
                     font-size: 12px;

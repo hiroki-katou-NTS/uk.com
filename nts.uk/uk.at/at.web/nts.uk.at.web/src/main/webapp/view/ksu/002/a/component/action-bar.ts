@@ -13,7 +13,7 @@ module nts.uk.ui.at.ksu002.a {
 					},
 					timeClick: -1,
 					attr: {
-						tabindex: $component.data.tabIndex
+						tabindex: $$tabindex
 					},
 					click: function() { $component.data.mode('copy'); }
 				"></button>
@@ -24,7 +24,7 @@ module nts.uk.ui.at.ksu002.a {
 					},
 					timeClick: -1,
 					attr: {
-						tabindex: $component.data.tabIndex
+						tabindex: $$tabindex
 					},
 					click: function() { $component.data.mode('edit'); }
 				"></button>
@@ -36,7 +36,7 @@ module nts.uk.ui.at.ksu002.a {
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['undo']); },
 					attr: {
-						tabindex: $component.data.tabIndex
+						tabindex: $$tabindex
 					}
 				"></button>
 			<button class="small btn-redo" data-bind="
@@ -45,13 +45,13 @@ module nts.uk.ui.at.ksu002.a {
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['redo']); },
 					attr: {
-						tabindex: $component.data.tabIndex
+						tabindex: $$tabindex
 					}
 				"></button>
 			<button class="small btn-help" data-bind="
 					i18n: 'KSU002_27',
 					attr: {
-						tabindex: $component.data.tabIndex
+						tabindex: $$tabindex
 					}
 				"></button>
 		</div>
@@ -61,7 +61,7 @@ module nts.uk.ui.at.ksu002.a {
 			<label data-bind="i18n: 'KSU002_12'"></label>
 	        <div data-bind="
 				attr: {
-					tabindex: $component.data.tabIndex
+					tabindex: $$tabindex
 				},
 				ntsComboBox: {
 					width: '430px',
@@ -87,7 +87,7 @@ module nts.uk.ui.at.ksu002.a {
 					filter: ko.observable(true),
 					show-mode: ko.observable(0),
 					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
-					tabindex: $component.data.tabIndex,
+					tabindex: $$tabindex,
 					width: 520,
 					workplace-id: $component.data.workplaceId
 				"></div>
@@ -184,7 +184,12 @@ module nts.uk.ui.at.ksu002.a {
 			element.classList.add('action-bar');
 			element.removeAttribute('tabindex');
 
-			ko.applyBindingsToNode(element, { component }, bindingContext);
+			const childContext = bindingContext
+				.extend({
+					$$tabindex: tabIndex
+				});
+
+			ko.applyBindingsToNode(element, { component }, childContext);
 
 			return { controlsDescendantBindings: true };
 		}
