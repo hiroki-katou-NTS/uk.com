@@ -22,7 +22,20 @@
 		</tr>
 		<tr>
 			<td><div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div></td>
-			<td style="padding-top: 8px;" ><div id = "listWorkTime"><working-hours params="input: input , callback: getDataWorkTime.bind($data)" ></working-hours></div></td>
+			<td style="padding-top: 8px;" >
+				<div id="listWorkTime">
+					<div data-bind="
+                            kcp013: selected,
+                            workplace-id: workplaceIdKCP013,
+                            dataSources: dataSources,
+                            filter: filter,
+                            disabled: disabled,
+                            show-mode: showMode,
+                            tabindex: 0,
+                            width: width,
+                        "></div>
+				</div>
+			</td>
 		</tr>
 	</table>
 </div>
