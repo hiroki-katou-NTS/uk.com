@@ -47,6 +47,7 @@ module nts.uk.ui.calendar {
 	export interface DataInfo<T = KnockoutObservable<string | null>> {
 		holiday: T;
 		event: T;
+		comfirmed: KnockoutObservable<boolean>;
 		achievement: KnockoutObservable<boolean | null>;
 	}
 
@@ -325,6 +326,20 @@ module nts.uk.ui.calendar {
 				className.push(COLOR_CLASS.SAME_MONTH);
 
 				if (data) {
+					ko.computed({
+						read: () => {
+							const comfirmed = ko.unwrap(data.comfirmed);
+
+							if (comfirmed) {
+								className.push(COLOR_CLASS.CONFIRMED);
+							} else {
+								className.remove(COLOR_CLASS.CONFIRMED);
+							}
+						},
+						owner: dayData,
+						disposeWhenNodeIsRemoved: element
+					})
+
 					ko.computed({
 						read: () => {
 							const achievement = ko.unwrap(data.achievement);
