@@ -8,6 +8,7 @@ module nts.uk.ui.memento {
 		memento(state: StateMemento): void;
 		undoAble: KnockoutComputed<boolean>;
 		redoAble: KnockoutComputed<boolean>;
+		hasChange: KnockoutComputed<boolean>;
 	}
 
 	export interface Options {
@@ -96,7 +97,8 @@ module nts.uk.ui.memento {
 					options.replace.apply(target, [ko.unwrap(target), state.current]);
 				}
 			},
-			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length)
+			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),
+			hasChange: ko.computed(() => !!ko.unwrap($memento.undo).length || ko.unwrap($memento.redo).length)
 		});
 
 		return target;
