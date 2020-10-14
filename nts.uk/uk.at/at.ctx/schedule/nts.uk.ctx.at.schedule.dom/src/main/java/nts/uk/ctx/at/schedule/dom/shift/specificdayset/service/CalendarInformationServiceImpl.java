@@ -10,14 +10,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.*;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.UseSet;
 /**
  * 
  * @author Doan Duy Hung

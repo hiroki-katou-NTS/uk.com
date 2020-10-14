@@ -7,8 +7,11 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.shift.management.CopyCompanyShiftPaletteService.Require;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.CopyCompanyShiftPaletteService;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.CopyCompanyShiftPaletteService.Require;
 
 @RunWith(JMockit.class)
 public class CopyCompanyShiftPaletteServiceTest {
@@ -22,9 +25,9 @@ public class CopyCompanyShiftPaletteServiceTest {
 	 */
 	@Test
 	public void testDuplicate_throw_1712() {
-		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		ShiftPaletteCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = false;
 		
 		new Expectations() {
@@ -43,9 +46,9 @@ public class CopyCompanyShiftPaletteServiceTest {
 	 */
 	@Test
 	public void testDuplicate() {
-		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		ShiftPaletteCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = true;
 		
 		new Expectations() {
@@ -67,9 +70,9 @@ public class CopyCompanyShiftPaletteServiceTest {
 	 */
 	@Test
 	public void testDuplicate_2() {
-		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		ShiftPaletteCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = true;
 		new Expectations() {
 			{
@@ -85,9 +88,9 @@ public class CopyCompanyShiftPaletteServiceTest {
 	
 	@Test
 	public void testDuplicate_3() {
-		ShiftPalletsCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
+		ShiftPaletteCom shiftPalletsCom = ShiftPalletsComHelper.DUMMY;
 		int page = 2;
-		ShiftPalletName shiftPalletName = new ShiftPalletName("shiftPalletName");
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletName");
 		boolean overwrite = false;
 		new Expectations() {
 			{
