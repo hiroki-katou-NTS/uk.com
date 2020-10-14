@@ -1,20 +1,20 @@
+
 .header-image-no-event {
-    background-image: url(../image/121.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
 
 .header-image-event:hover {
-    background-image: url(../image/120.png);
     cursor: pointer;
 }
 
 .header-image-event {
-    background-image: url(../image/120.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
@@ -145,17 +145,8 @@
 	margin-top: 3px;
 }
 
-.setting-button {
-	background: url(../image/image008.png) no-repeat center;
-}
-
-#A5 {
-	background: url(../image/image099.png) no-repeat center;
-}
-
 .size-image-button1 {
 	background-size: 20px 20px !important;
-	width: 27px;
 }
 
 .size-image-button2 {
@@ -165,9 +156,8 @@
 }
 
 .size-image-button3 {
-	background-size: 20px 20px !important;
-	height: 24px !important;;
-	width: 24px;
+	height: 26px !important;;
+	width:  33px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -293,10 +283,9 @@
 
 #undo {
 	margin-top: 6px;
-	background: url(../image/image030.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 }
 
 button[disabled] {
@@ -307,20 +296,11 @@ button[disabled] {
 
 #redo {
 	margin-top: 6px;
-	background: url(../image/image031.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
-}
-
-#prevMonth {
-	background: url(../image/image050.png) no-repeat center;
-}
-
-#nextMonth {
-	background: url(../image/image053.png) no-repeat center;
 }
 
 #A4_4 > button.nts-switch-button{
@@ -362,7 +342,7 @@ button[disabled] {
 }
 
 #functon-area-row2-left {
-	width: 634px;
+	width: 612px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
@@ -512,31 +492,43 @@ html {
 }
 
 .toLeft {
-	background: url(../image/toleft.png) no-repeat center;
-	width: 27px;
-	height: 15px;
 	margin-left: 308px;  
 	float: left;
+    height: 18px;
 }
 
 .toRight {
-	background: url(../image/toright.png) no-repeat center;
-	width: 27px;
-	height: 15px;
 	float: left;
+    height: 18px;
 }
 
 .toDown {
-	background: url(../image/todown.png) no-repeat center;
 	height: 25px;
-	margin-left: 10px;
+	margin-left: 9px;
 	float: left;
+	width: 18px;
+}
+
+.iconToDown {
+	margin-left: -8px;
+	margin-top: -1px;
+}
+
+.iconToLeft {
+	margin-top: -5px;
+}
+
+.iconToRight {
+	margin-top: -5px;
+}
+
+#A5 {
+	width: 30px;
 }
 
 .settingHeightGrid {
-	background: url(../image/iconsetting.png) no-repeat center;
-	width: 27px;
-	height: 27px;
+	width: 25px;
+	height: 25px;
 }
 
 #A16 table td {
