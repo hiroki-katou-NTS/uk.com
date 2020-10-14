@@ -336,6 +336,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             // truowng hop khong co page nao duoc dang ky
             if (listPageInfo.length == 0) {
                 self.listPageComIsEmpty = true;
+                $("#extable").exTable("stickData", []);
             } else {
                 self.listPageComIsEmpty = false;
             }
@@ -429,6 +430,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             // truowng hop khong co page nao duoc dang ky
             if (listPageInfo.length == 0) {
                 self.listPageWkpIsEmpty = true;
+                $("#extable").exTable("stickData", []);
             } else {
                 self.listPageWkpIsEmpty = false;
             }

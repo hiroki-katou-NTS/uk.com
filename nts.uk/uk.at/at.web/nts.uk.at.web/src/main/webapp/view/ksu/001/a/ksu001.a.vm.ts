@@ -2617,6 +2617,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         dfd.resolve(true);
                     }
                 } else if (userInfor.disPlayFormat == 'shift') {
+                    // truong hop listPage empty thi khong can validate
+                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
+                            dfd.reject();
+                            return;
+                    }
+
+                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 2 && (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true)) {
+                        dfd.reject();
+                        return;
+                    } 
+                    
                     // neu data = {} thi la co  shiftmaster đa bị xóa
                     // => stick show mess 1728
                     let isRemove = Object.keys(data).length === 0 && data.constructor === Object;
