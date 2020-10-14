@@ -425,25 +425,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkExitCellUpdated();
             });
             
-            self.pathToLeft = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("152.png").serialize();
-            
-            self.pathToRight = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("153.png").serialize();
-            
-            self.pathToDown = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("150.png").serialize();
-            
-            self.pathToUp = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("151.png").serialize();
+            self.pathToLeft  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("152.png").serialize();
+            self.pathToRight = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("153.png").serialize();
+            self.pathToDown  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("150.png").serialize();
+            self.pathToUp    = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("151.png").serialize();
         }
         // end constructor
         
@@ -1498,11 +1483,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (workType.length > 0) {
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = true;
-                        $("#listWorkTime").addClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(true);
                     } else {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = false;
-                        $("#listWorkTime").removeClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(false);
                     }
                 }
             });
