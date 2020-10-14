@@ -245,6 +245,15 @@ module nts.uk.ui.at.ksu002.a {
 							// change data
 							.then(() => {
 								const { data } = current;
+								const old: ScheduleData = ko.toJS(data);
+
+								// prevent if copy twice or more
+								if (old.wtype.code === wtype.code
+									&& old.wtime.code === wtime.code
+									&& old.value.begin === wtime.value.begin
+									&& old.value.finish === wtime.value.finish) {
+									return false;
+								}
 
 								data.wtype.code(wtype.code);
 								data.wtype.name(wtype.name);
@@ -263,9 +272,15 @@ module nts.uk.ui.at.ksu002.a {
 									data.value.begin(wtime.value.begin);
 									data.value.finish(wtime.value.finish);
 								}
+
+								return true
 							})
 							// save after change data
-							.then(() => vm.schedules.memento({ current, preview }));
+							.then((change: boolean) => {
+								if (change) {
+									vm.schedules.memento({ current, preview });
+								}
+							});
 					}
 				}
 			}
