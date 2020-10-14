@@ -18,6 +18,8 @@
       <kafs00-b
         v-if="kaf000_B_Params != null"
         v-bind:params="kaf000_B_Params"
+        v-on:kaf000BChangeDate="kaf000BChangeDate"
+        v-on:kaf000BChangePrePost="kaf000BChangePrePost"
       />
     </div>
     <!-- A3 -->
@@ -256,6 +258,8 @@
       <kafs00-c
         v-if="kaf000_C_Params != null"
         v-bind:params="kaf000_C_Params"
+        v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
+        v-on:kaf000CChangeAppReason="kaf000CChangeAppReason"
       />
     </div>
 

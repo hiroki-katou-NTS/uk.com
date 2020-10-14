@@ -1043,12 +1043,12 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.goOutLst.forEach((item) => {
                 if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
                     if (item.actualHours.startTime) {
-                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 0, item.swtModel );
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 0 );
 
                         listDestinationTimeApp.push(destinationApp);
                     }
                     if (item.actualHours.endTime) {
-                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 1, item.swtModel );
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 1 );
 
                         listDestinationTimeApp.push(destinationApp);
                     }
@@ -1272,6 +1272,22 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }
 
         return false;
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        console.log('emit' + objectDate);
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        console.log('emit' + prePostAtr);
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        console.log('emit' + opAppStandardReasonCD);
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        console.log('emit' + opAppReason);
     }
 }
 

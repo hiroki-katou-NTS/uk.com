@@ -157,3 +157,23 @@ export enum ScreenMode {
     // 詳細モード
     DETAIL = 1
 }
+
+// ----------------------------------------------------
+
+export class TimeSetDisp {
+    public title: string;
+    public frame: number;
+    public actualHours = { applicationAchievementAtr: 1, startTime: null, endTime: null };
+    public appHours = { applicationAchievementAtr: 0, startTime: null, endTime: null };
+    public outingType: number;
+
+    constructor( title: string, frame: number, actualStart: number, actulaEnd: number, appStart: number, appEnd: number, outingType?: number ) {
+        this.title = title;
+        this.frame = frame;
+        this.actualHours.startTime = actualStart;
+        this.actualHours.endTime = actulaEnd;
+        this.appHours.startTime = appStart;
+        this.appHours.endTime = appEnd;
+        this.outingType = outingType;
+    }
+}
