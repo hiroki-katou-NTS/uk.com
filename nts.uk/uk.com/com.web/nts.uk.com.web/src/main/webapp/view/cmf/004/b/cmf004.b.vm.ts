@@ -798,7 +798,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       return new ManualSettingModal(Number(self.isCheckboxActive()),
         self.dataContentConfirm().dataContentcategoryList().map(data => data.saveSetName()).pop(), moment.utc().toISOString(), self.pwdCompressEdt.value(),
         moment.utc().toISOString(), moment.utc(dateValue.dateRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.dateRange().startDate, "YYYY/MM/DD").toISOString(),
-        moment.utc(dateValue.monthRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.monthRange().startDate, "YYYY/MM/DD").toISOString(), self.supplementaryExplanation(),
+        moment.utc(dateValue.monthRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.monthRange().startDate, "YYYY/MM/DD").toISOString(), self.explanationValue(),
         Number(dateValue.yearRange().endDate), Number(dateValue.yearRange().startDate), self.dataContentConfirm().selectedRecoveryMethod(),
         self.selectedEmployee(), self.dataRecoverySummary().recoveryCategoryList().map(data => new CategoryTableList(data.categoryId(), data.systemType())), self.recoverySourceCode());
     }
