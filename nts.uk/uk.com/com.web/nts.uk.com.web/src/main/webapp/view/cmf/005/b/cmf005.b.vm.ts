@@ -63,7 +63,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     //B7_1
     saveBeforDeleteOption: KnockoutObservableArray<model.ItemModel>;
-    isSaveBeforeDeleteFlg: number;
+    isSaveBeforeDeleteFlg: KnockoutObservable<number> = ko.observable(0);
     isDelete: KnockoutObservableArray<boolean>;
 
     //B8_1
@@ -523,7 +523,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     private nextFromBToD() {
       let self = this;
       if (self.selectedTitleAtr() === 0) {
-        self.saveManualSetting();
+        self.gotoscreenF();
       } else {
         self.next();
         $('#D4_2').focus();
@@ -807,31 +807,69 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       params.monthValue = self.monthValue();
       params.yearValue = self.yearValue();
       params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
+      params.modal = self.saveManualSetting();
+      debugger;
+      console.log(self.isSaveBeforeDeleteFlg());
+      if (Number(self.isSaveBeforeDeleteFlg()) === 1) {
+        service.addMalSet(self.createManualSettings()).then((res) => {
+          if (res && res != "") {
+            setShared("CMF005KParams", {
+              storeProcessingId: res,
+              dataSaveSetName: self.savedName(),
+              dayValue: self.dateValue(),
+              monthValue: self.monthValue(),
+              yearValue: self.yearValue()
+            });
 
-      setShared("CMF005_E_PARAMS", params);
-      modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
-        self.buttonEnable(false);
-      });
+            nts.uk.ui.windows.sub.modal("/view/cmf/005/k/index.xhtml").onClosed(() => {
+              const param = getShared("CMF004KParams");
+              if (param.isSuccess) {
+                setShared("CMF005_E_PARAMS", params);
+                self.saveManualSetting();
+                nts.uk.ui.windows.sub.modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
+                  self.buttonEnable(false);
+                });
+              }
+            });
+          }
+        })
+      } else {
+        setShared("CMF005_E_PARAMS", params);
+       
+        nts.uk.ui.windows.sub.modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
+          self.buttonEnable(false);
+        });
+      }
     }
 
-    private saveManualSetting(): void {
+    createManualSettings(): ManualSettingModal {
+      const self = this;
+      return new ManualSettingModal(self.isExistCompressPasswordFlg() ? 1 : 0, self.deleteSetName(), moment.utc().toISOString(), self.passwordForCompressFile(),
+        moment.utc().toISOString(), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
+        moment.utc(self.monthValue().endDate, 'YYYY/MM').toISOString(), moment.utc(self.monthValue().startDate, 'YYYY/MM').toISOString(),
+        self.supplementExplanation(), Number(self.yearValue().endDate), Number(self.yearValue().startDate), self.selectedTitleAtr(),
+        self.employeeDeletionList(), self.listDataCategory(), self.selectedPatternId().substring(1));
+    }
+
+    private saveManualSetting(): DelManualSettingModal {
       let self = this;
       console.log(self.employeeDeletionList())
-      let manualSetting = new ManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
+      return new DelManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
         moment.utc(self.referenceDate, 'YYYY/MM/DD').toISOString(), moment.utc().toISOString(),
         moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString(),
         moment.utc(self.monthValue().startDate, 'YYYY/MM').toISOString(), moment.utc(self.monthValue().endDate, 'YYYY/MM').toISOString(),
         self.yearValue().startDate, self.yearValue().endDate,
         Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
         Number(self.selectedTitleAtr()), self.selectedPatternId().substring(1), self.employeeDeletionList(), self.listDataCategory());
-      service.addManualSetDel(manualSetting).done(function (data: any) {
-        self.delId(data);
-        self.gotoscreenF();
-      }).fail(function (error) {
-        alertError(error);
+      // service.addManualSetDel(manualSetting).done(function (data: any) {
+      //   self.delId(data);
+      //   self.gotoscreenF();
+      // }).fail(function (error) {
+      //   alertError(error);
 
-      }).always(() => {
-      });
+      // }).always(() => {
+      // });
+
     }
 
     /**
@@ -912,7 +950,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
   }
 
 
-  export class ManualSettingModal {
+  export class DelManualSettingModal {
     delName: string;
     suppleExplanation: string;
     systemType: number;
@@ -956,6 +994,47 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       this.employees = employees;
       this.delPattern = delPattern;
       this.categories = categories;
+    }
+  }
+
+  export class ManualSettingModal {
+    passwordAvailability: number;
+    saveSetName: string;
+    referenceDate: string;
+    compressedPassword: string;
+    executionDateAndTime: string;
+    daySaveEndDate: string;
+    daySaveStartDate: string;
+    monthSaveEndDate: string;
+    monthSaveStartDate: string;
+    suppleExplanation: string;
+    endYear: number;
+    startYear: number;
+    presenceOfEmployee: number;
+    employees: EmployeeDeletion[];
+    category: Category[];
+    patternCode: string;
+
+    constructor(passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
+      executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string,
+      suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number,
+      employees: EmployeeDeletion[], category: Category[], patternCode: string) {
+      this.passwordAvailability = passwordAvailability;
+      this.saveSetName = saveSetName;
+      this.referenceDate = referenceDate;
+      this.compressedPassword = compressedPassword ? compressedPassword : null;
+      this.executionDateAndTime = executionDateAndTime;
+      this.daySaveEndDate = daySaveEndDate ? daySaveEndDate : null;
+      this.daySaveStartDate = daySaveStartDate ? daySaveStartDate : null;
+      this.monthSaveEndDate = monthSaveEndDate ? monthSaveEndDate : null;
+      this.monthSaveStartDate = monthSaveStartDate ? monthSaveStartDate : null;
+      this.suppleExplanation = suppleExplanation ? suppleExplanation : null;
+      this.endYear = endYear ? endYear : null;
+      this.startYear = startYear ? startYear : null;
+      this.presenceOfEmployee = presenceOfEmployee;
+      this.employees = employees;
+      this.category = category;
+      this.patternCode = patternCode;
     }
   }
 

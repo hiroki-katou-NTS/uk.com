@@ -23,7 +23,6 @@ public class JpaCategoryFieldMtForDelRepository extends JpaRepository implements
     private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryFieldMtPk.categoryId IN :lstCategoryId ";
     private static final String SELECT_BY_ID_AND_SYSTEM_TYPE = SELECT_ALL_QUERY_STRING +
     		" WHERE f.categoryFieldMtPk.categoryId = :categoryId AND f.categoryFieldMtPk.systemType = :systemType";
-    
 
     
     @Override
@@ -76,5 +75,16 @@ public class JpaCategoryFieldMtForDelRepository extends JpaRepository implements
 		        .getList());
 		});
 		return entities.stream().map(c->c.toDomain()).collect(Collectors.toList());
+	}
+
+
+
+
+	@Override
+	public List<CategoryFieldMtForDelete> findByCategoryIdAndSystemType(String categoryId, int systemType) {
+		return this.queryProxy().query(SELECT_BY_ID_AND_SYSTEM_TYPE, SspmtCategoryFieldMtForDelete.class)
+				.setParameter("categoryId", categoryId)
+				.setParameter("systemType", systemType)
+				.getList(SspmtCategoryFieldMtForDelete::toDomain);
 	}
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
  * データ保存の保存結果
  */
 @AllArgsConstructor
-@Value
+@Data
 public class ResultOfSavingDto {
 
 	/**
