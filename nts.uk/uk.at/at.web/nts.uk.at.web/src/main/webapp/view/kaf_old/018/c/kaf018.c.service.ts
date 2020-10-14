@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.c.service {
+module nts.uk.at.view.kaf018_old.c.service {
     var paths: any = {
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
         initApprovalSttByEmployee: "at/request/application/approvalstatus/initApprovalSttByEmployee"

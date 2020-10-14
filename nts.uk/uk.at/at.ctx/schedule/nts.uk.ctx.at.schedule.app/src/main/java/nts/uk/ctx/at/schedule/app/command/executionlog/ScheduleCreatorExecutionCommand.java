@@ -60,7 +60,15 @@ public class ScheduleCreatorExecutionCommand {
 	@Setter
 	@Getter
 	private Object companySetting;
-
+	
+	// 「更新処理自動実行」.実行種別
+	private Boolean isReExecution; 
+	
+	// 「更新処理自動実行」.再実行条件.異動者を再作成する
+	private Boolean recreateTransfer;
+	
+	// 「更新処理自動実行」.実行種別.休職者・休業者を再作成
+ 
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -129,7 +137,6 @@ public class ScheduleCreatorExecutionCommand {
 	}
 
 
-
 //	public Boolean getIsDeleteBeforInsert() {
 //		return isDeleteBeforInsert;
 //	}
@@ -188,7 +195,21 @@ public class ScheduleCreatorExecutionCommand {
 		this.employeeIds = employeeIds;
 	}
 
+	public void setIsReExecution(Boolean isReExecution) {
+		this.isReExecution = isReExecution;
+	}
+	
+	public boolean getIsReExecution() {
+		return this.isReExecution;
+	}
 
+	public void setRecreateTransfer(Boolean recreateTransfer) {
+		this.recreateTransfer = recreateTransfer;
+	}
+	
+	public boolean getRecreateTransfer() {
+		return this.recreateTransfer;
+	}
 
 	/**
 	 * To base command.

@@ -33,5 +33,6 @@ public class ShiftPalletsOrgDto {
 					.stream()
 					.map(c -> new ShiftPalletDto(c))
 					.collect(Collectors.toList());
+	
 	}
 }

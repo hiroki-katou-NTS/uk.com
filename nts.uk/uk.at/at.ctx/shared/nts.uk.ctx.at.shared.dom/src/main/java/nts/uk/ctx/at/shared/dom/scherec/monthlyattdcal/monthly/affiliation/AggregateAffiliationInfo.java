@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -28,7 +29,7 @@ public class AggregateAffiliationInfo implements Serializable{
 	/** 分類コード */
 	private ClassificationCode classCd; 
 	/** 勤務種別コード */
-	private BusinessTypeCode businessTypeCd;
+	private Optional<BusinessTypeCode> businessTypeCd;
 	
 	/**
 	 * コンストラクタ
@@ -39,7 +40,7 @@ public class AggregateAffiliationInfo implements Serializable{
 		this.workplaceId = new WorkplaceId("");
 		this.jobTitleId = new JobTitleId("");
 		this.classCd = new ClassificationCode("");
-		this.businessTypeCd = new BusinessTypeCode("");
+		this.businessTypeCd = Optional.empty();
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class AggregateAffiliationInfo implements Serializable{
 			WorkplaceId workplaceId,
 			JobTitleId jobTitleId,
 			ClassificationCode classCd,
-			BusinessTypeCode businessTypeCd){
+			Optional<BusinessTypeCode> businessTypeCd){
 		
 		AggregateAffiliationInfo domain = new AggregateAffiliationInfo();
 		domain.employmentCd = employmentCd;

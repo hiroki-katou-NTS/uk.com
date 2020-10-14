@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                             </div>
                         </div>
                     </div>
+                    <div id="comment1" class="cell valign-top" style="vertical-align: middle; padding-left: 10px" data-bind="text: $vm.comment1, visible: $vm.application().appType === 2"></div>
                 </div>
             </div>
         `

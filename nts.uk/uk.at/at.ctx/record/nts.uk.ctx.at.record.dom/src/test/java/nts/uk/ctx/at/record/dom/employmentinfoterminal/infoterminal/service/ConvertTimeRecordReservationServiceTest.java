@@ -111,8 +111,9 @@ public class ConvertTimeRecordReservationServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
-				true, ReservationArt.NONE, Optional.empty()));
+		Optional<StampRecord> stampRecord = Optional.empty();
+//				Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
+//				true, ReservationArt.NONE, Optional.empty()));
 
 		new Expectations() {
 			{
@@ -184,9 +185,9 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						((Map<Integer, BentoReservationCount>) any));
-				result = new BusinessException("System error");
+//				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+//						((Map<Integer, BentoReservationCount>) any));
+//				result = new BusinessException("System error");
 
 			}
 		};
@@ -217,15 +218,15 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						((Map<Integer, BentoReservationCount>) any));
-				result = new BusinessException("System error");
+//				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+//						((Map<Integer, BentoReservationCount>) any));
+//				result = new BusinessException("System error");
 
 //				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 //				result = Optional.empty();
 
-				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+//				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
+//				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = Arrays.asList("1");
@@ -259,15 +260,15 @@ public class ConvertTimeRecordReservationServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						((Map<Integer, BentoReservationCount>) any));
-				result = new BusinessException("System error");
+//				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+//						((Map<Integer, BentoReservationCount>) any));
+//				result = new BusinessException("System error");
 
 //				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 //				result = Optional.empty();
 
-				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+//				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
+//				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = new ArrayList<>();

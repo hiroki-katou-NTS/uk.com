@@ -62,6 +62,46 @@ interface ViewContext {
 	};
 
 	readonly ready: (callback: () => void) => void;
+
+	readonly user: UserContext;
+	readonly program: ProgramContext;
+}
+
+interface UserContext {
+	readonly contractCode: string;
+	readonly companyId: string;
+	readonly companyCode: string;
+	readonly isEmployee: boolean;
+	readonly employeeId: string;
+	readonly employeeCode: string;
+	readonly selectedLanguage: {
+		readonly basicLanguageId: string;
+		readonly personNameLanguageId: string;
+	};
+	readonly role: {
+		readonly attendance: string | null;
+		readonly companyAdmin: string | null;
+		readonly groupCompanyAdmin: string | null;
+		readonly officeHelper: string | null;
+		readonly payroll: string | null;
+		readonly personalInfo: string | null;
+		readonly personnel: string | null;
+		readonly systemAdmin: string | null;
+		readonly isInCharge: {
+			readonly attendance: boolean;
+			readonly payroll: boolean;
+			readonly personalInfo: boolean;
+			readonly personnel: boolean;
+		};
+	};
+}
+
+interface ProgramContext {
+	readonly webapi: WEB_APP;
+	readonly programId: string;
+	readonly programName: string;
+	readonly path: string;
+	readonly isDebugMode: boolean;
 }
 
 // Data structure of names and messages
@@ -123,41 +163,8 @@ interface KnockoutStatic {
 
 interface ComponentViewModel {
 	readonly $el: HTMLElement;
-	readonly $user: {
-		readonly contractCode: string;
-		readonly companyId: string;
-		readonly companyCode: string;
-		readonly isEmployee: boolean;
-		readonly employeeId: string;
-		readonly employeeCode: string;
-		readonly selectedLanguage: {
-			readonly basicLanguageId: string;
-			readonly personNameLanguageId: string;
-		};
-		readonly role: {
-			readonly attendance: string | null;
-			readonly companyAdmin: string | null;
-			readonly groupCompanyAdmin: string | null;
-			readonly officeHelper: string | null;
-			readonly payroll: string | null;
-			readonly personalInfo: string | null;
-			readonly personnel: string | null;
-			readonly systemAdmin: string | null;
-			readonly isInCharge: {
-				readonly attendance: boolean;
-				readonly payroll: boolean;
-				readonly personalInfo: boolean;
-				readonly personnel: boolean;
-			};
-		};
-	};
-	readonly $program: {
-		readonly webapi: WEB_APP;
-		readonly programId: string;
-		readonly programName: string;
-		readonly path: string;
-		readonly isDebugMode: boolean;
-	};
+	readonly $user: UserContext;
+	readonly $program: ProgramContext;
 	readonly $date: {
 		readonly now: {
 			(): Date;
@@ -208,6 +215,17 @@ interface ComponentViewModel {
 			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
+		/** Like:
+		 *  nts.uk.ui.windows.setShared
+		 *  nts.uk.ui.windows.getShared
+		 */
+		readonly shared: {
+			(name: string): JQueryDeferred<any>;
+			(name: string, params: any): JQueryDeferred<any>;
+		};
+		/**
+		 * Storage data to localStorage with encode data
+		 */
 		readonly storage: {
 			(name: string): JQueryDeferred<any>;
 			(name: string, params: any): JQueryDeferred<any>;

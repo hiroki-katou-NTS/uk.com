@@ -778,6 +778,9 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	@Override
 	public List<EmploymentHistory> getByCidAndListEmpID(String companyId, List<String> empIds) {
 		List<EmploymentHistory> lstEmpHis = new ArrayList<>();
+		if (empIds.isEmpty()) {
+			return lstEmpHis;
+		}
 		List<BsymtEmploymentHist> listEntity = this.queryProxy().query(GET_BY_CID_AND_EMPIDS,BsymtEmploymentHist.class)
 				.setParameter("companyId", companyId)
 				.setParameter("empIds", empIds).getList();
