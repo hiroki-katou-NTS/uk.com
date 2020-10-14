@@ -695,6 +695,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
+                // check enable or disable tbaleButton
+                self.checkEnabDisableTblBtn();
+                
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
                 
@@ -2499,33 +2502,42 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.clear();
         }
         
-        shiftPalletControlEnable(){
+        shiftPalletControlEnable() {
             let self = this;
-            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
-                $('#tableButton1 button').removeClass('disabledShiftControl');
-            } else {
-                $('#tableButton2 button').removeClass('disabledShiftControl');
-            }   
+            self.checkEnabDisableTblBtn();
             $('.listLink a').css("pointer-events", "");
             __viewContext.viewModel.viewAC.enableSwitchBtn(true);
             __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(true);
             __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(true);
-            
-            
-            
         }
         
-        shiftPalletControlDisable(){
+        shiftPalletControlDisable() {
             let self = this;
             if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
                 $('#tableButton1 button').addClass('disabledShiftControl');
             } else {
                 $('#tableButton2 button').addClass('disabledShiftControl');
-            }  
+            }
             $('.listLink a').css("pointer-events", "none");
             __viewContext.viewModel.viewAC.enableSwitchBtn(false);
             __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(false);
             __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(false);
+        }
+        
+        checkEnabDisableTblBtn() {
+            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                    $('#tableButton1 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                }
+            } else {
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('#tableButton2 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                }
+            }
         }
         
         removeClass() {
