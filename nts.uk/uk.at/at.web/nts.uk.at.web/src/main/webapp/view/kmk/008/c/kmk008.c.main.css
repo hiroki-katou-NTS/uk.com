@@ -57,3 +57,32 @@ tr.tr-common-height {
 #C4_6_header th {
 	text-align: center;
 }
+
+#C4_11 {
+	border-bottom: 1px solid #E0F59E;
+}
+
+#C4_22 {
+	border-bottom: 1px solid #E0F59E;
+	border-right: 1px solid #E0F59E;
+}
+
+td .cell-with-background {
+	background: #E0F59E !important;
+}
+
+td .vertical-align-bottom {
+	vertical-align: bottom !important;
+}
+
+td span.nts-editor-wrapped.ntsControl {
+	width: auto !important;
+}
+
+#C4_12, #C4_17, #C4_26, #C4_32 {
+	border-right: 1px solid #E0F59E;
+}
+
+#C4_5 {
+	width: 96px;
+}
