@@ -99,8 +99,6 @@ module nts.uk.ui.memento {
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length)
 		});
 
-		_.extend(window, { $memento });
-
 		return target;
 	};
 

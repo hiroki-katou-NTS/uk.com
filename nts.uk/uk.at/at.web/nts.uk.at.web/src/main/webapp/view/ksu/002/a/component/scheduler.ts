@@ -73,8 +73,6 @@ module nts.uk.ui.at.ksu002.a {
                     })
                 });
 
-            _.extend(window, { binding });
-
             ko.applyBindingsToNode(element, { component }, binding);
 
             return { controlsDescendantBindings: true };
