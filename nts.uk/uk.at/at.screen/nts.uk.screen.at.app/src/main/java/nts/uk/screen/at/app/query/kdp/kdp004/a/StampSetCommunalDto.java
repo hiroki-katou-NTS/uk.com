@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.kdp.kdp004.a;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampSettingDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 

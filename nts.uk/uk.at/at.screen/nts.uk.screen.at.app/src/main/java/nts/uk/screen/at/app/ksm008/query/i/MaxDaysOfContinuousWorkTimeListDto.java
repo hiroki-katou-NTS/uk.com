@@ -28,20 +28,26 @@ public class MaxDaysOfContinuousWorkTimeListDto {
     /**
      * 日数
      */
-    private MaxDaysOfConsecutiveWorkTimeDTO maxDaysContiWorktime;
-}
+    private Integer maxDaysContiWorktime;
 
+    /**
+     * 就業時間帯名称
+     */
+    private List<WorkingHoursDTO> workingHours;
+
+}
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-class MaxDaysOfConsecutiveWorkTimeDTO {
+ class WorkingHoursDTO {
     /**
-     * 就業時間帯コードリスト
+     * code
      */
-    private List<String> workTimeCodes;
+    private String code;
 
     /**
-     * 日数
+     * name
      */
-    private Integer numberOfDays;
+    private String name;
 }
+
