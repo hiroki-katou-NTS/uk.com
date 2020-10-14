@@ -37,7 +37,7 @@ module nts.uk.com.view.cmm024.a {
 		screenBMode: KnockoutObservable<number> = ko.observable(ScreenModel.EDIT);
 		enableScheduleHistoryB: KnockoutObservable<boolean> = ko.observable(true);
 		allowSettingB: KnockoutObservable<boolean> = ko.observable(true);
-		isShowPanelB: KnockoutObservable<boolean> = ko.observable(false);
+		isShowPanelB: KnockoutObservable<boolean> = ko.observable(true);
 		workplaceScheduleHistoryList: KnockoutObservableArray<ScheduleHistoryDto> = ko.observableArray([]);
 		workplaceScheduleHistorySelected: KnockoutObservable<string> = ko.observable();
 		workplaceScheduleHistoryObjSelected: KnockoutObservable<ScheduleHistoryDto> = ko.observable(null);
@@ -145,7 +145,9 @@ module nts.uk.com.view.cmm024.a {
 
 				if (scheduleHistory[0].code === value)
 					$('#historyList tr:first-child').focus();
-
+				else
+					$('#historyList tr[data-id="' + objFind.code + '"]').focus();
+					
 			} else {
 				vm.resetSettingsScreenA(false, true, false, true, ScreenModel.ADDNEW);
 			}
@@ -532,7 +534,11 @@ module nts.uk.com.view.cmm024.a {
 						vm.companyScheduleHistoryList(tempScheduleList);
 						if (vm.companyScheduleHistoryList().length > 0) {
 							//get the first item of list							
-							selectedHistory = vm.companyScheduleHistoryList()[0];
+							if (ScreenModel.ADDNEW !== vm.screenAMode() && vm.companyScheduleHistoryObjSelected())
+								selectedHistory = vm.companyScheduleHistoryObjSelected();
+							else
+								selectedHistory = vm.companyScheduleHistoryList()[0];
+
 							vm.companyScheduleHistorySelected(selectedHistory.code);
 							vm.companyScheduleHistoryObjSelected(selectedHistory);
 							vm.dispplayInfoOnScreenA(selectedHistory.code);
@@ -697,6 +703,8 @@ module nts.uk.com.view.cmm024.a {
 
 				if (scheduleHistory[0].code === value)
 					$('#historyListB tr:first-child').focus();
+				else
+					$('#historyListB tr[data-id="' + objFind.code + '"]').focus();
 
 			} else {
 				vm.resetSettingsScreenB(false, true, false, true, ScreenModel.ADDNEW);
@@ -713,6 +721,7 @@ module nts.uk.com.view.cmm024.a {
 				if (data && data.workPlaceUseAtr !== 1) {
 					$("#sidebar").ntsSideBar("hide", 1);
 					$('.sidebar-content .disappear').html('');
+					vm.isShowPanelB(false);
 				} else
 					vm.isShowPanelB(true);
 			});
@@ -848,7 +857,11 @@ module nts.uk.com.view.cmm024.a {
 						vm.workplaceScheduleHistoryList(tempScheduleList);
 						if (vm.workplaceScheduleHistoryList().length > 0) {
 							//get the first item of list
-							selectedHistory = vm.workplaceScheduleHistoryList()[0];
+							if (ScreenModel.ADDNEW !== vm.screenBMode() && vm.workplaceScheduleHistoryObjSelected())
+								selectedHistory = vm.workplaceScheduleHistoryObjSelected();
+							else
+								selectedHistory = vm.workplaceScheduleHistoryList()[0];
+
 							vm.workplaceScheduleHistorySelected(selectedHistory.code);
 							vm.workplaceScheduleHistoryObjSelected(selectedHistory);
 							vm.dispplayInfoOnScreenB(selectedHistory.code);
