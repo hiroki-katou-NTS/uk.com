@@ -18,10 +18,6 @@ public class BsymtContactAddrEmpPK implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    @Column(name = "CID")
-    private String companyId;
-
-    @NotNull
     @Column(name = "SID")
     private String employeeId;
 }

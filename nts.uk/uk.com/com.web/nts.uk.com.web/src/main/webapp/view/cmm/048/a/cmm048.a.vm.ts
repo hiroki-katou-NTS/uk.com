@@ -1,5 +1,8 @@
 module nts.uk.com.view.cmm048.a {
 
+  const API = {
+    find: "query/cmm048userinformation/find",
+  };
   @bean()
   export class ViewModel extends ko.ViewModel {
 
@@ -70,6 +73,8 @@ module nts.uk.com.view.cmm048.a {
     public addNewAnniversary() {
       const vm = this;
       vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
+      console.log(1)
+      vm.$ajax(API.find).then(data =>  console.log(data));
     }
 
     public removeAnniversary(anniversary: AnniversaryNotification) {
@@ -79,6 +84,8 @@ module nts.uk.com.view.cmm048.a {
 
     public save() {
       const vm = this;
+      console.log(1)
+      
     }
   }
 

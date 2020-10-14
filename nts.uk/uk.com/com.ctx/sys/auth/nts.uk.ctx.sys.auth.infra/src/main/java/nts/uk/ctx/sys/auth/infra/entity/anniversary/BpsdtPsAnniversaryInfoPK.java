@@ -3,12 +3,12 @@ package nts.uk.ctx.sys.auth.infra.entity.anniversary;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.MonthDay;
 
 @Data
 @Embeddable
@@ -24,5 +24,5 @@ public class BpsdtPsAnniversaryInfoPK implements Serializable {
 
     @NotNull
     @Column(name = "ANNIVERSARY_DATE")
-    private GeneralDate anniversary;
+    private MonthDay anniversary;
 }

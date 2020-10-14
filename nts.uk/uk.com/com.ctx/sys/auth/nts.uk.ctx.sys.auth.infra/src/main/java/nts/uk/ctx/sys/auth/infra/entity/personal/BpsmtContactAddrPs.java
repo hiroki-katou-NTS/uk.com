@@ -107,52 +107,53 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
     // column 他の連絡先[0].連絡先のアドレス
     @Basic(optional = false)
-    @Column(name = "OTHER＿CONTACT1_ADDRESS")
+    @Column(name = "OTHER_CONTACT1_ADDRESS")
     private String address1;
 
     // column column 他の連絡先[0].在席照会に表示するか
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT1_DISP")
+    @Column(name = "OTHER_CONTACT1_DISP")
     private Integer isDisplay1;
 
     // column 他の連絡先[1].連絡先のアドレス
     @Basic(optional = false)
-    @Column(name = "OTHER＿CONTACT2_ADDRESS")
+    @Column(name = "OTHER_CONTACT2_ADDRESS")
     private String address2;
 
     // column column 他の連絡先[1].在席照会に表示するか
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT2_DISP")
+    @Column(name = "OTHER_CONTACT2_DISP")
     private Integer isDisplay2;
 
     // column 他の連絡先[2].連絡先のアドレス
     @Basic(optional = false)
-    @Column(name = "OTHER＿CONTACT3_ADDRESS")
+    
+    @Column(name = "OTHER_CONTACT3_ADDRESS")
     private String address3;
 
     // column column 他の連絡先[2].在席照会に表示するか
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT3_DISP")
+    @Column(name = "OTHER_CONTACT3_DISP")
     private Integer isDisplay3;
 
     // column 他の連絡先[3].連絡先のアドレス
     @Basic(optional = false)
-    @Column(name = "OTHER＿CONTACT4_ADDRESS")
+    @Column(name = "OTHER_CONTACT4_ADDRESS")
     private String address4;
 
     // column column 他の連絡先[3].在席照会に表示するか
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT4_DISP")
+    @Column(name = "OTHER_CONTACT4_DISP")
     private Integer isDisplay4;
 
     // column 他の連絡先[4].連絡先のアドレス
     @Basic(optional = false)
-    @Column(name = "OTHER＿CONTACT5_ADDRESS")
+    @Column(name = "OTHER_CONTACT5_ADDRESS")
     private String address5;
 
     // column column 他の連絡先[4].在席照会に表示するか
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT5_DISP")
+    @Column(name = "OTHER_CONTACT5_DISP")
     private Integer isDisplay5;
 
     @Override

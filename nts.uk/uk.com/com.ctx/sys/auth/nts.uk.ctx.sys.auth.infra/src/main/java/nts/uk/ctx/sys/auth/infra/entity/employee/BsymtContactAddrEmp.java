@@ -30,6 +30,10 @@ public class BsymtContactAddrEmp extends UkJpaEntity implements EmployeeContact.
     @EmbeddedId
     private BsymtContactAddrEmpPK bsymtContactAddrEmpPK;
 
+    @Basic(optional = false)
+    @Column(name = "CID")
+    private String companyId;
+
     // column メールアドレス
     @Basic(optional = true)
     @Column(name = "MAIL_ADDRESS")
