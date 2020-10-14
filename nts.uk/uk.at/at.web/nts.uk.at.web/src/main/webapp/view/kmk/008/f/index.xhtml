@@ -38,14 +38,13 @@
                         <span class="label" data-bind="text: selectedEmpCode"></span>
                         <span class="label" data-bind="text: employeeName"></span>
                     </div>
-                    <div id="tab-panel" tabindex="2"
-                         data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+                    <div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+                        <button class="settingButton small" tabindex="3"
+                                data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
+
                         <div class="tab-content-1">
-                            <button class="settingButton small" tabindex="3"
-                                    data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
-                            <div>
-                                <table id="single-list"
-                                       data-bind="ntsGridList: {
+                            <table id="single-list"
+                                   data-bind="ntsGridList: {
 									height: 250,
 									dataSource: items,
 									primaryKey: 'year',
@@ -53,24 +52,19 @@
 									multiple: false,
 									value: currentCode
 								    }">
-                                </table>
-                            </div>
+                            </table>
                         </div>
                         <div class="tab-content-2">
-                            <div>
-                                <button class="settingButton small" tabindex="3"
-                                        data-bind="click: openDiaglog , enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
-                                <table id="single-list"
-                                       data-bind="ntsGridList: {
+                            <table id="single-list"
+                                   data-bind="ntsGridList: {
 									height: 250,
-									dataSource: items2,
+									dataSource: items,
 									primaryKey: 'year',
 									columns: columns2,
 									multiple: false,
 									value: currentCode
 								    }">
-                                </table>
-                            </div>
+                            </table>
                         </div>
                     </div>
                 </div>

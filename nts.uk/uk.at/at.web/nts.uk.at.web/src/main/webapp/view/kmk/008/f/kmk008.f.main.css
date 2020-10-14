@@ -1,6 +1,7 @@
 .settingButton {
     float: right;
-    margin-bottom: 10px !important;
+    margin-top: 22px;
+    margin-right: 22px;
 }
 
 .container-right {
@@ -14,7 +15,8 @@
 }
 
 .ui-tabs-panel > div {
-    height: 300px;
+    height: 255px;
+    margin-top: 44px;
 }
 
 #main {
@@ -25,10 +27,6 @@
     margin-top: 30px;
 }
 
-.lbl-title-employeer-name div{
-    margin-right: 10px;
-}
-
 .lbl-title-employeer-name span {
-    margin-right: 5px;
+    margin-left: 20px;
 }

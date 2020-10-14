@@ -17,7 +17,7 @@ module nts.uk.at.view.kmk008.f {
         selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
 
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        items2: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        items2: KnockoutObservableArray<ItemModel2> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         columns2: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk008.f {
 
         //search
         ccg001ComponentOption: any;
-        showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(false);
+        showInfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(false);
 
         // Options
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk008.f {
                 isShowNoSelectRow: false,
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
-                disableSelection : false,
+                disableSelection: false,
                 maxRows: 12,
                 tabindex: 4
             };
@@ -65,15 +65,15 @@ module nts.uk.at.view.kmk008.f {
             vm.tabs = ko.observableArray([
                 {
                     id: 'tab-1',
-                    title: vm.$i18n("KMK008_30"),
-                    content: '.tab-content-2',
+                    title: vm.$i18n("KMK008_29"),
+                    content: '.tab-content-1',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 },
                 {
                     id: 'tab-2',
-                    title: vm.$i18n("KMK008_29"),
-                    content: '.tab-content-1',
+                    title: vm.$i18n("KMK008_30"),
+                    content: '.tab-content-2',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 }
@@ -82,13 +82,8 @@ module nts.uk.at.view.kmk008.f {
                 if (vm.selectedId()) {
                     return vm.getDetail(vm.selectedId());
                 } else {
-                    if (vm.selectedTab() == "tab-1") {
-                        vm.items2([]);
-                        vm.items2.push(new ItemModel("", "", ""));
-                    } else {
-                        vm.items([]);
-                        vm.items.push(new ItemModel("", "", ""));
-                    }
+                    vm.items([]);
+                    vm.items2([]);
                 }
             });
 
@@ -98,13 +93,11 @@ module nts.uk.at.view.kmk008.f {
                 {headerText: vm.$i18n("KMK008_20"), key: 'alarm', width: 150}
             ]);
             vm.columns2 = ko.observableArray([
+
                 {headerText: vm.$i18n("KMK008_30"), key: 'year', width: 100},
                 {headerText: vm.$i18n("KMK008_19"), key: 'error', width: 150},
                 {headerText: vm.$i18n("KMK008_20"), key: 'alarm', width: 150}
             ]);
-
-            vm.items.push(new ItemModel("", "", ""));
-            vm.items2.push(new ItemModel("", "", ""));
 
             vm.selectedEmpCode.subscribe(newValue => {
                 if (!nts.uk.text.isNullOrEmpty(newValue)) {
@@ -116,7 +109,6 @@ module nts.uk.at.view.kmk008.f {
                     vm.selectedId(employee.employeeId);
                     vm.employeeName(employee.employeeName);
                 } else {
-                    // vm.setNewMode();
                     vm.selectedId("");
                     vm.employeeName("");
                     vm.items([]);
@@ -164,7 +156,7 @@ module nts.uk.at.view.kmk008.f {
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     vm.selectedEmployee(data.listEmployee);
-                    vm.showinfoSelectedEmployee(true);
+                    vm.showInfoSelectedEmployee(true);
                     vm.employeeList([]);
                     vm.employeeList(_.map(data.listEmployee, item => {
                         return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
@@ -191,16 +183,16 @@ module nts.uk.at.view.kmk008.f {
 
         openDiaglog() {
             const vm = this;
-            let isYearMonth = false;
-            if (vm.selectedTab() == "tab-1") {
-                isYearMonth = true;
-            }
+
             setShared("KMK_008_PARAMS", {
                 employeeCode: vm.selectedEmpCode(),
                 employeeId: vm.selectedId(),
                 employeeName: vm.employeeName(),
-                isYearMonth: isYearMonth
+                isYearMonth: vm.selectedTab() == "tab-2"
             });
+
+            setShared("KMK_008_DATA", vm.items2);
+
             modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
                 if (vm.selectedId()) {
                     vm.getDetail(vm.selectedId());
@@ -211,32 +203,41 @@ module nts.uk.at.view.kmk008.f {
         getDetail(employmentCategoryCode: string) {
             const vm = this;
             vm.isShowButton(true);
-            if (vm.selectedTab() == "tab-1") {
-                vm.$ajax(PATH_API.getMonth, { employeeId: employmentCategoryCode }).done(function (monthData: Array<MonthDto>) {
-                    if (monthData.length) {
-                        vm.items2([]);
-                        _.forEach(monthData, function (value) {
-                            vm.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
-                        });
 
-                    } else {
+            vm.$blockui("invisible");
+
+            if (vm.selectedTab() == "tab-2") {
+                vm.$ajax(PATH_API.getMonth, {employeeId: employmentCategoryCode})
+                    .done(function (monthData: Array<MonthDto>) {
+                        vm.items([]);
                         vm.items2([]);
-                        vm.items2.push(new ItemModel("", "", ""));
-                    }
-                });
+                        if (monthData && monthData.length) {
+                            _.forEach(monthData, function (value) {
+                                vm.items.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
+                                vm.items2.push(new ItemModel2(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
+                            });
+                        }
+                    })
+                    .fail(res => {
+                        vm.$dialog.error(res.message);
+                    })
+                    .always(() => vm.$blockui("clear"));
             } else {
-                vm.$ajax(PATH_API.getYear, { employeeId: employmentCategoryCode }).done(function (yearData: Array<YearDto>) {
-                    if (yearData.length) {
+                vm.$ajax(PATH_API.getYear, {employeeId: employmentCategoryCode})
+                    .done(function (yearData: Array<YearDto>) {
                         vm.items([]);
-                        _.forEach(yearData, function (value) {
-                            vm.items.push(new ItemModel(value.yearValue, nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
-                        });
-
-                    } else {
-                        vm.items([]);
-                        vm.items.push(new ItemModel("", "", ""));
-                    }
-                });
+                        vm.items2([]);
+                        if (yearData && yearData.length) {
+                            _.forEach(yearData, function (value) {
+                                vm.items.push(new ItemModel(value.yearValue.toString(), nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
+                                vm.items2.push(new ItemModel2(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                            });
+                        }
+                    })
+                    .fail(res => {
+                        vm.$dialog.error(res.message);
+                    })
+                    .always(() => vm.$blockui("clear"));
             }
         }
     }
@@ -253,12 +254,24 @@ module nts.uk.at.view.kmk008.f {
         }
     }
 
+    export class ItemModel2 {
+        year: number;
+        error: number;
+        alarm: number;
+
+        constructor(year: number, error: number, alarm: number) {
+            this.year = year;
+            this.error = error;
+            this.alarm = alarm;
+        }
+    }
 
     export class UnitModel {
         code: string;
         name: string;
         affiliationName: string;
         employeeId: string;
+
         constructor(code: string, name: string, affiliationName: string, employeeId: string) {
             this.code = code;
             this.name = name;
@@ -268,14 +281,14 @@ module nts.uk.at.view.kmk008.f {
     }
 
     export class MonthDto {
-        yearMonthValue: string;
-        errorOneMonth: string;
-        alarmOneMonth: string;
+        yearMonthValue: number; //３６協定年月設定.年月
+        errorOneMonth: number; //３６協定年月設定.1ヶ月のエラーアラーム時間.エラー時間
+        alarmOneMonth: number; //３６協定年月設定.1ヶ月のエラーアラーム時間.アラーム時間
     }
 
     export class YearDto {
-        yearValue: string;
-        errorOneYear: string;
-        alarmOneYear: string;
+        yearValue: number; //３６協定年度設定.年度
+        errorOneYear: number; //３６協定年度設定.1年間のエラーアラーム時間.エラー時間
+        alarmOneYear: number; //３６協定年度設定.1年間のエラーアラーム時間.アラーム時間
     }
 }
