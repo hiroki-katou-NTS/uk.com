@@ -1,0 +1,77 @@
+table#table1 td  {
+	padding-bottom: 10px;
+}
+table#table2 {
+	margin-bottom: 10px;
+	width :450px;
+}
+.block-left {
+	height: 300px;
+	width: 365px;
+	border-right: 2px solid #ccc;
+	float: left;
+}
+.block-right{
+	height: 300px;
+	width: 365px;
+	float: left;
+	padding-left: 10px;
+}
+.table-left-td {
+	padding-left: 25px;
+    padding-top: 10px;
+}
+
+.nts-fixed-body-wrapper{
+	height: 170px !important;
+    background: #fff;
+}
+table#table4 {
+	margin-bottom: 10px;
+	width :630px;
+}
+
+#tab-2 {
+	height: 417px;
+}
+
+table#table6 td {
+	height:40px;
+	border: 2px solid #ccc;
+	padding-left: 10px;
+}
+
+.block-left-2 {
+	height: 400px;
+	width: 465px;
+	border-right: 2px solid #ccc;
+	float: left;
+}
+.block-right-2{
+	height: 300px;
+	width: 265px;
+	float: left;
+	padding-left: 10px;
+}
+#table6-fixsize{
+	padding-left: 20px;
+    padding-top: 15px;
+}
+.size-a87{
+	width: 50px;
+    float: left;
+    padding-top: 8px
+}
+.size-a86{
+    width: 112px;
+    float: left;
+    padding-top: 8px;
+}
+#size-a89{
+	padding-left: 20px;
+    padding-top: 25px;
+}
+.color-grid{
+	background-color:  #CFF1A5;'
+}
+	

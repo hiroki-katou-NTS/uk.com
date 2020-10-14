@@ -218,22 +218,22 @@ public class AggregateMonthlyRecordServiceTest {
 			monthlyWork.getAnyItemList().addAll(anyItemOfMons);
 		}
 		
-		val result = this.aggregateMonthlyService.aggregate(
-				companyId,
-				employeeId,
-				yearMonth,
-				closureId,
-				closureDate,
-				period,
-				prevAggrResult,
-				Optional.ofNullable(prevAbsRecResult),
-				Optional.ofNullable(prevBreakDayOffResult),
-				prevSpecialLeaveResultMap,
-				companySets,
-				employeeSets,
-				Optional.ofNullable(dailyWorks),
-				Optional.ofNullable(monthlyWork));
-		
-		result.toString();
+//		val result = this.aggregateMonthlyService.aggregate(
+//				companyId,
+//				employeeId,
+//				yearMonth,
+//				closureId,
+//				closureDate,
+//				period,
+//				prevAggrResult,
+//				Optional.ofNullable(prevAbsRecResult),
+//				Optional.ofNullable(prevBreakDayOffResult),
+//				prevSpecialLeaveResultMap,
+//				companySets,
+//				employeeSets,
+//				Optional.ofNullable(dailyWorks),
+//				Optional.ofNullable(monthlyWork));
+//		
+//		result.toString();
 	}
 }

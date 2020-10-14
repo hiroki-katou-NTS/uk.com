@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDay;
 
 /**
  * フレックス勤務の日別計算設定
