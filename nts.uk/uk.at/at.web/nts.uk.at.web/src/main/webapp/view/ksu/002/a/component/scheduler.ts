@@ -28,13 +28,14 @@ module nts.uk.ui.at.ksu002.a {
         }
     }
 
-    export interface ObserverScheduleData extends c.DataInfo<KnockoutObservable<string>> {
+    export interface ObserverScheduleData<R = any> extends c.DataInfo<KnockoutObservable<string>> {
+        $raw: R;
         wtype: WData<KnockoutObservable<string>>;
         wtime: WData<KnockoutObservable<string>>;
         value: {
             begin: KnockoutObservable<number | null>;
             finish: KnockoutObservable<number | null>;
-        }
+        };
     }
 
     const COMPONENT_NAME = 'scheduler';

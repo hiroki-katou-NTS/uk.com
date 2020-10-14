@@ -85,7 +85,7 @@ module nts.uk.ui.at.ksu002.a {
 					kcp013: $component.workTimeData.selected,
 					dataSources: $component.workTimeData.dataSources,
 					filter: ko.observable(true),
-					show-mode: ko.observable(0),
+					show-mode: ko.observable(3),
 					disabled: ko.computed(function() { return ko.unwrap($component.data.mode) !== 'copy' }),
 					tabindex: $$tabindex,
 					width: 520,

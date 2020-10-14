@@ -4,6 +4,10 @@ module nts.uk.ui.at.ksu002.a {
 	import m = nts.uk.ui.memento;
 	import c = nts.uk.ui.calendar;
 
+	type DayData = c.DayData<ScheduleData>;
+	type DayDataRawObsv = c.DayData<ObserverScheduleData>;
+	type DayDataMementoObsv = c.DayData<ObserverScheduleData<WorkSchedule<Date>>>;
+
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
@@ -12,7 +16,7 @@ module nts.uk.ui.at.ksu002.a {
 	const memento: m.Options = {
 		size: 20,
 		// callback function raise when undo or redo
-		replace: function (data: c.DayData<ObserverScheduleData>[], replacer: c.DayData<ScheduleData>) {
+		replace: function (data: DayDataRawObsv[], replacer: DayData) {
 			const exist = _.find(data, f => moment(f.date).isSame(replacer.date, 'date'));
 
 			if (exist) {
@@ -38,7 +42,7 @@ module nts.uk.ui.at.ksu002.a {
 
 		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
-		schedules: m.MementoObservableArray<c.DayData<ObserverScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
+		schedules: m.MementoObservableArray<DayDataRawObsv> = ko.observableArray([]).extend({ memento }) as any;
 
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
@@ -91,30 +95,34 @@ module nts.uk.ui.at.ksu002.a {
 						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
-								const clones: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
+								const clones: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-								_.each(response, (d) => {
-									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
+								_.each(response, ($raw) => {
+									const exits = _.find(clones, c => $raw.date.isSame(c.date, 'date'));
 
 									if (exits) {
 										exits.data = {
+											$raw: {
+												...$raw,
+												date: $raw.date.toDate()
+											},
 											wtype: {
-												code: ko.observable(d.workTypeCode),
-												name: ko.observable(d.workTypeName)
+												code: ko.observable($raw.workTypeCode),
+												name: ko.observable($raw.workTypeName)
 											},
 											wtime: {
-												code: ko.observable(d.workTimeCode),
-												name: ko.observable(d.workTimeName)
+												code: ko.observable($raw.workTimeCode),
+												name: ko.observable($raw.workTimeName)
 											},
 											value: {
-												begin: ko.observable(d.startTime),
-												finish: ko.observable(d.endTime)
+												begin: ko.observable($raw.startTime),
+												finish: ko.observable($raw.endTime)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
 										};
 
-										const { dateInfoDuringThePeriod } = d;
+										const { dateInfoDuringThePeriod } = $raw;
 
 										if (dateInfoDuringThePeriod) {
 											const {
@@ -148,6 +156,27 @@ module nts.uk.ui.at.ksu002.a {
 						})
 						.always(() => vm.$blockui('hide'));
 				});
+
+			// UI-4-2 実績表示を「しない」に選択する
+			vm.achievement
+				.subscribe((c) => {
+					const { NO } = ACHIEVEMENT;
+					const schedules = ko.unwrap(vm.schedules);
+
+					if (c === NO) {
+						_.each(schedules, (sc: DayDataMementoObsv) => {
+							const { data } = sc;
+							const { $raw, value, wtime, wtype } = data;
+
+						});
+					} else {
+						_.each(schedules, (sc: DayDataMementoObsv) => {
+							const { data } = sc;
+							const { $raw, value, wtime, wtype } = data;
+
+						});
+					}
+				});
 		}
 
 		mounted() {
@@ -170,15 +199,15 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		// edit data on copy mode
-		clickDayCell(type: c.CLICK_CELL, dayData: c.DayData<ObserverScheduleData>) {
+		clickDayCell(type: c.CLICK_CELL, dayData: DayDataRawObsv) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
 			const workData = ko.unwrap(vm.workData);
-			const preview: c.DayData<ScheduleData> = ko.toJS(dayData);
+			const preview: DayData = ko.toJS(dayData);
 
 			if (type === 'info' && mode === 'copy' && workData) {
 				const { wtime, wtype } = workData;
-				const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
+				const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
 				if (current) {
@@ -204,9 +233,9 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		// edit data on edit mode
-		changeDayCell(current: c.DayData<ScheduleData>) {
+		changeDayCell(current: DayData) {
 			const vm = this;
-			const wrap: c.DayData<ObserverScheduleData>[] = ko.unwrap(vm.schedules);
+			const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
 			const preview = _.find(wrap, f => moment(f.date).isSame(current.date, 'date'));
 
 			if (preview) {
