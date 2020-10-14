@@ -48,3 +48,8 @@ button.caret-right:after {
     color: #92D050;
     margin-left: 3px;
 }
+.textTitlePanel {
+	font-weight: 400;
+    font-size: 25px;
+    text-align: start;
+}
