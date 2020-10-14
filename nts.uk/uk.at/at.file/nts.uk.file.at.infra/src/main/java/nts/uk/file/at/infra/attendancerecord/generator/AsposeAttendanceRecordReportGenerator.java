@@ -463,7 +463,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
 			Range dailyRange;
 			AttendanceRecordReportDailyData data = dailyDatas.get(i - 1);
-//			if (data.isApprovalMonthly()) {
+			if (data.isApprovalMonthly()) {
 				Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
 				approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
 				approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
@@ -471,8 +471,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				approvalRange.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THICK, Color.getRed());
 				Style styleApprove = approvalRange.get(0, 0).getStyle();
 				approvalRange.get(0, 0).setStyle(styleApprove);
-				approvalRange.get(0, 0).setValue("123");
-//			}
+				approvalRange.get(0, 0).setValue("確認済");
+			}
 			if (!data.isSecondCol()) {
 				int row = dataRow.get(REPORT_LEFT_ROW);
 
@@ -500,6 +500,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			dailyRange.get(0, 1).setValue(data.getDayOfWeek());
 			List<AttendanceRecordReportColumnData> reportColumnDatas = data.getColumnDatas();
 			for (int k = 0, l = reportColumnDatas.size(); k < l; k++) {
+				// set left or right
+//				if()
 				dailyRange.get(0, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getUper());
 				dailyRange.get(1, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getLower());
 			}
