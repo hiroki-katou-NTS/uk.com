@@ -23,7 +23,7 @@ public class GetScheduleActualOfWorkInfo002 {
 	@Inject
 	private GetScheduleOfWorkInfo002 getScheduleOfWorkInfo002;
 	@Inject
-	private GetWorkActualOfWorkInfo002 getWorkActualOfWorkInfo002;
+	private GetWorkRecord getWorkRecord;
 
 	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoInput param) {
 
@@ -32,7 +32,7 @@ public class GetScheduleActualOfWorkInfo002 {
 
 		if (param.getActualData()) {
 			// lay data Daily
-			List<WorkScheduleWorkInforDto> listDataDaily = getWorkActualOfWorkInfo002.getDataActualOfWorkInfo(param);
+			List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.get(param);
 			// merge
 			List<WorkScheduleWorkInforDto> listToRemove = new ArrayList<WorkScheduleWorkInforDto>();
 			List<WorkScheduleWorkInforDto> listToAdd = new ArrayList<WorkScheduleWorkInforDto>();

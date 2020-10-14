@@ -11,7 +11,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.GetWorkTypeKSU002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
