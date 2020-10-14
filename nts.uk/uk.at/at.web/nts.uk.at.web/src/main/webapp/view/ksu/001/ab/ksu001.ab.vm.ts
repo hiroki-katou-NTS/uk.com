@@ -55,6 +55,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.dataCell = {};
             
             self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
+            self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 if (newValue == null || newValue == undefined)
                     return;
