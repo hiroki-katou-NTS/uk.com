@@ -40,10 +40,10 @@
 						<td style="text-align: center;"><span
 							data-bind="text: no"></span></td>
 						<com:ko-if bind="erAlAtr()==0">
-							<td style="background-color: red;">ER</td>
+							<td class="bg-daily-error">ER</td>
 						</com:ko-if>
 						<com:ko-if bind="erAlAtr()==1">
-							<td style="background-color: yellow;">AL</td>
+							<td class="bg-daily-alarm">AL</td>
 						</com:ko-if>
 						<com:ko-if
 							bind="erAlAtr()!=0 &amp;&amp; erAlAtr()!=1">
