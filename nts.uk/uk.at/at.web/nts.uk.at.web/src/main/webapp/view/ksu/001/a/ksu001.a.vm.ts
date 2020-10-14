@@ -996,7 +996,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data middle
                 let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid == emp.employeeId; });
                 if(personalCond.length > 0){
-                   middleDs.push({ sid: i.toString() , employeeId: emp.employeeId, team: personalCond[0].teamName, rank: personalCond[0].rankName, qualification: personalCond[0].licenseClassification });
+                   middleDs.push({ 
+                    sid: i.toString(), 
+                    employeeId: emp.employeeId, 
+                    team: _.isNil(personalCond[0].teamName) ? '' : personalCond[0].teamName , 
+                    rank: _.isNil(personalCond[0].rankName) ? '' : personalCond[0].rankName, 
+                    qualification: _.isNil(personalCond[0].licenseClassification) ? '' : personalCond[0].licenseClassification });
                 }
                 
                 // set data to detailContent : datasource va deco
