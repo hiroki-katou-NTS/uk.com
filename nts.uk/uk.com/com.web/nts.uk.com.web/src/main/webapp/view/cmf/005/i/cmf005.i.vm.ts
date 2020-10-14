@@ -71,7 +71,7 @@ module nts.uk.com.view.cmf005.i {
       service.findSaveSetHistory(momentFrom, momentTo)
         .then((data: SaveSetHistoryDto[]) => {
           const res: SaveSetHistoryDto[] = [
-            { rowNumber: 1, patternCode: '', saveName: 'すべて' }
+            { rowNumber: 1, patternCode: '', delName: 'すべて' }
           ];
           if (data && data.length) {
             _.each(data, (x, i) => {
@@ -103,10 +103,10 @@ module nts.uk.com.view.cmf005.i {
       let arr: FindDataHistoryDto[] = [];
       let searchValue: SaveSetHistoryDto;
       if (Number(vm.searchValue()) === 1) {
-        arr = _.map(_.filter(vm.searchItems(), data => data.rowNumber !== 1), data => new FindDataHistoryDto(data.patternCode, data.saveName));
+        arr = _.map(_.filter(vm.searchItems(), data => data.rowNumber !== 1), data => new FindDataHistoryDto(data.patternCode, data.delName));
       } else {
         searchValue = vm.getSearchValue(vm.searchValue());
-        arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
+        arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.delName));
       }
       const param = {
         objects: arr,
@@ -282,7 +282,7 @@ module nts.uk.com.view.cmf005.i {
   export interface SaveSetHistoryDto {
     rowNumber: number;
     patternCode: string;
-    saveName: string;
+    delName: string;
   }
 
   export class DataDto {

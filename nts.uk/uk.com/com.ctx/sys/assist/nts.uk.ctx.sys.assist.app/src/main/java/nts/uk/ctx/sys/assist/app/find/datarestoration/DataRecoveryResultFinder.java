@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public class DataRecoveryResultFinder {
 		return dataRecoveryResultRepository.getDataRecoveryResultByStartDatetime(from, to)
 											.stream()
 											.map(SaveSetDto::fromDomain)
+											.sorted(Comparator.comparing(SaveSetDto::getPatternCode))
 											.distinct()
 											.collect(Collectors.toList());
 	}
