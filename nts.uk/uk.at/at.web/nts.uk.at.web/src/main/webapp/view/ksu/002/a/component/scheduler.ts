@@ -311,7 +311,8 @@ module nts.uk.ui.at.ksu002.a {
                             inputFormat: 'time',
                             value: $component.model.begin,
                             readonly: false,
-                            enable: $component.enable
+                            enable: $component.enable,
+                            required: $component.model.required
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
@@ -335,7 +336,8 @@ module nts.uk.ui.at.ksu002.a {
                             inputFormat: 'time',
                             value: $component.model.finish,
                             readonly: false,
-                            enable: $component.enable
+                            enable: $component.enable,
+                            required: $component.model.required
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
@@ -346,10 +348,13 @@ module nts.uk.ui.at.ksu002.a {
             `
         })
         export class DataInfoComponent extends ko.ViewModel {
-            model: WorkTimeRange = {
-                begin: ko.observable(null),
-                finish: ko.observable(null)
-            };
+            model: WorkTimeRange & {
+                required: KnockoutObservable<boolean>;
+            } = {
+                    begin: ko.observable(null),
+                    finish: ko.observable(null),
+                    required: ko.observable(false)
+                };
 
             click: WorkTimeRange = {
                 begin: ko.observable(CL_VALUE),
@@ -393,6 +398,13 @@ module nts.uk.ui.at.ksu002.a {
                     ko.computed({
                         read: () => {
                             model.finish(ko.unwrap(value.finish));
+                        },
+                        owner: vm
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            model.required(!ko.unwrap(value.required));
                         },
                         owner: vm
                     });
