@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf005.k {
 
       constructor() {
         let self = this;
-        let params = nts.uk.ui.windows.getShared("CMF004KParams");
+        let params = nts.uk.ui.windows.getShared("CMF005KParams");
 
         self.timeStart = new Date();
         self.timeOver = ko.observable('00:00:00');

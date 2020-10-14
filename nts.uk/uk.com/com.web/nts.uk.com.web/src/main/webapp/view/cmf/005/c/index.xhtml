@@ -180,7 +180,7 @@
             <div class="div-line swap-zone">
               <!-- C4 削除可能カテゴリ一覧 -->
               <div id="C4" tabindex="11" data-bind="ntsSwapList: {
-                name: 'CMF005_46',
+                name: '#[CMF005_46]',
                 disableMoveButton: disableMoveButton,
                 showSearchBox: { showLeft : true},
                 showSort: { showLeft: true, showRight: false },
@@ -304,6 +304,7 @@
                     #{i18n.getText('CMF003_237')}</div>
                   <!-- C12_3 圧縮パスワード-->
                   <input id="C12_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
+                    name: '#[CMF003_238]',
                     value: password, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,
@@ -315,6 +316,7 @@
                   <label class="time-label div-column-1" id="C12_5">#{i18n.getText('CMF003_285')}</label>
                   <!-- C12_6 パスワード確認入力-->
                   <input id="C12_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
+                    name: '#[CMF003_286]',
                     value: confirmPassword, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,

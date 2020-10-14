@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf005.b {
             getSystemDate: "ctx/sys/assist/app/getSystemDate",
             screenDisplayProcess: "ctx/sys/assist/autosetting/screenDelDisplayProcessing",
             patternSettingSelect: "ctx/sys/assist/autosetting/delPatternSettingSelect",
+            addMalSet: "ctx/sys/assist/app/addMalSet"
         }
 
               
@@ -27,5 +28,9 @@ module nts.uk.com.view.cmf005.b {
         export function patternSettingSelect(param: any): JQueryPromise<any> {
           return ajax('com', paths.patternSettingSelect, param);
         }
+
+        export function addMalSet(param: any): JQueryPromise<any> {
+          return nts.uk.request.ajax('com', paths.addMalSet, param);
+      }
     }
 }
