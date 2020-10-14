@@ -93,6 +93,14 @@ module nts.uk.at.view.kdl052.screenModel {
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
           }
         }
+        // 取得したObject＜介護看護休暇設定＞．管理区分をチェックする。
+        if (result && result.managementClassification) {
+          if (result.managementClassification.manageType === 1) {
+            vm.manageDisabled(true);
+          } else {
+            vm.manageDisabled(false);
+          }
+        }
         // do any bussiness logic after request done at here
       });
     }

@@ -28,6 +28,7 @@ module nts.uk.at.view.kdl052.test.screenModel {
           employeeList: _.split(this.selectedCodeList(), ','),
           baseDate: this.baseDate()
         }
+      // Input．社員IDリストをチェックする。
       if (data.employeeList.length > 1) {
         vm.$window.modal('/view/kdl/052/multi.xhtml', data);
       } else {

@@ -18,4 +18,9 @@ public class ManagementClassificationLstEmployeeDto  {
 	 * List<社員情報>
 	 */
 	private List<EmployeeInfoBasic> lstEmployee;
+	
+	/**
+	 * 次回起算日
+	 */
+	private String nextStartDate;
 }
