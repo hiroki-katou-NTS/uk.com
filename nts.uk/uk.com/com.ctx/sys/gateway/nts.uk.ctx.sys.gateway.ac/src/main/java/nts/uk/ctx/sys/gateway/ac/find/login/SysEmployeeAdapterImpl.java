@@ -7,6 +7,8 @@ package nts.uk.ctx.sys.gateway.ac.find.login;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
@@ -28,6 +30,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.StatusOfEmployeeImport;
  * The Class SysEmployeeAdapterImpl.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 
 	/** The employee info pub. */
@@ -67,6 +70,23 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		// Return
 		return Optional.empty();
 	}
+	
+	@Override
+	public Optional<EmployeeImport> getCurrentInfoBySid(String employeeId) {
+		Optional<EmployeeDataMngInfoExport> optEmployee = syEmployeePub.getSdataMngInfo(employeeId);
+		
+		if(!optEmployee.isPresent()) {
+			return Optional.empty();
+		}
+		
+		EmployeeDataMngInfoExport employee = optEmployee.get();
+		return Optional.of(new EmployeeImport(
+				employee.getCompanyId(), 
+				employee.getPersonId(), 
+				employee.getEmployeeId(), 
+				employee.getEmployeeCode()));
+	}
+
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter#getByPid(java.lang.String, java.lang.String)

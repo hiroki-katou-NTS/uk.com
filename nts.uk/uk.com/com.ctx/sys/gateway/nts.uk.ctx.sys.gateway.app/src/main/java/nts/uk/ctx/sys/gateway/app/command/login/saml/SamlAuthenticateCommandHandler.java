@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.singlesignon.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
 import java.util.Optional;
 
@@ -21,8 +21,8 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 
 	protected AuthenticateInfo handle(CommandHandlerContext<SamlAuthenticateCommand> context) {
 		SamlAuthenticateCommand command = context.getCommand();
-		String contractCode = command.getContractCode();
-		String password = command.getPassword();
+		String contractCode = command.getTenantCode();
+		String password = command.getTenantPassword();
 		
 		// テナント認証情報のチェック
 		this.checkInput(command);
@@ -69,10 +69,10 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 	 * @param command the command
 	 */
 	private void checkInput(SamlAuthenticateCommand command) {
-		if (command.getContractCode() == null || command.getContractCode().isEmpty()) {
+		if (command.getTenantCode() == null || command.getTenantCode().isEmpty()) {
 			throw new BusinessException("Msg_313");
 		}
-		if (command.getPassword() == null || command.getPassword().isEmpty()) {
+		if (command.getTenantPassword() == null || command.getTenantPassword().isEmpty()) {
 			throw new BusinessException("Msg_310");
 		}
 	}

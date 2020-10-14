@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**

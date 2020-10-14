@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.app.command.singlesignon.saml;
+package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
 import lombok.Data;
 

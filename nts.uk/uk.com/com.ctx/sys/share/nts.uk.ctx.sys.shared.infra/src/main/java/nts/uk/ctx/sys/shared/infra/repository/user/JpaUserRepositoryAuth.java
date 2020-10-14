@@ -39,6 +39,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	private static final String SELECT_BY_ASSOCIATE_PERSIONID = "SELECT c FROM SacmtUser c WHERE c.associatedPersonID = :associatedPersonID";
 
+	
+
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
 		return this.queryProxy().query(SELECT_BY_ASSOCIATE_PERSIONID, SacmtUser.class)
@@ -52,7 +54,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return this.queryProxy().query(SELECT_BY_USER, SacmtUser.class).setParameter("userID", userID)
 				.getSingle(c -> c.toDomain());
 	}
-
+	
 	private static final String SELECT_BY_KEY = "SELECT c From SacmtUser c" + " WHERE c.expirationDate >= :systemDate"
 			+ " AND c.specialUser = :specialUser " + " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
 
@@ -74,6 +76,9 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		});
 		return datas;
 	}
+	
+	
+	
 
 	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.businessName FROM SacmtUser c"
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"

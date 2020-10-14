@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginInforDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.LoginInforDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.PasswordPolicyFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;

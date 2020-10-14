@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.security.hash.password.PasswordHash.Verifier;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 
@@ -101,5 +102,9 @@ public class User extends AggregateRoot {
 	public boolean hasAssociatedPersonID() {
 		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
-
+	
+	public boolean comparePassword(String password) {
+		Verifier salt = PasswordHash.verifyThat(password, this.getUserID());
+		return salt.isEqualTo(this.getPassword().toString());
+	}
 }

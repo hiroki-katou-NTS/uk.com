@@ -8,11 +8,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.gateway.app.command.singlesignon.saml.AuthenticateInfo;
-import nts.uk.ctx.sys.gateway.app.command.singlesignon.saml.SamlAuthenticateCommand;
-import nts.uk.ctx.sys.gateway.app.command.singlesignon.saml.SamlAuthenticateCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.singlesignon.saml.SamlValidateCommand;
-import nts.uk.ctx.sys.gateway.app.command.singlesignon.saml.SamlValidateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.AuthenticateInfo;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommandHandler;
 
 /**
  * The Class SamlWs.

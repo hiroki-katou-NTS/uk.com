@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,9 +34,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
-import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 import nts.uk.shr.com.context.AppContexts;
@@ -140,7 +138,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 //			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
 	
 	
-	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
+//	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
 
 	private static final String SELECT_FIXED_DATA = String.join(" ", "SELECT",
 			"DISTINCT mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
