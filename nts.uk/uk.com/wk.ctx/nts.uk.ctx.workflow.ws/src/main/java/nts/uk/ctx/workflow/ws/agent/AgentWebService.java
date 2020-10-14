@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.ws.agent;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.app.command.agent.AddAgentCommandHandler;
 import nts.uk.ctx.workflow.app.command.agent.AgentCommandBase;
 import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommand;
@@ -18,6 +21,7 @@ import nts.uk.ctx.workflow.app.command.agent.UpdateAgentCommandHandler;
 import nts.uk.ctx.workflow.app.find.agent.AgentDto;
 import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoImport;
 
 @Path("workflow/agent")
 @Produces("application/json")
@@ -83,9 +87,10 @@ public class AgentWebService extends WebService {
 
 	}
 	
-	@Path("findEmpName")
+	@Path("findEmpInfo")
 	@POST
-	public JavaTypeResult<String> findEmpName(String sId) {
-		return new JavaTypeResult<String>(employeeAdapter.getEmployeeName(sId));
+	public EmpInfoImport findEmpName(String sId) {
+		List<EmpInfoImport> result = employeeAdapter.getEmpInfo(Collections.singletonList(sId));
+		return CollectionUtil.isEmpty(result) ? null : result.get(0);
 	}
 }

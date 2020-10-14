@@ -1,20 +1,20 @@
 module cmm044.a.service {
-    var paths: any = {
+    const paths: any = {
         findAgent: "workflow/agent/find",
         findAllAgent: "workflow/agent/find/",
-        findEmployeeName: "workflow/agent/findEmpName",
-        deleteAgent: "workflow/agent/delete/",
-        addAgent: "workflow/agent/add/",
-        updateAgent: "workflow/agent/update/",
+        findEmployeeName: "workflow/agent/findEmpInfo",
+        deleteAgent: "workflow/agent/delete",
+        addAgent: "workflow/agent/add",
+        updateAgent: "workflow/agent/update",
         searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
 
-    }
+    };
 
-    export function findAgent(parameter: any): JQueryPromise<viewmodel.model.AgentDto> {
+    export function findAgent(parameter: any): JQueryPromise<viewmodel.IAgentDto> {
         return nts.uk.request.ajax("com", paths.findAgent, parameter);
     }
 
-    export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
+    export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.IAgentDto>> {
         return nts.uk.request.ajax("com", paths.findAllAgent + employeeId);
     }
 
