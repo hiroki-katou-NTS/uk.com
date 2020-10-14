@@ -13,7 +13,7 @@ import java.util.Optional;
 public class JpaEmployeeContactRepository extends JpaRepository implements EmployeeContactRepository {
 
     //select by employee ID
-    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT m FROM BsymtContactAddrEmp m WHERE m.bsymtContactAddrEmpPK.employeeId =: employeeId";
+    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT m FROM BsymtContactAddrEmp m WHERE m.bsymtContactAddrEmpPK.employeeId = :employeeId";
 
     private static BsymtContactAddrEmp toEntity(EmployeeContact domain) {
         BsymtContactAddrEmp entity = new BsymtContactAddrEmp();

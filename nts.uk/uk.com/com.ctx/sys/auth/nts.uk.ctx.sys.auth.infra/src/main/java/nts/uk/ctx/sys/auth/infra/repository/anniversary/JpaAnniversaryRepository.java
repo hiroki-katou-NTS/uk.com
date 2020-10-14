@@ -15,23 +15,23 @@ import java.util.Optional;
 public class JpaAnniversaryRepository extends JpaRepository implements AnniversaryRepository {
 
     //select by personal ID
-    private static final String SELECT_BY_PERSONAL_ID = "SELECT a FROM BpsdtPsAnniversaryInfo a WHERE a.bpsdtPsAnniversaryInfoPK.personalId =: personalId";
+    private static final String SELECT_BY_PERSONAL_ID = "SELECT a FROM BpsdtPsAnniversaryInfo a WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId";
 
     //select by anniversary
     private static final String SELECT_BY_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a "
-            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId =: personalId"
+            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
             + " AND (CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2 >= :anniversary AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) <= DATEADD(day, a.noticeDay, :anniversary)))"
             + " OR ((CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) >= anniversary AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) <= DATEADD(day, a.noticeDay, :anniversary)))";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
-            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId =: personalId"
-            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN: datePeriod";
+            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
+            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary IN :datePeriod";
 
     //select by person ID and anniversary
     private static final String SELECT_BY_PERSONAL_ID_AND_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a"
-            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId =: personalId"
-            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary =: anniversary";
+            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
+            + " AND a.bpsdtPsAnniversaryInfoPK.anniversary = :anniversary";
 
     private static BpsdtPsAnniversaryInfo toEntity(AnniversaryNotice domain) {
         BpsdtPsAnniversaryInfo entity = new BpsdtPsAnniversaryInfo();

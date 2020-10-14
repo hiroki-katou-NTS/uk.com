@@ -12,7 +12,7 @@ import java.util.Optional;
 public class JpaPersonalContactRepository extends JpaRepository implements PersonalContactRepository {
 
     //select by personal ID
-    private static final String SELECT_BY_PERSONAL_ID = "SELECT m FROM BpsmtContactAddrPs m WHERE m.bpsmtContactAddrPsPK.personalId =: personalId";
+    private static final String SELECT_BY_PERSONAL_ID = "SELECT m FROM BpsmtContactAddrPs m WHERE m.bpsmtContactAddrPsPK.personalId = :personalId";
 
     private static BpsmtContactAddrPs toEntity(PersonalContact domain) {
         BpsmtContactAddrPs entity = new BpsmtContactAddrPs();

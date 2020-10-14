@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class SettingInformationDto {
+	private String id;
 }

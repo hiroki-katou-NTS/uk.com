@@ -107,7 +107,7 @@ public class UserInformationScreenQuery {
         Optional<EmployeeDataMngInfo> employeeInfo = employeeDataMngInfoRepository.findByEmpId(loginEmployeeId);
         EmployeeDataMngInfoDto employeeDataMngInfoDto = employeeInfo.map(EmployeeDataMngInfoDto::toDto).orElse(new EmployeeDataMngInfoDto());
 
-        //SQ7 - get 個人連絡先
+        //SQ7 - get 個人連絡先 dang chet o day
         Optional<PersonalContact> personalContact = personalContactRepository.getByPersonalId(loginPersonalId);
         PersonalContactDto personalContactDto = PersonalContactDto.builder().build();
         personalContact.ifPresent(contact -> contact.setMemento(personalContactDto));
