@@ -4,6 +4,10 @@ module nts.uk.ui.at.ksu002.a {
 	import m = nts.uk.ui.memento;
 	import c = nts.uk.ui.calendar;
 
+	type DayData = c.DayData<ScheduleData>;
+	type DayDataRawObsv = c.DayData<ObserverScheduleData>;
+	type DayDataMementoObsv = c.DayData<ObserverScheduleData<WorkSchedule<Date>>>;
+
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
@@ -11,12 +15,24 @@ module nts.uk.ui.at.ksu002.a {
 
 	const memento: m.Options = {
 		size: 20,
-		/*replace: function (data: c.DayData[]) {
-			_.each(data, (d: c.DayData) => {
+		// callback function raise when undo or redo
+		replace: function (data: DayDataRawObsv[], replacer: DayData) {
+			const exist = _.find(data, f => moment(f.date).isSame(replacer.date, 'date'));
 
-				d.
-			});
-		}*/
+			if (exist) {
+				const { data } = exist;
+				const { wtime, wtype, value } = replacer.data;
+
+				data.wtime.code(wtime.code);
+				data.wtime.name(wtime.name);
+
+				data.wtype.code(wtype.code);
+				data.wtype.name(wtype.name);
+
+				data.value.begin(value.begin);
+				data.value.finish(value.finish);
+			}
+		}
 	};
 
 	@bean()
@@ -26,9 +42,10 @@ module nts.uk.ui.at.ksu002.a {
 
 		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
-		schedules: m.MementoObservableArray<c.DayData<ScheduleData>> = ko.observableArray([]).extend({ memento }) as any;
+		schedules: m.MementoObservableArray<DayDataRawObsv> = ko.observableArray([]).extend({ memento }) as any;
 
 		workplaceId: KnockoutObservable<string> = ko.observable('');
+		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
 
 		created() {
@@ -78,43 +95,87 @@ module nts.uk.ui.at.ksu002.a {
 						)
 						.then((response: WorkSchedule[]) => {
 							if (response && response.length) {
-								const clones: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
+								const clones: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-								_.each(response, (d) => {
-									const exits = _.find(clones, c => d.date.isSame(c.date, 'date'));
+								_.each(response, ($raw) => {
+									const exits = _.find(clones, c => $raw.date.isSame(c.date, 'date'));
 
 									if (exits) {
 										exits.data = {
-											...exits.data,
+											$raw: {
+												...$raw,
+												date: $raw.date.toDate()
+											},
 											wtype: {
-												code: d.workTypeCode,
-												name: d.workTypeName
+												code: ko.observable($raw.workTypeCode),
+												name: ko.observable($raw.workTypeName)
 											},
 											wtime: {
-												code: d.workTimeCode,
-												name: d.workTimeName
+												code: ko.observable($raw.workTimeCode),
+												name: ko.observable($raw.workTimeName)
 											},
 											value: {
-												begin: d.startTime,
-												finish: d.endTime
+												begin: ko.observable($raw.startTime),
+												finish: ko.observable($raw.endTime)
 											},
-											holiday: '', // exits.date.getDate() === 9 ? '海の日' : exits.date.getDate() === 6 ? 'スポーツの日' : '',
-											event: '', // exits.date.getDate() === 5 ? `<pre>${JSON.stringify(d, null, 4)}</pre>` : ''
+											holiday: ko.observable(null),
+											event: ko.observable(null),
 										};
 
-										exits.className = [
-											...(exits.className || []),
-											// exits.date.getDate() === 5 ? c.COLOR_CLASS.EVENT : '',
-											// exits.date.getDate() === 6 ? c.COLOR_CLASS.HOLIDAY : '',
-											// exits.date.getDate() === 9 ? c.COLOR_CLASS.HOLIDAY : ''
-										].filter(c => !!c)
+										const { dateInfoDuringThePeriod } = $raw;
+
+										if (dateInfoDuringThePeriod) {
+											const {
+												holiday,
+												specificDay,
+												listSpecDayNameCompany,
+												listSpecDayNameWorkplace,
+												optCompanyEventName,
+												optWorkplaceEventName
+											} = dateInfoDuringThePeriod;
+
+											// What is this???
+											if (holiday) {
+												exits.data.holiday(`${listSpecDayNameCompany.join('\n')}\n${listSpecDayNameWorkplace.join('\n')}`);
+											}
+
+											if (specificDay || optCompanyEventName || optWorkplaceEventName) {
+												exits.data.event(`${optCompanyEventName || ''}\n${optWorkplaceEventName || ''}`);
+											}
+										}
 									}
 								});
 
-								vm.schedules.reset(clones);
+								vm.schedules(clones);
+								vm.schedules.reset();
+
+								vm.$nextTick(() => {
+									$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+								});
 							}
 						})
 						.always(() => vm.$blockui('hide'));
+				});
+
+			// UI-4-2 実績表示を「しない」に選択する
+			vm.achievement
+				.subscribe((c) => {
+					const { NO } = ACHIEVEMENT;
+					const schedules = ko.unwrap(vm.schedules);
+
+					if (c === NO) {
+						_.each(schedules, (sc: DayDataMementoObsv) => {
+							const { data } = sc;
+							const { $raw, value, wtime, wtype } = data;
+
+						});
+					} else {
+						_.each(schedules, (sc: DayDataMementoObsv) => {
+							const { data } = sc;
+							const { $raw, value, wtime, wtype } = data;
+
+						});
+					}
 				});
 		}
 
@@ -122,6 +183,8 @@ module nts.uk.ui.at.ksu002.a {
 			const vm = this;
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+			_.extend(window, { vm });
 		}
 
 		// event on click undo or redo button
@@ -136,66 +199,65 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		// edit data on copy mode
-		clickDayCell(type: c.CLICK_CELL, dayData: c.DayData<ScheduleData>) {
+		clickDayCell(type: c.CLICK_CELL, dayData: DayDataRawObsv) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
 			const workData = ko.unwrap(vm.workData);
+			const preview: DayData = ko.toJS(dayData);
 
 			if (type === 'info' && mode === 'copy' && workData) {
 				const { wtime, wtype } = workData;
-				const wrap: c.DayData<ScheduleData>[] = ko.toJS(vm.schedules);
+				const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
+				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
-				const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
+				if (current) {
+					$.Deferred()
+						.resolve(true)
+						// change data
+						.then(() => {
+							const { data } = current;
 
-				if (exist) {
-					const { data } = exist;
+							data.wtime.code(wtime.code);
+							data.wtime.name(wtime.name);
 
-					data.wtime = {
-						code: wtime.code,
-						name: wtime.name
-					};
+							data.wtype.code(wtype.code);
+							data.wtype.name(wtype.name);
 
-					data.wtype = wtype;
-
-					data.value = wtime.value;
+							data.value.begin(wtime.value.begin);
+							data.value.finish(wtime.value.finish);
+						})
+						// save after change data
+						.then(() => vm.schedules.memento({ current, preview }));
 				}
-
-				vm.schedules.memento(wrap);
 			}
 		}
 
 		// edit data on edit mode
-		changeDayCell(dayData: c.DayData<ScheduleData>) {
+		changeDayCell(current: DayData) {
 			const vm = this;
+			const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
+			const preview = _.find(wrap, f => moment(f.date).isSame(current.date, 'date'));
 
-			const wrap: c.DayData[] = _.cloneDeep(ko.toJS(vm.schedules));
+			if (preview) {
+				$.Deferred()
+					.resolve(true)
+					// save to memento before change data
+					.then(() => vm.schedules.memento({ current, preview }))
+					.then(() => {
+						const { data } = preview;
+						const { wtime, wtype, value } = current.data;
 
-			const exist = _.find(wrap, f => moment(f.date).isSame(dayData.date, 'date'));
+						data.wtime.code(wtime.code);
+						data.wtime.name(wtime.name);
 
-			if (exist) {
-				const { data } = dayData;
+						data.wtype.code(wtype.code);
+						data.wtype.name(wtype.name);
 
-				exist.data = { ...data };
+						data.value.begin(value.begin);
+						data.value.finish(value.finish);
+					});
 			}
-
-			vm.schedules.memento(wrap);
 		}
-
-		openDialog() {
-			const vm = this;
-
-			vm.$window
-				.storage('CDL009Params', { selectedIds: [], baseDate: moment().toISOString(), target: 1 })
-				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
-				.then((data) => {
-					debugger;
-				});
-		}
-	}
-
-	interface ResponseData {
-		listWorkTypeInfo: WorkType[];
-		listWorkScheduleWorkInfor: WorkSchedule<string>[];
 	}
 
 	interface WorkSchedule<D = moment.Moment> {
@@ -226,23 +288,21 @@ module nts.uk.ui.at.ksu002.a {
 		workTypeCode: string;
 		workTypeEditStatus: null | string;
 		workTypeName: string;
+		dateInfoDuringThePeriod: DateInfoDuringThePeriod;
 	}
 
-	interface WorkType {
-		workStyle: WorkTypeRequired;
-		workTimeSetting: number;
-		workTypeDto: WorkTypeData;
-	}
-
-	interface WorkTypeData {
-		memo: string;
-		name: string;
-		workTypeCode: string;
-	}
-
-	enum WorkTypeRequired {
-		REQUIRED = 1,
-		OPTIONAL = 2,
-		NON_REQUIRED = 2
+	interface DateInfoDuringThePeriod {
+		// 祝日であるか
+		holiday: boolean;
+		// 会社の特定日名称リスト
+		listSpecDayNameCompany: string[];
+		// 職場の特定日名称リスト
+		listSpecDayNameWorkplace: string[];
+		// 会社行事名称
+		optCompanyEventName: string | null;
+		//  職場行事名称
+		optWorkplaceEventName: string | null;
+		// 特定日であるか
+		specificDay: boolean;
 	}
 }

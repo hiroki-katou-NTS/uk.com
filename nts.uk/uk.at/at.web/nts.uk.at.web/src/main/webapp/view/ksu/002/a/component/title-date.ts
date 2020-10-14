@@ -47,10 +47,10 @@ module nts.uk.ui.at.ksu002.a {
 			},
 			ntsSwitchButton: {
 				name: $i18n('KSU002_6'),
-				value: ko.observable(1),
+				value: $component.achievement,
 				options: [
 					{ code: 1, name: $i18n('KSU002_8') },
-					{ code: 2, name: $i18n('KSU002_9') }
+					{ code: 0, name: $i18n('KSU002_9') }
 				],
 				optionsText: 'name',
 				optionsValue: 'code'
@@ -105,10 +105,11 @@ module nts.uk.ui.at.ksu002.a {
 		init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
 			const dateRange = valueAccessor();
-			const mode = allBindingsAccessor.get('mode');
+			const achievement = allBindingsAccessor.get('achievement');
 			const workplaceId = allBindingsAccessor.get('workplace-id');
+			const hasChange = allBindingsAccessor.get('has-change');
 			const tabIndex = element.getAttribute('tabindex') || '1';
-			const params = { mode, dateRange, tabIndex, workplaceId };
+			const params = { achievement, hasChange, dateRange, tabIndex, workplaceId };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -137,6 +138,8 @@ module nts.uk.ui.at.ksu002.a {
 
 		public dateRanges: KnockoutObservableArray<DateOption> = ko.observableArray([]);
 
+		public achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
+
 		constructor(private params: Params) {
 			super();
 
@@ -149,15 +152,16 @@ module nts.uk.ui.at.ksu002.a {
 				vm.params = {
 					tabIndex: "1",
 					dateRange: ko.observable({ begin, finish }),
-					mode: ko.observable(1),
-					workplaceId: ko.observable('')
+					achievement: ko.observable(1),
+					workplaceId: ko.observable(''),
+					hasChange: ko.computed(() => false)
 				};
 			}
 
-			const { mode, dateRange, workplaceId } = params;
+			const { achievement, dateRange, workplaceId, hasChange } = params;
 
-			if (mode === undefined) {
-				vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
+			if (achievement === undefined) {
+				vm.params.achievement = ko.observable(ACHIEVEMENT.NO);
 			}
 
 			if (dateRange === undefined) {
@@ -167,68 +171,160 @@ module nts.uk.ui.at.ksu002.a {
 			if (workplaceId === undefined) {
 				vm.params.workplaceId = ko.observable('');
 			}
+
+			if (hasChange === undefined) {
+				vm.params.hasChange = ko.computed(() => false)
+			}
 		}
 
 		created() {
 			const vm = this;
+			const cache: CacheData = {
+				yearMonth: null,
+				dateRange: null,
+				mode: 0
+			};
 			const proccesPeriod = (response: Period) => {
 				const MD_FORMAT = 'MM/DD';
 				const YMD_FORMAT = 'YYYY/MM/DD';
-				const oid = ko.unwrap(vm.selectedRangeIndex);
 
 				if (response) {
-					const { yearMonth, periodsClose, employeeInfo } = response;
+					const { yearMonth, periodsClose } = response;
 
-					if (employeeInfo) {
-						vm.params.workplaceId(employeeInfo.workplaceId);
+					if (vm.yearMonth() !== `${yearMonth}`) {
+						vm.yearMonth(`${yearMonth}`);
+					} else {
+						vm.yearMonth.valueHasMutated();
 					}
 
-					// vm.dateRanges([]);
-					vm.yearMonth(`${yearMonth}`);
+					$.Deferred()
+						.resolve(true)
+						// clear old data sources of date range
+						.then(() => vm.dateRanges([]))
+						// load new data
+						.then(() => {
+							if (periodsClose && periodsClose.length) {
+								vm.dateRanges(periodsClose
+									.map((m, id) => {
+										const mb = moment.utc(m.startDate, YMD_FORMAT);
+										const me = moment.utc(m.endDate, YMD_FORMAT);
 
-					if (periodsClose && periodsClose.length) {
-						vm.dateRanges(periodsClose
-							.map((m, id) => {
-								const mb = moment.utc(m.startDate, YMD_FORMAT);
-								const me = moment.utc(m.endDate, YMD_FORMAT);
-
-								return {
-									id: id + 1,
-									title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
-									begin: mb.toDate(),
-									finish: me.toDate()
-								};
-							}));
-
-						vm.$nextTick(() => {
-							if (ko.unwrap(vm.selectedRangeIndex) === oid) {
-								vm.selectedRangeIndex.valueHasMutated();
+										return {
+											id: id + 1,
+											title: `${m.closureName}${vm.$i18n('KSU002_7')}${mb.format(MD_FORMAT)}${vm.$i18n('KSU002_5')}${me.format(MD_FORMAT)}`,
+											begin: mb.toDate(),
+											finish: me.toDate(),
+											wpId: m.workplaceId
+										};
+									}));
 							}
 						});
-					}
 				}
 			};
 
+			// first load
 			vm.$ajax('at', API.BASE_DATE).then(proccesPeriod);
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
 					const cmd = { yearMonth: Number(ym) };
+					const hasChange = ko.unwrap(vm.params.hasChange);
 
-					vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+					// first load
+					if (cache.yearMonth === null) {
+						cache.yearMonth = cmd.yearMonth;
+						vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+					} else if (cache.yearMonth !== cmd.yearMonth) {
+						if (hasChange) {
+							vm.$dialog
+								.confirm({ messageId: 'Msg_1732' })
+								.then((v) => {
+									if (v === 'yes') {
+										cache.yearMonth = cmd.yearMonth;
+										vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+									} else {
+										// rollback data
+										vm.yearMonth(`${cache.yearMonth}`);
+									}
+								});
+						} else {
+							cache.yearMonth = cmd.yearMonth;
+							vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+						}
+					}
 				});
 
 			vm.selectedRangeIndex
 				.subscribe(c => {
-					if (!!c && c > -1) {
+					if ([null, undefined].indexOf(c) > -1) {
+						cache.dateRange = null;
+					} else {
 						const dateRanges = ko.unwrap(vm.dateRanges);
+						const hasChange = ko.unwrap(vm.params.hasChange);
 
 						const exist = _.find(dateRanges, (f) => f.id === c);
 
 						if (exist) {
-							const { finish, begin } = exist;
+							if (cache.dateRange === null) {
+								cache.dateRange = c;
 
-							vm.params.dateRange({ finish, begin });
+								const { finish, begin, wpId } = exist;
+
+								vm.params.workplaceId(wpId);
+								vm.params.dateRange({ finish, begin });
+							} else if (cache.dateRange !== c) {
+								if (hasChange) {
+									vm.$dialog
+										.confirm({ messageId: 'Msg_1732' })
+										.then((v) => {
+											if (v === 'yes') {
+												cache.dateRange = c;
+
+												const { finish, begin, wpId } = exist;
+
+												vm.params.workplaceId(wpId);
+												vm.params.dateRange({ finish, begin });
+											} else {
+												// rollback data
+												vm.selectedRangeIndex(cache.dateRange);
+											}
+										});
+								} else {
+									cache.dateRange = c;
+
+									const { finish, begin, wpId } = exist;
+
+									vm.params.workplaceId(wpId);
+									vm.params.dateRange({ finish, begin });
+								}
+							}
+						}
+					}
+				});
+
+			vm.achievement
+				.subscribe(c => {
+					const hasChange = ko.unwrap(vm.params.hasChange);
+
+					if (cache.mode === null) {
+						cache.mode = c;
+						vm.params.achievement(c);
+					} else if (cache.mode !== c) {
+						if (hasChange) {
+							vm.$dialog
+								.confirm({ messageId: 'Msg_1732' })
+								.then((v) => {
+									if (v === 'yes') {
+										cache.mode = c;
+										vm.params.achievement(c);
+									} else {
+										// rollback data
+										vm.achievement(cache.mode);
+									}
+								});
+						} else {
+							cache.mode = c;
+							vm.params.achievement(c);
 						}
 					}
 				});
@@ -238,19 +334,22 @@ module nts.uk.ui.at.ksu002.a {
 	interface Params {
 		tabIndex: string;
 		dateRange: KnockoutObservable<c.DateRange | null>;
-		mode: KnockoutObservable<ACHIEVEMENT>;
+		achievement: KnockoutObservable<ACHIEVEMENT>;
 		workplaceId: KnockoutObservable<string>;
+		hasChange: KnockoutComputed<boolean>;
 	}
 
 	interface DateOption extends c.DateRange {
 		id: number;
 		title: string;
+		wpId: string;
 	}
 
 	interface Closure {
 		closureName: string;
 		endDate: string;
 		startDate: string;
+		workplaceId: string;
 	}
 
 	interface Period {
@@ -262,11 +361,20 @@ module nts.uk.ui.at.ksu002.a {
 	interface EmployeeInfo {
 		employeeCd: string;
 		employeeName: string;
-		workplaceId: string;
 	}
 
-	enum ACHIEVEMENT {
-		SHOW = 1,
-		HIDE = 0
+	export enum ACHIEVEMENT {
+		YES = 1,
+		NO = 0
+	}
+
+	/**
+	 * Cache data for rollback
+	 * after choose no of comfirm message: Msg_1732
+	 */
+	interface CacheData {
+		yearMonth: number | null;
+		dateRange: number | null;
+		mode: number;
 	}
 }

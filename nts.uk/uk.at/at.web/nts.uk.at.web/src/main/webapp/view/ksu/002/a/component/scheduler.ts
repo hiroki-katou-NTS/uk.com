@@ -1,12 +1,22 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
+declare module nts {
+    export module uk {
+        export module util {
+            export module browser {
+                export const version: string;
+            }
+        }
+    }
+}
+
 module nts.uk.ui.at.ksu002.a {
     import c = nts.uk.ui.calendar;
+    import b = nts.uk.util.browser;
 
-
-    interface WData {
-        code: string;
-        name: string;
+    interface WData<T = string> {
+        code: T;
+        name: T;
     }
 
     export interface ScheduleData extends c.DataInfo {
@@ -18,7 +28,18 @@ module nts.uk.ui.at.ksu002.a {
         }
     }
 
+    export interface ObserverScheduleData<R = any> extends c.DataInfo<KnockoutObservable<string>> {
+        $raw: R;
+        wtype: WData<KnockoutObservable<string>>;
+        wtime: WData<KnockoutObservable<string>>;
+        value: {
+            begin: KnockoutObservable<number | null>;
+            finish: KnockoutObservable<number | null>;
+        };
+    }
+
     const COMPONENT_NAME = 'scheduler';
+    const CL_VALUE = Number(!!b.version.match(/IE/));
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -26,7 +47,7 @@ module nts.uk.ui.at.ksu002.a {
         virtual: false
     })
     export class SchedulerComponentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+        init(element: HTMLElement, valueAccessor: () => c.DayData<ObserverScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
             const name = COMPONENT_NAME;
             const schedules = valueAccessor();
             const mode = allBindingsAccessor.get('mode');
@@ -45,7 +66,6 @@ module nts.uk.ui.at.ksu002.a {
             const binding = bindingContext
                 .extend({
                     $change: changeCell,
-                    $currenttab: ko.observable(null),
                     $tabindex: tabIndex,
                     $editable: ko.computed({
                         read: () => {
@@ -53,8 +73,6 @@ module nts.uk.ui.at.ksu002.a {
                         }
                     })
                 });
-
-            _.extend(window, { binding });
 
             ko.applyBindingsToNode(element, { component }, binding);
 
@@ -84,13 +102,13 @@ module nts.uk.ui.at.ksu002.a {
                     <div class="month">
                         <div class="week cf">
                             <div class="day">
-                                <div class="status">
+                                <div class="status wk-hours">
                                     <span data-bind="i18n: 'KSU002_25'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
                             </div>
                             <div class="day">
-                                <div class="status full-height">
+                                <div class="status wk-hours full-height">
                                     <span data-bind="i18n: 'KSU002_26'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
@@ -160,20 +178,29 @@ module nts.uk.ui.at.ksu002.a {
                     position: relative;
                     z-index: 9;
                 }
-                .scheduler .ntsControl input.state-1:focus {
+                .scheduler .ntsControl input:focus {
                     color: #fff;
                     box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #007fff !important;
                 }
-                .scheduler .ntsControl input.state-0:focus,
                 .scheduler .ntsControl input.state-2:focus {
                     color: #000;
                     box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #fff !important;
                 }
-                .scheduler .ntsControl.error input {
+                .scheduler .ntsControl.error input.state-0,
+                .scheduler .ntsControl.error input.state-1,
+                .scheduler .ntsControl.error input.state-2 {
+                    color: #000;
                     box-shadow: 0px 0px 0px 2px #ff6666 !important;
-                    background-color: rgba(255, 102, 102, 0.1) !important;
+                    background-color: transparent !important;
+                }
+                .scheduler .ntsControl.error input.state-0:focus,
+                .scheduler .ntsControl.error input.state-1:focus,
+                .scheduler .ntsControl.error input.state-2:focus {
+                    color: #000;
+                    box-shadow: 0px 0px 0px 2px #ff6666 !important;
+                    background-color: rgba(255, 102, 102, 0.1) !important;                    
                 }
                 .scheduler .calendar {
                     float: left;
@@ -197,10 +224,13 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar+.calendar .month+.month .day .status {
                     display: block;
                     height: 38px;
-                    background: #d9d9d9;
+                    background-color: #d9d9d9;
                     box-sizing: border-box;
                     border-bottom: 1px solid #808080;
                     padding: 0 25px;
+                }
+                .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
+                    background-color: #FFC91D;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.full-height>span {
                     font-size: 12px;
@@ -243,7 +273,7 @@ module nts.uk.ui.at.ksu002.a {
             virtual: false
         })
         export class DataInfoComponentBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => c.DayData<ScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            init(element: HTMLElement, valueAccessor: () => c.DayData<ObserverScheduleData>, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = COMPONENT_NAME;
                 const dayData = valueAccessor();
                 const params = { dayData, context: bindingContext };
@@ -270,19 +300,21 @@ module nts.uk.ui.at.ksu002.a {
                             'state-1': ko.unwrap($component.click.begin) === 1,
                             'state-2': ko.unwrap($component.click.begin) === 2,
                         },
+                        attr: {
+                            tabindex: $tabindex
+                        },
                         ntsTimeEditor: {
                             name: 'Duration',
                             constraint: 'SampleTimeDuration',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
-                            readonly: $component.readonly.begin,
+                            readonly: false,
                             enable: $editable
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['begin']) },
-                            click: function() { $component.showInput.apply($component, ['begin']) },
-                            focus: function() { $component.registerTab.apply($component, ['begin']) }
+                            click: function() { $component.showInput.apply($component, ['begin']) }
                         }" />
                 </div>
                 <div class="leave">
@@ -292,19 +324,21 @@ module nts.uk.ui.at.ksu002.a {
                             'state-1': ko.unwrap($component.click.finish) === 1,
                             'state-2': ko.unwrap($component.click.finish) === 2,
                         },
+                        attr: {
+                            tabindex: $tabindex
+                        },
                         ntsTimeEditor: {
                             name: 'Duration',
                             constraint: 'SampleTimeDuration',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
-                            readonly: $component.readonly.finish,
+                            readonly: false,
                             enable: $editable
                         },
                         event: {
                             blur: function() { $component.hideInput.apply($component, ['finish']) },
-                            click: function() { $component.showInput.apply($component, ['finish']) },
-                            focus: function() { $component.registerTab.apply($component, ['finish']) }
+                            click: function() { $component.showInput.apply($component, ['finish']) }
                         }" />
                 </div>
             </div>
@@ -316,119 +350,143 @@ module nts.uk.ui.at.ksu002.a {
                 finish: ko.observable(null)
             };
 
-            click: WorkTimeRange<number> = {
-                begin: ko.observable(0),
-                finish: ko.observable(0)
+            click: WorkTimeRange = {
+                begin: ko.observable(CL_VALUE),
+                finish: ko.observable(CL_VALUE)
             };
 
-            readonly: {
-                begin: KnockoutObservable<boolean>;
-                finish: KnockoutObservable<boolean>;
-            } = {
-                    begin: ko.observable(true),
-                    finish: ko.observable(true)
-                };
-
             text: {
-                wtype: string;
-                wtime: string;
+                wtype: KnockoutObservable<string>;
+                wtime: KnockoutObservable<string>;
             } = {
-                    wtime: '',
-                    wtype: ''
+                    wtime: ko.observable(''),
+                    wtype: ko.observable('')
                 };
 
-            constructor(private data: { dayData: c.DayData<ScheduleData>; context: BindingContext }) {
+            constructor(private data: { dayData: c.DayData<ObserverScheduleData>; context: BindingContext }) {
                 super();
             }
 
             created() {
                 const vm = this;
-                const { data, model } = vm;
+                const { data, model, text } = vm;
                 const { context, dayData } = data;
-
-                let b: number | null = null;
-                let f: number | null = null;
+                const cache: { begin: number | null; finish: number | null; } = { begin: null, finish: null };
 
                 if (dayData.data) {
                     const { data } = dayData;
+                    const { wtype, wtime, value } = data;
 
-                    vm.text.wtype = data.wtype.name;
-                    vm.text.wtime = data.wtime.name;
+                    text.wtype = wtype.name;
+                    text.wtime = wtime.name;
 
-                    if (data.value) {
-                        const { value } = data;
+                    ko.computed({
+                        read: () => {
+                            model.begin(ko.unwrap(value.begin));
+                        },
+                        owner: vm
+                    });
 
-                        model.begin(value.begin);
-                        model.finish(value.finish);
-                    }
+                    ko.computed({
+                        read: () => {
+                            model.finish(ko.unwrap(value.finish));
+                        },
+                        owner: vm
+                    });
+
+                    model.begin
+                        .subscribe((c: number) => {
+                            if (_.isNumber(c) && cache.begin !== c && ko.unwrap(value.begin) !== c) {
+                                cache.begin = c;
+                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+
+                                clone.data.value.begin = c;
+
+                                context.$change.apply(context.$vm, [clone]);
+                            }
+                        });
+
+                    model.finish
+                        .subscribe(c => {
+                            if (_.isNumber(c) && cache.finish !== c && ko.unwrap(value.finish) !== c) {
+                                cache.finish = c;
+                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+
+                                clone.data.value.finish = c;
+
+                                context.$change.apply(context.$vm, [clone]);
+                            }
+                        });
                 }
-
-                model.begin
-                    .subscribe((c: number) => {
-                        if (_.isNumber(c) && b !== c) {
-                            b = c;
-                            const clone = _.cloneDeep(dayData);
-
-                            clone.data.value.begin = c;
-                            setTimeout(() => {
-                                context.$change.apply(context.$vm, [clone]);
-                            }, 0);
-                        }
-                    });
-
-                model.finish
-                    .subscribe(c => {
-                        if (_.isNumber(c) && f !== c) {
-                            f = c;
-                            const clone = _.cloneDeep(dayData);
-
-                            clone.data.value.finish = c;
-                            setTimeout(() => {
-                                context.$change.apply(context.$vm, [clone]);
-                            }, 0);
-                        }
-                    });
-
-                vm.click.begin
-                    .subscribe(c => {
-                        vm.readonly.begin(c < 2);
-                    });
-
-                vm.click.finish
-                    .subscribe(c => {
-                        vm.readonly.finish(c < 2);
-                    });
             }
 
             mounted() {
                 const vm = this;
-                const { data } = vm;
-                const { dayData, context } = data;
-                const $current = ko.unwrap(context.$currenttab);
-
-                if ($current) {
-                    if (moment($current.date).isSame(dayData.date)) {
-                        context.$currenttab(null);
-
-                        vm.showInput($current.input);
-
-                        $(vm.$el).find(`.${$current.input}`).focus();
-                    }
-                }
+                const { click } = vm;
+                const $begin = $(vm.$el).find('input.begin');
+                const $finish = $(vm.$el).find('input.finish');
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+                ko.computed({
+                    read: () => {
+                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.begin) < 2 : true;
+
+                        if ($begin.length) {
+                            if (!readonly) {
+                                $begin.removeAttr('readonly');
+                            } else {
+                                $begin.attr('readonly', 'readonly');
+                            }
+                        }
+                    },
+                    owner: vm,
+                    disposeWhenNodeIsRemoved: vm.$el
+                });
+
+                ko.computed({
+                    read: () => {
+                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.finish) < 2 : true;
+
+                        if ($finish.length) {
+                            if (!readonly) {
+                                $finish.removeAttr('readonly');
+                            } else {
+                                $finish.attr('readonly', 'readonly');
+                            }
+                        }
+                    },
+                    owner: vm,
+                    disposeWhenNodeIsRemoved: vm.$el
+                });
+
+                /*$begin
+                    .on('keyup', (evt: JQueryEventObject) => {
+                        if ([13, 32].indexOf(evt.keyCode) > -1) {
+                            vm.showInput('begin');
+                        }
+
+                        return true;
+                    });
+
+                $finish
+                    .on('keyup', (evt: JQueryEventObject) => {
+                        if ([13, 32].indexOf(evt.keyCode) > -1) {
+                            vm.showInput('finish');
+                        }
+
+                        return true;
+                    });*/
             }
 
             hideInput(input: INPUT_TYPE) {
                 const vm = this;
 
                 if (input === 'begin') {
-                    vm.click.begin(0);
+                    vm.click.begin(CL_VALUE);
                 } else if (input === 'finish') {
-                    vm.click.finish(0);
+                    vm.click.finish(CL_VALUE);
                 }
-
-                vm.data.context.$currenttab(null);
             }
 
             showInput(input: INPUT_TYPE) {
@@ -437,58 +495,16 @@ module nts.uk.ui.at.ksu002.a {
                 if (input === 'begin') {
                     const i = vm.click.begin();
 
-                    vm.click.begin(i + 1);
-
-                    setTimeout(() => {
-                        if (i >= 1) {
-                            $(vm.$el).find('input.begin').focus();
-                        }
-                    }, 1);
+                    if (i <= 1) {
+                        vm.click.begin(i + 1);
+                    }
                 } else if (input === 'finish') {
                     const i = vm.click.finish();
 
-                    vm.click.finish(i + 1);
-
-                    setTimeout(() => {
-                        if (i >= 1) {
-                            $(vm.$el).find('input.finish').focus();
-                        }                        
-                    }, 1);
-                }
-            }
-
-            registerTab(input: INPUT_TYPE) {
-                const vm = this;
-                const { data } = vm;
-
-                vm.data.context
-                    .$currenttab({
-                        date: data.dayData.date,
-                        input
-                    });
-            }
-
-            nextTab(input: INPUT_TYPE, evt: KeyboardEvent) {
-                const vm = this;
-
-                debugger;
-
-                if (evt.keyCode === 9) {
-                    if (input === 'begin') {
-                        vm.registerTab('finish');
-                    } else {
-                        const { data } = vm;
-                        const mm = moment(data.dayData.date).add(1, 'day');
-
-                        vm.data.context
-                            .$currenttab({
-                                date: mm.toDate(),
-                                input: 'begin'
-                            });
+                    if (i <= 1) {
+                        vm.click.finish(i + 1);
                     }
                 }
-
-                return true;
             }
         }
 
@@ -503,10 +519,6 @@ module nts.uk.ui.at.ksu002.a {
             $vm: any,
             $change: Function,
             $tabindex: string | number;
-            $currenttab: KnockoutObservable<null | {
-                date: Date;
-                input: INPUT_TYPE;
-            }>;
             $editable: KnockoutReadonlyComputed<boolean>;
         }
     }

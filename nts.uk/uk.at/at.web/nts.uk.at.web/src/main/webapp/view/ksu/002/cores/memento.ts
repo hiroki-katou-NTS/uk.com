@@ -4,31 +4,42 @@ module nts.uk.ui.memento {
 	export interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
 		undo(): void;
 		redo(): void;
-		reset(data?: any): void;
-		memento(data?: any): void;
+		reset(): void;
+		memento(state: StateMemento): void;
 		undoAble: KnockoutComputed<boolean>;
 		redoAble: KnockoutComputed<boolean>;
+		hasChange: KnockoutComputed<boolean>;
 	}
 
 	export interface Options {
 		size: number;
-		replace?: (replacer: any) => any;
+		replace: (sources: any, replacer: any) => void;
 	}
 
 	interface Memento {
-		undo: KnockoutObservableArray<any>;
-		redo: KnockoutObservableArray<any>;
+		undo: KnockoutObservableArray<StateMemento>;
+		redo: KnockoutObservableArray<StateMemento>;
+	}
+
+	interface StateMemento {
+		current: any;
+		preview: any;
 	}
 
 	const memento = function (target: KnockoutObservableArray<any>, options: Options) {
 		if (!options) {
 			options = {
-				size: 9999
+				size: 9999,
+				replace: function () { }
 			};
 		}
 
 		if (options.size < 1) {
 			options.size = 9999;
+		}
+
+		if (!options.replace) {
+			options.replace = function () { };
 		}
 
 		const $memento: Memento = {
@@ -49,62 +60,45 @@ module nts.uk.ui.memento {
 
 		// extends memento methods to observable
 		_.extend(target, {
-			reset: function $$reset(data?: any[]) {
-				if (data !== undefined) {
-					target(data);
-				}
-
+			reset: function $$reset() {
 				$memento.undo([]);
 				$memento.redo([]);
 			},
-			memento: function $$memento(data?: any) {
+			memento: function $$memento(state: StateMemento) {
 				$memento.redo([]);
-				// push old data to memories			
-				$memento.undo.unshift(ko.toJS(target));
 
-				if (data !== undefined) {
-					target(data);
-				}
+				// push old data to memories			
+				$memento.undo.unshift(ko.toJS(state));
 
 				// remove old record when memory size has large than config
 				stripMemory();
 			},
 			undo: function $$undo() {
 				if (ko.unwrap($memento.undo).length) {
-					const current = ko.unwrap(target);
-					const preview = $memento.undo.shift();
+					const state = $memento.undo.shift();
 
-					$memento.redo.unshift(current);
-
+					$memento.redo.unshift(state);
 					// remove old record when memory size has large than config
 					stripMemory();
 
-					if (!options.replace) {
-						target(preview);
-					} else {
-						target(options.replace(preview));
-					}
+					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
 			},
 			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
 			redo: function $$redo() {
 				if (ko.unwrap($memento.redo).length) {
-					const current = ko.unwrap(target);
-					const forward = $memento.redo.shift();
+					const state = $memento.redo.shift();
 
-					$memento.undo.unshift(current);
+					$memento.undo.unshift(state);
 
 					// remove old record when memory size has large than config
 					stripMemory();
 
-					if (!options.replace) {
-						target(forward);
-					} else {
-						target(options.replace(forward));
-					}
+					options.replace.apply(target, [ko.unwrap(target), state.current]);
 				}
 			},
-			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length)
+			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),
+			hasChange: ko.computed(() => !!ko.unwrap($memento.undo).length || ko.unwrap($memento.redo).length)
 		});
 
 		return target;
