@@ -55,3 +55,7 @@ td.red-color {
   float: right;
   margin-right: 10px;
 }
+
+#I2_2 > div:first-child {
+  margin-bottom: 10px;
+}

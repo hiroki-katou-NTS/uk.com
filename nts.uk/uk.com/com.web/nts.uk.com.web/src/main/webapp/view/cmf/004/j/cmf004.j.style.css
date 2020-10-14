@@ -21,3 +21,7 @@ tbody > td:first-child {
 td.red-color {
 	color: #FF0000;
 }
+
+#J2_2 > div:first-child {
+  margin-bottom: 10px;
+}

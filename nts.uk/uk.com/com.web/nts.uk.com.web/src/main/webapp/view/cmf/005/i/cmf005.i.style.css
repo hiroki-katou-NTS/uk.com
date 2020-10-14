@@ -50,4 +50,8 @@ td.red-color {
 #I1_2 {
   float: right;
   margin-right: 10px;
+} 
+
+#I3 > div:first-child {
+  margin-bottom: 10px;
 }
