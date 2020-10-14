@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/kaf/000/a/component2/kaf000.a.component2.css"/>
+        <com:stylefile path="/view/kaf/000/a/component3/kaf000.a.component3.css"/>
+        <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js"/>
+        <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component3/kaf000.a.component3.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js"/>
+        <com:scriptfile path="/view/kaf/020/b/kaf020.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <button class="goback link-button">#{i18n.getText('KAF020_15')}</button>
+            <button class="proceed">#{i18n.getText('KAF020_16')}</button>
+            <div data-bind="component: { name: 'kaf000-a-component7',
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block;"></div>
+        </div>
+        <div id="contents-aria">
+            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+
+        </div>
+        <div data-bind="component: { name: 'kaf000-a-component3',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
