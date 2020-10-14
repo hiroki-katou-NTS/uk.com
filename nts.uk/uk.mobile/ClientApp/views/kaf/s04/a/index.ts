@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS04BComponent } from '../b';
+import {KafS00SubP1Component,KAFS00P1Params} from '../../s00/sub/p1';
+
 
 import {
     ITime,
@@ -38,6 +40,7 @@ import {
         'kaf-s00-c': KafS00CComponent,
         'kaf-s00-shr': KafS00ShrComponent,
         'kaf-s04-b': KafS04BComponent,
+        'kaf-s00-p1': KafS00SubP1Component,
     },
     constraints: []
 })
@@ -46,6 +49,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: IParamS00B;
     public kafS00CParams: IParamS00C;
+    public kafS00P1Params1: KAFS00P1Params;
+    public kafS00P1Params2: KAFS00P1Params;
+    public kafS00P1Params3: KAFS00P1Params;
+    public kafS00P1Params4: KAFS00P1Params;
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
@@ -150,6 +157,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.initComponentA();
                     vm.initComponetB();
                     vm.initComponentC();
+                    vm.initComponentP1();
                     vm.$mask('hide');
 
                     if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
@@ -201,6 +209,55 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 return false;
             }
         }
+    }
+
+    public initComponentP1() {
+        const vm = this;
+
+        vm.kafS00P1Params1 = {
+            preAppDisp: false,
+            preAppTime: null,
+            preAppExcess: null,
+            actualDisp: false,
+            actualTime: null,
+            actualExcess: null,
+            scheduleDisp: true,
+            scheduleTime: null,
+            scheduleExcess: null
+        };
+        vm.kafS00P1Params2 = {
+            preAppDisp: false,
+            preAppTime: null,
+            preAppExcess: null,
+            actualDisp: false,
+            actualTime: null,
+            actualExcess: null,
+            scheduleDisp: true,
+            scheduleTime: null,
+            scheduleExcess: null
+        };
+        vm.kafS00P1Params3 = {
+            preAppDisp: false,
+            preAppTime: null,
+            preAppExcess: null,
+            actualDisp: false,
+            actualTime: null,
+            actualExcess: null,
+            scheduleDisp: true,
+            scheduleTime: null,
+            scheduleExcess: null
+        };
+        vm.kafS00P1Params4 = {
+            preAppDisp: false,
+            preAppTime: null,
+            preAppExcess: null,
+            actualDisp: false,
+            actualTime: null,
+            actualExcess: null,
+            scheduleDisp: true,
+            scheduleTime: null,
+            scheduleExcess: null
+        };
     }
 
     public initComponentA() {
@@ -331,13 +388,15 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
-            if (vm.check.cbCancelLate.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 0,
-                        workNo: 1
-                    }
-                );
+            if (vm.application.prePostAtr == 1) {
+                if (vm.check.cbCancelLate.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            lateOrEarlyClassification: 0,
+                            workNo: 1
+                        }
+                    );
+                }
             }
         }
 
@@ -359,13 +418,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
-            if (vm.check.cbCancelEarlyLeave.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 1,
-                        workNo: 1
-                    }
-                );
+
+            if (vm.application.prePostAtr == 1) {
+                if (vm.check.cbCancelEarlyLeave.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            lateOrEarlyClassification: 1,
+                            workNo: 1
+                        }
+                    );
+                }
             }
         }
 
@@ -387,13 +449,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 2,
                 }
             );
-            if (vm.check.cbCancelLate2.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 0,
-                        workNo: 2
-                    }
-                );
+
+            if (vm.application.prePostAtr == 1) {
+                if (vm.check.cbCancelLate2.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            lateOrEarlyClassification: 0,
+                            workNo: 2
+                        }
+                    );
+                }
             }
         }
 
@@ -414,13 +479,15 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 2,
                 }
             );
-            if (vm.check.cbCancelEarlyLeave2.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 1,
-                        workNo: 2
-                    }
-                );
+            if (vm.application.prePostAtr == 1) {
+                if (vm.check.cbCancelEarlyLeave2.value) {
+                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                        {
+                            lateOrEarlyClassification: 1,
+                            workNo: 2
+                        }
+                    );
+                }
             }
         }
 
@@ -569,7 +636,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
                             vm.time.leaveTime = i.opAchievementDetail.opLeaveTime;
                             vm.time.attendanceTime2 = i.opAchievementDetail.opWorkTime2;
                             vm.time.leaveTime2 = i.opAchievementDetail.opDepartureTime2;
-
+                            vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                            vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                            vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                            vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
                             vm.check.cbCancelLate.isDisable = false;
                             vm.check.cbCancelEarlyLeave.isDisable = false;
                         }

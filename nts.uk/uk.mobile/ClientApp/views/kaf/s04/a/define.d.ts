@@ -292,6 +292,12 @@ export interface IAppDispInfoStartupOutput {
 export interface IOpActualContentDisplayLst {
     date: string;
     opAchievementDetail: {
+        achievementEarly: {
+            scheAttendanceTime1: number | null;
+            scheAttendanceTime2: number | null;
+            scheDepartureTime1: number | null;
+            scheDepartureTime2: number | null;
+        }
         opWorkTime: number | null;
         opWorkTime2: number | null;
         opLeaveTime: number | null;

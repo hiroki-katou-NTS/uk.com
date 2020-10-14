@@ -7,16 +7,16 @@
       </div>
     </div>
     <div class="row pl-4 pb-2">
-        <span class="col-4">
-        <i class="far fa-clock" aria-hidden="true" ></i>
-        {{-240 | timewd}}</span>
+        <kaf-s00-p1 class="col-4"
+        v-bind:params="kafS00P1Params1" 
+        />
         <span class="col-8" v-if="condition1">{{time.attendanceTime | timewd}} {{'KAFS04_19' | i18n}}</span>
         <span class="col-8" v-else>{{time.attendanceTime | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
     </div>
     <div class="row pl-4 pb-2">
-        <span class="col-4">
-        <i class="far fa-clock" aria-hidden="true" ></i>
-        {{-240 | timewd}}</span>
+        <kaf-s00-p1 class="col-4"
+        v-bind:params="kafS00P1Params2" 
+        />
         <span class="col-8" v-if="condition2">{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}</span>
         <span class="col-8" v-else>{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
     </div>
@@ -28,18 +28,19 @@
         </div>
       </div>
       <div class="row pl-4 pb-2">
-          <span class="col-4">
-          <i class="far fa-clock" aria-hidden="true" ></i>
-          {{-240 | timewd}}</span>
+          <kaf-s00-p1 class="col-4"
+          v-bind:params="kafS00P1Params3" 
+          />
           <span class="col-8" v-if="condition3">{{time.attendanceTime2 | timewd}} {{'KAFS04_19' | i18n}}</span>
           <span class="col-8" v-else>{{time.attendanceTime2 | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
       </div>
       <div class="row pl-4 pb-3">
-          <span class="col-4">
-          <i class="far fa-clock" aria-hidden="true" ></i>
-          {{-240 | timewd}}</span>
-          <span class="col-8" v-if="condition4">{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}</span>
-          <span class="col-8" v-else>{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
+          <kaf-s00-p1 class="col-4"
+          v-bind:params="kafS00P1Params4" 
+          />
+          <span class="col-8" v-if="cond4">{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}</span>
+          <span class="col-8" v-else-if="cond4 == false">{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
+          <span v-else class="col-8">{{'KAFS04_18' | i18n}}</span>
       </div>
     </div>
   </div>

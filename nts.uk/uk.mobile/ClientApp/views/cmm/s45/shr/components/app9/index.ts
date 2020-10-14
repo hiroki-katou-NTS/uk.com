@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import {
     IAppDispInfoStartupOutput,
@@ -6,12 +6,16 @@ import {
     IEarlyInfos,
     ITime
 } from '../../../../../kaf/s04/a/define';
-import * as _ from 'lodash';
+import { KafS00SubP1Component, KAFS00P1Params } from '../../../../../kaf/s00/sub/p1';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'cmms45componentsapp9',
     template: require('./index.vue'),
     validations: {},
+    components: {
+        'kaf-s00-p1': KafS00SubP1Component
+    },
     constraints: []
 })
 export class CmmS45ComponentsApp9Component extends Vue {
@@ -23,10 +27,13 @@ export class CmmS45ComponentsApp9Component extends Vue {
         attendanceTime2: 0,
         leaveTime2: 0,
     };
+    public kafS00P1Params1: KAFS00P1Params;
+    public kafS00P1Params2: KAFS00P1Params;
+    public kafS00P1Params3: KAFS00P1Params;
+    public kafS00P1Params4: KAFS00P1Params;
     public condition1: boolean = true;
     public condition2: boolean = true;
     public condition3: boolean = true;
-    public condition4: boolean = true;
     public showData: boolean = false;
     @Prop({
         default: () => ({
@@ -39,9 +46,73 @@ export class CmmS45ComponentsApp9Component extends Vue {
         appDetail: IAppDetail,
     };
 
+    get cond4() {
+        const vm = this;
+        let temp: boolean | null;
+        if (_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[3])) {
+                temp = null;
+            }
+        vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((i) => {
+                if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
+                    temp = true;
+                }
+            });
+        vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation.forEach((i) => {
+                if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
+                    temp = false;
+                }
+            });
+
+        return temp;
+    }
+
     public created() {
         const vm = this;
 
+        vm.kafS00P1Params1 = {
+            actualDisp: false,
+            preAppDisp: false,
+            scheduleDisp: true,
+            actualExcess: null,
+            actualTime: null,
+            preAppExcess: null,
+            preAppTime: null,
+            scheduleExcess: null,
+            scheduleTime: null
+        };
+        vm.kafS00P1Params2 = {
+            actualDisp: false,
+            preAppDisp: false,
+            scheduleDisp: true,
+            actualExcess: null,
+            actualTime: null,
+            preAppExcess: null,
+            preAppTime: null,
+            scheduleExcess: null,
+            scheduleTime: null
+        };
+        vm.kafS00P1Params3 = {
+            actualDisp: false,
+            preAppDisp: false,
+            scheduleDisp: true,
+            actualExcess: null,
+            actualTime: null,
+            preAppExcess: null,
+            preAppTime: null,
+            scheduleExcess: null,
+            scheduleTime: null
+        };
+        vm.kafS00P1Params4 = {
+            actualDisp: false,
+            preAppDisp: false,
+            scheduleDisp: true,
+            actualExcess: null,
+            actualTime: null,
+            preAppExcess: null,
+            preAppTime: null,
+            scheduleExcess: null,
+            scheduleTime: null
+        };
         let paramsStartB = {
             appId: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
             infoStartup: vm.params.appDispInfoStartupOutput,
@@ -50,7 +121,6 @@ export class CmmS45ComponentsApp9Component extends Vue {
         vm.$auth.user.then((user: any) => {
             vm.$mask('show');
             vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
-                vm.$mask('hide');
                 vm.params.appDetail = res.data;
                 //事後モード && ※3			「補足資料」Sheetの「２．取り消す初期情報」に記載している。
                 if (vm.params.appDetail.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr == 1) {
@@ -65,11 +135,16 @@ export class CmmS45ComponentsApp9Component extends Vue {
                         if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
                             vm.condition3 = false;
                         }
-                        if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
-                            vm.condition4 = false;
-                        }
                     });
                 }
+
+                //update component S00 P1
+                vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
+                    vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                    vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                    vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                    vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                });
 
                 const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
                 const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
@@ -77,7 +152,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
                 const condition7 = vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 
                 // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
-                if (condition7 == true &&  condition5 || condition6 ) {
+                if (condition7 == true && condition5 || condition6) {
                     vm.showData = true;
                 } else {
                     vm.showData = false;
@@ -115,11 +190,13 @@ export class CmmS45ComponentsApp9Component extends Vue {
                         }
                     });
                 }
+                vm.$mask('hide');
             }).catch(() => {
 
             });
         });
     }
+
 
 
     public mounted() {
