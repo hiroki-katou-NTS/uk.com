@@ -458,6 +458,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				return dfd.promise();
 			}
 
+			if(nts.uk.ui.errors.hasError()) {
+				vm.$blockui('clear');
+				dfd.fail();
+
+				return dfd.promise();
+			}
+
             let legalHolidayCd = '';
             let nonStatutoryHolidayCd = '';
             let holidayCd = '';
