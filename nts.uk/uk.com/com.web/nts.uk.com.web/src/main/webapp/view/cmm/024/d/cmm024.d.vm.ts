@@ -1,10 +1,10 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.cmm024.d {
-	import service = nts.uk.com.view.cmm024.a.service;
-	import HistoryUpdate = nts.uk.com.view.cmm024.a.service.HistoryUpdate;
-	import ScheduleHistoryDto = nts.uk.com.view.cmm024.a.service.ScheduleHistoryDto;
-	import ScheduleHistoryModel = nts.uk.com.view.cmm024.a.service.ScheduleHistoryModel;
+	import common = nts.uk.com.view.cmm024.a.common;
+	import HistoryUpdate = common.HistoryUpdate;
+	import ScheduleHistoryDto = common.ScheduleHistoryDto;
+	import ScheduleHistoryModel = common.ScheduleHistoryModel;
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -38,7 +38,7 @@ module nts.uk.com.view.cmm024.d {
 			let vm = this;
 
 			//get value from parent form
-			vm.newEndDate(moment(service.END_DATE, 'YYYY/MM/DD').toDate());
+			vm.newEndDate(moment(common.END_DATE, 'YYYY/MM/DD').toDate());
 			vm.registrationHistoryType(HistoryUpdate.HISTORY_EDIT);
 			$('.ntsDatepicker').focus();
 
@@ -75,7 +75,7 @@ module nts.uk.com.view.cmm024.d {
 				let dataModel = vm.scheduleHistoryModel();
 				let isBefore = moment(stDate).format('YYYYMMDD') <= moment(allowDate).format('YYYYMMDD');
 
-				if (isBefore && vm.registrationHistoryType() === service.HistoryUpdate.HISTORY_EDIT) {
+				if (isBefore && vm.registrationHistoryType() === common.HistoryUpdate.HISTORY_EDIT) {
 					let oldDate: string = moment(allowDate, 'YYYY/MM/DD').format('YYYY/MM/DD');
 					vm.$dialog.error({ messageId: "Msg_156", messageParams: [oldDate] });
 					return;
@@ -92,7 +92,7 @@ module nts.uk.com.view.cmm024.d {
 						screen: dataModel.screen
 					};
 
-				if (vm.registrationHistoryType() == service.HistoryUpdate.HISTORY_DELETE) {
+				if (vm.registrationHistoryType() == common.HistoryUpdate.HISTORY_DELETE) {
 					vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: string) => {
 						if (result === 'yes') {
 							vm.deleteScheduleHistory(params);
@@ -139,15 +139,20 @@ module nts.uk.com.view.cmm024.d {
 		}
 
 		/**
-		 * Delete a schedule history of company / workplace
-		*/
+		 *  Delete a schedule history of company / workplace
+		 * params {
+		 * @companyId / @workplaceId string : 会社ID / 職場ID
+		 * @startDate date : 期間
+		 * @endDate date : 期間	
+		 * }
+		 */
 		deleteScheduleHistory(params: any) {
 			let vm = this;
 
 			switch (params.screen) {
 				case 'A':
-					vm.$blockui('show');
-					service.deleteAScheduleHistoryByCompany(params)
+					vm.$blockui('show');					
+					vm.$ajax('at', common.CMM024_API.screenD_DeleteScheduleHistoryByCompany, params)
 						.done((response) => {
 							vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
 								vm.$window.close();
@@ -163,8 +168,8 @@ module nts.uk.com.view.cmm024.d {
 					break;
 
 				case 'B':
-					vm.$blockui('show');
-					service.deleteAScheduleHistoryByWorkplace(params)
+					vm.$blockui('show');					
+					vm.$ajax('at', common.CMM024_API.screenD_DeleteScheduleHistoryByWorkplace, params)
 						.done((response) => {
 							vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
 								vm.$window.close();
@@ -182,16 +187,22 @@ module nts.uk.com.view.cmm024.d {
 		}
 
 		/**
-		 * update a schedule history of company / workplace
-		*/
+		 * update a schedule history
+		 * params {
+		 * @companyId / @workplaceId string : 会社ID / 職場ID
+		 * @startDate date : 期間
+		 * @endDate date : 期間	
+		 * @startDateBeforeChange : 期間
+		 * }
+		 */
 		updateScheduleHistory(params: any) {
 			let vm = this,
 				status: boolean = false;
 
 			vm.$blockui('show');
 			switch (params.screen) {
-				case 'A':
-					service.updateAScheduleHistoryByCompany(params)
+				case 'A':					
+					vm.$ajax('at', common.CMM024_API.screenD_UpdateScheduleHistoryByCompany, params)
 						.done((response) => {
 							vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
 								status = true;
@@ -203,8 +214,8 @@ module nts.uk.com.view.cmm024.d {
 						.always(() => vm.$blockui('hide'));
 					break;
 
-				case 'B':
-					service.updateAScheduleHistoryByWorkplace(params)
+				case 'B':					
+					vm.$ajax('at', common.CMM024_API.screenD_UpdateScheduleHistoryByWorkplace, params)
 						.done((response) => {
 							vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
 								status = true;
