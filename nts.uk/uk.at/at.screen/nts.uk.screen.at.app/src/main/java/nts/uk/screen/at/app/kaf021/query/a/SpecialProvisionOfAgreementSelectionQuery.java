@@ -102,31 +102,34 @@ public class SpecialProvisionOfAgreementSelectionQuery {
         Closure closureInfo = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
 
         // 年月を指定して、36協定期間の年月を取得する
-        YearMonth startYm = setting.getYearMonthOfAgreementPeriod(closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd));
+        YearMonth processingYm = closureInfo.getClosureMonth().getProcessingYm();
+        YearMonth startYm = setting.getYearMonthOfAgreementPeriod(YearMonth.of(processingYm.year(), setting.getStartingMonth().getMonth()));
+        YearMonth currentYm = setting.getYearMonthOfAgreementPeriod(closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd));
         YearMonth endYm = startYm.addMonths(11);
-        YearMonth currentYm = YearMonth.of(baseDate.year(), baseDate.month());
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(currentYm, endYm);
-        Map<String, Map<Integer, AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
+        Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
         for (String employeeId : employeeIds) {
-            Map<Integer, AgreementTimeOfManagePeriod> timeAll = new HashMap<>();
-            for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
-                timeAll.put(ymIndex.v(), null);
-            }
-            agreementTimeAll.put(employeeId, timeAll);
+            agreementTimeAll.put(employeeId, new ArrayList<>());
         }
 
         // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
-        Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeOfMngPeriodAll = GetAgreementTimeOfMngPeriod
+        Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeOfManagePeriods = GetAgreementTimeOfMngPeriod
                 .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, currentYm.addMonths(-1)))
                 .stream().collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getSid));
 
+        for (Map.Entry<String, List<AgreementTimeOfManagePeriod>> agreementTime : agreementTimeOfManagePeriods.entrySet()){
+            if (agreementTimeAll.containsKey(agreementTime.getKey())){
+                agreementTimeAll.get(agreementTime.getKey()).addAll(agreementTime.getValue());
+            }
+        }
+
         for (String employeeId : employeeIds) {
-            Map<Integer, AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employeeId);
+            List<AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employeeId);
             for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
                 // 【NO.333】36協定時間の取得
                 AgreementTimeOfManagePeriod time = GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
                 if (time != null) {
-                    timeAll.put(ymIndex.v(), time);
+                    timeAll.add(time);
                 }
             }
         }
@@ -144,11 +147,11 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             agreementTimeYearOpt.ifPresent(agreementTimeYear -> agreementTimeYearAll.put(employee.getEmployeeId(), agreementTimeYear));
 
             Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiOpt = GetAgreementTime.getMaxAverageMulti(require,
-                    new ArrayList<>(), employee.getEmployeeId(), startYm, baseDate, ScheRecAtr.RECORD);
+                    new ArrayList<>(), employee.getEmployeeId(), currentYm, baseDate, ScheRecAtr.RECORD);
             agreMaxAverageTimeMultiOpt.ifPresent(agreMaxAverageTimeMulti -> agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti));
         }
 
-        List<EmployeeAgreementTimeDto> empAgreementTimes = mappingEmployee(employees, startYm, endYm, agreementTimeOfMngPeriodAll, agreementTimeAll,
+        List<EmployeeAgreementTimeDto> empAgreementTimes = mappingEmployee(employees, startYm, endYm, agreementTimeAll,
                 agreementTimeYearAll, agreMaxAverageTimeMultiAll, monthsExceededAll);
 
         for (EmployeeAgreementTimeDto emp : empAgreementTimes) {
@@ -172,8 +175,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
     private List<EmployeeAgreementTimeDto> mappingEmployee(List<EmployeeBasicInfoDto> employees,
                                                            YearMonth startYm, YearMonth endYm,
-                                                           Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeOfMngPeriodAll,
-                                                           Map<String, Map<Integer, AgreementTimeOfManagePeriod>> agreementTimeAll,
+                                                           Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeAll,
                                                            Map<String, AgreementTimeYear> agreementTimeYearAll,
                                                            Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll,
                                                            Map<String, Integer> monthsExceededAll) {
@@ -188,16 +190,12 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             result.setAffiliationId(employee.getAffiliationId());
             result.setAffiliationName(employee.getAffiliationName());
 
-            // fill data to each month: AgreementTimeOfManagePeriod, AgreementTimeDetail
+            // fill data to each month: AgreementTimeOfManagePeriod
             YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYm, endYm);
             List<AgreementTimeOfManagePeriod> agrTimePeriods = new ArrayList<>();
-            if (agreementTimeOfMngPeriodAll.containsKey(result.getEmployeeId())) {
-                agrTimePeriods = agreementTimeOfMngPeriodAll.get(result.getEmployeeId());
+            if (agreementTimeAll.containsKey(result.getEmployeeId())) {
+                agrTimePeriods = agreementTimeAll.get(result.getEmployeeId());
             }
-            /*Map<Integer, AgreementTimeDetail> agreementTimeDetailByMonth = new HashMap<>();
-            if (agreementTimeDetailAll.containsKey(result.getEmployeeId())) {
-                agreementTimeDetailByMonth = agreementTimeDetailAll.get(result.getEmployeeId());
-            }*/
             mappingPeriodMonth(result, yearMonthPeriod, agrTimePeriods);
 
             // fill data AgreementTimeOutput
@@ -219,25 +217,15 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                                     YearMonthPeriod yearMonthPeriod,
                                     List<AgreementTimeOfManagePeriod> agrTimePeriods) {
         for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
-            AgreementTimeDto agreementTime = null;
-            AgreementTimeDto agreementMaxTime = null;
 
             Optional<AgreementTimeOfManagePeriod> agrTimePeriodOpt = agrTimePeriods.stream()
-                    .filter(x -> x.getYm() == ymIndex).findFirst();
-            if (agrTimePeriodOpt.isPresent()) {
-                AgreementTimeOfManagePeriod agrTimePeriod = agrTimePeriodOpt.get();
-                agreementTime = new AgreementTimeDto(agrTimePeriod);
-                agreementMaxTime = new AgreementTimeDto(agrTimePeriod); //TODO
+                    .filter(x -> x.getYm().equals(ymIndex)).findFirst();
+            if (!agrTimePeriodOpt.isPresent()) {
+                continue;
             }
+            AgreementTimeOfManagePeriod agrTimePeriod = agrTimePeriodOpt.get();
+            AgreementTimeMonthDto agreementTimeMonth = new AgreementTimeMonthDto(agrTimePeriod);
 
-            /*if (agreementTimeDetailByMonth.containsKey(ymIndex.v())) {
-                AgreementTimeDetail agreementTimeDetail = agreementTimeDetailByMonth.get(ymIndex.v());
-                Optional<AgreMaxTimeOfMonthly> confirmedMaxOpt = agreementTimeDetail.getConfirmedMax();
-                if (!confirmedMaxOpt.isPresent()) continue;
-                agreementMaxTime = new AgreementTimeDto(confirmedMaxOpt.get());
-            }*/
-
-            AgreementTimeMonthDto agreementTimeMonth = new AgreementTimeMonthDto(ymIndex.v(), agreementTime, agreementMaxTime);
             switch (ymIndex.month()) {
                 case 1:
                     result.setMonth1(agreementTimeMonth);
@@ -294,22 +282,22 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                 AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = agreMaxAverageTimeMultiAll.get(result.getEmployeeId());
                 for (AgreMaxAverageTime averageTime : agreMaxAverageTimeMulti.getAverageTimes()) {
                     YearMonthPeriod period = averageTime.getPeriod();
-                    int rangeMonth = period.end().compareTo(period.start());
+                    int rangeMonth = period.yearMonthsBetween().size();
                     AgreementMaxAverageTimeDto average = new AgreementMaxAverageTimeDto(averageTime);
                     switch (rangeMonth) {
-                        case 1:
+                        case 2:
                             result.setMonthAverage2(average);
                             break;
-                        case 2:
+                        case 3:
                             result.setMonthAverage3(average);
                             break;
-                        case 3:
+                        case 4:
                             result.setMonthAverage4(average);
                             break;
-                        case 4:
+                        case 5:
                             result.setMonthAverage5(average);
                             break;
-                        case 5:
+                        case 6:
                             result.setMonthAverage6(average);
                             break;
                     }

@@ -408,208 +408,100 @@ module nts.uk.at.kaf021.a {
                     affiliationName: "affiliationName " + i,
                     month1: {
                         yearMonth: 202001,
-                        time: {
-                            time: 100 * i,
-                            maxTime: 100 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL,
-                            error: 100 * i,
-                            alarm: 50 * i
-
-                        },
-                        maxTime: {
-                            time: 200 * i,
-                            maxTime: 200 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL,
-                            error: 200 * i,
-                            alarm: 150 * i
-                        },
+                        time: 100 * i,
+                        maxTime: 100 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.NORMAL,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month2: {
                         yearMonth: 202002,
-                        time: {
-                            time: 200 * i,
-                            maxTime: 200 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 300 * i,
-                            maxTime: 300 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 200 * i,
+                        maxTime: 200 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month3: {
                         yearMonth: 202003,
-                        time: {
-                            time: 3 * i,
-                            maxTime: 3 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 4 * i,
-                            maxTime: 4 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+
+                        time: 3 * i,
+                        maxTime: 3 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month4: {
                         yearMonth: 202004,
-                        time: {
-                            time: 4 * i,
-                            maxTime: 4 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 5 * i,
-                            maxTime: 5 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 4 * i,
+                        maxTime: 4 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month5: {
                         yearMonth: 202005,
-                        time: {
-                            time: 5 * i,
-                            maxTime: 5 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 6 * i,
-                            maxTime: 6 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 5 * i,
+                        maxTime: 5 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month6: {
                         yearMonth: 202006,
-                        time: {
-                            time: 6 * i,
-                            maxTime: 6 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 7 * i,
-                            maxTime: 7 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 6 * i,
+                        maxTime: 6 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month7: {
                         yearMonth: 202007,
-                        time: {
-                            time: 7 * i,
-                            maxTime: 7 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 8 * i,
-                            maxTime: 8 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 7 * i,
+                        maxTime: 7 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month8: {
                         yearMonth: 202008,
-                        time: {
-                            time: 8 * i,
-                            maxTime: 8 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 9 * i,
-                            maxTime: 9 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 8 * i,
+                        maxTime: 8 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month9: {
                         yearMonth: 202009,
-                        time: {
-                            time: 9 * i,
-                            maxTime: 9 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 10 * i,
-                            maxTime: 10 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 9 * i,
+                        maxTime: 9 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month10: {
                         yearMonth: 202010,
-                        time: {
-                            time: 10 * i,
-                            maxTime: 10 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 11 * i,
-                            maxTime: 11 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 10 * i,
+                        maxTime: 10 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month11: {
                         yearMonth: 202011,
-                        time: {
-                            time: 12 * i,
-                            maxTime: 12 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 12 * i,
-                            maxTime: 12 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 12 * i,
+                        maxTime: 12 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     month12: {
                         yearMonth: 202012,
-                        time: {
-                            time: 1300 * i,
-                            maxTime: 1300 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
-                        maxTime: {
-                            time: 1400 * i,
-                            maxTime: 1400 * i + 10,
-                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                            error: 100 * i,
-                            alarm: 50 * i
-                        },
+                        time: 1300 * i,
+                        maxTime: 1300 * i + 10,
+                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
+                        error: 100 * i,
+                        alarm: 50 * i
                     },
                     year: {
                         limitTime: 1000 * i,
