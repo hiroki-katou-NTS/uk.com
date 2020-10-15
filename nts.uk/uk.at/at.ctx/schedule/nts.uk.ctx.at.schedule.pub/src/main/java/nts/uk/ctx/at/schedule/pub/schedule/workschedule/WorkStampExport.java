@@ -22,7 +22,7 @@ public class WorkStampExport extends DomainObject{
 	/*
 	 * 丸め後の時刻 TimeWithDayAttr
 	 */
-	private int afterRoundingTime;
+//	private int afterRoundingTime;
 	
 	/*
 	 * 時刻
@@ -34,9 +34,9 @@ public class WorkStampExport extends DomainObject{
 	 */
 	private String locationCode;
 
-	public WorkStampExport(int afterRoundingTime, WorkTimeInformationExport timeDay, String locationCode) {
+	public WorkStampExport(WorkTimeInformationExport timeDay, String locationCode) {
 		super();
-		this.afterRoundingTime = afterRoundingTime;
+//		this.afterRoundingTime = afterRoundingTime;
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
 	}

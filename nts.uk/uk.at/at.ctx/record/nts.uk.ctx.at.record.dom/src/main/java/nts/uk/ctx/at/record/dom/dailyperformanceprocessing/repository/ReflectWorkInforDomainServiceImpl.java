@@ -1721,9 +1721,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 						// 出勤
-						RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.get()
 										: null;
@@ -1735,9 +1735,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										.intValue())
 								: sheet.getAttendance().v();
 						// 退勤
-						RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+						RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 								.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent()
-										? stampSet.getRoundingSets().stream()
+										? stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 												.findFirst().get()
 										: null;
@@ -1803,10 +1803,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
 										// 出勤
-										RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet atendanceRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
 												.isPresent()
-														? stampSet.getRoundingSets().stream()
+														? stampSet.getRoundingTime().getRoundingSets().stream()
 																.filter(item -> item.getSection() == Superiority.ATTENDANCE)
 																.findFirst().get()
 														: null;
@@ -1821,9 +1821,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
 
 										// 退勤
-										RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
+										RoundingSet leavingRoundingSet = stampSet.getRoundingTime().getRoundingSets().stream()
 												.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
-												.isPresent() ? stampSet.getRoundingSets().stream()
+												.isPresent() ? stampSet.getRoundingTime().getRoundingSets().stream()
 														.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
 														.findFirst().get() : null;
 
@@ -1866,13 +1866,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				if (item.getAttendanceStamp() != null) {
 					WorkStamp actualStamp = null;
 					if (item.getAttendanceStamp().getActualStamp() != null) {
-						actualStamp = new WorkStamp(item.getAttendanceStamp().getActualStamp().getAfterRoundingTime(),
+						actualStamp = new WorkStamp(
 								item.getAttendanceStamp().getActualStamp().getTimeWithDay(),
 								item.getAttendanceStamp().getActualStamp().getLocationCode(),
 								item.getAttendanceStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp stamp = new WorkStamp(item.getAttendanceStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp stamp = new WorkStamp(
 							item.getAttendanceStamp().getStamp().getTimeWithDay(),
 							item.getAttendanceStamp().getStamp().getLocationCode(),
 							item.getAttendanceStamp().getStamp().getStampSourceInfo());
@@ -1886,13 +1886,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					WorkStamp leaveActualStampTemp = null;
 					if (item.getLeaveStamp().getActualStamp() != null) {
 						leaveActualStampTemp = new WorkStamp(
-								item.getLeaveStamp().getActualStamp().getAfterRoundingTime(),
 								item.getLeaveStamp().getActualStamp().getTimeWithDay(),
 								item.getLeaveStamp().getActualStamp().getLocationCode(),
 								item.getLeaveStamp().getActualStamp().getStampSourceInfo());
 					}
 
-					WorkStamp leaveStampTemp = new WorkStamp(item.getLeaveStamp().getStamp().getAfterRoundingTime(),
+					WorkStamp leaveStampTemp = new WorkStamp(
 							item.getLeaveStamp().getStamp().getTimeWithDay(),
 							item.getLeaveStamp().getStamp().getLocationCode(),
 							item.getLeaveStamp().getStamp().getStampSourceInfo());
@@ -2020,7 +2019,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	private TimeActualStamp attendanceStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
@@ -2033,7 +2031,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	
 	private TimeActualStamp leaveStampInfor(TimeLeavingWork timeLeavingWork) {
 		WorkStamp stamp = new WorkStamp(
-				timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 				timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().isPresent()
 						? timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode()

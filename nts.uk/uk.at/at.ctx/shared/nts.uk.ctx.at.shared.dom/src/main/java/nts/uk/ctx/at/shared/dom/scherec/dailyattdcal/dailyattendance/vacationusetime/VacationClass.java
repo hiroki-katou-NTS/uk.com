@@ -158,9 +158,15 @@ public class VacationClass {
 		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
 
 		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
+		
+		//振休使用時間の計算
+		AttendanceTime transferHolidayUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.Pause, predSetting,
+				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
+
+		val transferHolidayOfDaily =new TransferHolidayOfDaily(transferHolidayUseTime);		
 
 		return new HolidayOfDaily(absenceOfDaily, timeDigestOfDaily, yearlyReservedOfDaily, substituteOfDaily,
-				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily, new TransferHolidayOfDaily(new AttendanceTime(0)));
+				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily, transferHolidayOfDaily);
 	}
 
 	/**

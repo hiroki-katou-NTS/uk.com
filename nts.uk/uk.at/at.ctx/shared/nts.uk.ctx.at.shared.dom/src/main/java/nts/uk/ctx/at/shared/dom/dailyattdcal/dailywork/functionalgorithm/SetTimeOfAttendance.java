@@ -42,12 +42,12 @@ public class SetTimeOfAttendance {
 			// 「出退勤（List）」を作成する
 			lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
 				return new TimeLeavingWork(x.getWorkNo(),
-						new TimeActualStamp(null, new WorkStamp(x.getAttendance(),
+						new TimeActualStamp(null, new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
 										x.getAttendance()),
 								Optional.empty()), 0),
 						new TimeActualStamp(null,
-								new WorkStamp(x.getLeaveWork(),
+								new WorkStamp(
 										new WorkTimeInformation(
 												new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
 												x.getLeaveWork()),
@@ -61,9 +61,9 @@ public class SetTimeOfAttendance {
 							workInfo.getRecordInfo().getWorkTimeCode(), autoStampClasssifi));
 		}
 
-		// ジャスト遅刻早退時刻を補正する
-		correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),
-				lstTimeLeavingWork);
+//		// ジャスト遅刻早退時刻を補正する
+//		correctLateArrivalDepartureTime.process(companyId, workInfo.getRecordInfo().getWorkTimeCode().v(),
+//				lstTimeLeavingWork);
 
 		// 「自動打刻セット区分」元に「出退勤（List）」を整理する
 		lstTimeLeavingWork.forEach(data -> {
