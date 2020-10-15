@@ -1,3 +1,9 @@
+a {
+  color: blue !important;
+}
+.mt-5 {
+  margin-top: 5px;
+}
 .w-490 {
   width: 490px;
 }
