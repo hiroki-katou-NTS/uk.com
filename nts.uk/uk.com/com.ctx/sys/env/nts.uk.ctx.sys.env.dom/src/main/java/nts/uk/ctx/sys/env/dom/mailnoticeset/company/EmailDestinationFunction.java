@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
 /**
  * メール送信先機能
  */
-@Getter
+@Data
+@Builder
 public class EmailDestinationFunction {
     /**
      * メール分類

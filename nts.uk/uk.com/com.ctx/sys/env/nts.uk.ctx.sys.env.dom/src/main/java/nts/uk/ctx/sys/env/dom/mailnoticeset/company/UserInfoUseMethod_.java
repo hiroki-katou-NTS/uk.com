@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.環境.メール通知設定.会社.会社
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.環境.メール通知設定.会社.会社.ユーザー情報の使用方法
  */
 @Getter
 public class UserInfoUseMethod_ extends AggregateRoot {
