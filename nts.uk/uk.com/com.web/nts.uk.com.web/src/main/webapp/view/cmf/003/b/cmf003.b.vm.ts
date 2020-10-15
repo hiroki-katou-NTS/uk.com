@@ -879,13 +879,13 @@ module nts.uk.com.view.cmf003.b {
         this.passwordAvailability = passwordAvailability;
         this.saveSetName = saveSetName;
         this.referenceDate = referenceDate;
-        this.compressedPassword = compressedPassword ? compressedPassword : null;
+        this.compressedPassword = compressedPassword;
         this.executionDateAndTime = executionDateAndTime;
         this.daySaveEndDate = daySaveEndDate ? daySaveEndDate : null;
         this.daySaveStartDate = daySaveStartDate ? daySaveStartDate : null;
         this.monthSaveEndDate = monthSaveEndDate ? monthSaveEndDate : null;
         this.monthSaveStartDate = monthSaveStartDate ? monthSaveStartDate : null;
-        this.suppleExplanation = suppleExplanation ? suppleExplanation : null;
+        this.suppleExplanation = suppleExplanation;
         this.endYear = endYear ? endYear : null;
         this.startYear = startYear ? startYear : null;
         this.presenceOfEmployee = presenceOfEmployee;

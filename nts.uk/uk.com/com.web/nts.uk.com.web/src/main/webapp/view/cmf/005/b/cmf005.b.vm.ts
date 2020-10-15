@@ -276,12 +276,14 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         systemType: self.systemTypes()
       };
       service.patternSettingSelect(param).done((res) => {
+        console.log(res);
         self.savedName(res.patternName);
         self.deleteSetName(res.patternName);
         self.isExistCompressPasswordFlg(res.withoutPassword === 1);
         self.passwordForCompressFile(res.patternCompressionPwd);
         self.confirmPasswordForCompressFile(res.patternCompressionPwd);
         self.supplementExplanation(res.patternSuppleExplanation);
+        debugger;
 
         const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
         self.listDataCategory(_.map(res.selectCategories, (x: any) => {
@@ -812,6 +814,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
       params.modal = self.saveManualSetting();
       if (Number(self.isSaveBeforeDeleteFlg()) === 1) {
+        debugger;
         service.addMalSet(self.createManualSettings()).then((res) => {
           if (res && res != "") {
             setShared("CMF005KParams", {
@@ -823,10 +826,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             });
 
             nts.uk.ui.windows.sub.modal("/view/cmf/005/k/index.xhtml").onClosed(() => {
-              const param = getShared("CMF004KParams");
+              const param = getShared("CMF005KParams");
               if (param.isSuccess) {
                 setShared("CMF005_E_PARAMS", params);
-                self.saveManualSetting();
                 nts.uk.ui.windows.sub.modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
                   self.buttonEnable(false);
                 });
@@ -1019,15 +1021,15 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       this.passwordAvailability = passwordAvailability;
       this.saveSetName = saveSetName;
       this.referenceDate = referenceDate;
-      this.compressedPassword = compressedPassword ? compressedPassword : null;
+      this.compressedPassword = compressedPassword;
       this.executionDateAndTime = executionDateAndTime;
-      this.daySaveEndDate = daySaveEndDate ? daySaveEndDate : null;
-      this.daySaveStartDate = daySaveStartDate ? daySaveStartDate : null;
-      this.monthSaveEndDate = monthSaveEndDate ? monthSaveEndDate : null;
-      this.monthSaveStartDate = monthSaveStartDate ? monthSaveStartDate : null;
-      this.suppleExplanation = suppleExplanation ? suppleExplanation : null;
-      this.endYear = endYear ? endYear : null;
-      this.startYear = startYear ? startYear : null;
+      this.daySaveEndDate = daySaveEndDate;
+      this.daySaveStartDate = daySaveStartDate;
+      this.monthSaveEndDate = monthSaveEndDate;
+      this.monthSaveStartDate = monthSaveStartDate;
+      this.suppleExplanation = suppleExplanation;
+      this.endYear = endYear;
+      this.startYear = startYear;
       this.presenceOfEmployee = presenceOfEmployee;
       this.employees = _.map(employees, e => new Employee(e.employeeId, e.employeeCode, e.businessName));
       this.category = category;
