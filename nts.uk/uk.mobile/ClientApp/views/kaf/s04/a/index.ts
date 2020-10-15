@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS04BComponent } from '../b';
-import {KafS00SubP1Component,KAFS00P1Params} from '../../s00/sub/p1';
+import { KafS00SubP1Component, KAFS00P1Params } from '../../s00/sub/p1';
 
 
 import {
@@ -49,10 +49,50 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: IParamS00B;
     public kafS00CParams: IParamS00C;
-    public kafS00P1Params1: KAFS00P1Params;
-    public kafS00P1Params2: KAFS00P1Params;
-    public kafS00P1Params3: KAFS00P1Params;
-    public kafS00P1Params4: KAFS00P1Params;
+    public kafS00P1Params1: KAFS00P1Params = {
+        preAppDisp: false,
+        preAppTime: null,
+        preAppExcess: null,
+        actualDisp: false,
+        actualTime: null,
+        actualExcess: null,
+        scheduleDisp: true,
+        scheduleTime: null,
+        scheduleExcess: null
+    };
+    public kafS00P1Params2: KAFS00P1Params = {
+        preAppDisp: false,
+        preAppTime: null,
+        preAppExcess: null,
+        actualDisp: false,
+        actualTime: null,
+        actualExcess: null,
+        scheduleDisp: true,
+        scheduleTime: null,
+        scheduleExcess: null
+    };
+    public kafS00P1Params3: KAFS00P1Params = {
+        preAppDisp: false,
+        preAppTime: null,
+        preAppExcess: null,
+        actualDisp: false,
+        actualTime: null,
+        actualExcess: null,
+        scheduleDisp: true,
+        scheduleTime: null,
+        scheduleExcess: null
+    };
+    public kafS00P1Params4: KAFS00P1Params = {
+        preAppDisp: false,
+        preAppTime: null,
+        preAppExcess: null,
+        actualDisp: false,
+        actualTime: null,
+        actualExcess: null,
+        scheduleDisp: true,
+        scheduleTime: null,
+        scheduleExcess: null
+    };
     public data !: IData;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput;
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
@@ -159,6 +199,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.initComponentC();
                     vm.initComponentP1();
                     vm.$mask('hide');
+
+                    if (!vm.mode) {
+                        let schedTime = vm.res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+                        schedTime.forEach((item) => {
+                            vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                            vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                            vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                            vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                        });
+                    }
 
                     if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
                         vm.conditionLateEarlyLeave2Show = false;
