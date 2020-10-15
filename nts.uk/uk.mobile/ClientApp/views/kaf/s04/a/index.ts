@@ -204,10 +204,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         let schedTime = vm.res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
                         schedTime.forEach((item) => {
                             if (item.opAchievementDetail != null) {
-                                vm.kafS00P1Params1.scheduleTime ? item.opAchievementDetail.achievementEarly.scheAttendanceTime1 : null;
-                                vm.kafS00P1Params2.scheduleTime ? item.opAchievementDetail.achievementEarly.scheDepartureTime2 : null;
-                                vm.kafS00P1Params3.scheduleTime ? item.opAchievementDetail.achievementEarly.scheAttendanceTime2 : null;
-                                vm.kafS00P1Params4.scheduleTime ? item.opAchievementDetail.achievementEarly.scheDepartureTime2 : null;
+                                vm.kafS00P1Params1.scheduleTime  = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                                vm.kafS00P1Params2.scheduleTime  = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                                vm.kafS00P1Params3.scheduleTime  = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                                vm.kafS00P1Params4.scheduleTime  = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
                             }
                         });
                     }
