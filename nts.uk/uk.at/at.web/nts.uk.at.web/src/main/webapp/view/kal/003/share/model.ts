@@ -718,8 +718,8 @@ module nts.uk.at.view.kal003.share.model {
                                     if (self.extractType() == 6 || self.extractType() == 8) {
                                         if (parseInt(startPairValue.value()) >= parseInt(endPairValue.value())) {
                                             setTimeout(() => {
-                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });
+                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_836");
+                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_836" });
                                             }, 50);
                                         } else {
                                             nts.uk.ui.errors.clearAll();
@@ -727,8 +727,8 @@ module nts.uk.at.view.kal003.share.model {
                                     } else if (self.extractType() == 7 || self.extractType() == 9) {
                                         if (parseInt(startPairValue.value()) > parseInt(endPairValue.value())) {
                                             setTimeout(() => {
-                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });
+                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_836");
+                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_836" });
                                             }, 50);
                                         } else {
                                             nts.uk.ui.errors.clearAll();
@@ -776,21 +776,21 @@ module nts.uk.at.view.kal003.share.model {
             endTimeValue: InputModel, startFlag: boolean) {
             let self = this;
             if (endDayValue.enable()) {
-                nts.uk.ui.errors.removeByCode($('#' + startDayValue.inputId), "Msg_927");
-                nts.uk.ui.errors.removeByCode($('#' + endDayValue.inputId), "Msg_927");
+                nts.uk.ui.errors.removeByCode($('#' + startDayValue.inputId), "Msg_836");
+                nts.uk.ui.errors.removeByCode($('#' + endDayValue.inputId), "Msg_836");
 
                 let startDay: number = parseInt(startDayValue.value());
                 let endDay: number = parseInt(endDayValue.value());
                 let startTime: number = 0;
                 let endTime: number = 0;
                 if (!_.isNil(startTimeValue.value())) {
-                    nts.uk.ui.errors.removeByCode($('#' + startTimeValue.inputId), "Msg_927");
+                    nts.uk.ui.errors.removeByCode($('#' + startTimeValue.inputId), "Msg_836");
                     startTime = parseInt(startTimeValue.value());
 
                 }
                 if (!_.isNil(endTimeValue.value())) {
                     endTime = parseInt(endTimeValue.value());
-                    nts.uk.ui.errors.removeByCode($('#' + endTimeValue.inputId), "Msg_927");
+                    nts.uk.ui.errors.removeByCode($('#' + endTimeValue.inputId), "Msg_836");
                 }
                 let fullStart = startDay * 1440 + startTime;
                 let fullEnd = endDay * 1440 + endTime;
@@ -801,10 +801,10 @@ module nts.uk.at.view.kal003.share.model {
                         let day = startFlag ? startDayValue : endDayValue;
                         let time = startFlag ? startTimeValue : endTimeValue;
                         if (day.enable()) {
-                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                         if (time.enable()) {
-                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                     }
                 }
@@ -813,10 +813,10 @@ module nts.uk.at.view.kal003.share.model {
                         let day = startFlag ? startDayValue : endDayValue;
                         let time = startFlag ? startTimeValue : endTimeValue;
                         if (day.enable()) {
-                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                         if (time.enable()) {
-                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                     }
                 }

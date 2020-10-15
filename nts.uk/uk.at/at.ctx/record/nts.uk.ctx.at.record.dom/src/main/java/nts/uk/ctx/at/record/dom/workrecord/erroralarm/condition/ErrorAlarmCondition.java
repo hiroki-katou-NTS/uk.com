@@ -408,7 +408,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	            break;
 	    }
 	    if (!valid) {
-	    	throw new BusinessException("Msg_927");
+	    	throw new BusinessException("Msg_836");
 	    }
 	}
 	/**
