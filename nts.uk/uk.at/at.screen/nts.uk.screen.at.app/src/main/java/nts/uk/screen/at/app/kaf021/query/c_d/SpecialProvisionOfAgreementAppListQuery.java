@@ -43,7 +43,7 @@ public class SpecialProvisionOfAgreementAppListQuery {
         String cid = AppContexts.user().companyId();
         // 全ての締めの処理年月と締め期間を取得する
         List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
-        if (CollectionUtil.isEmpty(closurePeriods)) throw new BusinessException("Msg_1843");
+        if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
         CurrentClosurePeriod closurePeriod = closurePeriods.get(0);
 
         return search(closurePeriod.getClosureStartDate(), closurePeriod.getClosureEndDate(), status);

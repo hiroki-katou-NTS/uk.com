@@ -58,7 +58,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
         // <call>(会社ID):List＜締めID, 現在の締め期間＞
         CurrentClosurePeriod closurePeriod = getClosure(cid);
 
-        return new StartupInfo(setting.getStartingMonth().value, closurePeriod.getProcessingYm().v());
+        return new StartupInfo(new AgreementOperationSettingDto(setting), closurePeriod.getProcessingYm().v());
     }
 
     /**
@@ -117,8 +117,8 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                 .get(this.createRequire(), employeeIds, new YearMonthPeriod(startYm, currentYm.addMonths(-1)))
                 .stream().collect(Collectors.groupingBy(AgreementTimeOfManagePeriod::getSid));
 
-        for (Map.Entry<String, List<AgreementTimeOfManagePeriod>> agreementTime : agreementTimeOfManagePeriods.entrySet()){
-            if (agreementTimeAll.containsKey(agreementTime.getKey())){
+        for (Map.Entry<String, List<AgreementTimeOfManagePeriod>> agreementTime : agreementTimeOfManagePeriods.entrySet()) {
+            if (agreementTimeAll.containsKey(agreementTime.getKey())) {
                 agreementTimeAll.get(agreementTime.getKey()).addAll(agreementTime.getValue());
             }
         }
@@ -156,14 +156,13 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
         for (EmployeeAgreementTimeDto emp : empAgreementTimes) {
             Optional<SpecialProvisionsOfAgreement> specialAgreementOpt;
-            if (isYearMode){
+            if (isYearMode) {
                 specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYear(emp.getEmployeeId(), fiscalYear);
-            }
-            else {
-                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(),startYm);
+            } else {
+                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(), startYm);
             }
 
-            if (specialAgreementOpt.isPresent()){
+            if (specialAgreementOpt.isPresent()) {
                 SpecialProvisionsOfAgreement specialAgreement = specialAgreementOpt.get();
                 ApprovalStatus status = specialAgreement.getApprovalStatusDetails().getApprovalStatus();
                 emp.setStatus(status.value);
@@ -308,13 +307,15 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
     private AgreementOperationSetting getSetting(String cid) {
         Optional<AgreementOperationSetting> settingOpt = agreementOperationSettingRepo.find(cid);
-        if (!settingOpt.isPresent()) throw new BusinessException("Msg_1843");
-        return settingOpt.get();
+        if (!settingOpt.isPresent()) throw new RuntimeException("AgreementOperationSetting is null!");
+        AgreementOperationSetting setting = settingOpt.get();
+        if (!setting.isSpecicalConditionApplicationUse()) throw new BusinessException("Msg_1843");
+        return setting;
     }
 
     private CurrentClosurePeriod getClosure(String cid) {
         List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
-        if (CollectionUtil.isEmpty(closurePeriods)) throw new BusinessException("Msg_1843");
+        if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
         return closurePeriods.get(0);
     }
 

@@ -6,10 +6,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class StartupInfo {
-    /**
-     * 起算月
-     */
-    private int startingMonth;
+
+    private AgreementOperationSettingDto setting;
 
     /**
      * 処理年月

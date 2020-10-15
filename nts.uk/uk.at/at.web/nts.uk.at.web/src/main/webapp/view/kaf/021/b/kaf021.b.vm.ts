@@ -184,8 +184,8 @@ module nts.uk.at.kaf021.b {
 
             let month = vm.getMonth()
 
-            let datas = [];
-            _.each(params.datas, (item: common.EmployeeAgreementTime) => {
+            let datas: Array<EmployeeAgreementTimeNew> = [];
+            _.each(params.datas, (item: any) => {
                 let data: EmployeeAgreementTimeNew = {
                     employeeId: item.employeeId,
                     wkpName: item.wkpName,
