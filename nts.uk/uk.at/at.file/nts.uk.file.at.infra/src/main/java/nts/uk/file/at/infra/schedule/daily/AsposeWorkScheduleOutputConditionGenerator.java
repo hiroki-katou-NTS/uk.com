@@ -2808,8 +2808,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		} else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		}
-		else {
+		} else {
 			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		}

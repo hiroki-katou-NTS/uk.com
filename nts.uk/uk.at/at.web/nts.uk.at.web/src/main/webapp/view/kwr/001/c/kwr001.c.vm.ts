@@ -64,7 +64,7 @@ module nts.uk.at.view.kwr001.c {
                 { code: 1, name: nts.uk.resource.getText("KWR001_153") },
                 { code: 0, name: nts.uk.resource.getText("KWR001_154") }
             ]);
-            selectedSizeClassificationType: KnockoutObservable<number> = ko.observable(0);
+            selectedSizeClassificationType: KnockoutObservable<number> = ko.observable(FontSizeEnum.BIG);
 
             // combobox C5_1
             itemProjectType: KnockoutObservableArray<any> = ko.observableArray([
@@ -77,7 +77,7 @@ module nts.uk.at.view.kwr001.c {
             selectedProjectType: KnockoutObservable<number>;
 
             // C7_13 label
-            sizeClassificationLabel: KnockoutObservable<string>;
+            sizeClassificationLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KWR001_65"));
             limitAttendanceItem: any = {
                 right: LIMIT_BIG_SIZE
             };
@@ -108,6 +108,7 @@ module nts.uk.at.view.kwr001.c {
                 self.selectedProjectType = ko.observable(-1);
 
                 self.currentCodeListSwap.subscribe(function(value) {
+                    self.fillterByAttendanceType(self.selectedProjectType());
                 })
 
                 self.items.subscribe(function(value) {
@@ -180,7 +181,6 @@ module nts.uk.at.view.kwr001.c {
                 self.mapIdCodeAtd = {};
                 self.mapCodeIdAtd = {};
 
-                self.sizeClassificationLabel = ko.observable(nts.uk.resource.getText("KWR001_65"));
                 self.selectedSizeClassificationType.subscribe(value => {
                     self.loadSwapLst(false);
                     if (value === FontSizeEnum.SMALL) {
@@ -264,7 +264,8 @@ module nts.uk.at.view.kwr001.c {
                 self.selectionType = dataTransfer.selection;
 
                 $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function() {
-                    if (_.isUndefined(dataTransfer.codeChoose)) {
+                    if (!dataTransfer.codeChoose) {
+                        self.selectedSizeClassificationType(FontSizeEnum.BIG);
                         self.currentCodeList(null);
                     } else {
                         self.currentCodeList(dataTransfer.codeChoose);

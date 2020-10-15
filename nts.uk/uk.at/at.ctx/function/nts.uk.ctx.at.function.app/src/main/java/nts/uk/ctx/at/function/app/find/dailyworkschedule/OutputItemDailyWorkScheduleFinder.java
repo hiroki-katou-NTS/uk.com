@@ -348,7 +348,8 @@ public class OutputItemDailyWorkScheduleFinder {
 					// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
 					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(codeSourceSerivce));
-					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
+					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getSheetNo)
+					          							  .thenComparing(AuthorityFomatDaily::getDisplayOrder));
 					lstDataReturn = lstAuthorityFomatDaily.stream()
 															.map(domain -> {
 																DataInforReturnDto dto = new DataInforReturnDto();
@@ -361,7 +362,7 @@ public class OutputItemDailyWorkScheduleFinder {
 					// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
 					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(codeSourceSerivce).v());
-					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
+					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getSheetNo).thenComparing(BusinessTypeFormatDaily::getOrder));
 					lstDataReturn = lstBusinessTypeFormatDaily.stream()
 															.map(domain -> {
 																DataInforReturnDto dto = new DataInforReturnDto();
