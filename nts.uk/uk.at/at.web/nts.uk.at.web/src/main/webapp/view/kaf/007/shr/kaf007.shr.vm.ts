@@ -175,19 +175,21 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                         vm.model().workTimeCD(childData.selectedWorkTimeCode);
                         vm.appWorkChange.workTimeName(childData.selectedWorkTimeName);
 
-                        if(childData.first) {
-                            vm.appWorkChange.startTime1(childData.first.start);
-                            vm.appWorkChange.endTime1(childData.first.end)
-                        } else {
-                            vm.appWorkChange.startTime1(null);
-                            vm.appWorkChange.endTime1(null)
-                        }
-                        if(childData.second) {
-                            vm.appWorkChange.startTime2(childData.second.start);
-                            vm.appWorkChange.endTime2(childData.second.end)
-                        } else {
-                            vm.appWorkChange.startTime2(null);
-                            vm.appWorkChange.endTime2(null)
+                        if(vm.model().appWorkChangeSet.initDisplayWorktimeAtr !== 1) {
+                            if(childData.first) {
+                                vm.appWorkChange.startTime1(childData.first.start);
+                                vm.appWorkChange.endTime1(childData.first.end)
+                            } else {
+                                vm.appWorkChange.startTime1(null);
+                                vm.appWorkChange.endTime1(null)
+                            }
+                            if(childData.second) {
+                                vm.appWorkChange.startTime2(childData.second.start);
+                                vm.appWorkChange.endTime2(childData.second.end)
+                            } else {
+                                vm.appWorkChange.startTime2(null);
+                                vm.appWorkChange.endTime2(null)
+                            }
                         }
                     }
                 }).then(() => {
@@ -199,12 +201,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 }).fail(fail => console.log(fail))
                 
             }).always(() => {
-                if(vm.mode === 0) {
-                    $('#kaf000-a-component4-singleDate').focus(); $('.ntsStartDatePicker').focus();
-                } else {
                     $('#time1Start').focus();
-                }
-
             });;
         }
 

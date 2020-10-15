@@ -4,7 +4,8 @@
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.opAppReason">
                 {{'KAFS00_16' | i18n}}</v-label>
-            <span class="badge badge-warning" style="height: 30%">必須</span>
+            <span class="badge badge-warning" v-if="standardReasonRequired || requiredAppReason">必須</span>
+            <span class="badge badge-info" v-else>任意</span>
         </div>
         <div class="card-body">
             <div v-if="displayFixedReason">

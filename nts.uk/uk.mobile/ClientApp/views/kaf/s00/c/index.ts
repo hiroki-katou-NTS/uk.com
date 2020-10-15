@@ -7,13 +7,13 @@ import { component, Prop, Watch } from '@app/core/component';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        params: {
-            output: {
-                opAppReason: {
-                    constraint: 'AppReason'
-                }         
-            }
-        },
+        // params: {
+        //     output: {
+        //         opAppReason: {
+        //             constraint: 'AppReason'
+        //         }         
+        //     }
+        // },
         opAppReason: {
             constraint: 'AppReason'
         } 
@@ -26,20 +26,7 @@ export class KafS00CComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: { 
         // KAFS00_C_起動情報
-        input: {
-            // 定型理由の表示
-            displayFixedReason: number,
-            // 申請理由の表示
-            displayAppReason: number,
-            // 定型理由一覧
-            reasonTypeItemLst: Array<ReasonTypeItemDto>,
-            // 申請制限設定
-            appLimitSetting: any,
-            // 選択中の定型理由
-            opAppStandardReasonCD?: number,
-            // 入力中の申請理由
-            opAppReason?: string 
-        },
+        input: KAFS00CParams,
         output: {
             // 定型理由
             opAppStandardReasonCD: number,
@@ -53,6 +40,21 @@ export class KafS00CComponent extends Vue {
 
     public created() {
         const self = this;
+        self.initFromParams();    
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        self.initFromParams();
+    }
+
+    @Watch('params')
+    private initFromParams() {
+        const self = this;
+        if (!self.params) {
+            return;
+        }
         self.dropdownList = [{
             appStandardReasonCD: '',
             displayOrder: 0,
@@ -152,6 +154,18 @@ export class KafS00CComponent extends Vue {
         return self.displayFixedReason || self.displayAppReason;
     }
 
+    get standardReasonRequired() {
+        const self = this;
+
+        return self.$input.appLimitSetting.standardReasonRequired;
+    }
+
+    get requiredAppReason() {
+        const self = this;
+
+        return self.$input.appLimitSetting.requiredAppReason;
+    }
+
     @Watch('opAppStandardReasonCD')
     public opAppStandardReasonCDWatcher(value) {
         const self = this;
@@ -173,4 +187,20 @@ interface ReasonTypeItemDto {
     displayOrder: number;
     defaultValue: boolean;
     reasonForFixedForm: string;     
+}
+
+// KAFS00_C_起動情報
+export interface KAFS00CParams {
+    // 定型理由の表示
+    displayFixedReason: number;
+    // 申請理由の表示
+    displayAppReason: number;
+    // 定型理由一覧
+    reasonTypeItemLst: Array<ReasonTypeItemDto>;
+    // 申請制限設定
+    appLimitSetting: any;
+    // 選択中の定型理由
+    opAppStandardReasonCD?: number;
+    // 入力中の申請理由
+    opAppReason?: string;
 }

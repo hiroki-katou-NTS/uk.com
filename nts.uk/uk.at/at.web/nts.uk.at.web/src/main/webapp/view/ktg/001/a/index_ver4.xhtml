@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 600, height: 200 };</script>
+			<com:stylefile path="ktg001.ver4.a.style.css" />
+			<com:scriptfile path="ktg001.ver4.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<table class="parent">
+					<tr>
+						<td>
+							<table class="widget-table">
+								<tr>
+									<td id="title">
+										<div data-bind="ntsFormLabel: {text: title}"></div>
+									</td>
+									<td class="go-button">
+										<button data-bind=" click : setting">
+											<i data-bind="ntsIcon: { no: 5 }"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table class="widget-table row">
+								<tr>
+									<td class="child-row" data-bind="text: $i18n('KTG001_1')"></td>
+									<td class="go-button" data-bind="visible: true">
+										<button data-bind=" click : applicationList">
+											<i data-bind="ntsIcon: { no: 145 }"></i>
+										</button>
+									</td>
+									<td data-bind="text: appText"></td>
+								</tr>
+								<tr>
+									<td class="child-row" data-bind="text: $i18n('KTG001_2')"></td>
+									<td class="go-button" data-bind="visible: true">
+										<button data-bind=" click : dayPerformanceConfirm">
+											<i data-bind="ntsIcon: { no: 145 }"></i>
+										</button>
+									</td>
+									<td data-bind="text: dayText"></td>
+								</tr>
+								<tr>
+									<td class="child-row" data-bind="text: $i18n('KTG001_3')"></td>
+									<td class="go-button" data-bind="visible: true">
+										<button data-bind=" click : monPerformanceConfirm">
+											<i data-bind="ntsIcon: { no: 145 }"></i>
+										</button>
+									</td>
+									<td data-bind="text: monText"></td>
+								</tr>
+								<tr>
+									<td class="child-row" data-bind="text: $i18n('KTG001_4')"></td>
+									<td class="go-button" data-bind="visible: true">
+										<button data-bind=" click : aggrementApproval">
+											<i data-bind="ntsIcon: { no: 145 }"></i>
+										</button>
+									</td>
+									<td data-bind="text: aggrText"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

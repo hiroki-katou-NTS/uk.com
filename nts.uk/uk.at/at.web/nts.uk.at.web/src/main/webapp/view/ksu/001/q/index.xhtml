@@ -73,6 +73,7 @@
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3705')}</div>
 							<div style="margin-left: 20px; margin-top: 15px">
+								
 								<table>
 									<thead>
 										<tr>
@@ -95,7 +96,7 @@
 													enable: true,
 													inputFormat: 'time',
 													mode: 'time',
-													readonly: false}" /></td>										
+													readonly:  $parent.date() == '' }" /></td>										
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input id = "extBudgetMoney"
 												style="text-align: right; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
@@ -106,7 +107,7 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>													
+													readonly: $parent.date() == '' }" /></td>													
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input id = "extBudgetNumberPerson"
 												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
@@ -117,7 +118,7 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
+													readonly: $parent.date() == '' }" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input id = "extBudgetNumericalVal"
 												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
@@ -128,9 +129,9 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
+													readonly: $parent.date() == '' }" /></td>
 										</tr>
-									</tbody>
+									</tbody>								
 								</table>
 							</div>
 						</div>
