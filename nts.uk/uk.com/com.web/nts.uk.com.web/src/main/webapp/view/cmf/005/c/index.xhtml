@@ -309,7 +309,7 @@
                     value: password, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,
-                    constraint: 'FileCompressionPassword',
+                    constraint: 'PasswordCompressFile',
                     option: { textmode: 'password' } }" tabindex="15" />
                 </div>
                 <div class="div-line flex valign-center">
@@ -321,7 +321,7 @@
                     value: confirmPassword, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,
-                    constraint: 'FileCompressionPassword',
+                    constraint: 'PasswordCompressFile',
                     option: { textmode: 'password' } }" tabindex="16" />
                 </div>
               </div>
@@ -331,7 +331,7 @@
               <div id="C13_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_226')}</div>
               <!-- C10_2 補足説明入力 -->
               <input id="C13_2" class="div-column-2" data-bind="ntsTextEditor: {
-                name: #[CMF003_227],
+                name: '#[CMF003_227]',
                 value: explanation,
                 enable: true,
                 required: false,
