@@ -72,9 +72,7 @@ public class TotalCondition {
 		}
 		
 		/** ○勤怠項目IDから時間を取得 */
-		val converter = require.createDailyConverter();
-		converter.setData(dailyWork);
-		val time = converter.convert(this.atdItemId.get()).get().valueOrDefault(0);
+		val time = getTime(require, dailyWork);
 		
 		/** ○下限チェック */
 		if (this.lowerLimitSettingAtr == UseAtr.Use) {
@@ -91,6 +89,14 @@ public class TotalCondition {
 		}
 		
 		return true;
+	}
+
+	private Integer getTime(RequireM1 require, IntegrationOfDaily dailyWork) {
+		val converter = require.createDailyConverter();
+		converter.setData(dailyWork);
+		val time = converter.convert(this.atdItemId.get()).get();
+		return time.getValueType().isInteger() ? 
+				time.getIntOrDefault() : time.getDoubleOrDefault().intValue();
 	}
 	
 	public static interface RequireM1 {
