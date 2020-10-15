@@ -1,57 +1,101 @@
 @CHARSET "UTF-8";
 
-.master_setting {
-	width: 220px;
-	height: 180px;
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 5px;
-	box-shadow: 0 5px #999;
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+	height: calc(100vh - 181px);
+	overflow: auto;
 }
 
-.master_title_left {
+.monthlyPatternContents {
+	padding: 20px;
+	width: 270px;
+}
+
+.monthlyPatternDetail {
+	margin-left: 50px;
+}
+
+.ksm005a .wrapper-monthy {
+	display: flex;
+	align-items: flex-end;
+	margin-bottom: 1px;
+}
+.ksm005a .wrapper-monthy .monthly-pattern {
+	flex: 1;
+}
+.ksm005a .wrapper-monthy .monthly-button {
+	text-align: right;
+	padding: 0 0 0 15px;
+}
+.ksm005a .panel {
 	margin-top: 10px;
-	margin-left: 10px;
-	width: 190px;
-	height: 80px;
-	background-color: cyan;
-	border-radius: 5px;
+}
+.ksm005a .panel .panel-header {
+	background: #C5E0B4;
+	padding: 5px 10px;
+	margin: -10px -10px 0 -10px;
+	border-radius: 5px 5px 0 0;
+}
+.ksm005a .panel .panel-body {
+	display: flex;
+	align-items: center;
+	padding-top: 10px;
+}
+.ksm005a .panel .panel-body .button {
+	flex: 0;
+	padding: 0 10px;
+}
+.ksm005a .panel .panel-body .calendar {
+	flex: 1;
+	padding: 0 10px;
+}
+.ksm005a .panel .panel-body .row-flex {
+	display: flex;
+	align-items: center;
+}
+.ksm005a .panel .panel-body .row-flex:first-child {
+	margin-bottom: 5px;
+}
+.ksm005a .panel .panel-body .row-flex div:not(:last-child) {
+	margin-right: 10px;
+}
+.ksm005a .panel .panel-body .row-flex .label {
+	width: 85px
+}
+.round-green {
+	background-color: #92F29B !important;
+	border-radius: 20px;
+}
+.ksm005a  .fc-row .fc-content-skeleton td.fc-event-container {
+    text-align: center;
 }
 
-.master_title_right {
-	margin-top: 10px;
-	margin-left: 10px;
-	width: 190px;
-	height: 80px;
-	background-color: #EAE0EA;
-	border-radius: 5px;
+.ksm005a  .fc-row .fc-content-skeleton .fc-content .fc-title {
+    line-height: 20px;
+	font-size: small;
 }
-
-.label_master {
-	font-size: 20pt;
-	padding-top: 20px;
-	padding-left: 20px;
-	display: block;
+.ksm005a .code-name {
+	display: flex;
 }
-
-.label_tips {
-	font-size: 9pt;
-	margin-top: 5px;
-	margin-left: 10px;
+.ksm005a .input-code-name {
+	padding-top: 5px;
 }
-
-.btnconfig {
-	margin-top: 10px;
-	margin-left: 10px;
+.ksm005a .input-code-name.table {
+	 width: 100%;
 }
-
-.btnconfig.caret-right:after {
-	color: #2ECC71;
-	margin-left: 3px;
+.ksm005a .input-code-name.table .cell:nth-child(1){
+	width: 200px;
 }
-
-.master_setting_caret.caret-right:after {
-	color: #92D050;
-	border-width: 51px 26px;
-	margin-top: -160px;
+.ksm005a .input-code-name.table .cell:nth-child(2){
+	width: 70px;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3){
+	width: auto;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3) > .nts-editor-wrapped{
+	width: 100%;
+}
+.ksm005a .input-code-name.table .cell:nth-child(3) > .nts-editor-wrapped > input{
+	width: calc(100% - 22px)!important;
 }

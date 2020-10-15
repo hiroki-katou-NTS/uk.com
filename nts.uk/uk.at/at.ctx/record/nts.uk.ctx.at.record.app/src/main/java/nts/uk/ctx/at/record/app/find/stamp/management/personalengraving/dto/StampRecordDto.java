@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 
 /**
  * @author anhdt
@@ -261,7 +261,7 @@ public class StampRecordDto {
 			return ContentsStampType.TEMPORARY_LEAVING.value;
 		}
 		// 14 応援開始 None None False => 出勤系
-		if (changeClockArt == ChangeClockArt.FIX.value && changeCalArt == ChangeCalArt.NONE.value
+		if (changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && changeCalArt == ChangeCalArt.NONE.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT.value;
 		}
@@ -276,12 +276,12 @@ public class StampRecordDto {
 			return ContentsStampType.WORK_SUPPORT.value;
 		}
 		// 17 応援開始 早出 NONE False => 出勤系
-		if (changeClockArt == ChangeClockArt.FIX.value && changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
+		if (changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT_EARLY_APPEARANCE.value;
 		}
 		// 18 応援開始 休出 NONE False => 出勤系
-		if (changeClockArt == ChangeClockArt.FIX.value && changeCalArt == ChangeCalArt.BRARK.value
+		if (changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && changeCalArt == ChangeCalArt.BRARK.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
 			return ContentsStampType.START_SUPPORT_BREAK.value;
 		}

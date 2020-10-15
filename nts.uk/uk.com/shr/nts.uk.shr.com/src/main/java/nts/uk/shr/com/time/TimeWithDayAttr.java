@@ -2,6 +2,7 @@ package nts.uk.shr.com.time;
 
 import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.enumcommon.DayAttr;
 
 /**
@@ -37,6 +38,27 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	 */
 	public TimeWithDayAttr(int minutesFromZeroOClock) {
 		super(minutesFromZeroOClock);
+	}
+	
+	/**
+	 * 時分から作る
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr hourMinute(int hour, int minute) {
+		return new TimeWithDayAttr(hour * 60 + minute);
+	}
+	
+	/**
+	 * 日区分と時分から作る
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr dayHourMinute(DayAttr day, int hour, int minute) {
+		return hourMinute(day.hours + hour, minute);
 	}
 
 	/**
@@ -106,4 +128,34 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	public int rawHour(){
 		return this.v() / 60;
 	}
+	
+	/**
+	 * 基準日、対象日、対象時刻から日区分付き時刻に変換する
+	 * 
+	 * @param baseDate
+	 *            基準日
+	 * @param targetDate
+	 *            対象日
+	 * @param timesOfDay
+	 *            時刻
+	 * @return 時刻（日区分付き）
+	 */
+	public static TimeWithDayAttr convertToTimeWithDayAttr(GeneralDate baseDate,GeneralDate targetDate, int timesOfDay) {
+
+		// 時刻(日区分付き)．時刻←INPUT．時刻
+
+		// 対象日は基準日から見て何の日か判断する
+		if (baseDate.equals(targetDate)) { // 当日
+			return new TimeWithDayAttr(timesOfDay);
+		} else if (baseDate.addDays(-1).equals(targetDate)) { // 前日
+			return new TimeWithDayAttr(timesOfDay - MAX_MINUTES_IN_DAY);
+		} else if (baseDate.addDays(1).equals(targetDate)) { // 翌日
+			return new TimeWithDayAttr(timesOfDay + MAX_MINUTES_IN_DAY);
+		} else if (baseDate.addDays(2).equals(targetDate)) {// 翌々日
+			return new TimeWithDayAttr(timesOfDay + 2 * MAX_MINUTES_IN_DAY);
+		}
+		
+		throw new RuntimeException("Error convert : 基準日、対象日、対象時刻から日区分付き時刻に変換する ");
+	}
+
 }

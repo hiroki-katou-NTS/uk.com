@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.portal.dom.enums;
  *
  */
 public enum System {	
+	
 	/**
 	 * 0:共通
 	 */

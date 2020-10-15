@@ -240,7 +240,7 @@ module nts.uk.com.view.cmm018.a {
                                _.each(lstUse, function(item){
                                    if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
-                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
+                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
                                 });
                                 self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
@@ -273,7 +273,7 @@ module nts.uk.com.view.cmm018.a {
                                _.each(lstUse, function(item){
                                    if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
-                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
+                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
                                 });
                                 self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
@@ -307,7 +307,7 @@ module nts.uk.com.view.cmm018.a {
                                _.each(lstUse, function(item){
                                    if(item.useAtr == 1 && item.appType != 14){
                                        self.lstAppDis.push(item.appType);
-                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
+                                       self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
                                 });
                                 self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
@@ -395,7 +395,7 @@ module nts.uk.com.view.cmm018.a {
                            _.each(lstUse, function(item){
                                if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
-                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
+                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
                             });
                             self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
@@ -591,7 +591,7 @@ module nts.uk.com.view.cmm018.a {
                            _.each(lstUse, function(item){
                                if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
-                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).localizedName,1));
+                                   self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
                             });
                             self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
@@ -664,7 +664,7 @@ module nts.uk.com.view.cmm018.a {
                                if(item.useAtr == 1 && item.appType != 14){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, 
-                                                self.findName(lstName, item.appType).localizedName,1, null));
+                                                self.findName(lstName, item.appType).appName,1, null));
                                }
                             });
                             self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2, null));
@@ -701,7 +701,7 @@ module nts.uk.com.view.cmm018.a {
             }
             findName(lstName, appType){
                 return _.find(lstName, (name) =>{
-                            return name.value == appType;
+                            return name.appType == appType;
                         });
             }
             startPage(transferData: any){

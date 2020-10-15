@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -115,7 +116,7 @@ public interface ApprovalRootStateRepository {
 	 * @param approverID
 	 * @return
 	 */
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID, DatePeriod period,
+	public List<ApprovalRootState> findEmploymentAppCMM045(String approverID, List<String> agentLst, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus);
 
@@ -138,4 +139,16 @@ public interface ApprovalRootStateRepository {
 	 */
 	List<ApprovalRootState> findApprovalRootStateIds(String companyId, List<String> approverIds, 
 			GeneralDate startDate, GeneralDate endDate);
+
+	/**
+	 * refactor 4
+	 * @param approvalRootState
+	 */
+	public void insertApp(ApprovalRootState approvalRootState);
+	
+	/**
+	 * refactor 4
+	 */
+	public Map<String, List<ApprovalPhaseState>> getApprovalPhaseByID(List<String> appIDLst);
+
 }

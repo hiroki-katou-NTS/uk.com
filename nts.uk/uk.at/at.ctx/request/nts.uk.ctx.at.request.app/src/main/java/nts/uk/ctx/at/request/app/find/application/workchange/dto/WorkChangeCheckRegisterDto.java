@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 
@@ -24,7 +25,7 @@ public class WorkChangeCheckRegisterDto {
 	public static WorkChangeCheckRegisterDto fromDomain(WorkChangeCheckRegOutput workChangeCheckRegOutput) {
 		WorkChangeCheckRegisterDto result = new WorkChangeCheckRegisterDto();
 		result.confirmMsgLst = workChangeCheckRegOutput.getConfirmMsgLst();
-		result.holidayDateLst = workChangeCheckRegOutput.getHolidayDateLst().stream().map(x -> x.toString("yyyy/MM/dd")).collect(Collectors.toList());
+		result.holidayDateLst = CollectionUtil.isEmpty(workChangeCheckRegOutput.getHolidayDateLst()) ? null : workChangeCheckRegOutput.getHolidayDateLst().stream().map(x -> x.toString("yyyy/MM/dd")).collect(Collectors.toList());
 		return result;
 	}
 }

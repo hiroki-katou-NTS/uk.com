@@ -13,7 +13,7 @@ public class ApplicationCommand {
 
 	private String employeeID;
 
-	private Long appVersion;
+	private int appVersion;
 	
 	private Integer remainDays;
 

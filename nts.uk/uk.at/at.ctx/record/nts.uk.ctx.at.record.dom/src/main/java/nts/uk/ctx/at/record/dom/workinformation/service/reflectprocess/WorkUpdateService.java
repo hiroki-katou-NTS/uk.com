@@ -6,8 +6,8 @@ import java.util.Map;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.BreakTimeParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 
 /**
  * 反映処理
@@ -29,7 +29,7 @@ public interface WorkUpdateService {
 	 */
 	public void updateScheStartEndTime(TimeReflectPara data, IntegrationOfDaily dailyInfo);
 	void editStateOfDailyPerformance(String sid, GeneralDate ymd, 
-			List<EditStateOfDailyPerformance> lstEditState, List<Integer> lstItem);
+			List<EditStateOfDailyAttd> lstEditState, List<Integer> lstItem);
 	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
 	 * 開始時刻の反映, 終了時刻を反映

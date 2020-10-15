@@ -7,16 +7,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -37,9 +37,9 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
 
-		if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getLogOnInfo().isEmpty()) {
+		if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo().isEmpty()) {
 
-			List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
+			List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
 
 			// ペアの逆転がないか確認する(PCログオンログオフ)
 			List<Integer> attendanceItemIds = this.checkPairReversed(pCLogOnInfoOfDaily);
@@ -116,7 +116,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 	private List<Integer> checkPairReversed(PCLogOnInfoOfDaily pCLogOnInfoOfDaily) {
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
+		List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
 
 		for (LogOnInfo logOnInfo : logOnInfos) {
 			if (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn() != null && logOnInfo.getLogOff().isPresent()
@@ -147,18 +147,18 @@ public class PCLogOnOffIncorrectOrderCheck {
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
+		List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			// 1回目のログオンと出勤．打刻が存在するか確認する(check first LogOn and stamp of
 			// attendance of first timeLeavingWork has data or not)
 			if (logOnInfos.get(0).getLogOn() != null && timeLeavingWorks.get(0).getAttendanceStamp().isPresent()
 					&& timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
+					&& timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(0).getLogOn().get().greaterThan(
-						timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay())) {
+						timeLeavingWorks.get(0).getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get())) {
 					attendanceItemIds.add(794);
 					attendanceItemIds.add(31);
 				}
@@ -168,9 +168,9 @@ public class PCLogOnOffIncorrectOrderCheck {
 			// first timeLeavingWork has data or not)
 			if (logOnInfos.get(0).getLogOff() != null && timeLeavingWorks.get(0).getLeaveStamp().isPresent()
 					&& timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().isPresent()
-					&& timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+					&& timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(0).getLogOff().get()
-						.lessThan(timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
+						.lessThan(timeLeavingWorks.get(0).getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get())) {
 					attendanceItemIds.add(795);
 					attendanceItemIds.add(34);
 				}
@@ -178,11 +178,11 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 			// 2回目のログオンと出勤．打刻が存在するか確認する(check second LogOn and stamp of
 			// attendance of second timeLeavingWork has data or not)
-			if (logOnInfos.get(1).getLogOn() != null && timeLeavingWorks.get(1).getAttendanceStamp().isPresent()
+			if (logOnInfos.get(1).getLogOn() != null && timeLeavingWorks.size()>1 && timeLeavingWorks.get(1).getAttendanceStamp().isPresent()
 					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
+					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(1).getLogOn().get().greaterThan(
-						timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay())) {
+						timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get())) {
 					attendanceItemIds.add(796);
 					attendanceItemIds.add(41);
 				}
@@ -190,11 +190,11 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 			// 2回目のログオフと退勤．打刻が存在するか確認する(check second LogOff and stamp of leave
 			// of second timeLeavingWork has data or not)
-			if (logOnInfos.get(1).getLogOff() != null && timeLeavingWorks.get(1).getLeaveStamp().isPresent()
+			if (logOnInfos.get(1).getLogOff() != null && timeLeavingWorks.size()>1 && timeLeavingWorks.get(1).getLeaveStamp().isPresent()
 					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().isPresent()
-					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(1).getLogOff().get()
-						.lessThan(timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
+						.lessThan(timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get())) {
 					attendanceItemIds.add(797);
 					attendanceItemIds.add(44);
 				}

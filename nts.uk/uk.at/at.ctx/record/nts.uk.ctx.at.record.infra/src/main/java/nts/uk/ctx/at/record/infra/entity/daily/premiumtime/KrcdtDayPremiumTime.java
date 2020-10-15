@@ -15,11 +15,11 @@ import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.FieldReflection;
-import nts.uk.ctx.at.record.dom.premiumtime.PremiumTime;
-import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

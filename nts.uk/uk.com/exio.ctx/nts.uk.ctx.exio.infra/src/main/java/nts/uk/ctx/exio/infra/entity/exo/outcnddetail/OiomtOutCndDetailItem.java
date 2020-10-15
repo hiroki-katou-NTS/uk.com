@@ -26,12 +26,12 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 出力条件詳細項目
+ * 外部出力出力条件詳細項目
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_OUT_CND_DETAIL_ITEM")
+@Table(name = "OIOMT_EX_OUT_CND_DTL_ITEM")
 public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	 * 条件記号
 	 */
 	@Basic(optional = false)
-	@Column(name = "CONDITION_SYMBOL")
+	@Column(name = "CND_SYMBOL")
 	public int conditionSymbol;
 
 	/**
@@ -168,7 +168,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD")
+		@PrimaryKeyJoinColumn(name = "CND_SET_CD", referencedColumnName = "CND_SET_CD")
 	})	
 	private OiomtOutCndDetail oiomtOutCndDetail;
 

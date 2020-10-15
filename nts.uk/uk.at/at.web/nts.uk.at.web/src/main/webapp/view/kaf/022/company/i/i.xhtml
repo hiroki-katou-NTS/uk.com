@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:com="http://xmlns.jcp.org/jsf/component"
+				xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table id="fixed-table-i">
+		<colgroup>
+			<col width="250px" />
+			<col width="650px" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_259')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_669')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListI1_2,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: lateEarlyClearAlarmAtr,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header">#{i18n.getText('KAF022_670')}</td>
+				<td class="vertical-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+                            options: itemListI1_3,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: lateEarlyCancelAtr,
+                            enable: true}">
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</ui:composition>

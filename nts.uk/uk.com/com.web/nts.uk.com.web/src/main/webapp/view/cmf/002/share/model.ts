@@ -69,10 +69,10 @@ module nts.uk.com.view.cmf002.share.model {
         PLUS = 0, // +
         MINUS = 1 // -
     }
-    export enum SYMBOL_OPRERATION {
-        PLUS = 0, // +
-        MINUS = 1 // -
-    }
+    // export enum SYMBOL_OPRERATION {
+    //     PLUS = 0, // +
+    //     MINUS = 1 // -
+    // }
     export enum CATEGORY_SETTING {
         /**
        * 出力しない
@@ -471,13 +471,15 @@ module nts.uk.com.view.cmf002.share.model {
         dispItemNo: any;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
+        keywordAtr: number;
         isCheck: KnockoutObservable<boolean>;
 
-        constructor(itemNo: any, itemName: string) {
+        constructor(itemNo: any, itemName: string, keywordAtr: number) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo.toString();
             this.itemName = ko.observable(itemName);
             this.dispitemName = itemName;
+            this.keywordAtr = keywordAtr;
             this.isCheck = ko.observable(false);
         }
     }

@@ -1,52 +1,33 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
-import static java.util.stream.Collectors.groupingBy;
-
 /*import java.lang.reflect.Array;*/
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.error.BusinessException;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -95,7 +76,7 @@ public class CheckBeforeRegisterHolidayWork {
 	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	/*public ColorConfirmResult checkBeforeRregisterColor(CreateHolidayWorkCommand command) {
 		// 会社ID
@@ -152,70 +133,71 @@ public class CheckBeforeRegisterHolidayWork {
 	}*/
 
 	public HdWorkCheckRegisterDto checkBeforeRegister(CreateHolidayWorkCommand command) {
-		// 会社ID
-		String companyId = AppContexts.user().companyId();
-		// 申請ID
-		String appID = IdentifierUtil.randomUniqueId();
-		
-		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
-		
-		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
-		
-		String typicalReason = Strings.EMPTY;
-		String displayReason = Strings.EMPTY;
-		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
-			typicalReason += command.getAppReasonID();
-		}
-		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
-			if(Strings.isNotBlank(typicalReason)){
-				displayReason += System.lineSeparator();
-			}
-			displayReason += command.getApplicationReason();
-		}
-		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-				.getRequestSetting().getApplicationSetting();
-		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
-			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
-			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
-					&& Strings.isBlank(typicalReason+displayReason)) {
-				throw new BusinessException("Msg_115");
-			}
-		}
-		
-		// Create Application
-		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
-
-		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
-		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
-		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
-		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
-		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
-		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
-		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
-		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
-
-		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
-				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				 command.getOverTimeShiftNight(),
-				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
-		
-		HdWorkCheckRegisterOutput output = holidayService.checkBeforeRegister(
-				companyId, 
-				appHdWorkDispInfoOutput, 
-				appRoot, 
-				false, 
-				holidayWorkDomain, 
-				command.getCalculateFlag());
-		
-		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
-		
-		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
-		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
-		return hdWorkCheckRegisterDto;
+//		// 会社ID
+//		String companyId = AppContexts.user().companyId();
+//		// 申請ID
+//		String appID = IdentifierUtil.randomUniqueId();
+//		
+//		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
+//		
+//		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+//				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+//				.filter(x -> x.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst().get();
+//		
+//		String typicalReason = Strings.EMPTY;
+//		String displayReason = Strings.EMPTY;
+//		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
+//			typicalReason += command.getAppReasonID();
+//		}
+//		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+//			if(Strings.isNotBlank(typicalReason)){
+//				displayReason += System.lineSeparator();
+//			}
+//			displayReason += command.getApplicationReason();
+//		}
+//		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+//				.getRequestSetting().getApplicationSetting();
+//		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+//			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+//			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
+//					&& Strings.isBlank(typicalReason+displayReason)) {
+//				throw new BusinessException("Msg_115");
+//			}
+//		}
+//		
+//		// Create Application
+////		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+////				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+//		Application appRoot = null;
+//		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+//		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+//		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+//		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
+//		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
+//		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
+//		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
+//		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
+//
+//		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
+//				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
+//				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+//				 command.getOverTimeShiftNight(),
+//				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
+//		
+//		HdWorkCheckRegisterOutput output = holidayService.checkBeforeRegister(
+//				companyId, 
+//				appHdWorkDispInfoOutput, 
+//				appRoot, 
+//				false, 
+//				holidayWorkDomain, 
+//				command.getCalculateFlag());
+//		
+//		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
+//		
+//		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
+//		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
+//		return hdWorkCheckRegisterDto;
+		return null;
 		
 		// return CheckBeforeRegister(command.getCalculateFlag(), appRoot, holidayWorkDomain, command.isActualExceedConfirm());
 	}
@@ -315,11 +297,12 @@ public class CheckBeforeRegisterHolidayWork {
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, preActualColorResult);
 	}*/
 
-	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application_New app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+	public OvertimeCheckResultDto CheckBeforeRegister(int calculateFlg, Application app, AppHolidayWork appHolidayWork, boolean actualExceedConfirm) {
+		String companyID = AppContexts.user().companyId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// ３６協定時間上限チェック（月間）
 		Optional<AppOvertimeDetail> appOvertimeDetailOtp = commonOvertimeHoliday.registerHdWorkCheck36TimeLimit(
-				app.getCompanyID(), app.getEmployeeID(), app.getAppDate(), appHolidayWork.getHolidayWorkInputs());
+				companyID, app.getEmployeeID(), app.getAppDate().getApplicationDate(), appHolidayWork.getHolidayWorkInputs());
 		result.setAppOvertimeDetail(AppOvertimeDetailDto.fromDomain(appOvertimeDetailOtp));
 		// TODO: ３６協定時間上限チェック（年間）
 		beforeCheck.TimeUpperLimitYearCheck();
@@ -329,121 +312,121 @@ public class CheckBeforeRegisterHolidayWork {
 	public ColorConfirmResult checkBeforeUpdateColor(CreateHolidayWorkCommand command) {
 
 		// 会社ID
-		String companyId = AppContexts.user().companyId();
-		// 申請ID
-		String appID = IdentifierUtil.randomUniqueId();
-
-		// Create Application
-		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
-
-		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
-		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
-		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
-		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
-		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
-		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
-		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
-		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
-
-		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
-				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
-				 command.getOverTimeShiftNight(),
-				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
-		// 社員ID
-		String employeeId = AppContexts.user().employeeId();
-		int calculateFlg = command.getCalculateFlag();
-		// 登録前エラーチェック
-		//勤務種類、就業時間帯チェックのメッセージを表示
-		otherCommonAlgorithm.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
-		// 計算ボタン未クリックチェック
-		// Get setting info
-		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(appRoot.getCompanyID(), employeeId, 1, ApplicationType.BREAK_TIME_APPLICATION, appRoot.getAppDate());
-		// 時刻計算利用する場合にチェックしたい
-		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
-		if (null != requestSetting) {
-			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
-		}
-		// 事前申請超過チェック
-		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
-				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
-		// Only check for [残業時間]
-		// 時間①～フレ超過時間 まで 背景色をピンク
-		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
-		
-		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
-			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck010(appRoot.getCompanyID(), appRoot.getAppDate(),
-					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
-			if (colorConfirmResult.isConfirm()) {
-				return colorConfirmResult;
-			}
-		}
+//		String companyId = AppContexts.user().companyId();
+//		// 申請ID
+//		String appID = IdentifierUtil.randomUniqueId();
+//
+//		// Create Application
+////		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
+////				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
+//		Application appRoot =  null;
+//		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
+//		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
+//		Integer workClockStart2 = command.getWorkClockStart2() == null ? null : command.getWorkClockStart2().intValue();
+//		Integer workClockEnd2 = command.getWorkClockEnd2() == null ? null : command.getWorkClockEnd2().intValue();
+//		int goAtr1 = command.getGoAtr1() == null ? 0 : command.getGoAtr1().intValue();
+//		int backAtr1 = command.getBackAtr1() == null ? 0 : command.getBackAtr1().intValue();
+//		int goAtr2 = command.getGoAtr2() == null ? 0 : command.getGoAtr2().intValue();
+//		int backAtr2 = command.getBackAtr2() == null ? 0 : command.getBackAtr2().intValue();
+//
+//		AppHolidayWork holidayWorkDomain = factoryHolidayWork.buildHolidayWork(companyId, appID,
+//				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockStart1, workClockEnd1, workClockStart2,
+//				workClockEnd2, goAtr1,backAtr1,goAtr2,backAtr2,command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+//				 command.getOverTimeShiftNight(),
+//				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());
+//		// 社員ID
+//		String employeeId = AppContexts.user().employeeId();
+//		int calculateFlg = command.getCalculateFlag();
+//		// 登録前エラーチェック
+//		//勤務種類、就業時間帯チェックのメッセージを表示
+//		otherCommonAlgorithm.checkWorkingInfo(companyId, command.getWorkTypeCode(), command.getSiftTypeCode());
+//		// 計算ボタン未クリックチェック
+//		// Get setting info
+//		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
+//				.prelaunchAppCommonSetService(companyId, employeeId, 1, ApplicationType.HOLIDAY_WORK_APPLICATION, appRoot.getAppDate().getApplicationDate());
+//		// 時刻計算利用する場合にチェックしたい
+//		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
+//		if (null != requestSetting) {
+//			commonOvertimeHoliday.calculateButtonCheck(calculateFlg, requestSetting.getApplicationDetailSetting().get().getTimeCalUse());
+//		}
+//		// 事前申請超過チェック
+//		Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
+//				.collect(groupingBy(HolidayWorkInput::getAttendanceType));
+//		// Only check for [残業時間]
+//		// 時間①～フレ超過時間 まで 背景色をピンク
+//		List<HolidayWorkInput> holidayWorkInputs = findMap.get(AttendanceType.BREAKTIME);
+//		
+//		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
+//			ColorConfirmResult colorConfirmResult = commonOvertimeHoliday.preApplicationExceededCheck010(companyId, appRoot.getAppDate().getApplicationDate(),
+//					appRoot.getInputDate(), appRoot.getPrePostAtr(), AttendanceType.BREAKTIME.value, holidayWorkInputs, command.getApplicantSID());
+//			if (colorConfirmResult.isConfirm()) {
+//				return colorConfirmResult;
+//			}
+//		}
 		
 		return new ColorConfirmResult(false, 0, 0, "", Collections.emptyList(), null, null);
 	}
 	
 	public HdWorkCheckRegisterDto checkBeforeUpdate(UpdateHolidayWorkCommand command) {
-		String companyID = AppContexts.user().companyId();
-		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, command.getAppID());
-		if(!opAppHolidayWork.isPresent()){
-			throw new RuntimeException("khong tim dc doi tuong");
-		}
-		
-		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
-		
-		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findFirst().get();
-		String appReason = Strings.EMPTY;	
-		String typicalReason = Strings.EMPTY;
-		String displayReason = Strings.EMPTY;
-		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
-			typicalReason += command.getAppReasonID();
-		}
-		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
-			if(Strings.isNotBlank(typicalReason)){
-				displayReason += System.lineSeparator();
-			}
-			displayReason += command.getApplicationReason();
-		} else {
-			if(Strings.isBlank(typicalReason)){
-				displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getAppReason().v();
-			}
-		} 
-		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
-				.getRequestSetting().getApplicationSetting();
-		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
-			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
-			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
-					&& Strings.isBlank(typicalReason+displayReason)) {
-				throw new BusinessException("Msg_115");
-			}
-		}
-		appReason = typicalReason + displayReason;
-		
-		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
-		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>();
-		holidayWorkInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		holidayWorkInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		holidayWorkInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		holidayWorkInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
-		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
-				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyID, appHolidayWork.getAppID()));
-		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
-		String applicationReason = appReason;
-		appHolidayWork.setDivergenceReason(divergenceReason);
-		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
-		appHolidayWork.setAppOvertimeDetail(appOvertimeDetailOtp);
-		appHolidayWork.setHolidayShiftNight(command.getHolidayWorkShiftNight());
-		appHolidayWork.setWorkTimeCode(Strings.isBlank(command.getSiftTypeCode()) ? null : new WorkTimeCode(command.getSiftTypeCode()));
-		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(command.getWorkClockStart1(), command.getWorkClockEnd1(), command.getGoAtr1(), command.getBackAtr1()));
-		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(command.getWorkClockStart2(), command.getWorkClockEnd2(), command.getGoAtr2(), command.getBackAtr2()));
-		appHolidayWork.setWorkTypeCode(Strings.isBlank(command.getWorkTypeCode()) ? null : new WorkTypeCode(command.getWorkTypeCode()));
-		appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
-		appHolidayWork.setVersion(appHolidayWork.getVersion());
-		appHolidayWork.getApplication().setVersion(command.getVersion());
+//		String companyID = AppContexts.user().companyId();
+//		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, command.getAppID());
+//		if(!opAppHolidayWork.isPresent()){
+//			throw new RuntimeException("khong tim dc doi tuong");
+//		}
+//		
+//		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = command.getAppHdWorkDispInfoCmd().toDomain();
+//		
+//		AppTypeSetting appTypeSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+//				.getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
+//				.filter(x -> x.getAppType() == ApplicationType.HOLIDAY_WORK_APPLICATION).findFirst().get();
+//		String appReason = Strings.EMPTY;	
+//		String typicalReason = Strings.EMPTY;
+//		String displayReason = Strings.EMPTY;
+//		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
+//			typicalReason += command.getAppReasonID();
+//		}
+//		if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+//			if(Strings.isNotBlank(typicalReason)){
+//				displayReason += System.lineSeparator();
+//			}
+//			displayReason += command.getApplicationReason();
+//		} else {
+//			if(Strings.isBlank(typicalReason)){
+//				displayReason = applicationRepository.findByID(companyID, command.getAppID()).get().getOpAppReason().get().v();
+//			}
+//		} 
+//		ApplicationSetting applicationSetting = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput()
+//				.getRequestSetting().getApplicationSetting();
+//		if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY
+//			||appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
+//			if (applicationSetting.getAppLimitSetting().getRequiredAppReason()
+//					&& Strings.isBlank(typicalReason+displayReason)) {
+//				throw new BusinessException("Msg_115");
+//			}
+//		}
+//		appReason = typicalReason + displayReason;
+//		
+//		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
+//		List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>();
+//		holidayWorkInputs.addAll(command.getRestTime().stream().filter(x -> x.getStartTime()!=null||x.getEndTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+//		holidayWorkInputs.addAll(command.getOvertimeHours().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+//		holidayWorkInputs.addAll(command.getBreakTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+//		holidayWorkInputs.addAll(command.getBonusTimes().stream().filter(x -> x.getApplicationTime()!=null).map(x -> x.convertToDomain()).collect(Collectors.toList()));
+//		Optional<AppOvertimeDetail> appOvertimeDetailOtp = command.getAppOvertimeDetail() == null ? Optional.empty()
+//				: Optional.ofNullable(command.getAppOvertimeDetail().toDomain(companyID, appHolidayWork.getAppID()));
+//		String divergenceReason = command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator());
+//		String applicationReason = appReason;
+//		appHolidayWork.setDivergenceReason(divergenceReason);
+//		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
+//		appHolidayWork.setAppOvertimeDetail(appOvertimeDetailOtp);
+//		appHolidayWork.setHolidayShiftNight(command.getHolidayWorkShiftNight());
+//		appHolidayWork.setWorkTimeCode(Strings.isBlank(command.getSiftTypeCode()) ? null : new WorkTimeCode(command.getSiftTypeCode()));
+//		appHolidayWork.setWorkClock1(HolidayWorkClock.validateTime(command.getWorkClockStart1(), command.getWorkClockEnd1(), command.getGoAtr1(), command.getBackAtr1()));
+//		appHolidayWork.setWorkClock2(HolidayWorkClock.validateTime(command.getWorkClockStart2(), command.getWorkClockEnd2(), command.getGoAtr2(), command.getBackAtr2()));
+//		appHolidayWork.setWorkTypeCode(Strings.isBlank(command.getWorkTypeCode()) ? null : new WorkTypeCode(command.getWorkTypeCode()));
+//		// appHolidayWork.getApplication().setAppReason(new AppReason(applicationReason));
+//		appHolidayWork.setVersion(appHolidayWork.getVersion());
+		// appHolidayWork.getApplication().setVersion(command.getVersion());
 		
 		/*// 会社ID
 		String companyId = AppContexts.user().companyId();
@@ -471,18 +454,18 @@ public class CheckBeforeRegisterHolidayWork {
 				 command.getOverTimeShiftNight(),
 				CheckBeforeRegisterHolidayWork.getHolidayWorkInput(command, companyId, appID), Optional.empty());*/
 		
-		HdWorkCheckRegisterOutput output = holidayService.checkBeforeUpdate(
-				companyID, 
-				appHolidayWork.getApplication(), 
-				appHdWorkDispInfoOutput, 
-				command.getCalculateFlag(), 
-				appHolidayWork);
-		
-		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
-		
-		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
-		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
-		return hdWorkCheckRegisterDto;
+//		HdWorkCheckRegisterOutput output = holidayService.checkBeforeUpdate(
+//				companyID, 
+//				appHolidayWork.getApplication(), 
+//				appHdWorkDispInfoOutput, 
+//				command.getCalculateFlag(), 
+//				appHolidayWork);
+//		
+//		HdWorkCheckRegisterDto hdWorkCheckRegisterDto = new HdWorkCheckRegisterDto();
+//		
+//		hdWorkCheckRegisterDto.confirmMsgLst = output.getConfirmMsgLst();
+//		hdWorkCheckRegisterDto.appOvertimeDetailOtp = AppOvertimeDetailDto.fromDomain(output.getAppOvertimeDetailOtp());
+//		return hdWorkCheckRegisterDto;
 
 		/*// 会社ID
 		String companyId = AppContexts.user().companyId();
@@ -525,6 +508,8 @@ public class CheckBeforeRegisterHolidayWork {
 		beforeCheck.TimeUpperLimitYearCheck();
 
 		return result;*/
+		
+		return null;
 	}
 
 	public static List<HolidayWorkInput> getHolidayWorkInput(CreateHolidayWorkCommand command, String Cid, String appId) {

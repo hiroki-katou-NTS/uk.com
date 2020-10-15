@@ -7,6 +7,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ public class KshstDefLaborOtCalc extends UkJpaEntity implements Serializable {
 
 	/*変形法定内残業を計算する*/
 	@Column(name="LEGAL_OT_CALC")
-	private BigDecimal legalOtCalc;
+	private NotUseAtr legalOtCalc;
 
 	@Override
 	protected Object getKey() {

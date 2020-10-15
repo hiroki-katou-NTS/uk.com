@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -19,6 +16,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 /** 日別実績の勤務情報 */
 @Data
@@ -64,6 +65,26 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (workInfo != null) {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
+			result.setActualWorkInfo(createWorkInfo(workInfo.getWorkInformation().getRecordInfo()));
+			result.setBackStraightAtr(workInfo.getWorkInformation().getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getWorkInformation().getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getWorkInformation().getGoStraightAtr().value);
+			result.setPlanWorkInfo(createWorkInfo(workInfo.getWorkInformation().getScheduleInfo()));
+			
+			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getWorkInformation().getScheduleTimeSheets()));
+			result.setDayOfWeek(workInfo.getWorkInformation().getDayOfWeek().value);
+			result.setVersion(workInfo.getVersion());
+			result.exsistData();
+		}
+		return result;
+	}
+	
+	public static WorkInformationOfDailyDto getDto(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
+		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
+		if (workInfo != null) {
+			result.setVersion(workInfo.getVer());
+			result.setEmployeeId(employeeId);
+			result.setDate(ymd);
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
 			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState().value);
@@ -72,7 +93,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
-			result.setVersion(workInfo.getVersion());
+			result.setVersion(workInfo.getVer());
 			result.exsistData();
 		}
 		return result;
@@ -87,8 +108,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
-		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
-						workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
+		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(), workInfo.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
 	}
 
 	@Override
@@ -102,7 +122,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public WorkInfoOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+	public WorkInfoOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
 		if (!this.isHaveData()) {
 			return null;
 		}
@@ -121,14 +141,14 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
 						(c) -> c.getLeave() != null && c.getWorking() != null));
 		domain.setVersion(this.version);
-		
-		return domain;
+		domain.getWorkInformation().setVer(this.version);
+		return domain.getWorkInformation();
 	}
 	
 	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
-		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
 
 	@Override

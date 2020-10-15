@@ -125,11 +125,11 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getRecordInfo().getWorkTimeCode() == null && workInfo.getScheduleInfo().getWorkTimeCode() == null) {
+			if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null && workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null) {
 				compareTypeError = WorkCheckResult.NOT_ERROR;
-			} else if(workInfo.getRecordInfo().getWorkTimeCode() == null || workInfo.getScheduleInfo().getWorkTimeCode() == null) {
+			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null || workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null) {
 				compareTypeError = WorkCheckResult.ERROR;
-			} else if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
+			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode())){
 				compareTypeError = WorkCheckResult.NOT_ERROR;
 			} else {
 				compareTypeError = WorkCheckResult.ERROR;
@@ -139,14 +139,14 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 		WorkCheckResult planCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimePlan != null) {
 			if(this.workTimePlan.isUse() && !this.workTimePlan.getLstWorkTime().isEmpty()){
-				planCheck = this.workTimePlan.contains(workInfo.getScheduleInfo().getWorkTimeCode()) 
+				planCheck = this.workTimePlan.contains(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode()) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}
 		WorkCheckResult actualCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeActual != null) {
 			if(this.workTimeActual.isUse() && !this.workTimeActual.getLstWorkTime().isEmpty()){
-				actualCheck = this.workTimeActual.contains(workInfo.getRecordInfo().getWorkTimeCode()) 
+				actualCheck = this.workTimeActual.contains(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode()) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}

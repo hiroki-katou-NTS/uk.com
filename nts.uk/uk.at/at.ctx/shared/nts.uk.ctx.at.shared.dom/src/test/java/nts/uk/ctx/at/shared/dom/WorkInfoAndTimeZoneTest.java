@@ -24,7 +24,7 @@ public class WorkInfoAndTimeZoneTest {
 		List<TimeZone> listTimeZone = new ArrayList<>();
 		WorkType workType = new WorkType();
 		listTimeZone.add(new TimeZone());
-		WorkInfoAndTimeZone workInfoAndTimeZone = new WorkInfoAndTimeZone(workType, // dummy
+		WorkInfoAndTimeZone workInfoAndTimeZone = WorkInfoAndTimeZone.create(workType, // dummy
 				null, listTimeZone);// dummy
 		assertThat(workInfoAndTimeZone.getWorkType()).isEqualTo(workType);
 		assertThat(workInfoAndTimeZone.getWorkTime().isPresent()).isFalse();

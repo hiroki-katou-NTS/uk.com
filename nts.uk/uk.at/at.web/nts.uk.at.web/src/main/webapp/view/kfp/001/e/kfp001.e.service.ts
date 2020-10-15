@@ -7,7 +7,8 @@ module nts.uk.at.view.kfp001.e {
             executeAggr: "ctx/at/record/optionalaggr/executeAggr/{0}",
             getErrorMessageInfo: "ctx/at/record/optionalaggr/getErrorMessageInfo/{0}",
             getErrorInfos: "ctx/at/record/optionalaggr/finderrorinfo/{0}",
-            stopExecute: "ctx/at/record/optionalaggr/stopExecute/{0}"
+            stopExecute: "ctx/at/record/optionalaggr/stopExecute/{0}",
+            getAggrPeriod: "ctx/at/record/optionalaggr/aggrPeriod/{0}"
         }
 
 
@@ -25,6 +26,10 @@ module nts.uk.at.view.kfp001.e {
         }
         export function stopExecute(dataFromD: any) {
             let _path = format(paths.stopExecute, dataFromD);
+            return ajax("at", _path);
+        }
+        export function getAggrPeriod(id: any) {
+            let _path = format(paths.getAggrPeriod, id);
             return ajax("at", _path);
         }
 

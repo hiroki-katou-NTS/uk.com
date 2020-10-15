@@ -17,62 +17,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdMinutes;
-import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdMinutes;
-import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdNumber;
-import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.SpecialHolidayRemainDataMerge;
-import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
-import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDayAndTimes;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemain;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.ActualSpecialLeaveRemainDay;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeavaRemainTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemain;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveRemainDay;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUnDigestion;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveUseTimes;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.UseNumber;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
@@ -86,9 +33,61 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdMinutes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AttendanceDaysMonthToTal;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.RemainDataDaysMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.RealAnnualLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffDayAndTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemainDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.UseNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -1729,7 +1728,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public void toEntityRemainMerge(RemainMerge domain) {
 		this.toEntityMonAnnleaRemain(domain.getAnnLeaRemNumEachMonth());
 		this.toEntityRsvLeaRemNumEachMonth(domain.getRsvLeaRemNumEachMonth());
-		this.toEntitySpeRemain(domain.getSpecialHolidayRemainDataMerge());
+		this.toEntitySpeRemain(domain.getSpecialHolidayRemainData());
 		this.toEntityDayOffRemainDayAndTimes(domain.getMonthlyDayoffRemainData());
 		this.toEntityAbsenceLeaveRemainData(domain.getAbsenceLeaveRemainData());
 		this.toEntityCareRemainData(domain.getMonCareHdRemain());
@@ -1745,7 +1744,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 										this.getKrcdtMonRemainPk().getIsLastDay() == 1 ? true : false)));
 		domains.setAnnLeaRemNumEachMonth(this.toDomainAnnLeaRemNumEachMonth());
 		domains.setRsvLeaRemNumEachMonth(this.toDomainRsvLeaRemNumEachMonth());
-		domains.setSpecialHolidayRemainDataMerge(this.toDomainSpecialHolidayRemainData());
+		domains.setSpecialHolidayRemainData(this.toDomainSpecialHolidayRemainData());
 		domains.setMonthlyDayoffRemainData(this.toDomainMonthlyDayoffRemainData());
 		domains.setAbsenceLeaveRemainData(this.toDomainAbsenceLeaveRemainData());
 		domains.setMonCareHdRemain(this.toDomainMonCareHdRemain());
@@ -2053,27 +2052,32 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_SP_REMAIN **/
-	public void toEntitySpeRemain(SpecialHolidayRemainDataMerge domain) {
-		this.toEntityMonthSpeRemain1(domain.getSpecialHolidayRemainData1());
-		this.toEntityMonthSpeRemain2(domain.getSpecialHolidayRemainData2());
-		this.toEntityMonthSpeRemain3(domain.getSpecialHolidayRemainData3());
-		this.toEntityMonthSpeRemain4(domain.getSpecialHolidayRemainData4());
-		this.toEntityMonthSpeRemain5(domain.getSpecialHolidayRemainData5());
-		this.toEntityMonthSpeRemain6(domain.getSpecialHolidayRemainData6());
-		this.toEntityMonthSpeRemain7(domain.getSpecialHolidayRemainData7());
-		this.toEntityMonthSpeRemain8(domain.getSpecialHolidayRemainData8());
-		this.toEntityMonthSpeRemain9(domain.getSpecialHolidayRemainData9());
-		this.toEntityMonthSpeRemain10(domain.getSpecialHolidayRemainData10());
-		this.toEntityMonthSpeRemain11(domain.getSpecialHolidayRemainData11());
-		this.toEntityMonthSpeRemain12(domain.getSpecialHolidayRemainData12());
-		this.toEntityMonthSpeRemain13(domain.getSpecialHolidayRemainData13());
-		this.toEntityMonthSpeRemain14(domain.getSpecialHolidayRemainData14());
-		this.toEntityMonthSpeRemain15(domain.getSpecialHolidayRemainData15());
-		this.toEntityMonthSpeRemain16(domain.getSpecialHolidayRemainData16());
-		this.toEntityMonthSpeRemain17(domain.getSpecialHolidayRemainData17());
-		this.toEntityMonthSpeRemain18(domain.getSpecialHolidayRemainData18());
-		this.toEntityMonthSpeRemain19(domain.getSpecialHolidayRemainData19());
-		this.toEntityMonthSpeRemain20(domain.getSpecialHolidayRemainData20());
+	public void toEntitySpeRemain(List<SpecialHolidayRemainData> domain) {
+		getSpecHolRemain(domain, 1).ifPresent(c -> this.toEntityMonthSpeRemain1(c));
+		getSpecHolRemain(domain, 2).ifPresent(c -> this.toEntityMonthSpeRemain2(c));
+		getSpecHolRemain(domain, 3).ifPresent(c -> this.toEntityMonthSpeRemain3(c));
+		getSpecHolRemain(domain, 4).ifPresent(c -> this.toEntityMonthSpeRemain4(c));
+		getSpecHolRemain(domain, 5).ifPresent(c -> this.toEntityMonthSpeRemain5(c));
+		getSpecHolRemain(domain, 6).ifPresent(c -> this.toEntityMonthSpeRemain6(c));
+		getSpecHolRemain(domain, 7).ifPresent(c -> this.toEntityMonthSpeRemain7(c));
+		getSpecHolRemain(domain, 8).ifPresent(c -> this.toEntityMonthSpeRemain8(c));
+		getSpecHolRemain(domain, 9).ifPresent(c -> this.toEntityMonthSpeRemain9(c));
+		getSpecHolRemain(domain, 10).ifPresent(c -> this.toEntityMonthSpeRemain10(c));
+		getSpecHolRemain(domain, 11).ifPresent(c -> this.toEntityMonthSpeRemain11(c));
+		getSpecHolRemain(domain, 12).ifPresent(c -> this.toEntityMonthSpeRemain12(c));
+		getSpecHolRemain(domain, 13).ifPresent(c -> this.toEntityMonthSpeRemain13(c));
+		getSpecHolRemain(domain, 14).ifPresent(c -> this.toEntityMonthSpeRemain14(c));
+		getSpecHolRemain(domain, 15).ifPresent(c -> this.toEntityMonthSpeRemain15(c));
+		getSpecHolRemain(domain, 16).ifPresent(c -> this.toEntityMonthSpeRemain16(c));
+		getSpecHolRemain(domain, 17).ifPresent(c -> this.toEntityMonthSpeRemain17(c));
+		getSpecHolRemain(domain, 18).ifPresent(c -> this.toEntityMonthSpeRemain18(c));
+		getSpecHolRemain(domain, 19).ifPresent(c -> this.toEntityMonthSpeRemain19(c));
+		getSpecHolRemain(domain, 20).ifPresent(c -> this.toEntityMonthSpeRemain20(c));
+	}
+	
+	private Optional<SpecialHolidayRemainData> getSpecHolRemain(List<SpecialHolidayRemainData> domain, int no) {
+		return domain.stream().filter(c -> c.getSpecialHolidayCd() == no)
+				.findFirst();
 	}
 	
 	public void toEntitySpeRemain(SpecialHolidayRemainData domain) {
@@ -3408,28 +3412,28 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	 * KRCDT_MON_SP_REMAIN
 	 * 特別休暇月別残数データ
 	 */
-	public SpecialHolidayRemainDataMerge toDomainSpecialHolidayRemainData() {
-		SpecialHolidayRemainDataMerge merge = new SpecialHolidayRemainDataMerge();
-		merge.setSpecialHolidayRemainData1	(this.toDomainSpecialHolidayRemainData1	());
-		merge.setSpecialHolidayRemainData2	(this.toDomainSpecialHolidayRemainData2	());
-		merge.setSpecialHolidayRemainData3	(this.toDomainSpecialHolidayRemainData3	());
-		merge.setSpecialHolidayRemainData4	(this.toDomainSpecialHolidayRemainData4	());
-		merge.setSpecialHolidayRemainData5	(this.toDomainSpecialHolidayRemainData5	());
-		merge.setSpecialHolidayRemainData6	(this.toDomainSpecialHolidayRemainData6	());
-		merge.setSpecialHolidayRemainData7	(this.toDomainSpecialHolidayRemainData7	());
-		merge.setSpecialHolidayRemainData8	(this.toDomainSpecialHolidayRemainData8	());
-		merge.setSpecialHolidayRemainData9	(this.toDomainSpecialHolidayRemainData9	());
-		merge.setSpecialHolidayRemainData10	(this.toDomainSpecialHolidayRemainData10());
-		merge.setSpecialHolidayRemainData11	(this.toDomainSpecialHolidayRemainData11());
-		merge.setSpecialHolidayRemainData12	(this.toDomainSpecialHolidayRemainData12());
-		merge.setSpecialHolidayRemainData13	(this.toDomainSpecialHolidayRemainData13());
-		merge.setSpecialHolidayRemainData14	(this.toDomainSpecialHolidayRemainData14());
-		merge.setSpecialHolidayRemainData15	(this.toDomainSpecialHolidayRemainData15());
-		merge.setSpecialHolidayRemainData16	(this.toDomainSpecialHolidayRemainData16());
-		merge.setSpecialHolidayRemainData17	(this.toDomainSpecialHolidayRemainData17());
-		merge.setSpecialHolidayRemainData18	(this.toDomainSpecialHolidayRemainData18());
-		merge.setSpecialHolidayRemainData19	(this.toDomainSpecialHolidayRemainData19());
-		merge.setSpecialHolidayRemainData20	(this.toDomainSpecialHolidayRemainData20());
+	public List<SpecialHolidayRemainData> toDomainSpecialHolidayRemainData() {
+		List<SpecialHolidayRemainData> merge = new ArrayList<>();
+		merge.add(this.toDomainSpecialHolidayRemainData1());
+		merge.add(this.toDomainSpecialHolidayRemainData2());
+		merge.add(this.toDomainSpecialHolidayRemainData3());
+		merge.add(this.toDomainSpecialHolidayRemainData4());
+		merge.add(this.toDomainSpecialHolidayRemainData5());
+		merge.add(this.toDomainSpecialHolidayRemainData6());
+		merge.add(this.toDomainSpecialHolidayRemainData7());
+		merge.add(this.toDomainSpecialHolidayRemainData8());
+		merge.add(this.toDomainSpecialHolidayRemainData9());
+		merge.add(this.toDomainSpecialHolidayRemainData10());
+		merge.add(this.toDomainSpecialHolidayRemainData11());
+		merge.add(this.toDomainSpecialHolidayRemainData12());
+		merge.add(this.toDomainSpecialHolidayRemainData13());
+		merge.add(this.toDomainSpecialHolidayRemainData14());
+		merge.add(this.toDomainSpecialHolidayRemainData15());
+		merge.add(this.toDomainSpecialHolidayRemainData16());
+		merge.add(this.toDomainSpecialHolidayRemainData17());
+		merge.add(this.toDomainSpecialHolidayRemainData18());
+		merge.add(this.toDomainSpecialHolidayRemainData19());
+		merge.add(this.toDomainSpecialHolidayRemainData20());
 		return merge;
 	}
 	

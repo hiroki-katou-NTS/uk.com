@@ -10,23 +10,18 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-//import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-//import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -71,37 +66,40 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 			return check36AgreementCon;
 		}
 		
-		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
+//		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
 		int valueError = 0;
 		int valueAlarm = 0;
 		
 		//エラー時間( ID:204 or ID:206)　-　36協定エラーアラーム前時間
 		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
-			if(agreementTimeOfMonthly.getExceptionLimitErrorTime().isPresent()) {
-				if(agreementTimeOfMonthly.getLimitErrorTime().v()<agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v()) {
-					valueError = agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue();
-				}else {
-					valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
-				}
-			}else {
-				valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
-			}
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			if(agreementTimeOfMonthly.getExceptionLimitErrorTime().isPresent()) {
+//				if(agreementTimeOfMonthly.getLimitErrorTime().v()<agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v()) {
+//					valueError = agreementTimeOfMonthly.getExceptionLimitErrorTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue();
+//				}else {
+//					valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+//				}
+//			}else {
+//				valueError = agreementTimeOfMonthly.getLimitErrorTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+//			}
 		//アラーム時間(ID:203 or ID:205)　-　36協定エラーアラーム前時間
 		}else {
-			if(agreementTimeOfMonthly.getExceptionLimitAlarmTime().isPresent()) {
-				if(agreementTimeOfMonthly.getLimitAlarmTime().v()<agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v()) {
-					valueAlarm = agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
-				}else {
-					valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
-				}
-			}else {
-				valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
-			}
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			if(agreementTimeOfMonthly.getExceptionLimitAlarmTime().isPresent()) {
+//				if(agreementTimeOfMonthly.getLimitAlarmTime().v()<agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v()) {
+//					valueAlarm = agreementTimeOfMonthly.getExceptionLimitAlarmTime().get().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+//				}else {
+//					valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+//				}
+//			}else {
+//				valueAlarm = agreementTimeOfMonthly.getLimitAlarmTime().v() - agreementCheckCon36.getEralBeforeTime().intValue() ;
+//			}
 			
 		}
 		
 		//agreementTime : 202
-		int valueAgreementTime = agreementTimeOfMonthly.getAgreementTime().v();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		int valueAgreementTime = 0;//agreementTimeOfMonthly.getAgreementTime().v();
 		boolean check= false;
 		//error
 		if(agreementCheckCon36.getClassification() == ErrorAlarmRecord.ERROR) {
@@ -197,7 +195,7 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 				val workingSystem = workingConditionItemOpt.get().getLaborSystem();
 				//36協定基本設定を取得する
 				BasicAgreementSetting basicSet = AgreementDomainService.getBasicSet(require,
-						companyId, employeeId, date, workingSystem).getBasicAgreementSetting();
+						companyId, employeeId, date, workingSystem);
 				
 				this.acquire36AgreementExceptionSetting(companyId, employeeId, date, yearMonth, year, basicSet);
 				return basicSet;
@@ -218,7 +216,7 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 			int size = lstAgreementYearSetting.size();
 			for (int i = 0; i < size; i++) {
 				AgreementYearSetting agreementYearSetting = lstAgreementYearSetting.get(i);
-				if(agreementYearSetting.getYearValue()==year.v().intValue()){
+				if(agreementYearSetting.getYearValue().v() == year.v().intValue()){
 					newAgreementYearSetting=agreementYearSetting;
 					isExist=true;
 					break;
@@ -226,8 +224,9 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 			}
 			if(isExist){
 				//ドメインモデル「36協定基本設定」を更新する
-				basicSet.setAlarmOneYear(new AlarmOneYear(newAgreementYearSetting.getAlarmOneYear().v()));
-				basicSet.setErrorOneYear(new ErrorOneYear(newAgreementYearSetting.getErrorOneYear().v()));
+				/** TODO: 36協定時間対応により、コメントアウトされた */
+//				basicSet.setAlarmOneYear(new AlarmOneYear(newAgreementYearSetting.getAlarmOneYear().v()));
+//				basicSet.setErrorOneYear(new ErrorOneYear(newAgreementYearSetting.getErrorOneYear().v()));
 				this.basicAgreementSettingRepo.update2(basicSet);
 			}
 			
@@ -236,8 +235,9 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 				Optional<AgreementMonthSetting> optAgreementMonthSetting = this.agreementMonthSettingRepo.findByKey(employeeId, yearMonth);
 				if(optAgreementMonthSetting.isPresent()){
 					AgreementMonthSetting agreementMonthSetting = optAgreementMonthSetting.get();
-					basicSet.setAlarmOneMonth(agreementMonthSetting.getAlarmOneMonth());
-					basicSet.setErrorOneMonth(agreementMonthSetting.getErrorOneMonth());
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					basicSet.setAlarmOneMonth(agreementMonthSetting.getAlarmOneMonth());
+//					basicSet.setErrorOneMonth(agreementMonthSetting.getErrorOneMonth());
 					this.basicAgreementSettingRepo.update2(basicSet);
 				}
 			

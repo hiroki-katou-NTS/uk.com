@@ -58,6 +58,7 @@ module nts.uk.at.view.kal003.share.model {
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
+        approvalAlarmCheckConDto: KnockoutObservable<ApprovalAlarmCheckConditon> = ko.observable(new ApprovalAlarmCheckConditon([]));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
         condAgree36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
@@ -83,6 +84,7 @@ module nts.uk.at.view.kal003.share.model {
 
       
     }
+
 
 
 
@@ -304,6 +306,14 @@ module nts.uk.at.view.kal003.share.model {
             this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCode);
             this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
             this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
+        }
+    }
+
+    export class ApprovalAlarmCheckConditon {
+        listFixedExtractConditionWorkRecord: KnockoutObservableArray<ApprovalFixedConditionWorkRecord>; // tab fixed
+
+        constructor(listFixedExtractConditionWorkRecord: Array<ApprovalFixedConditionWorkRecord>) {
+            this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedExtractConditionWorkRecord);
         }
     }
 
@@ -2103,12 +2113,12 @@ module nts.uk.at.view.kal003.share.model {
         }
         //the same kdw007
         getAttendanceItemByCodes(codes): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", "at/record/divergencetime/AttendanceDivergenceName", codes);
+            return nts.uk.request.ajax("at", "at/record/divergencetime/setting/AttendanceDivergenceName", codes);
         }
 
         //the same kdw007
         getAttendanceItemMonthlyByCodes(codes): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", "at/record/divergencetime/getMonthlyAttendanceDivergenceName", codes);
+            return nts.uk.request.ajax("at", "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName", codes);
         }
     }
     // group condition
@@ -2327,6 +2337,15 @@ module nts.uk.at.view.kal003.share.model {
 		eralarmAtr: number;
     }
 
+    export interface IAppFixedConditionWorkRecord {
+        appAlarmConId: string;
+        name: string;
+        no: number;
+        displayMessage: string;
+        useAtr: boolean;
+		erAlAtr: number;
+    }
+
 
 
     //class FixedConditionWorkRecord
@@ -2344,6 +2363,23 @@ module nts.uk.at.view.kal003.share.model {
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
 			this.eralarmAtr = ko.observable(data.eralarmAtr);
+        }
+    }
+
+    export class ApprovalFixedConditionWorkRecord {
+        appAlarmConId: string;
+        no: KnockoutObservable<number>;
+        name: string;
+        displayMessage: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+		erAlAtr: KnockoutObservable<number>;
+        constructor(data: IAppFixedConditionWorkRecord) {
+            this.appAlarmConId = data.appAlarmConId;
+            this.no = ko.observable(data.no);
+            this.displayMessage = ko.observable(data.displayMessage);
+            this.useAtr = ko.observable(data.useAtr);
+            this.name = data.name;
+            this.erAlAtr = ko.observable(data.erAlAtr);
         }
     }
 

@@ -49,7 +49,6 @@ public class CompanyAdapterImp implements CompanyAdapter {
 	/** 暦上の年月を渡して、年度に沿った年月を取得する */
 	@Override
 	public YearMonth getYearMonthFromCalenderYM(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth) {
-		
 		// 「会社情報」を取得する　→　期首月
 		CompanyDto companyDto = this.getFirstMonth(companyId);
 		int startMonth = companyDto.getStartMonth();

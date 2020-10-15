@@ -14,11 +14,11 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 日付型データ形式設定
+* 外部出力日付型データ形式設定（初期値）
 */
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_DATE_FORMAT_SET")
+@Table(name = "OIOMT_EX_OUT_FM_DATE_INIT")
 public class OiomtDateFormatSet extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -28,52 +28,51 @@ public class OiomtDateFormatSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public OiomtDateFormatSetPk dateFormatSetPk;
-    
+
+	/**
+	 * 形式選択
+	 */
+	@Basic(optional = false)
+	@Column(name = "FORMAT_SELECTION")
+	public int formatSelection;
     
     /**
     * NULL値置換
     */
     @Basic(optional = false)
-    @Column(name = "NULL_VALUE_SUBSTITUTION")
+    @Column(name = "NULL_REPLACE_VAL_ATR")
     public int nullValueSubstitution;
-    
-    /**
-    * 固定値
-    */
-    @Basic(optional = false)
-    @Column(name = "FIXED_VALUE")
-    public int fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    @Basic(optional = true)
-    @Column(name = "VALUE_OF_FIXED_VALUE")
-    public String valueOfFixedValue;
-    
-    /**
-    * 小数桁
-    */
-    @Basic(optional = true)
-    @Column(name = "VALUE_OF_NULL_VALUE_SUBS")
-    public String valueOfNullValueSubs;
-    
-    /**
-    * 形式選択
-    */
-    @Basic(optional = false)
-    @Column(name = "FORMAT_SELECTION")
-    public int formatSelection;
-    
-    @Override
-    protected Object getKey()
-    {
-        return dateFormatSetPk;
-    }
+
+	/**
+	 * 小数桁
+	 */
+	@Basic(optional = true)
+	@Column(name = "NULL_REPLACE_VAL")
+	public String valueOfNullValueSubs;
+
+	/**
+	 * 固定値
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
+
+	/**
+	 * 固定値の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
+
+	@Override
+	protected Object getKey() {
+		return dateFormatSetPk;
+	}
 
     public DateFormatSet toDomain() {
         return new DateFormatSet(ItemType.DATE.value,this.dateFormatSetPk.cid, this.nullValueSubstitution, this.fixedValue, this.valueOfFixedValue, this.valueOfNullValueSubs, this.formatSelection);
     }
+    
     public static OiomtDateFormatSet toEntity(DateFormatSet domain) {
         return new OiomtDateFormatSet(
         		new OiomtDateFormatSetPk(domain.getCid()),

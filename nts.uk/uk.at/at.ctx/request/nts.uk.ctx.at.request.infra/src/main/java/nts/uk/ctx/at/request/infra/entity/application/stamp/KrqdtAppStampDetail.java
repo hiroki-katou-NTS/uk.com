@@ -57,7 +57,7 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
 	})
-	private KrqdtAppStamp krqdtAppStamp;
+	private KrqdtAppStamp_Old krqdtAppStamp;
 	
 	@Override
 	protected Object getKey() {

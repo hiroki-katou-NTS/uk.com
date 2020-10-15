@@ -48,6 +48,8 @@ public interface ScheduleExecutionLogRepository {
 	 *            the domain
 	 */
 	public void add(ScheduleExecutionLog domain);
+	public void addNew(ScheduleExecutionLog domain);
+
 
 	/**
 	 * Save.

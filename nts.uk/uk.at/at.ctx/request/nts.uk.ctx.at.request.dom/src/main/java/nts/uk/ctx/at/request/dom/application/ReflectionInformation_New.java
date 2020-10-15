@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 反映情報
@@ -28,18 +29,18 @@ public class ReflectionInformation_New extends DomainObject {
 	private ReflectedState_New stateReflectionReal;
 	
 	// 予定強制反映
-	private DisabledSegment_New forcedReflection;
+	private NotUseAtr forcedReflection;
 	
 	// 実績強制反映
-	private DisabledSegment_New forcedReflectionReal;
+	private NotUseAtr forcedReflectionReal;
 	
 	// 予定反映不可理由
 	@Setter
-	private Optional<ReasonNotReflect_New> notReason;
+	private Optional<ReasonNotReflect> notReason;
 	
 	// 実績反映不可理由
 	@Setter
-	private Optional<ReasonNotReflectDaily_New> notReasonReal;
+	private Optional<ReasonNotReflectDaily> notReasonReal;
 	
 	// 予定反映日時
 	@Setter
@@ -53,8 +54,8 @@ public class ReflectionInformation_New extends DomainObject {
 		return ReflectionInformation_New.builder()
 				.stateReflection(ReflectedState_New.NOTREFLECTED)
 				.stateReflectionReal(ReflectedState_New.NOTREFLECTED)
-				.forcedReflection(DisabledSegment_New.NOTTODO)
-				.forcedReflectionReal(DisabledSegment_New.NOTTODO)
+				.forcedReflection(NotUseAtr.NOT_USE)
+				.forcedReflectionReal(NotUseAtr.NOT_USE)
 				.notReason(Optional.empty())
 				.notReasonReal(Optional.empty())
 				.dateTimeReflection(Optional.empty())

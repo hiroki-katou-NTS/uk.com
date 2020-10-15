@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 /**
@@ -15,9 +15,9 @@ public interface AppReflectManager {
 	 * @param excLogId 実行ID
 	 * @param currentRecord default = 0
 	 */
-	public void reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting,
+	public void reflectEmployeeOfApp(Application appInfor, InformationSettingOfEachApp reflectSetting,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord);
 
-	void reflectEmployeeOfAppWithTransaction(Application_New appInfor,
+	void reflectEmployeeOfAppWithTransaction(Application appInfor,
 			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId);
 }

@@ -12,12 +12,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
     export class ScreenModel {
         logSets: KnockoutObservableArray<ItemLogSetModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
 
 
         recordTypeList: KnockoutObservableArray<ItemTypeModel>;
         selectedRecordType: KnockoutObservable<string>;
 
+        systemTypeList: KnockoutObservableArray<ItemTypeModel>;
 
         dataTypeList: KnockoutObservableArray<ItemTypeModel>;
         selectedDataType: KnockoutObservable<string>;
@@ -25,8 +26,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         //G4_2
         itemsSwap: KnockoutObservableArray<ItemLogSetRecordTypeModel>;
-        leftColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        rightColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        leftColumns: KnockoutObservableArray<any>;
+        rightColumns: KnockoutObservableArray<any>;
         selectedCodeList: KnockoutObservableArray<any>;
 
 
@@ -39,6 +40,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         currentName: KnockoutObservable<string>;
         recordType: KnockoutObservable<string>;
         dataType: KnockoutObservable<string>;
+        systemType: KnockoutObservable<string>;
         logSetOutputItems: KnockoutObservableArray<any>;
         dataTypeEmpty: KnockoutObservable<string>;
 
@@ -54,14 +56,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
         enableCode: KnockoutObservable<boolean>;
         enableRecordType: KnockoutObservable<boolean>;
         enableDataType: KnockoutObservable<boolean>;
-        
+        enableSystemType: KnockoutObservable<boolean>;
+
         logItemsFull: KnockoutObservableArray<ItemLogSetRecordTypeModel>;
 
         constructor() {
-            var self = this;
+            const self = this;
 
             self.logSets = ko.observableArray([]);
-            self.currentLogDisplaySet = ko.observable(new LogDisplaySetModal());
+            self.currentLogDisplaySet = ko.observable();
             self.columns = ko.observableArray([
                 { headerText: getText("CLI003_11"), key: 'code', width: 50 },
                 { headerText: getText("CLI003_12"), key: 'name', width: 200 }
@@ -74,9 +77,10 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentCode = ko.observable('');
             self.inputCode = ko.observable('');
             self.currentName = ko.observable('');
-            self.recordType = ko.observable(-1);
-            self.dataType = ko.observable(-1);
-            self.dataTypeEmpty = ko.observable(-1);
+            self.recordType = ko.observable('-1');
+            self.dataType = ko.observable('-1');
+            self.systemType = ko.observable('-1');
+            self.dataTypeEmpty = ko.observable('-1');
             self.logSetOutputItems = ko.observableArray([]);
 
             self.moveItems = ko.observableArray([]);
@@ -90,17 +94,19 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.enableCode = ko.observable(true);
             self.enableRecordType = ko.observable(true);
             self.enableDataType = ko.observable(true);
+            self.enableSystemType = ko.observable(true);
 
             self.initCombobox();
             self.initSwapList();
             self.obsSelectedLogSet();
             self.obsSelectedLogRecordType();
+            self.obsSelectedLogSystemType();
             self.obsSelectedLogDataType();
             self.obsMode();
         }
 
         initCombobox() {
-            var self = this;
+            const self = this;
             self.recordTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_RecordType_Login')),
                 new ItemTypeModel(1, getText('Enum_RecordType_StartUp')),
@@ -110,15 +116,23 @@ module nts.uk.com.view.cli003.g.viewmodel {
 //                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
                 new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
 //                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
-//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
+//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo')),
+                new ItemTypeModel(9, getText("Enum_RecordType_DataStorage")),
+                new ItemTypeModel(10, getText("Enum_RecordType_DataRecovery")),
+                new ItemTypeModel(11, getText("Enum_RecordType_DataDeletion")),
             ]);
 
+            self.systemTypeList = ko.observableArray([
+                new ItemTypeModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+                new ItemTypeModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+                new ItemTypeModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+                new ItemTypeModel(3, getText('Enum_SystemType_OFFICE_HELPER')),
+            ]);
             self.dataTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_DataType_Schedule')),
                 new ItemTypeModel(1, getText('Enum_DataType_DailyResults')),
                 new ItemTypeModel(2, getText('Enum_DataType_MonthlyResults')),
             ]);
-            
             self.dataTypeListEmpty = ko.observableArray([
                 new ItemTypeModel(-1, '')]);
             
@@ -136,7 +150,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         initSwapList() {
-            var self = this;
+            const self = this;
             self.itemsSwap = ko.observableArray([]);
             self.leftColumns = ko.observableArray([
                 { headerText: "code", dataType: 'string', key: 'code', hidden: true },
@@ -149,7 +163,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 { headerText: getText("CLI003_41"), dataType: 'string', key: 'name', width: 150 },
                 {
                     headerText: getText("CLI003_42"), dataType: 'string', key: 'isShow', width: 100,
-                    template: '<select style="width: 100%; padding-right:0px!important", onchange="changeShowOption(this, ${code});">'                    + '{{if ${isShow} == "0" }}'                    + '<option value="0" selected="true">' + getText("CLI003_44") + '</option>'                    + '<option value="1">' + getText("CLI003_45") + '</option>'                    + '{{else}}'                    + '<option value="0">' + getText("CLI003_44") + '</option>'                    + '<option value="1" selected="true">' + getText("CLI003_45") + '</option>'                    + '{{/if}}'                    + '</select>'
+                    template: '<select style="width: 100%; padding-right:0px!important", onchange="changeShowOption(this, ${code});">'
+                    + '{{if ${isShow} == "0" }}'
+                    + '<option value="0" selected="true">' + getText("CLI003_44") + '</option>'
+                    + '<option value="1">' + getText("CLI003_45") + '</option>'
+                    + '{{else}}'
+                    + '<option value="0">' + getText("CLI003_44") + '</option>'
+                    + '<option value="1" selected="true">' + getText("CLI003_45") + '</option>'
+                    + '{{/if}}'
+                    + '</select>'
                 },
                 {
                     headerText: getText("CLI003_43"), dataType: 'string', key: 'detail', width: 100,
@@ -164,7 +186,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         //event for change option the isShow on the selected code list
         changeShowOption(value: number, code: string) {
-            var self = this;
+            const self = this;
             for (let i = 0; i < self.selectedCodeList().length; i++) {
                 let logSetOutputItem = self.selectedCodeList()[i];
                 if (logSetOutputItem.code == code) {
@@ -191,7 +213,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         getAllLogDisplaySet() {
-            var self = this;
+            const self = this;
             let dfd = $.Deferred<any>();
             block.grayout();
 
@@ -200,9 +222,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 if (logDisplaySets && logDisplaySets.length > 0) {
                     self.logDisplaySets(logDisplaySets);
                     for (let i = 0; i < logDisplaySets.length; i++) {
-                        var logDisplaySet = logDisplaySets[i];
+                        const logDisplaySet = logDisplaySets[i];
                         self.logSets.push(new ItemLogSetModel(logDisplaySet.logSetId, logDisplaySet.code, logDisplaySet.name,
-                            logDisplaySet.recordType, logDisplaySet.dataType, logDisplaySet.logSetOutputItems));
+                            logDisplaySet.recordType, logDisplaySet.dataType,logDisplaySet.systemType, logDisplaySet.logSetOutputItems));
                     }
 
                     self.mode(MODE.UPDATE);
@@ -210,7 +232,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                         $("#G2_1").ntsGridList('setSelected', self.selectCode());
                         self.currentCode(self.selectCode());
                     } else {
-                        var logDisplaySetFirst = logDisplaySets[0];
+                        const logDisplaySetFirst = logDisplaySets[0];
                         $("#G2_1").ntsGridList('setSelected', logDisplaySetFirst.code);
                         self.currentCode(logDisplaySetFirst.code);
                     }
@@ -237,47 +259,51 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         setLogSetInfo(logSet: any) {
-            var self = this;
+            const self = this;
             self.currentLogDisplaySet(logSet);
             self.logSetId(logSet.id);
             self.inputCode(self.currentCode());
             self.currentName(logSet.name);
             self.recordType(logSet.recordType);
+            self.systemType(logSet.systemType);
 //            self.dataType(logSet.dataType);
         }
 
         resetAllForm() {
-            var self = this;
-            self.currentLogDisplaySet('');
+            const self = this;
+            self.currentLogDisplaySet();
             self.currentCode('');
             self.inputCode('');
             self.currentName('');
-            self.recordType(-1);
+            self.recordType('-1');
 //            self.dataType(-1);
+            self.systemType('-1');
             self.selectedCodeList.removeAll();
         }
 
         resetForm() {
-            var self = this;
-            self.currentLogDisplaySet('');
+            const self = this;
+            self.currentLogDisplaySet();
             self.currentName('');
-            self.recordType(-1);
-//            self.dataType(-1);
+            self.recordType('-1');
+            self.dataType('-1');
+            self.systemType('-1');
             self.selectedCodeList.removeAll();
         }
         
         initForm() {
-            var self = this;
-            self.recordType(0);
-//            self.dataType(-1);
+            const self = this;
+            self.recordType('0');
+            self.dataType('-1');
+            self.systemType('0');
         }
 
         obsSelectedLogSet() {
-            var self = this;
-            self.currentCode.subscribe(function(newValue) {
+            const self = this;
+            self.currentCode.subscribe((newValue) => {
                 errors.clearAll();
                 for (let i = 0; i < self.logSets().length; i++) {
-                    var logSet = self.logSets()[i];
+                    const logSet = self.logSets()[i];
                     if (logSet.code == newValue) {
                         self.resetForm();
                         self.setLogSetInfo(logSet);
@@ -290,10 +316,10 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         obsSelectedLogRecordType() {
-            var self = this;
+            const self = this;
             self.recordType.subscribe(function(newValue) {
                 if (typeof newValue !== "undefined" && newValue !=null ) {
-                    if (newValue != -1) {
+                    if (newValue != '-1') {
                         self.getLogItemByRecordType(newValue.toString());
                     }
                     else {
@@ -302,33 +328,44 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 }
             });
         }
+
+        obsSelectedLogSystemType() {
+            const self = this;
+            self.systemType.subscribe(function(newValue) {
+                if (typeof newValue !== "undefined" && newValue !=null ) {
+                    if (newValue != '-1') {
+                        // self.getLogItemBySystemType(newValue.toString());
+                    }
+                }
+            });
+        }
         
         obsSelectedLogDataType() {
-            var self = this;
+            const self = this;
             self.dataType.subscribe(function(newValue) {
                 if (typeof newValue !== "undefined" && newValue !=null ) {
-                    if (newValue != -1) {
-                        self.showLogItems(newValue);
+                    if (newValue != '-1') {
+                        self.showLogItems(parseInt(newValue));
                     }
                 }
             });
         }
         
         showLogItems(dataType : number) {
-            var self = this;
-            var logItemsEdit = [];
+            const self = this;
+            const logItemsEdit = [];
             if (dataType == 0 || dataType == 1) {
                 for (var k = 0; k < self.logItemsFull().length; k++) {
-                    var logOutputItem = self.logItemsFull()[k];
+                    const logOutputItem = self.logItemsFull()[k];
                     if (logOutputItem.code != 23 && logOutputItem.code != 24) {
                         logItemsEdit.push(logOutputItem);
                     }
                 }
                 
                 self.itemsSwap(logItemsEdit);
-                var selectCodeLists = [];
+                const selectCodeLists = [];
                 _.forEach(self.selectedCodeList(), function(logSetOutput) {
-                    var code = logSetOutput.code;
+                    const code = logSetOutput.code;
                     if (code != 23 && code != 24) {
                         selectCodeLists.push(logSetOutput);
                     }
@@ -337,15 +374,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 self.selectedCodeList(selectCodeLists);
             } else if (dataType == 2) {
                 for (var k = 0; k < self.logItemsFull().length; k++) {
-                    var logOutputItem = self.logItemsFull()[k];
+                    const logOutputItem = self.logItemsFull()[k];
                     if (logOutputItem.code != 22 && logOutputItem.code != 24) {
                         logItemsEdit.push(logOutputItem);
                     }
                 };
                 self.itemsSwap(logItemsEdit);
-                 var selectCodeLists = [];
+                 const selectCodeLists = [];
                 _.forEach(self.selectedCodeList(), function(logSetOutput) {
-                    var code = logSetOutput.code;
+                    const code = logSetOutput.code;
                     if (code != 22 && code != 24) {
                         selectCodeLists.push(logSetOutput);
                     }
@@ -356,21 +393,21 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         
-        handleDataType(recoredType: number) {
-            var self = this;
+        handleDataType(recoredType: string) {
+            const self = this;
             
-            if ((recoredType == 4 || recoredType == 5 || recoredType == 6)) {
+            if ((recoredType == '4' || recoredType == '5' || recoredType == '6')) {
                 self.setDataTypeList();
                 if (self.mode() == MODE.INSERT) {
-                    self.dataType(0);
+                    self.dataType('0');
                 } else {
-                    self.dataType(self.currentLogDisplaySet().dataType);
+                    self.dataType(String(self.currentLogDisplaySet().dataType));
                 }
             } else {
                 self.resetDataTypeList();
             }
             
-            if ((recoredType == 4 || recoredType == 5 || recoredType == 6) && (self.mode() == MODE.INSERT)) {
+            if ((recoredType == '4' || recoredType == '5' || recoredType == '6') && (self.mode() == MODE.INSERT)) {
                 self.enableDataType(true);
             } else {
                 self.enableDataType(false);
@@ -378,18 +415,18 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         getLogItemByRecordType(recordType: string) {
-            var self = this;
+            const self = this;
             self.itemsSwap.removeAll();
             self.selectedCodeList.removeAll();
             block.grayout();
             service.getLogOutputItemByRecordType(recordType).done(function(logOutputItems: any) {
                 if (logOutputItems && logOutputItems.length > 0) {
-                    var id;
+                    let id;
                     if (self.currentLogDisplaySet()) {
-                        id = self.currentLogDisplaySet().id;
+                        id = self.currentLogDisplaySet().logSetId;
                     }
                     
-                    var logItemsTemp = [];
+                    const logItemsTemp = [];
                     _.forEach(logOutputItems, function(logOutputItem) {
                         logItemsTemp.push(
                             new ItemLogSetRecordTypeModel(logOutputItem.itemNo, logOutputItem.itemName, 0,
@@ -404,13 +441,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     //check selected code
                     if (self.currentLogDisplaySet() &&
                         self.currentLogDisplaySet().recordType == recordType) {
-                        var logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
+                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
                         if (logSetOutputs) {
-                            var lengthItemSwap = logItemsTemp.length;
-                            var logItemSetted = [];
+                            const lengthItemSwap = logItemsTemp.length;
+                            const logItemSetted = [];
                             _.forEach(logSetOutputs, function(logSetOutput) {
-                                var itemNo = logSetOutput.itemNo;
-                                var itemName;
+                                let itemNo = logSetOutput.itemNo;
+                                let itemName;
                                 for (var k = 0; k < lengthItemSwap; k++) {
                                     if (logItemsTemp[k].code == itemNo) {
                                         itemName = logItemsTemp[k].name;
@@ -436,7 +473,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         obsMode() {
-            var self = this;
+            const self = this;
             self.mode.subscribe(function(newValue) {
                 if (newValue == MODE.INSERT) {
                     self.enableBtnReg(true);
@@ -446,6 +483,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(true);
                     self.enableRecordType(true);
                     self.enableDataType(true);
+                    self.enableSystemType(true);
                 }
                 else if (newValue == MODE.UPDATE) {
                     self.enableBtnReg(true);
@@ -455,6 +493,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(false);
                     self.enableRecordType(false);
                     self.enableDataType(false);
+                    self.enableSystemType(false);
                 }
                 else {
                     self.enableBtnReg(true);
@@ -464,12 +503,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(true);
                     self.enableRecordType(false);
                     self.enableDataType(false);
+                    self.enableSystemType(false);
                 }
             });
         }
 
         createNewItemDetail(logSetId: string, itemNo: number): Array<LogSetItemDetailModal> {
-            var listItemDetail = [];
+            const listItemDetail = [];
             for (let i = 1; i <= 5; i++) {
                 listItemDetail.push(new LogSetItemDetailModal(logSetId, itemNo, i, 0, '', 0));
             }
@@ -478,23 +518,25 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
 
         openH(itemNo, itemName) {
-            var self = this;
-            let curLogSetOutputItem;
+            const self = this;
+            let curLogSetOutputItem;
+
             for (let i = 0; i < self.selectedCodeList().length; i++) {
                 let logSetOutputItem = self.selectedCodeList()[i];
                 if (logSetOutputItem.code == itemNo) {
                     curLogSetOutputItem = logSetOutputItem;
                 }
-            }
+            }
+
             if (curLogSetOutputItem) {
                 setShared("CLI003GParams_ListSetItemDetail", curLogSetOutputItem.detail);
                 setShared("CLI003GParams_ItemName", curLogSetOutputItem.name);
                 modal("/view/cli/003/h/index.xhtml").onClosed(() => {
                     let listDetailConSet = getShared('CLI003GParams_ListSetItemDetailReturn');
                     if (listDetailConSet) {
-                        var listDetails = [];
+                        const listDetails = [];
                         for (let i = 0; i < listDetailConSet.length; i++) {
-                            var isUseCondFlg = listDetailConSet[i].isUseCondFlg == true ? 1 : 0;
+                            const isUseCondFlg = listDetailConSet[i].isUseCondFlg == true ? 1 : 0;
                             listDetails.push(new LogSetItemDetailModal(self.logSetId(), curLogSetOutputItem.code, i,
                                 isUseCondFlg, listDetailConSet[i].condition, listDetailConSet[i].symbolStr));
                         }
@@ -513,7 +555,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         };
 
         private validateCode(): boolean {
-            var self = this;
+            const self = this;
             for (let i = 0; i < self.logSets().length; i++) {
                 if (Number(self.inputCode()) == Number(self.logSets()[i].code)) {
                     alertError({ messageId: 'Msg_3' });
@@ -561,7 +603,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     infor({ messageId: "Msg_16" }).then(function() {
                      self.setFocus();
                     });;
-                    var newSelectedCode = self.updateSelectCodeAfterDel(self.logSetId());
+                    const newSelectedCode = self.updateSelectCodeAfterDel(self.logSetId());
                     self.selectCode(newSelectedCode);
                     self.getAllLogDisplaySet();
                 }).fail(function(error) {
@@ -577,9 +619,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         updateSelectCodeAfterDel(currentLogSetId: string): string {
             let self = this;
-            var length = self.logSets().length;
+            const length = self.logSets().length;
             for (let i = 0; i < length; i++) {
-                var logSet = self.logSets()[i];
+                const logSet = self.logSets()[i];
                 if (logSet.id == currentLogSetId) {
                     if (i <= length - 2) {
                         return self.logSets()[i + 1].code;
@@ -597,14 +639,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         private saveLogDisplaySet(): void {
             let self = this;
-            //self.logSetOutputItems(self.getListSetOutputItems());
-            var dataType = self.dataType();
-            if (self.recordType() != 6) {
+            //self.logSetOutputItems(self.getListSetOutputItems());
+
+            let dataType = self.dataType();
+            if (self.recordType() != '6') {
                 dataType = '';
             }
             
-            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
-                self.currentName(), dataType, self.recordType(), self.logSetOutputItems());            block.grayout();
+            const logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
+                self.currentName(), dataType, self.recordType(),self.systemType(),  self.logSetOutputItems());
+            block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
                 infor({ messageId: "Msg_15" }).then(function() {
@@ -627,13 +671,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
             let self = this;
             //self.logSetOutputItems(self.getListSetOutputItems());
 
-            var dataType = self.dataType();
-            if (self.recordType() != 6) {
+            let dataType = self.dataType();
+            if (self.recordType() != '6') {
                 dataType = '';
             }
             
-            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
-                self.currentName(), dataType, self.recordType(), self.logSetOutputItems());
+            const logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
+                self.currentName(), dataType, self.recordType(),self.systemType(), self.logSetOutputItems());
             block.grayout();
             service.updateLogDisplaySet(logDisplaySet).done(function(data: any) {
                 infor({ messageId: "Msg_15" }).then(function() {
@@ -649,13 +693,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }).always(() => {
                 block.clear();
             });
-        }
+        }
+
         //get list of output item that was selected in the swap list
         getListSetOutputItems(): Array<LogSetOutputItemModal> {
-            var self = this;
-            var listSelectedLogOutputItems = [];
-            for (let i = 0; i < self.selectedCodeList().length; i++) {                var item = self.selectedCodeList()[i];
-//                if (item.isShow == 1) {                listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
+            const self = this;
+            const listSelectedLogOutputItems = [];
+            for (let i = 0; i < self.selectedCodeList().length; i++) {
+                const item = self.selectedCodeList()[i];
+//                if (item.isShow == 1) {
+                listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
 //                } else {
 //                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
 //                }
@@ -664,11 +711,11 @@ module nts.uk.com.view.cli003.g.viewmodel {
         }
 
         validateLogSetOutputItem(): boolean {
-            var self = this;
+            const self = this;
             self.logSetOutputItems(self.getListSetOutputItems());
 
 //            for (var i = 0; i < self.logSetOutputItems().length; i++) {
-//                var logSetOutputItem = self.logSetOutputItems()[i];
+//                const logSetOutputItem = self.logSetOutputItems()[i];
 //                if (logSetOutputItem.isUseFlag == 1) {
 //                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
 //                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
@@ -698,17 +745,19 @@ module nts.uk.com.view.cli003.g.viewmodel {
         id: string;
         code: any;
         name: string;
-        recordType: number;
-        dataType: number;
+        recordType: string;
+        dataType: string;
+        systemType: string;
         logSetOutputs: any;
 
-        constructor(id: string, code: any, name: string, recordType: number,
-            dataType: number, logSetOutputs: any) {
+        constructor(id: string, code: any, name: string, recordType: string,
+            dataType: string, systemType: string,  logSetOutputs: any) {
             this.id = id;
             this.code = code;
             this.name = name;
             this.recordType = recordType;
             this.dataType = dataType;
+            this.systemType = systemType
             this.logSetOutputs = logSetOutputs;
         }
     }
@@ -753,18 +802,20 @@ module nts.uk.com.view.cli003.g.viewmodel {
         logSetId: string;
         code: string;
         name: string;
-        dataType: number;
-        recordType: number;
+        dataType: string;
+        recordType: string;
+        systemType: string;
         logSetOutputItems: Array<LogSetOutputItemModal>;
 
-        constructor(logSetId: string, code: string, name: string, dataType: number, recordType: number,
-            logSetOutputItems: Array<LogSetOutputItemModal>) {
+        constructor(logSetId: string, code: string, name: string, dataType: string, recordType: string,systemType: string,
+            logSetOutputs: Array<LogSetOutputItemModal>) {
             this.logSetId = logSetId;
             this.code = code;
             this.name = name;
             this.dataType = dataType;
             this.recordType = recordType;
-            this.logSetOutputItems = logSetOutputItems;
+            this.systemType = systemType;
+            this.logSetOutputItems = logSetOutputs;
         }
     }
 
@@ -808,8 +859,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
 }
 
 function openHDialog(element) {
-    var itemNo = $(element).data("code");
-    var itemName = $(element).data("name");
+    const itemNo = $(element).data("code");
+    const itemName = $(element).data("name");
     nts.uk.ui._viewModel.content.openH(itemNo, itemName);
 }
 
@@ -818,10 +869,10 @@ function changeShowOption(element, code) {
 }
 
 function afterLeft(toRight, oldSource, newI) {
-    var currentLogDisplaySet = nts.uk.ui._viewModel.content.currentLogDisplaySet();
+    const currentLogDisplaySet = nts.uk.ui._viewModel.content.currentLogDisplaySet();
     for (let j = 0; j < newI.length; j++) {
         let logSetOutputItem = newI[j];
-        var id;
+        let id;
         if (currentLogDisplaySet) {
             id = currentLogDisplaySet.id;
         }

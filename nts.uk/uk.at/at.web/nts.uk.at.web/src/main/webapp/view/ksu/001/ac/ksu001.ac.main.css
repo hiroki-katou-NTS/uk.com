@@ -1,0 +1,184 @@
+#qViewModel #tab-panel {
+	margin-top: -5px;
+	width: 1090px;
+}
+
+#qViewModel #tab-panel * {
+	float: left
+}
+
+#qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li {
+	height: 20px;
+	width: 50px;
+}
+
+#qViewModel .ui-widget.ui-tabs.vertical .ui-tabs-nav li a {
+	margin-left: 4px;
+	margin-top: 2px
+}
+
+#qViewModel .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	padding: 0px;
+	font-size: 11px;
+}
+
+#qViewModel #company, #qViewModel #workplace {
+	width: 1005px;
+	height: 60px;
+	background-color: #DAE3F3
+}
+
+.caret-background.caret-bottom:after {
+	left: 5% !important;
+	margin-top: 0px !important;
+	border-width: 8px 24px !important;
+	color: #E0F59E !important;
+}
+
+#tableButton1 {
+	background-color: rgb(237,250,194);
+	width: 910px;
+	height: 55px;
+	margin-top: 5px;
+}
+
+#tableButton1 button {
+	width: 85px !important;
+	height: 20px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid grey;
+	color : black;
+}
+
+#tableButton1 table td {
+	padding: 3px 3px !important;
+}
+
+#tableButton2 {
+	background-color: rgb(237,250,194);
+	width: 910px;
+	height: 55px;
+	margin-top: 5px;
+}
+
+#tableButton2 button {
+	width: 85px !important;
+	height: 20px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid grey;
+	color : black;
+}
+
+#tableButton2 table td {
+	padding: 3px 3px !important;
+}
+
+#Aa1_2 {
+	margin-left: 5px; 
+	margin-bottom: 10px
+}
+
+.listLink {
+    white-space: nowrap;
+}
+
+#qViewModel .hyperlink {
+	color: #0066CC;
+	margin-top: 14px;
+	width: max-content;
+	height: 32px;
+}
+
+#part-1-1, #part-1-2 {
+	margin-left: -8px;
+	margin-top: -11px
+}
+
+#part-1-1 div:FIRST-CHILD, #part-1-2 div:FIRST-CHILD {
+	height: 18px;
+	width: 650px;
+}
+
+#part-1-1 div:NTH-CHILD(2), #part-1-2 div:NTH-CHILD(2) {
+	margin-left: 150px
+}
+
+#part-1-1 button, #part-1-2 button {
+	margin-left: 20px;
+	height: 24px;
+}
+
+#popup-area {
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	visibility: hidden;
+	z-index: 1000
+}
+
+#popup-area * {
+	font-size: 14px !important;
+}
+
+#popup-area>div {
+	margin-top: 10px
+}
+
+.color-gray {
+	color: gray !important
+}
+
+.background-linkbtn {
+	background: rgb(237,250,194);	
+}
+
+#group-link-button-ja {
+	height: 30px;
+	margin-top: -5px;
+
+}
+
+#group-link-button-ja a {
+	font-size: 13px;
+	margin-top: 5px;
+	margin-left: 10px;
+	display: inline-block;
+}
+
+.openDialogJA {
+	width: 25px;
+	height: 25px;
+}
+
+.overwrite {
+	margin-top: 7px;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.ntsTable .ntsButtonCellSelected {
+    background-color: #007fff;
+    color: white !important;
+    top: 2px;
+}
+
+.withContent {
+	border: 1px solid grey !important;
+    color: black !important;
+}
+
+.nowithContent {
+	border: 1px solid LightGrey !important;
+    color: LightGrey !important;
+}
+
+.disabledShiftControl {
+	background-color: #d9d9d9 !important;
+	cursor: default;
+	color: #888888;
+	pointer-events: none;
+}

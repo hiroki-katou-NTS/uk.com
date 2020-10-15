@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 /**
  * 承認枠 : 承認者
  * @author hoatt
@@ -26,7 +27,7 @@ public class ApproverInfor extends DomainObject {
 	/**代行者*/
 	private String agentID;
 	/**承認日*/
-	private GeneralDate approvalDate;
+	private GeneralDateTime approvalDate;
 	/**理由*/
 	private String approvalReason;
 	
@@ -43,7 +44,7 @@ public class ApproverInfor extends DomainObject {
 					.build();
 	}
 	public static ApproverInfor convert(String approverID,
-			int approvalAtr, String agentID, GeneralDate approvalDate, String approvalReason, Integer approverInListOrder){
+			int approvalAtr, String agentID, GeneralDateTime approvalDate, String approvalReason, Integer approverInListOrder){
 		return new  ApproverInfor (approverID,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
 				agentID, approvalDate, approvalReason, approverInListOrder);

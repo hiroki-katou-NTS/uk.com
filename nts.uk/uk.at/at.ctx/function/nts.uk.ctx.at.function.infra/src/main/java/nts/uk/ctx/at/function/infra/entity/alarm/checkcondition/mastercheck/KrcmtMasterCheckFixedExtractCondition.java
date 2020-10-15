@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessage;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -56,7 +56,7 @@ public class KrcmtMasterCheckFixedExtractCondition extends UkJpaEntity {
 		return new MasterCheckFixedExtractCondition(
 					this.pk.getErAlId(),
 					this.pk.getNo(),
-					new ErrorAlarmMessage(this.message),
+					new ErrorAlarmMessageMSTCHK(this.message),
 					this.useAtr==1?true:false
 				);
 	}

@@ -30,10 +30,6 @@ public abstract class KshstTransLabTime extends UkJpaEntity {
 	@Column(name = "WEEKLY_TIME")
 	private int weeklyTime;
 
-	/** The week str. */
-//	@Column(name = "WEEK_STR")
-//	private int weekStr;
-
 	/** The daily time. */
 	@Column(name = "DAILY_TIME")
 	private int dailyTime;

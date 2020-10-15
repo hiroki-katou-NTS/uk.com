@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshmtLegalMon;
 
@@ -22,6 +23,7 @@ public class KshmtLegalTimeMSya extends KshmtLegalMon implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
+	@Getter
 	@EmbeddedId
 	public KshmtLegalTimeMSyaPK pk;
 	

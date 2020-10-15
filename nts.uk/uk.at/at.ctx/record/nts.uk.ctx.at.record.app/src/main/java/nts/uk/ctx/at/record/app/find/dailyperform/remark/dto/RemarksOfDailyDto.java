@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -14,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -45,8 +46,9 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public RemarksOfDailyPerform toDomain(String employeeId, GeneralDate date) {
-		return new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
+	public RemarksOfDailyAttd toDomain(String employeeId, GeneralDate date) {
+		RemarksOfDailyPerform domain = new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
+		return domain.getRemarks();
 	}
 
 	public static RemarksOfDailyDto getDto(RemarksOfDailyPerform x) {
@@ -54,6 +56,17 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
 			dto.setYmd(x.getYmd());
+			dto.setRemark(x.getRemarks().getRemarks().v());
+			dto.setNo(x.getRemarks().getRemarkNo());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
+		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+		if(x != null){
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setRemark(x.getRemarks().v());
 			dto.setNo(x.getRemarkNo());
 			dto.exsistData();

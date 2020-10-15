@@ -2,26 +2,26 @@
 
 module nts.uk.at.view.kmp001.b {
 	const template = `
-		<div class="sidebar-content-header">
-			<span class="title" data-bind= "text: $i18n('KMP001_2')"></span>
+		<div id="functions-area">
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind= "text: $i18n('KMP001_6'), click: deleteStamCard"></button>
 		</div>
-		<div class="search_label" style="padding-bottom: 0px">
-			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
-			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
-												click: getStampCard">
-			</button>
-			<button id="top_bottom" data-bind= "text: $i18n('KMP001_24'),
-												click: getAllStampCard"></button>
-		</div>
 		<div class="view-kmp">
+			<div class="search_label">
+				<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
+				<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+				<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
+													click: getStampCard">
+				</button>
+				<button id="top_bottom" data-bind= "text: $i18n('KMP001_24'),
+													click: getAllStampCard"></button>
+			</div>
 			<div class="float-left list-component">
 				<div class="caret-right caret-background bg-green" style="padding: 10px;">
 					<table id="card-list" 
 						data-bind="ntsGridList: {
-							height: 300,
+							height: 310,
 							optionsValue: 'stampNumber',
 							columns: [
 					            { headerText: $i18n('KMP001_22'), prop: 'stampNumber', width: 180 },
@@ -188,16 +188,16 @@ module nts.uk.at.view.kmp001.b {
 							stampInput = stampInput + "0";
 						}
 						break;
-					case 3:
-						for (var i = 0; i < s; i++) {
-							stampInput = " " + stampInput;
-						}
-						break;
-					case 4:
-						for (var i = 0; i < s; i++) {
-							stampInput = stampInput + " ";
-						}
-						break;
+					// case 3:
+					// 	for (var i = 0; i < s; i++) {
+					// 		stampInput = " " + stampInput;
+					// 	}
+					// 	break;
+					// case 4:
+					// 	for (var i = 0; i < s; i++) {
+					// 		stampInput = stampInput + " ";
+					// 	}
+					// 	break;
 				}
 
 				vm.stampCardBackSelect = stampInput;
@@ -228,7 +228,7 @@ module nts.uk.at.view.kmp001.b {
 				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
 				.then(() => vm.$window.storage('CDL009Output'))
 				.then((data: string | string[]) => {
-					if (data != '') {
+					if (data !== undefined) {
 						vm.employee.employeeId(ko.toJS(data));
 					}
 				});
@@ -278,22 +278,23 @@ module nts.uk.at.view.kmp001.b {
 
 			} else {
 				vm.$blockui("invisible");
-				vm.$ajax(KMP001B_API.GET_STAMPCARD + vm.stampCardBackSelect)
-					.then((data: IStampCard[]) => {
-						if (data) {
-							vm.items(data);
-							if (data[selectedIndex]) {
-								vm.model.stampNumber(data[selectedIndex].stampNumber);
-								vm.model.update(data[selectedIndex]);
-							} else {
-								vm.model.stampNumber('');
+				if (vm.stampCardBackSelect !== ''){
+					vm.$ajax(KMP001B_API.GET_STAMPCARD + vm.stampCardBackSelect)
+						.then((data: IStampCard[]) => {
+							if (data) {
+								vm.items(data);
+								if (data[selectedIndex]) {
+									vm.model.stampNumber(data[selectedIndex].stampNumber);
+									vm.model.update(data[selectedIndex]);
+								} else {
+									vm.model.stampNumber('');
+								}
 							}
-						}
 
-					}).always(() => {
-						vm.$blockui("clear");
-					});
-
+						}).always(() => {
+							vm.$blockui("clear");
+						});
+				}
 			}
 		}
 

@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.DeleteAgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgree36Command;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.ApprovalAlarmCheckConDto;
 
 /**
  * 
@@ -32,6 +33,8 @@ public class AlarmCheckConditionByCategoryCommand {
 	
 	private DailyAlarmCheckConditionCommand dailyAlarmCheckCondition;
 	
+	private ApprovalAlarmCheckConDto approvalAlarmCheckConDto;
+	
 	private Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition;
 	
 	private int action;
@@ -53,6 +56,7 @@ public class AlarmCheckConditionByCategoryCommand {
 	public AlarmCheckConditionByCategoryCommand(String code, String name, int category,
 			AlarmCheckTargetConditionCommand targetCondition, List<String> availableRoles,
 			DailyAlarmCheckConditionCommand dailyAlarmCheckCondition,
+			ApprovalAlarmCheckConDto approvalAlarmCheckConDto,
 			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action,
 			MonAlarmCheckConCommand monAlarmCheckCon,
 			UpdateAgree36Command agree36, MulMonCheckCondCommand mulMonCheckCond, 
@@ -64,6 +68,7 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.targetCondition = targetCondition;
 		this.availableRoles = availableRoles;
 		this.dailyAlarmCheckCondition = dailyAlarmCheckCondition;
+		this.approvalAlarmCheckConDto = approvalAlarmCheckConDto;
 		this.schedule4WeekAlarmCheckCondition = schedule4WeekAlarmCheckCondition;
 		this.action = action;
 		this.monAlarmCheckCon = monAlarmCheckCon;

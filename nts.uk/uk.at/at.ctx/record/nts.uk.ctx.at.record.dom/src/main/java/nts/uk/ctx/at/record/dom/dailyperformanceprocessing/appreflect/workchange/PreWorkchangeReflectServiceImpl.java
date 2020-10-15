@@ -10,16 +10,16 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalc
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
@@ -39,11 +39,11 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 		CommonReflectParameter workchangePara = param.getCommon();
 		GeneralDate appDate = workchangePara.getAppDate();
 		IntegrationOfDaily dailyInfor = preOTService.createIntegrationOfDailyStart(workchangePara.getEmployeeId(), appDate);
-		WorkInfoOfDailyPerformance workInfor = dailyInfor.getWorkInformation();
+		WorkInfoOfDailyPerformance workInfor = new WorkInfoOfDailyPerformance(param.getCommon().getEmployeeId(), param.getCommon().getAppDate(), dailyInfor.getWorkInformation());
 		//1日休日の判断
-		if(workInfor.getRecordInfo().getWorkTypeCode() != null
+		if(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
 				&& param.getExcludeHolidayAtr() == 1
-				&& WorkTypeIsClosedService.checkHoliday(requireService.createRequire(), workInfor.getRecordInfo().getWorkTypeCode().v())) {
+				&& WorkTypeIsClosedService.checkHoliday(requireService.createRequire(), workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v())) {
 			return;
 		}
 		//予定勤種を反映できるかチェックする
@@ -89,15 +89,15 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 					x.getAttendanceLeavingWork(1).ifPresent(a -> {
 						a.getAttendanceStamp().ifPresent(y -> {
 							y.getStamp().ifPresent(z -> {
-								if(z.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION) {
-									z.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT);
+								if(z.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
+									z.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE);
 								}
 							});
 						});
 						a.getLeaveStamp().ifPresent(y -> {
 							y.getStamp().ifPresent(z -> {
-								if(z.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION) {
-									z.setStampSourceInfo(StampSourceInfo.GO_STRAIGHT);
+								if(z.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
+									z.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.DIRECT_BOUNCE);
 								}
 							});
 						});

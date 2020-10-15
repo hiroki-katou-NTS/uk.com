@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -91,6 +91,14 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 				.setParameter("contractCd", contractCode)
 				.setParameter("startStampDate", start).setParameter("endStampDate", end).getList(x -> toDomain(x));
 	}
+	
+	//
+	@Override
+	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime) {
+		return this.queryProxy().find(
+				new KrcdtStampRecordPk(AppContexts.user().contractCode(), stampNumber.v(), stampDateTime),
+				KrcdtStampRecord.class).map(x -> toDomain(x));
+	}
 
 	// [6] 取得する
 	@Override
@@ -115,5 +123,6 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 				Optional.ofNullable(entity.empInfoTerCode == null ? null
 						: new EmpInfoTerminalCode(Integer.valueOf(entity.empInfoTerCode))));
 	}
+
 
 }

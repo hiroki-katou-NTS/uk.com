@@ -5,9 +5,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback.ScheTimeReflect;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 
 @Stateless
@@ -29,7 +29,7 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 		//自動打刻をクリアする
 		this.clearAutomaticEmbossing(param.getEmployeeId(),
 				param.getDateInfo(),
-				workInfo.getRecordInfo().getWorkTypeCode().v(),
+				workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
 				param.isAutoClearStampFlg(),
 				param.getOvertimePara());
 		//開始終了時刻の反映(事前)
@@ -93,10 +93,10 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 
 	@Override
 	public void startEndTimeOutput(StartEndTimeRelectCheck param, IntegrationOfDaily dailyInfor) {
-		WorkInfoOfDailyPerformance workInfo = dailyInfor.getWorkInformation();
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(param.getEmployeeId(), param.getBaseDate(), dailyInfor.getWorkInformation());
 		//反映する開始終了時刻を求める
-		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v(), 
-				workInfo.getRecordInfo().getWorkTypeCode() == null ? null : workInfo.getRecordInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput workInfor = new WorkTimeTypeOutput(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), 
+				workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode() == null ? null : workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		ScheStartEndTimeReflectOutput findStartEndTime = scheTimereflect.findStartEndTime(param, workInfor);
 		//ジャスト遅刻早退により時刻を編集する
 		StartEndTimeOutput justLateEarly = this.justLateEarly(workInfor.getWorktimeCode(), findStartEndTime);

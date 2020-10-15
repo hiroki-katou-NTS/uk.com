@@ -9,15 +9,12 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-//import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.SpecCountNotCalcSubject;
-//import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.SpecDayMonthCountCon;
-//import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.SpecTotalCountMonthly;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.TADaysCountCondOfMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.TADaysCountOfMonthlyAggr;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 //import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.WorkTypeClassification;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstVertMonMethod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountCondOfMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountOfMonthlyAggr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 
 /**
  * The Class JpaVerticalTotalMethodOfMonthly.

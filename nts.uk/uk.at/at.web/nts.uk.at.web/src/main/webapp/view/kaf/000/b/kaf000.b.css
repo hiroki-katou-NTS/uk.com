@@ -1,0 +1,22 @@
+.kaf000-function-btn {
+	margin-left: 0.1vw !important;
+	margin-right: 0px !important;
+}
+.controlButtonCell_kaf000 {
+	display: inline-block;
+}
+.kaf000-function-div-update{
+	margin-left: calc(10vw - 102px);
+	display: inline-block;
+}
+.kaf000-function-div-delete {
+	margin-left: calc(10vw - 102px);
+	display: inline-block;
+}
+.kaf000-function-div-cancel {
+	margin-left: calc(15vw - 153px);
+	display: inline-block;
+}
+.padding-5 {
+	padding: 5px;
+}

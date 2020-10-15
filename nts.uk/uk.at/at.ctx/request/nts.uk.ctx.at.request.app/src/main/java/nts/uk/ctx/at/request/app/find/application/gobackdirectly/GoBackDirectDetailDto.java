@@ -8,8 +8,8 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirect
 @Value
 public class GoBackDirectDetailDto {
 	//直行直帰
-	GoBackDirectlyDto goBackDirectlyDto;
-	//事前事後区分
+	GoBackDirectlyDto_Old goBackDirectlyDto;
+	//	
 	int prePostAtr;
 	//場所１
 	String workLocationName1;
@@ -42,7 +42,7 @@ public class GoBackDirectDetailDto {
 	 */
 	public static GoBackDirectDetailDto convertToDto(GoBackDirectAppSet domain) {
 		return new GoBackDirectDetailDto(
-				GoBackDirectlyDto.convertToDto(
+				GoBackDirectlyDto_Old.convertToDto(
 				domain.getGoBackDirectly()),
 				domain.getPrePostAtr(), 
 				domain.getWorkLocationName1(), 

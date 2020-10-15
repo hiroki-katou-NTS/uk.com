@@ -11,12 +11,12 @@ import javax.persistence.Table;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -61,7 +61,7 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 	}
 	
 	public static List<KrcdtDayLeaveGate> from(AttendanceLeavingGateOfDaily domain){
-		return domain.getAttendanceLeavingGates().stream().map(al -> 
+		return domain.getTimeZone().getAttendanceLeavingGates().stream().map(al -> 
 			from(domain.getEmployeeId(), domain.getYmd(), al)
 		).collect(Collectors.toList());
 	}
@@ -76,8 +76,8 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 		if(al.getAttendance().isPresent()){
 			al.getAttendance().ifPresent(a -> {
 				this.attendancePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
-				this.attendanceTime = getTime(a.getTimeWithDay());
-				this.attendanceStampSource = getSourceStamp(a.getStampSourceInfo());
+				this.attendanceTime = getTime(a.getTimeDay().getTimeWithDay().isPresent()?a.getTimeDay().getTimeWithDay().get():null);
+				this.attendanceStampSource = getSourceStamp(a.getTimeDay().getReasonTimeChange().getTimeChangeMeans());
 			});
 		} else {
 			this.attendancePlaceCode = null;
@@ -87,8 +87,8 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 		if(al.getLeaving().isPresent()){
 			al.getLeaving().ifPresent(a -> {
 				this.leavePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
-				this.leaveTime = getTime(a.getTimeWithDay());
-				this.leaveStampSource = getSourceStamp(a.getStampSourceInfo());
+				this.leaveTime = getTime(a.getTimeDay().getTimeWithDay().isPresent()?a.getTimeDay().getTimeWithDay().get():null);
+				this.leaveStampSource = getSourceStamp(a.getTimeDay().getReasonTimeChange().getTimeChangeMeans());
 			});
 		} else {
 			this.leavePlaceCode = null;
@@ -98,7 +98,7 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 		
 	}
 
-	private static Integer getSourceStamp(StampSourceInfo a) {
+	private static Integer getSourceStamp(TimeChangeMeans a) {
 		return a == null ? null : a.value;
 	}
 
@@ -123,8 +123,8 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 		return placeCode == null ? null : new WorkLocationCD(placeCode);
 	}
 
-	private StampSourceInfo toWorkLocationCD(Integer stampSource) {
-		return stampSource == null ? null : EnumAdaptor.valueOf(stampSource, StampSourceInfo.class);
+	private TimeChangeMeans toWorkLocationCD(Integer stampSource) {
+		return stampSource == null ? null : EnumAdaptor.valueOf(stampSource, TimeChangeMeans.class);
 	}
 
 	@Override

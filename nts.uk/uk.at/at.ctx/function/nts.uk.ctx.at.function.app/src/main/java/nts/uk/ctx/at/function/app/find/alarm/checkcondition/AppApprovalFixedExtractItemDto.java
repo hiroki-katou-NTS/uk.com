@@ -1,0 +1,23 @@
+package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
+
+import lombok.Getter;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItem;
+
+@Getter
+public class AppApprovalFixedExtractItemDto {
+	
+	private int no;
+
+	private String initMessage;
+
+	private int erAlAtr;
+
+	private String name;
+	
+	public AppApprovalFixedExtractItemDto(AppApprovalFixedExtractItem domain) {
+		this.no = domain.getNo();
+		this.initMessage = domain.getInitMessage().v();
+		this.erAlAtr = domain.getErAlAtr().value;
+		this.name = domain.getName().name;
+	}
+}

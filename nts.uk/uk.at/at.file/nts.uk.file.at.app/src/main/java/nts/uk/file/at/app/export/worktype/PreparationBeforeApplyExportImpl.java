@@ -1,20 +1,32 @@
 package nts.uk.file.at.app.export.worktype;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
-import nts.uk.shr.infra.file.report.masterlist.data.*;
-import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
-import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppAcceptLimitDay;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value ="PreparationBeforeApply")
@@ -171,7 +183,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                                 .build());
                         dataA6.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
                                 .columnId(COLUMN_NO_HEADER_2)
-                                .value(i.nameId)
+                                .value(i.name)
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         dataA6.put(COLUMN_NO_HEADER_3, MasterCellData.builder()

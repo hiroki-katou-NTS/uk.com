@@ -97,6 +97,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 		}
 		
 		// find short work time history
+		//ドメインモデル「短時間勤務履歴」を取得する
 		List<ShortWorkTimeHistory> opWorkTimeHist = this.workTimeHistRepo
 				.findLstByEmpAndPeriod(empIds, period);
 
@@ -106,7 +107,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 
 		List<String> historyIds = dateHistoryItems.stream().map(DateHistoryItem::identifier)
 				.collect(Collectors.toList());
-
+		//ドメインモデル「短時間勤務履歴項目」を取得する
 		List<ShortWorkTimeHistoryItem> shortWorkTimeHistoryItems = this.workTimeHistItemRepo
 				.findByHistIds(historyIds);
 
@@ -119,6 +120,7 @@ public class ShortWorkTimePubImpl implements ShShortWorkTimePub {
 		}
 
 		// return value
+		//取得した「短時間勤務履歴」(List)、「短時間勤務履歴項目」(List)を返す
 		return opWorkTimeHist.parallelStream().map(workTimeHist -> {
 			ShortWorkTimeHistoryItem workTimeHistItem = mapShortWorkTimeHistoryItem
 					.get(workTimeHist.getHistoryItems().get(0).identifier());

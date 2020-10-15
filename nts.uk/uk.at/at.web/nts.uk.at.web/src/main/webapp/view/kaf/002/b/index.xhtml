@@ -4,64 +4,154 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:ValidatorScript>
-					nts.uk.ctx.at.request.dom.application.AppReason
-					nts.uk.shr.com.time.TimeWithDayAttr
-					nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
-				</com:ValidatorScript>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="../shr/kaf002.shr.service.js" />
-				<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
-				<com:scriptfile path="../shr/kaf002.shr.vm.js" />
-				<com:scriptfile path="../m1/kaf002.m1.vm.js" />
-				<com:scriptfile path="../m2/kaf002.m2.vm.js" />
-				<com:scriptfile path="../m3/kaf002.m3.vm.js" />
-				<com:scriptfile path="../m4/kaf002.m4.vm.js" />
-				<com:scriptfile path="../m5/kaf002.m5.vm.js" />
-				<com:scriptfile path="../cm/kaf002.cm.vm.js" />
-				<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
-				<com:scriptfile path="../../000/a/kaf000.a.service.js" />
-				<com:scriptfile path="kaf002.b.vm.js" />
-				<com:scriptfile path="kaf002.b.start.js" />
-				<com:stylefile path="kaf002.b.main.css" />
-				<com:stylefile path="../../000/a/kaf000.a.main.css" />
-				<com:stylefile path="../cm/kaf002.cm.main.css" />
-				<com:stylefile path="../m1/kaf002.m1.main.css" />
-				<com:stylefile path="../m2/kaf002.m2.main.css" />
-				<com:stylefile path="../m3/kaf002.m3.main.css" />
-				<com:stylefile path="../m4/kaf002.m4.main.css" />
-				<com:stylefile path="../m5/kaf002.m5.main.css" />
-			</ui:define>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
 			
-			<ui:define name="content">
-				<div id="functions-area">
-					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF002_45')}</a>
-					<button class="proceed" data-bind="click: register">#{i18n.getText('KAF002_46')}</button>
-					<button style="display: none" data-bind="click: performanceReference">#{i18n.getText('KAF002_47')}</button>
-					<button style="display: none" data-bind="click: changeAppDate">#{i18n.getText('KAF002_48')}</button>
-					<div data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail }, visible: enableSendMail">#{i18n.getText('KAF002_49')}</div>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+   				</com:ValidatorScript>
+   				<com:ValidatorScript>
+					nts.uk.shr.com.time.AttendanceClock
+				</com:ValidatorScript>
+   				
+   				
+   				<com:stylefile
+				path="/view/kaf/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile
+				path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+				
+				<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile
+				path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile 
+				path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+				
+				
+			<com:stylefile path="/view/kaf/002/b/kaf002.b.main.css" />
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="/view/kaf/002/b/kaf002.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
+				<div
+					data-bind="component: { name: 'kaf000-a-component7', 
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"
+					style="display: inline-block;"></div>
+			</div>
+			<div id="contents-area">
+				<div
+					data-bind="component: { name: 'kaf000-a-component1', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="table">
+					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+                                          } }"></div>
+                  	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+									} }"></div>
 				</div>
-				<div id="contents-area">
-					<div data-bind="if: kaf000_a2">
-						<div data-bind="with: kaf000_a2">
-							<ui:include src="../../000/a/index1.xhtml" />	
-						</div>
-					</div>
-					<div data-bind="if: cm">
-						<div data-bind="with: cm">
-							<ui:include src="../cm/index.xhtml" />
-						</div>	
-					</div>
-					<div data-bind="if: kaf000_a2" class="b-table-div">
-						<div data-bind="with: kaf000_a2">
-							<ui:include src="../../000/a/index2_new.xhtml" />	
-						</div>
-					</div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component3', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important, white-space: break-spaces;">
 				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+				
+				<div class="inlineBlockFirst">
+					<!-- B6_1 -->
+					<div class="labelFirst" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF002_79')}</div>
+					<div style="margin-left: 40px" data-bind="ntsComboBox: {
+						options: dataSource,
+						optionsValue: 'code',
+						value: selectedCode,
+						optionsText: 'name',
+						required: true
+					}"></div>
+				</div>
+				
+				<div class="blockSecond">
+					<input class="inputBlockSecond" id="inputTimeKAF002"
+						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+													}"/>
+					
+					<div class="dropListBlockSecond" data-bind="visible: selectedCode() == 3, ntsComboBox: {
+						options: dataSourceReason,
+						optionsValue: 'code',
+						value: selectedCodeReason,
+						optionsText: 'name',
+						required: true
+					}"></div>
+				</div>
+				
+				<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="width: auto !important, white-space: break-spaces;" ></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div
+					data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

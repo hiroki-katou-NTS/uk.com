@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 // 「入力パラメータ」 社員ID; 年月日 ; 就業時間帯の参照先 ; 勤務種類コード ; 就業時間帯コード
 public class WorkTimeConvertCommand {
 
@@ -33,4 +35,16 @@ public class WorkTimeConvertCommand {
 	/** The working code. */
 	// 就業時間帯コード
 	private String workingCode;
+
+	public WorkTimeConvertCommand(String employeeId, ScheduleErrorLogGeterCommand baseGetter, int referenceWorkingHours,
+			String workTypeCode, String workingCode) {
+		super();
+		this.employeeId = employeeId;
+		this.baseGetter = baseGetter;
+		this.referenceWorkingHours = referenceWorkingHours;
+		this.workTypeCode = workTypeCode;
+		this.workingCode = workingCode;
+	}
+	
+	
 }

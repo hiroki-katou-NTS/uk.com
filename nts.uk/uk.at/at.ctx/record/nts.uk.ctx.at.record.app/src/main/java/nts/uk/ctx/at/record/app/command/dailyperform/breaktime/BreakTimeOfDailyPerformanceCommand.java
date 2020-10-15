@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 
 public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
@@ -25,10 +26,10 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	@Override
 	public void updateData(Object data) {
 		if(data != null){
-			BreakTimeOfDailyPerformance d = (BreakTimeOfDailyPerformance) data;
-			this.data.removeIf(br -> br.getBreakType() == d.getBreakType());
-			this.data.add(d);
-			this.data.sort((e1, e2) -> e1.getBreakType().value - e2.getBreakType().value);
+			BreakTimeOfDailyAttd d = (BreakTimeOfDailyAttd) data;
+			this.data.removeIf(br -> br.getTimeZone().getBreakType() == d.getBreakType());
+			this.data.add(new BreakTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), d));
+			this.data.sort((e1, e2) -> e1.getTimeZone().getBreakType().value - e2.getTimeZone().getBreakType().value);
 		}
 	}
 

@@ -11,15 +11,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -41,12 +42,27 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
 		return getDto(domain, null);
 	}
+	public static OptionalItemOfDailyPerformDto getDto(String employeeID,GeneralDate ymd,AnyItemValueOfDailyAttd domain) {
+		return getDto(employeeID,ymd,domain, null);
+	}
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain, Map<Integer, OptionalItem> master) {
 		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
 		if (domain != null) {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getAnyItem().getItems(), (c) -> 
+							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static OptionalItemOfDailyPerformDto getDto(String employeeID,GeneralDate ymd,AnyItemValueOfDailyAttd domain, Map<Integer, OptionalItem> master) {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+		if (domain != null) {
+			dto.setDate(ymd);
+			dto.setEmployeeId(employeeID);
 			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
 							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
 			dto.exsistData();
@@ -59,7 +75,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getAnyItem().getItems(), (c) -> 
 							OptionalItemValueDto.from(c, getAttrFromMasterWith(master, c))));
 			dto.exsistData();
 		}
@@ -107,7 +123,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
+	public AnyItemValueOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if (!this.isHaveData()) {
 			return null;
 		}
@@ -118,8 +134,9 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		optionalItems.removeIf(item -> item == null || !item.isHaveData());
-		return new AnyItemValueOfDaily(employeeId, date,
+		AnyItemValueOfDaily domain =  new AnyItemValueOfDaily(employeeId, date,
 				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
+		return domain.getAnyItem();
 	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {

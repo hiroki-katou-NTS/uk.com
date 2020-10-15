@@ -6,46 +6,51 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="contentE" tabindex="-1">
+		<div class="contentE panel-content" tabindex="-1">
 			<div tabindex="-1">
 				<label tabindex="-1">#{i18n.getText('KSC001_28')}</label>
 			</div>
 			<div class="contentELable">
-				<div class="lableCaseAll cf" tabindex="-1">
+                <div class="lableCaseAll cf" tabindex="-1">
+                    <div class="labelSelection" tabindex="-1"
+                         data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+                    <div tabindex="-1">
+                        <label data-bind="text: infoPeriodDate" tabindex="-1" />
+                    </div>
+                </div>
+				<div class="lableCaseAll cf label-list" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_29')}</div>
 					<div class="labelContents" tabindex="-1"
-						data-bind="foreach: lstLabelInfomation">
+						data-bind="foreach: lstLabelInfomationB">
 						<label data-bind="text: $data" tabindex="-1" />
 					</div>
 				</div>
-				<div class="lableCaseAll cf" tabindex="-1">
+				<div class="lableCaseAll cf  label-list" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_30')}</div>
-					<label class="labelCenter" tabindex="-1"
-						data-bind="text: infoCreateMethod"></label>
-				</div>
-				<div class="lableCaseAll cf" tabindex="-1">
-					<div class="labelSelection" tabindex="-1"
-						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<label class="labelCenter" tabindex="-1"
-						data-bind="text: infoPeriodDate"></label>
+                    <div class="labelContents" tabindex="-1"
+                         data-bind="foreach: lstLabelInfomationC">
+                        <label data-bind="text: $data" tabindex="-1" />
+                    </div>
 				</div>
 				<div class="lableCaseAll cf" tabindex="-1">
 					<div class="labelSelection" tabindex="-1"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_32')}</div>
-					<label class="labelCenter" tabindex="-1"
+					<label class="labelCenter total-employee" tabindex="-1"
 						data-bind="text: lengthEmployeeSelected"></label>
 				</div>
 			</div>
+            <div class="buttonPrevNext">
+                <div class="buttonBeginPrevious" tabindex="-1">
+                    <button data-bind="click: previousPageE" class="large"
+                            tabindex="1">#{i18n.getText('KSC001_102')}</button>
+                </div>
+                <div class="buttonBeginNext">
+                    <button class="proceed x-large" id="buttonFinishPageE"
+                            data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button></div>
+            </div>
 		</div>
-		<div class="btns">
-			<button data-bind="click: previousPageE" class="large"
-				tabindex="1">#{i18n.getText('KSC001_102')}</button>
-			<button class="proceed x-large" id="buttonFinishPageE"
-				data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button>
-		</div>
-
 	</ui:composition>
 </body>
 </html>

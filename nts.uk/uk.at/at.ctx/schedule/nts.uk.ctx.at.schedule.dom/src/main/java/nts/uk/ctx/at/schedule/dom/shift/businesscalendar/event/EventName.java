@@ -7,6 +7,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
+ * 行事名称
  * @author hungnm
  *
  */

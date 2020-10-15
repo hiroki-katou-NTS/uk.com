@@ -68,7 +68,8 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param date
 	 * @return UseSet
 	 */
-	private WorkdayDivision getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
+	@Override
+	public WorkdayDivision getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
 		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, date);
 		if(opCalendarCompany.isPresent()){
 			return opCalendarCompany.get().getWorkDayDivision();
@@ -95,7 +96,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param workingDayAtr
 	 * @return List<BasicWorkSetting>
 	 */
-	private BasicWorkSetting getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
+	public BasicWorkSetting getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
 		Optional<CompanyBasicWork> opCompanyBasicWork = companyBasicWorkRepository.findById(companyID, workingDayAtr);
 		if(opCompanyBasicWork.isPresent()){
 			CompanyBasicWork companyBasicWork = opCompanyBasicWork.get();

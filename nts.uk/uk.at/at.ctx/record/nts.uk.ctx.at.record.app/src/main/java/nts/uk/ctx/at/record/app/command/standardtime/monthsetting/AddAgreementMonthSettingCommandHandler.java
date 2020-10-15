@@ -13,10 +13,9 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSetDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 
@@ -45,8 +44,10 @@ public class AddAgreementMonthSettingCommandHandler extends CommandHandlerWithRe
 		AgreementMonthSetting agreementMonthSetting = new AgreementMonthSetting(
 				command.getEmployeeId(),
 				new YearMonth(command.getYearMonthValue()),
-				new ErrorOneMonth(command.getErrorOneMonth()),
-				new AlarmOneMonth(command.getAlarmOneMonth()));
+				/** TODO: 36協定時間対応により、コメントアウトされた */
+				new OneMonthErrorAlarmTime());
+//				new ErrorOneMonth(command.getErrorOneMonth()),
+//				new AlarmOneMonth(command.getAlarmOneMonth()));
 		
 //		agreementMonthSetting.validate();
 		

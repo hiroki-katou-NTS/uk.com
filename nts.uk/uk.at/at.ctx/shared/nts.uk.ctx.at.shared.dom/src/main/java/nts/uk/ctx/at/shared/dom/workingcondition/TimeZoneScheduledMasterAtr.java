@@ -6,12 +6,15 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 public enum TimeZoneScheduledMasterAtr {
 
 	/** The follow master reference. */
+	/** マスタ参照区分に従う */
 	FOLLOW_MASTER_REFERENCE(0, "Enum_TimeZoneScheduledMasterAtr_FollowMasterReference"),
 
 	/** The personal work daily. */
+	/** 個人勤務日別 */
 	PERSONAL_WORK_DAILY(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily"),
 
 	/** The personal day of week. */
+	/** 個人曜日別 */
 	PERSONAL_DAY_OF_WEEK(2, "Enum_TimeZoneScheduledMasterAtr_PersonalDayOfWeek");
 
 	/** The value. */

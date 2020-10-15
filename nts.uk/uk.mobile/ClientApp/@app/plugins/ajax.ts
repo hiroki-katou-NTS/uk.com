@@ -34,11 +34,11 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
-                    let env: { API_URL?: string } = process.env,
+                    let env: { API_URL?: string } = { API_URL: 'http://localhost:8080/' },
                         hostName: string = window.location.origin;
 
                     $.extend(opt, {
-                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8080')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8180')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 

@@ -15,11 +15,11 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 数値型データ形式設定
+ * 外部出力数値型データ形式設定（初期値）
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_NUMBER_DATA_FM_SET")
+@Table(name = "OIOMT_EX_OUT_FM_NUM_INIT")
 public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,18 +30,32 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 	public OiomtNumberDataFmSetPk numberDataFmSetPk;
 
 	/**
-	 * NULL値置換
+	 * 形式選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "NULL_VALUE_REPLACE")
-	public int nullValueReplace;
+	@Column(name = "FORMAT_SELECTION")
+	public int formatSelection;
 
 	/**
-	 * NULL値置換の値
+	 * 小数桁
 	 */
 	@Basic(optional = true)
-	@Column(name = "VALUE_OF_NULL_VALUE_REPLACE")
-	public String valueOfNullValueReplace;
+	@Column(name = "DECIMAL_DIGIT")
+	public Integer decimalDigit;
+
+	/**
+	 * 小数点区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "DECIMAL_POINT_ATR")
+	public int decimalPointCls;
+
+	/**
+	 * 小数端数
+	 */
+	@Basic(optional = false)
+	@Column(name = "DECIMAL_FRACTION")
+	public int decimalFraction;
 
 	/**
 	 * マイナス値を0で出力
@@ -51,40 +65,26 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 	public int outputMinusAsZero;
 
 	/**
-	 * 固定値
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
-
-	/**
-	 * 固定値の値
-	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
-
-	/**
 	 * 固定値演算
 	 */
 	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE_OPERATION")
+	@Column(name = "CALC_ATR")
 	public int fixedValueOperation;
-
-	/**
-	 * 固定値演算値
-	 */
-	@Basic(optional = true)
-	@Column(name = "FIXED_CALCULATION_VALUE")
-	public BigDecimal fixedCalculationValue;
 
 	/**
 	 * 固定値演算符号
 	 */
 	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE_OPERATION_SYMBOL")
+	@Column(name = "FIXED_VALUE_CALC_SYMBOL")
 	public int fixedValueOperationSymbol;
 
+	/**
+	 * 固定値演算値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_CALC_VAL")
+	public BigDecimal fixedCalculationValue;
+	
 	/**
 	 * 固定長出力
 	 */
@@ -103,36 +103,36 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 	 * 固定長編集方法
 	 */
 	@Basic(optional = false)
-	@Column(name = "FIXED_LENGTH_EDITING_METHOD")
+	@Column(name = "FIXED_LENGTH_EDIT_METHOD")
 	public int fixedLengthEditingMethod;
 
 	/**
-	 * 小数桁
+	 * NULL値置換
+	 */
+	@Basic(optional = false)
+	@Column(name = "NULL_REPLACE_VAL_ATR")
+	public int nullValueReplace;
+
+	/**
+	 * NULL値置換の値
 	 */
 	@Basic(optional = true)
-	@Column(name = "DECIMAL_DIGIT")
-	public Integer decimalDigit;
+	@Column(name = "NULL_REPLACE_VAL")
+	public String valueOfNullValueReplace;
 
 	/**
-	 * 小数点区分
+	 * 固定値
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_POINT_CLS")
-	public int decimalPointCls;
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
 
 	/**
-	 * 小数端数
+	 * 固定値の値
 	 */
-	@Basic(optional = false)
-	@Column(name = "DECIMAL_FRACTION")
-	public int decimalFraction;
-
-	/**
-	 * 形式選択
-	 */
-	@Basic(optional = false)
-	@Column(name = "FORMAT_SELECTION")
-	public int formatSelection;
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
 
 	@Override
 	protected Object getKey() {

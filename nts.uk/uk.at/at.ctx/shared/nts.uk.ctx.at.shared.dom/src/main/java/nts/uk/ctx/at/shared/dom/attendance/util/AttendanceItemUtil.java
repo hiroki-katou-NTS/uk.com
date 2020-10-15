@@ -729,7 +729,7 @@ public class AttendanceItemUtil implements ItemConst {
 		List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
 
 		if (list == null) {
-			return new ArrayList<>();
+			list = new ArrayList<>();
 		}
 
 		if (!layout.indexField().isEmpty()) {

@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSet;
 
 /**

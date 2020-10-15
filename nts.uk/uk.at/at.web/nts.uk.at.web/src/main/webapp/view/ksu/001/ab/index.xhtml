@@ -1,0 +1,41 @@
+<div id="contents-area cf" style="margin-top: 10px;">
+	<table>
+		<tr>
+			<td><div id="label" class="Abc1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_64')}</div></td>
+			<td>
+				<div tabindex="30" id="listWorkType" class="Abc2"
+					data-bind="ntsComboBox: {
+								options: listWorkType ,
+								optionsValue: 'workTypeCode',
+								visibleItemsCount: 10,
+								value: selectedWorkTypeCode ,
+								optionsText: 'name',
+								editable:  false,
+								enable: enableListWorkType ,
+								width: 300,
+								columns: [
+									{ prop: 'workTypeCode', length: 3 },
+									{ prop: 'name', length: 6 },
+									{ prop: 'memo', length: 20 }]}">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td><div id="label" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div></td>
+			<td style="padding-top: 8px;" >
+				<div id="listWorkTime">
+					<div data-bind="
+                            kcp013: selected,
+                            workplace-id: workplaceIdKCP013,
+                            dataSources: dataSources,
+                            filter: filter,
+                            disabled: disabled,
+                            show-mode: showMode,
+                            tabindex: 0,
+                            width: width,
+                        "></div>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>

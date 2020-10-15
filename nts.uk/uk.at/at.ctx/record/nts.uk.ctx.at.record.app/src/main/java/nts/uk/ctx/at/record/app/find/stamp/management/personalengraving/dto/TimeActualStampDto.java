@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
 import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * @author anhdt
@@ -33,18 +33,18 @@ public class TimeActualStampDto {
 			if(oActualWt.isPresent()) {
 				WorkStamp actualWt = oActualWt.get();
 				this.actualAfterRoundingTime = actualWt.getAfterRoundingTime().v();
-				this.actualTimeWithDay = actualWt.getTimeWithDay().v();
+				this.actualTimeWithDay = actualWt.getTimeDay().getTimeWithDay().isPresent()?actualWt.getTimeDay().getTimeWithDay().get().v():null;
 				this.actualLocationCode = actualWt.getLocationCode().isPresent() ? actualWt.getLocationCode().get().v() : null;
-				this.actualStampSourceInfo = actualWt.getStampSourceInfo().value;
+				this.actualStampSourceInfo = actualWt.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 			}
 			
 			Optional<WorkStamp> oStampWt = domain.getStamp();
 			if(oStampWt.isPresent()) {
 				WorkStamp stampWt = oStampWt.get();
 				this.stampAfterRoundingTime = stampWt.getAfterRoundingTime().v();
-				this.stampTimeWithDay = stampWt.getTimeWithDay().v();
+				this.stampTimeWithDay =stampWt.getTimeDay().getTimeWithDay().isPresent()? stampWt.getTimeDay().getTimeWithDay().get().v():null;
 				this.stampLocationCode = stampWt.getLocationCode().isPresent() ? stampWt.getLocationCode().get().v() : null;
-				this.stampStampSourceInfo = stampWt.getStampSourceInfo().value;
+				this.stampStampSourceInfo = stampWt.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 			}
 			
 		}

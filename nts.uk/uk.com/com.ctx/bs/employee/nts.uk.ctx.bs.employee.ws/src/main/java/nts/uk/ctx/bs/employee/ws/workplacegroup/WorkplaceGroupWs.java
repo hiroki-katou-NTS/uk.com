@@ -10,13 +10,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.DeleteWorkplaceGroupCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.DeleteWorkplaceGroupCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.group.RegisterWorkplaceGroupResult;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.ResWorkplaceGroupResult;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.UpdateWorkplaceGroupCommandHandler;
+import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.AffWorkplaceGroupDto;
+import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.AffWorkplaceGroupEmployeeQuery;
+import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.DateRequest;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupDto;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceGroupFinder;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.WorkplaceInfoRequest;
@@ -41,6 +44,9 @@ public class WorkplaceGroupWs extends WebService {
 
 	@Inject
 	private DeleteWorkplaceGroupCommandHandler deletewkpGroupCmd;
+	
+	@Inject
+	private AffWorkplaceGroupEmployeeQuery workplaceGroupEmployeeQuery ;
 
 	/**
 	 * Get all team setting
@@ -89,4 +95,10 @@ public class WorkplaceGroupWs extends WebService {
 		deletewkpGroupCmd.handle(command);
 	}
 
+	
+	@POST
+	@Path("workplacegroupemployee")
+	public AffWorkplaceGroupDto getWorkplaceGroupEmployee(DateRequest date) {
+		return workplaceGroupEmployeeQuery.getWorkplaceGroupOfEmployee(date.toDate());
+	}
 }

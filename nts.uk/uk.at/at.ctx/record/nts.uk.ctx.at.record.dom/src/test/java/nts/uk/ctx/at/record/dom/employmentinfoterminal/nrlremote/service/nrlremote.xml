@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE xml>
+<doc>　
+    <MAC_Address>00-14-22-01-23-45</MAC_Address>
+	<payload>
+		NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@@@@@sp_vol,68
+	</payload>
+</doc>

@@ -18,6 +18,4 @@ public class DetailedScreenPreBootModeOutput {
 	ApprovalAtr approvalATR;
 	//代行期限切れフラグ
 	boolean alternateExpiration;
-	//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
-	private boolean loginInputOrApproval;
 }

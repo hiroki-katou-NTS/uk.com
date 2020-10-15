@@ -7,87 +7,72 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1500, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kaf018.a.main.css" />
-			<com:scriptfile path="kaf018.a.service.js" />
-			<com:scriptfile path="kaf018.a.vm.js" />
-			<com:scriptfile path="kaf018.a.start.js" />
+			<com:stylefile path="/view/kaf/018/a/kaf018.a.css" />
+			<com:scriptfile path="/view/kaf/018/a/kaf018.a.vm.js" />
 			<!-- KCP004 -->
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- A1_1メール設定 -->
-				<div class="bts-sendMail">
-					<button tabindex="1" data-bind="click: gotoH">#{i18n.getText('KAF018_9')}</button>
-				</div>
+				<button data-bind="click: extraction, enable : $root.errors.isEmpty">#{i18n.getText('KAF018_311')}</button>
+				<button class="kaf018a-emailSetting" data-bind="click: emailSetting, enable : $root.errors.isEmpty">#{i18n.getText('KAF018_312')}</button>
 			</div>
 			<div id="contents-area">
-				<!-- A5パネル -->
-				<div class="content-area-left"
-					data-bind="ntsPanel:{width: '516px', height: '400px', direction: 'right', showIcon: true, visible: true}">
-					<div class="content-top">
-						<table>
-							<tr>
-								<td>
-									<!-- A3対象締め（ラベル） -->
-									<div class="content-top-lable"
-										data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
-								</td>
-								<td>
-									<!-- A3_1対象締め -->
-									<div id="combo-box" tabindex="1" class="fix-combobox"
-										data-bind="ntsComboBox: {
-										        optionsValue: 'closureId',
-										        visibleItemsCount: 5,
-										        optionsText: 'closeName',
-										        name: '#[KAF018_10]',
-										        required: true,
-										        value: selectTarget,
-										        options: targets,
-										        enable: true,
-										        columns: [
-										         { prop: 'closureId', length: 4},  
-										         { prop: 'closeName', length: 10},
-										        ]}">
-									</div>
-								</td>
-							</tr>
-						</table>
+				<div class="table kaf018a-div-table">
+					<div class="cell valign-bottom kaf018a-column1">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_313')}</div>
 					</div>
-					<!-- A2職場リスト -->
-					<div class="content-bottom">
-						<div id="tree-grid"></div>
-					</div>
-				</div>
-				<!-- A4形式選択 -->
-				<div class="content-area-right">
-					<!-- A4_1申請承認 -->
-					<!-- A4_2日別・月別確認  -->
-					<div class="content-left-top">
-						<div class="format-selected"
-							data-bind="ntsRadioBoxGroup: {
-								options: items,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: selectedValue,
-								enable: enable}">
+					<div class="cell valign-bottom">
+						<div data-bind="ntsComboBox: {
+											name: $i18n('KAF018_314'),
+											options: closureLst,
+											optionsValue: 'closureId',
+											visibleItemsCount: 5,
+											optionsText: 'closeName',
+											value: selectedClosureId,
+											required: true }">
 						</div>
-						<com:ko-if bind="isVisibleComfirm">
-							<div class="format-checkbox"
-								data-bind="ntsCheckBox: { checked: isDailyComfirm, enable: isEnableDailyComfirm, text: '#{i18n.getText('KAF018_14')}' }"></div>
-						</com:ko-if>
-					</div>
-					<!-- A10抽出 -->
-					<div class="content-left-bottom">
-					<button class="btn-excute large"
-						data-bind="click: choiceNextScreen">#{i18n.getText('KAF018_16')}</button>
 					</div>
 				</div>
-				<div class="clear"></div>
+				<div class="table kaf018a-div-table">
+					<div class="cell valign-bottom kaf018a-column1">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_315')}</div>
+					</div>
+					<div class="cell valign-bottom">
+						<div id="kaf000-a-component4-rangeDate"
+							data-bind="ntsDateRangePicker: {
+													name: $i18n('KAF018_316'),
+													required: true,
+													value: dateValue }">
+						</div>
+					</div>
+				</div>
+				<div class="table kaf018a-component">
+					<div class="cell kaf018a-column2">
+						<div class="kaf018a-panel" data-bind="ntsPanel:{width: '520px', height: '530px', direction: 'right', showIcon: true, visible: true}">
+							<div id="tree-grid" style="display: inline-block;"></div>
+						</div>
+					</div>
+					<div class="cell valign-top">
+						<div class="table kaf018a-div-table">
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_317')}</div>	
+						</div>
+						<div class="table">
+							<div id="kaf018-a-checkBoxLst" data-bind="ntsMultiCheckBox: {
+													options: ko.observableArray([
+														{ 'id': 1, 'name': $i18n('KAF018_318') },
+														{ 'id': 2, 'name': 'select2' },
+														{ 'id': 3, 'name': 'select3' },
+														{ 'id': 4, 'name': $i18n('KAF018_321') },
+													]),
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: selectedIds }"></div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

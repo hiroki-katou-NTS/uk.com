@@ -8,18 +8,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
@@ -334,15 +334,15 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			if(!optWorkInfor.isPresent()) {
 				return false;
 			}
-			List<ScheduleTimeSheet> lstScheduleTimeSheets = optWorkInfor.get().getScheduleTimeSheets()
+			List<ScheduleTimeSheet> lstScheduleTimeSheets = optWorkInfor.get().getWorkInformation().getScheduleTimeSheets()
 					.stream()
 					.filter(x -> x.getWorkNo().v() == frameNo).collect(Collectors.toList());
 			
 			//取得した予定出勤時刻に値がない  OR 
 			//（取得した編集状態が手修正（本人）AND 手修正（他人）ではない）
 			if(lstScheduleTimeSheets.isEmpty()
-					|| (dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_MYSELF
-					&& dailyData.getEditStateSetting() != EditStateSetting.HAND_CORRECTION_OTHER)) {
+					|| (dailyData.getEditState().getEditStateSetting() != EditStateSetting.HAND_CORRECTION_MYSELF
+					&& dailyData.getEditState().getEditStateSetting() != EditStateSetting.HAND_CORRECTION_OTHER)) {
 				return true;
 			}
 		}

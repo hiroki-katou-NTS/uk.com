@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
 
@@ -30,7 +28,7 @@ public class GoBackDirectSettingDto {
 	/**
 	 * 申請定型理由
 	 */
-	List<ApplicationReasonDto> listReasonDto;
+	// List<ApplicationReasonDto> listReasonDto;
 
 	AppCommonSettingDto appCommonSettingDto;
 	/**
@@ -51,15 +49,16 @@ public class GoBackDirectSettingDto {
 	 * @return
 	 */
 	public static GoBackDirectSettingDto convertToDto(GoBackDirectBasicData domain) {
-		return new GoBackDirectSettingDto(
-				GoBackDirectlyCommonSettingDto.convertToDto(
-						domain.getGoBackDirectSet().get()),
-						domain.getEmployeeName(), 
-						domain.getSID(), 
-						domain.getListAppReason().stream()
-						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
-				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
-				domain.isDutiesMulti(), DataWorkDto.fromDomain(domain.getWorkingData()),null);
+//		return new GoBackDirectSettingDto(
+//				GoBackDirectlyCommonSettingDto.convertToDto(
+//						domain.getGoBackDirectSet().get()),
+//						domain.getEmployeeName(), 
+//						domain.getSID(), 
+//						domain.getListAppReason().stream()
+//						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
+//				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
+//				domain.isDutiesMulti(), DataWorkDto.fromDomain(domain.getWorkingData()),null);
+		return null;
 	}
 
 }

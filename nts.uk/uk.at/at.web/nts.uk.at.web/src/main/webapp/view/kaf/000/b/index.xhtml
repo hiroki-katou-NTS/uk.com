@@ -8,76 +8,206 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
-				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.request.dom.application.AppReason
-				nts.uk.ctx.at.request.dom.application.ApproverReason
-				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
-				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
-				nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive
+				nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+				nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../../kdl/034/a/kdl034.a.vm.js" />
-			<com:scriptfile path="../shr/kaf000.shr.vm.js" />
-			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
-			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
-			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
-			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
-			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
-			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
-			<com:stylefile path="../../009/share/kaf009.share.style.css" />
-			<com:stylefile path="../../007/share/kaf007.share.style.css" />
-			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
-			<com:stylefile path="../../006/shr/kaf006.shr.main.css" />
-			<com:stylefile path="../../010/cm/kaf010.cm.main.css" />
-			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
-			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
-			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
-			<com:scriptfile path="../../002/m2/kaf002.m2.vm.js" />
-			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
-			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
-			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
-			<com:scriptfile path="../../005/shr/kaf005.shr.service.js" />
-			<com:scriptfile path="../../006/shr/kaf006.shr.service.js" />
-			<com:scriptfile path="kaf000.b.service.js" />
-			<com:stylefile path="kaf000.b.main.css" />
-			<com:scriptfile path="kaf000.b.vm.js" />
-			<!-- 004 start-->
-			<com:scriptfile path="../../004/b/kaf004.b.service.js" />
-			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
-			<com:stylefile path="../../004/e/kaf004.e.style.css" />
-			<!-- 004 end-->
-			<com:scriptfile path="../../009/share/kaf009.share.vm.js" />
-			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
-			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
-			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
-			<com:scriptfile path="../../002/c/kaf002.c.vm.js" />
-			<com:scriptfile path="../../005/shr/kaf005.shr.vm.js" />
-			<com:scriptfile path="../../006/shr/kaf006.shr.vm.js" />
-			<com:scriptfile path="../../005/b/kaf005.b.vm.js" />
-			<com:scriptfile path="../../006/b/kaf006.b.vm.js" />
-			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
-			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
-			<com:scriptfile path="../../007/b/kaf007.b.vm.js" />
-			<com:scriptfile path="../../010/shr/kaf010.shr.service.js" />
-			<com:scriptfile path="../../010/shr/kaf010.shr.vm.js" />
-			<com:scriptfile path="../../010/b/kaf010.b.vm.js" />
-
-			<!-- 011 start-->
-			<com:stylefile path="../../011/cm/kaf011.cm.style.css" />
-			<com:scriptfile path="../../011/shr/kaf011.shr.service.js" />
-			<com:scriptfile path="../../011/shr/kaf011.shr.vm.js" />
-			<com:scriptfile path="../../011/a/kaf011.a.vm.js" />
-			<com:scriptfile path="../../011/b/kaf011.b.vm.js" />
-			<!-- 011 end-->
-
-			<com:scriptfile path="kaf000.b.start.js" />
+			<com:stylefile path="/view/kaf/000/b/component1/kaf000.b.component1.css" />
+			<com:stylefile path="/view/kaf/000/b/component2/kaf000.b.component2.css" />
+			<com:stylefile path="/view/kaf/000/b/component3/kaf000.b.component3.css" />
+			<com:stylefile path="/view/kaf/000/b/component4/kaf000.b.component4.css" />
+			<com:stylefile path="/view/kaf/000/b/component5/kaf000.b.component5.css" />
+			<com:stylefile path="/view/kaf/000/b/component6/kaf000.b.component6.css" />
+			<com:stylefile path="/view/kaf/000/b/component7/kaf000.b.component7.css" />
+			<com:stylefile path="/view/kaf/000/b/component8/kaf000.b.component8.css" />
+			<com:stylefile path="/view/kaf/007/shr/kaf007.shr.css" />
+			<com:stylefile path="/view/kaf/009/shr/kaf009.share.style.css" />
+			<com:stylefile path="/view/kaf/002/m/kaf002.m.main.css" />
+			<com:stylefile path="/view/kaf/002/c/kaf002.c.main.css" />
+			<com:stylefile path="/view/kaf/002/d/kaf002.d.main.css" />
+			<com:scriptfile path="/view/kaf/004/shr/common/kaf004.shr.vm.js" />
+            <com:scriptfile path="/view/kaf/004/shr/b/kaf004.shr.vm.js" />
+            <com:stylefile path="/view/kaf/004/b/kaf004.b.css" />
+			<com:stylefile path="/view/kaf/000/b/kaf000.b.css" />
+			<com:stylefile path="/view/kaf/008/shr/kaf008.share.style.css" />
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
+			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
+			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
+			<com:scriptfile path="/view/kaf/000/b/component4/kaf000.b.component4.js" />
+			<com:scriptfile path="/view/kaf/000/b/component5/kaf000.b.component5.js" />
+			<com:scriptfile path="/view/kaf/000/b/component6/kaf000.b.component6.js" />
+			<com:scriptfile path="/view/kaf/000/b/component7/kaf000.b.component7.js" />
+			<com:scriptfile path="/view/kaf/000/b/component8/kaf000.b.component8.js" />
+			<com:scriptfile path="/view/kaf/000/b/component9/kaf000.b.component9.js" />
+			<com:scriptfile path="/view/kaf/007/shr/kaf007.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/008/shr/kaf008.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/009/shr/kaf009.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="/view/kaf/008/b/kaf008.b.vm.js" />
+			<com:scriptfile path="/view/kaf/002/m/kaf002.m.vm.js" />
+			<com:scriptfile path="/view/kaf/002/c/kaf002.c.vm.js" />
+			<com:scriptfile path="/view/kaf/002/d/kaf002.d.vm.js" />
+			<com:scriptfile path="/view/kaf/009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="/view/kaf/004/b/kaf004.b.vm.js" />
+			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-<ui:include src="index2.xhtml" />
+			<div id="functions-area">
+				<div style="display: inline-block;">
+					<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
+				</div>
+				<div style="display: inline-block; margin-left: 10px; margin-right: 10px;">
+					<!-- B1_2 -->
+					<button class="kaf000-function-btn"
+						data-bind="click: back, enable: $vm.enableBack">
+						<i class="icon icon-button-arrow-left"></i>
+					</button>
+					<!-- B1_3 -->
+					<button class="kaf000-function-btn"
+						data-bind="click: next, enable: $vm.enableNext">
+						<i class="icon icon-button-arrow-right"></i>
+					</button>
+				</div>
+				<div style="display: inline-block;">
+					<!-- B1_4 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayApprovalButton">
+						<button class="proceed kaf000-function-btn"
+							data-bind="click: btnApprove,
+													enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
+													">#{i18n.getText('KAF000_15')}</button>
+					</div>
+					<!-- B1_14 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayApprovalLabel">
+						<div class="comment">
+							<label>【承認】</label>
+						</div>
+					</div>
+					<!-- B1_5 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayDenyButton">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnDeny,
+									enable: enableDenyButton() &amp;&amp; $root.errors.isEmpty
+									">#{i18n.getText('KAF000_16')}</button>
+					</div>
+					<!-- B1_15 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayDenyLabel">
+						<div class="comment">
+							<label>【否認】</label>
+						</div>
+					</div>
+					<!-- B1_7 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayReleaseButton">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnRelease,
+									enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty
+									">#{i18n.getText('KAF000_18')}</button>
+					</div>
+					<!-- B1_6 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayRemandButton">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnRemand,
+									enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
+									   ">#{i18n.getText('KAF000_17')}</button>
+					</div>
+				</div>
+				<div class="kaf000-function-div-update">
+					<!-- B1_8 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayUpdateButton">
+						<button id = "updateKAF000" class="proceed kaf000-function-btn"
+							data-bind="click: updateData, enable: enableUpdateButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
 
+					</div>
+					<!-- B1_9 -->
+					<div class="controlButtonCell_kaf000">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnPrint, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_20')}</button>
+					</div>
+					<!-- B1_10 -->
+					<div class="controlButtonCell_kaf000" style="display: none">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnReferences">#{i18n.getText('KAF000_21')}</button>
+					</div>
+					<!-- B1_11 -->
+					<div class="controlButtonCell_kaf000" style="display: none">
+						<button class="kaf000-function-btn"
+							data-bind="click: btnSendEmail">#{i18n.getText('KAF000_22')}</button>
+					</div>
+				</div>
+				<div class="kaf000-function-div-delete">
+					<!-- B1_12 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayDeleteButton">
+						<button class="danger kaf000-function-btn"
+							data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
+					</div>
+				</div>
+				<div class="kaf000-function-div-cancel">
+					<!-- B1_13 -->
+					<div class="controlButtonCell_kaf000"
+						data-bind="if: displayCancelButton">
+						<button class="danger kaf000-function-btn"
+							data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
+					</div>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div data-bind="if: ko.unwrap(appType) === 0">
+					APP TYPE = 0
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 1">
+					APP TYPE = 1
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 2">
+					<div data-bind="component: {
+							name: 'kaf007-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 3">
+					<div data-bind="component: {
+							name: 'kaf008-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 4">
+					<div data-bind="component: {
+							name: 'kaf009-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 9">
+					<div data-bind="component: {
+							name: 'kaf004-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === 7">
+					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
+						<div data-bind="component: {
+							name: 'kaf002-c',
+							params: childParam
+						}"></div>
+					</div>
+					<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
+						<div data-bind="component: {
+							name: 'kaf002-d',
+							params: childParam
+						}"></div>
+					</div>
+				</div>
+			</div>
 		</ui:define>
-
 	</ui:composition>
 </body>
 </html>

@@ -1,109 +1,144 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1280, height: 780 };</script>
-				<com:stylefile path="ksm005.b.main.css" />
-				<com:scriptfile set="IGNITE" />
-				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
-				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
-				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
-				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
-				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
-				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
-				<com:scriptfile path="ksm005.b.start.js" />
-				<com:scriptfile path="ksm005.b.service.js" />
-				<com:scriptfile path="ksm005.b.vm.js" />
-				<com:ValidatorScript>
-					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode
-					nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName
-				</com:ValidatorScript>
-			</ui:define>
-			<ui:define name="content">
-				<div id="functions-area">
-					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
-					
-					<button tabindex="1" data-bind="click: resetData">#{i18n.getText('KSM005_8')}</button>
-					<button tabindex="2" class="proceed" data-bind="click: saveDataMonthlyPattern">#{i18n.getText('KSM005_9')}</button>
-					<button tabindex="3" data-bind="click: openBatchSettingDialog">#{i18n.getText('KSM005_10')}</button>
-					<button tabindex="5" class="danger" data-bind="enable: enableDelete, click: deleteMonthlyPattern">#{i18n.getText('KSM005_12')}</button>
-				</div>
-				<div class="contents">
-					<div tabindex="-1" class="pull-left monthlyPatternContents caret-right caret-background bg-green">
-						<table tabindex="-1" id="lstMonthlyPattern" 
-							data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: lstMonthlyPattern,
-							primaryKey: 'code',
-							columns: columnMonthlyPatterns,
-							multiple: false,
-							value: selectMonthlyPattern,
-							rows: 10
-						}"></table>	
-					</div>
-					<div class="pull-left monthlyPatternDetail">
-						<div data-bind="with: monthlyPatternModel">
-							<div class="lableData" 
-								data-name="#{i18n.getText('KSM005_16')}" 
-								data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
-								<label>#{i18n.getText('KSM005_16')}</label>
-							</div>
-							<input tabindex="6" id="inp_monthlyPatternCode" 
-								class="nts-input"
-								data-bind="ntsTextEditor: {
-								value: code,
-								constraint: 'MonthlyPatternCode',
-								option: textEditorOption,
-								required: true,
-								name:'#[KSM005_17]', 
-								enable: enableMonthlyPatternCode}" />
-								
-							<input tabindex="7" id="inp_monthlyPatternName" 
-								class="nts-input" 
-								data-bind="ntsTextEditor: {
-								value: name,
-								constraint: 'MonthlyPatternName',
-								option: textEditorOptionName,
-								required: true,
-								name:'#[KSM005_18]', 
-								enable: true,
-								immediate: false}" />
-						</div>
-						<br/>
-						<div tabindex="9" class="nts-calendar-container">
-							<div class="nts-calendar-header">
-								<div id="yMPicker" data-bind="ntsDatePicker: {
-								name: '#[KCP006_1]',
-								value: yearMonthPicked, 
-								dateFormat: 'yearmonth', 
-								valueFormat: 'YYYYMM', 
-								cssRanger: cssRangerYM,
-								defaultClass: 'round-orange',
-								showJumpButtons: true,
-								required: true}"></div>
-							</div>
-							<div id="calendar" data-bind="ntsCalendar: {
-								optionDates: optionDates, 
-								yearMonth: yearMonthPicked, 
-								firstDay: firstDay, 
-								startDate: startDate, 
-								endDate: endDate,
-								workplaceId: workplaceId,
-								workplaceName: workplaceName,
-								eventDisplay: eventDisplay,
-								eventUpdatable: eventUpdatable,
-								holidayDisplay: holidayDisplay,
-								cellButtonDisplay: cellButtonDisplay}">
-							</div>
-						</div>
-					</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-	</body>
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 450, height: 570};</script>
+        <com:stylefile path="ksm005.b.main.css"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="ksm005.b.start.js"/>
+        <com:scriptfile path="ksm005.b.service.js"/>
+        <com:scriptfile path="ksm005.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div class="contents">
+            <div class="period_labels">
+                <div style="width: 79px" data-bind="ntsFormLabel: {required: true}">
+                    <label>#{i18n.getText('KSM005_27')}</label>
+                </div>
+                <div id="daterangepicker" tabindex="1"
+                     data-bind="ntsDateRangePicker: { name: '#[KSM005_27]', startName: '#[KSM005_35]', endName: '#[KSM005_36]', required: true, enable: true, showNextPrevious: false, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}"/>
+            </div>
+            <div class="employee_labels">
+                <div data-bind="ntsFormLabel: {}">
+                    <label>#{i18n.getText('KSM005_28')}</label>
+                </div>
+                <div>
+                    <button tabindex="3" class="showDialogB72">#{i18n.getText('KSM005_89')}</button>
+                </div>
+            </div>
+            <div style="width: 410px">
+                <hr/>
+            </div>
+
+            <div data-bind="if: lstHolidaysPattern().length">
+                <div data-bind="if: hasWorkingDays()">
+                    <div style="margin-top: 5px !important;" class="pull-left workday_labels">
+                        <div class="pull-left lableData"
+                             data-bind="ntsFormLabel: {required: true}">
+                            <label>#{i18n.getText('KSM005_29')}</label>
+                        </div>
+                        <button tabindex="4" data-bind="click: openDialogWorkDays"
+                                class="pull-left large">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoWorkDays()"></label>
+                            <br/>
+                            <label data-bind="text: worktimeInfoWorkDays()"></label>
+                        </div>
+                    </div>
+                    <div class="pull-left workday_labels">
+                        <div class="pull-left">
+                            <div tabindex="5"
+                                 data-bind="ntsCheckBox: { checked: settingForHolidays }">#{i18n.getText('KSM005_85')}</div>
+                        </div>
+                    </div>
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"></div>
+                        <button tabindex="6" class="pull-left large"
+                                data-bind="click: openDialogPublicHolidays, enable: visibleHolidaySetting()">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoPublicHolidays() "></label>
+                        </div>
+                    </div>
+                </div>
+                <com:ko-if bind=" hasWorkingDays() &amp;&amp; (hasNonStatutoryHolidays() || hasLegalHoliday())">
+                    <div class="pull-left workday_labels hr-line" >
+                        <div class="hr"></div>
+                    </div>
+                </com:ko-if>
+
+                <div data-bind="if: hasLegalHoliday()">
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"
+                             data-bind="ntsFormLabel: {required: true}">
+                            <label>#{i18n.getText('KSM005_30')}</label>
+                        </div>
+                        <button tabindex="7" class="pull-left large"
+                                data-bind="click: openDialogStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoStatutoryHolidays()"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-bind="if: hasNonStatutoryHolidays()">
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"
+                             data-bind="ntsFormLabel: {required: true}">
+                            <label>#{i18n.getText('KSM005_31')}</label>
+                        </div>
+                        <button tabindex="8" class="pull-left large"
+                                data-bind="click: openDialogNoneStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoNoneStatutoryHolidays()"></label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="functions-area-bottom">
+            <div id="checkOverWriteSetting">
+                <div tabindex="9"
+                     data-bind="ntsCheckBox: { checked: overwirte, style: 'warnpanel' }">#{i18n.getText('KSM005_33')}</div>
+            </div>
+            <button tabindex="10" class="proceed x-large"
+                    data-bind="click: saveMonthlyPatternSettingBatch, enable: $root.errors.isEmpty">#{i18n.getText('KSM005_34')}</button>
+            <button tabindex="11" class="large"
+                    data-bind="click: cancelSaveMonthlyPatternSetting">#{i18n.getText('KSM005_26')}</button>
+        </div>
+        <div class="popup-area popup-b72 popup-panel bg-green">
+            <div tabindex="-1" class="popup-panel-body">
+                <table id="fixed-table" tabindex="6">
+                    <colgroup>
+                        <col width="35px"/>
+                        <col width="80px"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="ui-widget-header">#{i18n.getText('KSM005_92')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('KSM005_93')}</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: $vm.lstHolidaysPattern">
+                    <tr>
+                        <td>
+                            <div data-bind="text: code, css: {sat: $data.isSat, sun: $data.isSun}"></div>
+                        </td>
+                        <td>
+                            <div data-bind="text: $data.name, css : {holidayOrWeekend: $data.isHolidayOrWeekend, halfDayWork: $data.isHalfDayWork}"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
 </html>

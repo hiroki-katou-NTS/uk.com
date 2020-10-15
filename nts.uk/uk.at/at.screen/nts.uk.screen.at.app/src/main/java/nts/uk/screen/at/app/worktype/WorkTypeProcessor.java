@@ -82,6 +82,11 @@ public class WorkTypeProcessor {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeQueryRepository.findOtKaf022(companyId);
 	}
+
+	public List<WorkTypeDto> findBusinessTripKaf022(List<Integer> listOneDayAtr){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findBusinessTripKaf022(companyId, listOneDayAtr);
+	}
 	
 	/**
 	 * Find work type by company 

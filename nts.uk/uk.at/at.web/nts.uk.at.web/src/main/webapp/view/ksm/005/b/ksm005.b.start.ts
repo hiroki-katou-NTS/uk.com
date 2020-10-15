@@ -3,8 +3,6 @@ module nts.uk.at.view.ksm005.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(res) {
             __viewContext.bind(res);
-            screenModel.isBuild = true;
-        });
-
+        }).then(() => $(".ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component").focus());
     });
 }

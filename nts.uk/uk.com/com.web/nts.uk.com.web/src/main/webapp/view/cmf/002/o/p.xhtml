@@ -114,7 +114,8 @@
 			<tr>
 				<td style="vertical-align: bottom; padding-left: 15px;">
 					<!--P20_1 ←処理を選びなおす-->
-					<button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
+					<!-- ver62: remove O screen -->
+					<!-- <button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button> -->
 					<!--P20_2 次へ→-->
 					<button tabindex="5" class="proceed x-large" style="margin-left: 10px"
 							data-bind="click: todoScreenQ, disable : mode() == 2,enable: $root.errors.isEmpty">#{i18n.getText('CMF002_226')}</button>

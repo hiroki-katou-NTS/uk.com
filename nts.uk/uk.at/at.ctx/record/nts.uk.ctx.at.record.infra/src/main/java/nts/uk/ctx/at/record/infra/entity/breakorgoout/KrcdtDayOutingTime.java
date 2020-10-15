@@ -15,15 +15,15 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutingTotalTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinOutingTotalTime;
-import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -234,10 +234,10 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 	}
 	
 	public OutingTimeOfDaily toDomain() {
-		val reason = GoOutReason.corvert(this.krcdtDayOutingTimePK.reason);
+		val reason = GoingOutReason.corvert(this.krcdtDayOutingTimePK.reason);
 		return new OutingTimeOfDaily(new BreakTimeGoOutTimes(count),
 									 //外出理由
-									 reason.isPresent()?reason.get():GoOutReason.OFFICAL, 
+									 reason.isPresent()?reason.get():GoingOutReason.UNION, 
 									 //休暇使用時間
 									 new TimevacationUseTimeOfDaily(new AttendanceTime(anuuualLeaveUseTime), 
 											 						new AttendanceTime(compensLeaveUseTime), 

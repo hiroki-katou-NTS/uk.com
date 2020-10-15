@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepos
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
@@ -36,6 +37,9 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository conditionRepo;
+	
+	@Inject 
+	private AppApprovalFixedExtractConditionRepository appApprovalFixedExtractConditionRepository;
 	
 	@Inject
 	private WorkRecordExtraConAdapter workRecordExtraConRepo;
@@ -79,6 +83,11 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			// delete List Fixed Work Record Extract Condition by list Error Alarm Code
 			String dailyAlarmConID =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().get(0).getDailyAlarmConID();
 			this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(dailyAlarmConID);
+		}
+		
+		if (command.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
+			String appAlarmConId = command.getApprovalAlarmCheckConDto().getListAppFixedConditionWorkRecordDto().get(0).getAppAlarmConId();
+			this.appApprovalFixedExtractConditionRepository.delete(appAlarmConId);
 		}
 		
 		if (command.getCategory() == AlarmCategory.MONTHLY.value) {

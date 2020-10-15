@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 @Getter
 @Setter
 public class AppWorkChangeDetailOutput {
-	
 	/**
 	 * 勤務変更申請の表示情報
 	 */
@@ -21,5 +20,4 @@ public class AppWorkChangeDetailOutput {
 	 * 勤務変更申請
 	 */
 	private AppWorkChange appWorkChange;
-	
 }

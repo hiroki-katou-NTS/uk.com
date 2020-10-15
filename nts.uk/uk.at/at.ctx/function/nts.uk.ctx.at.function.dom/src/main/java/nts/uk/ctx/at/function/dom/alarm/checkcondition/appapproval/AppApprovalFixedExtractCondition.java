@@ -20,6 +20,7 @@ public class AppApprovalFixedExtractCondition extends AggregateRoot {
 	
 	private boolean useAtr;
 
+	
 	public AppApprovalFixedExtractCondition(String errorAlarmCheckId, int no, ErrorAlarmMessage message,
 			boolean useAtr) {
 		this.errorAlarmCheckId = errorAlarmCheckId;

@@ -11,7 +11,7 @@ import nts.uk.shr.infra.permit.data.JpaEntityOfAvailabilityPermissionBase;
  * 外部出力カテゴリ利用権限の設定
  */
 @Entity
-@Table(name = "OIOMT_EX_OUT_CTG_AUTH_SET")
+@Table(name = "OIOMT_EX_OUT_CTG_AUTH")
 public class OiomtExOutCtgAuthSet extends JpaEntityOfAvailabilityPermissionBase<ExOutCtgAuthSet>
 		implements RestoreAvailabilityPermission {
 	

@@ -30,8 +30,7 @@ public class GetUsableShiftMasterServiceTest {
 	 */
 	@Test
 	public void testGetUsableShiftMaster_2() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor =  TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		List<ShiftMasterDto> results = new ArrayList<>();
 		results.add(new ShiftMasterDto());
 		new Expectations() {
@@ -54,8 +53,7 @@ public class GetUsableShiftMasterServiceTest {
 	 */
 	@Test
 	public void testGetUsableShiftMaster_3() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
 				Arrays.asList("123"));
 		List<ShiftMasterDto> results = new ArrayList<>();

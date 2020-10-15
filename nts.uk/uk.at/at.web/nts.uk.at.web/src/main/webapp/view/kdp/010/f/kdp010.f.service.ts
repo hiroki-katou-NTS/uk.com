@@ -12,4 +12,4 @@ module nts.uk.at.view.kdp010.f.service {
         return nts.uk.request.ajax("at", paths.getData);
     }
 }
-}
+

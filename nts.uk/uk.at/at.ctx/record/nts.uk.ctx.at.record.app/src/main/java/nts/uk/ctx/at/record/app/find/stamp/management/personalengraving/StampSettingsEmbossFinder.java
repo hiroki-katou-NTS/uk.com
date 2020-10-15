@@ -126,6 +126,7 @@ public class StampSettingsEmbossFinder {
 		List<EmployeeStampInfo> employeeStampDatas = new ArrayList<>();
 		EmpStampDataRequiredImpl empStampDataR = new EmpStampDataRequiredImpl(stampCardRepo, stampRecordRepo,
 				stampDakokuRepo);
+
 		List<GeneralDate> betweens = period.datesBetween();
 		betweens.sort((d1, d2) -> d2.compareTo(d1));
 		for (GeneralDate date : betweens) {
@@ -197,7 +198,7 @@ public class StampSettingsEmbossFinder {
 
 		@Inject
 		protected StampSetPerRepository stampSetPerRepo;
-
+		
 		@Inject
 		protected WorkingConditionRepository workingConditionRepo;
 		
@@ -206,13 +207,13 @@ public class StampSettingsEmbossFinder {
 
 		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-
+		
 		@Inject
 		private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
-
+		
 		@Inject
 		private PortalStampSettingsRepository portalStampSettingsrepo;
-
+		
 		public StampTypeToSuppressRequiredImpl(StampCardRepository stampCardRepo, StampRecordRepository stampRecordRepo,
 				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
 				PredetemineTimeSettingRepository predetemineTimeSettingRepo,
@@ -233,18 +234,18 @@ public class StampSettingsEmbossFinder {
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
 			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
-
+		
 		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String workTimeCode) {
 			String companyId = AppContexts.user().companyId();
 			return this.predetemineTimeSettingRepo.findByWorkTimeCode(companyId, workTimeCode);
 		}
-
+		
 		@Override
 		public Optional<StampSettingPerson> getStampSet(String companyId) {
 			return this.stampSetPerRepo.getStampSet(companyId);
 		}
-
+		
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
 			return this.settingsSmartphoneStampRepo.get(companyId);
@@ -259,22 +260,10 @@ public class StampSettingsEmbossFinder {
 		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
 			return this.workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 		}
-
+		
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
 			return this.workingConditionItemRepo.getByHistoryId(historyId);
 		}
-
 	}
-	
-	//@AllArgsConstructor
-	//private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
-		
-	//	@Override
-	//	public List<StampCard> getListStampCard(String sid) {
-	//		return stampCardRepo.getListStampCard(sid);
-	//	}
-		
-	//}
-
 }

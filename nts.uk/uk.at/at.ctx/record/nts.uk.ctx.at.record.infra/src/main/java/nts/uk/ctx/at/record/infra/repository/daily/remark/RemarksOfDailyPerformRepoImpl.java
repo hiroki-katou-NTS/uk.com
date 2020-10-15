@@ -21,11 +21,11 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumn;
 import nts.uk.ctx.at.record.infra.entity.daily.remarks.KrcdtDayRemarksColumnPK;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -93,11 +93,11 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 
 	@Override
 	public void update(RemarksOfDailyPerform domain) {
-		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()), 
+		Optional<KrcdtDayRemarksColumn> remarks = queryProxy().find(new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarks().getRemarkNo()), 
 				KrcdtDayRemarksColumn.class);
 		if(remarks.isPresent()){
 			KrcdtDayRemarksColumn c = remarks.get();
-			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().v();
+			c.remarks = domain.getRemarks() == null ? null : domain.getRemarks().getRemarks().v();
 			commandProxy().update(c);
 		} else {
 			add(domain);

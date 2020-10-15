@@ -45,6 +45,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckConAgr;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AlarmCheckSubConAgr;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItemRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
@@ -98,18 +102,24 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private ExtraResultMonthlyFunAdapter extraResultMonthly;
-	
+
 	@Inject
 	private MultiMonthFucAdapter multiMonthCond;
 
 	@Inject
 	private IAgreeCondOtRepository condOtRep;
-	
+
 	@Inject
 	private IAgreeNameErrorRepository iAgreeNameErrorRepository;
-	
+
 	@Inject
 	private IAgreeConditionErrorRepository iAgreeConditionErrorRepository;
+
+	@Inject
+	private AppApprovalFixedExtractConditionRepository appApprovalFixedExtractConditionRepository;
+
+	@Inject
+	private AppApprovalFixedExtractItemRepository appApprovalFixedExtractItemRepository;
 	
 	@Inject
 	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
@@ -119,7 +129,8 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
-		return conditionRepo.findByCategory(companyId, category).stream().map(item -> minValueFromDomain(item)).collect(Collectors.toList());
+		return conditionRepo.findByCategory(companyId, category).stream().map(item -> minValueFromDomain(item))
+				.collect(Collectors.toList());
 	}
 
 	public boolean checkManager() {
@@ -134,13 +145,15 @@ public class AlarmCheckConditionByCategoryFinder {
 		if (category == AlarmCategory.AGREEMENT.value) {
 			List<AgreeNameError> itemDefault = iAgreeNameErrorRepository.findAll();
 			List<AgreeConditionError> agreeCondition = iAgreeConditionErrorRepository.findAll(code, category);
-			if(itemDefault.size() != agreeCondition.size() && agreeCondition.size() != 0) {
+			if (itemDefault.size() != agreeCondition.size() && agreeCondition.size() != 0) {
 				// add default new Item 2: 上限規制(Upper)
-				iAgreeConditionErrorRepository.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId, category, code,
-						0, Period.Months_Average.value, ErrorAlarm.Upper.value, ""));
-				iAgreeConditionErrorRepository.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId, category, code,
-						0, Period.One_Month.value, ErrorAlarm.Upper.value, ""));
-				
+				iAgreeConditionErrorRepository
+						.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId,
+								category, code, 0, Period.Months_Average.value, ErrorAlarm.Upper.value, ""));
+				iAgreeConditionErrorRepository
+						.insert(AgreeConditionError.createFromJavaType(UUID.randomUUID().toString(), companyId,
+								category, code, 0, Period.One_Month.value, ErrorAlarm.Upper.value, ""));
+
 			}
 		}
 		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
@@ -150,7 +163,7 @@ public class AlarmCheckConditionByCategoryFinder {
 			throw new RuntimeException("Object not exist!");
 		}
 	}
-	
+
 	public AlarmCheckConditionByCategoryDto getDataByCodeAndInsertDefault(int category, String code) {
 		String companyId = AppContexts.user().companyId();
 		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
@@ -162,17 +175,21 @@ public class AlarmCheckConditionByCategoryFinder {
 	}
 
 	public List<DailyErrorAlarmCheckDto> getDailyErrorAlarmCheck() {
-		return errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId()).stream().map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(), item.getDisplayMessage()))
+		return errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId()).stream()
+				.map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
+						item.getDisplayMessage()))
 				.collect(Collectors.toList());
 	}
 
 	private AlarmCheckConditionByCategoryDto fromDomain(AlarmCheckConditionByCategory domain) {
 		int schedule4WCondition = 0;
-		DailyAlarmCondition dailyAlarmCondition = new DailyAlarmCondition("", ConExtractedDaily.ALL.value, false, Collections.emptyList(), Collections.emptyList());
+		DailyAlarmCondition dailyAlarmCondition = new DailyAlarmCondition("", ConExtractedDaily.ALL.value, false,
+				Collections.emptyList(), Collections.emptyList());
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
+		List<AppFixedConditionWorkRecordDto> listAppAlCheckConDto = new ArrayList();
 		List<WorkRecordExtraConAdapterDto> lstWorkRecordExtraCon = new ArrayList<>();
 		// monthly
-		MonAlarmCheckCon monAlarmCheckCon = new MonAlarmCheckCon("",Collections.emptyList());
+		MonAlarmCheckCon monAlarmCheckCon = new MonAlarmCheckCon("", Collections.emptyList());
 		List<FixedExtraMonFunDto> listFixedExtraMonFun = new ArrayList<>();
 		List<ExtraResultMonthlyDomainEventDto> arbExtraCon = new ArrayList<>();
 		List<String> listEralCheckIDOld = new ArrayList<>();
@@ -189,14 +206,19 @@ public class AlarmCheckConditionByCategoryFinder {
 		List<AgreeNameError> listAgreeNameError = this.nameRep.findAll();
 		List<AgreeConditionErrorDto> listCondError = new ArrayList<>();
 		listCondError = listConError.stream().map(item -> {
-			String agreementNameErr = listAgreeNameError.stream().filter(x -> (x.getPeriod() == item.getPeriod() && x.getErrorAlarm() == item.getErrorAlarm())).findFirst().get().getName().v();
-			return new AgreeConditionErrorDto(item.getCategory().value, item.getId(), item.getCode().v(), item.getUseAtr().value, item.getPeriod().value, item.getErrorAlarm().value, item.getMessageDisp().v(), agreementNameErr);
+			String agreementNameErr = listAgreeNameError.stream()
+					.filter(x -> (x.getPeriod() == item.getPeriod() && x.getErrorAlarm() == item.getErrorAlarm()))
+					.findFirst().get().getName().v();
+			return new AgreeConditionErrorDto(item.getCategory().value, item.getId(), item.getCode().v(),
+					item.getUseAtr().value, item.getPeriod().value, item.getErrorAlarm().value,
+					item.getMessageDisp().v(), agreementNameErr);
 		}).collect(Collectors.toList());
 		// AgreeCondOtFinder
 		List<AgreeCondOtDto> listCondOt = new ArrayList<>();
 		List<AgreeCondOt> result = condOtRep.findAll(domain.getCode().v(), domain.getCategory().value);
 		listCondOt = result.stream().map(x -> {
-			return new AgreeCondOtDto(x.getCategory().value, x.getId(), x.getNo(), x.getCode().v(), x.getOt36().v(), x.getExcessNum().v(), x.getMessageDisp().v());
+			return new AgreeCondOtDto(x.getCategory().value, x.getId(), x.getNo(), x.getCode().v(), x.getOt36().v(),
+					x.getExcessNum().v(), x.getMessageDisp().v());
 		}).collect(Collectors.toList());
 
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
@@ -206,14 +228,18 @@ public class AlarmCheckConditionByCategoryFinder {
 		if (domain.getCategory() == AlarmCategory.DAILY && domain.getExtractionCondition() != null) {
 			dailyAlarmCondition = (DailyAlarmCondition) domain.getExtractionCondition();
 			String dailyID = dailyAlarmCondition.getDailyAlarmConID();
-			List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter.getAllFixedConWorkRecordByID(dailyID);
-			List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter.getAllFixedConditionDataPub();
+			List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter
+					.getAllFixedConWorkRecordByID(dailyID);
+			List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter
+					.getAllFixedConditionDataPub();
 			for (FixedConditionDataAdapterDto i : listFixedConditionData) {
 				boolean check = true;
 				if (listFixedConditionWorkRecord != null && !listFixedConditionWorkRecord.isEmpty()) {
 					for (FixedConWorkRecordAdapterDto e : listFixedConditionWorkRecord) {
 						if (e.getFixConWorkRecordNo() == i.getFixConWorkRecordNo()) {
-							FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(), i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr(), i.getEralarmAtr());
+							FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(),
+									i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(),
+									e.isUseAtr(), i.getEralarmAtr());
 							listFixedConditionWkRecord.add(dto);
 							check = false;
 							break;
@@ -221,54 +247,97 @@ public class AlarmCheckConditionByCategoryFinder {
 					}
 				}
 				if (check) {
-					FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), i.getMessage(), false, i.getEralarmAtr());
+					FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(),
+							i.getFixConWorkRecordNo(), i.getMessage(), false, i.getEralarmAtr());
 					listFixedConditionWkRecord.add(dto);
 				}
 			}
-			lstWorkRecordExtraCon = workRecordExtractConditionAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
+			lstWorkRecordExtraCon = workRecordExtractConditionAdapter
+					.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		}
+
+		if (domain.getCategory() == AlarmCategory.APPLICATION_APPROVAL && domain.getExtractionCondition() != null) {
+			Optional<AppApprovalAlarmCheckCondition> approvalAlCheckCon = appApprovalFixedExtractConditionRepository
+					.findByCodeAndCategory(domain.getCompanyId(), domain.getCode().v(), domain.getCategory().value);
+
+			List<AppApprovalFixedExtractConditionDto> listAppConDto = appApprovalFixedExtractConditionRepository
+					.findAll().stream().map(e -> new AppApprovalFixedExtractConditionDto(e))
+					.collect(Collectors.toList());
+
+			List<AppApprovalFixedExtractItemDto> listAppItem = appApprovalFixedExtractItemRepository.findAll().stream()
+					.map(e -> new AppApprovalFixedExtractItemDto(e)).collect(Collectors.toList());
+
+			if (approvalAlCheckCon.isPresent()) {
+				List<Integer> listNo = listAppConDto.stream()
+						.filter(e -> e.getAppAlarmCheckId().equals(approvalAlCheckCon.get().getApprovalAlarmConID()))
+						.map(a -> a.getNo()).collect(Collectors.toList());
+
+				listAppItem.stream().forEach(e -> {
+					int check = listNo.indexOf(e.getNo());
+					if (check > 0) {
+						AppFixedConditionWorkRecordDto dto = new AppFixedConditionWorkRecordDto(listAppConDto.get(check).getAppAlarmCheckId(), e.getNo(), e.getName(),
+								listAppConDto.get(check).getMessage(), listAppConDto.get(check).isUseAtr(),
+								e.getErAlAtr());
+						listAppAlCheckConDto.add(dto);
+					}
+//					ApprovalAlarmCheckConDto dto = new ApprovalAlarmCheckConDto(e.getNo(), e.getName(),
+//							listAppConDto.get(check).getMessage(), listAppConDto.get(check).isUseAtr(),
+//							e.getErAlAtr()); con mot doan
+				});
+				;
+
+			}
+
+		}
+
 		// monthly
 		if (domain.getCategory() == AlarmCategory.MONTHLY && domain.getExtractionCondition() != null) {
 			monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition();
 
-			//get arbExtraCon
+			// get arbExtraCon
 			arbExtraCon = extraResultMonthly.getListExtraResultMonByListEralID(monAlarmCheckCon.getArbExtraCon());
 			listEralCheckIDOld = monAlarmCheckCon.getArbExtraCon();
 			// get fixExtra monthly
 			List<FixedExtraItemMonFunImport> dataFixedExtraMon = fixExtraItemMon.getAllFixedExtraItemMon();
-			listFixedExtraMonFun = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream().map(c -> FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList());
+			listFixedExtraMonFun = fixExtraMon.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID()).stream()
+					.map(c -> FixedExtraMonFunDto.convertToImport(c)).collect(Collectors.toList());
 			for (FixedExtraMonFunDto fixedExtraMonFunDto : listFixedExtraMonFun) {
 				for (FixedExtraItemMonFunImport fixedExtraItemMonFunImport : dataFixedExtraMon) {
-					if (fixedExtraMonFunDto.getFixedExtraItemMonNo() == fixedExtraItemMonFunImport.getFixedExtraItemMonNo()) {
+					if (fixedExtraMonFunDto.getFixedExtraItemMonNo() == fixedExtraItemMonFunImport
+							.getFixedExtraItemMonNo()) {
 						fixedExtraMonFunDto.setMonAlarmCheckName(fixedExtraItemMonFunImport.getFixedExtraItemMonName());
 						break;
 					}
 				}
 			} // end for
 		}
-		
-		
+
 		if (domain.getCategory() == AlarmCategory.MULTIPLE_MONTH && domain.getExtractionCondition() != null) {
 			MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
 
-//			get arbExtraCon
-			mulMonCheckCondDomainEventDtos = multiMonthCond.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
+			// get arbExtraCon
+			mulMonCheckCondDomainEventDtos = multiMonthCond
+					.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
 			listEralCheckIDOld = mulMonAlarmCond.getErrorAlarmCondIds();
 		}
-		
-		if (domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY && domain.getExtractionCondition() != null) {
+
+		if (domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
+				&& domain.getExtractionCondition() != null) {
 			AnnualHolidayAlarmCondition annualHolidayAlCon = (AnnualHolidayAlarmCondition) domain
 					.getExtractionCondition();
 			AlarmCheckConAgr alarmCheckConAgr = annualHolidayAlCon.getAlarmCheckConAgr();
 			AlarmCheckSubConAgr alSubConAgr = annualHolidayAlCon.getAlarmCheckSubConAgr();
 			annualHolidayAlConDto.setAlCheckConAgrDto(alarmCheckConAgr == null ? null
 					: new AlarmCheckConAgrDto(alarmCheckConAgr.isDistByPeriod(),
-							alarmCheckConAgr.getDisplayMessage().isPresent() ? alarmCheckConAgr.getDisplayMessage().get().v() : null, 
+							alarmCheckConAgr.getDisplayMessage().isPresent()
+									? alarmCheckConAgr.getDisplayMessage().get().v() : null,
 							alarmCheckConAgr.getUsageObliDay().v()));
 			annualHolidayAlConDto.setAlCheckSubConAgrDto(alSubConAgr == null ? null
 					: new AlarmCheckSubConAgrDto(alSubConAgr.isNarrowUntilNext(), alSubConAgr.isNarrowLastDay(),
-							alSubConAgr.getNumberDayAward().isPresent() ? alSubConAgr.getNumberDayAward().get().v() : null, 
-							alSubConAgr.getPeriodUntilNext().isPresent() ? alSubConAgr.getPeriodUntilNext().get().v() : null));
+							alSubConAgr.getNumberDayAward().isPresent() ? alSubConAgr.getNumberDayAward().get().v()
+									: null,
+							alSubConAgr.getPeriodUntilNext().isPresent() ? alSubConAgr.getPeriodUntilNext().get().v()
+									: null));
 		}
 		
 		if (domain.getCategory() == AlarmCategory.MASTER_CHECK && domain.getExtractionCondition() != null) {
@@ -299,20 +368,32 @@ public class AlarmCheckConditionByCategoryFinder {
 			}
 		}
 
-		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value,
-				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(), domain.getExtractTargetCondition().isFilterByClassification(), domain.getExtractTargetCondition().isFilterByJobTitle(),
-						domain.getExtractTargetCondition().isFilterByBusinessType(), domain.getExtractTargetCondition().getLstEmploymentCode(), domain.getExtractTargetCondition().getLstClassificationCode(),
-						domain.getExtractTargetCondition().getLstJobTitleId(), domain.getExtractTargetCondition().getLstBusinessTypeCode()),
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
+				domain.getCategory().value,
+				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(),
+						domain.getExtractTargetCondition().isFilterByClassification(),
+						domain.getExtractTargetCondition().isFilterByJobTitle(),
+						domain.getExtractTargetCondition().isFilterByBusinessType(),
+						domain.getExtractTargetCondition().getLstEmploymentCode(),
+						domain.getExtractTargetCondition().getLstClassificationCode(),
+						domain.getExtractTargetCondition().getLstJobTitleId(),
+						domain.getExtractTargetCondition().getLstBusinessTypeCode()),
 				domain.getListRoleId(), schedule4WCondition,
-				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(), dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(), 
-						lstWorkRecordExtraCon.stream().sorted((x,y)->x.getSortOrderBy() - y.getSortOrderBy()).collect(Collectors.toList()), 
+				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
+						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
+						lstWorkRecordExtraCon.stream().sorted((x, y) -> x.getSortOrderBy() - y.getSortOrderBy())
+								.collect(Collectors.toList()),
 						listFixedConditionWkRecord),
-				new MonAlarmCheckConDto(listFixedExtraMonFun,arbExtraCon,listEralCheckIDOld), new AlarmChkCondAgree36Dto(listCondError, listCondOt), 
-				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos,listEralCheckMulMonIDOld), annualHolidayAlConDto,
+				new ApprovalAlarmCheckConDto(listAppAlCheckConDto),
+				new MonAlarmCheckConDto(listFixedExtraMonFun, arbExtraCon, listEralCheckIDOld),
+				new AlarmChkCondAgree36Dto(listCondError, listCondOt),
+				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos, listEralCheckMulMonIDOld),
+				annualHolidayAlConDto,
 				new MasterCheckAlarmCheckConditionDto(listMasterCheckFixedCon));
 	}
 
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
-		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value, null, null, 0, null, null, null, null, null, null);
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
+				domain.getCategory().value, null, null, 0, null, null, null, null, null, null, null);
 	}
 }

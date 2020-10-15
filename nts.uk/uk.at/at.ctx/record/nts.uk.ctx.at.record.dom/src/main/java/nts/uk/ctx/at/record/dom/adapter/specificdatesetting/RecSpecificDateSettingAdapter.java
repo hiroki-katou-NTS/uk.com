@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.adapter.specificdatesetting;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 
 public interface RecSpecificDateSettingAdapter {
 
@@ -23,5 +25,7 @@ public interface RecSpecificDateSettingAdapter {
 	 * @return
 	 */
 	public RecSpecificDateSettingImport specificDateSettingServiceByListWpl(String companyID, List<String> workPlaceID, GeneralDate date);
+	
+	public List<RecSpecificDateSettingImport> getList(String companyID, List<String> workPlaceID, DatePeriod datePeriod);
 	
 }

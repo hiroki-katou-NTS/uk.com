@@ -178,12 +178,12 @@ public class HolidayWorkWebService extends WebService{
 	@Path("confirmInconsistency")
 	public List<String> confirmInconsistency(CreateHolidayWorkCommand command) {
 		String companyID = AppContexts.user().companyId();
-		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+		Optional<OvertimeRestAppCommonSetting>  overTimeSettingOpt = overTimeSetRepo.getOvertimeRestAppCommonSetting(companyID, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
 		List<ConfirmMsgOutput> outputLst = commonOvertimeHoliday.inconsistencyCheck(
 				companyID, 
 				command.getApplicantSID(), 
 				command.getApplicationDate(),
-				ApplicationType.BREAK_TIME_APPLICATION,
+				ApplicationType.HOLIDAY_WORK_APPLICATION,
 				overTimeSettingOpt.get().getAppDateContradictionAtr());
 		List<String> result = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(outputLst)) {
