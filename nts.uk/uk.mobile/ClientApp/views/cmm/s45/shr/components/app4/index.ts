@@ -27,12 +27,12 @@ export class CmmS45ComponentsApp4Component extends Vue {
     public isCondition3: boolean = false;
     public isCondition4: boolean = false;
 
-    public appWorkChange: any = new AppWorkChange();
+    public goBackDirect: any = new GoBackDirect();
 
     public user: any;
     public $app() {
 
-        return this.appWorkChange;
+        return this.goBackDirect;
     }
     public created() {
         const self = this;
@@ -53,14 +53,18 @@ export class CmmS45ComponentsApp4Component extends Vue {
     }
     public fetchData(getParams: any) {
         const self = this;
-        this.$http.post('at', API.start, {
+        self.$http.post('at', API.start, {
             companyId: self.user.companyId,
             applicationId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
-            appDispInfoStartupDto: this.params.appDispInfoStartupOutput
+            appDispInfoStartupDto: self.params.appDispInfoStartupOutput
         }).then((res: any) => {
-                this.dataOutput = res.data;
-                this.bindStart();
-                this.params.appDetail = this.dataOutput;
+                self.dataOutput = res.data;
+                self.bindStart();
+                self.params.appDetail = self.dataOutput;
+                self.$mask('hide');
+            }).catch((res: any) => {
+                self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                self.$mask('hide');
             });
     }
     public bindStart() {
@@ -128,7 +132,7 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
 }
 // dto 
-class AppWorkChange {
+class GoBackDirect {
 
     public workType: string = '';
 
