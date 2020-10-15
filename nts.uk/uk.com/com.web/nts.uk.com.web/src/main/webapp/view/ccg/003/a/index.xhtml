@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-    <ui:composition template="../../../../master/freelayout.xhtml">
+  <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <com:stylefile path="ccg003.a.style.css" />
         <com:scriptfile path="ccg003.a.vm.js" />
@@ -17,16 +17,16 @@
         <div id="A0" class="panel panel-frame panel-ccg003">
           <div class="top-content">
             <!-- A1 対象日 -->
-            <div id="A1" class="fw-left"><span>2020/06/04(木)</span>
+            <div id="A1"><span>2020/06/04(木)</span>
             </div>
             <div class="fw-right">
               <div>
                 <!-- A2 メッセージ入力 -->
-                <a id="A2" class="mr-5" href="#">#{i18n.getText('CCG003_4')}</a>
+                <a id="A2" class="mr-5" href="#" data-bind="click: openScreenB">#{i18n.getText('CCG003_4')}</a>
               </div>
               <div>
                 <!-- A3 ☓アイコン -->
-                <img id="close-ccg003" class="img-close" src="../resource/CCG003_1.png" />
+                <img id="close-ccg003" class="img-close" src="../resource/CCG003_1.png" data-bind="click: closeWindow" />
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@
             <table>
               <tr>
                 <!-- A4 絞り込み -->
-                <div id="A4" data-bind="ntsAccordion: {}">
+                <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
                   <!-- ヘッダテキスト -->
                   <h3 class="bg-accordion-1 no-border-bottom">#{i18n.getText('CCG003_5')}</h3>
                   <div class="bg-accordion-1 no-border-radius pl-10">
@@ -55,47 +55,54 @@
                   </div>
                 </div>
               </tr>
-
               <tr>
-                <!-- A6 メッセージ -->
-                <div data-bind="ntsAccordion: {}">
-                  <h3 class="bg-schedule-focus">
-                    <!-- ヘッダテキスト -->
-                    <span class="limited-label mw-400">絞り込み</span>
-                    <!-- A6_1 NEWアイコン -->
-                    <img id="A6_1" class="new-img" src="../resource/CCG003_2.png" />
-                  </h3>
-                  <!-- A6_2 メッセージ内容 -->
-                  <div class="mr-data no-border-radius">
-                    <div class="row-inline">
-                      <span>表示期間表示期間表示期間表示期間表示期間表示期間表示期間表示</span>
-                    </div>
-                  </div>
-                </div>
-              </tr>
+                <td>
+                  <div class="auto-overflow">
+                    <table>
+                      <tr>
+                        <!-- A6 メッセージ -->
+                        <div class="w-490" data-bind="ntsAccordion: {}">
+                          <h3 class="bg-schedule-focus">
+                            <!-- ヘッダテキスト -->
+                            <span class="limited-label mw-400">絞り込み</span>
+                            <!-- A6_1 NEWアイコン -->
+                            <img id="A6_1" class="new-img" src="../resource/CCG003_2.png" />
+                          </h3>
+                          <!-- A6_2 メッセージ内容 -->
+                          <div class="mr-data no-border-radius">
+                            <div class="row-inline">
+                              <span data-bind="html: demoText1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </tr>
+                      <tr>
+                        <!-- A5 記念日 -->
+                        <div class="w-490" data-bind="ntsAccordion: {}">
+                          <div class="bg-schedule-focus">
+                            <!-- ヘッダテキスト -->
+                            <span class="limited-label mw-400">メッセージ(itrem transfer)</span>
+                            <!-- A5_1 NEWアイコン -->
+                            <img id="A5_1" class="new-img" src="../resource/CCG003_2.png" />
+                          </div>
+                          <div class="mr-data no-border-radius">
+                            <!-- A5_2 記念日内容 -->
+                            <div class="row-inline">
+                              <span data-bind="html: dataText2"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </tr>
 
-              <tr>
-                <!-- A5 記念日 -->
-                <div data-bind="ntsAccordion: {}">
-                  <div class="bg-schedule-focus">
-                    <!-- ヘッダテキスト -->
-                    <span class="limited-label mw-400">メッセージ(itrem transfer)12312312312312 1231231231231231231212 131231232132</span>
-                    <!-- A5_1 NEWアイコン -->
-                    <img id="A5_1" class="new-img" src="../resource/CCG003_2.png" />
+                    </table>
                   </div>
-                  <div class="mr-data no-border-radius">
-                    <!-- A5_2 記念日内容 -->
-                    <div class="row-inline">
-                      <span>表示期間表示</span>
-                    </div>
-                  </div>
-                </div>
+                </td>
               </tr>
             </table>
           </div>
         </div>
       </div>
     </ui:define>
-    </ui:composition>
+  </ui:composition>
 </body>
 </html>

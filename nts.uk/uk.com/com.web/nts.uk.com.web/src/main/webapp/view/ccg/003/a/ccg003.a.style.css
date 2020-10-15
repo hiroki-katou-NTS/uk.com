@@ -1,3 +1,6 @@
+.w-490 {
+  width: 490px;
+}
 .img-close {
   cursor: pointer;
   width: 15px;
@@ -19,7 +22,7 @@
   max-height: 460px;
   background: #f2f8ee;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  width: 490px;
+  width: 500px;
   border-radius: 0px !important;
 }
 .row-inline {
@@ -69,4 +72,8 @@
 }
 .mr-5 {
   margin-right: 5px;
+}
+.auto-overflow {
+  overflow-y: auto;
+  max-height: 310px;
 }

@@ -4,7 +4,7 @@
 .radio-box-group > .ntsRadioBox {
   margin-top: 10px;
 }
-.message-group {
+.flex {
   display: flex;
 }
 #C1_2 {
@@ -22,4 +22,40 @@
 }
 .w-p-60 {
   width: 60%;
+}
+.clear-both {
+  clear: both;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.w-p-85 {
+  width: 85%;
+}
+.ml-5 {
+  margin-left: 5px;
+}
+.ml-20 {
+  margin-left: 20px;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.w-280 {
+  width: 280px;
+}
+#functions-area-bottom {
+  height: 40px !important;
+}
+.pl-25 {
+  padding-left: 25px;
+}
+.pr-25 {
+  padding-right: 25px;
+}
+.ml-60 {
+  margin-left: 60px !important;
 }

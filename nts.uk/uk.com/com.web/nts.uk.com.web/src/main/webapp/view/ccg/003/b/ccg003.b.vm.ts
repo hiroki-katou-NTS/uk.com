@@ -9,23 +9,27 @@ module nts.uk.com.view.ccg003.b {
     }));
 
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-      new ItemModel({id: '1', ymDisplay: '11/11 - 11/12', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
-      new ItemModel({id: '1', ymDisplay: '1', content: 'a'}),
+      new ItemModel({id: '1', ymDisplay: '11/11 - 11/12', content: 'Demo data to show in table'}),
+      new ItemModel({id: '1', ymDisplay: '03/10 - 11/10', content: 'Demo data to show in table with limited labellllllllllllllllllllll'}),
+      new ItemModel({id: '1', ymDisplay: '06/09 - 11/09', content: 'Demo data'}),
+      new ItemModel({id: '1', ymDisplay: '03/08 - 11/08', content: 'Demo data'}),
+      new ItemModel({id: '1', ymDisplay: '03/07 - 08/07', content: 'Demo data'}),
+      new ItemModel({id: '1', ymDisplay: '04/06 - 11/06', content: 'Demo data'})
     ]);
     
-    created() {}
+    created() {
+      $('#B20_1').focus();
+    }
 
     openScreenC(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/c/index.xhtml');
+      vm.$window.modal('/view/ccg/003/c/index.xhtml', true);
     }
+
+    closeDialog(): void {
+      this.$window.close();
+    }
+
   }
 
   class DatePeriod {
