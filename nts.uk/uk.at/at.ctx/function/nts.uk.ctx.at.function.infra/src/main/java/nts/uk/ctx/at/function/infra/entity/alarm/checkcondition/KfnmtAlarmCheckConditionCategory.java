@@ -176,6 +176,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case APPLICATION_APPROVAL:
 			extractionCondition = entity.appApprovalCondition == null ? null : entity.appApprovalCondition.toDomain();
+			break;
 		case SCHEDULE_4WEEK:
 			extractionCondition = entity.schedule4W4DAlarmCondition == null ? null
 					: entity.schedule4W4DAlarmCondition.toDomain();

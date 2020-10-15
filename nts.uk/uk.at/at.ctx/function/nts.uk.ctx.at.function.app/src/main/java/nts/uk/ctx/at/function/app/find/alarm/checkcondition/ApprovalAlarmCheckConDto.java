@@ -9,5 +9,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApprovalAlarmCheckConDto {
 	
-	List<AppFixedConditionWorkRecordDto> listAppFixedConditionWorkRecordDto;
+	List<AppApprovalFixedExtractConditionDto> listFixedExtractConditionWorkRecord;
 }

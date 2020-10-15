@@ -3,26 +3,34 @@ package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractCondition;
+//import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmAtr;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.ErrorAlarmAtr;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class AppApprovalFixedExtractConditionDto {
 
-	private String appAlarmCheckId;
+	private String appAlarmConId;
+	
+	private String name;
 
 	private int no;
 
-	private String message;
+	private String displayMessage;
 
 	private boolean useAtr;
 
-	private String code;
+	private int erAlAtr;
 
-	public AppApprovalFixedExtractConditionDto(AppApprovalFixedExtractCondition domain) {
-		this.appAlarmCheckId = domain.getErrorAlarmCheckId();
-		this.no = domain.getNo();
-		this.message = domain.getMessage().v();
-		this.useAtr = domain.isUseAtr();
+	public static AppApprovalFixedExtractConditionDto fromDomain(AppApprovalFixedExtractCondition domain) {
+		return new AppApprovalFixedExtractConditionDto(domain.getErrorAlarmCheckId()
+				, ""
+				, domain.getNo()
+				, domain.getMessage().v()
+				, domain.isUseAtr()
+				, ErrorAlarmAtr.OTH.value);
 	}
 }

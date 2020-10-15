@@ -85,4 +85,15 @@ public class JpaAppApprovalFixedExtractConditionRepository extends JpaRepository
 		this.getEntityManager().createQuery(query)
 		.setParameter("id", id).executeUpdate();
 	}
+
+
+	@Override
+	public List<AppApprovalFixedExtractCondition> findById(String id) {
+		String query = "SELECT a FROM KrqmtAppApprovalFixedExtractCondition a WHERE a.pk.erAlId = :id";
+		List<AppApprovalFixedExtractCondition> result = this.queryProxy().query(query, KrqmtAppApprovalFixedExtractCondition.class)
+				.setParameter("id", id).getList(a -> new AppApprovalFixedExtractCondition(
+						a.getPk().getErAlId(), a.getPk().getNo(), new ErrorAlarmMessage(a.getMessage()), 
+						a.getUseAtr() == 0 ? false : true));
+		return result;
+	}
 }

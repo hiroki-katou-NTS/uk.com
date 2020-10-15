@@ -9,6 +9,8 @@ public interface AppApprovalFixedExtractConditionRepository {
 	
 	public List<AppApprovalFixedExtractCondition> findAll();
 	
+	public List<AppApprovalFixedExtractCondition> findById(String id);
+	
 	public Optional<AppApprovalAlarmCheckCondition> findByCodeAndCategory(String companyId, String code, int category);
 	
 	public void add(AppApprovalFixedExtractCondition domain);

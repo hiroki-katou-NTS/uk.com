@@ -35,4 +35,12 @@ public enum AppApprovalFixedCheckItem {
 		
 		return null;
 	}
+	
+	public static AppApprovalFixedCheckItem fromName(String name) {
+		for (AppApprovalFixedCheckItem item : AppApprovalFixedCheckItem.values()) {
+			if (item.name.equals(name)) return item;
+		}
+		
+		return null;
+	}
 }

@@ -8,7 +8,7 @@ module nts.uk.at.view.kal003.a.tab {
 
 		load(){
 			let self = this;
-			service.getAllFixedConData().done((data: Array<any>) => {
+			service.getAllFixedApprovalItem().done((data: Array<any>) => {
 				if (data && data.length) {
 					let _list: Array<model.ApprovalFixedConditionWorkRecord> = _.map(data, acc => {
 						return new model.ApprovalFixedConditionWorkRecord({ appAlarmConId: "", name: acc.name, no: acc.no, displayMessage: acc.displayMessage, useAtr: false, erAlAtr: acc.erAlAtr });
@@ -47,7 +47,7 @@ module nts.uk.at.view.kal003.a.tab {
 				owner: self
 			});
 
-			$("#table-fixed").ntsFixedTable({ width: 512 }); // chua sua o day
+			$("#table-fixed").ntsFixedTable({ width: 512 }); 
 		}//end constructor
 	}//end FixedCheckConditionTab
 }//end tab
