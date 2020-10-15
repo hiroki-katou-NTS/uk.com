@@ -582,15 +582,14 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
-        }
-        
-        // ver6 
-        // 「事前事後区分」が表示しない場合
-        let appDispInfoStartupOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput;
-        let isDisplayPre = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
-        if (isDisplayPre == 0) {
-            // 「勤務変更申請の表示情報．申請表示情報.申請表示情報(基準日関係あり).事前事後区分」を使用する
-            self.application.prePostAtr = appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr;
+            // ver6 
+            // 「事前事後区分」が表示しない場合
+            let appDispInfoStartupOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput;
+            let isDisplayPre = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+            if (isDisplayPre == 0) {
+                // 「勤務変更申請の表示情報．申請表示情報.申請表示情報(基準日関係あり).事前事後区分」を使用する
+                self.application.prePostAtr = appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr;
+            }
         }
         self.application.enteredPerson = self.user.employeeId;
 
