@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
+import javax.ejb.Stateless;
 import java.util.List;
 
 /**
@@ -13,6 +17,9 @@ import java.util.List;
  * @author : chinh.hm
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class WorkStatusOutputSettings extends AggregateRoot {
 
     // 	設定ID 	(GUID)

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,12 +13,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 public class DisplayContentsOfWorkStatusPk implements Serializable {
     public static final long serialVersionUID = 1L;
 
     // 	設定ID
     @Column(name = "ID")
-    public int iD;
+    public String iD;
 
     // 	出力順位-> 出力項目.順位
     @Column(name = "ITEM_POS")
