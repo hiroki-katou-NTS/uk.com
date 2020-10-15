@@ -1,5 +1,6 @@
 package nts.uk.query.app.user.information;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -24,6 +25,8 @@ import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
 import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContactRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
@@ -35,7 +38,7 @@ import nts.uk.query.app.user.information.password.changelog.PasswordChangeLogDto
 import nts.uk.query.app.user.information.password.policy.PasswordPolicyDto;
 import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
-import nts.uk.query.app.user.information.setting.SettingInformationDto;
+import nts.uk.query.app.user.information.setting.UserInfoUseMethodDto;
 import nts.uk.query.app.user.information.user.UserDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -48,6 +51,9 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class UserInformationScreenQuery {
+
+    @Inject
+    private UserInfoUseMethod_Repository userInfoUseMethod_repository;
 
     @Inject
     private EmployeeService employeeService;
@@ -83,28 +89,31 @@ public class UserInformationScreenQuery {
     private AvatarRepository avatarRepository;
 
     public UserInformationDto getUserInformation() {
-
+        String loginCid = AppContexts.user().companyId();
         String loginUserId = AppContexts.user().userId();
         String loginPersonalId = AppContexts.user().personId();
         String loginEmployeeId = AppContexts.user().employeeId();
         String loginContractCode = AppContexts.user().contractCode();
 
-        //TODO SQ1 - get ユーザー情報の使用方法 from CMM049
-        SettingInformationDto settingInformationDto = SettingInformationDto.builder().build();
+        //SQ1 - get ユーザー情報の使用方法 from CMM049
+        Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
+        UserInfoUseMethodDto settingInformationDto = UserInfoUseMethodDto.builder().build();
+        userInfoUseMethod_.ifPresent(method -> method.setMemento(settingInformationDto));
+
         //SQ2 - call DomainService 社員情報を取得する
         EmployeeInformationImport employeeInformation = employeeService.getEmployeeInformation(loginEmployeeId, GeneralDate.today());
         String positionName = employeeInformation.getPositionName();
         String wkpDisplayName = employeeInformation.getWkpDisplayName();
         Boolean isInCharge = employeeInformation.isEmployeeCharge();
 
-        //TODO SQ3 - Handle ユーザ情報の使用方法.Empty (pending because of CMM049)
-//        if(ユーザ情報の使用方法.Empty) {
-//            if(isInCharge) {
-//                throw new BusinessException("Msg_1775");
-//            } else {
-//                throw new BusinessException("Msg_1774");
-//            }
-//        }
+        //SQ3 - Handle ユーザ情報の使用方法.Empty (pending because of CMM049)
+        if (settingInformationDto.getCompanyId() == null) {
+            if (isInCharge) {
+                throw new BusinessException("Msg_1775");
+            } else {
+                throw new BusinessException("Msg_1774");
+            }
+        }
 
         //SQ4 - get ユーザ
         Optional<User> loginUser = userRepository.getByUserID(loginUserId);
@@ -133,7 +142,7 @@ public class UserInformationScreenQuery {
                 .flatMap(List::stream)
                 .filter(item -> this.checkHireDate(item.getDatePeriod()))
                 .collect(Collectors.toList());
-        GeneralDate hireDate = affCompanyHistItems.get(affCompanyHistItems.size()-1).start();
+        GeneralDate hireDate = affCompanyHistItems.get(affCompanyHistItems.size() - 1).start();
 
         //SQ9 - get 個人の記念日情報
         List<AnniversaryNotice> anniversaryNoticeList = anniversaryRepository.getByPersonalId(loginPersonalId);
@@ -185,7 +194,7 @@ public class UserInformationScreenQuery {
     }
 
     private boolean checkHireDate(DatePeriod datePeriod) {
-        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0  &&
+        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0 &&
                 datePeriod.end().compareTo(GeneralDate.today()) >= 0
         );
     }

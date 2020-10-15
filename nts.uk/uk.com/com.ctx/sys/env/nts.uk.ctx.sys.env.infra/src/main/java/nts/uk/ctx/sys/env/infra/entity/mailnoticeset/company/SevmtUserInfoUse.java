@@ -197,61 +197,61 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
      * 他の連絡先名1
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT1_NAME")
+    @Column(name = "OTHER_CONTACT1_NAME")
     private String otherContact1Name;
     /**
      * 他の連絡先1利用設定
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT1_USE")
+    @Column(name = "OTHER_CONTACT1_USE")
     private Integer otherContact1Use;
     /**
      * 他の連絡先名2
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT2_NAME")
+    @Column(name = "OTHER_CONTACT2_NAME")
     private String otherContact2Name;
     /**
      * 他の連絡先2利用設定
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT2_USE")
+    @Column(name = "OTHER_CONTACT2_USE")
     private Integer otherContact2Use;
     /**
      * 他の連絡先名3
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT3_NAME")
+    @Column(name = "OTHER_CONTACT3_NAME")
     private String otherContact3Name;
     /**
      * 他の連絡先3利用設定
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT3_USE")
+    @Column(name = "OTHER_CONTACT3_USE")
     private Integer otherContact3Use;
     /**
      * 他の連絡先名4
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT4_NAME")
+    @Column(name = "OTHER_CONTACT4_NAME")
     private String otherContact4Name;
     /**
      * 他の連絡先4利用設定
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT4_USE")
+    @Column(name = "OTHER_CONTACT4_USE")
     private Integer otherContact4Use;
     /**
      * 他の連絡先名5
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT5_NAME")
+    @Column(name = "OTHER_CONTACT5_NAME")
     private String otherContact5Name;
     /**
      * 他の連絡先5利用設定
      */
     @Basic(optional = true)
-    @Column(name = "OTHER＿CONTACT5_USE")
+    @Column(name = "OTHER_CONTACT5_USE")
     private Integer otherContact5Use;
     /**
      * 記念日の表示
