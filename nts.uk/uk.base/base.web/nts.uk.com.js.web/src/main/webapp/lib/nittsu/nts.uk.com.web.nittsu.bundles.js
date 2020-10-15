@@ -230,7 +230,8 @@ var nts;
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
-                function Felica() {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
                     var fc = this;
                     // create socket for connect to c# app
                     fc.socket = new WebSocket(WS_URI);
@@ -261,6 +262,9 @@ var nts;
                                 callback('disconnect', undefined, undefined);
                                 break;
                             case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
                                 callback('read', undefined, json.CardNo);
                                 break;
                         }
@@ -269,7 +273,8 @@ var nts;
                 return Felica;
             }());
             // export only create method for Felica class
-            function felica(cb) {
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
                 // if reconnect, close old connect
                 if (instance && instance.socket.OPEN) {
                     instance.socket.close();
@@ -277,7 +282,7 @@ var nts;
                 // register callback function
                 callback = cb;
                 // create new instance (and new socket connection)
-                return instance = new Felica();
+                return instance = new Felica(once);
             }
             devices.felica = felica;
         })(devices = uk.devices || (uk.devices = {}));
@@ -4539,7 +4544,11 @@ var nts;
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
                     "/view/kdw/003/a/index.xhtml",
-                    "/view/ccg/033/index.xhtml"
+                    "/view/ccg/033/index.xhtml",
+                    "/view/kdp/003/a/index.xhtml",
+                    "/view/kdp/003/f/index.xhtml",
+                    "/view/kdp/004/a/index.xhtml",
+                    "/view/kdp/005/a/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })

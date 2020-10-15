@@ -117,8 +117,9 @@ public class ConvertTimeRecordStampServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
-				true, ReservationArt.NONE, Optional.empty()));
+		Optional<StampRecord> stampRecord = Optional.empty();
+//				Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
+//				true, ReservationArt.NONE, Optional.empty()));
 
 		new Expectations() {
 			{
@@ -187,7 +188,8 @@ public class ConvertTimeRecordStampServiceTest {
 				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+				result = Optional.empty();
+//						Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
 
 			}
 		};
