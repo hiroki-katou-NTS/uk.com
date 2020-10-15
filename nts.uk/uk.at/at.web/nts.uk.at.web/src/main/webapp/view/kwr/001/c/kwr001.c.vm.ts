@@ -118,6 +118,7 @@ module nts.uk.at.view.kwr001.c {
                 self.enableCodeC3_2 = ko.observable(false);
 
                 self.currentCodeList.subscribe(function(value) {
+                    self.selectedProjectType(-1);
                     let codeChoose = _.find(self.allMainDom(), function(o: any) {
                         return value == o.code;
                     });
@@ -499,6 +500,7 @@ module nts.uk.at.view.kwr001.c {
                 self.enableBtnDel(false);
                 self.layoutId  = null;
                 self.selectedRuleCode(0);
+                self.selectedProjectType(-1);
                 _.delay(() => {
                     nts.uk.ui.errors.clearAll();
                 }, 400);
