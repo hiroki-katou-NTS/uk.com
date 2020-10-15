@@ -4,6 +4,7 @@ module nts.uk.com.view.cmm024.c {
 	import common = nts.uk.com.view.cmm024.a.common;
 	import ScheduleHistoryDto = common.ScheduleHistoryDto;
 	import HistoryRes = common.HistoryRes;
+	import EmployeeDto = common.EmployeeDto;
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -37,7 +38,6 @@ module nts.uk.com.view.cmm024.c {
 
 			vm.$window.storage("scheduleHistorySelected").then((data) => {
 				vm.scheduleHistorySelected(data);
-				vm.initScheduleHistory();
 			});
 
 			$('.ntsDatepicker').focus();
@@ -51,8 +51,8 @@ module nts.uk.com.view.cmm024.c {
 				currentDateHistory = vm.scheduleHistorySelected();
 
 			let newStartDate: Date = vm.newStartDate(), //開始年月日テキストボックス -> A2_6, B2_6
-				newEndDate: Date = moment(service.END_DATE).toDate(),
-				cStartDate: Date = moment(service.END_DATE).toDate();
+				newEndDate: Date = moment(common.END_DATE).toDate(),
+				cStartDate: Date = moment(common.END_DATE).toDate();
 
 			if (!nts.uk.util.isNullOrEmpty(currentDateHistory)) {
 				cStartDate = moment(currentDateHistory.startDate).toDate()
@@ -65,10 +65,10 @@ module nts.uk.com.view.cmm024.c {
 			} else {
 				let startDate = moment(newStartDate).format('YYYY/MM/DD');
 				let newScheduleHistoryDto: ScheduleHistoryDto,
-					personalInfoApprove = [],
-					personalInfoConfirm = [];
+					personalInfoApprove: Array<EmployeeDto> = [],
+					personalInfoConfirm : Array<EmployeeDto> = [];
 
-				newScheduleHistoryDto = new ScheduleHistoryDto(startDate, service.END_DATE);
+				newScheduleHistoryDto = new ScheduleHistoryDto(startDate, common.END_DATE);
 
 				//履歴から引き継ぐ履歴から引き継ぐ
 				if (vm.registrationHistoryType() === HistoryRes.HISTORY_TRANSFER) {
@@ -81,7 +81,7 @@ module nts.uk.com.view.cmm024.c {
 
 					newScheduleHistoryDto = new ScheduleHistoryDto(
 						startDate,
-						service.END_DATE, //endDate
+                        common.END_DATE, //endDate
 						personalInfoApprove,
 						personalInfoConfirm
 					);
@@ -107,17 +107,6 @@ module nts.uk.com.view.cmm024.c {
 				vm.$window.close();
 				return false;
 			});
-		}
-
-		initScheduleHistory() {
-			let vm = this,
-				scheduleHistory: ScheduleHistoryDto = vm.scheduleHistorySelected();
-
-			if (!nts.uk.util.isNullOrUndefined(scheduleHistory)) {
-				if (!nts.uk.util.isNullOrEmpty(scheduleHistory.startDate)) {
-					//vm.newStartDate(moment(scheduleHistory.startDate, 'YYYY/MM/DD').toDate());
-				}
-			}
 		}
 	}
 }
