@@ -37,13 +37,17 @@ module nts.uk.ui.at.ksu002.a {
             finish: KnockoutObservable<number | null>;
             required: KnockoutObservable<WORKTYPE_SETTING>;
         };
-        state: {
-            wtype: KnockoutObservable<EDIT_STATE>;
-            wtime: KnockoutObservable<EDIT_STATE>;
-            value: {
-                begin: KnockoutObservable<EDIT_STATE>;
-                finish: KnockoutObservable<EDIT_STATE>;
-            }
+        state: StateEdit;
+        comfirmed: KnockoutObservable<boolean>;
+        achievement: KnockoutObservable<boolean | null>;
+    }
+
+    export interface StateEdit {
+        wtype: KnockoutObservable<EDIT_STATE>;
+        wtime: KnockoutObservable<EDIT_STATE>;
+        value: {
+            begin: KnockoutObservable<EDIT_STATE>;
+            finish: KnockoutObservable<EDIT_STATE>;
         }
     }
 
@@ -299,6 +303,168 @@ module nts.uk.ui.at.ksu002.a {
                 const params = { dayData, context: bindingContext };
                 const component = { name, params };
 
+                const { data, className } = dayData;
+
+                if (data) {
+                    const { state } = data;
+
+                    ko.computed({
+                        read: () => {
+                            const comfirmed = ko.unwrap(data.comfirmed);
+
+                            if (comfirmed) {
+                                className.push(c.COLOR_CLASS.CONFIRMED);
+                            } else {
+                                className.remove(c.COLOR_CLASS.CONFIRMED);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    })
+
+                    ko.computed({
+                        read: () => {
+                            const achievement = ko.unwrap(data.achievement);
+
+                            if (achievement) {
+                                className.push(c.COLOR_CLASS.ACHIEVEMENT);
+                            } else {
+                                className.remove(c.COLOR_CLASS.ACHIEVEMENT);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const wtype = ko.unwrap(state.wtype);
+
+                            if (wtype === EDIT_STATE.IMPRINT) {
+                                className.push(c.COLOR_CLASS.IMPRINT_WTYPE);
+                            } else {
+                                className.remove(c.COLOR_CLASS.IMPRINT_WTYPE);
+                            }
+
+                            if (wtype === EDIT_STATE.REFLECT_APPLICATION) {
+                                className.push(c.COLOR_CLASS.REFLECTED_WTYPE);
+                            } else {
+                                className.remove(c.COLOR_CLASS.REFLECTED_WTYPE);
+                            }
+
+                            if (wtype === EDIT_STATE.HAND_CORRECTION_MYSELF) {
+                                className.push(c.COLOR_CLASS.SELF_ALTER_WTYPE);
+                            } else {
+                                className.remove(c.COLOR_CLASS.SELF_ALTER_WTYPE);
+                            }
+
+                            if (wtype === EDIT_STATE.HAND_CORRECTION_OTHER) {
+                                className.push(c.COLOR_CLASS.OTHER_ALTER_WTYPE);
+                            } else {
+                                className.remove(c.COLOR_CLASS.OTHER_ALTER_WTYPE);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const wtime = ko.unwrap(state.wtime);
+
+                            if (wtime === EDIT_STATE.IMPRINT) {
+                                className.push(c.COLOR_CLASS.IMPRINT_WTIME);
+                            } else {
+                                className.remove(c.COLOR_CLASS.IMPRINT_WTIME);
+                            }
+
+                            if (wtime === EDIT_STATE.REFLECT_APPLICATION) {
+                                className.push(c.COLOR_CLASS.REFLECTED_WTIME);
+                            } else {
+                                className.remove(c.COLOR_CLASS.REFLECTED_WTIME);
+                            }
+
+                            if (wtime === EDIT_STATE.HAND_CORRECTION_MYSELF) {
+                                className.push(c.COLOR_CLASS.SELF_ALTER_WTIME);
+                            } else {
+                                className.remove(c.COLOR_CLASS.SELF_ALTER_WTIME);
+                            }
+
+                            if (wtime === EDIT_STATE.HAND_CORRECTION_OTHER) {
+                                className.push(c.COLOR_CLASS.OTHER_ALTER_WTIME);
+                            } else {
+                                className.remove(c.COLOR_CLASS.OTHER_ALTER_WTIME);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const begin = ko.unwrap(state.value.begin);
+
+                            if (begin === EDIT_STATE.IMPRINT) {
+                                className.push(c.COLOR_CLASS.IMPRINT_WTIME_BEGIN);
+                            } else {
+                                className.remove(c.COLOR_CLASS.IMPRINT_WTIME_BEGIN);
+                            }
+
+                            if (begin === EDIT_STATE.REFLECT_APPLICATION) {
+                                className.push(c.COLOR_CLASS.REFLECTED_WTIME_BEGIN);
+                            } else {
+                                className.remove(c.COLOR_CLASS.REFLECTED_WTIME_BEGIN);
+                            }
+
+                            if (begin === EDIT_STATE.HAND_CORRECTION_MYSELF) {
+                                className.push(c.COLOR_CLASS.SELF_ALTER_WTIME_BEGIN);
+                            } else {
+                                className.remove(c.COLOR_CLASS.SELF_ALTER_WTIME_BEGIN);
+                            }
+
+                            if (begin === EDIT_STATE.HAND_CORRECTION_OTHER) {
+                                className.push(c.COLOR_CLASS.OTHER_ALTER_WTIME_BEGIN);
+                            } else {
+                                className.remove(c.COLOR_CLASS.OTHER_ALTER_WTIME_BEGIN);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const finish = ko.unwrap(state.value.finish);
+
+                            if (finish === EDIT_STATE.IMPRINT) {
+                                className.push(c.COLOR_CLASS.IMPRINT_WTIME_FINISH);
+                            } else {
+                                className.remove(c.COLOR_CLASS.IMPRINT_WTIME_FINISH);
+                            }
+
+                            if (finish === EDIT_STATE.REFLECT_APPLICATION) {
+                                className.push(c.COLOR_CLASS.REFLECTED_WTIME_FINISH);
+                            } else {
+                                className.remove(c.COLOR_CLASS.REFLECTED_WTIME_FINISH);
+                            }
+
+                            if (finish === EDIT_STATE.HAND_CORRECTION_MYSELF) {
+                                className.push(c.COLOR_CLASS.SELF_ALTER_WTIME_FINISH);
+                            } else {
+                                className.remove(c.COLOR_CLASS.SELF_ALTER_WTIME_FINISH);
+                            }
+
+                            if (finish === EDIT_STATE.HAND_CORRECTION_OTHER) {
+                                className.push(c.COLOR_CLASS.OTHER_ALTER_WTIME_FINISH);
+                            } else {
+                                className.remove(c.COLOR_CLASS.OTHER_ALTER_WTIME_FINISH);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+                }
+
                 ko.applyBindingsToNode(element, { component }, bindingContext);
 
                 return { controlsDescendantBindings: true };
@@ -423,7 +589,7 @@ module nts.uk.ui.at.ksu002.a {
 
                     ko.computed({
                         read: () => {
-                            model.required(!ko.unwrap(value.required));
+                            model.required(ko.unwrap(value.required) === WORKTYPE_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
                         },
                         owner: vm
                     });
@@ -454,7 +620,10 @@ module nts.uk.ui.at.ksu002.a {
 
                     vm.enable = ko.computed({
                         read: () => {
-                            return context.$editable() && !(data.comfirmed() || data.achievement());
+                            return context.$editable()
+                                && !(data.comfirmed() || data.achievement())
+                                && !!data.wtime.code()
+                                && data.value.required() === WORKTYPE_SETTING.REQUIRED;
                         },
                         owner: vm
                     })

@@ -14,6 +14,11 @@ module nts.uk.ui.calendar {
 		className: KnockoutObservableArray<string>;
 	}
 
+	export interface DataInfo<T = KnockoutObservable<string | null>> {
+		event: T;
+		holiday: T;
+	}
+
 	export interface DateRange {
 		begin: Date;
 		finish: Date;
@@ -36,19 +41,29 @@ module nts.uk.ui.calendar {
 		SATURDAY = 'saturday',
 		CONFIRMED = 'confirmed',
 		SELF_ALTER = 'self-alter',
+		SELF_ALTER_WTYPE = 'self-alter-wtype',
+		SELF_ALTER_WTIME = 'self-alter-wttime',
 		OTHER_ALTER = 'other-alter',
+		OTHER_ALTER_WTYPE = 'other-alter-wtype',
+		OTHER_ALTER_WTIME = 'other-alter-wtime',
+		SELF_ALTER_WTIME_BEGIN = 'self-alter-wtime-begin',
+		OTHER_ALTER_WTIME_BEGIN = 'other-alter-wtime-begin',
+		SELF_ALTER_WTIME_FINISH = 'self-alter-wtime-finish',
+		OTHER_ALTER_WTIME_FINISH = 'other-alter-wtime-finish',
 		REFLECTED = 'reflected',
+		REFLECTED_WTYPE = 'reflected-wtype',
+		REFLECTED_WTIME = 'reflected-wtime',
+		REFLECTED_WTIME_BEGIN = 'reflected-wtime-begin',
+		REFLECTED_WTIME_FINISH = 'reflected-wtime-finish',
 		DIFF_MONTH = 'diff-month',
 		SAME_MONTH = 'same-month',
 		READONLY = 'readonly',
-		ACHIEVEMENT = 'achievement'
-	}
-
-	export interface DataInfo<T = KnockoutObservable<string | null>> {
-		holiday: T;
-		event: T;
-		comfirmed: KnockoutObservable<boolean>;
-		achievement: KnockoutObservable<boolean | null>;
+		ACHIEVEMENT = 'achievement',
+		IMPRINT = 'imprint',
+		IMPRINT_WTYPE = 'imprint-wtype',
+		IMPRINT_WTIME = 'imprint-wtime',
+		IMPRINT_WTIME_BEGIN = 'imprint-wtime-begin',
+		IMPRINT_WTIME_FINISH = 'imprint-wtime-finsh',
 	}
 
 	const D_FORMAT = 'YYYYMM';
@@ -314,7 +329,7 @@ module nts.uk.ui.calendar {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const dayData = ko.unwrap(valueAccessor());
 
-			const { date, data, inRange, className, binding } = dayData;
+			const { date, inRange, className, binding } = dayData;
 
 			if (moment(date).isSame(new Date(), 'date')) {
 				className.push(COLOR_CLASS.CURRENT);
@@ -324,36 +339,6 @@ module nts.uk.ui.calendar {
 				className.push(COLOR_CLASS.DIFF_MONTH);
 			} else {
 				className.push(COLOR_CLASS.SAME_MONTH);
-
-				if (data) {
-					ko.computed({
-						read: () => {
-							const comfirmed = ko.unwrap(data.comfirmed);
-
-							if (comfirmed) {
-								className.push(COLOR_CLASS.CONFIRMED);
-							} else {
-								className.remove(COLOR_CLASS.CONFIRMED);
-							}
-						},
-						owner: dayData,
-						disposeWhenNodeIsRemoved: element
-					})
-
-					ko.computed({
-						read: () => {
-							const achievement = ko.unwrap(data.achievement);
-
-							if (achievement) {
-								className.push(COLOR_CLASS.ACHIEVEMENT);
-							} else {
-								className.remove(COLOR_CLASS.ACHIEVEMENT);
-							}
-						},
-						owner: dayData,
-						disposeWhenNodeIsRemoved: element
-					});
-				}
 			}
 
 			if (binding) {

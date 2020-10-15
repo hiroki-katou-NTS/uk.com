@@ -104,6 +104,9 @@ module nts.uk.ui.at.ksu002.a {
 									const exits = _.find(clones, c => $raw.date.isSame(c.date, 'date'));
 
 									if (exits) {
+										const { IMPRINT } = EDIT_STATE;
+										const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
+
 										exits.data = {
 											$raw: {
 												...$raw,
@@ -128,11 +131,11 @@ module nts.uk.ui.at.ksu002.a {
 											achievement: ko.observable(arch === NO ? null : $raw.achievements),
 											state: {
 												value: {
-													begin: ko.observable(EDIT_STATE.IMPRINT),
-													finish: ko.observable(EDIT_STATE.IMPRINT),
+													begin: ko.observable(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT),
+													finish: ko.observable(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT),
 												},
-												wtime: ko.observable(EDIT_STATE.IMPRINT),
-												wtype: ko.observable(EDIT_STATE.IMPRINT)
+												wtime: ko.observable(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT),
+												wtype: ko.observable(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT)
 											}
 										};
 
@@ -240,6 +243,7 @@ module nts.uk.ui.at.ksu002.a {
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
 				if (current && !current.data.achievement()) {
+					const cloned: DayData = ko.toJS(current);
 					/**
 					 * Required & deferred & wtime exist ?
 					 */
@@ -273,6 +277,12 @@ module nts.uk.ui.at.ksu002.a {
 									data.value.finish(wtime.value.finish);
 								}
 							})
+							.then(() => {
+								const { state } = current.data;
+								const changed: DayData = ko.toJS(current);
+
+								vm.compare(cloned, changed, state);
+							})
 							// save to memento after change data
 							.then(() => vm.memento(current, preview));
 					}
@@ -287,6 +297,8 @@ module nts.uk.ui.at.ksu002.a {
 			const preview = _.find(wrap, f => moment(f.date).isSame(current.date, 'date'));
 
 			if (preview) {
+				const cloned: DayData = ko.toJS(preview);
+
 				$.Deferred()
 					.resolve(true)
 					// save to memento before change data
@@ -303,6 +315,12 @@ module nts.uk.ui.at.ksu002.a {
 
 						data.value.begin(value.begin);
 						data.value.finish(value.finish);
+					})
+					.then(() => {
+						const { state } = preview.data;
+						const changed: DayData = ko.toJS(preview);
+
+						vm.compare(cloned, changed, state);
 					});
 			}
 		}
@@ -319,6 +337,24 @@ module nts.uk.ui.at.ksu002.a {
 				|| c.data.value.begin !== p.data.value.begin
 				|| c.data.value.finish !== p.data.value.finish) {
 				vm.schedules.memento({ current, preview });
+			}
+		}
+
+		private compare(cloned: DayData, changed: DayData, state: StateEdit) {
+			if (changed.data.wtype.code !== cloned.data.wtype.code) {
+				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
+			}
+
+			if (changed.data.wtime.code !== cloned.data.wtime.code) {
+				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+			}
+
+			if (changed.data.value.begin !== cloned.data.value.begin) {
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+			}
+
+			if (changed.data.value.finish !== cloned.data.value.finish) {
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 		}
 	}
