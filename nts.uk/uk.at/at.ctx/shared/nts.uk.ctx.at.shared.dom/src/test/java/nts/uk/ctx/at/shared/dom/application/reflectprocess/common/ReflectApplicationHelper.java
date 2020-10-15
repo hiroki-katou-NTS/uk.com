@@ -18,9 +18,11 @@ import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
+import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
@@ -74,6 +76,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
 
@@ -252,6 +255,12 @@ public class ReflectApplicationHelper {
 				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
 	}
 
+	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre, GeneralDate date) {
+
+		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(date), "1",
+				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+	}
+
 	public static ApplicationShare createAppShare(PrePostAtrShare pre) {
 		return createAppShare(ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION, pre);
 	}
@@ -369,4 +378,18 @@ public class ReflectApplicationHelper {
 				new WorkInformation("001", "001"), CalculationState.No_Calculated, NotUseAttribute.Not_use,
 				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
 	}
+
+	public static  AppRecordImageShare createAppRecord() {
+		return createAppRecord(EngraveShareAtr.ATTENDANCE);
+	}
+	
+	public static  AppRecordImageShare createAppRecord(EngraveShareAtr atr) {
+
+		ApplicationShare app = ReflectApplicationHelper.createAppShare(ApplicationTypeShare.STAMP_APPLICATION,
+				PrePostAtrShare.POSTERIOR, GeneralDate.ymd(2020, 1, 1));
+
+		return new AppRecordImageShare(atr, new AttendanceClock(600),
+				Optional.of(GoingOutReason.PUBLIC), app);
+	}
+	
 }

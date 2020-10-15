@@ -29,12 +29,13 @@ public class ReflectApplicationHelper {
 		return createApp(ApplicationType.STAMP_APPLICATION, pre);
 	}
 
-	public static Application createAppWithReason(ApplicationType appType, int standCode, String appReason) {
+	public static Application createAppWithReason(ApplicationType appType, Integer standCode, String appReason) {
 		Application app = new Application(1, "1", PrePostAtr.POSTERIOR, "1", appType,
 				new ApplicationDate(GeneralDate.today()), "1", GeneralDateTime.now(),
 				new ReflectionStatus(new ArrayList<>()));
-		app.setOpAppStandardReasonCD(Optional.of(new AppStandardReasonCode(standCode)));
-		app.setOpAppReason(Optional.of(new AppReason(appReason)));
+		app.setOpAppStandardReasonCD(
+				Optional.ofNullable(standCode == null ? null : new AppStandardReasonCode(standCode)));
+		app.setOpAppReason(Optional.ofNullable(appReason == null ? null : new AppReason(appReason)));
 		return app;
 	}
 

@@ -76,7 +76,7 @@ public class ReflectTimeStamp {
 	}
 
 	public static boolean groupAtt(EngraveShareAtr atr) {
-		if (atr == EngraveShareAtr.ATTENDANCE || atr == EngraveShareAtr.EARLY
+		if (atr == EngraveShareAtr.ATTENDANCE  || atr == EngraveShareAtr.EARLY
 				|| atr == EngraveShareAtr.HOLIDAY) {
 			return true;
 		}

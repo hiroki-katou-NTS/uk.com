@@ -26,8 +26,8 @@ public class GetReflectOutGoFrameNumber {
 			}
 
 			// 外出と戻りの時刻を比較する
-			int goOutBefore = 0, goOutAfter = 0;
-			int attBefore = 0, attAfter = 0;
+			int goOutBefore = Integer.MIN_VALUE, goOutAfter =  Integer.MIN_VALUE;
+			int attBefore =  Integer.MIN_VALUE, attAfter =  Integer.MIN_VALUE;
 
 			if (after.getGoOut().isPresent() && after.getGoOut().get().getStamp().isPresent()) {
 				goOutAfter = after.getGoOut().get().getStamp().get().getAfterRoundingTime().v();

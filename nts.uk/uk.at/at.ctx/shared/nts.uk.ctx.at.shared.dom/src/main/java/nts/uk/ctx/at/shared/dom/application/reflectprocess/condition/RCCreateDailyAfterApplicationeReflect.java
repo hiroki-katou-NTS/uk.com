@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.workrecord.RCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -34,7 +34,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 
 	public static DailyAfterAppReflectResult process(Require require, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
-		String companyId = AppContexts.user().companyId();
+		String companyId = require.getCId();
 		// TODO: typeDaikyu chua co domain
 		ApplicationReflect domainSetReflect = GetDomainReflectModelApp.process(require, companyId,
 				application.getAppType(), Optional.empty());
@@ -66,8 +66,11 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
-			itemIds.addAll(RCReflectWorkStampApp.reflect(require, (AppStampShare) application, dailyApp,
-					(ReflectAppStamp) domainSetReflect));
+			if (!application.getOpStampRequestMode().isPresent()
+					|| application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ADDITIONAL) {
+				itemIds.addAll(RCReflectWorkStampApp.reflect(require, (AppStampShare) application, dailyApp,
+						(ReflectAppStamp) domainSetReflect));
+			}
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// TODO: 8：時間休暇申請を反映する

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,7 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.testing.assertion.NtsAssert.Invoke;
 import nts.arc.time.GeneralDate;
@@ -137,22 +139,76 @@ public class ReflectApplicationReasonTest {
 
 	}
 
-	//AとBから値と勤怠項目IDを作成します
+	// 反映前の申請理由情報と申請から値と勤怠項目IDを作成します
 	@Test
 	public void testCreateId() {
-		// private static Map<Integer, String>
-		// createMap(List<ReasonApplicationDailyResult> apps, Application application) {
 
-		List<ReasonApplicationDailyResult> apps = Arrays.asList(new ReasonApplicationDailyResult("1",
-				GeneralDate.ymd(2020, 05, 01),
-				new ApplicationTypeReason(ApplicationType.ABSENCE_APPLICATION, Optional.empty()), PrePostAtr.POSTERIOR,
-				new ApplicationReasonInfo(new AppStandardReasonCode(1), new AppReason("AA"))));
-		Invoke.staticMethod(ReflectApplicationReason.class, "createMap",  null);
+		// 申請.申請理由<>null の場合 → 値 ＝ 反映前の申請理由情報.申請理由
+		// 事前事後区分＝事前の場合 → 勤怠項目ID ← 下記の勤怠項目（869~881）の該当する勤怠項目ID
+		List<ReasonApplicationDailyResult> apps = Arrays
+				.asList(create(GeneralDate.ymd(2020, 05, 01), ApplicationType.ABSENCE_APPLICATION, // 休暇申請
+						PrePostAtr.PREDICT, // 事後
+						11, "AA"));
+
+		Application application = ReflectApplicationHelper.createAppWithReason(ApplicationType.ABSENCE_APPLICATION,
+				null, "1111");
+		Map<Integer, String> actualResult = Invoke.staticMethod(ReflectApplicationReason.class, "createMap", apps,
+				application);
+		// 勤怠項目ID: 873, 値 = "AA"
+		assertTrue(actualResult.keySet().contains(873));
+		assertTrue(actualResult.values().contains("AA"));
+
+		// 申請.申請理由<>null の場合 → 値 ＝ 反映前の申請理由情報.申請理由
+		// 事前事後区分＝事後の場合 → 勤怠項目ID ← 下記の勤怠項目（895~907）の該当する勤怠項目ID
+		apps = Arrays.asList(create(GeneralDate.ymd(2020, 05, 01), ApplicationType.ABSENCE_APPLICATION, // 休暇申請
+				PrePostAtr.POSTERIOR, // 事後
+				11, "AA"));
+
+		application = ReflectApplicationHelper.createAppWithReason(ApplicationType.ABSENCE_APPLICATION, null, "1111");
+		actualResult = Invoke.staticMethod(ReflectApplicationReason.class, "createMap", apps, application);
+		// 勤怠項目ID: 899, 値 = "AA"
+		assertTrue(actualResult.keySet().contains(899));
+		assertTrue(actualResult.values().contains("AA"));
+
+		// 申請..定型理由コード<>null の場合 → 値 ＝ 反映前の申請理由情報.定型
+		// 事前事後区分＝事前の場合 → 勤怠項目ID ← 下記の勤怠項目（882~894）の該当する勤怠項目ID
+		apps = Arrays.asList(create(GeneralDate.ymd(2020, 05, 01), ApplicationType.OVER_TIME_APPLICATION, // 残業申請
+				1, // 残業申請区分=通常残業
+				PrePostAtr.PREDICT, // 事前
+				10, "AA"));
+
+		application = ReflectApplicationHelper.createAppWithReason(ApplicationType.OVER_TIME_APPLICATION, 1, null);
+		actualResult = Invoke.staticMethod(ReflectApplicationReason.class, "createMap", apps, application);
+		// 勤怠項目ID: 899, 値 = 10
+		assertTrue(actualResult.keySet().contains(883));
+		assertTrue(actualResult.values().contains("10"));
+
+		// 申請..定型理由コード<>null の場合 → 値 ＝ 反映前の申請理由情報.定型
+		// 事前事後区分＝事後の場合 → 勤怠項目ID ← 下記の勤怠項目（908~920）の該当する勤怠項目ID
+		apps = Arrays.asList(create(GeneralDate.ymd(2020, 05, 01), ApplicationType.OVER_TIME_APPLICATION, // 残業申請
+				1, // 残業申請区分=通常残業
+				PrePostAtr.POSTERIOR, // 事後
+				10, "AA"));
+
+		application = ReflectApplicationHelper.createAppWithReason(ApplicationType.OVER_TIME_APPLICATION, 1, null);
+		actualResult = Invoke.staticMethod(ReflectApplicationReason.class, "createMap", apps, application);
+		// 勤怠項目ID: 909, 値 = 10
+		assertTrue(actualResult.keySet().contains(909));
+		assertTrue(actualResult.values().contains("10"));
+
 	}
 
 	private ReasonApplicationDailyResult create(GeneralDate date, ApplicationType appType, PrePostAtr prePostAtr,
 			Integer code, String appReason) {
-		return new ReasonApplicationDailyResult("1", date, new ApplicationTypeReason(appType, Optional.empty()),
+		return create(date, appType, null, prePostAtr, code, appReason);
+	}
+
+	private ReasonApplicationDailyResult create(GeneralDate date, ApplicationType appType, Integer overType,
+			PrePostAtr prePostAtr, Integer code, String appReason) {
+		return new ReasonApplicationDailyResult("1", date,
+				new ApplicationTypeReason(appType,
+						Optional.ofNullable(
+								overType == null ? null : EnumAdaptor.valueOf(overType, OvertimeAppAtr.class))),
 				prePostAtr, new ApplicationReasonInfo(new AppStandardReasonCode(code), new AppReason(appReason)));
 	}
 }

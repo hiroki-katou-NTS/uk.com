@@ -9,7 +9,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -23,7 +22,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -34,9 +32,8 @@ public class GetTargetDateRecordApplication {
 
 	public static Pair<Optional<GeneralDate>, Optional<Stamp>> getTargetDate(Require require,
 			AppRecordImageShare applicaton) {
-		String contractCode = AppContexts.user().contractCode();
 		// 打刻カード番号を取得する
-		List<StampCard> lstCard = require.getLstStampCardBySidAndContractCd(contractCode, applicaton.getEmployeeID());
+		List<StampCard> lstCard = require.getLstStampCardBySidAndContractCd(applicaton.getEmployeeID());
 
 		if (lstCard.isEmpty())
 			return Pair.of(Optional.empty(), Optional.empty());
@@ -46,7 +43,7 @@ public class GetTargetDateRecordApplication {
 			appDate.addDays(1);
 			time -= 1440;
 		}
-		Stamp stamp = new Stamp(new ContractCode(contractCode), lstCard.get(0).getStampNumber(),
+		Stamp stamp = new Stamp(lstCard.get(0).getContractCd(), lstCard.get(0).getStampNumber(),
 				GeneralDateTime.localDateTime(
 						LocalDateTime.of(appDate.year(), appDate.month(), appDate.day(), time / 60, time % 60)),
 				new Relieve(AuthcMethod.ID_AUTHC, StampMeans.NAME_SELECTION),
@@ -65,6 +62,6 @@ public class GetTargetDateRecordApplication {
 
 		// 打刻カード番号を取得する
 		// StampCardRepository
-		List<StampCard> getLstStampCardBySidAndContractCd(String contractCd, String sid);
+		List<StampCard> getLstStampCardBySidAndContractCd(String sid);
 	}
 }

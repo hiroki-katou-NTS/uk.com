@@ -29,12 +29,6 @@ public class ReflectGoOutReturn {
 			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 
-		// 日別勤怠(計算用work）に日別勤怠(work）をコピーする
-		IntegrationOfDaily dailyCopy = converter.setData(dailyRecordApp.getDomain()).toDomain();
-
-		// 打刻を反映する
-		require.reflectStamp(stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy);
-
 		// 反映前の日別勤怠(work）.外出時間帯を保持する
 		Optional<OutingTimeOfDailyAttd> outingTimeBefore = dailyRecordApp.getOutingTime();
 
@@ -44,17 +38,25 @@ public class ReflectGoOutReturn {
 						outingTimeBefore.orElseGet(null))
 				.toDomain().getOutingTime();
 
+		
+		converter = require.createDailyConverter();
+		// 日別勤怠(計算用work）に日別勤怠(work）をコピーする
+		IntegrationOfDaily dailyCopy = converter.setData(dailyRecordApp.getDomain()).toDomain();
+
+		// 打刻を反映する
+		require.reflectStamp(stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy);
+
 		// 日別勤怠(work）に日別勤怠(計算用work）の外出時間帯をコピーする
 		converter = require.createDailyConverter();
-		Optional<OutingTimeOfDailyAttd> outingTimeCopyFromCopy = converter.setData(dailyCopy).toDomain()
+		Optional<OutingTimeOfDailyAttd> outingTimeCopyAfter = converter.setData(dailyCopy).toDomain()
 				.getOutingTime();
 
-		if ((!outingTimeCopyFromBefore.isPresent() && outingTimeCopyFromCopy.isPresent())
-				|| (outingTimeCopyFromBefore.isPresent() && !outingTimeCopyFromCopy.isPresent())) {
+		if ((!outingTimeCopyFromBefore.isPresent() && outingTimeCopyAfter.isPresent())
+				|| (outingTimeCopyFromBefore.isPresent() && !outingTimeCopyAfter.isPresent())) {
 			return new ReflectTimeStampResult();
 		}
 		// 反映した外出枠NOを取得する
-		val result = GetReflectOutGoFrameNumber.process(outingTimeCopyFromCopy.get().getOutingTimeSheets(),
+		val result = GetReflectOutGoFrameNumber.process(outingTimeCopyAfter.get().getOutingTimeSheets(),
 				outingTimeBefore.get().getOutingTimeSheets());
 		return new ReflectTimeStampResult(dailyRecordApp.getDomain(), result.isReflect(), new WorkNo(result.getNo()));
 	}

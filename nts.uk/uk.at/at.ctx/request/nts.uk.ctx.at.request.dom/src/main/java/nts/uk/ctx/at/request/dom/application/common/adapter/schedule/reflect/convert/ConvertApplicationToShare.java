@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
@@ -129,30 +130,37 @@ public class ConvertApplicationToShare {
 			return appShare;
 
 		case STAMP_APPLICATION:
-			// AppStampShare
-			AppStamp appStamp = (AppStamp) application;
-			return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
-				return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()),
-						x.getTimeOfDay(),
-						x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), 
-						x.getAppStampGoOutAtr());
-			}).collect(Collectors.toList()), // 時刻
+			if (!application.getOpStampRequestMode().isPresent()
+					|| application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
+				// AppStampShare
+				AppStamp appStamp = (AppStamp) application;
+				return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
+					return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
+							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr());
+				}).collect(Collectors.toList()), // 時刻
 
-					appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
-							.collect(Collectors.toList()), // 時刻の取消
+						appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
+								.collect(Collectors.toList()), // 時刻の取消
 
-					appStamp.getListTimeStampAppOther().stream().map(x -> {
-						return new TimeStampAppOtherShare(new DestinationTimeZoneAppShare(
-								x.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
-								x.getDestinationTimeZoneApp().getEngraveFrameNo()), x.getTimeZone());
-					}).collect(Collectors.toList()), // 時間帯
+						appStamp.getListTimeStampAppOther().stream().map(x -> {
+							return new TimeStampAppOtherShare(new DestinationTimeZoneAppShare(
+									x.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
+									x.getDestinationTimeZoneApp().getEngraveFrameNo()), x.getTimeZone());
+						}).collect(Collectors.toList()), // 時間帯
 
-					appStamp.getListDestinationTimeZoneApp().stream().map(x -> {
-						return new DestinationTimeZoneAppShare(
-								TimeZoneStampClassificationShare.valueOf(x.getTimeZoneStampClassification().value),
-								x.getEngraveFrameNo());
-					}).collect(Collectors.toList()), // 時間帯の取消
-					appShare);
+						appStamp.getListDestinationTimeZoneApp().stream().map(x -> {
+							return new DestinationTimeZoneAppShare(
+									TimeZoneStampClassificationShare.valueOf(x.getTimeZoneStampClassification().value),
+									x.getEngraveFrameNo());
+						}).collect(Collectors.toList()), // 時間帯の取消
+						appShare);
+			} else {
+				// レコーダイメージ申請
+				AppRecordImage appImg = (AppRecordImage) application;
+
+				return new AppRecordImageShare(EngraveShareAtr.valueOf(appImg.getAppStampCombinationAtr().value),
+						appImg.getAttendanceTime(), appImg.getAppStampGoOutAtr(), appShare);
+			}
 
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// TODO: wait new domain
@@ -171,12 +179,7 @@ public class ConvertApplicationToShare {
 			return appShare;
 
 		default:
-			// レコーダイメージ申請
-			AppRecordImage appImg = (AppRecordImage) application;
-
-			return new AppRecordImageShare(
-					EngraveShareAtr.valueOf(appImg.getAppStampCombinationAtr().value),
-					appImg.getAttendanceTime(), appImg.getAppStampGoOutAtr(), appShare);
+			return null;
 		}
 	}
 

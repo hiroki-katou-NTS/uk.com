@@ -96,11 +96,11 @@ public class ReflectApplicationReason {
 									: true))
 					.collect(Collectors.toList());
 			if (application.getOpAppReason().isPresent()) {
-				result.put(conts.get(0).getItemId(), application.getOpAppReason().get().v());
+				result.put(conts.get(0).getItemId(), app.getReasonInfo().getOpAppReason().v());
 			} else {
 				result.put(conts.get(1).getItemId(),
 						application.getOpAppStandardReasonCD().isPresent()
-								? String.valueOf(application.getOpAppStandardReasonCD().get().v())
+								? String.valueOf(app.getReasonInfo().getStandardReasonCode().v())
 								: "");
 			}
 		}

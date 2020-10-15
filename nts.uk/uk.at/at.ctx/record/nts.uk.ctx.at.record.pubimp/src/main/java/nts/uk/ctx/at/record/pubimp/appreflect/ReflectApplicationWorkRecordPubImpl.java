@@ -113,11 +113,12 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Override
 	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
 			ReflectStatusResultShare reflectStatus) {
-		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), stampCardRepository,
-				correctionAttendanceRule, workTypeRepo, workTimeSettingRepository, workTimeSettingService,
-				basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd, checkRangeReflectLeavingWork,
-				temporarilyReflectStampDailyAttd, dailyRecordShareFinder, convertDailyRecordToAd,
-				calculateDailyRecordServiceCenter, dailyRecordAdUpService, requestSettingAdapter);
+		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
+				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
+				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
+				checkRangeReflectLeavingWork, temporarilyReflectStampDailyAttd, dailyRecordShareFinder,
+				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
+				requestSettingAdapter);
 		return ReflectApplicationWorkRecord.process(impl, (ApplicationShare) application, date, reflectStatus);
 	}
 
@@ -125,6 +126,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	public class RequireImpl implements ReflectApplicationWorkRecord.Require {
 
 		private final String companyId;
+
+		private final String contractCode;
 
 		private final StampCardRepository stampCardRepository;
 
@@ -157,8 +160,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		private final RequestSettingAdapter requestSettingAdapter;
 
 		@Override
-		public List<StampCard> getLstStampCardBySidAndContractCd(String contractCd, String sid) {
-			return stampCardRepository.getLstStampCardBySidAndContractCd(contractCd, sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return stampCardRepository.getLstStampCardBySidAndContractCd(contractCode, sid);
 		}
 
 		@Override
@@ -199,7 +202,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo getTimeReflect(String companyId, String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo getTimeReflect(String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
 			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
 		}
@@ -221,7 +224,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				IntegrationOfDaily integrationOfDaily) {
 			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily);
 		}
-		
+
 		@Override
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
 			// TODO: Auto-generated method stub
