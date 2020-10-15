@@ -217,6 +217,12 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	
 	@POST
+	@Path("appSetM")
+	public ApproverRegisterSetDto getAppUnitM(StartQCommand command) {
+		return applicationUseAtrFinder.getStartM(command);
+	}
+	
+	@POST
 	@Path("checkRegisterQ")
 	public void checkRegisterQ(RegisterQCommand command){
 		applicationUseAtrFinder.checkRegisterQ(command);

@@ -214,7 +214,7 @@ export module viewmodel {
                  nts.uk.ui.block.clear();   
             }).fail(function(res: any){
                 nts.uk.ui.dialog.alert({ messageId: res.messageId || res.message});
-                 nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
             });
         }
         findTypeSelected(id: number){

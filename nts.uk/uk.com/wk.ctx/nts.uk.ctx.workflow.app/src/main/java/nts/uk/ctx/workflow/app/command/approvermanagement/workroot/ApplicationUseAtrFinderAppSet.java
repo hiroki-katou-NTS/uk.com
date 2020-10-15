@@ -16,6 +16,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
+import nts.uk.ctx.workflow.dom.service.ApprovalSettingService;
 import nts.uk.ctx.workflow.dom.service.SettingUseUnitRegisterService;
 import nts.uk.ctx.workflow.dom.service.SettingUseUnitService;
 import nts.uk.ctx.workflow.dom.service.SettingUseUnitServiceImp;
@@ -37,6 +38,8 @@ public class ApplicationUseAtrFinderAppSet {
 	@Inject 
 	private SettingUseUnitRegisterService settingUseUnitRegisterService;
 	
+	@Inject
+	private ApprovalSettingService approvalSettingService;
 	
 	public ApproverRegisterSetDto getAppSet(String companyId){
 		Optional<ApprovalSetting> approvalSetting = approvalSettingRepository.getApprovalByComId(companyId);
@@ -48,7 +51,13 @@ public class ApplicationUseAtrFinderAppSet {
 	}
 	public SettingUseUnitDto getStartQ(StartQCommand command) {
 		SettingUseUnitOutput setting = settingUseUnitService.start(command.companyId, command.systemAtr);
+		
 		return SettingUseUnitDto.fromDomain(setting);
+	}
+	
+	public ApproverRegisterSetDto getStartM(StartQCommand command) {
+		
+		return ApproverRegisterSetDto.fromDomain(approvalSettingService.getSettingUseUnit(command.companyId, command.systemAtr));
 	}
 	
 	public void checkRegisterQ(RegisterQCommand command) {
