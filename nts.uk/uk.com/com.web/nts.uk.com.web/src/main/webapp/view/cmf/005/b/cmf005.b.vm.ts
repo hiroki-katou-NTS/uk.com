@@ -801,7 +801,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     public gotoscreenF(): void {
       let self = this;
       let params = {};
-      console.log(self.employeeDeletionList());
+      
+      console.log(self.selectedEmployeeCode());
       params.delId = self.delId();
       params.deleteSetName = self.deleteSetName();
       params.dateValue = self.dateValue();
@@ -843,6 +844,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     createManualSettings(): ManualSettingModal {
       const self = this;
+      if (self.employeeDeletionList().length !== self.selectedEmployeeCode().length) {
+        self.employeeDeletionList(_.filter(self.employeeDeletionList(), e => _.includes(self.selectedEmployeeCode(), e.code)));
+      }
       return new ManualSettingModal(self.isExistCompressPasswordFlg() ? 1 : 0, self.deleteSetName(), moment.utc().toISOString(), self.passwordForCompressFile(),
         moment.utc().toISOString(), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
         moment.utc(self.monthValue().endDate, 'YYYY/MM').toISOString(), moment.utc(self.monthValue().startDate, 'YYYY/MM').toISOString(),
@@ -852,7 +856,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
 
     private saveManualSetting(): DelManualSettingModal {
       let self = this;
-      console.log(self.employeeDeletionList())
+      if (self.employeeDeletionList().length !== self.selectedEmployeeCode().length) {
+        self.employeeDeletionList(_.filter(self.employeeDeletionList(), e => _.includes(self.selectedEmployeeCode(), e.code)));
+      }
       return new DelManualSettingModal(self.deleteSetName(), self.supplementExplanation(), self.systemType(),
         moment.utc(self.referenceDate, 'YYYY/MM/DD').toISOString(), moment.utc().toISOString(),
         moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').toISOString(),

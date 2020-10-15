@@ -92,7 +92,7 @@
         <button class="large functional-button" data-bind="click: duplicate, enable: !isNewMode()"
           tabindex="3">#{i18n.getText('CMF005_77')}</button>
         <!-- C7_4 登録ボタン -->
-        <button class="large functional-button danger" data-bind="click: deletePattern, enable: saveFormatEnabled &amp;&amp; !isNewMode()"
+        <button class="large functional-button danger" data-bind="click: deletePattern, enable: saveFormatEnabled() &amp;&amp; !isNewMode()"
           tabindex="4">#{i18n.getText('CMF005_78')}</button>
       </div>
       <div id="contents-area">
