@@ -105,7 +105,7 @@
 																					 enable: true,
 																					 attr: {tabindex:43}" />
 															<span class="box"></span>
-															<span class="label">定型選択</span>
+															<span class="label">#{i18n.getText('KWR001_13')}</span>
 														</label>
 													</span>
 												</td>
@@ -122,6 +122,7 @@
 															value: selectedCodeA7_3,
 															optionsText: 'name',
 															width: 200,
+															required: true,
 															enable: enableA7_2,
 															columns: [
 																{ prop: 'code', length: 2 },
@@ -150,13 +151,13 @@
 																					 enable: freeSettingEnabled,
 																					 attr: {tabindex:43}" />
 															<span class="box"></span>
-															<span class="label">自由設定</span>
+															<span class="label">#{i18n.getText('KWR001_124')}</span>
 														</label>
 													</span>
 												</td>
 												<td>
 														<!-- A7_9 -->
-													<div tabindex="10" id="combo-box" data-bind="ntsComboBox: {
+													<div tabindex="10" id="combo-box-free-setting" data-bind="ntsComboBox: {
 														name: '#{i18n.getText('KWR001_124')}',
 														options: outputItemDailyWorkSchedules,
 														optionsValue: 'code',
@@ -164,6 +165,7 @@
 														value: selectedCodeA7_8,
 														optionsText: 'name',
 														width: 200,
+														required: true,
 														enable: enableA7_8,
 														columns: [
 															{ prop: 'code', length: 2 },

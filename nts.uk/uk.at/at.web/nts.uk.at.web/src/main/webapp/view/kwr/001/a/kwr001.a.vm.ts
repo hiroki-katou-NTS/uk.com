@@ -174,6 +174,8 @@ module nts.uk.at.view.kwr001.a {
                 self.selectionType.subscribe((value) => {
                     self.enableA7_2(value === 0);
                     self.enableA7_8(value === 1);
+                    nts.uk.ui.errors.clearAll();
+
                 });
                 
                 // start set variable for CCG001
@@ -702,10 +704,18 @@ module nts.uk.at.view.kwr001.a {
             
             private validateMinimumOneChecked(): boolean {
                 let self = this;
-                
-                $('#combo-box').ntsError('check');
-                if (nts.uk.ui.errors.hasError()) {
-                    return false;
+                if (self.selectionType() === ItemSelectionType.STANDARD_SELECTION) {
+                    $('#combo-box').ntsError('check');
+                    if (nts.uk.ui.errors.hasError()) {
+                        return false;
+                    }
+                }
+
+                if (self.selectionType() === ItemSelectionType.FREE_SETTING) {
+                    $('#combo-box-free-setting').ntsError('check');
+                    if (nts.uk.ui.errors.hasError()) {
+                        return false;
+                    }
                 }
                 
                 if (self.selectedDataOutputType() == 0) {
