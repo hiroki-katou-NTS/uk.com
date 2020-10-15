@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 public class KfnmtRptYrRecDispContPk implements Serializable {
     public static final long serialVersionUID = 1L;
 

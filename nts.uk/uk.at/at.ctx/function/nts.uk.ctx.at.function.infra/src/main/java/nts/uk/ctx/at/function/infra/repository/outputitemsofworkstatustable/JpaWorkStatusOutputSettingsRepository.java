@@ -7,6 +7,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalculationClassification;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispCont;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecItem;
@@ -17,6 +19,7 @@ import javax.ejb.Stateless;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaWorkStatusOutputSettingsRepository extends JpaRepository implements WorkStatusOutputSettingsRepository {
@@ -110,18 +113,23 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
     @Override
     public WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId) {
-        // TODO
-        this.queryProxy().query(FIND_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
+        val itemList = this.queryProxy().query(FIND_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain).get();
+                .setParameter("settingId", settingId).getList();
 
-        this.queryProxy().query(FIND_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
+        val outputItem = this.queryProxy().query(FIND_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain).get();
+                .setParameter("settingId", settingId).getList(JpaWorkStatusOutputSettingsRepository::toDomain);
+        outputItem.forEach(e->{
+            e.setSelectedAttendanceItemList(itemList.stream().filter(i->i.pk.itemPos==e.getRank())
+                    .map(JpaWorkStatusOutputSettingsRepository::toDomain).collect(Collectors.toList()));
+        });
 
-        return this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
+        val rs = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain).get();
+        rs.setOutputItem(outputItem);
+        return rs;
     }
 
     @Override
@@ -244,12 +252,13 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 null
         );
     }
+
     private static OutputItem toDomain(KfnmtRptWkRecItem entity) {
         return new OutputItem(
-                Integer.parseInt(entity.pk.iD),
+                entity.pk.itemPos,
                 new FormOutputItemName(entity.itemName),
                 entity.itemIsPrintEd,
-                null,
+                EnumAdaptor.valueOf(entity.itemType, IndependentCalculationClassification.class),
                 null,
                 EnumAdaptor.valueOf(entity.itemAtribute, CommonAttributesOfForms.class),
                 null
@@ -257,7 +266,10 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     }
 
     private static OutputItemDetailSelectionAttendanceItem toDomain(KfnmtRptWkRecDispCont entity) {
-//        return new OutputItemDetailSelectionAttendanceItem();
-        return null;
+        return new OutputItemDetailSelectionAttendanceItem(
+                EnumAdaptor.valueOf(entity.operator, OperatorsCommonToForms.class),
+                entity.pk.attendanceId
+        );
+
     }
 }
