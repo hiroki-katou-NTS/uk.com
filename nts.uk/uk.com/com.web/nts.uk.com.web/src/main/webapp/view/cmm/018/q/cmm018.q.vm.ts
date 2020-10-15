@@ -151,11 +151,11 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 	}
 	class CheckBoxModel {
 		
-		public companyUnit: KnockoutObservable<Boolean> = ko.observable(false);
+		public companyUnit: KnockoutObservable<Boolean> = ko.observable(true);
 		
-		public workPlaceUnit: KnockoutObservable<Boolean> = ko.observable(false);
+		public workPlaceUnit: KnockoutObservable<Boolean> = ko.observable(true);
 		
-		public personUnit: KnockoutObservable<Boolean> = ko.observable(false);
+		public personUnit: KnockoutObservable<Boolean> = ko.observable(true);
 		
 		public changeValue(companyUnit: boolean, workPlaceUnit: boolean, personUnit: boolean) {
 			this.companyUnit(companyUnit);
