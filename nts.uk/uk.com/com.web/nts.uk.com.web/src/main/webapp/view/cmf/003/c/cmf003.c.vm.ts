@@ -461,6 +461,7 @@ module nts.uk.com.view.cmf003.c {
       service.selectPattern(param).then((res) => {
         const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
+        vm.screenMode.valueHasMutated();
         vm.codeValue(pattern.patternCode);
         vm.nameValue(pattern.patternName);
         vm.categoriesFiltered([]);
