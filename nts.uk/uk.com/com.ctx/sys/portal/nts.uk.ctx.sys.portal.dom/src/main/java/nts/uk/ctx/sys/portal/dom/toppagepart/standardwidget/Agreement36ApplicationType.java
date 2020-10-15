@@ -9,14 +9,17 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 public enum Agreement36ApplicationType {
 
 	// 1ヶ月
-	ONE_MONTH(1),
+	ONE_MONTH(1,"1ヶ月"),
 
 	// 1年間
-	ONE_YEAR(2);
+	ONE_YEAR(2,"1年間");
 
 	public final int value;
+	
+	public final String name;
 
-	Agreement36ApplicationType(int type) {
+	Agreement36ApplicationType(int type, String name) {
 		this.value = type;
+		this.name = name;
 	}
 }

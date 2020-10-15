@@ -9,17 +9,19 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 public enum ConfirmationStatus {
 
 	// 未確認
-	UNCONFIRMED(1),
+	UNCONFIRMED(1, "未確認"),
 
 	// 確認済
-	CONFIRMED(2),
+	CONFIRMED(2, "確認済"),
 
 	// 否認
-	DENY(3);
+	DENY(3, "否認");
 
-	ConfirmationStatus(int status) {
+	ConfirmationStatus(int status, String name) {
 		this.value = status;
+		this.name = name;
 	}
 
 	public final int value;
+	public final String name;
 }
