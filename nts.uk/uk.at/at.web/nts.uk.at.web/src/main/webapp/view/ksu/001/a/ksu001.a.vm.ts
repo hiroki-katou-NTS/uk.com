@@ -205,13 +205,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
                         if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                             // disable combobox workType, workTime
-                            //s__viewContext.viewModel.viewAB.enableListWorkType(false);
-                            $("#listWorkType").addClass("disabledWorkTime");
-                            if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
-                                $("#listWorkTime").addClass("disabledWorkTime");
-                            }
+                            __viewContext.viewModel.viewAB.enableListWorkType(false);
+                            __viewContext.viewModel.viewAB.disabled(true);
                         } else {
-                            $("#shiftPallet-Control").addClass("disabledShiftControl");
+                            self.shiftPalletControlDisable();
                         }
                     }
                     
@@ -425,25 +422,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkExitCellUpdated();
             });
             
-            self.pathToLeft = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("152.png").serialize();
-            
-            self.pathToRight = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("153.png").serialize();
-            
-            self.pathToDown = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("150.png").serialize();
-            
-            self.pathToUp = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("151.png").serialize();
+            self.pathToLeft  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("152.png").serialize();
+            self.pathToRight = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("153.png").serialize();
+            self.pathToDown  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("150.png").serialize();
+            self.pathToUp    = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("151.png").serialize();
         }
         // end constructor
         
@@ -695,6 +677,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
+                // check enable or disable tbaleButton
+                self.checkEnabDisableTblBtn();
+                
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
                 
@@ -848,12 +833,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             if (!workTypeCodeSave.isPresent()) {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(true);
                 }
             } else {
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
                 if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(true);
                 }
             }
         }
@@ -1495,11 +1480,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (workType.length > 0) {
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = true;
-                        $("#listWorkTime").addClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(true);
                     } else {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = false;
-                        $("#listWorkTime").removeClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(false);
                     }
                 }
             });
@@ -2412,11 +2395,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
                 //__viewContext.viewModel.viewAB.enableListWorkType(true);
-                $("#listWorkType").removeClass("disabledWorkTime");
+                __viewContext.viewModel.viewAB.enableListWorkType(true);
+                
                 let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
                 if (objWtime[0].workTimeSetting != 2) {
-                    $("#listWorkTime").removeClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(false);
                 }
                 if (self.selectedModeDisplayInBody() == 'time') {
                     self.visibleBtnInput(true);
@@ -2481,11 +2465,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // disable combobox workType, workTime
-                //s__viewContext.viewModel.viewAB.enableListWorkType(false);
-                $("#listWorkType").addClass("disabledWorkTime");
-                if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
-                }
+                __viewContext.viewModel.viewAB.disabled(true);
+                __viewContext.viewModel.viewAB.enableListWorkType(false);
+                
                 if (self.selectedModeDisplayInBody() == 'time') {
                     self.visibleBtnInput(true);
                     self.enableBtnInput(false);
@@ -2499,33 +2481,42 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.clear();
         }
         
-        shiftPalletControlEnable(){
+        shiftPalletControlEnable() {
             let self = this;
-            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
-                $('#tableButton1 button').removeClass('disabledShiftControl');
-            } else {
-                $('#tableButton2 button').removeClass('disabledShiftControl');
-            }   
+            self.checkEnabDisableTblBtn();
             $('.listLink a').css("pointer-events", "");
             __viewContext.viewModel.viewAC.enableSwitchBtn(true);
             __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(true);
             __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(true);
-            
-            
-            
         }
         
-        shiftPalletControlDisable(){
+        shiftPalletControlDisable() {
             let self = this;
             if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
                 $('#tableButton1 button').addClass('disabledShiftControl');
             } else {
                 $('#tableButton2 button').addClass('disabledShiftControl');
-            }  
+            }
             $('.listLink a').css("pointer-events", "none");
             __viewContext.viewModel.viewAC.enableSwitchBtn(false);
             __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(false);
             __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(false);
+        }
+        
+        checkEnabDisableTblBtn() {
+            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                    $('#tableButton1 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                }
+            } else {
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('#tableButton2 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                }
+            }
         }
         
         removeClass() {
