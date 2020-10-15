@@ -67,7 +67,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     isDelete: KnockoutObservableArray<boolean>;
 
     //B8_1
-    isExistCompressPasswordFlg: KnockoutObservable<boolean>;
+    isExistCompressPasswordFlg: KnockoutObservable<boolean> = ko.observable(false);
     passwordForCompressFile: KnockoutObservable<string>;
     confirmPasswordForCompressFile: KnockoutObservable<string>;
     // check password constraint 
@@ -283,7 +283,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         self.passwordForCompressFile(res.patternCompressionPwd);
         self.confirmPasswordForCompressFile(res.patternCompressionPwd);
         self.supplementExplanation(res.patternSuppleExplanation);
-        debugger;
 
         const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
         self.listDataCategory(_.map(res.selectCategories, (x: any) => {
@@ -805,7 +804,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       let self = this;
       let params = {};
       
-      console.log(self.selectedEmployeeCode());
       params.delId = self.delId();
       params.deleteSetName = self.deleteSetName();
       params.dateValue = self.dateValue();
@@ -813,8 +811,12 @@ module nts.uk.com.view.cmf005.b.viewmodel {
       params.yearValue = self.yearValue();
       params.saveBeforDelete = self.isSaveBeforeDeleteFlg();
       params.modal = self.saveManualSetting();
+
+      if (!self.isExistCompressPasswordFlg()) {
+        self.passwordForCompressFile('');
+        self.confirmPasswordForCompressFile('');
+      }
       if (Number(self.isSaveBeforeDeleteFlg()) === 1) {
-        debugger;
         service.addMalSet(self.createManualSettings()).then((res) => {
           if (res && res != "") {
             setShared("CMF005KParams", {
@@ -826,9 +828,10 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             });
 
             nts.uk.ui.windows.sub.modal("/view/cmf/005/k/index.xhtml").onClosed(() => {
-              const param = getShared("CMF005KParams");
+              const param = getShared("CMF004KParams");
               if (param.isSuccess) {
                 setShared("CMF005_E_PARAMS", params);
+                self.saveManualSetting();
                 nts.uk.ui.windows.sub.modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
                   self.buttonEnable(false);
                 });

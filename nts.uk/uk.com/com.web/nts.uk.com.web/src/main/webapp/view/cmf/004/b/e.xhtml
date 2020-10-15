@@ -129,7 +129,11 @@
                 <!--E8_4 補足説明(ラベル)-->
                 <div id="E8_4" class="div-column-1" data-bind="ntsFormLabel: { constraint: 'Explanation' }">#{i18n.getText('CMF004_477')}</div>
                 <!--E8_5 補足説明-->
-                <input id="E8_5" data-bind="ntsTextEditor: { value: $vm.explanationValue, enable: true, constraint: 'Explanation' }" tabindex="7" />
+                <input id="E8_5" data-bind="ntsTextEditor: { 
+                  name: '#[CMF004_477]',
+                  value: $vm.explanationValue, 
+                  enable: true, 
+                  constraint: 'Explanation' }" tabindex="7" />
             </div>
         </div>
         <div class="div-line">

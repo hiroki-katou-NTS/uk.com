@@ -235,7 +235,7 @@ module nts.uk.com.view.cmf005.k {
       // close popup
       public close(): void {
         const self = this;
-        setShared("CMF004KParams", {
+        setShared("CMF005KParams", {
           isSuccess: getText('Enum_OperatingCondition_DONE') === self.status()
         });
         nts.uk.ui.windows.close();
