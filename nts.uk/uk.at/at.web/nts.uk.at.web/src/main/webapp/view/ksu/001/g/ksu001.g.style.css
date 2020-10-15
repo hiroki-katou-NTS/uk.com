@@ -1,0 +1,24 @@
+.container-custom {	
+    display: flex;	
+    margin:10px ;
+}
+#grid_container {
+	/* overflow-y: scroll;
+	overflow-x: hidden; */
+} 
+
+.ui-iggrid td.ui-iggrid-filtercell {
+	border: 1px solid #CCC !important;
+}
+
+.ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	border: 0px solid #c5c5c5 !important;
+}
+
+#grid_dd_desirse_button  {
+	display: none !important;
+}
+
+.ui-igcombo-wrapper {
+	width: auto !important;
+}
