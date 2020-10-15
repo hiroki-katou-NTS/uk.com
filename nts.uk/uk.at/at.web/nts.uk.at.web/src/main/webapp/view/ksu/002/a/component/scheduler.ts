@@ -28,6 +28,7 @@ module nts.uk.ui.at.ksu002.a {
         }
         state: StateEdit<EDIT_STATE>;
         comfirmed: boolean;
+        classification: WORK_STYLE | null;
         achievement: boolean | null;
     }
 
@@ -42,6 +43,7 @@ module nts.uk.ui.at.ksu002.a {
         };
         state: StateEdit;
         comfirmed: KnockoutObservable<boolean>;
+        classification: KnockoutObservable<WORK_STYLE | null>;
         achievement: KnockoutObservable<boolean | null>;
     }
 
@@ -63,6 +65,17 @@ module nts.uk.ui.at.ksu002.a {
         REFLECT_APPLICATION = 2,
         // 打刻反映
         IMPRINT = 3
+    }
+
+    export enum WORK_STYLE {
+        // １日出勤系
+        FULL_TIME = 3,
+        // 午前出勤系
+        MORNING = 1,
+        // 午後出勤系
+        AFTERNOON = 2,
+        // １日休日系
+        HOLIDAY = 0
     }
 
     const COMPONENT_NAME = 'scheduler';
@@ -323,7 +336,7 @@ module nts.uk.ui.at.ksu002.a {
                         },
                         owner: dayData,
                         disposeWhenNodeIsRemoved: element
-                    })
+                    });
 
                     ko.computed({
                         read: () => {
@@ -333,6 +346,38 @@ module nts.uk.ui.at.ksu002.a {
                                 className.push(c.COLOR_CLASS.ACHIEVEMENT);
                             } else {
                                 className.remove(c.COLOR_CLASS.ACHIEVEMENT);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const classification = ko.unwrap(data.classification);
+
+                            if (classification === WORK_STYLE.AFTERNOON) {
+                                className.push(c.COLOR_CLASS.CLASSIFICATION_AFTERNOON);
+                            } else {
+                                className.remove(c.COLOR_CLASS.CLASSIFICATION_AFTERNOON);
+                            }
+
+                            if (classification === WORK_STYLE.FULL_TIME) {
+                                className.push(c.COLOR_CLASS.CLASSIFICATION_FULLTIME);
+                            } else {
+                                className.remove(c.COLOR_CLASS.CLASSIFICATION_FULLTIME);
+                            }
+
+                            if (classification === WORK_STYLE.HOLIDAY) {
+                                className.push(c.COLOR_CLASS.CLASSIFICATION_HOLIDAY);
+                            } else {
+                                className.remove(c.COLOR_CLASS.CLASSIFICATION_HOLIDAY);
+                            }
+
+                            if (classification === WORK_STYLE.MORNING) {
+                                className.push(c.COLOR_CLASS.CLASSIFICATION_MORNING);
+                            } else {
+                                className.remove(c.COLOR_CLASS.CLASSIFICATION_MORNING);
                             }
                         },
                         owner: dayData,

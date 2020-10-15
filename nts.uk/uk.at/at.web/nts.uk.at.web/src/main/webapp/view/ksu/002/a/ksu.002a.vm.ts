@@ -135,6 +135,7 @@ module nts.uk.ui.at.ksu002.a {
 											event: ko.observable(null),
 											comfirmed: ko.observable($raw.confirmed),
 											achievement: ko.observable(arch === NO ? null : $raw.achievements),
+											classification: ko.observable($raw.workHolidayCls),
 											state: {
 												value: {
 													begin: ko.observable(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT),
