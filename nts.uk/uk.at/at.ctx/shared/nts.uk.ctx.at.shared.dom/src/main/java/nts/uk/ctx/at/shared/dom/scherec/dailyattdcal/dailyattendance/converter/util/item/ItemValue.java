@@ -86,23 +86,23 @@ public class ItemValue {
 		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 	
-	private Integer getIntOrDefault() {
+	public Integer getIntOrDefault() {
 		return isHaveValue() ? new Integer(this.value) : 0;
 	}
 	
-	private String getStringOrDefault() {
+	public String getStringOrDefault() {
 		return isHaveValue() ? this.value : "";
 	}
 	
-	private Boolean getBooleanOrDefault() {
+	public Boolean getBooleanOrDefault() {
 		return isHaveValue() ? new Boolean(this.value) : false;
 	}
 	
-	private GeneralDate getDateOrDefault() {
+	public GeneralDate getDateOrDefault() {
 		return isHaveValue() ? GeneralDate.fromString(this.value, DATE_FORMAT) : null;
 	}
 	
-	private Double getDoubleOrDefault() {
+	public Double getDoubleOrDefault() {
 		return isHaveValue() ? new Double(this.value) : 0;
 	}
 
