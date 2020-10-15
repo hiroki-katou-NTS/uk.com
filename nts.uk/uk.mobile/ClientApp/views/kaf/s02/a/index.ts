@@ -1,10 +1,10 @@
-import { _,Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { TotopComponent } from '@app/components/totop';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00DComponent } from '../../../kaf/s00/d';
-import { WorkHour, GoBackHour } from '../shr/index';
+import { WorkHour, GoBackHour, Error, DestinationTimeAppDto, TimeStampAppDto, TimeZone, DestinationTimeZoneAppDto, TimeStampAppOtherDto, ScreenMode } from '../shr/index';
 import {
     KafS00AComponent,
     KafS00BComponent,
@@ -22,14 +22,11 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        workHour1: {
+        workHours: {
             timeRange: true,
-            required: false
+            required: false,
         }
     },
-    constraints: [
-        'nts.uk.shr.com.time.TimeWithDayAttr'
-    ],
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
@@ -43,7 +40,7 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 })
 export class KafS02AComponent extends KafS00ShrComponent {
     public title: string = 'KafS02A';
-    
+
     @Prop({ default: null })
     public params?: any;
 
@@ -53,6 +50,90 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public user: any;
 
+    public isValidateAll: Boolean = true;
+
+    public appStampReflectOptional: any = null;
+
+    public useCancelFunction: boolean = false;
+
+    public useTemporary: boolean = false;
+
+    public multipleWork: boolean = false;
+
+    public appDispInfoStartupOutput: any = {};
+
+    public appStampOutputDto: any = {};
+
+    public application: any = {
+        version: 1,
+        // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
+        prePostAtr: 1,
+        // employeeID: '',
+        appType: 7,
+        appDate: this.$dt(new Date(), 'YYYY/MM/DD'),
+        enteredPerson: '1',
+        inputDate: this.$dt(new Date(), 'YYYY/MM/DD HH:mm:ss'),
+        reflectionStatus: {
+            listReflectionStatusOfDay: [{
+                actualReflectStatus: 1,
+                scheReflectStatus: 1,
+                targetDate: '2020/01/07',
+                opUpdateStatusAppReflect: {
+                    opActualReflectDateTime: '2020/01/07 20:11:11',
+                    opScheReflectDateTime: '2020/01/07 20:11:11',
+                    opReasonActualCantReflect: 1,
+                    opReasonScheCantReflect: 0
+
+                },
+                opUpdateStatusAppCancel: {
+                    opActualReflectDateTime: '2020/01/07 20:11:11',
+                    opScheReflectDateTime: '2020/01/07 20:11:11',
+                    opReasonActualCantReflect: 1,
+                    opReasonScheCantReflect: 0
+                }
+            }]
+        },
+    };
+
+    public errorList: any[] = [
+        new Error({ start: false, end: false, type: 'workHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'workHour', frame: 2 }),
+        new Error({ start: false, end: false, type: 'tempoHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'tempoHour', frame: 2 }),
+        new Error({ start: false, end: false, type: 'tempoHour', frame: 3 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 2 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 3 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 4 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 5 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 6 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 7 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 8 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 9 }),
+        new Error({ start: false, end: false, type: 'gooutHour', frame: 10 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 2 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 3 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 4 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 5 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 6 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 7 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 8 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 9 }),
+        new Error({ start: false, end: false, type: 'breakHour', frame: 10 }),
+        new Error({ start: false, end: false, type: 'childCareHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'childCareHour', frame: 2 }),
+        new Error({ start: false, end: false, type: 'longTermHour', frame: 1 }),
+        new Error({ start: false, end: false, type: 'longTermHour', frame: 2 }),
+    ];
+
+    public workingTime: any[] = [];
+    public tempoTime: any[] = [];
+    public outingTime: any[] = [];
+    public breakTime: any[] = [];
+    public nursingTime: any[] = [];
+    public parentingTime: any[] = [];
+
     public dataSource = [
         { id: 1, name: '私用' },
         { id: 2, name: '公用' },
@@ -61,38 +142,44 @@ export class KafS02AComponent extends KafS00ShrComponent {
     ];
 
     // value workHours
-    public workHour1 = new WorkHour(100, 200, 1, 'KAFS02_4', true, false, false, null, null);
-    public workHour2 = new WorkHour(null, null, 2, 'KAFS02_6', true, false, false, null, null);
-    public tempWorkHour1 = new WorkHour(null, null, 1, 'KAFS02_7', true, false, true, null, null);
-    public tempWorkHour2 = new WorkHour(null, null, 2, 'KAFS02_7', true, false, true, null, null);
-    public tempWorkHour3 = new WorkHour(null, null, 3, 'KAFS02_7', true, false, true, null, null);
+    public workHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_4', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public workHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_6', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public tempWorkHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public tempWorkHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public tempWorkHour3 = new WorkHour({ startTime: null, endTime: null, frame: 3, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
 
     public workHourLst = [this.workHour1, this.workHour2];
+    public checkboxWH = [];
     public tempWorkHourLst = [this.tempWorkHour1, this.tempWorkHour2, this.tempWorkHour3];
+    public checkboxTH = [];
 
     // value goOut hour
-    public goOut1 = new GoBackHour(null, null, 1, 1, 'KAFS02_9', true, false, false, null, null);
-    public goOut2 = new GoBackHour(null, null, 2, 1, 'KAFS02_9', true, false, false, null, null);
+    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
 
     public goOutLst = [this.goOut1, this.goOut2];
+    public checkboxGH = [];
 
     // value break time
-    public break1 = new WorkHour(null, null, 1, 'KAFS02_12', true, false, false, null, null);
-    public break2 = new WorkHour(null, null, 2, 'KAFS02_12', true, false, false, null, null);
+    public break1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public break2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
 
     public breakLst = [this.break1, this.break2];
+    public checkboxBH = [];
 
     // childCare time
-    public childCareTime1 = new WorkHour(null, null, 1, 'KAFS02_14', true, false, false, null, null);
-    public childCareTime2 = new WorkHour(null, null, 2, 'KAFS02_14', true, false, false, null, null);
+    public childCareTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public childCareTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
 
     public childCareLst = [this.childCareTime1, this.childCareTime2];
+    public checkboxCH = [];
 
     // long-term care time
-    public longTermTime1 = new WorkHour(null, null, 1, 'KAFS02_16', true, false, false, null, null);
-    public longTermTime2 = new WorkHour(null, null, 2, 'KAFS02_16', true, false, false, null, null);
+    public longTermTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
+    public longTermTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null,  actualStart: null, actualEnd: null });
 
     public longTermLst = [this.longTermTime1, this.longTermTime2];
+    public checkboxLH = [];
 
     public created() {
         const self = this;
@@ -126,20 +213,579 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                 return self.$http.post('at', API.startStampApp, command);
             }
-        }).then((data) => {
-            if ( data ) {
+        }).then((data: any) => {
+            if (data) {
                 console.log(data);
+                self.appStampReflectOptional = data.data.appStampReflectOptional;
+
+                self.createParamA(data.data);
+                self.createParamB(data.data);
+                self.createParamC(data.data);
+
+                self.errorList.map((item) => {
+                    item.start = false;
+                    item.end = false;
+                });
+                // self.errorList = data.data.errorListOptional;
+                self.fetchErrorLst(data.data.errorListOptional);
+
+                self.useCancelFunction = data.data.appStampSetting.useCancelFunction === 1 ? true : false;
+                self.useTemporary = data.data.useTemporary;
+                self.multipleWork = data.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+
+                self.appStampOutputDto = data.data;
+                self.appDispInfoStartupOutput = data.data.appDispInfoStartupOutput;
+                let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+                if (!_.isEmpty(opActualContentDisplayLst)) {
+                    this.bindActualAchive(opActualContentDisplayLst);
+                }
+
+                self.workHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+                self.tempWorkHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+                self.breakLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+                self.goOutLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+                self.longTermLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+                self.childCareLst.map((x) => x.dispCheckbox = this.useCancelFunction);
             }
         }).then(() => self.$mask('hide'));
+    }
+
+    public fetchErrorLst(errorLst: any[]) {
+        const self = this;
+        let errorList = self.errorList;
+
+        errorLst.forEach((item) => {
+            // workHour
+            if (item.timeStampAppEnum === 0) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'workHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'workHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+
+            // tempo hour
+            if (item.timeStampAppEnum === 1) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'tempoHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'tempoHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+
+            // gooutHour
+            if (item.timeStampAppEnum === 2) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'gooutHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'gooutHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+
+            // breakHour
+            if (item.timeStampAppEnum === 6) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'breakHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'breakHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+
+            // childCareHour
+            if (item.timeStampAppEnum === 4) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'childCareHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'childCareHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+
+            // longTermHour
+            if (item.timeStampAppEnum === 5) {
+                if (item.startEndClassification === 0) {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'longTermHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].start = true;
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < errorList.length; x++) {
+                        if (errorList[x].type === 'longTermHour' && errorList[x].frame === item.stampFrameNo) {
+                            errorList[x].end = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        self.errorList.forEach((item) => {
+            if (item.type === 'workHour') {
+                for (let x = 0; x < this.workHourLst.length; x++) {
+                    if (item.frame === this.workHourLst[x].frame) {
+                        this.workHourLst[x].errorMsg = null;
+                        if (item.start && item.end && item.frame === 1) {
+                            this.workHourLst[x].errorMsg = this.$i18n( 'KAFS02_22', ' ' );
+                        }
+                        if (!item.start && item.end) {
+                            this.workHourLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_WorkOut' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.workHourLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_WorkIn' );
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'tempoHour') {
+                for (let x = 0; x < this.tempWorkHourLst.length; x++) {
+                    if (item.frame === this.tempWorkHourLst[x].frame) {
+                        this.tempWorkHourLst[x].errorMsg = null;
+                        // if (!item.start && !item.end) {
+                        //     this.tempWorkHourLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
+                        // }
+                        if (!item.start && item.end) {
+                            this.tempWorkHourLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_ExtraOut' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.tempWorkHourLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_ExtraIn' );
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'gooutHour') {
+                for (let x = 0; x < this.goOutLst.length; x++) {
+                    if (item.frame === this.goOutLst[x].frame) {
+                        this.goOutLst[x].errorMsg = null;
+                        // if (!item.start && !item.end) {
+                        //     this.goOutLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
+                        // }
+                        if (!item.start && item.end) {
+                            this.goOutLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_Out' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.goOutLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'Com_In' );
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'breakHour') {
+                for (let x = 0; x < this.breakLst.length; x++) {
+                    if (item.frame === this.breakLst[x].frame) {
+                        this.breakLst[x].errorMsg = null;
+                        // if (!item.start && !item.end) {
+                        //     this.breakLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
+                        // }
+                        if (!item.start && item.end) {
+                            this.breakLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_24' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.breakLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_23' );
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'childCareHour') {
+                for (let x = 0; x < this.childCareLst.length; x++) {
+                    if (item.frame === this.childCareLst[x].frame) {
+                        this.childCareLst[x].errorMsg = null;
+                        // if (!item.start && !item.end) {
+                        //     this.childCareLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
+                        // }
+                        if (!item.start && item.end) {
+                            this.childCareLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_26' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.childCareLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_25' );
+                        }
+                    }
+                }
+            }
+
+            if (item.type === 'longTermHour') {
+                for (let x = 0; x < this.longTermLst.length; x++) {
+                    if (item.frame === this.longTermLst[x].frame) {
+                        this.longTermLst[x].errorMsg = null;
+                        // if (!item.start && !item.end) {
+                        //     this.longTermLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
+                        // }
+                        if (!item.start && item.end) {
+                            this.longTermLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_28' );
+                        } 
+                        if (item.start && !item.end) {
+                            this.longTermLst[x].errorMsg = this.$i18n( 'KAFS02_22', 'KAFS02_27' );
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public createParamA(data: any) {
+        const self = this;
+
+        let appDispInfoWithDateOutput = data.appDispInfoStartupOutput.appDispInfoWithDateOutput;
+        let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        self.kaf000_A_Params = {
+            companyID: self.user.companyId,
+            employeeID: self.user.employeeId,
+            // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
+            employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
+            // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
+            applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
+            // opOvertimeAppAtr: null
+        };
+    }
+
+    public createParamB(data: any) {
+        const self = this;
+
+        self.kaf000_B_Params = null;
+        let paramb = {
+            input: {
+                mode: self.mode ? 0 : 1,
+                appDisplaySetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+                newModeContent: {
+                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                    appTypeSetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                    useMultiDaySwitch: false,
+                    initSelectMultiDay: false
+                },
+                detailModeContent: null
+
+
+            },
+            output: {
+                prePostAtr: 0,
+                startDate: null,
+                endDate: null
+            }
+        };
+        if (!self.mode) {
+            paramb.input.detailModeContent = {
+                prePostAtr: data.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            };
+        }
+        self.kaf000_B_Params = paramb;
+        if (self.mode) {
+            self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
+                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(startDate)) {
+
+                    return;
+                }
+                let listDate = [];
+                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
+                }
+
+                if (!_.isNull(endDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
+                    }
+
+                }
+                self.changeDate(listDate);
+            });
+
+            self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
+                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+
+                    return;
+                }
+                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
+                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(endDate)) {
+
+                    return;
+                }
+                let listDate = [];
+                if (!_.isNull(startDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
+                    }
+                }
+
+                self.changeDate(listDate);
+            });
+            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
+            });
+
+        }
+    }
+
+    public createParamC(data: any) {
+        const self = this;
+        // KAFS00_C_起動情報
+        let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
+        self.kaf000_C_Params = {
+            input: {
+                // 定型理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+                // 申請理由の表示
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+                // 定型理由一覧
+                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+                // 申請制限設定
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+                // 選択中の定型理由
+                // empty
+                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                // 入力中の申請理由
+                // empty
+                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                // 定型理由
+                opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+            },
+            output: {
+                // 定型理由
+                opAppStandardReasonCD: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                // 申請理由
+                opAppReason: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+            }
+        };
+    }
+
+    public changeDate(dates: any) {
+        const self = this;
+        self.$mask('show');
+        let command = {
+            companyId: self.user.companyId,
+            appStampOutputDto: self.appStampOutputDto,
+            date: dates,
+            recorderFlag: true,
+        };
+        self.$http.post('at', API.changeDate, command)
+            .then((res: any) => {
+                self.appDispInfoStartupOutput = res.data.appDispInfoStartupOutput;
+                let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+                if (!_.isEmpty(opActualContentDisplayLst)) {
+                    this.bindActualAchive(opActualContentDisplayLst);
+                }
+
+                self.errorList.map((item) => {
+                    item.start = false;
+                    item.end = false;
+                });
+                self.fetchErrorLst(res.data.errorListOptional);
+                self.$mask('hide');
+            }).catch((res: any) => {
+                self.handleErrorMessage(res).then((msgId: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
+                    }
+                });
+                self.$mask('hide');
+            });
+    }
+
+    public bindActualAchive(actualContentDisplayLst: any) {
+        const self = this;
+        if (actualContentDisplayLst[0].opAchievementDetail) {
+            let stampRecord = actualContentDisplayLst[0].opAchievementDetail.stampRecordOutput;
+    
+            let workingTime: any[] = stampRecord.workingTime;
+            let tempoTime: any[] = stampRecord.extraordinaryTime;
+            let outingTime: any[] = stampRecord.outingTime;
+            let breakTime: any[] = stampRecord.breakTime;
+            let nursingTime: any[] = stampRecord.nursingTime;
+            let parentingTime: any[] = stampRecord.parentingTime;
+    
+            // working hour
+            if (!_.isEmpty(workingTime)) {
+                workingTime.forEach((item) => {
+                    for (let i = 0; i < this.workHourLst.length; i++) {
+                        if (item.frameNo === this.workHourLst[i].frame) {
+                            this.workHourLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.workHourLst[i].actualHours.startTime = item.opStartTime;
+                            this.workHourLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+            
+            // tempo hour
+            if (!_.isEmpty(tempoTime)) {
+                tempoTime.forEach((item) => {
+                    for (let i = 0; i < this.tempWorkHourLst.length; i++) {
+                        if (item.frameNo === this.tempWorkHourLst[i].frame) {
+                            this.tempWorkHourLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.tempWorkHourLst[i].actualHours.startTime = item.opStartTime;
+                            this.tempWorkHourLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+    
+            // go out time
+            if (!_.isEmpty(outingTime)) {
+                outingTime.forEach((item) => {
+                    for (let i = 0; i < this.goOutLst.length; i++) {
+                        if (item.frameNo === this.goOutLst[i].frame) {
+                            this.goOutLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.goOutLst[i].actualHours.startTime = item.opStartTime;
+                            this.goOutLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+    
+            // break time
+            if (!_.isEmpty(breakTime)) {
+                breakTime.forEach((item) => {
+                    for (let i = 0; i < this.breakLst.length; i++) {
+                        if (item.frameNo === this.breakLst[i].frame) {
+                            this.breakLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.breakLst[i].actualHours.startTime = item.opStartTime;
+                            this.breakLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+    
+            // parenting time
+            if (!_.isEmpty(parentingTime)) {
+                parentingTime.forEach((item) => {
+                    for (let i = 0; i < this.childCareLst.length; i++) {
+                        if (item.frameNo === this.childCareLst[i].frame) {
+                            this.childCareLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.childCareLst[i].actualHours.startTime = item.opStartTime;
+                            this.childCareLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+    
+            // long term time
+            if (!_.isEmpty(nursingTime)) {
+                nursingTime.forEach((item) => {
+                    for (let i = 0; i < this.longTermLst.length; i++) {
+                        if (item.frameNo === this.longTermLst[i].frame) {
+                            this.longTermLst[i].actualHours.applicationAchievementAtr = 1;
+                            this.longTermLst[i].actualHours.startTime = item.opStartTime;
+                            this.longTermLst[i].actualHours.endTime = item.opEndTime;
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    public handleErrorMessage(res: any) {
+        const self = this;
+        // self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            if (res.errors) {
+                if (_.isArray(res.errors)) {
+                    return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+                } else {
+                    return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+                }
+            }
+        }
+    }
+
+    public handleConfirmMessage(messages: any) {
+        const self = this;
+
+        return new Promise((resolve: any) => {
+            if (_.isEmpty(messages)) {
+                resolve(true);
+            }
+            let msg = messages[0].value;
+            
+            return self.$modal.confirm({ messageId: msg.messageId })
+                .then((value) => {
+                    if (value === 'yes') {
+                        return self.handleConfirmMessage(messages.data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+        });
     }
 
     public addGooutHour() {
         const self = this;
 
         let currentFrame = self.goOutLst.length;
+        let start: any = null;
+        let end: any = null;
+
+        self.outingTime.forEach((item) => {
+            if (item.frameNo === (currentFrame + 1)) {
+                start = item.opStartTime;
+                end = item.opEndTime;
+            }
+        });
         if (currentFrame < 10) {
-            let goOutHour = new GoBackHour(null, null, (currentFrame + 1), 1, 'KAFS02_9', true, false, false);
-    
+            // let goOutHour = new GoBackHour(null, null, (currentFrame + 1), 1, 'KAFS02_9', true, false, false, null, null);
+            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: 1, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null,  actualStart: start, actualEnd: end });
+
             self.goOutLst.push(goOutHour);
         }
     }
@@ -148,14 +794,506 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
 
         let currentFrame = self.breakLst.length;
+        let actualStart = null;
+        let actualEnd = null;
+
+        self.breakTime.forEach((item) => {
+            if (item.frameNo === (currentFrame + 1)) {
+                actualStart = item.opStartTime;
+                actualEnd = item.opEndTime;
+            }
+        });
+
         if (currentFrame < 10) {
-            let breakTime = new WorkHour(null, null, (currentFrame + 1), 'KAFS02_12', true, false, false);
-    
+            // let breakTime = new WorkHour(null, null, (currentFrame + 1), 'KAFS02_12', true, false, false, null, null);
+            let breakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null,  actualStart: null, actualEnd: null });
+
             self.breakLst.push(breakTime);
         }
+    }
+
+    public register() {
+        const self = this;
+        let validAll: boolean = true;
+
+        self.$mask('show');
+        for (let child of self.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        self.isValidateAll = validAll;
+        self.$validate();
+        if (!self.$valid || !validAll ) {
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
+
+            return;
+        }
+
+        self.bindDataApplication();
+        self.bindDataAppStamp();
+
+        return self.checkBeforeRegister()
+            .then((result) => {
+                if (result) {
+                    return self.handleConfirmMessage(result.data);
+                }
+            })
+            .then((result) => {
+                if (result) {
+                    console.log(result);
+
+                    return self.registerData();
+                }
+            })
+            .then((result) => {
+                if (result) {
+                    console.log(result);
+                    self.$mask('hide');
+                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appID });
+                }
+            }).catch((err) => {
+                if (err) {
+                    console.log(err);
+                    self.handleErrorMessage(err);
+                    self.$mask('hide');
+                }
+            });
+    }
+
+    public checkBeforeRegister(): any {
+        const self = this;
+        let command = {
+            companyId: self.user.companyId,
+            agentAtr: false,
+            applicationDto: self.application,
+            appStampOutputDto: self.appStampOutputDto
+        };
+        
+        return self.$http.post('at', API.checkBeforeRegister, command);
+    }
+
+    private registerData(): any {
+        const self = this;
+
+        let command = {
+            applicationDto: self.application,
+            appStampDto: self.appStampOutputDto.appStampOptional,
+            appRecordImageDto: null,
+            appStampOutputDto: self.appStampOutputDto,
+            recoderFlag: false
+        };
+
+        return self.$http.post('at', API.register, command);
+    }
+
+    private bindDataAppStamp() {
+        const self = this;
+
+        let prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+        let listTimeStampApp: Array<TimeStampAppDto> = [],
+                listDestinationTimeApp: Array<DestinationTimeAppDto> = [],
+                listTimeStampAppOther: Array<TimeStampAppOtherDto> = [],
+                listDestinationTimeZoneApp: Array<DestinationTimeZoneAppDto> = [];
+
+        if (prePostAtr === 0) {
+            // work hour
+            self.workHourLst.forEach((item) => {
+                if (item.workHours.start) {
+                    let destinationApp = new DestinationTimeAppDto( 0, item.frame, 0 );
+                    let hour = new TimeStampAppDto( destinationApp, item.workHours.start, null );
+
+                    listTimeStampApp.push(hour);
+                }
+                if (item.workHours.end) {
+                    let destinationApp = new DestinationTimeAppDto( 0, item.frame, 1 );
+                    let hour = new TimeStampAppDto( destinationApp, item.workHours.end, null );
+
+                    listTimeStampApp.push(hour);
+                }
+            });
+
+            // tempo hour
+            self.tempWorkHourLst.forEach((item) => {
+                if (item.workHours.start) {
+                    let destinationApp = new DestinationTimeAppDto( 1, item.frame, 0 );
+                    let hour = new TimeStampAppDto( destinationApp, item.workHours.start, null );
+
+                    listTimeStampApp.push(hour);
+                }
+                if (item.workHours.end) {
+                    let destinationApp = new DestinationTimeAppDto( 1, item.frame, 1 );
+                    let hour = new TimeStampAppDto( destinationApp, item.workHours.end, null );
+
+                    listTimeStampApp.push(hour);
+                }
+            });
+
+            // goout hour
+            self.goOutLst.forEach((item) => {
+                if (item.hours.start) {
+                    let destinationApp = new DestinationTimeAppDto( 2, item.frame, 0 );
+                    let hour = new TimeStampAppDto( destinationApp, item.hours.start, null, item.swtModel );
+
+                    listTimeStampApp.push(hour);
+                }
+                if (item.hours.end) {
+                    let destinationApp = new DestinationTimeAppDto( 2, item.frame, 1 );
+                    let hour = new TimeStampAppDto( destinationApp, item.hours.end, null, item.swtModel );
+
+                    listTimeStampApp.push(hour);
+                }
+            });
+
+            // break hour
+            self.breakLst.forEach((item) => {
+                if (item.workHours.start && item.workHours.end) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 2, item.frame );
+                    let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                    let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+    
+                    listTimeStampAppOther.push(hour);
+                }
+            });
+
+            // child care hour
+            self.childCareLst.forEach((item) => {
+                if (item.workHours.start && item.workHours.end) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 0, item.frame );
+                    let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                    let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+    
+                    listTimeStampAppOther.push(hour);
+                }
+            });
+
+            // long term hour
+            self.longTermLst.forEach((item) => {
+                if (item.workHours.start && item.workHours.end) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 1, item.frame );
+                    let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                    let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+    
+                    listTimeStampAppOther.push(hour);
+                }
+            });
+        } else {
+            // work hour
+            self.workHourLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    if (item.actualHours.startTime) {
+                        let destinationApp = new DestinationTimeAppDto( 0, item.frame, 0 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                    if (item.actualHours.endTime) {
+                        let destinationApp = new DestinationTimeAppDto( 0, item.frame, 1 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                } else {
+                    if (item.workHours.start) {
+                        let destinationApp = new DestinationTimeAppDto( 0, item.frame, 0 );
+                        let hour = new TimeStampAppDto( destinationApp, item.workHours.start, null );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                    if (item.workHours.end) {
+                        let destinationApp = new DestinationTimeAppDto( 0, item.frame, 1 );
+                        let hour = new TimeStampAppDto( destinationApp, item.workHours.end, null );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                }
+            });
+
+            // tempo hour
+            self.tempWorkHourLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    if (item.actualHours.startTime) {
+                        let destinationApp = new DestinationTimeAppDto( 1, item.frame, 0 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                    if (item.actualHours.endTime) {
+                        let destinationApp = new DestinationTimeAppDto( 1, item.frame, 1 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                } else {
+                    if (item.workHours.start) {
+                        let destinationApp = new DestinationTimeAppDto( 1, item.frame, 0 );
+                        let hour = new TimeStampAppDto( destinationApp, item.workHours.start, null );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                    if (item.workHours.end) {
+                        let destinationApp = new DestinationTimeAppDto( 1, item.frame, 1 );
+                        let hour = new TimeStampAppDto( destinationApp, item.workHours.end, null );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                }
+            });
+
+            // goout hour
+            self.goOutLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    if (item.actualHours.startTime) {
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 0 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                    if (item.actualHours.endTime) {
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 1 );
+
+                        listDestinationTimeApp.push(destinationApp);
+                    }
+                } else {
+                    if (item.hours.start) {
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 0 );
+                        let hour = new TimeStampAppDto( destinationApp, item.hours.start, null, item.swtModel );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                    if (item.hours.end) {
+                        let destinationApp = new DestinationTimeAppDto( 2, item.frame, 1 );
+                        let hour = new TimeStampAppDto( destinationApp, item.hours.end, null, item.swtModel );
+    
+                        listTimeStampApp.push(hour);
+                    }
+                }
+            });
+
+            // break hour
+            self.breakLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 2, item.frame );
+
+                    listDestinationTimeZoneApp.push(destinationApp);
+                } else {
+                    if (item.workHours.start && item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto( 2, item.frame );
+                        let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                        let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+        
+                        listTimeStampAppOther.push(hour);
+                    }
+                }
+            });
+
+            // child care hour
+            self.childCareLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 0, item.frame );
+
+                    listDestinationTimeZoneApp.push(destinationApp);
+                } else {
+                    if (item.workHours.start && item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto( 0, item.frame );
+                        let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                        let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+        
+                        listTimeStampAppOther.push(hour);
+                    }
+                }
+            });
+
+            // long term hour
+            self.longTermLst.forEach((item) => {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                    let destinationApp = new DestinationTimeZoneAppDto( 1, item.frame );
+
+                    listDestinationTimeZoneApp.push(destinationApp);
+                } else {
+                    if (item.workHours.start && item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto( 1, item.frame );
+                        let timeZone = new TimeZone( item.workHours.start, item.workHours.end );
+                        let hour = new TimeStampAppOtherDto( destinationApp, timeZone );
+        
+                        listTimeStampAppOther.push(hour);
+                    }
+                }
+            });
+        }
+
+        self.appStampOutputDto.appStampOptional = {
+            listTimeStampApp: (listTimeStampApp),
+            listDestinationTimeApp: (listDestinationTimeApp),
+            listTimeStampAppOther: (listTimeStampAppOther),
+            listDestinationTimeZoneApp: (listDestinationTimeZoneApp)
+        };
+    }
+
+    private bindDataApplication() {
+        const self = this;
+
+        if (!self.mode) {
+            self.application = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        }
+        if (self.mode) {
+            self.application.employeeID = self.user.employeeId;
+        }
+
+        if (self.kaf000_B_Params) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+                } else {
+                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                }
+            }
+
+            self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+
+        }
+
+        if (self.kaf000_C_Params.output) {
+            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
+            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
+        }
+        self.application.enteredPerson = self.user.employeeId;
+    }
+
+    // ※5
+    get condition5() {
+        const self = this;
+
+        if (self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※2
+    get condition2() {
+        const self = this;
+
+        if (self.kaf000_B_Params != null && self.kaf000_B_Params.output.prePostAtr === 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // ※12
+    // get condition12() {
+    //     const self = this;
+
+    //     if (self.isError) {
+    //         return true;
+    //     }
+
+    //     return false;
+    // }
+
+    // ※10
+    get condition10() {
+        const self = this;
+
+        if (self.useCancelFunction) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※4
+    get condition4() {
+        const self = this;
+
+        if (self.useTemporary) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※1
+    public condition1(item: WorkHour) {
+        const self = this;
+
+        if (item.frame === 2) {
+            if (self.multipleWork) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    // ※6
+    get condition6() {
+        const self = this;
+
+        if (self.appStampReflectOptional && self.appStampReflectOptional.outingHourse === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※7
+    get condition7() {
+        const self = this;
+
+        if (self.appStampReflectOptional && self.appStampReflectOptional.breakTime === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※8
+    get condition8() {
+        const self = this;
+
+        if (self.appStampReflectOptional && self.appStampReflectOptional.parentHours === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // ※9
+    get condition9() {
+        const self = this;
+
+        if (self.appStampReflectOptional && self.appStampReflectOptional.nurseTime === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        console.log('emit' + objectDate);
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        console.log('emit' + prePostAtr);
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        console.log('emit' + opAppStandardReasonCD);
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        console.log('emit' + opAppReason);
     }
 }
 
 const API = {
-    startStampApp : 'at/request/application/stamp/startStampApp'
+    startStampApp: 'at/request/application/stamp/startStampApp',
+    changeDate: 'at/request/application/stamp/changeAppDateMobile',
+    checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
+    register: 'at/request/application/stamp/register'
 };
