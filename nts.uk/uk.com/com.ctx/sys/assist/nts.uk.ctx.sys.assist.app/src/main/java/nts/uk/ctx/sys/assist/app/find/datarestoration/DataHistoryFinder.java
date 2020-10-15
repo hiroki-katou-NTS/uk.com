@@ -99,14 +99,12 @@ public class DataHistoryFinder {
 												.findFirst().orElse(null),
 										pdr,
 										drrList.stream()
-												.filter(data -> data.getStartDateTime().after(from) 
-															&& data.getEndDateTime().isPresent() 
-																	? data.getEndDateTime().get().before(to) 
-																	: true)
 												.filter(drr -> drr.getDataRecoveryProcessId()
 														.equals(pdr.getDataRecoveryProcessId()))
 												.findFirst().orElse(null)))
 				.filter(Objects::nonNull)
+				.filter(data -> data.getSaveStartDatetime().after(from) 
+						&& data.getSaveStartDatetime().before(to))
 				.collect(Collectors.toList());
 	}
 }
