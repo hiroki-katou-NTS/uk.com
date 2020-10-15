@@ -2205,11 +2205,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 		if (specialUseNumberAfterOpt.isPresent()){
 			if (specialUseNumberAfterOpt.get().getUseTimes().isPresent()){
-				result.afterUseMinutes = specialUseNumberAfterOpt.get().getUseTimes().get().v();
+				result.afterUseMinutes = specialUseNumberAfterOpt.get().getUseTimes().get().getUseTimes().v();
 			}
 		}
-		domain.get
 		result.useTimes = specialUseTime.getUseNumber().v();
+		
+		
 		
 		
 		// 実特別休暇：使用数

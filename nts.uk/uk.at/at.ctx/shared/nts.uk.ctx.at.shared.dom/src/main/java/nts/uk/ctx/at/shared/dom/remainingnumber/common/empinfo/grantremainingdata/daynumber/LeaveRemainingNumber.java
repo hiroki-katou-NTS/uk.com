@@ -5,9 +5,13 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 
 /**
  * 休暇残数  
@@ -244,8 +248,9 @@ public class LeaveRemainingNumber {
 	 * @param baseDate 基準日
 	 * @return
 	 */
-	public Optional<LimitedTimeHdTime> getContractTime(
+	static public Optional<LimitedTimeHdTime> getContractTime(
 		RequireM3 require,
+		String companyID,
 		String employeeId,
 		GeneralDate baseDate){
 		
@@ -255,24 +260,35 @@ public class LeaveRemainingNumber {
 //		WorkingConditionItemRepository workingConditionItemRepository
 //			= repositoriesRequiredByRemNum.getWorkingConditionItemRepository();
 		
-		// 契約時間が会社一律で設定されているか 　ooooo
+		// ドメインモデル「年休設定」を取得する
+		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
+		if(annualPaidLeave == null){
+			return Optional.empty();
+		}
 		
-		// 丸め処理 　ooooo
-		
-		
-		// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
-		Optional<WorkingConditionItem> workCond
-			= require.workingConditionItem(employeeId, baseDate);
-
-		if (workCond.isPresent()) {
-			contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
-					: Optional.ofNullable(new LimitedTimeHdTime(workCond.get().getContractTime().v()));
+		// 契約時間が会社一律で設定されているか
+		if ( annualPaidLeave.getTimeSetting().getTimeManageType().equals(ManageDistinct.YES)){
+			// 会社の設定情報を取得する
+			
+			
+			
+		} else {
+			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
+			Optional<WorkingConditionItem> workCond
+				= require.workingConditionItem(employeeId, baseDate);
+	
+			if (workCond.isPresent()) {
+				contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
+						: Optional.ofNullable(new LimitedTimeHdTime(workCond.get().getContractTime().v()));
+				
+				// 丸め処理 　ooooo
+			}
 		}
 		
 		return contractTime;
 	}
 	
-	public static interface RequireM3 {
+	public static interface RequireM3 extends AbsenceTenProcess.RequireM1 {
 		
 		// 労働条件取得
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);

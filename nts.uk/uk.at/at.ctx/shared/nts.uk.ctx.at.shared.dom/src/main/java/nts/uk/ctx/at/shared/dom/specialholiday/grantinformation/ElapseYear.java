@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacation
 @NoArgsConstructor
 @Getter
 @Setter
-public class ElapseYear extends DomainObject {
+public class ElapseYear extends AggregateRoot {
 	
 	/** 会社ID */
 	private String companyId;

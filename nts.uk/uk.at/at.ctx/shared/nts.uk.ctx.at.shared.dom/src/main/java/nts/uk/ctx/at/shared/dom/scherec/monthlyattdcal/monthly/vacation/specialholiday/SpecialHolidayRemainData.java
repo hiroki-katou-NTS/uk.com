@@ -96,13 +96,10 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 			DatePeriod period,
 			int specialLeaveCode,
 			InPeriodOfSpecialLeaveResultInfor inPeriod,
-			SpecialLeaveRemainNoMinus remainNoMinus,
-			// ooooo要修正！！
-			boolean yousyuusei______){
+			SpecialLeaveRemainNoMinus remainNoMinus){
 	
 //		【項目移送】
 		
-		           
 		SpecialHolidayRemainData domain = new SpecialHolidayRemainData();
 		
 //		社員ID　←　パラメータ「社員ID」
@@ -128,10 +125,9 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		
 
 		// 特別休暇：使用数
-		
-//		特別休暇．使用数．使用日数．使用日数付与前　←　特別休暇の残数マイナスなし．使用数付与前
 		double specialUseDays = remainNoMinus.getUseDaysBeforeGrant();
-		
+
+//		特別休暇．使用数．使用日数．使用日数付与前　←　特別休暇の残数マイナスなし．使用数付与前
 		SpecialLeaveRemainDay specialUseDaysBefore = new SpecialLeaveRemainDay(
 				remainNoMinus.getUseDaysBeforeGrant());
 		
@@ -150,31 +146,6 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		SpecialLeaveUseDays specialUseNumberDays = new SpecialLeaveUseDays(
 				new SpecialLeaveRemainDay(specialUseDays));
 		
-		// 特別休暇：残数
-		
-//		特別休暇．残数付与前．日数　←　特別休暇の残数マイナスなし．残数付与前
-		SpecialLeaveRemain specialRemainBefore = new SpecialLeaveRemain(
-				new SpecialLeaveRemainDay(remainNoMinus.getRemainDaysBeforeGrant()),
-				Optional.empty());
-		
-//		特別休暇．残数付与後．日数　←　特別休暇の残数マイナスなし．残数付与後
-		Optional<SpecialLeaveRemain> specialRemainAfterOpt = Optional.empty();
-		if (remainNoMinus.getRemainDaysAfterGrant().isPresent()){
-			specialRemainAfterOpt = Optional.of(new SpecialLeaveRemain(
-					new SpecialLeaveRemainDay(remainNoMinus.getRemainDaysAfterGrant().get()),
-					Optional.empty()));
-		}
-		
-//		特別休暇．未消化数　←　特別休暇情報（期間終了日の翌日開始時点）．残数．未消化数
-		// ooooo要修正！！
-		// 特別休暇：未消化数
-		SpecialLeaveRemainDay a = new SpecialLeaveRemainDay(
-				inPeriod.getRemainDays().getUnDisgesteDays());
-		SpecialLeaveUnDigestion unDegestionNumber 
-			= new SpecialLeaveUnDigestion(a, Optional.empty());
-
-		// 特別休暇
-		
 		// 特別休暇 使用数
 		SpecialLeaveUsedInfo specialLeaveUsedInfo
 			= SpecialLeaveUsedInfo.of(
@@ -185,46 +156,43 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 					specialLeaveUseNumberAfterOpt
 					);
 		
-		// 特別休暇 残数
+
+//		特別休暇．未消化数　←　特別休暇情報（期間終了日の翌日開始時点）．残数．未消化数
+		// ooooo要修正！！
+		// 特別休暇：未消化数
+		inPeriod.getAsOfStartNextDayOfPeriodEnd()
+		SpecialLeaveRemainDay a = new SpecialLeaveRemainDay(
+				inPeriod.getRemainDays().getUnDisgesteDays());
+		SpecialLeaveUnDigestion unDegestionNumber 
+			= new SpecialLeaveUnDigestion(a, Optional.empty());
 		
-		// 合計
-		SpecialLeaveRemainingNumber specialLeaveRemainingNumber
-			= new SpecialLeaveRemainingNumber();
-		// 付与前
-		SpecialLeaveRemainingNumber remainingNumberBeforeGrant
-			= new SpecialLeaveRemainingNumber();
-		// 付与後
-		Optional<SpecialLeaveRemainingNumber> remainingNumberAfterGrantOpt
-			= Optional.empty();
+		
+		// 特別休暇：残数
+		
+//		特別休暇．残数付与前．日数　←　特別休暇の残数マイナスなし．残数付与前
+		SpecialLeaveRemainingNumber specialRemainBefore 
+			= SpecialLeaveRemainingNumber.createFromJavaType(
+				remainNoMinus.getRemainDaysBeforeGrant(), 0);
+		
+//		特別休暇．残数付与後．日数　←　特別休暇の残数マイナスなし．残数付与後
+		Optional<SpecialLeaveRemainingNumber> specialRemainAfterOpt = Optional.empty();
+		if (remainNoMinus.getRemainDaysAfterGrant().isPresent()){
+			specialRemainAfterOpt = Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(
+					remainNoMinus.getRemainDaysAfterGrant().get(), 0) );
+		}
 		
 //		特別休暇．残数．日数　←　（特別休暇の残数マイナスなし．残数付与後が存在する場合）
-//　　　　　　特別休暇の残数マイナスなし．残数付与後
-//　　　　　　（存在しない場合）
-//　　　　　　特別休暇の残数マイナスなし．残数付与前
-		remainingNumberBeforeGrant.setDayNumberOfRemain( // ooooo要修正！！確認
-				new DayNumberOfRemain(specialRemainBefore.getDays().v()));
-		
-		// 特別休暇の残数マイナスなし．残数付与後が存在する場合
-		if ( specialRemainAfterOpt.isPresent() ){
-//	　　　　　　特別休暇の残数マイナスなし．残数付与後
-			specialLeaveRemainingNumber.setDayNumberOfRemain(
-				new DayNumberOfRemain(specialRemainAfterOpt.get().getDays().v()));
-			
-			SpecialLeaveRemainingNumber remainingNumberAfterGrant
-				= new SpecialLeaveRemainingNumber();
-			remainingNumberAfterGrant.setDayNumberOfRemain(
-					new DayNumberOfRemain(specialRemainAfterOpt.get().getDays().v()));
-			remainingNumberAfterGrantOpt = Optional.of(remainingNumberAfterGrant);
-		}
-		else { // 存在しない場合
-//	　　　　　　特別休暇の残数マイナスなし．残数付与前
-			specialLeaveRemainingNumber.setDayNumberOfRemain(
-					new DayNumberOfRemain(specialRemainBefore.getDays().v()));
+//　　　　　　　　特別休暇の残数マイナスなし．残数付与後
+//　　　　　　　　（存在しない場合）
+//　　　　　　　　特別休暇の残数マイナスなし．残数付与前
+		SpecialLeaveRemainingNumber specialRemain;
+		if (specialRemainAfterOpt.isPresent()){
+			specialRemain = specialRemainAfterOpt.get().clone();
 		}
 		
 		SpecialLeaveRemainingNumberInfo specialLeaveRemainingNumberInfo
-			= SpecialLeaveRemainingNumberInfo.of(
-					specialLeaveRemainingNumber, remainingNumberBeforeGrant, remainingNumberAfterGrantOpt);
+			= new SpecialLeaveRemainingNumberInfo(
+					specialRemain, specialRemainBefore, specialRemainAfterOpt);
 
 		// 特別休暇
 		domain.specialLeave = new SpecialLeave(
@@ -236,24 +204,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		
 		
 		
-		
-		
-		
-		
-
-//		付与区分　←　（特別休暇情報（期間終了日の翌日開始時点）．残数．特別休暇（マイナスあり）残数．付与後）が存在する場合）
-//		　　　　　　　　　true
-//		　　　　　　　　　（存在しない場合）
-//		　　　　　　　　　false
-//
-//		特別休暇付与情報．付与日数←　（特別休暇情報（期間終了日の翌日開始時点）．残数．特別休暇（マイナスあり）残数．付与後）が存在する場合）
-//		　　　　　　　　　　　　　　　　　　　　特別休暇情報（期間終了日の翌日開始時点）．付与残数データ．付与日がINPUT．期間．開始＋１日～INPUT．期間．終了日＋１の付与残数データ．明細．付与数．日数
-//		　　　　　　　　　　　　　　　　　　　　（存在しない場合）
-//		　　　　　　　　　　　　　　　　　　　　NULL
-//		         
-
-// 特別休暇：使用数
-		
+		// 実特別休暇：使用数
 //		実特別休暇．使用数．使用日数．使用日数付与前　←　特別休暇の残数．付与前明細．使用数
 		double actualUseDaysBefore = inPeriod.getRemainDays().getGrantDetailBefore().getUseDays();
 		double actualSpecialUseDays = actualUseDaysBefore;
@@ -345,13 +296,13 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 					new DayNumberOfRemain(specialRemainBefore.getDays().v()));
 		}
 		
-		SpecialLeaveRemainingNumberInfo specialLeaveRemainingNumberInfo
-			= SpecialLeaveRemainingNumberInfo.of(
-					specialLeaveRemainingNumber, remainingNumberBeforeGrant, remainingNumberAfterGrantOpt);
-
-		// 特別休暇
-		domain.specialLeave = new SpecialLeave(
-				specialLeaveUsedInfo, specialLeaveRemainingNumberInfo);
+//		SpecialLeaveRemainingNumberInfo specialLeaveRemainingNumberInfo
+//			= SpecialLeaveRemainingNumberInfo.of(
+//					specialLeaveRemainingNumber, remainingNumberBeforeGrant, remainingNumberAfterGrantOpt);
+//
+//		// 特別休暇
+//		domain.specialLeave = new SpecialLeave(
+//				specialLeaveUsedInfo, specialLeaveRemainingNumberInfo);
 		
 // ------------------------------------------------
 		
@@ -406,10 +357,19 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		
 		
 		
-		
-		
-		
-		
+
+
+//		付与区分　←　（特別休暇情報（期間終了日の翌日開始時点）．残数．特別休暇（マイナスあり）残数．付与後）が存在する場合）
+//		　　　　　　　　　true
+//		　　　　　　　　　（存在しない場合）
+//		　　　　　　　　　false
+//
+//		特別休暇付与情報．付与日数←　（特別休暇情報（期間終了日の翌日開始時点）．残数．特別休暇（マイナスあり）残数．付与後）が存在する場合）
+//		　　　　　　　　　　　　　　　　　　　　特別休暇情報（期間終了日の翌日開始時点）．付与残数データ．付与日がINPUT．期間．開始＋１日～INPUT．期間．終了日＋１の付与残数データ．明細．付与数．日数
+//		　　　　　　　　　　　　　　　　　　　　（存在しない場合）
+//		　　　　　　　　　　　　　　　　　　　　NULL
+//		         
+
 		
 		// 付与区分
 		domain.grantAtr = inPeriod.getRemainDays().getGrantDetailAfter().isPresent();

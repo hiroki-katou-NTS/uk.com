@@ -99,7 +99,12 @@ public class GrantDateTbl extends AggregateRoot {
 		return errors;
 	}
 	
-//	public GrantDateTbl(GrantDateCode grantDateCode, GrantDateName grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
+//	public GrantDateTbl(
+//			GrantDateCode grantDateCode, 
+//			GrantDateName grantDateName, 
+//			boolean isSpecified, 
+//			boolean fixedAssign, 
+//			Integer numberOfDays) {
 //		this.grantDateCode = grantDateCode;
 //		this.grantDateName = grantDateName;
 //		this.isSpecified = isSpecified;
@@ -107,9 +112,19 @@ public class GrantDateTbl extends AggregateRoot {
 //		this.numberOfDays = numberOfDays;
 //	}
 
-//	public static GrantDateTbl createFromJavaType(String grantDateCode, String grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
-//		return new GrantDateTbl(new GrantDateCode(grantDateCode), new GrantDateName(grantDateName), isSpecified, fixedAssign, numberOfDays);
-//	}
+	public static GrantDateTbl createFromJavaType(
+			String grantDateCode, 
+			String grantDateName, 
+			boolean isSpecified, 
+			boolean fixedAssign, 
+			Integer numberOfDays) {
+		return new GrantDateTbl(
+				new GrantDateCode(grantDateCode), 
+				new GrantDateName(grantDateName),
+				isSpecified, 
+				fixedAssign, 
+				numberOfDays);
+	}
 	
 //	/**
 //	 * Create from Java Type

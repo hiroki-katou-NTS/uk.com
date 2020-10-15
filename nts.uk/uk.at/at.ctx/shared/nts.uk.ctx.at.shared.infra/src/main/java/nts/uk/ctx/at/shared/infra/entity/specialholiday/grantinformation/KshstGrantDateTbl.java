@@ -33,9 +33,9 @@ public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
 	@Column(name = "IS_SPECIFIED")
 	public int isSpecified;
 	
-	/* テーブル以降の固定付与をおこなう */
-	@Column(name = "FIXED_ASSIGN")
-	public int fixedAssign;
+//	/* テーブル以降の固定付与をおこなう */
+//	@Column(name = "FIXED_ASSIGN")
+//	public int fixedAssign;
 	
 	/* テーブル以降の毎年付与日数 */
 	@Column(name = "NUMBER_OF_DAYS")
@@ -47,11 +47,11 @@ public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public KshstGrantDateTbl(KshstGrantDateTblPK pk, String grantName, int isSpecified, int fixedAssign, Integer numberOfDays) {
+	public KshstGrantDateTbl(KshstGrantDateTblPK pk, String grantName, int isSpecified, Integer numberOfDays) {
 		this.pk = pk;
 		this.grantName = grantName;
 		this.isSpecified = isSpecified;
-		this.fixedAssign = fixedAssign;
+//		this.fixedAssign = fixedAssign;
 		this.numberOfDays = numberOfDays;
 	}
 }

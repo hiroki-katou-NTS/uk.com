@@ -25,13 +25,11 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
-	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.numberOfDays "
-			+ "FROM KshstGrantDateTbl e "
+	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e FROM KshstGrantDateTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
-	private final static String SELECT_GRANDATE_BY_CODE_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.numberOfDays "
-			+ "FROM KshstGrantDateTbl e "
+	private final static String SELECT_GRANDATE_BY_CODE_QUERY = "SELECT e FROM KshstGrantDateTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
@@ -61,14 +59,14 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @param c
 	 * @return
 	 */
-	private GrantDateTbl createGdDomainFromEntity(Object[] c) {
-		String grantDateCd = String.valueOf(c[0]);
-		String grantName = String.valueOf(c[1]);
-		boolean isSpecified = Integer.parseInt(String.valueOf(c[2])) == 1 ? true : false;
-		boolean fixedAssign = Integer.parseInt(String.valueOf(c[3])) == 1 ? true : false;
-		int numberOfDays = c[4] != null ? Integer.parseInt(String.valueOf(c[4])) : 0;
+	private GrantDateTbl createGdDomainFromEntity(KshstGrantDateTbl c) {
+//		String grantDateCd = String.valueOf(c[0]);
+//		String grantName = String.valueOf(c[1]);
+//		boolean isSpecified = Integer.parseInt(String.valueOf(c[2])) == 1 ? true : false;
+////		boolean fixedAssign = Integer.parseInt(String.valueOf(c[3])) == 1 ? true : false;
+//		int numberOfDays = c[4] != null ? Integer.parseInt(String.valueOf(c[4])) : 0;
 		
-		return GrantDateTbl.createFromJavaType(grantDateCd, grantName, isSpecified, fixedAssign, numberOfDays);
+		return GrantDateTbl.createFromJavaType(c.pk.grantDateCd, c.grantName, c.isSpecified, c.fixedAssign, c.numberOfDays);
 	}
 	
 	/**
@@ -110,7 +108,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
+		return this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, KshstGrantDateTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getList(c -> {
@@ -120,7 +118,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode) {
-		return this.queryProxy().query(SELECT_GRANDATE_BY_CODE_QUERY, Object[].class)
+		return this.queryProxy().query(SELECT_GRANDATE_BY_CODE_QUERY, KshstGrantDateTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.setParameter("grantDateCd", grantDateCode)
@@ -154,8 +152,8 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		KshstGrantDateTbl old = this.queryProxy().find(pk, KshstGrantDateTbl.class).orElse(null);
 		old.grantName = grantDateTbl.getGrantDateName().v();
 		old.isSpecified = grantDateTbl.isSpecified() ? 1 : 0;
-		old.fixedAssign = grantDateTbl.isFixedAssign() ? 1 : 0;
-		old.numberOfDays = grantDateTbl.getNumberOfDays();
+//		old.fixedAssign = grantDateTbl.isFixedAssign() ? 1 : 0;
+//		old.numberOfDays = grantDateTbl.getNumberOfDays();
 		this.commandProxy().update(old);
 		updateElapseYears(grantDateTbl);
 	}

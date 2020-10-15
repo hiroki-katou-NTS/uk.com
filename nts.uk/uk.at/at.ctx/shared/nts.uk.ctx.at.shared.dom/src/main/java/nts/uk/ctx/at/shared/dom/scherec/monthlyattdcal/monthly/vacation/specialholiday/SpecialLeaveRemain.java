@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
 /**
  * 特別休暇残数
@@ -32,5 +33,23 @@ public class SpecialLeaveRemain {
 	public void clear(){
 		days = new SpecialLeaveRemainDay(0.0);
 		time = Optional.empty();
+	}
+	
+	/**
+	 * クローン
+	 */
+	@Override
+	public SpecialLeaveRemain clone() {
+		SpecialLeaveRemain cloned = new SpecialLeaveRemain();
+		try {
+			cloned.days = new SpecialLeaveRemainDay(days.v());
+			if (time.isPresent()){
+				cloned.time = Optional.of(new SpecialLeavaRemainTime(time.get().v()));
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("SpecialLeaveUsedInfo clone error.");
+		}
+		return cloned;
 	}
 }

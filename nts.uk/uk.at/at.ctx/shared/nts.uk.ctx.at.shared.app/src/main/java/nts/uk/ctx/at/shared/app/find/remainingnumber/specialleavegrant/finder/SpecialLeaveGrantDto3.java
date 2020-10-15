@@ -72,35 +72,34 @@ public class SpecialLeaveGrantDto3 extends PeregDomainDto {
 
 	public static SpecialLeaveGrantDto3 createFromDomain(SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto3 dto = new SpecialLeaveGrantDto3();
-		dto.specialid = domain.getSpecialId();
-		dto.cid = domain.getCId();
+		dto.cid = domain.getCid();
 		dto.sid = domain.getEmployeeId();
-		dto.specialLeaCode = domain.getSpecialLeaveCode().v();
+		dto.specialLeaCode = domain.getSpecialLeaveCode();
 		dto.grantDate = domain.getGrantDate();
-		dto.deadlineDate = domain.getDeadlineDate();
+		dto.deadlineDate = domain.getDeadline();
 		dto.expStatus = domain.getExpirationStatus().value;
 		dto.registerType = domain.getRegisterType().value;
-		dto.numberDayGrant = domain.getDetails().getGrantNumber().getDayNumberOfGrant().v();
-		dto.timeGrant = domain.getDetails().getGrantNumber().getTimeOfGrant().isPresent()
-				? domain.getDetails().getGrantNumber().getTimeOfGrant().get().v()
+		dto.numberDayGrant = domain.getDetails().getGrantNumber().getDays().v();
+		dto.timeGrant = domain.getDetails().getGrantNumber().getMinutes().isPresent()
+				? domain.getDetails().getGrantNumber().getMinutes().get().v()
 				: 0;
-		dto.numberDayRemain = domain.getDetails().getRemainingNumber().getDayNumberOfRemain().v();
-		dto.timeRemain = domain.getDetails().getRemainingNumber().getTimeOfRemain().isPresent()
-				? domain.getDetails().getRemainingNumber().getTimeOfRemain().get().v()
+		dto.numberDayRemain = domain.getDetails().getRemainingNumber().getDays().v();
+		dto.timeRemain = domain.getDetails().getRemainingNumber().getMinutes().isPresent()
+				? domain.getDetails().getRemainingNumber().getMinutes().get().v()
 				: 0;
-		dto.numberDayUse = domain.getDetails().getUsedNumber().getDayNumberOfUse().v();
-		dto.timeUse = domain.getDetails().getUsedNumber().getTimeOfUse().isPresent()
-				? domain.getDetails().getUsedNumber().getTimeOfUse().get().v()
+		dto.numberDayUse = domain.getDetails().getUsedNumber().getDays().v();
+		dto.timeUse = domain.getDetails().getUsedNumber().getMinutes().isPresent()
+				? domain.getDetails().getUsedNumber().getMinutes().get().v()
 				: 0;
-		dto.useSavingDays = domain.getDetails().getUsedNumber().getUseSavingDays().isPresent()
-				? domain.getDetails().getUsedNumber().getUseSavingDays().get().v()
+		dto.useSavingDays = domain.getDetails().getUsedNumber().getStowageDays().isPresent()
+				? domain.getDetails().getUsedNumber().getStowageDays().get().v()
 				: 0d;
-		dto.numberDaysOver = domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
-				? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getNumberOverDays().v()
+		dto.numberDaysOver = domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+				? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v()
 				: 0d;
-		dto.timeOver = (domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()
-				&& domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().isPresent())
-						? domain.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver().get()
+		dto.timeOver = (domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+				&& domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().timeOver.isPresent())
+						? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().timeOver.get()
 								.v()
 						: 0;
 		return dto;

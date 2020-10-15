@@ -42,6 +42,10 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     
     //端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
+    
+    
+    
+    
     /**
      * Instantiates a new time vacation setting.
      *

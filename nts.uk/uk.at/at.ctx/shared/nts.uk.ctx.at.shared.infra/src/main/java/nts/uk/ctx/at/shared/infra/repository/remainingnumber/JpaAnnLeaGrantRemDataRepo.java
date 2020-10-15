@@ -101,7 +101,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	public void add(AnnualLeaveGrantRemainingData data) {
 		if(data != null) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
-		entity.annLeavID = data.getAnnLeavID();
+		entity.annLeavID = data.getLeaveID();
 		entity.sid = data.getEmployeeId();
 		entity.cid = data.getCid();
 		updateValue(entity, data);
@@ -113,7 +113,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
 		if (data != null) {
-			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getAnnLeavID(),KRcmtAnnLeaRemain.class);
+			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),KRcmtAnnLeaRemain.class);
 			if (entityOpt.isPresent()) {
 				KRcmtAnnLeaRemain entity = entityOpt.get();
 				updateValue(entity, data);
