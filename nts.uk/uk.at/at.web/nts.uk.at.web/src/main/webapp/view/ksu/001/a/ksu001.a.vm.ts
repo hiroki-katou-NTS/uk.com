@@ -1403,25 +1403,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         setIconEventHeader() {
             setTimeout(() => {
-                
                 // set icon Employee
-                let iconEmpPath = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("7.png").serialize();
+                let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
                 $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
                 
                 // set backgound image icon header
-                let iconEventPath = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("120.png").serialize();
+                let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
                 $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
 
-                let iconNoEventPath = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("121.png").serialize();
+                let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
                 $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
             }, 1);
         }
