@@ -2,34 +2,63 @@
 	width: 1200px !important;
 }
 
-.boder-style {
+.panel-row {
+	float: left;
+	padding: 0px 10px 0px 10px;
+	/*border: 2px solid #B1B1B1;*/
+	/*border-radius: 7px;*/
+}
+#caret-top-container {
+	width: 755px;
+	padding-top: 0px;
+	padding-bottom: 3px;
+}
+
+#row2 {
+	border: 2px solid #B1B1B1;
+	border-radius: 7px;
+	margin-left: 10px;
+	width: 729px;
+}
+
+.border-style {
 	float: left;
 	clear: right;
-	margin-top: 10px;
 }
 
-.contents-area-left {
+.panel-frame {
 	height: 250px;
-	width: 230px;
-	margin-left: 20px;
+	width: 195px;
 }
 
-.contents-area-middle {
-	height: 250px;
-	width: 230px;
-}
-
-.contents-area-right {
-	height: 140px;
-	width: 200px;
-	margin-left: 40px;
+.no-border {
+	border:none !important;
 }
 
 .contents-area-caret-right {
-	height: 300px;
-	width: 65px;
+	height: 280px;
+	width: 50px;
 	float: left;
 	clear: right;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.panel-spacing {
+	height: 280px;
+	width: 40px;
+	float: left;
+}
+
+.contents-area-caret-top {
+	height: 30px;
+	width: 210px;
+	float: right;
+	clear: right;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .lbl-before-ready {
@@ -39,16 +68,22 @@
 }
 
 .panel-custom-font-size {
-	font-size: 2em;
+	font-size: 1.5em;
+	text-align: center;
 }
 
 .lbl-unit-setting-explanation, .lbl-general-labor-explanation {
 	margin-top: 7px;
 }
 
-.btn-unit-setting, .btn-deformed-labor {
-	margin-left: 10px;
+.btn-unit-setting {
 	margin-top: 10px;
+	width: 100%;
+}
+
+.btn-deformed-labor {
+	margin-top: 10px;
+	width: calc(100% - 15px);
 }
 
 .contents-area-right-caret {
@@ -56,11 +91,20 @@
 }
 
 .lbl-general-labor-explanation-margin-top {
-	margin-top: 30px;
+	margin-top: 36px;
 }
 
-.caret-right-kmk008 {
-	margin-left: 47px;
+.lbl-general-labor-explanation-margin-top2 {
+	margin-top: 54px;
+}
+
+.lbl-general-labor-explanation-no-margin-top {
+	margin-top: 0px;
+}
+
+.caret-kmk008 {
+	text-align: center;
+	margin: 3px;
 }
 
 .master_setting_caret.caret-right:after {
@@ -73,13 +117,28 @@
 .master_setting_caret.caret-bottom:after {
 	color: #92D050;
     border-width: 22px 45px;
-    margin-left: 3px;
-    margin-top: 3px;
-    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.master_setting_caret.caret-top:after {
+	color: #92D050;
+	border-width: 22px 45px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .setting_caret.caret-right:after {
 	color: #2ECC71;
     border-width: 13px 9px;
     margin-left: 1px;
+}
+
+
+#A4_13 {
+	margin-top: 40px;
+}
+
+#A4_16 {
+	margin-top: 0px;
 }

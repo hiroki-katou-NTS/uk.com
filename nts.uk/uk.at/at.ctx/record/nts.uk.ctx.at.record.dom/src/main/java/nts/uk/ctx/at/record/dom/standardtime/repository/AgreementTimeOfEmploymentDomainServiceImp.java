@@ -1,28 +1,29 @@
 package nts.uk.ctx.at.record.dom.standardtime.repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeOfEmploymentDomainService {
 
 	@Inject
-	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepostitory;
+	private Employment36HoursRepository agreementTimeOfEmploymentRepostitory;
 
 	@Override
 	public List<String> add(BasicAgreementSetting basicAgreementSetting,
 			AgreementTimeOfEmployment agreementTimeOfEmployment) {
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfEmployment);
 		if (errors.isEmpty()) {
-			this.agreementTimeOfEmploymentRepostitory.add(agreementTimeOfEmployment);
+			this.agreementTimeOfEmploymentRepostitory.insert(agreementTimeOfEmployment);
 		}
 		return errors;
 	}
@@ -30,8 +31,11 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 	@Override
 	public void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId) {
 
-		this.agreementTimeOfEmploymentRepostitory.remove(companyId, employmentCategoryCode,
-				EnumAdaptor.valueOf(laborSystemtAtr, LaborSystemtAtr.class));
+		Optional<AgreementTimeOfEmployment> timeOfEmployment =  agreementTimeOfEmploymentRepostitory.getByCidAndEmployCode(companyId,employmentCategoryCode, EnumAdaptor.valueOf(laborSystemtAtr,LaborSystemtAtr.class));
+		if(timeOfEmployment.isPresent()){
+			//2: delete
+			agreementTimeOfEmploymentRepostitory.delete(timeOfEmployment.get());
+		}
 	}
 
 	@Override

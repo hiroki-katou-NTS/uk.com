@@ -5,6 +5,9 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.approveregister.Krcmt36ArgApvUnit;
 
+import javax.ejb.Stateless;
+
+@Stateless
 public class UnitOfApproverRepoImpl extends JpaRepository implements UnitOfApproverRepo {
 
     @Override

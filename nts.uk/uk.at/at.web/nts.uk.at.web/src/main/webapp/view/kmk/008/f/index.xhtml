@@ -1,309 +1,76 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<div class="sidebar-content-header">
-		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="4"
-			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button class="proceed" tabindex="4"
-			data-bind="click: addUpdateDataClassification, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
-		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-		<button class="danger" tabindex="4"
-			data-bind="click: removeDataClassification , enable: isRemove">#{i18n.getText('KMK008_16')}</button>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
 
-	</div>
-	<div class="contents-area">
-		<div class="tabpanel-1-contents-area-left" style="width: 480px">
+        <com:stylefile path="kmk008.f.main.css"/>
+        <com:scriptfile path="kmk008.f.vm.js"/>
+    </ui:define>
 
-			<div id="empt-list-setting-screen-f"></div>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div id="functions-area-content">
+                <a class="goback" tabindex="4"
+                   data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+            </div>
+        </div>
+        <div id="contents-area">
+            <div id="ccgcomponent" tabindex="1"></div>
 
-		</div>
-		<div class="tabpanel-1-contents-area-right" 
-				data-bind="with: timeOfClassification">
-			<div class="lbl-title-employeer-name">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Class'])}</div>
-				<span class="label" data-bind="text: $parent.currentClassificationName"></span>
-			</div>
-			<div class="label">#{i18n.getText('KMK008_6')}</div>
-			<HR />
-			<table class="table-basic-setting-list">
-				<tr style="background-color: #E0F59E">
-					<th style="width: 25%">#{i18n.getText('KMK008_18')}</th>
-					<th style="width: 25%">#{i18n.getText('KMK008_19')}</th>
-					<th style="width: 25%">#{i18n.getText('KMK008_20')}</th>
-					<th style="width: 25%">#{i18n.getText('KMK008_21')}</th>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_22')}</td>
-					<td><input class="time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorWeek,
-						constraint: 'ErrorWeek',
-						value: errorWeek,
-						inputFormat: 'time',
-						mode: 'time',
-						enable: true,
-						readonly: false,
-						required: false }" />
-					</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmWeek, 
-						constraint: 'AlarmWeek', 
-						value: alarmWeek, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" />
-					</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitWeek, 
-						constraint: 'LimitWeek', 
-						value: limitWeek, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" />
-					</td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_23')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorTwoWeeks, 
-						constraint: 'ErrorTwoWeeks', 
-						value: errorTwoWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" />
-					</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmTwoWeeks, 
-						constraint: 'AlarmTwoWeeks', 
-						value: alarmTwoWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitTwoWeeks, 
-						constraint: 'LimitTwoWeeks', 
-						value: limitTwoWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_24')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorFourWeeks, 
-						constraint: 'ErrorFourWeeks', 
-						value: errorFourWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmFourWeeks,
-						constraint: 'AlarmFourWeeks', 
-						value: alarmFourWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td> 
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitFourWeeks,
-						constraint: 'LimitFourWeeks', 
-						value: limitFourWeeks, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_25')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorOneMonth,
-						constraint: 'ErrorOneMonth', 
-						value: errorOneMonth, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmOneMonth, 
-						constraint: 'AlarmOneMonth', 
-						value: alarmOneMonth, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitOneMonth, 
-						constraint: 'LimitOneMonth', 
-						value: limitOneMonth, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_26')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorTwoMonths, 
-						constraint: 'ErrorTwoMonths', 
-						value: errorTwoMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmTwoMonths,
-						constraint: 'AlarmTwoMonths', 
-						value: alarmTwoMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitTwoMonths, 
-						constraint: 'LimitTwoMonths', 
-						value: limitTwoMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_27')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorThreeMonths, 
-						constraint: 'ErrorThreeMonths', 
-						value: errorThreeMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmThreeMonths,
-						constraint: 'AlarmThreeMonths', 
-						value: alarmThreeMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitThreeMonths,
-						constraint: 'LimitThreeMonths', 
-						value: limitThreeMonths, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-				<tr>
-					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_28')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameErrorOneYear, 
-						constraint: 'ErrorOneYear', 
-						value: errorOneYear, 
-						inputFormat: 'time', 
-						mode: 'time',
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameAlarmOneYear,  
-						constraint: 'AlarmOneYear', 
-						value: alarmOneYear, 
-						inputFormat: 'time', 
-						mode: 'time', 
-						enable: true, 
-						readonly: false, 
-						required: false }" /></td>
-					<td><input class= "time-editor-custom-width" tabindex="5"
-						data-bind="ntsTimeEditor: {
-						name: $parent.nameLimitOneYear,  
-						constraint: 'LimitOneYear', 
-						value: limitOneYear, 
-						inputFormat: 'time', 
-						mode: 'time',
-						enable: false, 
-						readonly: false, 
-						required: false }" /></td>
-				</tr>
-			</table>
+            <div id="main" class=" container cf">
+                <div id="component-items-list"></div>
 
-			<div class="label mt10">#{i18n.getText('KMK008_115')}</div>
-			<HR />
-			<div class="upperMonth">
-				<div
-					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_116')}</div>
-				<input class="time-editor-custom-width" tabindex="27"
-					data-bind="ntsTimeEditor: {
-						name: $parent.nameUpperMonth,  
-						constraint: 'AgreementOneMonthTime', 
-						value: upperMonth, 
-						inputFormat: 'time', 
-						mode: 'time',
-						enable: true, 
-						readonly: false, 
-						required: true }" />
-				<span class="label">#{i18n.getText('KMK008_117')}</span>
-			</div>
-			<div class="upperMonth">
-				<div
-					data-bind="ntsFormLabel: {constraint: 'AgreementOneMonthTime', required: true}">#{i18n.getText('KMK008_119')}</div>
-				<input class="time-editor-custom-width" tabindex="27"
-					data-bind="ntsTimeEditor: {
-						name: $parent.nameUpperMonthAverage,  
-						constraint: 'AgreementOneMonthTime', 
-						value: upperMonthAverage, 
-						inputFormat: 'time', 
-						mode: 'time',
-						enable: true, 
-						readonly: false, 
-						required: true }" />
-				<span class="label">#{i18n.getText('KMK008_124')}</span>
-			</div>
-		</div>
-	</div>
+                <div class="container-right">
+                    <div class="lbl-title-employeer-name">
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Person'])}</div>
+                        <span class="label" data-bind="text: selectedEmpCode"></span>
+                        <span class="label" data-bind="text: employeeName"></span>
+                    </div>
+                    <div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+                        <button class="settingButton small" tabindex="3"
+                                data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
+
+                        <div class="tab-content-1">
+                            <table id="single-list"
+                                   data-bind="ntsGridList: {
+									height: 250,
+									dataSource: items,
+									primaryKey: 'year',
+									columns: columns,
+									multiple: false,
+									value: currentCode
+								    }">
+                            </table>
+                        </div>
+                        <div class="tab-content-2">
+                            <table id="single-list"
+                                   data-bind="ntsGridList: {
+									height: 250,
+									dataSource: items,
+									primaryKey: 'year',
+									columns: columns2,
+									multiple: false,
+									value: currentCode
+								    }">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

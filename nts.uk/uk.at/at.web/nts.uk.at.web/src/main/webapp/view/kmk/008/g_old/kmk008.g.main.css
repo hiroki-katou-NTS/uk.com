@@ -1,0 +1,32 @@
+#settingButton {
+	float: right;
+	margin-bottom: 10px;
+}
+
+.lbl-title-employeer-name{
+	margin-bottom: 10px !important;
+}
+
+.tabpanel-1-contents-area-right {
+	width: 400px;
+	margin-top: 20px;
+	float: left;
+	clean: right;
+}
+
+#component-items-list{
+	float: left; 
+	margin-left: 90px;
+}
+
+#kmk008-tab-panel .ui-tabs-panel > div {
+    height: 300px;
+}
+
+#main{
+	margin-top: 10px;
+}
+#kmk008-tab-panel{
+	margin-top: -25px;
+    position: relative;
+}
