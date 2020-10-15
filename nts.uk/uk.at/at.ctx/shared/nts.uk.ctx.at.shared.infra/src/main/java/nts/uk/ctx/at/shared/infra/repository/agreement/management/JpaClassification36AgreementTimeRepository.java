@@ -8,12 +8,14 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enum
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCls;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtClsPk;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * 	Repository	 分類３６協定時間
  */
+@Stateless
 public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
     private static String FIND_BY_CID;
     private static String FIND_BY_CID_AND_CLS_CD;
