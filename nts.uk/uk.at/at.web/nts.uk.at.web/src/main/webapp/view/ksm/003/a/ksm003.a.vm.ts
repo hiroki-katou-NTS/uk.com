@@ -192,7 +192,7 @@ module nts.uk.at.view.ksm003.a {
                         vm.mainModel().patternName(dataRes.name);
 
                         //disabel addNew button
-                        vm.lessThan99Items(dataRes.infos.length <= vm.maxWorkingTimeItems);
+                        vm.lessThan99Items(dataRes.infos.length < vm.maxWorkingTimeItems);
 
                         //get list item
                         let dailyPatternVals = dataRes.infos.map(function (item) {
@@ -295,7 +295,7 @@ module nts.uk.at.view.ksm003.a {
         disableAddNewLine() {
             let vm = this;
             let dailyPatternVals = vm.mainModel().dailyPatternVals();
-            vm.lessThan99Items(dailyPatternVals.length <= vm.maxWorkingTimeItems);
+            vm.lessThan99Items(dailyPatternVals.length < vm.maxWorkingTimeItems);
         }
 
         //click button open Dialog Working
@@ -537,24 +537,24 @@ module nts.uk.at.view.ksm003.a {
                 }
 
                 //register / update i ok
-                vm.$dialog.info({ messageId: "Msg_15" }).then(() => { });
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                    let patternCode = vm.mainModel().patternCode();
 
-                let patternCode = vm.mainModel().patternCode();
+                    //vm.selectedCode(patternCode);
+                    vm.selectedCheckAll(false);
+                    vm.enableRemoveItem(false);
+                    //reload working list
+                    vm.getListWorkingCycle();
 
-                //vm.selectedCode(patternCode);
-                vm.selectedCheckAll(false);
-                vm.enableRemoveItem(false);
-                //reload working list
-                vm.getListWorkingCycle();
-                
-                if(vm.isEditting()) 
-                    vm.getPatternValByPatternCd(patternCode);
-                else {                   
-                    vm.isEditting(true);
-                }       
+                    if(vm.isEditting())
+                        vm.getPatternValByPatternCd(patternCode);
+                    else {
+                        vm.isEditting(true);
+                    }
 
-                $("#inpPattern").focus();  
-                vm.$blockui("hide");
+                    $("#inpPattern").focus();
+                    vm.$blockui("hide");
+                });
 
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);

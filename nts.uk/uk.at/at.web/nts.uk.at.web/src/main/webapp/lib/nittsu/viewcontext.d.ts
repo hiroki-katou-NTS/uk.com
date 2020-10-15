@@ -216,6 +216,17 @@ interface ComponentViewModel {
 			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
+		/** Like:
+		 *  nts.uk.ui.windows.setShared
+		 *  nts.uk.ui.windows.getShared
+		 */
+		readonly shared: {
+			(name: string): JQueryDeferred<any>;
+			(name: string, params: any): JQueryDeferred<any>;
+		};
+		/**
+		 * Storage data to localStorage with encode data
+		 */
 		readonly storage: {
 			(name: string): JQueryDeferred<any>;
 			(name: string, params: any): JQueryDeferred<any>;
