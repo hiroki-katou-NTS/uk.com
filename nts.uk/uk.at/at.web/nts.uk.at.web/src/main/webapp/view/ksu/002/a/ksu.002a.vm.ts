@@ -6,8 +6,8 @@ module nts.uk.ui.at.ksu002.a {
 
 	type DayData = c.DayData<ScheduleData>;
 	type DayDataRawObsv = c.DayData<ObserverScheduleData>;
-	type DayDataMementoObsv = c.DayData<ObserverScheduleData<WorkSchedule<Date>>>;
-	type Save2Memento = DayData | DayDataRawObsv | DayDataMementoObsv;
+	type DayDataMementoObsv = c.DayData<ObserverScheduleData<WorkSchedule>>;
+	type DayDataSave2Memento = DayData | DayDataRawObsv | DayDataMementoObsv;
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
@@ -94,7 +94,7 @@ module nts.uk.ui.at.ksu002.a {
 							}))
 							.value()
 						)
-						.then((response: WorkSchedule[]) => {
+						.then((response: WorkSchedule<moment.Moment>[]) => {
 							if (response && response.length) {
 								const { NO } = ACHIEVEMENT;
 								const arch = ko.unwrap(vm.achievement);
@@ -300,7 +300,7 @@ module nts.uk.ui.at.ksu002.a {
 		}
 
 		// check state & memento data
-		private memento(current: Save2Memento, preview: Save2Memento) {
+		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
 			const vm = this;
 			const c: DayData = ko.toJS(current);
 			const p: DayData = ko.toJS(preview);
@@ -315,40 +315,51 @@ module nts.uk.ui.at.ksu002.a {
 		}
 	}
 
-	interface WorkSchedule<D = moment.Moment> {
+	interface WorkSchedule<D = Date> {
 		// 実績か
 		achievements: boolean;
-		active: boolean;
 		// 確定済みか
 		confirmed: boolean;
 		// 年月日
 		date: D;
-		edit: boolean;
 		// 社員ID
-		employeeId: string;
-		endTime: null | number;
-		endTimeEditState: null | number;
+		// employeeId: string;
 		// データがあるか
-		haveData: boolean;
-		isActive: boolean;
-		isEdit: boolean;
+		// haveData: boolean;
+		// 勤務予定が必要か
 		needToWork: boolean;
-		startTime: null | number;
-		startTimeEditState: null | number;
 		supportCategory: number;
-		workHolidayCls: null | string;
-		workTimeCode: string;
-		workTimeEditStatus: null | string;
-		workTimeName: string;
+		// 出勤休日区分
+		workHolidayCls: null | number;
+		// 勤務種類コード
 		workTypeCode: string;
-		workTypeEditStatus: null | string;
+		// 勤務種類名
 		workTypeName: string;
+		// 就業時間帯コード
+		workTimeCode: string;
+		// 就業時間帯名
+		workTimeName: string;
+		// 開始時刻
+		startTime: null | number;
+		// 終了時刻
+		endTime: null | number;
+		// 勤務種類編集状態
+		workTypeEditStatus: null | EditStateOfDailyAttd;
+		// 就業時間帯編集状態
+		workTimeEditStatus: null | EditStateOfDailyAttd;
+		// 開始時刻編集状態
+		startTimeEditState: null | EditStateOfDailyAttd;
+		// 終了時刻編集状態
+		endTimeEditState: null | EditStateOfDailyAttd;
+		// Data info for event daisy (sakura)
 		dateInfoDuringThePeriod: DateInfoDuringThePeriod;
 	}
 
 	interface DateInfoDuringThePeriod {
 		// 祝日であるか
 		holiday: boolean;
+		// 特定日であるか
+		specificDay: boolean;
 		// 会社の特定日名称リスト
 		listSpecDayNameCompany: string[];
 		// 職場の特定日名称リスト
@@ -357,7 +368,23 @@ module nts.uk.ui.at.ksu002.a {
 		optCompanyEventName: string | null;
 		//  職場行事名称
 		optWorkplaceEventName: string | null;
-		// 特定日であるか
-		specificDay: boolean;
+	}
+
+	interface EditStateOfDailyAttd {
+		// 勤怠項目ID
+		attendanceItemId: number;
+		// 編集状態: 日別実績の編集状態
+		editStateSetting: EDIT_STATE;
+	}
+
+	enum EDIT_STATE {
+		// 手修正（本人）
+		HAND_CORRECTION_MYSELF = 0,
+		// 手修正（他人）
+		HAND_CORRECTION_OTHER = 1,
+		// 申請反映
+		REFLECT_APPLICATION = 2,
+		// 打刻反映
+		IMPRINT = 3
 	}
 }
