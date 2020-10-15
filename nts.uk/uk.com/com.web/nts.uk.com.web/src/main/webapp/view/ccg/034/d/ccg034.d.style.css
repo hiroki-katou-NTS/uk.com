@@ -37,8 +37,6 @@
 #menu-creation-layout {
   z-index: 1;
   position: relative;
-  width: 1920px;
-  height: 1080px;
   box-sizing: border-box;
   overflow: auto;
   background-attachment: local;
@@ -54,11 +52,14 @@
   border: 2px solid #aaaaaa;
 }
 #menu-creation-layout > .menu-creation-item:hover {
-  cursor: grab;
+  cursor: pointer;
 }
 #menu-creation-layout > .menu-creation-item.ui-selected {
   z-index: 4;
   border: 2px solid #97d155;
+}
+#menu-creation-layout > .menu-creation-item.ui-selected:hover {
+  cursor: grab;
 }
 
 #menu-creation-layout > .menu-creation-item-highlight {

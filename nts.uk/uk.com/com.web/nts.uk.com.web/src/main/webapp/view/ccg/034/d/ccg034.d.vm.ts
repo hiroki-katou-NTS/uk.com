@@ -7,22 +7,29 @@ module nts.uk.com.view.ccg034.d {
     // ...
   }
 
-  const MENU_CREATION_LAYOUT_ID = 'menu-creation-layout';
-  const ITEM_HIGHLIGHT_ID = 'item-highlight';
+  const MENU_CREATION_LAYOUT_ID: string = 'menu-creation-layout';
+  const ITEM_HIGHLIGHT_ID: string = 'item-highlight';
   const CELL_SIZE: number = 40;
+  const CREATION_LAYOUT_WIDTH: number = 1920;
+  const CREATION_LAYOUT_HEIGHT: number = 1080;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
     $menuCreationLayout: JQuery = null;
     $hoverHighlight: JQuery = null;
+    $listPart: JQuery[] = [];
+    partClientId: number = 0;
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
 
     mounted() {
       const vm = this;
       // Init text resource
-      vm.layoutSizeText(vm.$i18n('CCG034_50', ['1920', '1080']));
+      vm.layoutSizeText(vm.$i18n('CCG034_50', [CREATION_LAYOUT_WIDTH.toString(), CREATION_LAYOUT_HEIGHT.toString()]));
       // Store creation layout as class variable for easier access
       vm.$menuCreationLayout = $(`#${MENU_CREATION_LAYOUT_ID}`);
+      vm.$menuCreationLayout
+        .outerWidth(CREATION_LAYOUT_WIDTH)
+        .outerHeight(CREATION_LAYOUT_HEIGHT);
       // Init dragable item
       $(".menu-creation-option").draggable({
         appendTo: `#${MENU_CREATION_LAYOUT_ID}`,
@@ -65,31 +72,38 @@ module nts.uk.com.view.ccg034.d {
      * Create new item on drop from menu
      * @param item
      */
-    private createItemFromMenu(item: JQueryUI.DraggableEventUIParams, partType: string) {
+    private createItemFromMenu(part: JQueryUI.DraggableEventUIParams, partType: string) {
       const vm = this;
       const partSize = vm.getPartSize(partType);
-      // Calculate new item div position
-      const positionTop: number = item.position.top > 0 ? Math.round(item.position.top / CELL_SIZE) * CELL_SIZE : 0;
-      const positionLeft: number = item.position.left > 0 ? Math.round(item.position.left / CELL_SIZE) * CELL_SIZE : 0;
-      // Create new item div
-      const newItem: JQuery = $("<div>", { "class": "menu-creation-item" });
-      newItem
+      // Calculate new part div position
+      const positionTop: number = part.position.top > 0 ? Math.round(part.position.top / CELL_SIZE) * CELL_SIZE : 0;
+      const positionLeft: number = part.position.left > 0 ? Math.round(part.position.left / CELL_SIZE) * CELL_SIZE : 0;
+      // Create new part div
+      const newPart: JQuery = $("<div>", { "class": "menu-creation-item" });
+      const newPartData = new PartData({
+        clientId: vm.partClientId,
+        width: partSize.width,
+        height: partSize.height,
+        minWidth: partSize.width,
+        minHeight: partSize.height,
+        partType: partType,
+        positionTop: positionTop,
+        positionLeft: positionLeft,
+      });
+      vm.partClientId++;
+      newPart
         // Set more attr (highlight width, height, position)
         .outerWidth(partSize.width)
         .outerHeight(partSize.height)
         .css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` })
         // Update item data object
-        .data(new PartData({
-          width: partSize.width,
-          height: partSize.height,
-          minWidth: partSize.width,
-          minHeight: partSize.height,
-          partType: partType,
-          positionTop: positionTop,
-          positionLeft: positionLeft,
-        }));
+        .data(newPartData);
+      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      vm.filterOverlappingPart(newPartData);
+      // Add new item to origin list
+      vm.$listPart.push(newPart);
       // Append to creation layout
-      vm.$menuCreationLayout.append(newItem);
+      vm.$menuCreationLayout.append(newPart);
       // Init selectable creation layout
       vm.$menuCreationLayout.selectable({
         selected: (event, ui) => {
@@ -218,25 +232,30 @@ module nts.uk.com.view.ccg034.d {
      * @param item
      */
     private resizeItem(item: JQueryUI.ResizableUIParams) {
+      const vm = this;
       const partData: PartData = item.element.data();
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
       const height: number = item.element.height() > partData.minHeight ? Math.ceil(item.element.height() / CELL_SIZE) * CELL_SIZE : partData.minHeight;
+      const newPartData = new PartData({
+        clientId: partData.clientId,
+        width: width,
+        height: height,
+        minWidth: partData.minWidth,
+        minHeight: partData.minHeight,
+        partType: partData.partType,
+        positionTop: partData.positionTop,
+        positionLeft: partData.positionLeft,
+      });
       item.element
         // Set more attr (highlight width, height, position)
         .outerWidth(width)
         .outerHeight(height)
         .css({ 'top': `${partData.positionTop}px`, 'left': `${partData.positionLeft}px` })
         // Update item data object
-        .data(new PartData({
-          width: width,
-          height: height,
-          minWidth: partData.minWidth,
-          minHeight: partData.minHeight,
-          partType: partData.partType,
-          positionTop: partData.positionTop,
-          positionLeft: partData.positionLeft,
-        }));
+        .data(newPartData);
+      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      vm.filterOverlappingPart(newPartData);
     }
 
     /**
@@ -244,23 +263,67 @@ module nts.uk.com.view.ccg034.d {
      * @param item
      */
     private moveItem(item: JQueryUI.DraggableEventUIParams) {
+      const vm = this;
       const partData: PartData = item.helper.data();
       // Calculate highlight div position
       const positionTop: number = item.position.top > 0 ? Math.round(item.position.top / CELL_SIZE) * CELL_SIZE : 0;
       const positionLeft: number = item.position.left > 0 ? Math.round(item.position.left / CELL_SIZE) * CELL_SIZE : 0;
+      const newPartData = new PartData({
+        clientId: partData.clientId,
+        width: partData.width,
+        height: partData.height,
+        minWidth: partData.minWidth,
+        minHeight: partData.minHeight,
+        partType: partData.partType,
+        positionTop: positionTop,
+        positionLeft: positionLeft,
+      });
       item.helper
         // Set more attr (highlight width, height, position)
         .css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` })
         // Update item data object
-        .data(new PartData({
-          width: partData.width,
-          height: partData.height,
-          minWidth: partData.minWidth,
-          minHeight: partData.minHeight,
-          partType: partData.partType,
-          positionTop: positionTop,
-          positionLeft: positionLeft,
-        }));
+        .data(newPartData);
+      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      vm.filterOverlappingPart(newPartData);
+    }
+
+    /**
+     * Check and remove overlapping part from creation layout
+     * @param checkingPart
+     */
+    private filterOverlappingPart(checkingPart: PartData) {
+      const vm = this;
+      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      const overlappingParts: JQuery[] = _.filter(vm.$listPart, (part) => vm.isItemOverlapping(checkingPart, part.data()));
+      _.forEach(overlappingParts, (part) => part.remove());
+      // Filter overlap part reference from origin list
+      vm.$listPart = _.filter(vm.$listPart, (part) => !vm.isItemOverlapping(checkingPart, part.data()));
+    }
+
+    /**
+     * Detects if two item part are colliding
+     * https://gist.github.com/jtsternberg/c272d7de5b967cec2d3d
+     * @param partData1
+     * @param partData2
+     */
+    private isItemOverlapping(partData1: PartData, partData2: PartData): boolean {
+      if (partData1.clientId === partData2.clientId) {
+        return false;
+      }
+      // Part data 1
+      const partData1DistanceFromTop = partData1.positionTop + partData1.height;
+      const partData1DistanceFromLeft = partData1.positionLeft + partData1.width;
+      // Part data 2
+      const partData2DistanceFromTop = partData2.positionTop + partData2.height;
+      const partData2DistanceFromLeft = partData2.positionLeft + partData2.width;
+
+      const notColliding = (partData1DistanceFromTop <= partData2.positionTop
+        || partData1.positionTop >= partData2DistanceFromTop
+        || partData1DistanceFromLeft <= partData2.positionLeft
+        || partData1.positionLeft >= partData2DistanceFromLeft);
+
+      // Return whether it IS colliding
+      return !notColliding;
     }
 
     /**
@@ -300,6 +363,7 @@ module nts.uk.com.view.ccg034.d {
   }
 
   class PartData {
+    clientId: number;
     width: number;
     height: number;
     minWidth: number;
