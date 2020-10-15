@@ -83,7 +83,7 @@ module nts.uk.com.view.cmm024.d {
 
 
 				let status = false,
-					params = {
+					params: any = {
 						companyId: dataModel.workPlaceCompanyId,
 						workPlaceId: dataModel.workPlaceCompanyId,
 						startDate: moment.utc(dataModel.scheduleHistoryUpdate.startDate, 'YYYY-MM-DD'),

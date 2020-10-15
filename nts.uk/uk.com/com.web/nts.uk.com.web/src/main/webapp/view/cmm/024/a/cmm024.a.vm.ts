@@ -6,9 +6,7 @@ module nts.uk.com.view.cmm024.a {
 	import ScheduleHistoryDto = nts.uk.com.view.cmm024.a.common.ScheduleHistoryDto;
 	import Model = nts.uk.com.view.cmm024.a.common.Model;
 	import HistoryRes = nts.uk.com.view.cmm024.a.common.HistoryRes;
-	import HistoryUpdate = nts.uk.com.view.cmm024.a.common.HistoryUpdate;
 	import ScreenModel = nts.uk.com.view.cmm024.a.common.ScreenModel;
-	import ScheduleHistory = nts.uk.com.view.cmm024.a.common.ScheduleHistory;
 	import ScheduleHistoryModel = common.ScheduleHistoryModel;
 
 	@bean()
@@ -192,7 +190,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-			let params = {
+			let params: any = {
 				companyId: vm.company().id, //ログイン会社ID				
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
@@ -232,7 +230,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-			let params = {
+			let params: any = {
 				companyId: vm.company().id, //ログイン会社ID								 
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
@@ -494,7 +492,7 @@ module nts.uk.com.view.cmm024.a {
 						vm.company().name = response.companyName;
 						//A2-6 - Schedule history listing
 						if (!nts.uk.util.isNullOrEmpty(response.scheduleHistory)) {
-							response.scheduleHistory.map((history) => {
+							response.scheduleHistory.map((history: any) => {
 								tempScheduleList.push(
 									new ScheduleHistoryDto(
 										history.startDate,
@@ -864,7 +862,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-			let params = {
+			let params:any = {
 				workPlaceId: vm.selectedWkpId(), //最新履歴の職場ID			
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
@@ -903,7 +901,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.$blockui('show');
 
-			let params = {
+			let params:any = {
 				workPlaceId: vm.selectedWkpId(), //最新履歴の職場ID
 				startDate: moment.utc(currentScheduleItem.startDate(), 'YYYY-MM-DD'), //期間
 				endDate: moment.utc(currentScheduleItem.endDate(), 'YYYY-MM-DD'), //期間
