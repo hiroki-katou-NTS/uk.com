@@ -67,6 +67,11 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 		return lstMailFunction;
 	}
 
+	@Override
+	public List<MailFunction> findAll() {
+		return null;
+	}
+
 	private MailFunction toDomain(SevmtMailFunction entity) {
 		return new MailFunction(new JpaMailFunctionGetMemento(entity));
 	}
