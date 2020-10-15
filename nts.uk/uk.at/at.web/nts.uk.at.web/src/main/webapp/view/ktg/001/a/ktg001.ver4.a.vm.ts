@@ -26,7 +26,7 @@ module nts.uk.at.view.ktg001 {
 
 	export interface IApprovedDataExecutionResult {
 		haveParticipant: Boolean;
-		topPagePartName: String;
+		topPagePartName: string;
 		appDisplayAtr: Boolean;
 		dayDisplayAtr: Boolean;
 		monthDisplayAtr: Boolean;
@@ -52,7 +52,7 @@ module nts.uk.at.view.ktg001 {
 	}
 
 	interface IResponse {
-		approvalDataExecutionResult: IApprovedDataExecutionResult;
+		approvedDataExecutionResultDto: IApprovedDataExecutionResult;
 		approvalProcessingUseSetting: IApprovalProcessingUseSetting;
 	}
 
@@ -65,11 +65,11 @@ module nts.uk.at.view.ktg001 {
 	@bean()
 	class ViewModel extends ko.ViewModel {
 
-		title: String = '';
-		appText: KnockoutObservable<string> = ko.observable('');
-		dayText: KnockoutObservable<string> = ko.observable('');
-		monText: KnockoutObservable<string> = ko.observable('');
-		aggrText: KnockoutObservable<string> = ko.observable('');
+		title: KnockoutObservable<string> = ko.observable('');
+		appText: KnockoutObservable<string> = ko.observable('あり');
+		dayText: KnockoutObservable<string> = ko.observable('あり');
+		monText: KnockoutObservable<string> = ko.observable('あり');
+		aggrText: KnockoutObservable<string> = ko.observable('あり');
 		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
 		param: KnockoutObservable<IParam> = ko.observable(null);
 		visible: KnockoutObservable<Boolean> = ko.observable(false);
@@ -77,6 +77,8 @@ module nts.uk.at.view.ktg001 {
 		created() {
 
 		}
+		
+		setting(){}
 
 		mounted() {
 			let vm = this;
@@ -98,30 +100,30 @@ module nts.uk.at.view.ktg001 {
 			
 			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
 				if (data) {
-					let approvalDataExecution = data.approvalDataExecutionResult;
+					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
 
-					vm.title = approvalDataExecution.topPagePartName;
+					vm.title(approvedDataExecution.topPagePartName);
 
-					approvalDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
+					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
 						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
-							vm.appText = approvalDataExecution.appDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvalDataExecution.appDisplayAtr);
+							vm.appText = approvedDataExecution.appDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
+							vm.visible(approvedDataExecution.appDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true) {
-							vm.dayText = approvalDataExecution.dayDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvalDataExecution.dayDisplayAtr);
+							vm.dayText = approvedDataExecution.dayDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
+							vm.visible(approvedDataExecution.dayDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true) {
-							vm.monText = approvalDataExecution.monthDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvalDataExecution.monthDisplayAtr);
+							vm.monText = approvedDataExecution.monthDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
+							vm.visible(approvedDataExecution.monthDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
-							vm.aggrText = approvalDataExecution.aggrDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvalDataExecution.aggrDisplayAtr);
+							vm.aggrText = approvedDataExecution.aggrDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
+							vm.visible(approvedDataExecution.aggrDisplayAtr);
 						}
 
 					})
@@ -131,21 +133,21 @@ module nts.uk.at.view.ktg001 {
 
 		}
 
-		/*applicationList() {
-			windows.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+		applicationList() {
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
 		}
 
 		dayPerformanceConfirm() {
-			windows.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
 		}
 
 		monPerformanceConfirm() {
-			windows.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
 		}
 
 		aggrementApproval() {
 		}
-*/
+
 
 
 	}
