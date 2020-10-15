@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -26,8 +26,8 @@ public class UpdateStampRequestSettingCommandHandler extends CommandHandler<Stam
 	protected void handle(CommandHandlerContext<StampRequestSettingCommand> context) {
 		StampRequestSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<StampRequestSetting> stamp = stampRep.findByCompanyID(companyId);
-		StampRequestSetting stampRequest = data.toDomain(companyId);
+		Optional<StampRequestSetting_Old> stamp = stampRep.findByCompanyID(companyId);
+		StampRequestSetting_Old stampRequest = data.toDomain(companyId);
 		if(stamp.isPresent()){
 			stampRep.updateStamp(stampRequest);
 			return;

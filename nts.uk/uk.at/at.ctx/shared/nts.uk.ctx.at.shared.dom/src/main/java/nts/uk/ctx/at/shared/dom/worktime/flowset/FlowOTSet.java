@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -12,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 //流動残業設定
 @Getter
-public class FlowOTSet extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowOTSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The fixed change atr. */
 	//所定変動区分
@@ -43,5 +47,17 @@ public class FlowOTSet extends WorkTimeDomainObject {
 	 */
 	public void correctData(FlowOTSet other) {
 		this.fixedChangeAtr = other.getFixedChangeAtr();
+	}
+	
+	@Override
+	public FlowOTSet clone() {
+		FlowOTSet cloned = new FlowOTSet();
+		try {
+			cloned.fixedChangeAtr = FixedChangeAtr.valueOf(this.fixedChangeAtr.value);
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowOTSet clone error.");
+		}
+		return cloned;
 	}
 }

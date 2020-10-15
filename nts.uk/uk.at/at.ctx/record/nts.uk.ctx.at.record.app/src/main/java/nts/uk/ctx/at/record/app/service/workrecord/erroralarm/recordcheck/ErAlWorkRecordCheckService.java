@@ -27,7 +27,6 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
@@ -45,6 +44,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHol
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -554,9 +554,10 @@ public class ErAlWorkRecordCheckService {
 
 		for (int i = 0; i < subWorkInfos.size(); i++) {
 			WorkInfoOfDailyPerformance info = subWorkInfos.get(i);
-			WorkTypeCode currentWTC = info.getRecordInfo().getWorkTypeCode();
 
-			if (setting.getTargetWorkType().contains(currentWTC) || !markPreviousDate) {
+			WorkTypeCode currentWTC = info.getWorkInformation().getRecordInfo().getWorkTypeCode();
+			
+			if(setting.getTargetWorkType().contains(currentWTC) || !markPreviousDate) {
 
 				if (markPreviousDate) {
 					markDate = info.getYmd();
@@ -569,7 +570,7 @@ public class ErAlWorkRecordCheckService {
 
 				for (int j = i + 1; j < subWorkInfos.size(); j++) {
 					WorkInfoOfDailyPerformance info2 = subWorkInfos.get(j);
-					WorkTypeCode currentWTC2 = info2.getRecordInfo().getWorkTypeCode();
+					WorkTypeCode currentWTC2 = info2.getWorkInformation().getRecordInfo().getWorkTypeCode();
 
 					if (!setting.getTargetWorkType().contains(currentWTC2)
 							&& !setting.getIgnoreWorkType().contains(currentWTC2)) {
@@ -669,15 +670,15 @@ public class ErAlWorkRecordCheckService {
 				condition.getCheckTargetCondtion())) {
 			return false;
 		}
-		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
-		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream()
-				.map(c -> c.sumCheckTarget(item -> {
-					if (item.isEmpty()) {
-						return new ArrayList<>();
-					}
-					return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
-							.collect(Collectors.toList());
-				})).collect(Collectors.toList());
+
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
+		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
+			if (item.isEmpty()) {
+				return new ArrayList<>();
+			}
+			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
+					.collect(Collectors.toList());
+		})).collect(Collectors.toList());
 
 		return condition.checkWith(workInfo, item -> {
 			if (item.isEmpty()) {
@@ -697,15 +698,15 @@ public class ErAlWorkRecordCheckService {
 				condition.getCheckTargetCondtion())) {
 			return new ResultCheckWith(false, null);
 		}
-		WorkInfoOfDailyPerformance workInfo = record.getWorkInfo().toDomain(record.employeeId(), record.getDate());
-		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream()
-				.map(c -> c.sumCheckTarget(item -> {
-					if (item.isEmpty()) {
-						return new ArrayList<>();
-					}
-					return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
-							.collect(Collectors.toList());
-				})).filter(v -> v != null).collect(Collectors.toList());
+
+		WorkInfoOfDailyPerformance workInfo =new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
+		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
+			if (item.isEmpty()) {
+				return new ArrayList<>();
+			}
+			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
+					.collect(Collectors.toList());
+		})).filter(v -> v != null).collect(Collectors.toList());
 
 		return new ResultCheckWith(condition.checkWith(workInfo, item -> {
 			if (item.isEmpty()) {

@@ -79,6 +79,13 @@ public class BasicWorkSetting extends DomainObject {
 		return true;
 	}
 
+	public BasicWorkSetting(WorktypeCode worktypeCode, WorkingCode workingCode, WorkdayDivision workdayDivision) {
+		super();
+		this.worktypeCode = worktypeCode;
+		this.workingCode = workingCode;
+		this.workdayDivision = workdayDivision;
+	}
+
 	
 	
 }

@@ -9,15 +9,22 @@
 		<ui:define name="extended-header">
 			<com:scriptfile path="kdl023.b.vm.js" />
 			<com:scriptfile path="kdl023.b.start.js" />
+			<com:stylefile path="kdl023.b.style.css"/>
 		</ui:define>
 		<ui:define name="period-calendar-header">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_23')}</div>
-			<span style="margin-left: 20px" data-bind="text: calendarStartDate.format('YYYY/MM/DD')"></span>
-			<span>#{i18n.getText('KDL023_24')}</span>
-			<span data-bind="text: calendarEndDate.format('YYYY/MM/DD')"></span>
+			<div id="daterangepicker" class="kdl023-daterange" tabindex="1" data-bind="ntsDateRangePicker: {
+				required: true,
+				enable: true,
+				showNextPrevious: false,
+				value: dateValue,
+				maxRange: 'oneYear',
+				type: 'yearmonth'}"/>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button tabindex="13" id="btnDecide" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL023_21')}</button>
+			<div data-bind="ntsCheckBox: { checked: false, style: 'warnpanel'}">#{i18n.getText('KDL023_37')}</div>
+			<br/>
+			<button tabindex="13" id="btnDecide" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
 			<button tabindex="14" id="btnCancel" class="large" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
 		</ui:define>
 	</ui:composition>

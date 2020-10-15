@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -16,6 +15,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.dispatchedinforma
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.AddPersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.AddPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.DeletePersonInfoHR;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.DeletePersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHROutput;
@@ -75,9 +75,9 @@ public class PersonInfoTestWebService extends WebService {
 	}
 	
 	@POST
-	@Path("deletePersonInfo/{histId}")
-	public void testDeletePersonHR(@PathParam("histId") String histId) {
-		deletePerson.deletePersonalInfo(histId);
+	@Path("deletePersonInfo")
+	public void testDeletePersonHR(List<DeletePersonInfoHRInput> input) {
+		deletePerson.deletePersonalInfo(input);
 	}
 	
 	@POST

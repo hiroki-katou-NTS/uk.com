@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
 /**
  * 
@@ -20,14 +21,15 @@ public interface DetailBeforeUpdate {
 	 * @param version
 	 * @param wkTypeCD
 	 * @param wkTimeCd
+	 * @param appDispInfoStartupOutput
 	 */
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
-			PrePostAtr postAtr, Long version,String wkTypeCD, String wkTimeCd);
+			PrePostAtr postAtr, int version,String wkTypeCD, String wkTimeCd, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 1.排他チェック
 	 */
-	public void exclusiveCheck(String companyID, String appID, Long version);
+	public void exclusiveCheck(String companyID, String appID, int version);
 	/**
 	 * 4-1.詳細画面登録前の処理 (CMM045)
 	 * @param companyID 会社ID 
@@ -38,7 +40,7 @@ public interface DetailBeforeUpdate {
 	 * @param postAtr 事前事後区分
 	 */
 	public boolean processBefDetailScreenReg(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
-			PrePostAtr postAtr, Long version);
+			PrePostAtr postAtr, int version, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	/**
 	 * 1.排他チェック (CMM045)
 	 * @param companyID
@@ -46,7 +48,7 @@ public interface DetailBeforeUpdate {
 	 * @param version
 	 * @return
 	 */
-	public boolean exclusiveCheckErr(String companyID, String appID, Long version);
+	public boolean exclusiveCheckErr(String companyID, String appID, int version);
 
 	/**
 	 * 勤務種類、就業時間帯チェックのメッセージを表示

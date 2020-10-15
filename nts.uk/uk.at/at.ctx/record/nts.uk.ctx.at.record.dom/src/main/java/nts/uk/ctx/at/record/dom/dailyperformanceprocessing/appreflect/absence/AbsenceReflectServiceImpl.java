@@ -6,24 +6,25 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalculateOfAppReflectParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 @Stateless
@@ -41,23 +42,24 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private PreOvertimeReflectService preOTService;
 	@Inject 
 	private RecordDomRequireService requireService;
+
 	@Override
 	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
 		CommonReflectParameter absencePara = param.getCommon();
 			GeneralDate loopDate = absencePara.getAppDate();
 			IntegrationOfDaily dailyInfor = preOTService.calculateForAppReflect(absencePara.getEmployeeId(), loopDate);
-			WorkInfoOfDailyPerformance workInfor = dailyInfor.getWorkInformation();
+			WorkInfoOfDailyPerformance workInfor = new WorkInfoOfDailyPerformance(param.getCommon().getEmployeeId(), param.getCommon().getAppDate(), dailyInfor.getWorkInformation());
 			//1日休日の判断
-			if(workInfor.getRecordInfo().getWorkTypeCode() != null
+			if(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
 					&& WorkTypeIsClosedService.checkHoliday(requireService.createRequire(),
-							workInfor.getRecordInfo().getWorkTypeCode().v())) {
+								workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v())) {
 				return;
 			}
 			boolean isRecordWorkType = false;
 			//予定勤種の反映
-			if(workInfor.getScheduleInfo() == null 
-					|| workInfor.getScheduleInfo().getWorkTimeCode() == null
-					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, workInfor.getScheduleInfo().getWorkTimeCode().v())) {
+			if(workInfor.getWorkInformation().getScheduleInfo() == null 
+					|| workInfor.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null
+					|| commonService.checkReflectScheWorkTimeType(absencePara, isPre, workInfor.getWorkInformation().getScheduleInfo().getWorkTimeCode().v())) {
 				isRecordWorkType = true;
 				workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), true, dailyInfor);
 			}				
@@ -109,7 +111,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Override
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode,
 			IntegrationOfDaily dailyInfor) {
-		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode, dailyInfor.getAttendanceLeave());
+		TimeLeavingOfDailyPerformance dailyPerformance = new TimeLeavingOfDailyPerformance(employeeId, baseDate, dailyInfor.getAttendanceLeave().get());
+		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode, Optional.ofNullable(dailyPerformance));
 		//開始終了時刻をクリアするかチェックする 値：０になる。	
 		if(!isCheckClean) return;
 		workTimeUpdate.cleanRecordTimeData(employeeId, baseDate, dailyInfor);
@@ -145,7 +148,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	 * @return
 	 */
 	private boolean checkReflectNenkyuTokkyu(TimeLeavingOfDailyPerformance timeLeavingOfDaily, int workNo) {
-		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getTimeLeavingWorks().stream()
+		List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDaily.getAttendance().getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo().v() == workNo).collect(Collectors.toList());
 		if(!timeLeavingWorks.isEmpty()) {
 			TimeLeavingWork timeLeaving1 = timeLeavingWorks.get(0);
@@ -155,7 +158,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optWorkStamp = attendanceStamp.getStamp();
 				if(optWorkStamp.isPresent()) {
 					WorkStamp workStamp = optWorkStamp.get();
-					if(workStamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+					if(workStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION) {
 						return false;
 					}
 				}
@@ -166,7 +169,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				Optional<WorkStamp> optStamp = leaveStamp.getStamp();
 				if(optStamp.isPresent()) {
 					WorkStamp stamp = optStamp.get();
-					if(stamp.getStampSourceInfo() == StampSourceInfo.SPR) {
+					if(stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION) {
 						return false;
 					}
 				}

@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,8 +22,8 @@ public class InsertAppWorkChangeSetCommandHandler extends CommandHandler<AppWork
 	protected void handle(CommandHandlerContext<AppWorkChangeSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		AppWorkChangeSetCommand data = context.getCommand();
-		Optional<AppWorkChangeSet> appWork = appWorkRep.findWorkChangeSetByID(companyId);
-		AppWorkChangeSet appChange = AppWorkChangeSet.createFromJavaType(companyId, 
+		Optional<AppWorkChangeSet_Old> appWork = appWorkRep.findWorkChangeSetByID(companyId);
+		AppWorkChangeSet_Old appChange = AppWorkChangeSet_Old.createFromJavaType(companyId, 
 				data.getExcludeHoliday(), data.getWorkChangeTimeAtr(), data.getDisplayResultAtr(), 
 				data.getInitDisplayWorktime(), data.getCommentContent1(), data.getCommentFontWeight1(), 
 				data.getCommentFontColor1(), data.getCommentContent2(), data.getCommentFontWeight2(), 

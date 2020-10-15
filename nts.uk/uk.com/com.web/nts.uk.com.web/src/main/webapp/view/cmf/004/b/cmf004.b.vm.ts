@@ -331,7 +331,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             block.invisible();
             //Get Data PerformDataRecover for Screen KCP 005
             service.findPerformDataRecover(self.recoveryProcessingId).done(function(data: any) {
-               console.log(); 
+               console.log();
                 if (data.targets) {
                     self.employeeListScreenG.removeAll();
                     let employeeData: Array<any> = [];
@@ -465,10 +465,10 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             if (checkItemE == 0) {
                 dialog.alertError({ messageId: "Msg_1265" });
             } else {
-                
+
                 $('#data-recovery-wizard').ntsWizard("next");
                 $("#F5_5:first-child .start-date input:first-child").focus();
-                
+
             }
 
         }

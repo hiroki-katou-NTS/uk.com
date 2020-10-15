@@ -55,4 +55,13 @@ public interface MonthlyPatternRepository {
 	 */
 	public Optional<MonthlyPattern> findById(String companyId, String monthlyPatternCode);
 
+	/**
+	 * Check exists.
+	 * exists(会社ID, 月間パターンコード)
+	 *
+	 * @param companyId the company id
+	 * @param monthlyPatternCode the monthly pattern code
+	 */
+	public boolean exists(String companyId, String monthlyPatternCode);
+
 }

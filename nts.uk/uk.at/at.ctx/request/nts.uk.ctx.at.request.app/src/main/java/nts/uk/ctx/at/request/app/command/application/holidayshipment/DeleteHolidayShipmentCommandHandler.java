@@ -27,13 +27,13 @@ public class DeleteHolidayShipmentCommandHandler
 	protected ProcessResult	 handle(CommandHandlerContext<HolidayShipmentCommand> context) {
 		HolidayShipmentCommand command = context.getCommand();
 		String companyID = AppContexts.user().companyId();
-		Long version = command.getAppVersion();
+		int version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の削除」を実行する
 		return deleteAppForPaidLeave(command, companyID, version);
 
 	}
 
-	private ProcessResult deleteAppForPaidLeave(HolidayShipmentCommand command, String companyID, Long version) {
+	private ProcessResult deleteAppForPaidLeave(HolidayShipmentCommand command, String companyID, int version) {
 
 		boolean isDeleteRec = command.getRecAppID() != null;
 		boolean isDeleteAbs = command.getAbsAppID() != null;
@@ -67,9 +67,11 @@ public class DeleteHolidayShipmentCommandHandler
 
 	}
 
-	private ProcessResult deleteProcess(String companyID, String appID, Long version) {
+	private ProcessResult deleteProcess(String companyID, String appID, int version) {
 		// アルゴリズム「詳細画面削除後の処理」を実行する
-		return this.afterDelete.screenAfterDelete(companyID, appID, version).getProcessResult();
+		// refactor 4 error
+		/*return this.afterDelete.screenAfterDelete(companyID, appID, version).getProcessResult();*/
+		return null;
 	}
 
 }

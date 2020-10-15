@@ -71,12 +71,11 @@ public interface ApprovalRootStateAdapter {
 	
 	public void insertFromCache(String companyID, String appID, GeneralDate date, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
 	
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate, String memo);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	public void doReleaseAllAtOnce(String companyID, String rootStateID);
 	
@@ -96,7 +95,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
 	
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo);
 	
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
 	
@@ -149,10 +148,24 @@ public interface ApprovalRootStateAdapter {
 	 * @param companyID
 	 * @return
 	 */
-	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, 
+	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, String approverID,
 			List<String> lstAgent, DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
     
     public List<ApprovalPhaseStateImport_New> getApprovalDetail(String appID);
+    
+    /**
+     * refactor 4
+     * @param listApprovalPhaseState
+     */
+    public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
+    
+    /**
+     * refactor 4
+     * @param appIDs
+     * @param companyID
+     * @return
+     */
+    public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalPhaseByID(List<String> appIDLst);
     
 }

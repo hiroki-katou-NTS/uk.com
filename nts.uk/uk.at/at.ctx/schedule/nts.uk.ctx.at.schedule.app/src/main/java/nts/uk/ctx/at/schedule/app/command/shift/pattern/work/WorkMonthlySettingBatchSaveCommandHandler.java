@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
@@ -96,11 +97,6 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// get command
 		WorkMonthlySettingBatchSaveCommand command = context.getCommand();
 
-		// check not setting
-		if (CollectionUtil.isEmpty(command.getWorkMonthlySetting())) {
-			throw new BusinessException("Msg_148");
-		}
-
 		// convert to map domain update
 		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = command
 				.getWorkMonthlySetting().stream().collect(Collectors.toMap((dto) -> {
@@ -117,27 +113,18 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// update begin date
 		toDate = this.toDate(yearMonth * MONTH_MUL + NEXT_DAY);
 
-		// loop year month setting
-		while (this.getYearMonth(toDate) == yearMonth) {
-			if (!mapWorkMonthlySetting.containsKey(this.getYearMonthDate(toDate))) {
-				throw new BusinessException("Msg_148");
-			}
-			toDate = this.nextDay(toDate);
-		}
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
+        List<GeneralDate> baseDates = lstDomain.stream().map(domainsetting -> domainsetting.getYmdk()).collect(Collectors.toList());
+		lstDomain = lstDomain.stream().filter(x -> x.getWorkInformation().getWorkTypeCode() != null &&
+				!StringUtil.isNullOrEmpty(x.getWorkInformation().getWorkTypeCode().v(),false)
+				&& !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
-		// check not setting
-		lstDomain.forEach(domain -> {
-			if (StringUtil.isNullOrEmpty(domain.getWorkTypeCode().v(), true)) {
-				throw new BusinessException("Msg_148");
-			}
-		});
 
 		// check setting work type
 		lstDomain.forEach(domain -> {
 			Optional<WorkType> worktype = this.workTypeRepository.findByPK(companyId,
-					domain.getWorkTypeCode().v());
+					domain.getWorkInformation().getWorkTypeCode().v());
 
 			// not exist data
 			if (!worktype.isPresent()) {
@@ -152,9 +139,10 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check setting work time
 		lstDomain.forEach(domain -> {
-			if (!StringUtil.isNullOrEmpty(domain.getWorkingCode().v(), true)) {
+			if (domain.getWorkInformation().getWorkTimeCode()!= null
+					&& !StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTimeCode().v(), true)) {
 				Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
-						domain.getWorkingCode().v());
+						domain.getWorkInformation().getWorkTimeCode().v());
 
 				// not exist data
 				if (!worktime.isPresent()) {
@@ -170,8 +158,8 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check pair work type and work time
 		lstDomain.forEach(domain -> {
-			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkTypeCode().v(),
-					domain.getWorkingCode().v());
+			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkInformation().getWorkTypeCode().v(),
+					domain.getWorkInformation().getWorkTimeCode() == null ? null : domain.getWorkInformation().getWorkTimeCode().v());
 		});
 
 		// command to domain
@@ -208,9 +196,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// get list domain update
 		List<WorkMonthlySetting> domainUpdates = this.workMonthlySettingRepository.findByYMD(
-				companyId, lstDomain.get(INDEX_FIRST).getMonthlyPatternCode().v(),
-				lstDomain.stream().map(domainsetting -> domainsetting.getYmdk())
-						.collect(Collectors.toList()));
+				companyId,command.getMonthlyPattern().getCode(), baseDates);
 
 		// convert to map domain update
 		Map<GeneralDate, WorkMonthlySetting> mapDomainUpdate = domainUpdates.stream()
@@ -226,11 +212,11 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// domain update all, add all collection
 		lstDomain.forEach(domainsetting -> {
-			
-			if (StringUtils.isEmpty(domainsetting.getWorkingCode().v())){
-				domainsetting.setWorkingCode(null);
+
+			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode() == null ? null : domainsetting.getWorkInformation().getWorkTimeCode().v())){
+				domainsetting.setWorkInformation(new WorkInformation(domainsetting.getWorkInformation().getWorkTypeCode().v(),null));
 			}
-			
+
 			// check exist of domain update
 			if (mapDomainUpdate.containsKey(domainsetting.getYmdk())) {
 				updateAllDomains.add(domainsetting);
@@ -239,8 +225,18 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 			}
 		});
 		// update all list domain
+
 		this.workMonthlySettingRepository.updateAll(updateAllDomains);
 
+		List<GeneralDate> listYmdk = new ArrayList<>();
+		updateAllDomains.forEach(x -> {
+			listYmdk.add(x.getYmdk());
+		});
+
+		List<WorkMonthlySetting> deleteAllDomains = domainUpdates.stream().filter(x -> !listYmdk.contains(x.getYmdk())).collect(Collectors.toList());
+		deleteAllDomains.forEach(x -> {
+			this.workMonthlySettingRepository.deleteWorkMonthlySettingById(x.getCompanyId().v(),x.getMonthlyPatternCode().v(),x.getYmdk());
+		});
 		// add all list domain
 		this.workMonthlySettingRepository.addAll(addAllDomains);
 	}
@@ -302,13 +298,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 	/**
 	 * To date.
 	 *
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param day
-	 *            the day
-	 * @return the date
+	 * @param yearMonthDate
 	 */
 	public Date toDate(int yearMonthDate) {
 		Calendar cal = Calendar.getInstance();

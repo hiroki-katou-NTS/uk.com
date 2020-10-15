@@ -27,6 +27,7 @@ public interface CompanyAdapter {
 	 */
 	// RequestList557
 	YearMonth getYearMonthFromCalenderYM(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
-
+	
+	
 	Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
 }

@@ -13,6 +13,10 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
+import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -101,5 +105,38 @@ public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.historyId;
+	}
+
+	public KshmtScheduleMethod(String sid, String historyId, int basicCreateMethod, Integer refBusinessDayCalendar,
+			Integer refBasicWork, Integer refWorkingHours) {
+		super();
+		this.sid = sid;
+		this.historyId = historyId;
+		this.basicCreateMethod = basicCreateMethod;
+		this.refBusinessDayCalendar = refBusinessDayCalendar;
+		this.refBasicWork = refBasicWork;
+		this.refWorkingHours = refWorkingHours;
+	}
+	
+	public ScheduleMethod toDomain() {
+		WorkScheduleBusCal workScheduleBusCal = null;
+		if(this.refBusinessDayCalendar != null && this.refBasicWork != null &&  this.refWorkingHours != null) {
+			workScheduleBusCal = new WorkScheduleBusCal(
+					this.refBusinessDayCalendar ==null?null:WorkScheduleMasterReferenceAtr.valueOf(this.refBusinessDayCalendar),
+							this.refBasicWork ==null?null:WorkScheduleMasterReferenceAtr.valueOf(this.refBasicWork),
+					this.refWorkingHours ==null?null:TimeZoneScheduledMasterAtr.valueOf(this.refWorkingHours));
+		}
+		return new ScheduleMethod(
+				this.basicCreateMethod,
+				workScheduleBusCal,
+				null);
+		
+	}
+	
+	public static KshmtScheduleMethod toEntity(ScheduleMethod scheduleMethod,String sid,String historyId) {
+		return new KshmtScheduleMethod(sid, historyId, scheduleMethod.getBasicCreateMethod().value, 
+				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value):null,
+				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value):null,
+				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value):null);
 	}
 }

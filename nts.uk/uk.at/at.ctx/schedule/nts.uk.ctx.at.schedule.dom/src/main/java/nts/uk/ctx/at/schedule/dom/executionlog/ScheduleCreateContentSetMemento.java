@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import nts.arc.time.GeneralDate;
 
+import java.util.Optional;
+
 /**
  * The Interface ExecutionContentSetMemento.
  */
@@ -16,22 +18,6 @@ public interface ScheduleCreateContentSetMemento {
 	public void setExecutionId(String executionId);
 
 	/**
-	 * Sets the copy start date.
-	 *
-	 * @param copyStartDate
-	 *            the new copy start date
-	 */
-	public void setCopyStartDate(GeneralDate copyStartDate);
-
-	/**
-	 * Sets the creates the method atr.
-	 *
-	 * @param createMethodAtr
-	 *            the new creates the method atr
-	 */
-	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr);
-
-	/**
 	 * Sets the confirm.
 	 *
 	 * @param confirm
@@ -42,66 +28,33 @@ public interface ScheduleCreateContentSetMemento {
 	/**
 	 * Sets the implement atr.
 	 *
-	 * @param implementAtr
-	 *            the new implement atr
+	 * @param creationType
+	 *            the new creation Type
 	 */
-	public void setImplementAtr(ImplementAtr implementAtr);
+	public void setcreationType(ImplementAtr creationType);
 
 	/**
-	 * Sets the process execution atr.
+	 * Sets the specify Creation.
 	 *
-	 * @param processExecutionAtr
-	 *            the new process execution atr
+	 * @param specifyCreation
+	 *            the new specify Creation
 	 */
-	public void setProcessExecutionAtr(ProcessExecutionAtr processExecutionAtr);
+	public void setSpecifyCreation(SpecifyCreation specifyCreation);
 
 	/**
-	 * Sets the re create atr.
+	 * Sets the recreate Condition.
 	 *
-	 * @param reCreateAtr
-	 *            the new re create atr
+	 * @param recreateCondition
+	 *            the new re recreate Condition
 	 */
-	public void setReCreateAtr(ReCreateAtr reCreateAtr);
+	public void setRecreateCondition(Optional<RecreateCondition> recreateCondition);
 
 	/**
-	 * Sets the reset master info.
+	 * Sets CopyStartDate
 	 *
-	 * @param resetMasterInfo
-	 *            the new reset master info
+	 * @param copyStartDate
+	 *            the new specify Creation
 	 */
-	public void setResetMasterInfo(Boolean resetMasterInfo);
+	public void setCopyStartDate(GeneralDate copyStartDate);
 
-	/**
-	 * Sets the reset working hours.
-	 *
-	 * @param resetWorkingHours
-	 *            the new reset working hours
-	 */
-	public void setResetWorkingHours(Boolean resetWorkingHours);
-
-	/**
-	 * Sets the reset time assignment.
-	 *
-	 * @param resetTimeAssignment
-	 *            the new reset time assignment
-	 */
-	public void setResetTimeAssignment(Boolean resetTimeAssignment);
-
-	public void setResetStartEndTime(Boolean resetStartEndTime);
-
-	// RebuildTargetAtr
-	public void setRebuildTargetAtr(RebuildTargetAtr rebuildTargetAtr);
-
-	// RebuildTargetDetailsAtr
-	public void setRecreateConverter(Boolean recreateConverter);
-
-	public void setRecreateEmployeeOffWork(Boolean recreateEmployeeOffWork);
-
-	public void setRecreateDirectBouncer(Boolean recreateDirectBouncer);
-
-	public void setRecreateShortTermEmployee(Boolean recreateShortTermEmployee);
-
-	public void setRecreateWorkTypeChange(Boolean recreateWorkTypeChange);
-
-	public void setProtectHandCorrection(Boolean protectHandCorrection);
 }

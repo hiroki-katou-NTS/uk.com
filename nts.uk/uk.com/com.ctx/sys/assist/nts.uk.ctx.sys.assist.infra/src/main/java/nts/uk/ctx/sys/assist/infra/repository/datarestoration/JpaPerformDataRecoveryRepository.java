@@ -399,12 +399,21 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static TableList fromDomain(Object[] objectSurfaceItem) {
 
-		return new TableList(objectSurfaceItem[0].toString(), objectSurfaceItem[1].toString(),
-				objectSurfaceItem[2].toString(), objectSurfaceItem[3].toString(), objectSurfaceItem[4].toString(),
-				objectSurfaceItem[5].toString(), Integer.parseInt(objectSurfaceItem[6].toString()),
-				Integer.parseInt(objectSurfaceItem[7].toString()), Integer.parseInt(objectSurfaceItem[8].toString()),
-				objectSurfaceItem[9].toString(), Integer.parseInt(objectSurfaceItem[10].toString()),
-				objectSurfaceItem[11].toString(), objectSurfaceItem[12].toString());
+		return new TableList(
+				objectSurfaceItem[0].toString(), 
+				objectSurfaceItem[1].toString(),
+				objectSurfaceItem[2].toString(), 
+				objectSurfaceItem[3].toString(), 
+				objectSurfaceItem[4].toString(),
+				objectSurfaceItem[5].toString(), 
+				Integer.parseInt(objectSurfaceItem[6].toString()),
+				Integer.parseInt(objectSurfaceItem[7].toString()), 
+				Integer.parseInt(objectSurfaceItem[8].toString()),
+				objectSurfaceItem[9].toString(), 
+				Integer.parseInt(objectSurfaceItem[10].toString()),
+				objectSurfaceItem[11].toString(), 
+				objectSurfaceItem[12].toString(),
+				Integer.parseInt(objectSurfaceItem[13].toString()));
 	}
 
 	@Override

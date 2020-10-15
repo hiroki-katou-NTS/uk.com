@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedSetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHDOccUnit;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateSetMemento;

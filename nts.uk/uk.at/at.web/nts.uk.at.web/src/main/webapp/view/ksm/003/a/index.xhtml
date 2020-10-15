@@ -1,141 +1,140 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-<ui:composition template="../../../../master/base.xhtml">
-    <ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE"/>
-        <com:ValidatorScript>
-            nts.uk.ctx.at.schedule.dom.shift.workcycle.NumOfWorkingDays
-            nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode
-            nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName
-        </com:ValidatorScript>
-        <com:stylefile path="ksm003.a.main.css"/>
-        <com:scriptfile path="ksm003.a.vm.js"/>
-    </ui:define>
-    <ui:define name="content">
-        <div id="functions-area" style="height: 55px">
-            <!-- B1_1: Button New -->
-            <button tabindex="1" id="btn_001"
-                    class="button separate-button fix-button"
+    <ui:composition template="../../../../master/base.xhtml">
+        <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
+            <com:ValidatorScript>
+                nts.uk.ctx.at.schedule.dom.shift.workcycle.NumOfWorkingDays
+                nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode
+                nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName
+            </com:ValidatorScript>
+            <com:stylefile path="ksm003.a.main.css" />
+            <com:scriptfile path="ksm003.a.vm.js" />
+        </ui:define>
+        <ui:define name="content">
+            <div id="functions-area">
+                <!-- B1_1: Button New -->
+                <button tabindex="1" id="btn_001" class="button separate-button fix-button"
                     data-bind="click: switchNewMode">#{i18n.getText('KSM003_20')}</button>
-            <!-- B1_2: Button Registration -->
-            <button tabindex="2" id="btn_002"
-                    class="button proceed separate-button fix-button"
+                <!-- B1_2: Button Registration -->
+                <button tabindex="2" id="btn_002" class="button proceed separate-button fix-button"
                     data-bind="click: saveWorking, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
-            <!-- B1_3: Button Display pattern -->
-            <button tabindex="3" id="btn_005"
-                    class="button separate-button fix-button"
-                    data-bind="click: openDialogWorking, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_35')}</button>
-            <!-- B1_4: Button Delete -->
-            <button tabindex="4" id="btn_004"
-                    class="button danger separate-button fix-button"
-                    data-bind="click: deletePattern, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
-            <!-- B1_4: Button Export Excel -->
-            <button tabindex="5" data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
-        </div>
-        <div id="content-area" class="ksm003-content-area">
-            <div id="left-content" style="float: left" class="bg-green caret-right caret-background">
-                <div style="float: left; margin: 20px">
-                    <!-- B2_2: List Divergence Reason -->
-                    <table tabindex="6" id="single-list"
-                           data-bind="ntsGridList:{
+                <!-- B1_3: Button Display pattern -->
+                <button tabindex="3" id="btn_005" class="button separate-button fix-button"
+                    data-bind="click: openDialogWorking, enable: isEditting()">#{i18n.getText('KSM003_35')}</button>
+                <!-- B1_4: Button Delete -->
+                <button tabindex="4" id="btn_004" class="button danger separate-button fix-button"
+                    data-bind="click: deletePattern, enable: isEditting()">#{i18n.getText('KSM003_22')}</button>
+                <!-- B1_4: Button Export Excel -->
+                <button tabindex="5" data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
+            </div>
+            <div id="content-area" class="ksm003-content-area">
+                <div id="left-content" style="float: left" class="bg-green caret-right caret-background">
+                    <div style="float: left; margin: 20px">
+                        <!-- B2_2: List Divergence Reason -->
+                        <table tabindex="6" id="single-list" data-bind="ntsGridList:{
 								width: 330,
-								height: 255,
+								height: 263,
 								options: itemLst,
 								optionsValue: 'code',
 								primaryKey: 'code',
-								columns: columns,
+								columns: [
+                                    { headerText: '#{i18n.getText('KSM003_26')}', key: 'code', formatter: _.escape, width: 100 },
+                                    { headerText: '#{i18n.getText('KSM003_27')}', key: 'name', formatter: _.escape, width: 200 },
+                                ],
 								multiple: false,
 								value: selectedCode,
 								enable: true}">
-                    </table>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div id="right-content" style="float: left;">
-                <div class="work-cycle-header">
-                    <div data-bind="ntsFormLabel: {required: true,constraint:['WorkCycleCode','WorkCycleName'] }">#{i18n.getText('KSM003_28')}</div>
-                    <input tabindex="7" class="nts-input" id="inpCode"
-                           data-bind="ntsTextEditor: {
+                <div id="right-content" style="float: left;">
+                    <div class="work-cycle-header" data-bind="with: mainModel">
+                        <div data-bind="ntsFormLabel: {required: true,constraint:['WorkCycleCode','WorkCycleName'] }">
+                            #{i18n.getText('KSM003_28')}</div>
+                        <input tabindex="7" class="nts-input" id="inpCode" data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
-                                          value: selectedCode,
+                                          value: patternCode,
                                           constraint: 'WorkCycleCode',
-                                          enable: !isEditting(),
-                                          required: true}"/>
-                    <!-- B3_3:Pattern Name-->
-                    <input tabindex="8" class="nts-input" id="inpPattern"
-                           data-bind="ntsTextEditor: {
+                                          enable: !$parent.isEditting(),
+                                          required: true}" />
+                        <!-- B3_3:Pattern Name-->
+                        <input tabindex="8" class="nts-input" id="inpPattern" data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
-                                          value: selectedName,
+                                          value: patternName,
                                           constraint: 'WorkCycleName',
-                                          required: true}"/>
-                </div>
-                <!-- Button -->
-                <div style="padding-bottom: 10px;">
-                    <Button tabindex="9" class="button"
+                                          required: true}" />
+                    </div>
+                    <!-- Button -->
+                    <div>
+                        <Button tabindex="9" class="button"
                             data-bind="click: addNewItem, enable: lessThan99Items()">#{i18n.getText('KSM003_4')}</Button>
-                    <Button tabindex="10" class="button danger"
+                        <Button tabindex="10" class="button danger"
                             data-bind="{click: removeLine, enable: enableRemoveItem()}">#{i18n.getText('KSM003_5')}</Button>
-                </div>
-                <div class="nts-fixed-header-container ui-iggrid nts-fixed-header">
-                    <div class="nts-fixed-header-wrapper">
-                        <div id="fixed-table-list" tabindex="11">
-                            <table id="fixedTable" width="100%">
-                                <colgroup>
-                                    <col width="35px"/>
-                                    <col width="55px"/>
-                                    <col width="125px"/>
-                                    <col width="125px"/>
-                                    <col width="110px"/>
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th class="ui-widget-header" style="text-align: center;">
-                                        <div tabindex="-1" class="chkboxListAll"
-                                             data-bind="ntsCheckBox: { checked: selectedCheckAll, name: '#[KSM003_23]' }"></div>
-                                    </th>
-                                    <th class="ui-widget-header"></th>
-                                    <th class="ui-widget-header">#{i18n.getText('KSM003_30')}</th>
-                                    <th class="ui-widget-header">#{i18n.getText('KSM003_31')}</th>
-                                    <th class="ui-widget-header">#{i18n.getText('KSM003_32')}</th>
-                                </tr>
-                                </thead>
-                                <tbody data-bind="foreach: dailyPatternValModel">
-                                <tr data-bind="attr: {id: 'row-' + dispOrder}">
-                                    <td>
-                                        <div tabindex="-1" class="chkbox-list"
-                                             data-bind="ntsCheckBox: { checked: isChecked }"></div>
-                                    </td>
-                                    <td>
-                                        <button tabindex="-1" class="button buttonEvent"
-                                                data-bind="attr: {id: 'btnVal' + dispOrder}, click: openDialogWorkDays">#{i18n.getText('KSM003_34')}</button>
-                                    </td>
-                                    <td><span data-bind="text: workTypeInfo"></span></td>
-                                    <td><span data-bind="text: workingInfo"></span></td>
-                                    <td><input tabindex="-1" class="nts-editor"
-                                               data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'NumOfWorkingDays', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
-                                               style="width: 20px; text-align: center;"/> #{i18n.getText('KSM003_33')}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="up-down-button">
-                            <div class="buttons">
-                                <button tabindex="12" class="auto-height" data-bind="click: upBtn"><i
-                                        class="icon icon-button-arrow-top"/></button>
-                                <button tabindex="13" class="auto-height down-btn" data-bind="click: downBtn"><i
-                                        class="icon icon-button-arrow-bottom"/></button>
+                    </div>
+                    <div class="nts-fixed-header-container ui-iggrid nts-fixed-header">
+                        <div class="nts-fixed-header-wrapper">
+                            <div id="fixed-table-list" tabindex="11">
+                                <table id="fixedTable" width="100%">
+                                    <colgroup>
+                                        <col width="35px" />
+                                        <col width="55px" />
+                                        <col width="125px" />
+                                        <col width="125px" />
+                                        <col width="110px" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th class="ui-widget-header" style="text-align: center;">
+                                                <div tabindex="-1" class="chkboxListAll"
+                                                    data-bind="ntsCheckBox: { checked: selectedCheckAll, name: '#[KSM003_23]' }">
+                                                </div>
+                                            </th>
+                                            <th class="ui-widget-header"></th>
+                                            <th class="ui-widget-header">#{i18n.getText('KSM003_30')}</th>
+                                            <th class="ui-widget-header">#{i18n.getText('KSM003_31')}</th>
+                                            <th class="ui-widget-header">#{i18n.getText('KSM003_32')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: dailyPatternValModel">
+                                        <tr data-bind="attr: {id: 'row-' + dispOrder}">
+                                            <td>
+                                                <div tabindex="-1" class="chkbox-list"
+                                                    data-bind="ntsCheckBox: { checked: isChecked }"></div>
+                                            </td>
+                                            <td>
+                                                <button tabindex="-1" class="button buttonEvent"
+                                                    data-bind="attr: {id: 'btnVal' + dispOrder}, click: function($data){ $vm.openDialogToSetWorkDays($data); }">#{i18n.getText('KSM003_34')}</button>
+                                            </td>
+                                            <td><span data-bind="text: workTypeInfo"></span></td>
+                                            <td><span data-bind="text: workingInfo"></span></td>
+                                            <td><input tabindex="-1" class="nts-editor"
+                                                    data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'NumOfWorkingDays', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
+                                                    style="width: 20px; text-align: center;" />
+                                                #{i18n.getText('KSM003_33')}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="up-down-button">
+                                <div class="buttons">
+                                    <button tabindex="12" class="auto-height" data-bind="click: upBtn"><i
+                                            class="icon icon-button-arrow-top" /></button>
+                                    <button tabindex="13" class="auto-height down-btn" data-bind="click: downBtn"><i
+                                            class="icon icon-button-arrow-bottom" /></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </ui:define>
-</ui:composition>
+        </ui:define>
+    </ui:composition>
 </body>
+
 </html>

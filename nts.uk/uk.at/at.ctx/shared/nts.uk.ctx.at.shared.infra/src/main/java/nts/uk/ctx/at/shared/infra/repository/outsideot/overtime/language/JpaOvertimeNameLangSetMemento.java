@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK;
 

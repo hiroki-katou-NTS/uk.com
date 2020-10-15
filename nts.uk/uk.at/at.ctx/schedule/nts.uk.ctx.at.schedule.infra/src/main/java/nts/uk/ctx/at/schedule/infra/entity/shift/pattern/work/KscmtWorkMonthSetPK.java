@@ -10,7 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
@@ -20,6 +22,8 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class KscmtWorkMonthSetPK implements Serializable {
 
@@ -30,37 +34,14 @@ public class KscmtWorkMonthSetPK implements Serializable {
 	@Column(name = "CID")
 	private String cid;
 
-	/** The m pattern cd. */
-	@Column(name = "M_PATTERN_CD")
+	/** The monthly pattern code. */
+	@Column(name = "CD")
 	private String mPatternCd;
 
 	/** The ymd K. */
-	@Column(name = "YMD_K")
+	@Column(name = "YMD")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate ymdK;
+	private GeneralDate ymdM;
 
-	/**
-	 * Instantiates a new kwmmt work month set PK.
-	 */
-	public KscmtWorkMonthSetPK() {
-		super();
-	}
-
-	/**
-	 * Instantiates a new kwmmt work month set PK.
-	 *
-	 * @param cid
-	 *            the cid
-	 * @param mPatternCd
-	 *            the m pattern cd
-	 * @param ymdK
-	 *            the ymd K
-	 */
-	public KscmtWorkMonthSetPK(String cid, String mPatternCd, GeneralDate ymdK) {
-		super();
-		this.cid = cid;
-		this.mPatternCd = mPatternCd;
-		this.ymdK = ymdK;
-	}
 
 }

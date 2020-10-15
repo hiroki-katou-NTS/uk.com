@@ -8,79 +8,13 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kaf018.f.main.css" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="kaf018.f.start.js" />
-			<com:scriptfile path="kaf018.f.service.js" />
-			<com:scriptfile path="kaf018.f.vm.js" />
-			<com:scriptfile path="kaf018.f.start.js" />
+			<com:stylefile path="/view/kaf/018/f/kaf018.f.css" />
+			<com:scriptfile path="/view/kaf/018/f/kaf018.f.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- F1_1 -->
-				<a class="goback"
-					data-bind="ntsLinkButton: { action: goBackA }">#{i18n.getText('KAF018_17')}</a>
-				<!-- F1_2 -->
-				<button tabindex="1" data-bind="click: backToE">#{i18n.getText('KAF018_59')}</button>
 			</div>
 			<div id="contents-area">
-				<table class="tbl-control">
-					<colgroup>
-						<col width="200px" />
-						<col />
-					</colgroup>
-					<tr>
-						<td>
-							<!-- F2_1 -->
-							<button class="auto-height" tabindex="2"
-								data-bind="click: preWkp, enable: enablePre">
-								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
-							</button> <!-- F2_2 -->
-							<button class="auto-height" tabindex="3"
-								data-bind="click: nextWkp, enable: enableNext">
-								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
-							</button>
-						</td>
-						<td>
-							<!-- F2_3 -->
-							<div class="label" data-bind="text: selectedWplName"></div>
-						</td>
-					</tr>
-				</table>
-				<table class="tbl-control">
-					<colgroup>
-						<col width="100px" />
-						<col width="100px" />
-						<col width="930px" />
-						<col width="100px" />
-					</colgroup>
-					<tr>
-						<td>
-							<!-- F3 -->
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
-						</td>
-						<td>
-							<!-- F3_1 -->
-							<div class="limited-label label"
-								data-bind="text: closureName"></div>
-						</td>
-						<td>
-							<!-- F4 --> <!-- F4_1 -->
-							<div class="limited-label label">
-								<span data-bind="text: processingYm"></span> (<span
-									data-bind="text: startDateFormat"></span> ~ <span
-									data-bind="text: endDateFormat"></span>)
-							</div>
-						</td>
-						<td class="align-right">
-							<!-- F10 -->
-							<button tabindex="-1" data-bind="ntsLegendButton: legendOptions">#{i18n.getText('KAF018_65')}</button>
-						</td>
-					</tr>
-				</table>
-				<!-- F5 -->
-				<div tabindex="4" id="extable"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

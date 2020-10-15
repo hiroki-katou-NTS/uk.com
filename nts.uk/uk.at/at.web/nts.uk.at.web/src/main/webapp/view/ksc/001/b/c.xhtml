@@ -7,135 +7,114 @@
 <body>
 	<ui:composition>
 		<com:EnumScript>
-			nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr
-			nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr
-			nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr
+			nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr
 		</com:EnumScript>
-
-		<div class="contentC">
-			<div style="height: 60px">
-				<div class="top-left" style="float: left; width: 50%;">
-					<div tabindex="-1">
-						<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
-					</div>
-					<div tabindex="-1" class="labelSchedule">
-						<label tabindex="-1">#{i18n.getText('KSC001_3')}</label>
-						<div id="inputSelectImplementAtr" tabindex="1"
-							class="selectImplementAtr"
-							data-bind="ntsSwitchButton: {
-								options: selectImplementAtr,
-								optionsValue: 'id',
-								optionsText: 'name',
-								name: '#[KSC001_81]',
-								value: selectedImplementAtrCode,
-								required: true,
-								enable: true }">
-						</div>
-						<button class="helpButton" tabindex="2"
-							data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
-					</div>
-				</div>
-
-				<!-- <div class="top-right" style="float: left; width: 50%;">
-					<div class="checkboxSettingEnd" tabindex="-1">
-						<div tabindex="15" data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
-					</div>
-					<div class="labelSettingEnd" tabindex="-1">
-						<label tabindex="-1">#{i18n.getText('KSC001_18')}</label>
-					</div>
-				</div> -->
+		<div class="contentC panel-content" tabindex="-1"> <!-- D ==> C -->
+			<div class="periodCovered" tabindex="-1">
+				<div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+				<div tabindex="-1" class="info-period-date" data-bind="text: infoPeriodDate"></div>
 			</div>
-
+			<div class="tab-header"><!-- C_1 -->
+				<label tabindex="-1">#{i18n.getText('KSC001_21')}</label>
+			</div>
 			<div class="selectionCase" tabindex="-1">
-				<div>
-					<label tabindex="-1">#{i18n.getText('KSC001_100')}</label>
-					<!-- <label tabindex="-1">＜対象データ＞</label> -->
+				<div tabindex="-1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSC001_30')}</div>
+				<div class="radioButtonGroup">
+					<div class="radioboxCaseAll" tabindex="1" id="inputCreateMethodAtr">
+						<div tabindex="-1" class="radioboxCase">
+							<div tabindex="-1"
+								data-bind="ntsRadioButton: {
+								checked: checkCreateMethodAtrPersonalInfo,
+								option: lstCreateMethod()[0], name: '#[KSC001_30]',
+								optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
+						</div>
+						<div tabindex="-1" class="radioboxCase">
+                            <!-- C2_4 --> <!-- checkCreateMethodAtrPersonalInfo -->
+							<div tabindex="-1"
+								data-bind="ntsRadioButton: {
+								checked: checkCreateMethodAtrPersonalInfo,
+								option: lstCreateMethod()[1],
+								name: $i18n('KSC001_30'),
+								optionValue: 'value', optionText: 'name',
+								group: 'KSC001_30'}" />
+                            <!-- C2_5 -->
+							<div class="comboBoxLists">
+								<div class="comboBoxItem">
+									<div class="item">#{i18n.getText('KSC001_113')}</div>
+									<div tabindex="2"  data-bind="ntsComboBox: {
+									name: $i18n('KSC001_107'),
+									options: creationMethodReference,
+									optionsValue: 'code',
+									value: creationMethodCode,
+									optionsText: 'name',
+									editable: false,
+									enable:  isCreationMethod,
+									required: false,
+									selectFirstIfNull: true,
+									visibleItemsCount: 4
+									}"></div>
+								</div>
+								<div class="comboBoxItem">
+									<div class="item">#{i18n.getText('KSC001_111')}</div>
+									<div class="monthly-pattern-code" tabindex="3"  id="monthlyPatternCode"
+										 data-bind="ntsComboBox: {
+											name: $i18n('KSC001_111'),
+											options: monthlyPatternOpts,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: monthlyPatternCode,
+											editable: false,
+											enable:  isMonthlyPattern,
+											required: isMonthlyPatternRq,
+											selectFirstIfNull: true,
+											visibleItemsCount: 5
+											}"></div>
+								</div>
+							</div>
+						</div>
+						<div tabindex="-1" class="radioboxCase">
+                            <!-- C2_5 -->
+							<div tabindex="-1"
+								data-bind="ntsRadioButton: {
+								checked: checkCreateMethodAtrPersonalInfo,
+								option: lstCreateMethod()[2],
+								name: '#[KSC001_30]', optionValue: 'value', optionText: 'name',
+								group: 'KSC001_30'}" />
+								<div tabindex="-1" class="comboBoxLists">
+									<div class="comboBoxItem"><!-- c2_14 -->
+                                        <div class="item" tabindex="-1">#{i18n.getText('KSC001_26')}</div>
+                                        <div tabindex="4" id="copy-start-date"
+                                             data-bind="ntsDatePicker: {value: copyStartDate,
+                                                        dateFormat: 'YYYY/MM/DD', required: true,
+                                                        name: '#[KSC001_26]', enable: isCopyStartDate}"></div>
+									</div>
+								</div>
+							</div>
+					</div>
 				</div>
-				<div
-					style="margin-left: 20px; margin-top: 10px; float: left; width: 100%">
-					<div tabindex="3" id="inputCheckReCreateBox"
-						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: isReCreate, option: lstReCreate()[0], 
-													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
-					<div style="margin-left: 20px;" tabindex="3"
-						data-bind="ntsRadioButton: { checked: checkReCreateAtrAllCase, enable: false, option: lstReCreate()[1], 
-													name: '#[KSC001_82]', optionValue: 'value', optionText: 'name', group: 'KSC001_82'}" />
-				</div>
-
-				<div tabindex="-1">
-					<label style="display: inline-block; margin-top: 10px;">#{i18n.getText('KSC001_6')}</label>
-				</div>
-				<div style="float: left" class="radioboxProcessExecutionAtr">
-					<div tabindex="4"
-						data-bind="ntsRadioButton: { checked: checkProcessExecutionAtrRebuild, enable: isReCreate, option: lstProcessExecution()[0], 
-													name: '#[KSC001_83]', optionValue: 'value', optionText: 'name', group: 'KSC001_83'}" />
-				</div>
-
-				<div id="inputRebuildAtr" tabindex="5" class="radioboxRebuildAtr"
-					data-bind="ntsSwitchButton: {
-					options: selectRebuildAtr,
-					optionsValue: 'id',
-					optionsText: 'name',
-					name: '#[KSC001_88]',
-					value: selectRebuildAtrCode,
-					required: true,
-					enable: isEnableRadioboxRebuildAtr }">
-				</div>
-
-				<div class="checkboxSetting" tabindex="-1">
-					<div class="checkboxOne" tabindex="6"
-						data-bind="ntsCheckBox: { checked: recreateConverter, 
-						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_91')}</div>
-					<div class="checkboxOne" tabindex="7"
-						data-bind="ntsCheckBox: { checked: recreateEmployeeOffWork,
-						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_92')}</div>
-					<div class="checkboxOne" tabindex="8"
-						data-bind="ntsCheckBox: { checked: recreateDirectBouncer,
-						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_93')}</div>
-				</div>
-				<div class="checkboxSetting" tabindex="-1">
-					<div class="checkboxOne" tabindex="9"
-						data-bind="ntsCheckBox: { checked: recreateShortTermEmployee, 
-						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_94')}</div>
-					<div class="checkboxOne" tabindex="10"
-						data-bind="ntsCheckBox: { checked: recreateWorkTypeChange,
-						enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_95')}</div>
-				</div>
-				<!-- <div class="radioboxProcessExecutionAtr">
-					<div tabindex="4"
-						data-bind="ntsRadioButton: { checked: checkProcessExecutionAtrRebuild, enable: isReCreate, option: lstProcessExecution()[1], 
-													name: '#[KSC001_83]', optionValue: 'value', optionText: 'name', group: 'KSC001_83'}" />
-				</div>
-
-				<div class="checkboxSetting-1" tabindex="-1">
-					<div class="checkboxOne-1" tabindex="11"
-						data-bind="ntsCheckBox: { checked: resetWorkingHours, 
-						enable: isReSetting }">#{i18n.getText('KSC001_96')}</div>
-					<div class="checkboxOne-1" tabindex="12"
-						data-bind="ntsCheckBox: { checked: resetMasterInfo,
-						enable: isReSetting }">#{i18n.getText('KSC001_97')}</div>
-				</div>
-				<div class="checkboxSetting-1" tabindex="-1">
-					<div class="checkboxOne-1" tabindex="13"
-						data-bind="ntsCheckBox: { checked: resetStartEndTime, 
-						enable: isReSetting }">#{i18n.getText('KSC001_98')}</div>
-					<div class="checkboxOne-1" tabindex="14"
-						data-bind="ntsCheckBox: { checked: resetTimeAssignment,
-						enable: isReSetting }">#{i18n.getText('KSC001_99')}</div>
-				</div> -->
+                <!-- C3_2 -->
+                <com:ko-if bind="isAttendance()">
+                <div id="confirmedCreation">
+                    <div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_101')}</div>
+                    <div class="radioButtonGroup comboBoxLists">
+                        <div class="checkBoxItem">
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
+                        </div>
+                    </div>
+                </div>
+                </com:ko-if>
 			</div>
-
-			<div style="margin-top: 140px; margin-left: 362px;">
+			
+			<div class="buttonPrevNext">
 				<div class="buttonBeginPrevious" tabindex="-1">
-					<button class="large" tabindex="16"
-						data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>
+					<button tabindex="6" class="large" data-bind="click: previousPageC">#{i18n.getText('KSC001_102')}</button>
 				</div>
-				<div class="buttonBeginNext" tabindex="-1">
-					<button tabindex="17" class="proceed x-large"
-						data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+				<div class="buttonBeginNext">
+					<button tabindex="7" class="proceed x-large"
+						data-bind="click: nextPageC, enable: $root.errors.isEmpty">#{i18n.getText('KSC001_20')}</button> <!-- , enable: $root.errors.isEmpty() &amp; isEnableNextPageC()  -->
 				</div>
 			</div>
 		</div>
-
 	</ui:composition>
 </body>
 </html>

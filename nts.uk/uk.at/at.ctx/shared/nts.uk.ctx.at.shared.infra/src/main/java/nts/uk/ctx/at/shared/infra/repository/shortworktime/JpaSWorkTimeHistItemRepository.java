@@ -226,7 +226,7 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		List<DateHistoryItem> resultHist = new ArrayList<>();
 
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD = ? AND END_YMD >= ? AND SID IN ("
+			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {

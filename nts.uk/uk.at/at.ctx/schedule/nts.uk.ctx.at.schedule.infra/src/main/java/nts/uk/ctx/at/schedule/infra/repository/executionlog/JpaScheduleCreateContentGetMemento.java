@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.dom.executionlog.*;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
+
+import java.util.Optional;
 
 /**
  * The Class JpaExecutionContentGetMemento.
@@ -37,8 +36,16 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 * getCopyStartDate()
 	 */
 	@Override
-	public GeneralDate getCopyStartDate() {
-		return this.entity.getCopyStartYmd();
+	public SpecifyCreation getSpecifyCreation() {
+		return new SpecifyCreation(
+				CreationMethod.valueOf(this.entity.getCreationMethod()),
+				Optional.ofNullable(this.entity.getCopyStartYmd()),
+				Optional.ofNullable(this.entity.getReferenceMaster() == null?  null:
+						ReferenceMaster.valueOf(this.entity.getReferenceMaster())),
+				Optional.ofNullable(StringUtil.isNullOrEmpty(this.entity.getMonthlyPatternId(),false)? null:
+						new MonthlyPatternCode(this.entity.getMonthlyPatternId()))
+
+		);
 	}
 
 	/*
@@ -48,8 +55,18 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 * getCreateMethodAtr()
 	 */
 	@Override
-	public CreateMethodAtr getCreateMethodAtr() {
-		return CreateMethodAtr.valueOf(this.entity.getCreateMethodAtr());
+	public Optional<RecreateCondition> getRecreateCondition() {
+		return Optional.of(new RecreateCondition(
+				this.entity.getReTargetAtr(),
+				this.entity.getReOverwriteConfirmed(),
+				this.entity.getReOverwriteRevised(),
+				Optional.of(new ConditionEmployee(
+						this.entity.getReTargetTransfer(),
+						this.entity.getReTargetLeave(),
+						this.entity.getReTargetShortWork(),
+						this.entity.getReTargetLaborChange()
+				))
+		));
 	}
 
 	/*
@@ -60,7 +77,7 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 */
 	@Override
 	public Boolean getConfirm() {
-		return this.entity.getConfirm() == TRUE_VALUE;
+		return this.entity.getBeConfirmed();
 	}
 
 	/*
@@ -70,110 +87,8 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 * getImplementAtr()
 	 */
 	@Override
-	public ImplementAtr getImplementAtr() {
-		return ImplementAtr.valueOf(this.entity.getImplementAtr());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getProcessExecutionAtr()
-	 */
-	@Override
-	public ProcessExecutionAtr getProcessExecutionAtr() {
-		return ProcessExecutionAtr.valueOf(this.entity.getProcessExeAtr());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getReCreateAtr()
-	 */
-	@Override
-	public ReCreateAtr getReCreateAtr() {
-		return ReCreateAtr.valueOf(this.entity.getReCreateAtr());
-	}
-
-	//
-	@Override
-	public RebuildTargetAtr getRebuildTargetAtr() {
-		return RebuildTargetAtr.valueOf(this.entity.getReTargetAtr());
-	}
-
-	@Override
-	public Boolean getRecreateConverter() {
-		return this.entity.getReConverter() == TRUE_VALUE;
-	}
-
-	@Override
-	public Boolean getRecreateEmployeeOffWork() {
-		return this.entity.getReEmpOffWork() == TRUE_VALUE;
-	}
-
-	@Override
-	public Boolean getRecreateDirectBouncer() {
-		return this.entity.getReDirectBouncer() == TRUE_VALUE;
-	}
-
-	@Override
-	public Boolean getRecreateShortTermEmployee() {
-		return this.entity.getReShortTermEmp() == TRUE_VALUE;
-	}
-
-	@Override
-	public Boolean getRecreateWorkTypeChange() {
-		return this.entity.getReWorkTypeChange() == TRUE_VALUE;
-	}
-
-	@Override
-	public Boolean getProtectHandCorrection() {
-		return this.entity.getReProtectHandCorrect() == TRUE_VALUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getResetMasterInfo()
-	 */
-	@Override
-	public Boolean getResetMasterInfo() {
-		return this.entity.getReMasterInfo() == TRUE_VALUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getResetWorkingHours()
-	 */
-	@Override
-	public Boolean getResetWorkingHours() {
-		return this.entity.getReWorkingHours() == TRUE_VALUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getResetTimeAssignment()
-	 */
-	@Override
-	public Boolean getResetTimeAssignment() {
-		return this.entity.getReTimeAssignment() == TRUE_VALUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento#
-	 * getResetTimeChildCare()
-	 */
-	@Override
-	public Boolean getResetStartEndTime() {
-		return this.entity.getReStartEndTime() == TRUE_VALUE;
+	public ImplementAtr getCreationType() {
+		return ImplementAtr.valueOf(this.entity.getCreationType());
 	}
 
 	/*

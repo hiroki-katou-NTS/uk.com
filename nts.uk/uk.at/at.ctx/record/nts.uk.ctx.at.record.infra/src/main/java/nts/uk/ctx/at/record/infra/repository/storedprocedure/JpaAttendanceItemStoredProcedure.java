@@ -10,9 +10,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcedureFactory;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 
 @Stateless
 public class JpaAttendanceItemStoredProcedure extends JpaRepository implements StoredProcedureFactory {
@@ -25,8 +25,8 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 
 		stQuery.setParameter("CID", comId).setParameter("SID", workInfo.getEmployeeId())
 				.setParameter("YMD", Date.valueOf(workInfo.getYmd().localDate()))
-				.setParameter("WorkTypeCode", workInfo.getRecordInfo().getWorkTypeCode().v())
-				.setParameter("WorkTimeCode", workInfo.getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getRecordInfo().getWorkTimeCode().v())
+				.setParameter("WorkTypeCode", workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
+				.setParameter("WorkTimeCode", workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? null : workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v())
 				.setParameter("HoliWorkTimes", calcHolWorkTime(attendanceTime));
 
 		stQuery.execute();
@@ -37,9 +37,9 @@ public class JpaAttendanceItemStoredProcedure extends JpaRepository implements S
 			return 0;
 		}
 
-		if (attendanceTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
+		if (attendanceTime.get().getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 				.getWorkHolidayTime().isPresent()) {
-			HolidayWorkTimeOfDaily hol = attendanceTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+			HolidayWorkTimeOfDaily hol = attendanceTime.get().getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get();
 			return hol.getHolidayWorkFrameTime().stream().mapToInt(c -> getHolTimeOrDefaul(c.getTransferTime())).sum();
 		}

@@ -31,19 +31,19 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
-import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem_;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.export.CalFormulasItemExportData;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.export.CalFormulasItemTableExportData;
 
 /**
  * The Class JpaOptionalItemRepository.

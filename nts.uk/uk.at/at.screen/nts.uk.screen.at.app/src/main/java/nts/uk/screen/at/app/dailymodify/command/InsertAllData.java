@@ -13,8 +13,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandl
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DPAttendanceItemRC;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless

@@ -7,13 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * 打刻漏れ(入退門)
@@ -35,23 +35,23 @@ public class ExitStampCheck {
 		
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 			if (attendanceLeavingGateOfDaily != null
-					&& !attendanceLeavingGateOfDaily.getAttendanceLeavingGates().isEmpty()) {
+					&& !attendanceLeavingGateOfDaily.getTimeZone().getAttendanceLeavingGates().isEmpty()) {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 
 				List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily
-						.getAttendanceLeavingGates();
+						.getTimeZone().getAttendanceLeavingGates();
 				for (AttendanceLeavingGate attendanceLeavingGate : attendanceLeavingGates) {
 					
 					// 退門のみ存在している(only has attendance time)
 					if (attendanceLeavingGate.getAttendance().isPresent()
-							&& attendanceLeavingGate.getAttendance().get().getTimeWithDay() != null
+							&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()
 							&& (!attendanceLeavingGate.getLeaving().isPresent()
 									|| (attendanceLeavingGate.getLeaving().isPresent()
-											&& attendanceLeavingGate.getLeaving().get().getTimeWithDay() == null))) {
+											&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay() == null))) {
 						if (attendanceLeavingGate.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(77);
 						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
@@ -61,9 +61,9 @@ public class ExitStampCheck {
 					// 入門のみ存在している(only has leaving time)
 					else if ((!attendanceLeavingGate.getAttendance().isPresent()
 							|| (attendanceLeavingGate.getAttendance().isPresent()
-									&& attendanceLeavingGate.getAttendance().get().getTimeWithDay() == null))
+									&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()))
 							&& (attendanceLeavingGate.getLeaving().isPresent()
-									&& attendanceLeavingGate.getLeaving().get().getTimeWithDay() != null)) {
+									&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent())) {
 						if (attendanceLeavingGate.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(75);
 						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
@@ -72,8 +72,8 @@ public class ExitStampCheck {
 					}
 					// 両方存在しない(both has not data)
 					else if (!attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getLeaving().isPresent()
-							|| ((attendanceLeavingGate.getAttendance().isPresent() && attendanceLeavingGate.getAttendance().get().getTimeWithDay() == null)
-									&& (attendanceLeavingGate.getLeaving().isPresent() && attendanceLeavingGate.getLeaving().get().getTimeWithDay() == null))) {
+							|| ((attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent())
+									&& (attendanceLeavingGate.getLeaving().isPresent() && !attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent()))) {
 						if (attendanceLeavingGate.getWorkNo().v() == 1) {
 							attendanceItemIDList.add(75);
 							attendanceItemIDList.add(77);

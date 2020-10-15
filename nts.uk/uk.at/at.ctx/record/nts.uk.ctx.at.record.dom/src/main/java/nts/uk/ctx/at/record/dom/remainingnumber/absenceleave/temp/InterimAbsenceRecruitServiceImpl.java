@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,12 +16,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -34,6 +31,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.Required
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -70,7 +70,10 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 			targetWorkInfos = workInfoOfDailyList.get();
 		}
 		else {
-			targetWorkInfos = require.dailyWorkInfos(employeeId, period);
+			targetWorkInfos = require.dailyWorkInfos(employeeId, period)
+					.entrySet().stream()
+					.map(c -> new WorkInfoOfDailyPerformance(employeeId, c.getKey(), c.getValue()))
+					.collect(Collectors.toList());
 		}
 		if (targetWorkInfos.size() == 0) return;
 		
@@ -88,8 +91,8 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から振出・振休の日数を取得
-			if (targetWorkInfo.getRecordInfo() == null) continue;
-			val workTypeCode = targetWorkInfo.getRecordInfo().getWorkTypeCode();
+			if (targetWorkInfo.getWorkInformation().getRecordInfo() == null) continue;
+			val workTypeCode = targetWorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			if (workTypeCode == null) continue;
 			if (!workTypeMap.containsKey(workTypeCode)) return;
 			val workType = workTypeMap.get(workTypeCode);

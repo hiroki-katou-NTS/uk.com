@@ -6,10 +6,10 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingSetMemento;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingSetMemento;
 
 /**
  * The Class RoundingDto.

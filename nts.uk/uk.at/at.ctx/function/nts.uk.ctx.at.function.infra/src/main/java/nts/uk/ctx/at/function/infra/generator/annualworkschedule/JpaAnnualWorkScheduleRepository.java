@@ -52,8 +52,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -61,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
@@ -352,9 +352,10 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 
             // RequestList453
             // 36協定時間を取得する
-            Map<String, List<AgreementTimeByEmpImport>> agreementTimeAll =
-                    agreementTimeByPeriodAdapter.algorithmImprove(cid, employeeIds, criteria, startMonth, fiscalYear, periodAtrs, new HashMap<>())
-                            .stream().collect(Collectors.groupingBy(AgreementTimeByEmpImport::getEmployeeId));
+            Map<String, List<AgreementTimeByEmpImport>> agreementTimeAll = new HashMap<>();
+            		/** TODO: 36協定時間対応により、コメントアウトされた */
+//                    agreementTimeByPeriodAdapter.algorithmImprove(cid, employeeIds, criteria, startMonth, fiscalYear, periodAtrs, new HashMap<>())
+//                            .stream().collect(Collectors.groupingBy(AgreementTimeByEmpImport::getEmployeeId));
 
             for (Map.Entry<String, List<AgreementTimeByEmpImport>> entry : agreementTimeAll.entrySet()) {
                 EmployeeData empData = exportData.getEmployees().get(entry.getKey());
@@ -496,7 +497,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// 基準日 = 「年度から集計期間を取得する」のOutputのenddate
 		GeneralDate criteria = datePeriod.get().end();
 		// 指定期間36協定時間の取得
-		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, periodAtr);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return new ArrayList<>();
+//		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, periodAtr);
 	}
 
 	/**

@@ -18,9 +18,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK_;

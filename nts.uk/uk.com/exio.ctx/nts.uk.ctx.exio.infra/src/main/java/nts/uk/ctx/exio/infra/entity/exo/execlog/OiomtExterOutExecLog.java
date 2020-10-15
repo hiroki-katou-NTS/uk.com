@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EXTER_OUT_EXEC_LOG")
+@Table(name = "OIODT_EX_OUT_EXEC_LOG")
 public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,6 +30,20 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtExterOutExecLogPk exterOutExecLogPk;
+	
+	/**
+	 * 処理開始日時
+	 */
+	@Basic(optional = false)
+	@Column(name = "PRO_START_DATETIME")
+	public GeneralDateTime processStartDatetime;
+
+	/**
+	 * 処理終了日時
+	 */
+	@Basic(optional = true)
+	@Column(name = "PRO_END_DATETIME")
+	public GeneralDateTime processEndDatetime;
 
 	/**
 	 * ユーザID
@@ -39,25 +53,109 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	public String uid;
 
 	/**
-	 * トータルエラーカウント
+	 * ロール種類
+	 */
+	@Basic(optional = true)
+	@Column(name = "CTG_ID")
+	public Integer categoryId;
+
+	/**
+	 * 実行者ID
+	 */
+	@Basic(optional = true)
+	@Column(name = "EXEC_ID")
+	public String execId;
+
+	/**
+	 * 処理単位
+	 */
+	@Basic(optional = true)
+	@Column(name = "PRO_UNIT")
+	public String processUnit;
+
+	/**
+	 * 定型区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "TOTAL_ERR_COUNT")
-	public int totalErrCount;
+	@Column(name = "STD_ATR")
+	public int stdClass;
+
+	/**
+	 * 条件設定コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CND_SET_CD")
+	public String codeSetCond;
+
+	/**
+	 * 設定名称
+	 */
+	@Basic(optional = false)
+	@Column(name = "NAME_SET")
+	public String nameSetting;
+
+	/**
+	 * 実行形態
+	 */
+	@Basic(optional = false)
+	@Column(name = "EXEC_FORM")
+	public int execForm;
 
 	/**
 	 * トータルカウント
 	 */
 	@Basic(optional = false)
-	@Column(name = "TOTAL_COUNT")
+	@Column(name = "TOTAL_CNT")
 	public int totalCount;
 
+	/**
+	 * 結果状態
+	 */
+	@Basic(optional = true)
+	@Column(name = "RESULT_STATUS")
+	public Integer resultStatus;
+	
+	/**
+	 * トータルエラーカウント
+	 */
+	@Basic(optional = false)
+	@Column(name = "TOTAL_ERR_CNT")
+	public int totalErrCount;
+
+	/**
+	 * 指定開始日付
+	 */
+	@Basic(optional = false)
+	@Column(name = "SPECIFIED_START_DATE")
+	public GeneralDate specifiedStartDate;
+
+	/**
+	 * 指定終了日
+	 */
+	@Basic(optional = false)
+	@Column(name = "SPECIFIED_END_DATE")
+	public GeneralDate specifiedEndDate;
+
+	/**
+	 * 指定基準日
+	 */
+	@Basic(optional = false)
+	@Column(name = "DESIGNATED_REFER_DATE")
+	public GeneralDate designatedReferDate;
+	
 	/**
 	 * ファイルID
 	 */
 	@Basic(optional = true)
 	@Column(name = "FILE_ID")
 	public String fileId;
+
+	/**
+	 * ファイル名
+	 */
+	@Basic(optional = true)
+	@Column(name = "FILE_NAME")
+	public String fileName;
 
 	/**
 	 * ファイルサイズ
@@ -72,104 +170,6 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "DEL_FILE")
 	public int delFile;
-
-	/**
-	 * ファイル名
-	 */
-	@Basic(optional = true)
-	@Column(name = "FILE_NAME")
-	public String fileName;
-
-	/**
-	 * ロール種類
-	 */
-	@Basic(optional = true)
-	@Column(name = "CATEGORY_ID")
-	public Integer categoryId;
-
-	/**
-	 * 処理単位
-	 */
-	@Basic(optional = true)
-	@Column(name = "PROCESS_UNIT")
-	public String processUnit;
-
-	/**
-	 * 処理終了日時
-	 */
-	@Basic(optional = true)
-	@Column(name = "PROCESS_END_DATETIME")
-	public GeneralDateTime processEndDatetime;
-
-	/**
-	 * 処理開始日時
-	 */
-	@Basic(optional = false)
-	@Column(name = "PROCESS_START_DATETIME")
-	public GeneralDateTime processStartDatetime;
-
-	/**
-	 * 定型区分
-	 */
-	@Basic(optional = false)
-	@Column(name = "STD_CLASS")
-	public int stdClass;
-
-	/**
-	 * 実行形態
-	 */
-	@Basic(optional = false)
-	@Column(name = "EXEC_FORM")
-	public int execForm;
-
-	/**
-	 * 実行者ID
-	 */
-	@Basic(optional = true)
-	@Column(name = "EXEC_ID")
-	public String execId;
-
-	/**
-	 * 指定基準日
-	 */
-	@Basic(optional = false)
-	@Column(name = "DESIGNATED_REFER_DATE")
-	public GeneralDate designatedReferDate;
-
-	/**
-	 * 指定終了日
-	 */
-	@Basic(optional = false)
-	@Column(name = "SPECIFIED_END_DATE")
-	public GeneralDate specifiedEndDate;
-
-	/**
-	 * 指定開始日付
-	 */
-	@Basic(optional = false)
-	@Column(name = "SPECIFIED_START_DATE")
-	public GeneralDate specifiedStartDate;
-
-	/**
-	 * 条件設定コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CODE_SET_COND")
-	public String codeSetCond;
-
-	/**
-	 * 結果状態
-	 */
-	@Basic(optional = true)
-	@Column(name = "RESULT_STATUS")
-	public Integer resultStatus;
-
-	/**
-	 * 設定名称
-	 */
-	@Basic(optional = false)
-	@Column(name = "NAME_SETTING")
-	public String nameSetting;
 
 	@Override
 	protected Object getKey() {
@@ -186,16 +186,26 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 
 	public static OiomtExterOutExecLog toEntity(ExterOutExecLog domain) {
 		return new OiomtExterOutExecLog(new OiomtExterOutExecLogPk(domain.getCompanyId(), domain.getOutputProcessId()),
-				domain.getUserId().orElse(null), domain.getTotalErrorCount(), domain.getTotalCount(),
-				domain.getFileId().orElse(null), domain.getFileSize().orElse(null), domain.getDeleteFile().value,
-				domain.getFileName().isPresent() ? domain.getFileName().get().v() : null,
+				domain.getProcessStartDateTime(), 
+				domain.getProcessEndDateTime().orElse(null),
+				domain.getUserId().orElse(null), 
 				domain.getCategoryID().isPresent() ? domain.getCategoryID().get().v() : null,
-				domain.getProcessUnit().orElse(null), domain.getProcessEndDateTime().orElse(null),
-				domain.getProcessStartDateTime(), domain.getStandardClass().value, domain.getExecuteForm().value,
-				domain.getExecuteId(), domain.getDesignatedReferenceDate(), domain.getSpecifiedEndDate(),
-				domain.getSpecifiedStartDate(), domain.getCodeSettingCondition().v(),
+				domain.getExecuteId(), 
+				domain.getProcessUnit().orElse(null), 
+				domain.getStandardClass().value, 
+				domain.getCodeSettingCondition().v(),
+				domain.getNameSetting().v(),
+				domain.getExecuteForm().value,
+				domain.getTotalCount(),
 				domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : null,
-				domain.getNameSetting().v());
+				domain.getTotalErrorCount(), 
+				domain.getSpecifiedStartDate(),
+				domain.getSpecifiedEndDate(), 
+				domain.getDesignatedReferenceDate(),
+				domain.getFileId().orElse(null), 
+				domain.getFileName().isPresent() ? domain.getFileName().get().v() : null,
+				domain.getFileSize().orElse(null), 
+				domain.getDeleteFile().value);
 	}
 
 }

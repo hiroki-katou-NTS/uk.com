@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementYearSettingDto;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 
 /**
  * 
@@ -28,9 +28,10 @@ public class AgreementYearSettingFinder {
 			agreementYearSettings.stream().forEach(f -> {
 				AgreementYearSettingDto agreementYearSettingDto = new AgreementYearSettingDto();
 
-				agreementYearSettingDto.setYearValue(f.getYearValue());
-				agreementYearSettingDto.setAlarmOneYear(f.getAlarmOneYear().v());
-				agreementYearSettingDto.setErrorOneYear(f.getErrorOneYear().v());
+				agreementYearSettingDto.setYearValue(f.getYearValue().v());
+				/** TODO: 36協定時間対応により、コメントアウトされた */
+//				agreementYearSettingDto.setAlarmOneYear(f.getAlarmOneYear().v());
+//				agreementYearSettingDto.setErrorOneYear(f.getErrorOneYear().v());
 				agreementYearSettingDtos.add(agreementYearSettingDto);
 			});
 		} else {

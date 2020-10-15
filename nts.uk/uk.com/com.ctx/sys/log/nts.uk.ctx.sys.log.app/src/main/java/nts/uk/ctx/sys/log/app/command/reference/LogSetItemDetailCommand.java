@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.log.app.command.reference;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.sys.log.dom.reference.LogCondition;
@@ -18,10 +16,6 @@ public class LogSetItemDetailCommand {
 	/** The Frame */
 	private int frame;
 	
-	// 使用区分
-	/** The Using Condition Flag */
-	private int isUseCondFlg;
-	
 	// 条件
 	/** The Log Condition */
 	private String condition;
@@ -30,9 +24,18 @@ public class LogSetItemDetailCommand {
 	/** The Symbol Condition */
 	private int sybol;
 	
-	public LogSetItemDetail toDomain(String logSetId) {
-		boolean isUseCondFlg = this.isUseCondFlg == 1 ? true : false;
-		return new LogSetItemDetail(logSetId, itemNo, frame, isUseCondFlg, 
-				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(sybol)));			
+	/**
+	 * 契約コード
+	 */
+	private String contractCd;
+	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
+	
+	public LogSetItemDetail toDomain(String logSetId, String cid) {
+		return new LogSetItemDetail(logSetId, itemNo, frame, 
+				new LogCondition(condition), SymbolEnum.valueOf(sybol), cid);			
 	}
 }

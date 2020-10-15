@@ -7,9 +7,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 //import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 /**
  * 打刻
  * @author dudt
@@ -53,7 +54,7 @@ public class StampItem extends AggregateRoot {
 	/**
 	 * 外出理由
 	 */
-	private GoOutReason goOutReason;
+	private GoingOutReason goOutReason;
 	/**
 	 * 年月日
 	 */
@@ -77,7 +78,7 @@ public class StampItem extends AggregateRoot {
 				EnumAdaptor.valueOf(stampAtr, StampAtr.class),
 				new WorkLocationCD(workLocationCd), 
 				new WorkLocationName(workLocationName),
-				EnumAdaptor.valueOf(stampReason, GoOutReason.class), 
+				EnumAdaptor.valueOf(stampReason, GoingOutReason.class), 
 				date,
 				personId,
 				EnumAdaptor.valueOf(reflected, ReflectedAtr.class));

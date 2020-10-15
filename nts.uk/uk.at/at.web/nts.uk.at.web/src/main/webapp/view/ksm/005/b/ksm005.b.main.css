@@ -1,17 +1,79 @@
 @CHARSET "UTF-8";
 
 .contents {
+	margin: 20px;
+	position: absolute;
+}
+
+.period_labels {
+	margin-top: 10px;
+	display: flex;
+}
+
+.employee_labels {
 	margin-top: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.workday_labels {
+	width: 385px;
 	margin-left: 20px;
-	height: calc(100vh - 181px);
-	overflow: auto;
+	margin-top: 15px;
 }
 
-.monthlyPatternContents {
-	padding: 20px;
-	width: 270px;
+.lableData {
+	width: 135px;
+	min-height: 37px;
 }
 
-.monthlyPatternDetail {
-	margin-left: 50px;
+.contentDetail {
+	width: 150px;
+	margin-left: 20px;
+}
+
+#functions-area-bottom {
+	height: 100px;
+}
+
+#checkOverWriteSetting {
+	display: block;
+    margin-bottom: 5px;
+}
+.workday_labels .hr {
+	width: 101%;
+	padding: 10px 0 0;
+	clear: left;
+	border-bottom: solid 1px #b1b1b1;
+}
+.popup-panel.bg-green {
+	background-color: #E0F59E;
+	padding: 7px;
+}
+.d-flex {
+	display: flex;
+	align-items: center;
+}
+.hr-line {
+	margin: 5px 0 0 20px;
+}
+
+.popup-b72 .sat{
+	color: #0000ff;
+}
+.popup-b72 .sun{
+	color: #ff0000;
+}
+
+.popup-b72 .holidayOrWeekend{
+	color: #ff0000;
+}
+.popup-b72 .halfDayWork{
+	color: #FF7F27;
+}
+.popup-b72 {
+	top: 125px !important;
+}
+.popup-b72 .nts-fixed-body-wrapper {
+	height: 134px !important;
 }

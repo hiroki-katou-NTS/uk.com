@@ -26,6 +26,8 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombi
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgCombiPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.KscmtPaletteOrgPk;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,6 +45,8 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	private static final String FIND_BY_PAGE;
 
 	private static final String FIND_TO_DELETE;
+	
+	private static final String FIND_TO_DELETE_NEW;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -52,7 +56,7 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 		builderString.append(
 				" FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE ");
 		builderString.append(
-				" JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON a.TARGET_UNIT = c.TARGET_UNIT AND a.TARGET_ID = c.TARGET_ID AND a.PAGE = c.PAGE ");
+				" JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION ");
 		SELECT = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -64,6 +68,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 		builderString.append(SELECT);
 		builderString.append(" WHERE a.TARGET_ID = 'workplaceId' AND a.PAGE = page");
 		FIND_TO_DELETE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT);
+		builderString.append(" WHERE a.CID = 'cid' AND  a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetid' AND a.PAGE = 'page'");
+		FIND_TO_DELETE_NEW = builderString.toString();
 
 	}
 
@@ -71,6 +80,11 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
 			+ " JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
 			+ " WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId'";
+	
+	private static final String FIND_BY_TARGETID_USE = "SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE, b.POSITION, b.POSITION_NAME, c.POSITION_ORDER, c.SHIFT_MASTER_CD"
+			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
+			+ " JOIN KSCMT_PALETTE_ORG_COMBI_DTL c ON b.TARGET_UNIT = c.TARGET_UNIT AND b.TARGET_ID = c.TARGET_ID AND b.PAGE = c.PAGE AND b.POSITION = c.POSITION"
+			+ " WHERE a.TARGET_UNIT = targetUnit AND a.TARGET_ID = 'targetId' AND a.USE_ATR = 1";
 	
 	private static final String FIND_BY_CID = "SELECT a.CID, a.TARGET_UNIT, a.TARGET_ID, a.PAGE, a.PAGE_NAME, a.USE_ATR, a.NOTE, b.POSITION, b.POSITION_NAME, c.POSITION_ORDER, c.SHIFT_MASTER_CD"
 			+ " FROM KSCMT_PALETTE_ORG a  JOIN KSCMT_PALETTE_ORG_COMBI b ON a.TARGET_UNIT = b.TARGET_UNIT AND a.TARGET_ID = b.TARGET_ID AND a.PAGE = b.PAGE"
@@ -319,6 +333,25 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 	}
 	
 	@Override
+	public List<ShiftPalletsOrg> findbyWorkPlaceIdUse(int targetUnit, String workplaceId) {
+		if (workplaceId == null) {
+			return new ArrayList<>();
+		}
+		String query = FIND_BY_TARGETID_USE;
+		query = query.replaceFirst("targetUnit", String.valueOf(targetUnit));
+		query = query.replaceFirst("targetId", workplaceId);
+
+		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
+			ResultSet rs = statement.executeQuery();
+			List<ShiftPalletsOrg> palletsOrgs = toEntity(createShiftPallets(rs)).stream().map(x -> x.toDomain())
+					.collect(Collectors.toList());
+			return palletsOrgs;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
 	public List<ShiftPalletsOrg> findByCID(String cid) {
 		String query = FIND_BY_CID;
 		query = query.replaceFirst("cid", String.valueOf(cid));
@@ -348,6 +381,32 @@ public class JpaShiftPalletOrgRepository extends JpaRepository implements ShiftP
 			throw new RuntimeException(ex);
 		}
 
+	}
+
+	@Override
+	public boolean exists(TargetOrgIdenInfor targeOrg, int page) {
+		String targetId = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE ? targeOrg.getWorkplaceId().get()
+				: targeOrg.getWorkplaceGroupId().get();
+		Optional<ShiftPalletsOrg> data = findShiftPalletOrg(targeOrg.getUnit().value, targetId, page);
+		return data.isPresent();
+	}
+
+	@Override
+	public void delete(TargetOrgIdenInfor targeOrg, int page) {
+		String targetid = targeOrg.getUnit() == TargetOrganizationUnit.WORKPLACE?targeOrg.getWorkplaceId().get():targeOrg.getWorkplaceGroupId().get();
+		String query = FIND_TO_DELETE_NEW;
+		query = query.replaceFirst("cid", AppContexts.user().companyId());
+		query = query.replaceFirst("targetUnit", String.valueOf(targeOrg.getUnit().value));
+		query = query.replaceFirst("targetid", String.valueOf(targetid));
+		query = query.replaceFirst("page", String.valueOf(page));
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			KscmtPaletteOrg kscmtPaletteOrg = toEntity(createShiftPallets(rs)).get(0);
+			commandProxy().remove(KscmtPaletteOrg.class, kscmtPaletteOrg.pk);
+			this.getEntityManager().flush();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 }

@@ -8,12 +8,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-//import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,35 +37,38 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneYear limitOneYear = new LimitOneYear(0);
+		AgreementOneYearTime limitOneYear = new AgreementOneYearTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
+//					}					
 				}
 			} else {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
+//					}					
 				}
 			}
 		}
 
-		if (agreementYearSetting.getAlarmOneYear().v().compareTo(agreementYearSetting.getErrorOneYear().v()) > 0) {
-			errors.add("Msg_59,KMK008_43,KMK008_42");
-		}
-
-		if (limitOneYear.v() > 0 && agreementYearSetting.getErrorOneYear().v().compareTo(limitOneYear.v()) > 0) {
-			errors.add("Msg_59,KMK008_42,KMK008_44");
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		if (agreementYearSetting.getAlarmOneYear().v().compareTo(agreementYearSetting.getErrorOneYear().v()) > 0) {
+//			errors.add("Msg_59,KMK008_43,KMK008_42");
+//		}
+//
+//		if (limitOneYear.v() > 0 && agreementYearSetting.getErrorOneYear().v().compareTo(limitOneYear.v()) > 0) {
+//			errors.add("Msg_59,KMK008_42,KMK008_44");
+//		}
 
 		if (errors.isEmpty()) {
 			this.agreementYearSettingRepository.add(agreementYearSetting);
@@ -82,40 +84,41 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneYear limitOneYear = new LimitOneYear(0);
+		AgreementOneYearTime limitOneYear = new AgreementOneYearTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
+//					}					
 				}
 			} else {
 				Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId, LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
 				if (agreementTimeOfCompany.isPresent()) {
-					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
-					if (basicAgreementSetting.isPresent()) {
-						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
-					}					
+					/** TODO: 36協定時間対応により、コメントアウトされた */
+//					Optional<BasicAgreementSetting> basicAgreementSetting = this.basicAgreementSettingRepository.find(agreementTimeOfCompany.get().getBasicSettingId());
+//					if (basicAgreementSetting.isPresent()) {
+//						limitOneYear = basicAgreementSetting.get().getLimitOneYear();
+//					}					
 				}
 			}
 		}
 
-		if (agreementYearSetting.getAlarmOneYear().v().compareTo(agreementYearSetting.getErrorOneYear().v()) > 0) {
-			errors.add("Msg_59,KMK008_43,KMK008_42");
-		}
-
-		if (limitOneYear.v() > 0 && agreementYearSetting.getErrorOneYear().v().compareTo(limitOneYear.v()) > 0) {
-			errors.add("Msg_59,KMK008_42,KMK008_44");
-		}
-		
-		Optional<AgreementYearSetting> agreementYear = this.agreementYearSettingRepository.findByKey(agreementYearSetting.getEmployeeId(), agreementYearSetting.getYearValue()); 
-		if(agreementYear.isPresent()){
-			errors.add("Msg_61,KMK008_29");
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		if (agreementYearSetting.getAlarmOneYear().v().compareTo(agreementYearSetting.getErrorOneYear().v()) > 0) {
+//			errors.add("Msg_59,KMK008_43,KMK008_42");
+//		}
+//		if (limitOneYear.v() > 0 && agreementYearSetting.getErrorOneYear().v().compareTo(limitOneYear.v()) > 0) {
+//			errors.add("Msg_59,KMK008_42,KMK008_44");
+//		}
+//		Optional<AgreementYearSetting> agreementYear = this.agreementYearSettingRepository.findByKey(agreementYearSetting.getEmployeeId(), agreementYearSetting.getYearValue()); 
+//		if(agreementYear.isPresent()){
+//			errors.add("Msg_61,KMK008_29");
+//		}
 
 		if (errors.isEmpty()) {
 			this.agreementYearSettingRepository.updateById(agreementYearSetting, yearMonthValueOld);

@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTarget;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTargetPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTargetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeTarget_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaScheduleCreatorRepository.
@@ -152,6 +154,11 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		this.commandProxy().insertAll(
 				domains.stream().map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 	}
+	@Override
+	public void saveAllNew(List<ScheduleCreator> domains) {
+		this.commandProxy().insertAll(
+				domains.stream().map(domain -> this.toEntityNew(domain)).collect(Collectors.toList()));
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -191,7 +198,12 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		// exclude select
 		return query.getSingleResult().intValue();
 	}
-	
+
+	@Override
+	public Optional<ScheduleCreator> findByExecutionIdAndSId(String executionId, String sId) {
+		return this.queryProxy().find(new KscdtScheExeTargetPK(executionId, sId), KscdtScheExeTarget.class).map(this::toDomain);
+	}
+
 	/**
 	 * To entity.
 	 *
@@ -201,6 +213,15 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	private KscdtScheExeTarget toEntity(ScheduleCreator domain){
 		KscdtScheExeTarget entity = new KscdtScheExeTarget();
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
+		return entity;
+	}
+	private KscdtScheExeTarget toEntityNew(ScheduleCreator domain){
+		KscdtScheExeTarget entity = new KscdtScheExeTarget();
+		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
+		val cd = AppContexts.user().contractCode();
+		val cid = AppContexts.user().companyId();
+		entity.setContractCd(cd);
+		entity.setCid(cid);
 		return entity;
 	}
 	

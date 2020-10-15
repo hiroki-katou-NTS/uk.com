@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /*
  * 休憩系打刻順序不正をチェックする
@@ -27,9 +27,9 @@ public class BreakTimeStampIncorrectOrderChecking {
 		// List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances =
 		// breakTimeOfDailyPerformanceRepository
 		// .findByKey(employeeId, processingDate);
-		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets().isEmpty()) {
 
-			List<BreakTimeSheet> newBreakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
+			List<BreakTimeSheet> newBreakTimeSheets = breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets();
 
 			List<BreakTimeSheet> breakTimeSheets = newBreakTimeSheets.stream()
 					.filter(item -> item.getStartTime() != null).collect(Collectors.toList());

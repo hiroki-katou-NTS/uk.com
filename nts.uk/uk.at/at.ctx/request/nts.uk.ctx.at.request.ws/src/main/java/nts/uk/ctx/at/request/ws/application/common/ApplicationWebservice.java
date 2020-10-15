@@ -1,25 +1,39 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveResult;
+import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
+import nts.uk.ctx.at.request.app.command.application.common.AppNewBehaviorCmd;
+import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.CancelAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.DeleteAppHandler;
+import nts.uk.ctx.at.request.app.command.application.common.DenyAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
-import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
-import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppPrintQuery;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationExportService;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
@@ -32,18 +46,24 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
-import nts.uk.ctx.at.request.app.find.application.common.dto.InputApproveData;
-import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.infra.web.util.StartPageLogService;
@@ -51,8 +71,7 @@ import nts.uk.shr.infra.web.util.StartPageLogService;
 @Path("at/request/application")
 @Produces("application/json")
 public class ApplicationWebservice extends WebService {
-	@Inject 
-	private ApplicationFinder finderApp;
+	
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
@@ -64,28 +83,12 @@ public class ApplicationWebservice extends WebService {
 	private GetDataCheckDetail getDataCheckDetail; 
 	
 	@Inject
-	private UpdateApplicationApproveHandler approveApp;
-	
-	@Inject
-	private UpdateApplicationDenyHandler denyApp;
-	
-	@Inject
 	private RemandApplicationHandler remandApplicationHandler;
-	
-	@Inject
-	private UpdateApplicationReleaseHandler releaseApp;
-	
-	@Inject
-	private UpdateApplicationCancelHandler cancelApp;
-	
 
 	@Inject
-	private UpdateApplicationDelete deleteApp;
-	
-	@Inject
 	private AppDataDateFinder appDataDateFinder;
-	@Inject
-	private UpdateApplicationDeadlineCommandHandler update;
+//	@Inject
+//	private UpdateApplicationDeadlineCommandHandler update;
 
 	@Inject
 	private ReflectAplicationCommmandHandler relect;
@@ -95,25 +98,37 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
-	/**
-	 * approve application
-	 * @return
-	 */
-	@POST
-	@Path("approveapp")
-	public ApproveProcessResult approveApp(InputApproveData command){
-		 return this.approveApp.handle(command);
-	}
+	// refactor 4
 	
-	/**
-	 * deny application
-	 * @return
-	 */
-	@POST
-	@Path("denyapp")
-	public ProcessResult denyApp(InputCommonData command){
-		return this.denyApp.handle(command);
-	}
+	@Inject 
+	private ApplicationFinder finderApp;
+	
+	@Inject
+	private DeleteAppHandler deleteApp;
+	
+	@Inject
+	private ApproveAppHandler approveApp;
+	
+	@Inject
+	private ReleaseAppHandler releaseApp;
+	
+	@Inject
+	private DenyAppHandler denyApp;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private CancelAppHandler cancelApp;
+	
+	@Inject
+	private ApplicationExportService applicationExportService;
+	
+	@Inject
+	private NewAfterRegister newAfterRegister;
+	
+	@Inject
+	private DetailAfterUpdate detailAfterUpdate;
 	
 	/**
 	 * remand application
@@ -123,36 +138,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("remandapp")
 	public MailSenderResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
-	}
-	
-	/**
-	 * release application
-	 * @return
-	 */
-	@POST
-	@Path("releaseapp")
-	public ProcessResult releaseApp(InputCommonData command){
-		return this.releaseApp.handle(command);
-	}
-	
-	/**
-	 * cancel application
-	 * @return
-	 */
-	@POST
-	@Path("cancelapp")
-	public void cancelApp(UpdateApplicationCommonCmd command){
-		 this.cancelApp.handle(command);
-	}
-	
-	/**
-	 * delete application
-	 * @return
-	 */
-	@POST
-	@Path("deleteapp")
-	public ProcessResult deleteApp(UpdateApplicationCommonCmd command){
-		 return this.deleteApp.handle(command);
 	}
 	
 	/**
@@ -261,11 +246,11 @@ public class ApplicationWebservice extends WebService {
 	 * @param command
 	 * @author yennth
 	 */
-	@POST
-	@Path("update")
-	public void update(List<ApplicationDeadlineCommand> command){
-		this.update.handle(command);
-	}
+//	@POST
+//	@Path("update")
+//	public void update(List<ApplicationDeadlineCommand> command){
+//		this.update.handle(command);
+//	}
 	
 	@POST
 	@Path("reflect-app")
@@ -284,11 +269,118 @@ public class ApplicationWebservice extends WebService {
 		return finderApp.getDetailMob(appID);
 	}
 	
+	// refactor 4
+	
+	@POST
+	@Path("getStartPC")
+	public AppDispInfoStartupDto getStartPC(StartupParam param) {
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> {
+										if(Strings.isBlank(x)) {
+											return null;
+										} else {
+											return GeneralDate.fromString(x, "yyyy/MM/dd");
+										}
+									}).collect(Collectors.toList());
+		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+				companyID, 
+				EnumAdaptor.valueOf(param.appType, ApplicationType.class), 
+				param.empLst, 
+				dateLst, 
+				true,
+				param.getOpHolidayAppType() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpHolidayAppType(), HolidayAppType.class)),
+				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));
+		return AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
+	}
+	
+	@POST
+	@Path("getDetailPC/{appID}")
+	public AppDispInfoStartupDto getDetailPC(@PathParam("appID") String appID) {
+		return finderApp.getDetailPC(appID);
+	}
+	
+	@POST
+	@Path("changeAppDate")
+	public AppDispInfoWithDateDto changeAppDate(ChangeDateParam param) {
+		String companyID = AppContexts.user().companyId();
+
+		List<GeneralDate> dateLst = new ArrayList<>();
+		if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
+			GeneralDate startDate = GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd");
+			GeneralDate endDate = GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd");
+			dateLst = new DatePeriod(startDate, endDate).datesBetween();
+		} else {
+			dateLst.add(GeneralDate.fromString(param.getAppDate(), "yyyy/MM/dd"));
+		}
+		
+		// TODO: 申請設定 domain has changed!
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
+				companyID, 
+				dateLst, 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0).getAppType(),
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput(), 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoWithDateOutput(),
+				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));
+		return AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput);
+	}
+	
+	@POST
+	@Path("deleteapp")
+	public ProcessResult deleteApp(AppDetailBehaviorCmd command){
+		return deleteApp.handle(command);
+	}
+	
+	@POST
+	@Path("approveapp")
+	public ApproveProcessResult approveApp(AppDetailBehaviorCmd command){
+		return approveApp.handle(command);
+	}
+	
+	@POST
+	@Path("releaseapp")
+	public ProcessResult releaseApp(AppDispInfoStartupDto command){
+		return releaseApp.handle(command);
+	}
+	
+	@POST
+	@Path("denyapp")
+	public ProcessResult denyApp(AppDetailBehaviorCmd command){
+		return denyApp.handle(command);
+	}
+	
 	@POST
 	@Path("checkVersion")
 	public void checkVersion(VersionCheckParam param) {
 		String companyID = AppContexts.user().companyId();
 		detailBeforeUpdate.exclusiveCheck(companyID, param.appID, param.version);
+	}
+	
+	@POST
+	@Path("cancelapp")
+	public void cancelApp(AppDispInfoStartupDto command){
+		cancelApp.handle(command);
+	}
+	
+	@POST
+    @Path("print")
+    public ExportServiceResult generate(AppPrintQuery query) {
+		return applicationExportService.start(query);
+    }
+	
+	@POST
+	@Path("afterRegister")
+	public AppListApproveResult afterRegister(AppNewBehaviorCmd appNewBehaviorCmd) {
+		
+		// return newAfterRegister.processAfterRegister(appID, appTypeSetting, mailServerSet);
+		return null;
+	}
+	
+	@POST
+	@Path("afterUpdate")
+	public AppListApproveResult afterUpdate(AppNewBehaviorCmd appNewBehaviorCmd) {
+		
+		// return newAfterRegister.processAfterRegister(appID, appTypeSetting, mailServerSet);
+		return null;
 	}
 }
 

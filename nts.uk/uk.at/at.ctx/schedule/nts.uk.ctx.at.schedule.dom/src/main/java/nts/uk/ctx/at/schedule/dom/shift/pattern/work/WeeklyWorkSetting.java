@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WeeklyWorkSetting.
+ * The Class WeeklyWorkDay.
  */
 // 週間勤務設定
 @Getter

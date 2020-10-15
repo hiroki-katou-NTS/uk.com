@@ -15,5 +15,4 @@ public class KrqdtGoBackDirectlyPK {
 
 	@Column(name = "APP_ID")
 	public String appID;
-
 }

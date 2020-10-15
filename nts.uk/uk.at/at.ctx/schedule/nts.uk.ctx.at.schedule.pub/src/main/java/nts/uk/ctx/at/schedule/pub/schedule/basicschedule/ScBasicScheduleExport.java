@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.pub.schedule.basicschedule;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
@@ -15,6 +16,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ScBasicScheduleExport {
 	
 	/** The employee id. */
@@ -36,4 +38,17 @@ public class ScBasicScheduleExport {
 	/** The work schedule time zones. */
 	// 勤務予定時間帯
 	private List<WorkScheduleTimeZoneExport> workScheduleTimeZones;
+	
+	public ScBasicScheduleExport(String employeeId, GeneralDate date, String workTypeCode, String workTimeCode,
+			List<WorkScheduleTimeZoneExport> workScheduleTimeZones) {
+		super();
+		this.employeeId = employeeId;
+		this.date = date;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.workScheduleTimeZones = workScheduleTimeZones;
+	}
+	
+	
+	
 }

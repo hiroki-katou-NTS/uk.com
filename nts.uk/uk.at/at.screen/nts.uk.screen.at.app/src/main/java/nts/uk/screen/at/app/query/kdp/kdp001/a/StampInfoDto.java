@@ -19,17 +19,25 @@ public class StampInfoDto {
 	 * 打刻場所情報
 	 */
 	private final StampLocationInforDto locationInfor;
-
+	/**
+	 * dựa vào 表示アイコン※[2]参照
+	 */
 	private int buttonValueType;
 
 	private RefectActualResultDto refActualResult;
+	
+	/**
+	 * dựa vào 時刻変更区分
+	 */
+	private int changeClockArt;
 
 	public static StampInfoDto fromDomain(Stamp stamp) {
 
 		return new StampInfoDto(RelieveDto.fromDomain(stamp.getRelieve()),
 				StampLocationInforDto.fromDomain(stamp.getLocationInfor()),
-				ButtonSettingsDto.toButtonValueType(StampTypeDto.fromDomain(stamp.getType())
-				), RefectActualResultDto.fromDomain(stamp.getRefActualResults()));
+				ButtonSettingsDto.toButtonValueType(StampTypeDto.fromDomain(stamp.getType())),
+				RefectActualResultDto.fromDomain(stamp.getRefActualResults()),
+				stamp.getType().getChangeClockArt().value);
 	}
 
 }

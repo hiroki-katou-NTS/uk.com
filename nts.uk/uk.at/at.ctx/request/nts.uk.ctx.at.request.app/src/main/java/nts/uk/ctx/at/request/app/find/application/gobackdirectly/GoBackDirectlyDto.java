@@ -1,98 +1,60 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+//直行直帰申請
 @AllArgsConstructor
-@Value
-public class GoBackDirectlyDto {
-	/**
-	 * version
-	 */
-	Long version;
-	/**
-	 * 会社ID
-	 */
-	String companyID;
-	/**
-	 * 申請ID
-	 */
-	String appID;
-	/**
-	 * 勤務種類
-	 */
-	String workTypeCD;
-	/**
-	 * 就業時間帯
-	 */
-	String siftCD;
-	/**
-	 * 勤務を変更する
-	 */
-	Integer workChangeAtr;
-	/**
-	 * 勤務直行1
-	 */
-	Integer goWorkAtr1;
-	/**
-	 * 勤務直帰1
-	 */
-	Integer backHomeAtr1;
-	/**
-	 * 勤務時間開始1
-	 */
-	Integer workTimeStart1;
-	/**
-	 * 勤務時間終了1
-	 */
-	Integer workTimeEnd1;
-	/**
-	 * 勤務場所選択1
-	 */
-	String workLocationCD1;
-	/**
-	 * 勤務直行2
-	 */
-	Integer goWorkAtr2;
-	/**
-	 * 勤務直帰2
-	 */
-	Integer backHomeAtr2;
-	/**
-	 * 勤務時間開始2
-	 */
-	Integer workTimeStart2;
-	/**
-	 * 勤務時間終了2
-	 */
-	Integer workTimeEnd2;
-	/**
-	 * 勤務場所選択２
-	 */
-	String workLocationCD2;
-	
-	/**
-	 * Convert to GoBackDirectlyDto
-	 */
-	public static GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
-		if(domain==null) return null;
-		return new GoBackDirectlyDto(
-				domain.getVersion(),
-				domain.getCompanyID(), 
-				domain.getAppID(), 
-				domain.getWorkTypeCD().map(x -> x.v()).orElse(null),
-				domain.getSiftCD().map(x -> x.v()).orElse(null), 
-				domain.getWorkChangeAtr().map(x -> x.value).orElse(null),
-				domain.getGoWorkAtr1().value,
-				domain.getBackHomeAtr1().value, 
-				domain.getWorkTimeStart1().map(x -> x.v()).orElse(null),
-				domain.getWorkTimeEnd1().map(x -> x.v()).orElse(null),
-				domain.getWorkLocationCD1().map(x -> x).orElse(null),
-				domain.getGoWorkAtr2().map(x -> x.value).orElse(null),
-				domain.getBackHomeAtr2().map(x -> x.value).orElse(null),
-				domain.getWorkTimeStart2().map(x -> x.v()).orElse(null),
-				domain.getWorkTimeEnd2().map(x -> x.v()).orElse(null),
-				domain.getWorkLocationCD2().map(x -> x).orElse(null));
+@NoArgsConstructor
+public class GoBackDirectlyDto extends ApplicationDto {
+	// 直帰区分
+	public int straightDistinction;
+	// 直行区分
+	public int straightLine;
+	// 勤務を変更する
+	public Integer isChangedWork;
+	// 勤務情報
+	public WorkInformationDto dataWork;
+
+	public static GoBackDirectlyDto convertDto(GoBackDirectly goBackAplication) {
+		GoBackDirectlyDto result = new GoBackDirectlyDto();
+		result.straightDistinction = goBackAplication.getStraightDistinction().value;
+		result.straightLine = goBackAplication.getStraightLine().value;
+		if (goBackAplication.getIsChangedWork().isPresent()) {
+			result.isChangedWork = goBackAplication.getIsChangedWork().get().value;
+		}
+		if (goBackAplication.getDataWork().isPresent()) {
+			result.dataWork = WorkInformationDto.fromDomain(goBackAplication.getDataWork().get());
+		}
+		return result;
+	}
+
+	public GoBackDirectly toDomain() {
+		Optional<NotUseAtr> isChange = Optional.ofNullable(null);
+		
+		if (isChangedWork != null) {
+			isChange = Optional.ofNullable(EnumAdaptor.valueOf(isChangedWork, NotUseAtr.class));
+		}
+		GoBackDirectly result = new GoBackDirectly();
+		result.setStraightDistinction(EnumAdaptor.valueOf(straightDistinction, NotUseAtr.class));
+		result.setStraightLine(EnumAdaptor.valueOf(straightLine, NotUseAtr.class));
+		result.setIsChangedWork(isChange);
+		Optional<WorkInformation> dataWorkSet = Optional.ofNullable(null);
+		if (dataWork != null) {
+			dataWorkSet = Optional.of(dataWork.toDomain());
+		}
+		if (this.getAppID() != null) {
+			result.setAppID(this.getAppID());
+			
+		}
+		result.setDataWork(dataWorkSet);
+		return result;
 	}
 }

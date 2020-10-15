@@ -45,6 +45,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
+	
+	private static final String SELECT_ALL_WORKTYPE_BY_CID = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
+			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 
 	private static final String SELECT_WORKTYPE_BY_LEAVE_ABSENCE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.oneDayAtr=12"
@@ -65,6 +69,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
+	
+	private static final String SELECT_BY_ID_CLASSIFICATION = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.deprecateAtr = :deprecateAtr"
+			+ " AND a.worktypeAtr = :worktypeAtr"
+			+ " AND a.oneDayAtr = :oneDayAtr";
 
 	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR = "SELECT a FROM KshmtWorkTypeSet a LEFT JOIN KshmtWorkType c"
 			+ " ON a.kshmtWorkTypeSetPK.companyId = c.kshmtWorkTypePK.companyId AND a.kshmtWorkTypeSetPK.workTypeCode = c.kshmtWorkTypePK.workTypeCode"
@@ -80,6 +89,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
+	
+	private static final String SELECT_WORKTYPE_ATR = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.deprecateAtr = :deprecateAtr";
 
 	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " LEFT JOIN KshmtWorkTypeOrder o"
@@ -377,6 +389,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 							.setParameter("lstPossible", subPossibleList).getList(x -> toDomain(x)));
 		});
 		return datas;
+	}
+	
+	@Override
+	public List<WorkType> findWorkByDeprecate(String companyId, int deprecateAtr) {
+		return this.queryProxy().query(SELECT_WORKTYPE_ATR, KshmtWorkType.class)
+				.setParameter("companyId", companyId).setParameter("deprecateAtr", deprecateAtr)
+				.getList(x -> toDomain(x));
 	}
 	
 	@Override
@@ -888,5 +907,50 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.getList(x -> toDomain(x));
 	}
 	
+
+	private static final String SELECT_ALL_FOR_KAF008;
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :deprecateAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" AND c.oneDayAtr IN :hdType");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		SELECT_ALL_FOR_KAF008 = builder.toString();
+	}
+
+	public List<WorkType> findForAppKAF008(String companyId, int deprecateAtr, int worktypeAtr, List<Integer> hdType){
+		return this.queryProxy().query(SELECT_ALL_FOR_KAF008, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("deprecateAtr", deprecateAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("hdType", hdType)
+				.getList(x -> toDomain(x));
+	}
+
+	private static final String SELECT_BY_DEPRECATE_AND_WORK_ATR;
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :deprecateAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		SELECT_BY_DEPRECATE_AND_WORK_ATR = builder.toString();
+	}
+
+	public List<WorkType> findByDepreacateAtrAndWorkTypeAtr(String companyId, int deprecateAtr, int worktypeAtr) {
+		return this.queryProxy().query(SELECT_BY_DEPRECATE_AND_WORK_ATR, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("deprecateAtr", deprecateAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.getList(x -> toDomain(x));
+	};
 	
+	@Override
+	public List<WorkType> getAllWorkTypeNotAbolished(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE_BY_CID, KshmtWorkType.class).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
+	}
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.dom.exo.outputitem;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(20)
+@StringMaxLength(40)
 public class OutputItemName extends StringPrimitiveValue<OutputItemName> {
 	/**
 	 * 

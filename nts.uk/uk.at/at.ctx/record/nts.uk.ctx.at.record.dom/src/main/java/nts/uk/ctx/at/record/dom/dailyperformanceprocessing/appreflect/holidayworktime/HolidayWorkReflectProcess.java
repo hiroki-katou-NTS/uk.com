@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywo
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 public interface HolidayWorkReflectProcess {
 	/**

@@ -56,4 +56,5 @@ public interface ScheduleExecutionLogGetMemento {
 	 * @return the execution Atr
 	 */
 	public ExecutionAtr getExeAtr();
+
 }

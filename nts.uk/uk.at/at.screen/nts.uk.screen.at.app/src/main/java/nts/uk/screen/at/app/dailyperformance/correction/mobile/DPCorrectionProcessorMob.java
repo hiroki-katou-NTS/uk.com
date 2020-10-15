@@ -43,21 +43,15 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusF
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
@@ -65,9 +59,15 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationLis
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -1050,19 +1050,19 @@ public class DPCorrectionProcessorMob {
 				.findByKey(employeeId, date);
 		if (timeLeavingOpt.isPresent()) {
 			TimeLeavingOfDailyPerformance timeLeaving = timeLeavingOpt.get();
-			if (!timeLeaving.getTimeLeavingWorks().isEmpty()) {
-				timeLeaving.getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1)
+			if (!timeLeaving.getAttendance().getTimeLeavingWorks().isEmpty()) {
+				timeLeaving.getAttendance().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1)
 						.forEach(x -> {
 							Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
 							if (attOpt.isPresent()) {
 								Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 								if (workStampOpt.isPresent() && stampSourceAt) {
 									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-											workStampOpt.get().getTimeWithDay(),
+											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 											workStampOpt.get().getLocationCode().isPresent()
 													? workStampOpt.get().getLocationCode().get()
 													: null,
-											StampSourceInfo.SPR);
+											TimeChangeMeans.SPR_COOPERATION);
 								}
 							}
 
@@ -1070,11 +1070,11 @@ public class DPCorrectionProcessorMob {
 							if (leavOpt.isPresent() && stampSourceLeav) {
 								Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
 								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-										workStampOpt.get().getTimeWithDay(),
+										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 										workStampOpt.get().getLocationCode().isPresent()
 												? workStampOpt.get().getLocationCode().get()
 												: null,
-										StampSourceInfo.SPR);
+										TimeChangeMeans.SPR_COOPERATION);
 							}
 							timeLeavingOfDailyPerformanceRepository.update(timeLeaving);
 						});

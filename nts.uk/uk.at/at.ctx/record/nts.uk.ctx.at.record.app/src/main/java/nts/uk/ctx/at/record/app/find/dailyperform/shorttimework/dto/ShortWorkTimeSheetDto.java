@@ -20,7 +20,7 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	private Integer no;
 
 	/** 育児介護区分: 育児介護区分 */
-	/** @see nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute */
+	/** @see nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute */
 	// @AttendanceItemLayout(layout = "B", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
 	private int attr;

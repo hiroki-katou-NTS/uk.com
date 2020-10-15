@@ -32,7 +32,7 @@ public class OiomtOutCndDetailPk implements Serializable
     * 条件設定コード
     */
     @Basic(optional = false)
-    @Column(name = "CONDITION_SETTING_CD")
+    @Column(name = "CND_SET_CD")
     public String conditionSettingCd;
     
 }

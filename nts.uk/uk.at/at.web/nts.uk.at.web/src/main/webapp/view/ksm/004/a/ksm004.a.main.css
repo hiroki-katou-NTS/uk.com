@@ -26,7 +26,7 @@
 }
 .infoTable {
 	padding: 0px;
-	width: 300px;
+	width: 310px;
 }
 .infoTable .panel {
 	padding: 0px;
@@ -36,7 +36,7 @@
 	background: #C5E0B4;
 	border-bottom: 2px solid #B1B1B1;
 	padding-top: 5px;
-    padding-left: 15px;
+    padding-left: 10px;
 }
 .infoTable > div:LAST-CHILD {
 	padding: 5px 5px;
@@ -73,13 +73,13 @@
 	padding-right: 5px !important;
 }
 .panel-frame-btn {
-	width: 80px;
+	width: 90px;
 	height: 50px;
 	margin: 5px;
+    border-radius: 7px;
 }
 .frame-btn {
 	display: inline-flex;
-	margin: 0 10px;
 }
 .button-sqr1 {
 	color: rgb(85,142,213);
@@ -89,5 +89,4 @@
 }
 .button-sqr3 {
 	color: rgb(255,0,0);
-	width: 90px;
 }

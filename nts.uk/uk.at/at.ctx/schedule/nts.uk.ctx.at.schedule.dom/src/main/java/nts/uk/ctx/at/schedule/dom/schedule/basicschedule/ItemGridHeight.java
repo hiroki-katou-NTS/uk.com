@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * @author sonnh1
  *
  */
-@IntegerMaxValue(9999)
+@IntegerMaxValue(2000)
 @IntegerMinValue(200)
 public class ItemGridHeight extends IntegerPrimitiveValue<ItemGridHeight> {
 	private static final long serialVersionUID = 1L;

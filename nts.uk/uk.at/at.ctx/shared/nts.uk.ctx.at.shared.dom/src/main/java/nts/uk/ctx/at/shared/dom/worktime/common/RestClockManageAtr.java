@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 /**
+ * 休憩打刻の時刻管理設定区分
  * The Enum RestClockManageAtr.
  */
 public enum RestClockManageAtr {

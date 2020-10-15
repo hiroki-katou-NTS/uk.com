@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.record.app.find.divergence.time;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,6 +34,9 @@ public class DivergenceAttendanceItemFinder {
 	/** The div time repo. */
 	@Inject
 	DivergenceTimeRepository divTimeRepo;
+	
+	@Inject
+	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	/**
 	 * Gets the all at type.
@@ -50,7 +56,7 @@ public class DivergenceAttendanceItemFinder {
 		Integer divType = 0;
 		
 		//get option<domain>
-		Optional<DivergenceTime> optionalDivTime = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
+		Optional<DivergenceTimeRoot> optionalDivTime = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		//if present
 		if (optionalDivTime.isPresent()) {
@@ -107,6 +113,24 @@ public class DivergenceAttendanceItemFinder {
 	 */
 	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
 		List<AttendanceNameDivergenceDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
+		return data;
+	}
+	
+	public List<AttendanceNameDivergenceDto> getMonthlyAtName(
+			List<Integer> monthlyAttendanceItemIds) {
+		String companyId = AppContexts.user().companyId();
+		List<AttendanceNameDivergenceDto> data = companyMonthlyItemService
+				.getMonthlyItems(companyId, Optional.empty(), monthlyAttendanceItemIds, Collections.emptyList())
+				.stream().map(x -> {
+					AttendanceNameDivergenceDto dto = new AttendanceNameDivergenceDto(x.getAttendanceItemId(),
+							x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber());
+					return dto;
+				}).collect(Collectors.toList());
+		/*List<AttendanceNameDivergenceDto> data = attendanceItemNameAdapter
+				.getMonthlyAttendanceItemName(monthlyAttendanceItemIds).stream()
+				.map(item -> new AttendanceNameDivergenceDto(item.getAttendanceItemId(),
+						item.getAttendanceItemName(), item.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());*/
 		return data;
 	}
 }

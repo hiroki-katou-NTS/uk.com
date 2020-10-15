@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.workform.flex.KrcstMonFlexAggrSet;
 import nts.uk.ctx.at.record.infra.entity.monthly.workform.flex.KrcstMonFlexAggrSetPK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 
 /**
  * リポジトリ実装：フレックス勤務の月別集計設定

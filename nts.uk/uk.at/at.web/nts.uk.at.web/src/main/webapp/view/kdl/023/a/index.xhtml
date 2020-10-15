@@ -8,11 +8,10 @@
 	<ui:composition template="../base/kdl023.base.index.xhtml">
 		<ui:define name="extended-header">
 			<com:scriptfile path="kdl023.a.vm.js" />
-			<com:scriptfile path="kdl023.a.start.js" />
 		</ui:define>
 		<ui:define name="calendar-header">
-			<div class="nts-calendar-header">
-				<div data-bind="ntsDatePicker: {
+			<div tabindex="12.1" class="nts-calendar-header">
+				<div tabindex="12.2" data-bind="ntsDatePicker: {
 				value: yearMonthPicked, 
 				dateFormat: 'yearmonth', 
 				valueFormat: 'YYYYMM', 
@@ -22,8 +21,19 @@
 			</div>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button id="btnClose" class="large" data-bind="click: closeDialog"
-						tabindex="13">#{i18n.getText('KDL023_16')}</button>
+            <com:ko-if bind="!isExecMode()">
+                <!--A4_1-->
+                <button id="btnClose" class="large ref-mode" data-bind="click: closeDialog" tabindex="13">#{i18n.getText('KDL023_16')}</button>
+            </com:ko-if>
+
+            <com:ko-if bind="isExecMode">
+                <!--A4_2-->
+                <div  tabindex="14" class="exec-mode" data-bind="ntsCheckBox: { checked: isOverWrite, style: 'warnpanel' }">#{i18n.getText('KDL023_37')}</div><br/>
+                <!--A4_3-->
+                <button tabindex="15" id="btnDecide" class="large proceed exec-mode" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
+                <!--A4_4-->
+                <button tabindex="16" id="btnCancel" class="medium exec-mode" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
+            </com:ko-if>
 		</ui:define>
 	</ui:composition>
 </body>

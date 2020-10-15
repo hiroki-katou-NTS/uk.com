@@ -11,11 +11,17 @@ public interface AttendanceOptions {
 	/** 工数・作業管理 */
 	boolean workload();
 	
+	/** 在席・伝言 */
+	boolean presentAndMessage();
+	
 	/** 時間休暇 */
 	boolean hourlyPaidLeave();
 	
 	/** 申請承認 */
 	boolean application();
+	
+	/** 入門・退門 */
+	boolean enterAndExit();
 	
 	/** 任意期間集計 */
 	boolean anyPeriodAggregation();

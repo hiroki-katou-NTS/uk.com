@@ -27,13 +27,14 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -181,11 +182,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			Statement statementI = con.createStatement();
-			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
+			for(BreakTimeSheet breakTimeSheet : breakTimes.getTimeZone().getBreakTimeSheets()){
 				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
 						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
 						+ breakTimes.getYmd() + "' , "
-						+ breakTimes.getBreakType().value + " , "
+						+ breakTimes.getTimeZone().getBreakType().value + " , "
 						+ breakTimeSheet.getBreakFrameNo().v() + " , "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
@@ -433,13 +434,13 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	public void updateForEachOfType(BreakTimeOfDailyPerformance breakTime) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
-			for(BreakTimeSheet breakTimeSheet : breakTime.getBreakTimeSheets()){
+			for(BreakTimeSheet breakTimeSheet : breakTime.getTimeZone().getBreakTimeSheets()){
 			
 				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , END_STAMP_TIME = "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + breakTime.getEmployeeId()
 						+ "' AND YMD = '" + breakTime.getYmd() + "'" + " AND BREAK_TYPE = "
-						+ breakTime.getBreakType().value + " AND BREAK_FRAME_NO = "
+						+ breakTime.getTimeZone().getBreakType().value + " AND BREAK_FRAME_NO = "
 						+ breakTimeSheet.getBreakFrameNo().v();
 				Statement statementU = con.createStatement();
 				statementU.executeUpdate(updateTableSQL);

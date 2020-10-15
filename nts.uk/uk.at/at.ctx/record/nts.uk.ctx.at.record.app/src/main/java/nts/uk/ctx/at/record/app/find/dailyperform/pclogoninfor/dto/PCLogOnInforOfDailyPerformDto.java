@@ -9,14 +9,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -48,7 +49,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	public static PCLogOnInforOfDailyPerformDto from(PCLogOnInfoOfDaily domain){
 		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
 		if (domain != null) {
-			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
+			dto.setLogonTime(ConvertHelper.mapTo(domain.getTimeZone().getLogOnInfo(),
 					(c) -> new LogonInfoDto(
 								c.getWorkNo() == null ? null : c.getWorkNo().v(),
 								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
@@ -56,6 +57,22 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static PCLogOnInforOfDailyPerformDto from(String employeeID,GeneralDate ymd,PCLogOnInfoOfDailyAttd domain){
+		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
+		if (domain != null) {
+			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
+					(c) -> new LogonInfoDto(
+								c.getWorkNo() == null ? null : c.getWorkNo().v(),
+								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
+								c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null
+					)));
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.exsistData();
 		}
 		return dto;
@@ -74,7 +91,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public PCLogOnInfoOfDaily toDomain(String employeeId, GeneralDate date) {
+	public PCLogOnInfoOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -84,9 +101,10 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
+		PCLogOnInfoOfDaily domain = new PCLogOnInfoOfDaily(employeeId, date, ConvertHelper.mapTo(logonTime, 
 							c -> new LogOnInfo(new PCLogOnNo(c.getNo()),
 								toWorkStamp(c.getLogOff()), toWorkStamp(c.getLogOn()))));
+		return domain.getTimeZone();
 	}
 
 	private TimeWithDayAttr toWorkStamp(Integer time){

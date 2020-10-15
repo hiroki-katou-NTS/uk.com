@@ -15,8 +15,6 @@ import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
@@ -25,8 +23,8 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRep
 public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	@Inject
 	IAppWorkChangeSetRepository workChangeRepository;
-	@Inject
-	ApplicationReasonRepository appFormRepo;
+//	@Inject
+//	ApplicationReasonRepository appFormRepo;
 	@Inject
 	EmployeeRequestAdapter employeeAdapter;
 	@Inject
@@ -96,9 +94,9 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		wcBasicData.setSID(sid);
 
 		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
-				ApplicationType.WORK_CHANGE_APPLICATION.value);
-		wcBasicData.setListAppReason(listReason);
+//		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
+//				ApplicationType.WORK_CHANGE_APPLICATION.value);
+//		wcBasicData.setListAppReason(listReason);
 
 		// 勤務変更申請基本データ
 		return wcBasicData;

@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.AddSubOperator;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemGetMemento;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.AddSubOperator;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItemGetMemento;
 
 /**
  * The Class JpaSelectedAttendanceItemGetMemento.

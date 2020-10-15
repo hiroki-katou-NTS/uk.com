@@ -10,8 +10,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -46,6 +47,9 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 	
 	@Column(name = "BONUS_PAY_CODE")
 	public String bonusPayCode;
+	
+	@Column(name = "WORK_TYPE_CODE")
+	public String businessTypeCode;
 
 	@Override
 	protected Object getKey() {
@@ -53,6 +57,7 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 	}
 
 	public AffiliationInforOfDailyPerfor toDomain(){
+		BusinessTypeCode businessTypeCode = this.businessTypeCode == null ? null : new BusinessTypeCode(this.businessTypeCode);
 		AffiliationInforOfDailyPerfor domain = new AffiliationInforOfDailyPerfor(
 				new EmploymentCode(this.employmentCode),
 				this.krcdtDaiAffiliationInfPK.employeeId,
@@ -60,18 +65,22 @@ public class KrcdtDaiAffiliationInf extends UkJpaEntity implements Serializable 
 				this.workplaceID,
 				this.krcdtDaiAffiliationInfPK.ymd,
 				new ClassificationCode(this.classificationCode),
-				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode));
+				this.bonusPayCode == null ? null : new BonusPaySettingCode(this.bonusPayCode),
+				businessTypeCode);
 		return domain;
 	}
 	
 	public static KrcdtDaiAffiliationInf toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor){
 		return new KrcdtDaiAffiliationInf(
 				new KrcdtDaiAffiliationInfPK(affiliationInforOfDailyPerfor.getEmployeeId(), affiliationInforOfDailyPerfor.getYmd()),
-				affiliationInforOfDailyPerfor.getEmploymentCode().v(),
-				affiliationInforOfDailyPerfor.getJobTitleID(),
-				affiliationInforOfDailyPerfor.getClsCode().v(),
-				affiliationInforOfDailyPerfor.getWplID(),
-				affiliationInforOfDailyPerfor.getBonusPaySettingCode() == null 
-					? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().v());
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getEmploymentCode().v(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getJobTitleID(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getClsCode().v(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getWplID(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode() == null 
+					? null : affiliationInforOfDailyPerfor.getAffiliationInfor().getBonusPaySettingCode().v(),
+				affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().isPresent()
+					? affiliationInforOfDailyPerfor.getAffiliationInfor().getBusinessTypeCode().get().v():null		
+				);
 	}
 }

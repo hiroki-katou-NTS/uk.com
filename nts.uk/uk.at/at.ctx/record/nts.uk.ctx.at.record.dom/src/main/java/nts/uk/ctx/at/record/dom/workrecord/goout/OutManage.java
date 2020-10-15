@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.goout;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 
 /**
  * @author Hoangdd

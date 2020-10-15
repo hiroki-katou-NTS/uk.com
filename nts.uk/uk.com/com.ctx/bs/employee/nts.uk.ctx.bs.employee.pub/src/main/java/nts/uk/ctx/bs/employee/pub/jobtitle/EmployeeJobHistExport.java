@@ -35,5 +35,7 @@ public class EmployeeJobHistExport {
 	/** The end date. */
 	// 配属期間 end
 	private GeneralDate endDate;
+	
+	private String jobTitleCode;
 
 }

@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -28,6 +27,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.classification.AffCompanyHistItemExport;
 import nts.uk.ctx.bs.employee.pub.classification.ClassificationExport;
+import nts.uk.ctx.bs.employee.pub.classification.EmpClassifiExport;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -171,8 +171,6 @@ public class ClassificationPubImp implements SyClassificationPub {
 		}).collect(Collectors.toList());
 	}
 
-	
-	
 	@Override
 	public List<AffCompanyHistItemExport> getByIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
 		List<AffCompanyHistItemDto> listAffCompanyHistItem = this.affiliatedCompanyHistoryFinder.getByIDAndBasedate( baseDate , listempID);
@@ -191,6 +189,17 @@ public class ClassificationPubImp implements SyClassificationPub {
 		}).collect(Collectors.toList());
 		
 		return result;
+	}
+
+	@Override
+	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
+		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
+		if (listAffClassHistItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		return listAffClassHistItem.stream().map(mapper -> {
+			return new EmpClassifiExport(mapper.getEmployeeId(), mapper.getClassificationCode().toString());
+		}).collect(Collectors.toList());
 	}
 
 	@RequiredArgsConstructor

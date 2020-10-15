@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.pub.attendancetype.AttendanceTypePub;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapterDto;
 @Stateless
 public class AttendanceTypeDivergenceAdapterImpl implements AttendanceTypeDivergenceAdapter{
 	@Inject

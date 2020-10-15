@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 
 /**
  * @author yennh

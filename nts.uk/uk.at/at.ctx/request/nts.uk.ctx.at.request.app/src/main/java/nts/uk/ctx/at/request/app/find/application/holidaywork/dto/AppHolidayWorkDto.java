@@ -1,16 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
-/*import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;*/
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOvertimeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
@@ -34,7 +30,7 @@ public class AppHolidayWorkDto {
 	/**
 	 * application
 	 */
-	private ApplicationDto_New application;
+	private ApplicationDto application;
 	/**
 	 * 会社ID
 	 * companyID
@@ -257,66 +253,67 @@ public class AppHolidayWorkDto {
 	private PreActualColorResult preActualColorResult;
 	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
-		return new AppHolidayWorkDto(
-				appHolidayWork.getVersion(),
-				ApplicationDto_New.fromDomain(appHolidayWork.getApplication()), 
-				appHolidayWork.getCompanyID(), 
-				appHolidayWork.getAppID(), 
-				"", 
-				false, 
-				"", 
-				"",
-				null,
-				CollectionUtil.isEmpty(appHolidayWork.getHolidayWorkInputs())
-					? Collections.emptyList() 
-					: appHolidayWork.getHolidayWorkInputs().stream().map(x -> HolidayWorkInputDto.fromDomain(x)).collect(Collectors.toList()), 
-				0, 
-				appHolidayWork.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appHolidayWork.getWorkTypeCode().v(), ""),
-				Collections.emptyList(),
-				appHolidayWork.getWorkTimeCode() == null ? null : new SiftType(appHolidayWork.getWorkTimeCode().v(),""),
-				Collections.emptyList(),
-				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
-				appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(),  
-				appHolidayWork.getWorkClock2().getStartTime()== null ? null : appHolidayWork.getWorkClock2().getStartTime().v(), 
-				appHolidayWork.getWorkClock2().getEndTime() == null ? null : appHolidayWork.getWorkClock2().getEndTime().v(),
-				appHolidayWork.getWorkClock1().getGoAtr().value,
-				appHolidayWork.getWorkClock1().getBackAtr().value,
-				appHolidayWork.getWorkClock2().getGoAtr().value,
-				appHolidayWork.getWorkClock2().getBackAtr().value,
-				"", 
-				appHolidayWork.getDivergenceReason(), 
-				0,
-				appHolidayWork.getHolidayShiftNight(), 
-				false, 
-				false, 
-				false, 
-				Collections.emptyList(), 
-				false, 
-				false, 
-				Collections.emptyList(),
-				false, 
-				false, 
-				0, 
-				false,
-				false,
-				false,
-				false,
-				false, 
-				null,
-				null,false, false, false,
-				null,
-				null, 
-				null,
-				Collections.emptyList(),
-				false,
-				false,
-				0,
-				0,
-				Collections.emptyList(),
-				null,
-				null,
-				null,
-				null);
+//		return new AppHolidayWorkDto(
+//				appHolidayWork.getVersion(),
+//				ApplicationDto_New.fromDomain(appHolidayWork.getApplication()), 
+//				appHolidayWork.getCompanyID(), 
+//				appHolidayWork.getAppID(), 
+//				"", 
+//				false, 
+//				"", 
+//				"",
+//				null,
+//				CollectionUtil.isEmpty(appHolidayWork.getHolidayWorkInputs())
+//					? Collections.emptyList() 
+//					: appHolidayWork.getHolidayWorkInputs().stream().map(x -> HolidayWorkInputDto.fromDomain(x)).collect(Collectors.toList()), 
+//				0, 
+//				appHolidayWork.getWorkTypeCode() == null ? null : new WorkTypeOvertime(appHolidayWork.getWorkTypeCode().v(), ""),
+//				Collections.emptyList(),
+//				appHolidayWork.getWorkTimeCode() == null ? null : new SiftType(appHolidayWork.getWorkTimeCode().v(),""),
+//				Collections.emptyList(),
+//				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
+//				appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(),  
+//				appHolidayWork.getWorkClock2().getStartTime()== null ? null : appHolidayWork.getWorkClock2().getStartTime().v(), 
+//				appHolidayWork.getWorkClock2().getEndTime() == null ? null : appHolidayWork.getWorkClock2().getEndTime().v(),
+//				appHolidayWork.getWorkClock1().getGoAtr().value,
+//				appHolidayWork.getWorkClock1().getBackAtr().value,
+//				appHolidayWork.getWorkClock2().getGoAtr().value,
+//				appHolidayWork.getWorkClock2().getBackAtr().value,
+//				"", 
+//				appHolidayWork.getDivergenceReason(), 
+//				0,
+//				appHolidayWork.getHolidayShiftNight(), 
+//				false, 
+//				false, 
+//				false, 
+//				Collections.emptyList(), 
+//				false, 
+//				false, 
+//				Collections.emptyList(),
+//				false, 
+//				false, 
+//				0, 
+//				false,
+//				false,
+//				false,
+//				false,
+//				false, 
+//				null,
+//				null,false, false, false,
+//				null,
+//				null, 
+//				null,
+//				Collections.emptyList(),
+//				false,
+//				false,
+//				0,
+//				0,
+//				Collections.emptyList(),
+//				null,
+//				null,
+//				null,
+//				null);
+		return null;
 	}
 	
 }

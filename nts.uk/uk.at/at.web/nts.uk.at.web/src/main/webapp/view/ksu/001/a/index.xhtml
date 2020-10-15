@@ -12,449 +12,431 @@
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
 			</com:ValidatorScript>
-
-			<!-- COMPONENT CCG001 -->
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<style>
+				.medium-font-size {
+					font-size: 0.6rem;
+				}
+				
+				.small-font-size {
+					font-size: 0.5rem;
+				}
+				
+				.cell-red {
+					background-color: red;
+				}
+				
+				.cell-green {
+					background-color: green;
+				}
+				
+				.extable div.cell-light-green, td.cell-light-green {
+					background-color: #B8FF33;
+				}
+				
+				.extable div.cell-light-green.selected, td.cell-light-green.selected {
+					background-color: #3498DB;
+					color: #FFF;
+				}
+				
+				.blue-text {
+					color: blue;
+				}
+				
+				.red-text{
+					color: red;
+				}
+				
+				.color-schedule-performance {color:#008000 !important;}
+			</style>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<!-- #CCG001 -->
 			<com:stylefile path="ksu001.a.main.css" />
 			<com:scriptfile path="ksu001.a.start.js" />
 			<com:scriptfile path="ksu001.a.vm.js" />
 			<com:scriptfile path="ksu001.a.service.js" />
 
-			<com:stylefile path="../o/ksu001.o.main.css" />
-			<com:scriptfile path="../o/ksu001.o.vm.js" />
-			<com:scriptfile path="../o/ksu001.o.service.js" />
+			<com:stylefile path="../ab/ksu001.ab.main.css" />
+			<com:scriptfile path="../ab/ksu001.ab.vm.js" />
+			<com:scriptfile path="../ab/ksu001.ab.service.js" />
 
-			<com:stylefile path="../q/ksu001.q.main.css" />
-			<com:scriptfile path="../q/ksu001.q.vm.js" />
-			<com:scriptfile path="../q/ksu001.q.service.js" />
+			<com:stylefile path="../ac/ksu001.ac.main.css" />
+			<com:scriptfile path="../ac/ksu001.ac.vm.js" />
+			<com:scriptfile path="../ac/ksu001.ac.service.js" />
 
-			<com:scriptfile path="../common/ksu001.js" />
+			<com:scriptfile path="../common/modelgrid.js" />
+
+			<com:scriptfile path="../../../kcp/013/shared/kcp013.vm.js" />
 
 		</ui:define>
 		<ui:define name="content">
 			<div data-bind="with: viewA">
 				<div id="functions-area">
-					<button id="saveData" tabindex="1" class="proceed"
-						data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_1')}</button>
-					<!-- <button tabindex="2" class="done" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_2')}</button>
-					<button tabindex="3" class="create" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_3')}</button>
-					<button tabindex="7" class="check" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_4')}</button>
-					<button tabindex="10" class="confirm"
-						data-bind="click: openDialogD, enable: hasEmployee">#{i18n.getText('KSU001_5')}</button>
-					<button tabindex="11" class="release">#{i18n.getText('KSU001_6')}</button>
-					<button tabindex="12" class="output">#{i18n.getText('KSU001_7')}</button>
-					<button tabindex="13" class="hope">#{i18n.getText('KSU001_8')}</button>
-					<button tabindex="14" class="vacation" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_9')}</button> -->
-					<button tabindex="20" class="revision"
-                        data-bind="click: openCDL027, enable: hasEmployee">#{i18n.getText('KSU001_10')}</button>
-					<!-- <button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button> -->
+					<button  id="A1_1"  class="proceed"  >#{i18n.getText('KSU001_1')}</button>
+					<button  id="A1_2"  class="proceed marginleft15px"  >#{i18n.getText('KSU001_2')}</button>
+					<button  id="A1_3"  class="create  marginleft15px"  >#{i18n.getText('KSU001_3')}</button>
+					<button  id="A1_4"  class="check   marginleft15px"  >#{i18n.getText('KSU001_4')}</button>
+					<button  id="A1_5"  class="confirm marginleft15px"  data-bind="click: openDialogU ">#{i18n.getText('KSU001_5')}</button>
+					<button  id="A1_6"  class="release marginleft15px"  >#{i18n.getText('KSU001_6')}</button>
+					
+					<button  id="A1_7">#{i18n.getText('KSU001_7')}</button>
+					<button  id="A1_8"  class="hope     marginleft15px" >#{i18n.getText('KSU001_8')}</button>
+					<button  id="A1_9"  class="vacation marginleft15px" >#{i18n.getText('KSU001_9')}</button>
+					<button  id="A1_10" class="marginleft15px" >#{i18n.getText('KSU001_10')}</button>
+					
+					<button  id="A1_11" data-bind="enable: true">#{i18n.getText('KSU001_11')}</button>
+					<button  id="A1_12" data-bind="enable: true">#{i18n.getText('KSU001_12')}</button>
 				</div>
-
-				<div id="popup-area2" class="popup-area popup-panel">
-					<button tabindex="4" class="proceed generally ">#{i18n.getText('KSU001_12')}</button>
-					<span id="generally-created">#{i18n.getText('KSU001_15')}</span><br />
-					<button tabindex="5" class="proceed simulation">#{i18n.getText('KSU001_13')}</button>
-					<span id="simulation-explanation">#{i18n.getText('KSU001_16')}</span><br />
-					<button tabindex="6" class="proceed capture">#{i18n.getText('KSU001_14')}</button>
-					<span id="capture-explanation">#{i18n.getText('KSU001_17')}</span>
-				</div>
-
-				<div id="popup-area3" class="popup-area popup-panel">
-					<span id="alarm-check-explanation">#{i18n.getText('KSU001_18')}</span>
-					<table tabindex="8" id="treegrid"
-						data-bind="ntsTreeGridView:{
-							width: 300,
-							height: 390,
-							options: itemsTree,
-							selectedValues: selectedCodeTree,
-							optionsValue: 'code',
-							optionsChild: 'childs',
-							optionsText: 'nodeText',
-							multiple: true,
-							enable: true,
-							showCheckBox: true}">
-					</table>
-					<button tabindex="9" class="proceed execution-popup3"
-						data-bind="click: openDialogC">#{i18n.getText('KSU001_21')}</button>
-				</div>
-
-				<div id="popup-area4" class="popup-area popup-panel">
+				
+				<!-- event when click btn KSU001_10 -->
+				<div id="A1_10_1" class="popup-area popup-panel btn10">
 					<div id="button-top">
-						<button tabindex="15" class="substitute-holiday">#{i18n.getText('Com_CompensationHoliday')}</button>
-						<button tabindex="16" class="pause">#{i18n.getText('Com_SubstituteHoliday')}</button>
-						<button tabindex="17" class="annual-holiday">#{i18n.getText('Com_PaidHoliday')}</button>
+						<button  id="A1_10_2" class="compensation" data-bind="click: openKDL005 ">#{i18n.getText('Com_CompensationHoliday')}</button>
+						<button  id="A1_10_4" class="paid" data-bind="click: openKDL020 ">#{i18n.getText('Com_PaidHoliday')}</button>
+						<button  id="A1_10_6" class="exsess">#{i18n.getText('Com_ExsessHoliday')}</button>
 					</div>
 					<div id="button-bot">
-						<button tabindex="18" class="yearly-reserved">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-						<button tabindex="19" class="break">#{i18n.getText('Com_ExsessHoliday')}</button>
+						<button  id="A1_10_3" class="substitute" data-bind="click: openKDL009 ">#{i18n.getText('Com_SubstituteHoliday')}</button>
+						<button  id="A1_10_5" class="fundedPaid" data-bind="click: openKDL029 ">#{i18n.getText('Com_FundedPaidHoliday')}</button>
+						<button  id="A1_10_7" class="supportsetting">#{i18n.getText('KSU001_29')}</button>
 					</div>
 				</div>
+				<!-- event when click btn KSU001_7 -->
+				<div id="A1_7_1" class="popup-area popup-panel btn10">
+					<table>
+						<tr style="height: 50px">
+							<td style="width: 20%"><button id="A1_7_2" class="compensation">#{i18n.getText('KSU001_13')}</button></td>
+							<td style="width: 80%"><span class="label" id="A1_7_3" style="">#{i18n.getText('KSU001_14', ['#Com_Person'])}</span></td>
+						</tr>
+						<tr style="height: 50px">
+							<td style="width: 20%"><button id="A1_7_4" class="substitute">#{i18n.getText('KSU001_15')}</button></td>
+							<td style="width: 80%"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
+						</tr>
+					</table>
+				</div>
 
-				<div id="popup-area5" class="popup-area popup-panel">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_301')}</div>
-					<hr></hr>
+				<!-- event when click btn KSU001_12 -->
+				<div id="A1_12_1" class="popup-area popup-panel">
+					<div id="A1_12_2" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_23')}</div>
+					<hr id="A1_12_3"></hr>
 					<div id="work-setting">
 						<div>
-							<button tabindex="22">#{i18n.getText('KSU001_22')}</button>
-							<span>#{i18n.getText('KSU001_30')}</span>
+							<button id="A1_12_4">#{i18n.getText('KSU001_24')}</button>
+							<span id="A1_12_5">#{i18n.getText('KSU001_25')}</span>
 						</div>
 
 						<div>
-							<button tabindex="23" data-bind="click: openDialogL">#{i18n.getText('KSU001_25')}</button>
-							<span>#{i18n.getText('KSU001_33')}</span>
+							<button id="A1_12_6">#{i18n.getText('KSU001_129')}</button>
+							<span id="A1_12_7">#{i18n.getText('KSU001_130')}</span>
 						</div>
 
 						<div>
-							<button tabindex="24">#{i18n.getText('KSU001_26')}</button>
-							<span>#{i18n.getText('KSU001_34')}</span>
+							<button id="A1_12_8" data-bind="click: openQDialog" >#{i18n.getText('KSU001_131')}</button>
+							<span id="A1_12_9">#{i18n.getText('KSU001_132')}</span>
 						</div>
 
+					</div>
+					<div id="A1_12_10" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_26')}</div>
+					<hr id="A1_12_11"></hr>
+					<div id="person-setting">
 						<div>
-							<button tabindex="25" data-bind="click: openDialogN">#{i18n.getText('KSU001_27')}</button>
-							<span>#{i18n.getText('KSU001_35')}</span>
-						</div>
-
-						<div>
-							<button tabindex="26">#{i18n.getText('KSU001_28')}</button>
-							<span>#{i18n.getText('KSU001_36')}</span>
-						</div>
-
-						<div>
-							<button tabindex="27">#{i18n.getText('KSU001_29')}</button>
-							<span>#{i18n.getText('KSU001_37')}</span>
+							<button id="A1_12_12">#{i18n.getText('KSU001_27')}</button>
+							<span id="A1_12_13">#{i18n.getText('KSU001_28')}</span>
 						</div>
 					</div>
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_302')}</div>
-					<hr></hr>
-					<div id="company-setting">
+					
+					<div id="A1_12_14" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_30')}</div>
+					<hr id="A1_12_15"></hr>
+					
+					<div id="sort-order-setting">
 						<div>
-							<button tabindex="28" data-bind="click: gotoKml004">#{i18n.getText('KSU001_23')}</button>
-							<span>#{i18n.getText('KSU001_31')}</span>
+							<button id="A1_12_16">#{i18n.getText('KSU001_31')}</button>
+							<span id="A1_12_17">#{i18n.getText('KSU001_32')}</span>
 						</div>
 						<div>
-							<button tabindex="29" data-bind="click: gotoKml002">#{i18n.getText('KSU001_24')}</button>
-							<span>#{i18n.getText('KSU001_32')}</span>
+							<button id="A1_12_18" data-bind="click: openLDialog" >#{i18n.getText('KSU001_36')}</button>
+							<span id="A1_12_19">#{i18n.getText('KSU001_33')}</span>
 						</div>
-					</div>
-				</div>
-
-				<div id="popup-area6" class="popup-area popup-panel">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_86')}</div>
-					<hr></hr>
-					<div style="margin-left: 35px; float: left">
-						<div style="width: 35%; float: left">
-							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_87')}</div>
-							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_88')}</div>
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_91')}</div>
-						</div>
-						<div style="width: 65%; float: left">
-							<div style="margin-bottom: 17px" id="combo-box11"
-								data-bind="ntsComboBox: {
-									options: backgroundColorList,
-									optionsValue: 'code',
-									value: selectedBackgroundColor,
-									optionsText: 'name',
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 10 }
-									]}"></div>
-							<div style="margin-bottom: 15px; margin-left: 0px !important"
-								class="cf"
-								data-bind="ntsSwitchButton: {
-									options: roundingRules,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedDisplayLastWeek,
-									enable: true }"></div>
-							<div id="popup6-radioBox"
-								data-bind="ntsRadioBoxGroup: {
-									options: itemList1,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedTypeHeightExTable,
-									enable: true}"></div>
-							<input id="input-heightExtable"
-								data-bind="ntsNumberEditor: {value: ko.observable(''), constraint: 'ItemGridHeight', enable: isEnableInputHeight, required: isEnableInputHeight, name: '#[KSU001_91]' }" />
-						</div>
-					</div>
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_92')}</div>
-					<hr></hr>
-					<div style="margin-left: 35px">
-						<div style="width: 35%; float: left">
-							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_93')}</div>
-							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_94')}</div>
-							<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_95')}</div>
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_96')}</div>
-						</div>
-						<div style="width: 65%; float: left">
-							<div style="margin-bottom: 18px; margin-left: 0px !important"
-								class="cf"
-								data-bind="ntsSwitchButton: {
-									options: roundingRules,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedDisplayBank,
-									enable: true }"></div>
-							<div style="margin-bottom: 18px; margin-left: 0px !important"
-								class="cf"
-								data-bind="ntsSwitchButton: {
-									options: roundingRules,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedDisplayVertical,
-									enable: true }"></div>
-							<div style="margin-bottom: 17px; margin-left: 0px !important"
-								class="cf"
-								data-bind="ntsSwitchButton: {
-									options: roundingRules,
-									optionsValue: 'id',
-									optionsText: 'name',
-									value: selectedCompareMonth,
-									enable: isEnableCompareMonth }"></div>
-							<div id="combo-box10"
-								data-bind="ntsComboBox: {
-									options: itemList,
-									optionsValue: 'code',
-									value: selectedCode,
-									optionsText: 'name',
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 10 }
-									]}"></div>
+						<div>
+							<button id="A1_12_20" data-bind="click: openMDialog" >#{i18n.getText('KSU001_34')}</button>
+							<span id="A1_12_21">#{i18n.getText('KSU001_35')}</span>
 						</div>
 					</div>
 				</div>
-
-				<div id="popup-area7" class="popup-area popup-panel">
-					<span>#{i18n.getText('KSU001_338')}</span><br />
-					<div style="width: 180px"
-						data-bind="ntsMultiCheckBox: {
-							options: itemList2,
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: selectedIds,
-							enable: true}"></div>
-					<div>
-						<button class="proceed">#{i18n.getText('KSU001_21')}</button>
+				
+				<!-- popup khi click btn A4 Screen-display-settings -->
+				<div id="A4_1" class="popup-area popup-panel A4_1A">
+					<div style="margin-left: 0px">
+						<div>
+							<div class="area6-left">
+								<span id="A4_2">#{i18n.getText('KSU001_42')}</span>
+								<span id="A4_3">：</span>
+							</div>
+							<div id="A4_4" class="cf area6-right"
+								data-bind="ntsSwitchButton: {
+ 									options: [{id: 'time', name: '#{i18n.getText('KSU001_43')}'}, 
+		 									 {id: 'shortName', name: '#{i18n.getText('KSU001_44')}'}, 
+		 									 {id: 'shift', name: '#{i18n.getText('KSU001_45')}'}] , 
+									optionsValue: 'id', 
+ 									optionsText: 'name', 
+ 									value: selectedModeDisplayInBody , 
+ 									enable: true }"></div> 
+						</div>
+						<div>
+							<div class="area6-left" >
+								<span id="A4_5">#{i18n.getText('KSU001_133')}</span>
+								<span id="A4_6">：</span>
+							</div>
+							<div id="A4_7" class="cf area6-right"
+								data-bind="ntsSwitchButton: {
+									options: [{id: 1, name: '#{i18n.getText('KSU001_135')}'}, {id: 2, name: '#{i18n.getText('KSU001_136')}'}] , 
+ 									optionsValue: 'id', 
+ 									optionsText: 'name', 
+ 									value: achievementDisplaySelected , 
+ 									enable: true }"></div> 
+						</div>
+					</div>
+					<div id="A4_8">#{i18n.getText('KSU001_125')}</div>
+					<hr id="A4_9" data-bind="visible: showComboboxA4_12"></hr>
+					<div style="margin-left: 0px" data-bind="visible: showComboboxA4_12">
+						<table>
+							<tr>
+								<td>
+									<div class="area6-2-left">
+										<span id="A4_10">#{i18n.getText('KSU001_134')}</span> 
+										<span id="A4_11" style="padding-left: 8px">：</span>
+									</div>
+								</td>
+								<td>
+									<div id="combo-box10" class="area6-right"  style="width: 90px"
+										data-bind="ntsComboBox: {
+										options: [{id: 0, name: '#{i18n.getText('KSU001_143')}'}, {id: 1, name: '#{i18n.getText('KSU001_144')}'}]  ,
+										optionsValue: 'id',
+										value: backgroundColorSelected ,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 3 }
+										]}"></div>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
-
-				<div id="popup-area8" class="popup-area popup-panel">
-					<div class="mb-5" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
-					<span data-bind="text: selectedDate"></span><br /> <span
-						class="ml-15">#{i18n.getText('KSU001_343')}</span>
+				
+				<!-- POPUP KHI CLICK BTN A16  -->
+				<div id="A16" class="popup-area popup-panel">
+					<table style="border: 0px solid #ccc;">
+						<tr>
+							<td>
+								<div class="inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_53')}</div>
+							</td>
+							<td>
+								<div class="inline" style="width: 170px;"
+									data-bind="ntsRadioBoxGroup: {
+											options: [{id: 1, name: '#{i18n.getText('KSU001_48')}'}, {id: 2, name: '#{i18n.getText('KSU001_49')}'}] ,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedTypeHeightExTable ,
+											enable: true}"></div>
+							</td>
+							<td>		
+								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 10px;"
+									data-bind="ntsNumberEditor: {value: heightGridSetting , 
+											constraint: 'ItemGridHeight', 
+											enable: isEnableInputHeight, 
+											required: isEnableInputHeight, 
+											name: '#[KSU001_49]' }" />
+							</td>
+						</tr>
+					</table>
 					<hr />
-					<div class="mb-5">
-						<input style="width: 170px"
-							data-bind="ntsTextEditor: {value: popupVal, enable: false}" />
-					</div>
-					<span class="ml-15">#{i18n.getText('KSU001_344')}</span> <span
-						class="ml-15"></span>
-					<hr />
-					<div>
-						<input
-							data-bind="ntsTextEditor: {
-								value: popupVal,
-								option:  ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-					            	textmode: 'text',
-					            	placeholder: '',
-					            	width: '170px',
-					            	textalign: 'left'
-					            })),
-								enable: true,
-								readonly: false}" />
-					</div>
-					<div style="margin-top: 10px">
-						<button id="popup-set" class="proceed" style="margin-left: 35px">#{i18n.getText('KSU001_1')}</button>
-						<button class="close-popup">#{i18n.getText('KSU001_84')}</button>
+					<div style="text-align: center;">
+						<button style="width: 90px" class="proceed" data-bind = "click : saveHeightGridToLocal">#{i18n.getText('KSU001_93')}</button>
 					</div>
 				</div>
-
-				<div id="popup-area9" class="popup-area popup-panel">
-					<span>#{i18n.getText('KSU001_306')}</span>
+				
+				<!-- POPUP KHI CLICK BTN A5 color-button-->
+				<div id="A5_1" class="popup-area popup-panel">
+					<span id="A5_2">#{i18n.getText('KSU001_306')}</span>
 					<hr />
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div class="square bg-schedule-uncorrectable"></div>
-								<span>#{i18n.getText('KSU001_310')}</span>
+								<div id="" class="square bg-schedule-uncorrectable"></div>
+								<span id="A5_2_2">#{i18n.getText('KSU001_309')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-daily-alter-self"></div>
-								<span>#{i18n.getText('KSU001_311')}</span>
+								<div id="" class="square bg-daily-alter-self"></div>
+								<span id="A5_2_3">#{i18n.getText('KSU001_310')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-daily-alter-other"></div>
-								<span>#{i18n.getText('KSU001_312')}</span>
+								<div id="" class="square bg-daily-alter-other"></div>
+								<span id="A5_2_4">#{i18n.getText('KSU001_311')}</span>
 							</div>
 						</div>
 						<div class="div-popup">
 							<div class="popup-div">
-								<div class="square bg-daily-reflect-application"></div>
-								<span>#{i18n.getText('KSU001_313')}</span>
-							</div>
-							<!-- <div class="popup-div">
-								<div class="square bg-schedule-fixed"></div>
-								<span>#{i18n.getText('KSU001_5')}</span>
+								<div id="" class="square bg-daily-reflect-application"></div>
+								<span id="A5_2_5">#{i18n.getText('KSU001_312')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-schedule-support"></div>
-								<span>#{i18n.getText('KSU001_314')}</span>
-							</div> -->
+								<div id="" class="square bg-schedule-fixed"></div>
+								<span id="A5_2_6">#{i18n.getText('KSU001_313')}</span>
+							</div>
+							<div class="popup-div">
+								<div id="" class="square bg-schedule-support"></div>
+								<span id="A5_2_7">#{i18n.getText('KSU001_314')}</span>
+							</div>
 						</div>
 					</div>
 
-					<span>#{i18n.getText('KSU001_307')}</span>
-					<hr />
-					<div class="div-popup ml-2">
-						<div class="popup-div">
-							<div id="color-7" class="square"></div>
-							<span>#{i18n.getText('KSU001_315')}</span>
-						</div>
-						<div class="popup-div">
-							<div id="color-8" class="square"></div>
-							<span>#{i18n.getText('KSU001_316')}</span>
-						</div>
-						<div class="popup-div">
-							<div id="color-9" class="square"></div>
-							<span>#{i18n.getText('KSU001_349')}</span>
-						</div>
-					</div>
-
-					<span>#{i18n.getText('KSU001_308')}</span>
+					<span id="A5_3">#{i18n.getText('KSU001_307')}</span>
 					<hr />
 					<div class="ml-2">
 						<div>
 							<div class="popup-div">
-								<div class="square bg-schedule-saturday"></div>
-								<span>#{i18n.getText('KSU001_318')}</span>
+								<div id="" class="square background-attendance"></div>
+								<span id="A5_3_2">#{i18n.getText('KSU001_315')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-schedule-sunday"></div>
-								<span>#{i18n.getText('KSU001_319')}</span>
+								<div id="" class="square background-holiday"></div>
+								<span id="A5_3_3">#{i18n.getText('KSU001_316')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-schedule-that-day"></div>
-								<span>#{i18n.getText('KSU001_320')}</span>
+								<div id="" class="square background-half-day-work"></div>
+								<span id="A5_3_4">#{i18n.getText('KSU001_317')}</span>
 							</div>
 						</div>
-						<!-- <div class="div-popup">
+						<div class="div-popup">
 							<div class="popup-div">
-								<div class="square bg-schedule-that-day"></div>
-								<span>#{i18n.getText('KSU001_320')}</span>
+								<div id="" class="square background-schedule-performance"></div>
+								<span id="A5_3_5">#{i18n.getText('KSU001_318')}</span>
 							</div>
-							 <div class="popup-div">
-								<div class="square bg-schedule-specific-date"></div>
-								<span>#{i18n.getText('KSU001_321')}</span>
-							</div> 
-						</div> -->
+						</div>
 					</div>
 
-					<!-- <span>#{i18n.getText('KSU001_309')}</span>
+					<span id="A5_4">#{i18n.getText('KSU001_308')}</span>
 					<hr />
 					<div class="ml-2">
 						<div>
-							<div class="popup-div" style="width: 285px !important">
-								<div class="square bg-schedule-no-health-insurance"></div>
-								<span>#{i18n.getText('KSU001_322')}</span>
+							<div class="popup-div">
+								<div id="" class="square bg-schedule-saturday"></div>
+								<span id="A5_4_2">#{i18n.getText('KSU001_319')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-schedule-no-empl-insurance"></div>
-								<span>#{i18n.getText('KSU001_323')}</span>
-							</div>
-						</div>
-						<div>
-							<div class="popup-div" style="width: 285px !important">
-								<div class="square bg-schedule-no-empl-health-insurance"></div>
-								<span>#{i18n.getText('KSU001_324')}</span>
+								<div id="" class="square bg-schedule-sunday"></div>
+								<span id="A5_4_3">#{i18n.getText('KSU001_320')}</span>
 							</div>
 							<div class="popup-div">
-								<div class="square bg-schedule-support"></div>
-								<span>#{i18n.getText('KSU001_314')}</span>
+								<div id="" class="square bg-schedule-specific-date"></div>
+								<span id="A5_4_4">#{i18n.getText('KSU001_321')}</span>
 							</div>
 						</div>
-					</div> -->
+						<div class="div-popup">
+							<div class="popup-div">
+								<div id="" class="square bg-schedule-that-day"></div>
+								<span id="A5_4_5">#{i18n.getText('KSU001_322')}</span>
+							</div>
+						</div>
+					</div>
 				</div>
-
+				
 				<div id="ccgcomponent_contents">
-					<div class="left-content">
-						<div id="ccgcomponent"></div>
-					</div>
 					<div class="right-content">
-						<div id="top-area">
-							<div id="top-area-left">
-								<span data-bind="text: affiliationName"></span> <span
-									data-bind="text: lengthListSid"></span>
+						<div id="functon-area-row2">
+							<div id="functon-area-row2-left">
+								<button id="A2_1" data-bind="enable: true ">#{i18n.getText('KSU001_37')}</button>
+								<span id="A2_2" data-bind="text: targetOrganizationName"></span>
 							</div>
-							<div id="top-area-right">
-								<button tabindex="-1" id="prevMonth" class="size-image-button1"
-									data-bind="click: backMonth, timeClick: -1"></button>
-								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span
-									id="special">#{i18n.getText('KSU001_66')}</span> <span
-									id="date-time-after" data-bind="text: dateTimeAfter"></span>
-								<button tabindex="-1" id="nextMonth" class="size-image-button1"
-									data-bind="click: nextMonth, timeClick: -1"></button>
+							<div id="functon-area-row2-center">
+								<div id="A3_1">
+									<button id="prevMonth" class="size-image-button3"
+										data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
+									<span id="date-time-prev" data-bind="text: dateTimePrev"></span>
+									<span id="special">#{i18n.getText('KSU001_66')}</span> <span
+										id="date-time-after" data-bind="text: dateTimeAfter"></span>
+									<button id="nextMonth" class="size-image-button3"
+										data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
 
-								<!-- <label class="ml-2">#{i18n.getText('KSU001_38')}:</label>
-								<div tabindex="-1" class="cf"
-									data-bind="ntsSwitchButton: {
-										options: timePeriod,
-										optionsValue: 'code',
+									<div id="A3_2" class="cf" style="margin-left: 5px"
+										data-bind="ntsSwitchButton: {
+										options: [{id: 1, name: '#{i18n.getText('KSU001_39')}'}, {id: 2, name: '#{i18n.getText('KSU001_40')}'}, {id: 3, name: '#{i18n.getText('KSU001_41')}'}] ,
+										optionsValue: 'id',
 										optionsText: 'name',
-										value: selectedTimePeriod}">
-								</div> -->
-								<label class="ml-2">#{i18n.getText('KSU001_42')}:</label>
-								<div tabindex="-1" class="cf"
-									data-bind="ntsSwitchButton: {
-										options: modeDisplay,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedModeDisplay}">
+										value: selectedDisplayPeriod}">
+									</div>
 								</div>
-								<!-- <label class="ml-2">#{i18n.getText('KSU001_46')}:</label>
-								<div tabindex="-1" class="cf"
-									data-bind="ntsSwitchButton: {
-										options: modeDisplayObject,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedModeDisplayObject}">
-								</div>
-								<button tabindex="-1"
-									class="color-button ml-2 size-image-button1"></button>
-								<button tabindex="-1" class="setting-button size-image-button1"></button> -->
-								<button tabindex="-1"
-									class="color-button ml-2 size-image-button1"></button>
+							</div>
+							<div id="functon-area-row2-right">
+								<button id="A4" data-bind="enable: true ">#{i18n.getText('KSU001_67')}</button>
+								<button id="A5" class="ml-2 size-image-button1"><i style="margin-left: -3px;" data-bind="ntsIcon: { no: 139,width: 20, height: 20 }"></i></button>
 							</div>
 						</div>
-						<div id="contain-view">
-							<div id="group-bt">
-								<button id="paste" class="size-image-button2"
-									data-bind="click: pasteData"></button>
-								<button id="copy" class="size-image-button2"
-									data-bind="click: copyData"></button>
-								<br />
-								<button id="undo" class="size-image-button2"
-									data-bind="click: undoData, timeClick: -1"></button>
-							</div>
-							<div id="oViewModel">
-								<div data-bind="with: $parent.viewO">
-									<ui:include src="../o/index.xhtml" />
+						<div style="clear: left"></div>
+						<div id="content-main" style="overflow: auto; ">
+							<div style="white-space: nowrap;">
+								<div id="contain-view-left">
+									<button id="A6_1" class="editMode" style="height: 38px;"
+										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
+									<br />
+									<button id="A6_2" class="confirmMode"
+										style="height: 38px; margin-top: 6px;"
+										data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
+								</div>
+								<div id="contain-view-right" class="inline">
+									<div id="group-bt">
+										<button id="paste" class="A7_1"
+											data-bind="click: pasteData, enable: enableBtnPaste">貼り付け</button>
+										<button id="coppy" class="A7_2"
+											data-bind="click: coppyData , enable: enableBtnCoppy">コピペ</button>
+										<button id="input" class="A7_3"
+											data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
+										<br />
+										<button id="undo" class="size-image-button2 A7_4"
+											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"><i data-bind="ntsIcon: { no: 44 }"></i></button>
+										<button id="redo" class="size-image-button2 A7_5"
+											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"><i data-bind="ntsIcon: { no: 154 }"></i></button>
+										<button
+											data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
+											style="margin-top: 13px;">？</button>
+									</div>
+									<div data-bind="ifnot: visibleShiftPalette">
+										<div id="oViewModel">
+											<div data-bind="with: $parent.viewAB">
+												<ui:include src="../ab/index.xhtml" />
+											</div>
+										</div>
+									</div>
+									<div data-bind="if: visibleShiftPalette">
+										<div id="qViewModel">
+											<div data-bind="with: $parent.viewAC">
+												<ui:include src="../ac/index.xhtml" />
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
-							<div id="qViewModel" style="display: none">
-								<div data-bind="with: $parent.viewQ">
-									<ui:include src="../q/index.xhtml" />
+							<div style="clear: left"></div>
+							<div>
+								<div>
+									<button class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
+									<button class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
+								</div>
+								<div style="clear: left"></div>
+								<div>
+									<div style="float: left">
+										<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 18, height: 20 }"></i></button>
+									</div>
+									<div id="extable-outside" style="float: left">
+										<div id="extable"></div>
+									</div>
+									<div style="float: left; margin-left: -30px">
+										<button class="settingHeightGrid"> <i style="margin-left: -4px;" data-bind="ntsIcon: { no: 3,width: 18, height: 18 }"></i> </button>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div id="extable"></div>
 					</div>
 				</div>
 			</div>

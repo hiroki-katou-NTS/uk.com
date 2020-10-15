@@ -64,6 +64,13 @@ public interface ScheduleErrorLogRepository {
 	public void add(ScheduleErrorLog domain);
 	
 	/**
+	 * Add in Transaction
+	 *
+	 * @param domain the domain
+	 */
+	public void addByTransaction(ScheduleErrorLog domain);
+	
+	/**
 	 * 
 	 * @param executionId
 	 * @param employeeId
@@ -79,4 +86,11 @@ public interface ScheduleErrorLogRepository {
 	 * @return
 	 */
 	public Boolean checkExistErrorByKey(String executionId, String employeeId);
+
+	/**
+	 * Update the.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleErrorLog domain);
 }

@@ -1,27 +1,30 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
-import java.util.Collections;
 
 /*import nts.arc.layer.app.command.JavaTypeResult;*/
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandlerPC;
+import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeAppdateDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParamPC;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -34,6 +37,9 @@ public class WorkchangeService extends WebService {
 
 	@Inject
 	private AddAppWorkChangeCommandHandler addHandler;
+	
+	@Inject
+    private AddAppWorkChangeCommandHandlerPC addHandlerPC;
 
 	@Inject
 	private UpdateAppWorkChangeCommandHandler updateHandler;
@@ -48,24 +54,22 @@ public class WorkchangeService extends WebService {
 	private AppWorkChangeFinder appWorkFinder;
 
 	/**
-	 * 起動する アルゴリズム「勤務変更申請画面初期（新規）」を実行する
-	 * 
-	 * @return
-	 */
-	@POST
-	@Path("getWorkChangeCommonSetting")
-	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting(WorkchangeSetParam workchangeSetParam) {
-		return commonFinder.getWorkChangeCommonSetting(workchangeSetParam.getSIDs(), workchangeSetParam.getAppDate());
-	}
-
-	/**
 	 * アルゴリズム「勤務変更申請登録」を実行する
 	 */
 	@POST
-	@Path("addworkchange")
+	@Path("addworkchange_PC")
 	public ProcessResult addWorkChange(AddAppWorkChangeCommand command) {
 		return addHandler.handle(command);
 	}
+	
+	/**
+     * アルゴリズム「勤務変更申請登録」を実行する
+     */
+    @POST
+    @Path("addworkchange")
+    public ProcessResult addWorkChangePC(AddAppWorkChangeCommand command) {
+        return addHandlerPC.handle(command);
+    }
 
 	/**
 	 * 
@@ -73,9 +77,9 @@ public class WorkchangeService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getWorkchangeByAppID/{appId}")
-	public AppWorkChangeDetailDto getWorkchangeByAppID(@PathParam("appId") String appId) {
-		return appWorkFinder.startDetailScreen(appId);
+	@Path("getWorkchangeByAppID_PC")
+	public AppWorkChangeOutputDto getWorkchangeByAppID(AppWorkChangeDetailParam appWorkChangeDetailParam) {
+		return appWorkFinder.startDetailScreen(appWorkChangeDetailParam);
 	}
 
 	/**
@@ -83,7 +87,7 @@ public class WorkchangeService extends WebService {
 	 */
 	@POST
 	@Path("updateworkchange")
-	public ProcessResult updateWorkChange(AddAppWorkChangeCommand command) {
+	public ProcessResult updateWorkChange(AddAppWorkChangeCommandPC command) {
 		return updateHandler.handle(command);
 	}
 
@@ -95,45 +99,55 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("workChangeSet")
-	public AppWorkChangeSetDto getWorkChangeSet() {
+	public AppWorkChangeSetDto_Old getWorkChangeSet() {
 		return appWorkFinder.findByCom();
 	}
-	
+
 	@POST
 	@Path("isTimeRequired")
 	public boolean isTimeRequired(String workTypeCD) {
 		return appWorkFinder.isTimeRequired(workTypeCD);
 	}
-	
+
 	@POST
 	@Path("startNew")
-	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto getStartNew(AppWorkChangeParamPC param) {
 		return appWorkFinder.getStartNew(param);
 	}
-	
+
 	@POST
 	@Path("changeAppDate")
-	public AppWorkChangeDispInfoDto changeAppDate(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto changeAppDate(AppWorkChangeAppdateDto param) {
 		return appWorkFinder.changeAppDate(param);
 	}
-	
+
 	@POST
 	@Path("changeWorkSelection")
-	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParam param) {
+	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
 		return appWorkFinder.changeWorkSelection(param);
 	}
-	
+
 	@POST
 	@Path("checkBeforeRegister")
-	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommand command) {
-		return appWorkFinder.checkBeforeRegister(command);
+	public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommandCheck command) {
+		 return appWorkFinder.checkBeforeRegisterNew(command);
 	}
 	
 	@POST
+    @Path("checkBeforeRegisterPC")
+    public WorkChangeCheckRegisterDto checkBeforeRegisterPC(AddAppWorkChangeCommandCheck command) {
+         return appWorkFinder.checkBeforeRegisterPC(command);
+    }
+
+	@POST
 	@Path("checkBeforeUpdate")
-	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommand command) {
-		appWorkFinder.checkBeforeUpdate(command);
-		return new WorkChangeCheckRegisterDto(Collections.emptyList(), Collections.emptyList());
+	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
+		// appWorkFinder.checkBeforeUpdate(command);
+		// return new WorkChangeCheckRegisterDto(Collections.emptyList(),
+		// Collections.emptyList());
+		return null;
 	}
+
+	
 
 }

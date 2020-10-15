@@ -5,47 +5,31 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -57,18 +41,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.Holiday
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
@@ -81,11 +54,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -96,20 +64,28 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
-	@Inject
-	private AppAbsenceRepository appAbsenceRepository;
-	@Inject
-	private ApplicationApprovalService_New appRepository;
+//	@Inject
+//	private AppAbsenceRepository appAbsenceRepository;
+//	@Inject
+//	private ApplicationApprovalService appRepository;
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
-	@Inject
-	private AppForSpecLeaveRepository repoSpecLeave;
+//	@Inject
+//	private AbsenceTenProcess absenceTenProcess;
+//	@Inject
+//	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
-	@Inject
-	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
-	@Inject
-	private ReserveLeaveManagerApdater rsvLeaMngApdater;
+//	@Inject
+//	private GetClosureStartForEmployee getClosureStartForEmp;
+//	@Inject
+//	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+//	@Inject
+//	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
+//	@Inject
+//	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
+//	@Inject
+//	private ReserveLeaveManagerApdater rsvLeaMngApdater;
 	
 	@Inject
 	private HdAppSetRepository hdAppSetRepository;
@@ -139,7 +115,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private NewBeforeRegister newBeforeRegister;
 	
 	@Inject
 	private InterimRemainDataMngCheckRegister interimRemainCheckReg;
@@ -152,9 +128,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject 
 	private WorkTimeSettingService weorkTimeSettingService;
-	
-	@Inject
-	private RemainNumberTempRequireService requireService;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -169,20 +142,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	}
 
 	@Override
-	public void createAbsence(AppAbsence domain, Application_New newApp, ApprovalRootStateImport_New approvalRootState) {
+	public void createAbsence(AppAbsence domain, Application newApp, ApprovalRootStateImport_New approvalRootState) {
 		// insert Application
-		this.appRepository.insert(newApp);
-		this.approvalRootStateAdapter.insertFromCache(
-				newApp.getCompanyID(), 
-				newApp.getAppID(), 
-				newApp.getAppDate(), 
-				newApp.getEmployeeID(), 
-				approvalRootState.getListApprovalPhaseState());
-		// insert Absence
-		this.appAbsenceRepository.insertAbsence(domain);
-		if(domain.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY) && domain.getAppForSpecLeave() != null){
-			repoSpecLeave.addSpecHd(domain.getAppForSpecLeave());
-		}
+		// error EA refactor 4
+		/*this.appRepository.insert(newApp);*/
+//		this.approvalRootStateAdapter.insertFromCache(
+//				newApp.getCompanyID(), 
+//				newApp.getAppID(), 
+//				newApp.getAppDate(), 
+//				newApp.getEmployeeID(), 
+//				approvalRootState.getListApprovalPhaseState());
+//		// insert Absence
+//		this.appAbsenceRepository.insertAbsence(domain);
+//		if(domain.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY) && domain.getAppForSpecLeave() != null){
+//			repoSpecLeave.addSpecHd(domain.getAppForSpecLeave());
+//		}
 		
 	}
 
@@ -203,7 +177,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			
 		}
 	}
-	
 	/**
 	 * @author hoatt
 	 * 14.休暇種類表示チェック
@@ -214,31 +187,27 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		//A4_3 - 年休設定
-		boolean isYearManage = false;
-		//A4_4 - 代休管理設定
-		boolean isSubHdManage = false;
-		//A4_5 - 振休管理設定
-		boolean isSubVacaManage = false;
-		//A4_8 - 積立年休設定
-		boolean isRetentionManage = false;
-		//10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(require, companyID);
-		isYearManage = annualHd.isYearHolidayManagerFlg();
-		//10-4.積立年休の設定を取得する
-		isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(require, cacheCarrier, 
-				companyID, sID, baseDate);
-		//10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = AbsenceTenProcess.getSettingForSubstituteHoliday(require, cacheCarrier,
-				companyID, sID, baseDate);
-		isSubHdManage = subHd.isSubstitutionFlg();
-		//10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cacheCarrier,
-				companyID, sID, baseDate);
-		isSubVacaManage = leaveSet.isSubManageFlag();
-		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
+//		//A4_3 - 年休設定
+//		boolean isYearManage = false;
+//		//A4_4 - 代休管理設定
+//		boolean isSubHdManage = false;
+//		//A4_5 - 振休管理設定
+//		boolean isSubVacaManage = false;
+//		//A4_8 - 積立年休設定
+//		boolean isRetentionManage = false;
+//		//10-1.年休の設定を取得する
+//		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
+//		isYearManage = annualHd.isYearHolidayManagerFlg();
+//		//10-4.積立年休の設定を取得する
+//		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
+//		//10-2.代休の設定を取得する
+//		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
+//		isSubHdManage = subHd.isSubstitutionFlg();
+//		//10-3.振休の設定を取得する
+//		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
+//		isSubVacaManage = leaveSet.isSubManageFlag();
+//		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
+		return null;
 	}
 	
 	@Override
@@ -349,84 +318,81 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
 			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage) {
-		
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
-		
-		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeID);
-		if(!closure.isPresent()){
-			return new NumberOfRemainOutput(null, null, null, null);
-		}
-		//年休残数
-		Double yearRemain = null;
-		//代休残数
-		Double subHdRemain = null;
-		//振休残数
-		Double subVacaRemain = null;
-		//ストック休暇残数
-		Double stockRemain = null;
-		GeneralDate closureDate = closure.get();
-		
-		//1
-		if(subVacaManage){//output．振休管理区分が管理する
-			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
-			//・会社ID＝ログイン会社ID
-//			・社員ID＝申請者社員ID
-//			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-//			・モード＝その他モード
-//			・基準日＝申請開始日
-//			・上書きフラグ＝false
-			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			AbsRecRemainMngOfInPeriod subVaca = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
-			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
-			subVacaRemain = subVaca.getRemainDays();//残日数
-		}
-		
-		//2
-		if(subHdManage){//output．代休管理区分が管理する
-			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
-			//・会社ID＝ログイン会社ID
-//			・社員ID＝申請者社員ID
-//			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-//			・モード＝その他モード
-//			・基準日＝申請開始日
-//			・上書きフラグ＝false
-			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod subHd = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
-			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
-			subHdRemain = subHd.getRemainDays();
-		}
-		
-		//3
-		if(retentionManage){//output．積休管理区分が管理する
-			//基準日時点の積立年休残数を取得する - RQ201
-			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
-			if(stock.isPresent()){
-				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
-				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
-				if(stock.get().getGrantRemainingList().size() > 0){
-					stockRemain = new Double(0L);
-					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
-						stockRemain = stockRemain + rsv.getRemainingNumber();
-					}
-				}
-			}
-		}
-		
-		//4
-		if(yearManage){//output．年休管理区分が管理する
-			//基準日時点の年休残数を取得する - RQ198
-			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
-			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
-				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
-		}
-        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
+//		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
+//		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
+//		if(!closure.isPresent()){
+//			return new NumberOfRemainOutput(null, null, null, null);
+//		}
+//		//年休残数
+//		Double yearRemain = null;
+//		//代休残数
+//		Double subHdRemain = null;
+//		//振休残数
+//		Double subVacaRemain = null;
+//		//ストック休暇残数
+//		Double stockRemain = null;
+//		GeneralDate closureDate = closure.get();
+//		
+//		//1
+//		if(subVacaManage){//output．振休管理区分が管理する
+//			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
+//			//・会社ID＝ログイン会社ID
+////			・社員ID＝申請者社員ID
+////			・集計開始日＝締め開始日
+////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+////			・モード＝その他モード
+////			・基準日＝申請開始日
+////			・上書きフラグ＝false
+//			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+//			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
+//			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
+//			subVacaRemain = subVaca.getRemainDays();//残日数
+//		}
+//		
+//		//2
+//		if(subHdManage){//output．代休管理区分が管理する
+//			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
+//			//・会社ID＝ログイン会社ID
+////			・社員ID＝申請者社員ID
+////			・集計開始日＝締め開始日
+////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+////			・モード＝その他モード
+////			・基準日＝申請開始日
+////			・上書きフラグ＝false
+//			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+//			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
+//			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
+//			subHdRemain = subHd.getRemainDays();
+//		}
+//		
+//		//3
+//		if(retentionManage){//output．積休管理区分が管理する
+//			//基準日時点の積立年休残数を取得する - RQ201
+//			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
+//			if(stock.isPresent()){
+//				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
+//				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
+//				if(stock.get().getGrantRemainingList().size() > 0){
+//					stockRemain = new Double(0L);
+//					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
+//						stockRemain = stockRemain + rsv.getRemainingNumber();
+//					}
+//				}
+//			}
+//		}
+//		
+//		//4
+//		if(yearManage){//output．年休管理区分が管理する
+//			//基準日時点の年休残数を取得する - RQ198
+//			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
+//			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
+//			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+//				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
+//		}
+//        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
+		return null;
 	}
 
 	@Override
@@ -609,37 +575,38 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			boolean displayHalfDayValue, Integer alldayHalfDay, HolidayAppType holidayType) {
-		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-
-		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
-		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
-		// 勤務種類を取得する
-		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
-				employmentSet, 
-				companyID, 
-				holidayType, 
-				alldayHalfDay,
-				displayHalfDayValue);
-		// 返ってきた「勤務種類<List>」を「休暇申請起動時の表示情報」にセットする
-		appAbsenceStartInfoOutput.setWorkTypeLst(workTypes);
-		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
-		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
-		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
-			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
-				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
-			} else {
-				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
-			}
-		}
-		// 勤務種類変更時処理
-		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
-				companyID, 
-				appAbsenceStartInfoOutput, 
-				holidayType, 
-				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
-		// 返ってきた「休暇申請起動時の表示情報」を返す
-		return appAbsenceStartInfoOutput;
+//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+//
+//		// INPUT．「休暇申請起動時の表示情報．勤務種類一覧」をクリアする
+//		appAbsenceStartInfoOutput.setWorkTypeLst(new ArrayList<>());
+//		// 勤務種類を取得する
+//		List<WorkType> workTypes = appAbsenceThreeProcess.getWorkTypeDetails(
+//				employmentSet, 
+//				companyID, 
+//				holidayType, 
+//				alldayHalfDay,
+//				displayHalfDayValue);
+//		// 返ってきた「勤務種類<List>」を「休暇申請起動時の表示情報」にセットする
+//		appAbsenceStartInfoOutput.setWorkTypeLst(workTypes);
+//		// 「休暇申請起動時の表示情報．選択中の勤務種類」を更新する
+//		List<String> workTypeCDLst = workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+//		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
+//		if(!selectedWorkTypeCD.isPresent() || !workTypeCDLst.contains(selectedWorkTypeCD.get())) {
+//			if(appAbsenceStartInfoOutput.getHdAppSet().getDisplayUnselect() == UseAtr.USE) {
+//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.empty());
+//			} else {
+//				appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.stream().findFirst().map(x -> x.getWorkTypeCode().v()));
+//			}
+//		}
+//		// 勤務種類変更時処理
+//		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
+//				companyID, 
+//				appAbsenceStartInfoOutput, 
+//				holidayType, 
+//				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
+//		// 返ってきた「休暇申請起動時の表示情報」を返す
+//		return appAbsenceStartInfoOutput;
+		return null;
 	}
 
 	@Override
@@ -657,26 +624,27 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
-			Application_New application, AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr,
+			Application application, AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr,
 			Optional<Boolean> mourningAtr) {
 		AbsenceCheckRegisterOutput result = new AbsenceCheckRegisterOutput();
 		List<ConfirmMsgOutput> confirmMsgLst = new ArrayList<>();
 		// 申請期間から休日の申請日を取得する
 		DatePeriod period = null;
-		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-			GeneralDate startDate = application.getStartDate().get();
-			GeneralDate endDate = application.getEndDate().get();
-			period = new DatePeriod(startDate, endDate);
-		} else {
-			period = new DatePeriod(application.getAppDate(), application.getAppDate());
-		}
-		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
+//		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+//			GeneralDate startDate = application.getStartDate().get();
+//			GeneralDate endDate = application.getEndDate().get();
+//			period = new DatePeriod(startDate, endDate);
+//		} else {
+//			period = new DatePeriod(application.getAppDate(), application.getAppDate());
+//		}
+		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(application.getEmployeeID(), period, Collections.emptyList());
 		// 勤務種類・就業時間帯のマスタチェックする
 		detailBeforeUpdate.displayWorkingHourCheck(companyID, 
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(), 
 				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
 		// 申請全般登録時チェック処理
-		List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
+		// error EA refactor 4
+		/*List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
 				companyID, 
 				EmploymentRootAtr.APPLICATION, 
 				agentAtr, 
@@ -684,7 +652,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				null, 
 				appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
 				holidayDateLst);
-		confirmMsgLst.addAll(confirmMsgLst1);
+		confirmMsgLst.addAll(confirmMsgLst1);*/
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst2 = this.checkAppAbsenceRegister(
 				true, 
@@ -824,88 +792,88 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		boolean chkSuperBreak = true;
 		
 		chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
-		chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
+		// chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
 		chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
 		chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
 		
-		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
-		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
-		List<GeneralDate> lstDateIsHoliday = otherCommonAlgorithm.lstDateIsHoliday(
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				new DatePeriod(startDate.orElse(null), endDate.orElse(null)));
-		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		appData.add(new AppRemainCreateInfor(
-				appAbsence.getApplication().getEmployeeID(), 
-				appAbsence.getApplication().getAppID(), 
-				GeneralDateTime.now(), 
-				startDate.orElse(null), 
-				EnumAdaptor.valueOf(appAbsence.getApplication().getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class) , 
-				ApplicationType.ABSENCE_APPLICATION, 
-				appAbsence.getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTypeCode().v()), 
-				appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				startDate, 
-				endDate, 
-				lstDateIsHoliday));
-		
-		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				new DatePeriod(closureStartDate, closureStartDate.addYears(1).addDays(-1)), 
-				false, 
-				startDate.orElse(null), 
-				new DatePeriod(startDate.orElse(null), endDate.orElse(null)),
-				true, 
-				new ArrayList<>(), 
-				new ArrayList<>(), 
-				appData, 
-				chkSubHoliday, 
-				chkPause, 
-				chkAnnual, 
-				chkFundingAnnual,
-				chkSpecial, 
-				chkPublicHoliday, 
-				chkSuperBreak); 
+//		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
+//		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
+//		List<GeneralDate> lstDateIsHoliday = otherCommonAlgorithm.lstDateIsHoliday(
+//				companyID, 
+//				appAbsence.getApplication().getEmployeeID(), 
+//				new DatePeriod(startDate.orElse(null), endDate.orElse(null)));
+//		List<AppRemainCreateInfor> appData = new ArrayList<>();
+//		appData.add(new AppRemainCreateInfor(
+//				appAbsence.getApplication().getEmployeeID(), 
+//				appAbsence.getApplication().getAppID(), 
+//				GeneralDateTime.now(), 
+//				startDate.orElse(null), 
+//				EnumAdaptor.valueOf(appAbsence.getApplication().getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class) , 
+//				ApplicationType.ABSENCE_APPLICATION, 
+//				appAbsence.getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTypeCode().v()), 
+//				appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()), 
+//				Optional.empty(), 
+//				Optional.empty(), 
+//				Optional.empty(), 
+//				startDate, 
+//				endDate, 
+//				lstDateIsHoliday));
+//		
+//		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
+//				companyID, 
+//				appAbsence.getApplication().getEmployeeID(), 
+//				new DatePeriod(closureStartDate, closureStartDate.addYears(1).addDays(-1)), 
+//				false, 
+//				startDate.orElse(null), 
+//				new DatePeriod(startDate.orElse(null), endDate.orElse(null)),
+//				true, 
+//				new ArrayList<>(), 
+//				new ArrayList<>(), 
+//				appData, 
+//				chkSubHoliday, 
+//				chkPause, 
+//				chkAnnual, 
+//				chkFundingAnnual,
+//				chkSpecial, 
+//				chkPublicHoliday, 
+//				chkSuperBreak); 
 		// 登録時の残数チェック
-		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
+		// EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
 		//EA.2577
 		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
-		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
-				|| checkResult.isChkFundingAnnual() || checkResult.isChkSpecial()){
-			//QA#100887
-			String name = "";
-			String nametmp = "";
-			if(checkResult.isChkSubHoliday()){
-				//代表者名 - HdAppType.TEMP_HD
-				nametmp = hdAppSet.getObstacleName() == null ? "" : hdAppSet.getObstacleName().v();
-				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-			}
-			if(checkResult.isChkPause()){
-				//振休名称 - HdAppType.SHIFT
-				nametmp = hdAppSet.getFurikyuName() == null ? "" : hdAppSet.getFurikyuName().v();
-				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-			}
-			if(checkResult.isChkAnnual()){
-				//年休名称 - HdAppType.ANNUAL_HD
-				nametmp = hdAppSet.getYearHdName() == null ? "" : hdAppSet.getYearHdName().v();
-				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-			}
-			if(checkResult.isChkFundingAnnual()){
-				//積休名称 - HdAppType.YEARLY_RESERVED
-				nametmp = hdAppSet.getYearResig() == null ? "" : hdAppSet.getYearResig().v();
-				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-			}
-			if(checkResult.isChkSpecial()){
-				//特別休暇名称 - HdAppType.SPECIAL_VACATION
-				nametmp = hdAppSet.getSpecialVaca() == null ? "" : hdAppSet.getSpecialVaca().v();
-				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-			}
-			//エラーメッセージ（Msg_1409）
-			throw new BusinessException("Msg_1409", name);
-		}
+//		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
+//				|| checkResult.isChkFundingAnnual() || checkResult.isChkSpecial()){
+//			//QA#100887
+//			String name = "";
+//			String nametmp = "";
+//			if(checkResult.isChkSubHoliday()){
+//				//代表者名 - HdAppType.TEMP_HD
+//				nametmp = hdAppSet.getObstacleName() == null ? "" : hdAppSet.getObstacleName().v();
+//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+//			}
+//			if(checkResult.isChkPause()){
+//				//振休名称 - HdAppType.SHIFT
+//				nametmp = hdAppSet.getFurikyuName() == null ? "" : hdAppSet.getFurikyuName().v();
+//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+//			}
+//			if(checkResult.isChkAnnual()){
+//				//年休名称 - HdAppType.ANNUAL_HD
+//				nametmp = hdAppSet.getYearHdName() == null ? "" : hdAppSet.getYearHdName().v();
+//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+//			}
+//			if(checkResult.isChkFundingAnnual()){
+//				//積休名称 - HdAppType.YEARLY_RESERVED
+//				nametmp = hdAppSet.getYearResig() == null ? "" : hdAppSet.getYearResig().v();
+//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+//			}
+//			if(checkResult.isChkSpecial()){
+//				//特別休暇名称 - HdAppType.SPECIAL_VACATION
+//				nametmp = hdAppSet.getSpecialVaca() == null ? "" : hdAppSet.getSpecialVaca().v();
+//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+//			}
+//			//エラーメッセージ（Msg_1409）
+//			throw new BusinessException("Msg_1409", name);
+//		}
 	}
 
 	@Override
@@ -913,15 +881,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			GeneralDate closureStartDate, HdAppSet hdAppSet, HolidayAppType holidayType, Integer alldayHalfDay, boolean mode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 申請日の矛盾チェック
-		List<ConfirmMsgOutput> confirmMsgLst1 = this.inconsistencyCheck(
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				appAbsence.getApplication().getStartDate().orElse(null), 
-				appAbsence.getApplication().getEndDate().orElse(null), 
-				alldayHalfDay, 
-				hdAppSet,
-				mode);
-		result.addAll(confirmMsgLst1);
+//		List<ConfirmMsgOutput> confirmMsgLst1 = this.inconsistencyCheck(
+//				companyID, 
+//				appAbsence.getApplication().getEmployeeID(), 
+//				appAbsence.getApplication().getStartDate().orElse(null), 
+//				appAbsence.getApplication().getEndDate().orElse(null), 
+//				alldayHalfDay, 
+//				hdAppSet,
+//				mode);
+//		result.addAll(confirmMsgLst1);
 		// 休暇残数チェック
 		this.checkRemainVacation(
 				companyID, 
@@ -941,25 +909,25 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// 代休振休優先消化チェック
 //		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet()
 //				.stream().filter(x -> x.getHolidayOrPauseType() == HolidayAppType.ANNUAL_PAID_LEAVE.value).findFirst().orElse(null);
-		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+		// AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
 //		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
 //		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
 //			geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getSwingOutAtr().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,HolidayAppType.ANNUAL_PAID_LEAVE.value).getHolidayAppType().get().value == HolidayAppType.ANNUAL_PAID_LEAVE.value : false
 //				
 //				).findFirst();
 //		AppEmploymentSetting employmentSet = setting.get();
-		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
-				mode, 
-				appAbsenceStartInfoOutput.getHdAppSet(), 
-				employmentSet, 
-				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubVacaManage(), 
-				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubHdManage(), 
-				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubVacaRemain(), 
-				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubHdRemain());
-		// 計画年休上限チェック
-		checkLimitAbsencePlan(companyID, employeeID, workTypeCD, startDate, endDate, lstDateIsHoliday);
-		// OUTPUTの確認メッセージを返す
-		result.addAll(confirmLst1);
+//		List<ConfirmMsgOutput> confirmLst1 = this.checkDigestPriorityHd(
+//				mode, 
+//				appAbsenceStartInfoOutput.getHdAppSet(), 
+//				employmentSet, 
+//				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubVacaManage(), 
+//				appAbsenceStartInfoOutput.getRemainVacationInfo().isSubHdManage(), 
+//				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubVacaRemain(), 
+//				appAbsenceStartInfoOutput.getRemainVacationInfo().getSubHdRemain());
+//		// 計画年休上限チェック
+//		checkLimitAbsencePlan(companyID, employeeID, workTypeCD, startDate, endDate, lstDateIsHoliday);
+//		// OUTPUTの確認メッセージを返す
+//		result.addAll(confirmLst1);
 		return result;
 	}
 
@@ -1057,33 +1025,33 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			Integer alldayHalfDay, List<GeneralDate> holidayDateLst, Optional<Boolean> mournerAtr) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// 社員の当月の期間を算出する
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				GeneralDate.today());
-		// 休暇種類共通エラーチェック
-		List<ConfirmMsgOutput> confirmMsgLst1 = this.holidayCommonCheck(
-				companyID, 
-				appAbsence, 
-				periodCurrentMonth.getStartDate(), 
-				appAbsenceStartInfoOutput.getHdAppSet(), 
-				holidayType, 
-				alldayHalfDay,
-				mode);
-		result.addAll(confirmMsgLst1);
+//		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(
+//				companyID, 
+//				appAbsence.getApplication().getEmployeeID(), 
+//				GeneralDate.today());
+//		// 休暇種類共通エラーチェック
+//		List<ConfirmMsgOutput> confirmMsgLst1 = this.holidayCommonCheck(
+//				companyID, 
+//				appAbsence, 
+//				periodCurrentMonth.getStartDate(), 
+//				appAbsenceStartInfoOutput.getHdAppSet(), 
+//				holidayType, 
+//				alldayHalfDay,
+//				mode);
+//		result.addAll(confirmMsgLst1);
 		// 休暇種類別エラーチェック
-		List<ConfirmMsgOutput> confirmMsgLst2 = this.errorCheckByHolidayType(
-				mode, 
-				companyID, 
-				appAbsence.getApplication().getEmployeeID(), 
-				appAbsence.getApplication().getStartDate().orElse(null), 
-				appAbsence.getApplication().getEndDate().orElse(null),
-				holidayType,
-				workTypeCD, 
-				holidayDateLst, 
-				appAbsenceStartInfoOutput, 
-				mournerAtr);
-		result.addAll(confirmMsgLst2);
+//		List<ConfirmMsgOutput> confirmMsgLst2 = this.errorCheckByHolidayType(
+//				mode, 
+//				companyID, 
+//				appAbsence.getApplication().getEmployeeID(), 
+//				appAbsence.getApplication().getStartDate().orElse(null), 
+//				appAbsence.getApplication().getEndDate().orElse(null),
+//				holidayType,
+//				workTypeCD, 
+//				holidayDateLst, 
+//				appAbsenceStartInfoOutput, 
+//				mournerAtr);
+//		result.addAll(confirmMsgLst2);
 		// 「確認メッセージリスト」を返す
 		return result;
 	}
@@ -1091,56 +1059,58 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, AppAbsence appAbsence,
 			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput) {
-		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
-//		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
-//				.findFirst().orElse(null);
-//		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
-//		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
-//			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
-//				
-//				).findFirst();
-//		AppEmploymentSetting employmentSet = employmentSetLst;
-		// 選択可能の勤務種類を取得する
-		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
-				employmentSet,
-				companyID,
-				appAbsence.getHolidayAppType(),
-				appAbsence.getAllDayHalfDayLeaveAtr().value, 
-				appAbsence.isHalfDayFlg());
-		// 申請済み勤務種類の存在判定と取得
-		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, appAbsence.getWorkTypeCode().v());
-		// INPUT．「休暇申請起動時の表示情報」を更新する
-		appAbsenceStartInfoOutput.setWorkTypeLst(applyWorkTypeOutput.getWkTypes());
-		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
-		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
-		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
-		// 勤務種類変更時処理
-		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
-				companyID, 
-				appAbsenceStartInfoOutput, 
-				appAbsence.getHolidayAppType(), 
-				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
-		// 返ってきた「休暇申請起動時の表示情報」を返す
-		return appAbsenceStartInfoOutput;
+//		AppEmploymentSetting employmentSet = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmploymentSet();
+////		AppEmploymentSetting employmentSet = employmentSetLst.stream().filter(x -> x.getHolidayOrPauseType() == appAbsence.getHolidayAppType().value)
+////				.findFirst().orElse(null);
+////		Optional<AppEmploymentSetting> setting = employmentSetLst.stream().filter(x -> 
+////		(CollectionUtil.isEmpty(x.getListWTOAH())) ? false : 
+////			geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getSwingOutAtr().get().value == appAbsence.getHolidayAppType().value : geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().isPresent() ? geWorkTypeObjAppHoliday(x,appAbsence.getHolidayAppType().value).getHolidayAppType().get().value == appAbsence.getHolidayAppType().value : false
+////				
+////				).findFirst();
+////		AppEmploymentSetting employmentSet = employmentSetLst;
+//		// 選択可能の勤務種類を取得する
+//		List<WorkType> workTypeLst = appAbsenceThreeProcess.getWorkTypeDetails(
+//				employmentSet,
+//				companyID,
+//				appAbsence.getHolidayAppType(),
+//				appAbsence.getAllDayHalfDayLeaveAtr().value, 
+//				appAbsence.isHalfDayFlg());
+//		// 申請済み勤務種類の存在判定と取得
+//		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, appAbsence.getWorkTypeCode().v());
+//		// INPUT．「休暇申請起動時の表示情報」を更新する
+//		appAbsenceStartInfoOutput.setWorkTypeLst(applyWorkTypeOutput.getWkTypes());
+//		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.of(appAbsence.getWorkTypeCode().v()));
+//		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()));
+//		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
+//		// 勤務種類変更時処理
+//		appAbsenceStartInfoOutput = this.workTypeChangeProcess(
+//				companyID, 
+//				appAbsenceStartInfoOutput, 
+//				appAbsence.getHolidayAppType(), 
+//				appAbsenceStartInfoOutput.getSelectedWorkTypeCD());
+//		// 返ってきた「休暇申請起動時の表示情報」を返す
+//		return appAbsenceStartInfoOutput;
+		return null;
 	}
 
 	@Override
 	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application, AppAbsence appAbsence,
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application, AppAbsence appAbsence,
 			Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr) {
 		AbsenceCheckRegisterOutput absenceCheckRegisterOutput = new AbsenceCheckRegisterOutput();
 		// 申請期間から休日の申請日を取得する
 		DatePeriod period = null;
-		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-			GeneralDate startDate = application.getStartDate().get();
-			GeneralDate endDate = application.getEndDate().get();
-			period = new DatePeriod(startDate, endDate);
-		} else {
-			period = new DatePeriod(application.getAppDate(), application.getAppDate());
-		}
-		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
+//		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+//			GeneralDate startDate = application.getStartDate().get();
+//			GeneralDate endDate = application.getEndDate().get();
+//			period = new DatePeriod(startDate, endDate);
+//		} else {
+//			period = new DatePeriod(application.getAppDate(), application.getAppDate());
+//		}
+		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(application.getEmployeeID(), period, Collections.emptyList());
 		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+		// error EA refactor 4
+		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
 				appAbsence.getApplication().getEmployeeID(), 
 				appAbsence.getApplication().getAppDate(), 
@@ -1149,7 +1119,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				appAbsence.getApplication().getPrePostAtr(), 
 				appAbsence.getApplication().getVersion(),
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(),
-				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());
+				appAbsence.getWorkTimeCode() == null ? null : appAbsence.getWorkTimeCode().v());*/
 		// 休暇申請登録時チェック処理
 		List<ConfirmMsgOutput> confirmMsgLst = this.checkAppAbsenceRegister(
 				false, 

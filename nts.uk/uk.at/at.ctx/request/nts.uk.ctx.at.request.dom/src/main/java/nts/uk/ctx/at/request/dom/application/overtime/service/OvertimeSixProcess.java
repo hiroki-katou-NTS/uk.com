@@ -2,11 +2,8 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface OvertimeSixProcess {
 	
@@ -33,7 +30,7 @@ public interface OvertimeSixProcess {
 	/**
 	 * 06-04_計算実績超過チェック
 	 */
-	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD,List<OvertimeInputCaculation> overtimeInputCaculations);
+	// public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD,List<OvertimeInputCaculation> overtimeInputCaculations);
 	
 	/**
 	 * 06-04-1_チェック条件
@@ -52,7 +49,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations);
+	// public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations);
 	
 	/**
 	 * 06-04-3_当日の場合
@@ -64,7 +61,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations);
+	// public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations);
 	
 	public List<OverTimeInput> convert(CaculationTime caculationTime);
 }

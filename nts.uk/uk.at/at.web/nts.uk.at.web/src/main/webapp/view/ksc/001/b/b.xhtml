@@ -6,32 +6,105 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div id="ccgcomponent"></div>
-		<div class="contentB" tabindex="-1">
+		<com:EnumScript>
+			nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr
+			nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr
+			nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr
+		</com:EnumScript>
+
+		<div class="contentB panel-content"><!-- C ===> B-->
 			<div class="periodCovered" tabindex="-1">
-				<div class="labelRangeDate" tabindex="-1" 
-					data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-				<div tabindex="3" id="dateRangePickerPeriod"
-					data-bind="ntsDateRangePicker: { 
-					    required: true,
-						showNextPrevious: true, 
-						value: periodDate,
-						startName:'#{i18n.getText('KSC001_72')}',
-				        endName:'#{i18n.getText('KSC001_73')}',
-				        name:'#{i18n.getText('KSC001_31')}',}"></div>
+                <div class="labelRangeDate" tabindex="-1" 
+                    data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSC001_31')}</div>
+                <div tabindex="2" id="dateRangePickerPeriod"
+                    data-bind="ntsDateRangePicker: { 
+                        required: true,
+                        showNextPrevious: false, 
+                        value: periodDate,
+                        startName:'#{i18n.getText('KSC001_72')}',
+                        endName:'#{i18n.getText('KSC001_73')}',
+                        name:'#{i18n.getText('KSC001_31')}'}"></div>
+			</div>		
+			<div class="tab-header"><!-- B4_1 -->
+				<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
 			</div>
-			
-			<div class ="selectionEmployee" tabindex="-1">
-				<div id="employeeSearch"></div>
+
+			<div class="selectionCase" tabindex="-1">
+				<!-- B4_2 -->
+				<div tabindex="-1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSC001_100')}</div>
+				<div class="radioButtonGroup">
+					<div tabindex="4" class="b43RadioGroup" data-bind="ntsRadioBoxGroup: {
+						name: '#[KSC001_81]',
+						options: selectImplementAtr,
+						optionsValue: 'id',
+						optionsText: 'name',
+						value: selectedImplementAtrCode,
+						enable: true
+						}"></div>
+					<!-- B4_6 -->
+                    <div class="switchButtonGroup">
+						<div class="SwitchButton"><!-- B4_7, B4_8 -->
+							<div id="inputRebuildAtr" tabindex="5" class="radioboxRebuildAtr b46SwitchButton"
+								data-bind="ntsSwitchButton: {
+								options: selectRebuildAtr,
+								optionsValue: 'id',
+								optionsText: 'name',
+								name: '#[KSC001_88]',
+								value: selectRebuildAtrCode,
+								required: true,
+								enable: isEnableRadioboxRebuildAtr }">
+							</div>
+						</div>
+						<div class="optLists">
+							<div class="checkboxSetting b51checkLists" tabindex="-1">
+								<div class="chkListTitle">
+									<label tabindex="-1">#{i18n.getText('KSC001_115')}</label>
+								</div>
+								<!-- B5_2, 3,4,5 -->
+                                <div id="checkBoxGroup" class="checkBoxGroup"  tabindex="-1">
+                                    <div class="checkboxOne" tabindex="6"
+                                        data-bind="ntsCheckBox: { checked: recreateConverter,
+                                        enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_91')}</div>
+                                    <div class="checkboxOne" tabindex="7"
+                                        data-bind="ntsCheckBox: { checked: recreateEmployeeOffWork,
+                                        enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_92')}</div>
+                                    <div class="checkboxOne" tabindex="8"
+                                        data-bind="ntsCheckBox: { checked: recreateShortTimeWorkers,
+                                        enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_93')}</div>
+                                    <div class="checkboxOne" tabindex="9"
+                                         data-bind="ntsCheckBox: { checked: recreateDirectBouncer,
+                                        enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_94')}</div>
+                                </div>
+							</div>
+							<div class="checkboxSetting b61checkLists" tabindex="-1">
+								<div class="chkListTitle">
+									<label tabindex="-1">#{i18n.getText('KSC001_104')}</label>
+								</div>
+								<!-- B6_3,4 -->
+                                <div class="checkBoxGroup">
+                                    <com:ko-if bind="isAttendance()">
+                                    <div class="checkboxOne" tabindex="10" id="overwriteConfirmedData"
+                                        data-bind="ntsCheckBox: { checked: overwriteConfirmedData,
+                                        enable: isFixedSchedules }">#{i18n.getText('KSC001_105')}</div>
+                                    </com:ko-if>
+                                    <div class="checkboxOne" tabindex="11"
+                                        data-bind="ntsCheckBox: { checked: createAfterDeleting,
+                                        enable: isHandleUpdateSchedule }">#{i18n.getText('KSC001_106')}</div>
+                                </div>
+							</div>
+						</div>
+                    </div>
+				</div>
 			</div>
-			
-			<div class="buttonNext" tabindex="-1">
-				<button class="proceed x-large"  tabindex="6"  
-					data-bind="enable: $root.errors.isEmpty, click: nextPageEmployee">#{i18n.getText('KSC001_20')}</button>
+
+			<div class="buttonPrevNext">			
+				<div class="buttonBeginNext" tabindex="-1">
+					<button tabindex="12" class="proceed x-large"
+						data-bind="click: nextPageB, enable: $root.errors.isEmpty">#{i18n.getText('KSC001_20')}</button>
+				</div>
 			</div>
-			
 		</div>
-		
+
 	</ui:composition>
 </body>
 </html>

@@ -106,7 +106,7 @@ public class MonthlyClosureUpdateLogProcess {
 		void updateMonthlyClosureUpdateLog(MonthlyClosureUpdateLog domain);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		List<MonthlyClosureUpdatePersonLog> monthlyClosureUpdatePersonLog(String monthlyClosureUpdateLogId);
 	}
