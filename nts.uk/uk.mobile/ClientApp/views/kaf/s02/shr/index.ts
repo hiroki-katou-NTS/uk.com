@@ -166,14 +166,16 @@ export class TimeSetDisp {
     public actualHours = { applicationAchievementAtr: 1, startTime: null, endTime: null };
     public appHours = { applicationAchievementAtr: 0, startTime: null, endTime: null };
     public outingType: number;
+    public cancelAtr: boolean;
 
-    constructor( title: string, frame: number, actualStart: number, actulaEnd: number, appStart: number, appEnd: number, outingType?: number ) {
+    constructor( title: string, frame: number, actualStart: number, actulaEnd: number, appStart: number, appEnd: number, cancelAtr: boolean, outingType?: number ) {
         this.title = title;
         this.frame = frame;
         this.actualHours.startTime = actualStart;
         this.actualHours.endTime = actulaEnd;
         this.appHours.startTime = appStart;
         this.appHours.endTime = appEnd;
+        this.cancelAtr = cancelAtr;
         this.outingType = outingType;
     }
 }
