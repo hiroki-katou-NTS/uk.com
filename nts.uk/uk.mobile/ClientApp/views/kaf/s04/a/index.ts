@@ -193,20 +193,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 };
                 vm.$mask('show');
                 vm.$http.post('at', API.startKAFS04, params).then((res: any) => {
+                    vm.$mask('hide');
                     vm.data = res.data;
                     vm.initComponentA();
                     vm.initComponetB();
                     vm.initComponentC();
                     vm.initComponentP1();
-                    vm.$mask('hide');
 
                     if (!vm.mode) {
                         let schedTime = vm.res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
                         schedTime.forEach((item) => {
-                            vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                            vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                            vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                            vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                            if (item.opAchievementDetail != null) {
+                                vm.kafS00P1Params1.scheduleTime ? item.opAchievementDetail.achievementEarly.scheAttendanceTime1 : null;
+                                vm.kafS00P1Params2.scheduleTime ? item.opAchievementDetail.achievementEarly.scheDepartureTime2 : null;
+                                vm.kafS00P1Params3.scheduleTime ? item.opAchievementDetail.achievementEarly.scheAttendanceTime2 : null;
+                                vm.kafS00P1Params4.scheduleTime ? item.opAchievementDetail.achievementEarly.scheDepartureTime2 : null;
+                            }
                         });
                     }
 
@@ -598,6 +600,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             application: vm.application,
             infoOutput: vm.infoOutPut,
         };
+        vm.$mask('show');
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.paramsAComponent = {
                 appID: res.data.appID,
@@ -619,13 +622,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
         vm.$mask('show');
         vm.$http.post('at', API.updateApp, paramsUpdate).then((res: any) => {
-            vm.$mask('hide');
             vm.paramsAComponent = {
                 appID: res.data.appID,
                 mode: vm.mode,
                 res: null,
             };
             vm.$emit('nextComponentA0', vm.paramsAComponent);
+            vm.$mask('hide');
         });
         //do something
     }

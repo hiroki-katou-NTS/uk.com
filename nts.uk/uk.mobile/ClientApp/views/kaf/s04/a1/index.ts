@@ -41,7 +41,6 @@ export class KafS04A1Component extends Vue {
     public handleCloseModel(res) {
         const vm = this;
 
-        //console.log(res);
         vm.paramsAComponent.mode = false;
         vm.$emit('showComponentA', vm.paramsAComponent.mode,res);
     }

@@ -7,7 +7,6 @@ import {
     ITime
 } from '../../../../../kaf/s04/a/define';
 import { KafS00SubP1Component, KAFS00P1Params } from '../../../../../kaf/s00/sub/p1';
-import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'cmms45componentsapp9',
@@ -27,10 +26,50 @@ export class CmmS45ComponentsApp9Component extends Vue {
         attendanceTime2: 0,
         leaveTime2: 0,
     };
-    public kafS00P1Params1: KAFS00P1Params;
-    public kafS00P1Params2: KAFS00P1Params;
-    public kafS00P1Params3: KAFS00P1Params;
-    public kafS00P1Params4: KAFS00P1Params;
+    public kafS00P1Params1: KAFS00P1Params = {
+        actualDisp: false,
+        preAppDisp: false,
+        scheduleDisp: true,
+        actualExcess: null,
+        actualTime: null,
+        preAppExcess: null,
+        preAppTime: null,
+        scheduleExcess: null,
+        scheduleTime: null
+    };
+    public kafS00P1Params2: KAFS00P1Params = {
+        preAppDisp: false,
+        scheduleDisp: true,
+        actualExcess: null,
+        actualTime: null,
+        preAppExcess: null,
+        preAppTime: null,
+        scheduleExcess: null,
+        scheduleTime: null,
+        actualDisp: false
+    };
+    public kafS00P1Params3: KAFS00P1Params = {
+        preAppDisp: false,
+        scheduleDisp: true,
+        actualExcess: null,
+        actualTime: null,
+        preAppExcess: null,
+        preAppTime: null,
+        scheduleExcess: null,
+        scheduleTime: null,
+        actualDisp: false
+    };
+    public kafS00P1Params4: KAFS00P1Params = {
+        preAppDisp: false,
+        scheduleDisp: true,
+        actualExcess: null,
+        actualTime: null,
+        preAppExcess: null,
+        preAppTime: null,
+        scheduleExcess: null,
+        scheduleTime: null,
+        actualDisp: false
+    };
     public condition1: boolean = true;
     public condition2: boolean = true;
     public condition3: boolean = true;
@@ -44,24 +83,25 @@ export class CmmS45ComponentsApp9Component extends Vue {
     }) public readonly params!: {
         appDispInfoStartupOutput: IAppDispInfoStartupOutput,
         appDetail: IAppDetail,
+
     };
 
     get cond4() {
         const vm = this;
         let temp: boolean | null;
         if (_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[3])) {
-                temp = null;
-            }
+            temp = null;
+        }
         vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((i) => {
-                if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
-                    temp = true;
-                }
-            });
+            if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
+                temp = true;
+            }
+        });
         vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation.forEach((i) => {
-                if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
-                    temp = false;
-                }
-            });
+            if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
+                temp = false;
+            }
+        });
 
         return temp;
     }
@@ -121,6 +161,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
         vm.$auth.user.then((user: any) => {
             vm.$mask('show');
             vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
+                vm.$mask('hide');
                 vm.params.appDetail = res.data;
                 //事後モード && ※3			「補足資料」Sheetの「２．取り消す初期情報」に記載している。
                 if (vm.params.appDetail.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr == 1) {
@@ -138,17 +179,23 @@ export class CmmS45ComponentsApp9Component extends Vue {
                     });
                 }
 
-                //update component S00 P1
-                vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
-                    vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                    vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                    vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                    vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item,index) => {
+                    if (index == 0) {
+                        vm.time.attendanceTime = item.timeWithDayAttr;
+                    }
+                    if (index == 1) {
+                        vm.time.leaveTime = item.timeWithDayAttr;
+                    }
+                    if (index == 2) {
+                        vm.time.attendanceTime2 = item.timeWithDayAttr;
+                    }
+                    if (index == 3) {
+                        vm.time.leaveTime2 = item.timeWithDayAttr;
+                    }
                 });
 
                 const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
                 const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
-
                 const condition7 = vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 
                 // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
@@ -157,6 +204,14 @@ export class CmmS45ComponentsApp9Component extends Vue {
                 } else {
                     vm.showData = false;
                 }
+
+                //update component S00 P1
+                vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
+                    vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                    vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                    vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                    vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                });
 
                 if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
 
@@ -190,7 +245,6 @@ export class CmmS45ComponentsApp9Component extends Vue {
                         }
                     });
                 }
-                vm.$mask('hide');
             }).catch(() => {
 
             });
