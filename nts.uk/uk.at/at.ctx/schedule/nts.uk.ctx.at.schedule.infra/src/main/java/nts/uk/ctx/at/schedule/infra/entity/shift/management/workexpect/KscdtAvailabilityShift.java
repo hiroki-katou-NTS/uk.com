@@ -38,16 +38,16 @@ public class KscdtAvailabilityShift extends ContractCompanyUkJpaEntity {
 	public static List<KscdtAvailabilityShift> fromDomain(
 			WorkAvailabilityOfOneDay expectation) {
 		
-		if (expectation.getWorkExpectation().getAssignmentMethod() != AssignmentMethod.SHIFT) {
+		if (expectation.getWorkAvailability().getAssignmentMethod() != AssignmentMethod.SHIFT) {
 			return new ArrayList<>();
 		}
 		
-		WorkAvailabilityByShiftMaster shiftExpectation =  (WorkAvailabilityByShiftMaster) expectation.getWorkExpectation();
+		WorkAvailabilityByShiftMaster shiftExpectation =  (WorkAvailabilityByShiftMaster) expectation.getWorkAvailability();
 		return shiftExpectation.getWorkableShiftCodeList().stream()
 				.map(s -> new KscdtAvailabilityShift(
 							new KscdtAvailabilityShiftPk(
 									expectation.getEmployeeId(), 
-									expectation.getExpectingDate(), s.v()) 
+									expectation.getWorkAvailabilityDate(), s.v()) 
 							))
 				.collect(Collectors.toList());
 	}
