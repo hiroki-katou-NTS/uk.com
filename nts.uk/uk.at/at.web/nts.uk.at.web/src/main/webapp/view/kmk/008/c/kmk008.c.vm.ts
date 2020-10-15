@@ -78,23 +78,23 @@ module nts.uk.at.view.kmk008.c {
 				vm.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
 			}
 
-			new service.Service().getAgreementTimeOfCompany(vm.laborSystemAtr).done(data => {
-				vm.timeOfCompany(new TimeOfCompanyModel(data));
-				if (data.updateMode) {
-					vm.isUpdate = true;
-				} else {
-					vm.isUpdate = false;
-				}
-				$("#errorCheckInput").focus();
-				dfd.resolve();
-			}).fail(error => {
-
-			});
+			// new service.Service().getAgreementTimeOfCompany(vm.laborSystemAtr).done(data => {
+			// 	vm.timeOfCompany(new TimeOfCompanyModel(data));
+			// 	if (data.updateMode) {
+			// 		vm.isUpdate = true;
+			// 	} else {
+			// 		vm.isUpdate = false;
+			// 	}
+			// 	$("#errorCheckInput").focus();
+			// 	dfd.resolve();
+			// }).fail(error => {
+			//
+			// }); TODO
 
 			$('#empt-list-setting').ntsListComponent(vm.empListCmp.listComponentOption);
-			$("#C4_3").ntsFixedTable({width: 452 });
-			$("#C4_6").ntsFixedTable({width: 700 });
-			$("#C4_31").ntsFixedTable({width: 700 });
+			$("#C4_3").ntsFixedTable({});
+			$("#C4_6").ntsFixedTable({});
+			$("#C4_31").ntsFixedTable({});
 
 			return dfd.promise();
 		}

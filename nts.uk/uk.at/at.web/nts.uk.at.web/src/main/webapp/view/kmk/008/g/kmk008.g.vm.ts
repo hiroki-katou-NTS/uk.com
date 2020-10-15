@@ -27,10 +27,6 @@ module nts.uk.at.view.kmk008.g {
                 new RadioModel(true, vm.$i18n("KMK008_181")),
                 new RadioModel(false, vm.$i18n("KMK008_182"))
             ]);
-        }
-
-        created() {
-            const vm = this;
 
             vm.$blockui("invisible");
             vm.$ajax(PATH_API.getData)
@@ -46,6 +42,10 @@ module nts.uk.at.view.kmk008.g {
                     $('#combo-box-month').focus();
                     vm.$blockui("clear");
                 });
+        }
+
+        created() {
+            const vm = this;
 
             _.extend(window, {vm});
         }

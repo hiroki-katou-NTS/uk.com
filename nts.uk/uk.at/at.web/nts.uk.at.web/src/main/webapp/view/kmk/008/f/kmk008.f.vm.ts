@@ -31,6 +31,7 @@ module nts.uk.at.view.kmk008.f {
         listComponentOption: any;
         selectedEmpCode: KnockoutObservable<string> = ko.observable('');
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray<UnitAlreadySettingModel>([]);
 
         //search
         ccg001ComponentOption: any;
@@ -42,10 +43,10 @@ module nts.uk.at.view.kmk008.f {
         constructor() {
             super();
             const vm = this;
-
             //list
             vm.listComponentOption = {
-                isShowAlreadySet: false,
+                isShowAlreadySet: true,
+                alreadySettingList: vm.alreadySettingList,
                 isMultiSelect: false,
                 listType: 4,
                 employeeInputList: vm.employeeList,
@@ -278,6 +279,11 @@ module nts.uk.at.view.kmk008.f {
             this.affiliationName = affiliationName;
             this.employeeId = employeeId;
         }
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
 
     export class MonthDto {

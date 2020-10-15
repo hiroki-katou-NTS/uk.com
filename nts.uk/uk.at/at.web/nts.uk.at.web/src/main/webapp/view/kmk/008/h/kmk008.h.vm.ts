@@ -1,72 +1,78 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmk008.h {
-    import service = nts.uk.at.view.kmk008.h.service;
-    
-    export module viewmodel {        
-        export class ScreenModel {
-            useEmployment: KnockoutObservable<boolean>;
-            useWorkPlace: KnockoutObservable<boolean>;
-            useClasss: KnockoutObservable<boolean>;
-            constructor() {
-                var self = this;
-                self.useEmployment = ko.observable(true);
-                self.useWorkPlace = ko.observable(true);
-                self.useClasss = ko.observable(true);
-            }
 
-            startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
+    const PATH_API = {
+        getData: 'screen/at/kmk008/h/getInitDisplay',
+        registerData: 'monthly/estimatedtime/unit/Register',
+    };
 
-                service.getData().done(function(item) {
-                    if (item) {
-                        self.useEmployment(item.employmentUseAtr);
-                        self.useWorkPlace(item.workPlaceUseAtr);
-                        self.useClasss(item.classificationUseAtr);
-                    } else {
-                        self.useEmployment(true);
-                        self.useWorkPlace(true);
-                        self.useClasss(true);
-                    }
-                    dfd.resolve();
-                });
+    @bean()
+    export class KMK008HViewModel extends ko.ViewModel {
+        // Init
+        classificationUseAtr: KnockoutObservable<boolean> = ko.observable(true); //３６協定単位設定.分類利用区分
+        employmentUseAtr: KnockoutObservable<boolean> = ko.observable(true); //３６協定単位設定.雇用利用区分
+        workPlaceUseAtr: KnockoutObservable<boolean> = ko.observable(true); //３６協定単位設定.職場利用区分
 
 
-                return dfd.promise();
-            }
+        constructor() {
+            super();
+            const vm = this;
 
-            submitAndCloseDialog(): void {
-                var self = this;
-                
-                service.getData().done(function(item) {                    
-                    if (item) {
-                        service.updateData({
-                            employmentUseAtr: self.useEmployment() ? 1 : 0,// 雇用使用区分
-                            workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,// 職場使用区分
-                            classificationUseAtr: self.useClasss() ? 1 : 0 // 分類使用区分
-                        }).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.closeDialog();
-                            });    
-                        });
-                    } else {
-                        service.insertData({
-                            employmentUseAtr: self.useEmployment() ? 1 : 0,// 雇用使用区分
-                            workPlaceUseAtr: self.useWorkPlace() ? 1 : 0,// 職場使用区分
-                            classificationUseAtr: self.useClasss() ? 1 : 0// 分類使用区分
-                        }).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.closeDialog();
-                            });    
-                        });
+            vm.$blockui("invisible");
+            vm.$ajax(PATH_API.getData)
+                .done(data => {
+                    if (data) {
+                        vm.classificationUseAtr(data.classificationUseAtr);
+                        vm.employmentUseAtr(data.employmentUseAtr);
+                        vm.workPlaceUseAtr(data.workPlaceUseAtr);
                     }
                 })
-                //self.closeDialog();
-            }
+                .fail(res => {
+                    vm.$dialog.error(res.message);
+                })
+                .always(() => {
+                    vm.$blockui("clear");
+                });
+        }
 
-            closeDialog(): void {
-                nts.uk.ui.windows.close();
-            }
+        created() {
+            const vm = this;
+
+            _.extend(window, {vm});
+        }
+
+
+        mounted() {
+            $("#checkboxEmp").focus();
+        }
+
+        submitAndCloseDialog() {
+            var vm = this;
+
+            vm.$blockui("invisible");
+            vm.$ajax(PATH_API.registerData,
+                {
+                    classificationUseAtr: vm.classificationUseAtr() ? 1 : 0,
+                    employmentUseAtr: vm.employmentUseAtr() ? 1 : 0,
+                    workPlaceUseAtr: vm.workPlaceUseAtr() ? 1 : 0
+                })
+                .done(() => {
+                    vm.$dialog.info({messageId: "Msg_15"});
+                    vm.closeDialog();
+                })
+                .fail(res => {
+                    vm.$dialog.error(res.message);
+                })
+                .always(() => vm.$blockui("clear"));
+        }
+
+        closeDialog() {
+            const vm = this;
+            vm.$window.close();
         }
     }
-
 }
+
+
+
