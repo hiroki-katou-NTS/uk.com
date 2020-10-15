@@ -101,8 +101,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
-                    companyId: this.user.companyId,
-                    employeeId: this.user.employeeId,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
                     dates: [],
                     mode: self.mode,
                     inforGoBackCommonDirectDto: self.dataOutput ? self.dataOutput : null,
@@ -112,12 +112,12 @@ export class KafS09AComponent extends KafS00ShrComponent {
             if (self.appDispInfoStartupOutput) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
                     return self.$http.post('at', API.startS09, {
-                        companyId: this.user.companyId,
-                        employeeId: this.user.employeeId,
+                        companyId: self.user.companyId,
+                        employeeId: self.user.employeeId,
                         dates: [],
                         mode: self.mode,
                         inforGoBackCommonDirectDto: self.dataOutput ? self.dataOutput : null,
-                        appDispInfoStartupDto: this.appDispInfoStartupOutput
+                        appDispInfoStartupDto: self.dataOutput ? self.dataOutput.appDispInfoStartup : self.appDispInfoStartupOutput
                     });
                 }
             }
@@ -325,7 +325,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.appGoBackDirect.isChangedWork = null;
         }
         if (!self.mode) {
+            let opAppStandardReasonCD =  self.application.opAppStandardReasonCD;
+            let opAppReason = self.application.opAppReason;
             self.application = self.dataOutput.appDispInfoStartup.appDetailScreenInfo.application;
+            self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+            self.application.opAppReason = opAppReason;
         }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
