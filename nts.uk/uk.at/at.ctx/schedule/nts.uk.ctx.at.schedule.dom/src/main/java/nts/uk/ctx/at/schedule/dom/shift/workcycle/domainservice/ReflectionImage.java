@@ -30,6 +30,10 @@ public class ReflectionImage {
      * @param workInformation
      */
     public void addByWeeklyWorking(GeneralDate date, WorkInformation workInformation){
+        val refEachDay = this.day.get(date);
+        if (refEachDay != null && refEachDay.getWorkCreateMethod().value == WorkCreateMethod.PUB_HOLIDAY.value) {
+            return;
+        }
         this.day.put(date, new RefImageEachDay(WorkCreateMethod.WEEKLY_WORK.value, workInformation, date));
     }
 
