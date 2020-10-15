@@ -1,0 +1,60 @@
+/* css panel */
+.panel-left {
+  height: 380px;
+  width: 220px;
+  margin-top: 45px;
+  margin-left: 30px;
+}
+
+.panel-right {
+  height: 380px;
+  width: 220px;
+  margin-top: 45px;
+  margin-left: 100px;
+}
+
+.div-panel {
+  align-items: center;
+  display: flex;
+  margin-top: 10px;
+  height: 40px;
+  font-weight: bold;
+}
+
+/* row inline */
+.inline-row {
+  display: inline-flex;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+/* css width */
+.w-100 {
+  width: 100%;
+}
+
+/* css margin */
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+.mt-45 {
+  margin-top: 45px;
+}
+
+.ml-50 {
+  margin-left: 50px;
+}
+
+.fix-color-caret::after {
+  color: #97D155 !important;
+}
