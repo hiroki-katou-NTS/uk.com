@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.PrimitiveValueBase;
@@ -1219,9 +1220,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         List<OvertimeQuotaSetUse> settings = overtimeAppSetRepo.getOvertimeQuotaSetting(companyId);
         List<OvertimeWorkFrame> frames = otWorkFrameRepo.getAllOvertimeWorkFrame(companyId);
         EnumSet.allOf(FlexWorkAtr.class).forEach(flex -> {
-            EnumSet.allOf(OvertimeAppAtr.class).forEach(ot -> {
+            int count = 0;
+            for (int index = 0; index < 3; index++) {
+                OvertimeAppAtr ot = EnumAdaptor.valueOf(index, OvertimeAppAtr.class);
                 OvertimeQuotaSetUse setting = settings.stream().filter(i -> i.getFlexWorkAtr() == flex && i.getOvertimeAppAtr() == ot).findFirst().orElse(null);
                 if (setting != null && !setting.getTargetOvertimeLimit().isEmpty()) {
+                    count++;
                     setting.getTargetOvertimeLimit().sort(Comparator.comparing(OverTimeFrameNo::v));
                     for (int row = 0; row < setting.getTargetOvertimeLimit().size(); row++) {
                         OverTimeFrameNo target = setting.getTargetOvertimeLimit().get(row);
@@ -1229,7 +1233,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         Map<String, MasterCellData> rowData = new HashMap<>();
                         for (int col = 0; col < 3; col++) {
                             String value;
-                            if (col == 0 && row == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
+                            if (col == 0 && row == 0 && count == 1) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
                             else if (col == 1 && row == 0) value = ot.name;
                             else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
                             else value = "";
@@ -1261,7 +1265,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
 //                    }
 //                    data.add(MasterData.builder().rowData(rowData).build());
 //                }
-            });
+            }
         });
         return data;
     }
