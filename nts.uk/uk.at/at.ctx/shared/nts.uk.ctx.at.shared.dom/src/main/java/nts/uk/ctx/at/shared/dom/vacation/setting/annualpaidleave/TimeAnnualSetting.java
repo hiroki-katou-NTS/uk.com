@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 public class TimeAnnualSetting extends DomainObject implements Serializable {
 
     /**
+     * 時間年休管理設定
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
@@ -40,11 +42,13 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     // 1日の時間未満の時間年休を積立年休とする
     private boolean isEnoughTimeOneDay;
     
-    //端数処理区分
+    /** 端数処理区分 */
+    // 端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
     
-    
-    
+    /** 1日の時間 */
+    // 1日の時間 
+    private Optional<AnnualTimePerDay> annualTimePerDay;
     
     /**
      * Instantiates a new time vacation setting.

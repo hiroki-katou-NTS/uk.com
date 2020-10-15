@@ -5,12 +5,12 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualTimePerDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualTimePerDayRefer;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.LeaveTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 
 /**
@@ -103,12 +103,14 @@ public class LeaveRemainingNumber {
 	 * 休暇使用数を消化する
 	 * @param require 残数処理 Requireクラス
 	 * @param leaveUsedNumber 休暇使用数
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 */
 	public LeaveUsedNumber digestLeaveUsedNumber(
 			RequireM3 require,
 			LeaveUsedNumber leaveUsedNumber,
+			String companyId,
 			String employeeId,
 			GeneralDate baseDate){
 		
@@ -118,7 +120,7 @@ public class LeaveRemainingNumber {
 		if ( !leaveUsedNumber.getMinutes().isPresent() ){ // 休暇使用数
 			return unusedNumber;
 		}
-			
+		
 		while(true){
 			if ( 1 <= this.days.v() // 1<=メンバ変数.休暇残数.日数 
 				&& 1 <= leaveUsedNumber.getMinutes().get().v() // input.休暇使用数.時間
@@ -137,8 +139,8 @@ public class LeaveRemainingNumber {
 				if (needStacking){ // 積み崩しが必要なとき
 					
 					// 年休１日に相当する時間年休時間を取得する
-					Optional<LimitedTimeHdTime> contractTimeOpt
-						= getContractTime(require, employeeId, baseDate);
+					Optional<LeaveTime> contractTimeOpt
+						= getContractTime(require, companyId, employeeId, baseDate);
 					
 					// 積み崩し処理を行う
 					if (contractTimeOpt.isPresent()){
@@ -248,17 +250,14 @@ public class LeaveRemainingNumber {
 	 * @param baseDate 基準日
 	 * @return
 	 */
-	static public Optional<LimitedTimeHdTime> getContractTime(
+	static public Optional<LeaveTime> getContractTime(
 		RequireM3 require,
 		String companyID,
 		String employeeId,
 		GeneralDate baseDate){
 		
 		// 契約時間
-		Optional<LimitedTimeHdTime> contractTime = Optional.empty();
-		
-//		WorkingConditionItemRepository workingConditionItemRepository
-//			= repositoriesRequiredByRemNum.getWorkingConditionItemRepository();
+		Optional<LeaveTime> contractTime = Optional.empty();
 		
 		// ドメインモデル「年休設定」を取得する
 		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
@@ -266,25 +265,42 @@ public class LeaveRemainingNumber {
 			return Optional.empty();
 		}
 		
-		// 契約時間が会社一律で設定されているか
-		if ( annualPaidLeave.getTimeSetting().getTimeManageType().equals(ManageDistinct.YES)){
-			// 会社の設定情報を取得する
+		// 1日の時間を取得
+		Optional<AnnualTimePerDay> annualTimePerDayOpt 
+			= annualPaidLeave.getTimeSetting().getAnnualTimePerDay();
+		if ( !annualTimePerDayOpt.isPresent() ){
+			return Optional.empty();
+		}
+		
+		AnnualTimePerDay annualTimePerDay = annualTimePerDayOpt.get();
+		
+		// 会社一律で設定されているとき
+		if ( annualTimePerDay.getAnnualTimePerDayRefer().equals(AnnualTimePerDayRefer.CompanyUniform)){ 
+
+			// １日の時間をセット
+			contractTime = Optional.of(new LeaveTime(annualTimePerDay.getLeaveTime().v()));
+				
+		} else { // 社員の契約時間により算定
 			
-			
-			
-		} else {
 			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 			Optional<WorkingConditionItem> workCond
 				= require.workingConditionItem(employeeId, baseDate);
 	
 			if (workCond.isPresent()) {
 				contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
-						: Optional.ofNullable(new LimitedTimeHdTime(workCond.get().getContractTime().v()));
+						: Optional.ofNullable(new LeaveTime(workCond.get().getContractTime().v()));
 				
-				// 丸め処理 　ooooo
+				// 丸め処理
+				// 取得した契約時間を1時間単位で切り上げる
+				if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.RoundUpTo1Hour) ){
+					int time = contractTime.get().v();
+					if ( time % 60 > 0 ){
+						int timeUpTo1Hour = (time/60)*60 + 60;
+						contractTime = Optional.of(new LeaveTime(timeUpTo1Hour));
+					}
+				}
 			}
 		}
-		
 		return contractTime;
 	}
 	
