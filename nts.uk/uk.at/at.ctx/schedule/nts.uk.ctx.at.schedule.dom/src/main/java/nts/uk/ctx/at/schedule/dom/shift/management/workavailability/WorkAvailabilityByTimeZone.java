@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  * @author dan_pv
  */
 @Value
-public class TimeZoneExpectation implements WorkExpectation, DomainValue {
+public class WorkAvailabilityByTimeZone implements WorkAvailability, DomainValue {
 	
 	/**
 	 * 勤務可能な時間帯のリスト
@@ -27,13 +27,13 @@ public class TimeZoneExpectation implements WorkExpectation, DomainValue {
 	 * @param workableTimeZoneList　社員の勤務希望時間帯リスト
 	 * @return
 	 */
-	public static TimeZoneExpectation create(List<TimeSpanForCalc> workableTimeZoneList) {
+	public static WorkAvailabilityByTimeZone create(List<TimeSpanForCalc> workableTimeZoneList) {
 		
 		if ( workableTimeZoneList.isEmpty()) {
 			throw new RuntimeException("timezone list is empty!");
 		}
 		
-		return new TimeZoneExpectation(workableTimeZoneList);
+		return new WorkAvailabilityByTimeZone(workableTimeZoneList);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class TimeZoneExpectation implements WorkExpectation, DomainValue {
 	}
 
 	@Override
-	public boolean isMatchingExpectation(Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		if (timeZoneList.isEmpty()) {
@@ -52,20 +52,20 @@ public class TimeZoneExpectation implements WorkExpectation, DomainValue {
 		return timeZoneList.stream().allMatch( timeZone -> 
 			
 			 this.workableTimeZoneList.stream()
-					.anyMatch( workableTimeZone -> this.isScheduleTimeZoneInsideExpectedTimeZone(workableTimeZone, timeZone))
+					.anyMatch( workableTimeZone -> this.isScheduleTimeZoneInsideAvailabilityTimeZone(workableTimeZone, timeZone))
 		);
 		
 	}
 
 	@Override
-	public WorkExpectDisplayInfo getDisplayInformation(Require require) {
+	public WorkAvailabilityDisplayInfo getDisplayInformation(Require require) {
 		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkExpectDisplayInfo(asignmentMethod, Collections.emptyList(), this.workableTimeZoneList);
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyList(), this.workableTimeZoneList);
 	}
 	
-	private boolean isScheduleTimeZoneInsideExpectedTimeZone(TimeSpanForCalc expectedTimeZone , TimeSpanForCalc scheduleTimeZone) {
-		return expectedTimeZone.checkDuplication(scheduleTimeZone) == TimeSpanDuplication.CONTAINS;
+	private boolean isScheduleTimeZoneInsideAvailabilityTimeZone(TimeSpanForCalc availabilityTimeZone , TimeSpanForCalc scheduleTimeZone) {
+		return availabilityTimeZone.checkDuplication(scheduleTimeZone) == TimeSpanDuplication.CONTAINS;
 	}
 
 }

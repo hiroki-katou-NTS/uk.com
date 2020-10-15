@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.management.shifttable;
 import java.util.Arrays;
 import java.util.Optional;
 
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class ShiftTableRuleHelper {
@@ -19,7 +19,7 @@ public class ShiftTableRuleHelper {
 	 * @param fromNoticeDays
 	 * @return
 	 */
-	public static ShiftTableRule createWithParam(NotUseAtr useWorkExpectationAtr, Optional<ShiftTableSetting> setting, Optional<FromNoticeDays> fromNoticeDays) {
+	public static ShiftTableRule createWithParam(NotUseAtr useWorkExpectationAtr, Optional<WorkAvailabilityRule> setting, Optional<FromNoticeDays> fromNoticeDays) {
 		
 		return ShiftTableRule.create( 
 				NotUseAtr.USE, 

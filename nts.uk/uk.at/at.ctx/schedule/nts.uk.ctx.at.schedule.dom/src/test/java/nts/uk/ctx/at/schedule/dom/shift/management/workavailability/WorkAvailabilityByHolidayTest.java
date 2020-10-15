@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,32 +18,32 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
-public class HolidayExpectationTest {
+public class WorkAvailabilityByHolidayTest {
 	
 	@Injectable
-    private WorkExpectation.Require require;
+    private WorkAvailability.Require require;
 	
 	@Test
 	public void getters() {
 		
-		HolidayExpectation holidayexp = new HolidayExpectation();
+		WorkAvailabilityByHoliday holidayexp = new WorkAvailabilityByHoliday();
 		
 		NtsAssert.invokeGetters(holidayexp);
 	}
 	
 	@Test
 	public void testGetAssignmentMethod() {
-		assertThat(new HolidayExpectation().getAssignmentMethod())
+		assertThat(new WorkAvailabilityByHoliday().getAssignmentMethod())
 			.isEqualTo(AssignmentMethod.HOLIDAY);
 	}
 	
 	@Test
-	public void testIsHolidayExpectation() {
-		assertThat(new HolidayExpectation().isHolidayExpectation()).isTrue();
+	public void testIsHolidayAvailability() {
+		assertThat(new WorkAvailabilityByHoliday().isHolidayAvailability()).isTrue();
 	}
 	
 	@Test
-	public void testIsMatchingExpectation_getWorkStyle_empty() {
+	public void testIsMatchingWorkAvailability_getWorkStyle_empty() {
 		
 		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
@@ -54,13 +54,13 @@ public class HolidayExpectationTest {
             }
         };
         
-        boolean result = new HolidayExpectation().isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         assertThat(result).isFalse();
 		
 	}
 	
 	@Test
-	public void testIsMatchingExpectation_getWorkStyle_dif_OneDayRest() {
+	public void testIsMatchingWorkAvailability_getWorkStyle_dif_OneDayRest() {
 		
 		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
@@ -71,13 +71,13 @@ public class HolidayExpectationTest {
             }
         };
         
-        boolean result = new HolidayExpectation().isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         assertThat(result).isFalse();
 		
 	}
 	
 	@Test
-	public void testIsMatchingExpectation_getWorkStyle_OneDayRest() {
+	public void testIsMatchingWorkAvailability_getWorkStyle_OneDayRest() {
 		
 		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
@@ -88,7 +88,7 @@ public class HolidayExpectationTest {
             }
         };
         
-        boolean result = new HolidayExpectation().isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = new WorkAvailabilityByHoliday().isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         assertThat(result).isTrue();
 		
 	}
@@ -96,7 +96,7 @@ public class HolidayExpectationTest {
 	
 	@Test
 	public void testGetDisplayInformation() {
-		WorkExpectDisplayInfo displayInfo = new HolidayExpectation().getDisplayInformation(require);
+		WorkAvailabilityDisplayInfo displayInfo = new WorkAvailabilityByHoliday().getDisplayInformation(require);
 		
 		assertThat(displayInfo.getMethod()).isEqualTo(AssignmentMethod.HOLIDAY);
 		assertThat(displayInfo.getNameList()).isEmpty();

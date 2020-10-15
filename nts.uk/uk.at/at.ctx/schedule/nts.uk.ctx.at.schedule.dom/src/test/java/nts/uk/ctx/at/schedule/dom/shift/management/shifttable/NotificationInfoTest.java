@@ -31,7 +31,7 @@ public class NotificationInfoTest {
 		GeneralDate deadline = GeneralDate.ymd(2020, 10, 10);
 		DatePeriod period = new DatePeriod( GeneralDate.ymd(2020, 10, 16), GeneralDate.ymd(2020, 11, 15));
 		
-		DeadlineAndPeriodOfExpectation deadlineAndPeriod = new DeadlineAndPeriodOfExpectation(deadline, period);
+		DeadlineAndPeriodOfWorkAvailability deadlineAndPeriod = new DeadlineAndPeriodOfWorkAvailability(deadline, period);
 		
 		NotificationInfo result = NotificationInfo.createNotification(deadlineAndPeriod);
 		

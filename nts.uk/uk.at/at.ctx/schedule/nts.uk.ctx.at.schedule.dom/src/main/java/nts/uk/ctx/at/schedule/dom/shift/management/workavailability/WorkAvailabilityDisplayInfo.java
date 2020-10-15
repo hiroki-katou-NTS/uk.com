@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  *
  */
 @Value
-public class WorkExpectDisplayInfo {
+public class WorkAvailabilityDisplayInfo {
 	
 	private AssignmentMethod method;
 	

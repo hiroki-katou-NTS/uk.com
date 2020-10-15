@@ -13,24 +13,24 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 
-public class ShiftTableDateSettingTest {
+public class WorkAvailabilityRuleDateSettingTest {
 	
 	@Test
 	public void getters() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		NtsAssert.invokeGetters(target);  
 	}
 	
 	@Test
 	public void TestGetShiftPeriodUnit() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		
-		assertThat(target.getShiftPeriodUnit()).isEqualTo(ShiftPeriodUnit.MONTHLY);
+		assertThat(target.getShiftPeriodUnit()).isEqualTo(WorkAvailabilityPeriodUnit.MONTHLY);
 	}
 	
 	@Test
@@ -39,7 +39,7 @@ public class ShiftTableDateSettingTest {
 		/**
 		 * 締め日: 15日、締切日: 10日
 		 */
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 6);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 6);
 		
 		/**
 		 *  today = 2020/9/10
@@ -61,7 +61,7 @@ public class ShiftTableDateSettingTest {
 		/**
 		 * 締め日: 15日、締切日: 10日
 		 */
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 6);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 6);
 		
 		/**
 		 *  today = 2020/9/11
@@ -79,14 +79,14 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testIsOverHolidayMaxdays_false() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		List<WorkExpectationOfOneDay> expectations = Arrays.asList(
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
+		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
 				);
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
@@ -97,15 +97,15 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testIsOverHolidayMaxdays_true() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		List<WorkExpectationOfOneDay> expectations = Arrays.asList(
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
+		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 6), AssignmentMethod.HOLIDAY)
 				);
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
@@ -120,9 +120,9 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case1() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 10, 16) );
@@ -136,9 +136,9 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case3() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 10));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 10));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 10));
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 10, 16) );
@@ -151,9 +151,9 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case4() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 11));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 11));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 11, 10));
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 11, 16) );
@@ -167,12 +167,12 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case5() {
 		
-		ShiftTableDateSetting target = new ShiftTableDateSetting(
+		WorkAvailabilityRuleDateSetting target = new WorkAvailabilityRuleDateSetting(
 				new OneMonth(DateInMonth.lastDay()),
 				DateInMonth.lastDay(), 
-				new HolidayExpectationMaxdays(0));
+				new HolidayAvailabilityMaxdays(0));
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 1, 15));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 1, 15));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 1, 31));
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 2, 1) );
@@ -186,12 +186,12 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case6() {
 		
-		ShiftTableDateSetting target = new ShiftTableDateSetting(
+		WorkAvailabilityRuleDateSetting target = new WorkAvailabilityRuleDateSetting(
 				new OneMonth(DateInMonth.lastDay()),
 				DateInMonth.lastDay(), 
-				new HolidayExpectationMaxdays(0));
+				new HolidayAvailabilityMaxdays(0));
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 2, 15));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 2, 15));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 2, 29));
 		assertThat(ruleInfo.getPeriod().start()).isEqualTo( GeneralDate.ymd(2020, 3, 1) );
@@ -202,9 +202,9 @@ public class ShiftTableDateSettingTest {
 	@Test
 	public void testGetPeriodWhichIncludeExpectingDate() {
 		
-		ShiftTableDateSetting target = ShiftTableDateSettingHelper.createWithParam(15, 10, 3);
+		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
-		DatePeriod period = target.getPeriodWhichIncludeExpectingDate(GeneralDate.ymd(2020, 10, 1));
+		DatePeriod period = target.getPeriodWhichIncludeAvailabilityDate(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(period.start()).isEqualTo( GeneralDate.ymd(2020, 9, 16));
 		assertThat(period.end()).isEqualTo( GeneralDate.ymd(2020, 10, 15));

@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.HolidayExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.ShiftExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.TimeZoneExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationMemo;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByShiftMaster;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByTimeZone;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
@@ -44,35 +44,35 @@ public class KscdtAvailability extends ContractCompanyUkJpaEntity{
 		return pk;
 	}
 	
-	public static KscdtAvailability fromDomain(WorkExpectationOfOneDay expectation) {
+	public static KscdtAvailability fromDomain(WorkAvailabilityOfOneDay expectation) {
 		return new KscdtAvailability(
 				new KscdtAvailabilityPk(expectation.getEmployeeId(), expectation.getExpectingDate()), 
 				expectation.getMemo().v(),
 				expectation.getWorkExpectation().getAssignmentMethod().value);
 	}
 	
-	public WorkExpectationOfOneDay toDomain(List<ShiftMasterCode> shiftMasterCodeList,
+	public WorkAvailabilityOfOneDay toDomain(List<ShiftMasterCode> shiftMasterCodeList,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		AssignmentMethod asignmentMethod = AssignmentMethod.of(this.method);
-		WorkExpectation workExpectation;
+		WorkAvailability workExpectation;
 		switch (asignmentMethod) {
 			case SHIFT:
-				workExpectation = new ShiftExpectation(shiftMasterCodeList);
+				workExpectation = new WorkAvailabilityByShiftMaster(shiftMasterCodeList);
 				break;
 			case TIME_ZONE:
-				workExpectation = new TimeZoneExpectation(timeZoneList);
+				workExpectation = new WorkAvailabilityByTimeZone(timeZoneList);
 				break;
 			case HOLIDAY:
 			default:
-				workExpectation = new HolidayExpectation();
+				workExpectation = new WorkAvailabilityByHoliday();
 				break;
 		}
 		
-		return new WorkExpectationOfOneDay(
+		return new WorkAvailabilityOfOneDay(
 				this.pk.employeeID,
 				this.pk.expectingDate, 
-				new WorkExpectationMemo(this.memo), 
+				new WorkAvailabilityMemo(this.memo), 
 				workExpectation);
 				
 	}

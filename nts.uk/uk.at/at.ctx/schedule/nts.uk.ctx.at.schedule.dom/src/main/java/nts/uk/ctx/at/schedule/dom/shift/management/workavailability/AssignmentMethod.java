@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

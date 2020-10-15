@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,38 +19,38 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
-public class ShiftExpectationTest {
+public class WorkAvailabilityByShiftMasterTest {
 	
 	@Injectable
-    private WorkExpectation.Require require;
+    private WorkAvailability.Require require;
 	
 	@Test
 	public void getters() {
 		
-		ShiftExpectation shiftExp = ShiftExpectationTestHelper.defaultCreate();
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
 		NtsAssert.invokeGetters(shiftExp);
 	}
 	
 	@Test
 	public void testGetAssignmentMethod() {
 		
-		ShiftExpectation shiftExp = ShiftExpectationTestHelper.defaultCreate();
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
 		
 		assertThat(shiftExp.getAssignmentMethod()).isEqualTo(AssignmentMethod.SHIFT);
 	}
 	
 	@Test
-	public void testIsHolidayExpectation() {
+	public void testIsHolidayAvailability() {
 		
-		ShiftExpectation shiftExp = ShiftExpectationTestHelper.defaultCreate();
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
 		
-		assertThat(shiftExp.isHolidayExpectation()).isFalse();
+		assertThat(shiftExp.isHolidayAvailability()).isFalse();
 	}
 	
 	@Test
-	public void testIsMatchingExpectation_getShiftMaster_empty() {
+	public void testIsMatchingWorkAvailability_getShiftMaster_empty() {
 		
-		ShiftExpectation shiftExp = ShiftExpectationTestHelper.defaultCreate();
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.defaultCreate();
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
@@ -62,21 +62,21 @@ public class ShiftExpectationTest {
             }
         };
         
-        boolean result = shiftExp.isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = shiftExp.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         
         assertThat(result).isFalse();
 		
 	}
 	
 	@Test
-	public void testIsMatchingExpectation_getShiftMaster_notMatch() {
+	public void testIsMatchingWorkAvailability_getShiftMaster_notMatch() {
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
 		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 		
-		ShiftExpectation shiftExp = ShiftExpectationTestHelper.createWithShiftCodes("S01", "S02");
-		ShiftMaster shiftMaster = ShiftExpectationTestHelper.createShiftMasterWithCode("S03");
+		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCode("S03");
 		
 		new Expectations() {
             {
@@ -85,20 +85,20 @@ public class ShiftExpectationTest {
             }
         };
         
-        boolean result = shiftExp.isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = shiftExp.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         
         assertThat(result).isFalse();
 	}
 
 	@Test
-	public void testIsMatchingExpectation_getShiftMaster_Match() {
+	public void testIsMatchingWorkAvailability_getShiftMaster_Match() {
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
 		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 		
-		ShiftExpectation shiftExpectation = ShiftExpectationTestHelper.createWithShiftCodes("S01", "S02");
-		ShiftMaster shiftMaster = ShiftExpectationTestHelper.createShiftMasterWithCode("S02");
+		WorkAvailabilityByShiftMaster shiftAvailability = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
+		ShiftMaster shiftMaster = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCode("S02");
 		
 		new Expectations() {
             {
@@ -107,7 +107,7 @@ public class ShiftExpectationTest {
             }
         };
         
-        boolean result = shiftExpectation.isMatchingExpectation(require, workInformation, new ArrayList<>());
+        boolean result = shiftAvailability.isMatchingWorkAvailability(require, workInformation, new ArrayList<>());
         
         assertThat(result).isTrue();
 	}
@@ -115,10 +115,10 @@ public class ShiftExpectationTest {
 	@Test
 	public void testGetDisplayInformation() {
 		
-		 ShiftExpectation shiftExp = ShiftExpectationTestHelper.createWithShiftCodes("S01", "S02", "S03");
+		 WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02", "S03");
 		
-		ShiftMaster shiftMaster1 = ShiftExpectationTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
-		ShiftMaster shiftMaster2 = ShiftExpectationTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
+		ShiftMaster shiftMaster1 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S01", "S01-name");
+		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
 		
 		new Expectations() {
             {
@@ -127,7 +127,7 @@ public class ShiftExpectationTest {
             }
         };
 		
-		WorkExpectDisplayInfo displayInfo = shiftExp.getDisplayInformation(require);
+		WorkAvailabilityDisplayInfo displayInfo = shiftExp.getDisplayInformation(require);
 		
 		assertThat(displayInfo.getMethod()).isEqualTo(AssignmentMethod.SHIFT);
 		assertThat(displayInfo.getNameList())

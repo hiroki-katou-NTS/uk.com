@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 
 /**
  * シフト表の設定
@@ -12,13 +12,13 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfO
  * @author hiroko_miura
  *
  */
-public interface ShiftTableSetting {
+public interface WorkAvailabilityRule {
 
 	/**
 	 * シフト勤務単位は
 	 * @return
 	 */
-	ShiftPeriodUnit getShiftPeriodUnit();
+	WorkAvailabilityPeriodUnit getShiftPeriodUnit();
 	
 	/**
 	 * 何日前に通知するかの最大日数
@@ -29,31 +29,31 @@ public interface ShiftTableSetting {
 	/**
 	 * 締切日を過ぎているか
 	 * 過ぎる場合 return true
-	 * @param expectingDate 希望日
+	 * @param availabilityDate 希望日
 	 * @return
 	 */
-	boolean isOverDeadline(GeneralDate expectingDate);
+	boolean isOverDeadline(GeneralDate availabilityDate);
 	
 	/**
 	 * 休日日数の上限日数を超えているか
 	 * 超える場合 return true
-	 * @param workExpectList　一日の勤務希望リスト: 休日、シフト、時間帯の全部
+	 * @param workAvailabilityList 一日の勤務希望リスト: 休日、シフト、時間帯の全部
 	 * @return
 	 */
-	boolean isOverHolidayMaxDays(List<WorkExpectationOfOneDay> workExpectList);
+	boolean isOverHolidayMaxDays(List<WorkAvailabilityOfOneDay> workAvailabilityList);
 	
 	/**
 	 * 基準日に対応する締切日と期間を取得する
 	 * @param baseDate 基準日
 	 * @return
 	 */
-	DeadlineAndPeriodOfExpectation getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
+	DeadlineAndPeriodOfWorkAvailability getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
 	
 	/**
-	* 希望日を含める期間を取得する
-	 * @param expectingDate　希望日
+	 * 希望日を含める期間を取得する
+	 * @param availabilityDate 希望日
 	 * @return
 	 */
-	DatePeriod getPeriodWhichIncludeExpectingDate(GeneralDate expectingDate);
+	DatePeriod getPeriodWhichIncludeAvailabilityDate(GeneralDate availabilityDate);
 	
 }

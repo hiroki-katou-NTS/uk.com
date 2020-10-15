@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @RequiredArgsConstructor
-public enum ShiftPeriodUnit {
+public enum WorkAvailabilityPeriodUnit {
 	/**　一週間	 */
 	WEEKLY(0),
 	
@@ -19,7 +19,7 @@ public enum ShiftPeriodUnit {
 	
 	public final int value;
 	
-	public static ShiftPeriodUnit of(int value) {
-		return EnumAdaptor.valueOf(value, ShiftPeriodUnit.class);
+	public static WorkAvailabilityPeriodUnit of(int value) {
+		return EnumAdaptor.valueOf(value, WorkAvailabilityPeriodUnit.class);
 	}
 }

@@ -7,7 +7,7 @@ import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -22,40 +22,40 @@ public class ShiftTableRule implements DomainValue {
 	private final NotUseAtr usePublicAtr;
 	
 	/** 勤務希望運用区分 */
-	private final NotUseAtr useWorkExpectationAtr;
+	private final NotUseAtr useWorkAvailabilityAtr;
 	
 	/** シフト表の設定 */
-	private final Optional<ShiftTableSetting> shiftTableSetting;
+	private final Optional<WorkAvailabilityRule> shiftTableSetting;
 	
 	/** 勤務希望の指定できる方法リスト */
-	private final List<AssignmentMethod> expectationAssignMethodList;
+	private final List<AssignmentMethod> availabilityAssignMethodList;
 	
 	/** 締切日の何日前に通知するかの日数 */
 	private final Optional<FromNoticeDays> fromNoticeDays;
 	
 	/**
-	 * 作る
+	 * 
 	 * @param usePublicAtr 公開運用するかどうか
-	 * @param useWorkExpectationAtr　勤務希望運用するかどうか
-	 * @param shiftTableSetting　シフト表の設定のインスタンス
-	 * @param expectationAssignMethodList　
-	 * @param fromNoticeDays
+	 * @param useWorkAvailabilityAtr 勤務希望運用するかどうか
+	 * @param shiftTableSetting シフト表の設定のインスタンス
+	 * @param availabilityAtrAssignMethodList 勤務希望の指定できる方法リスト
+	 * @param fromNoticeDays 締切日の何日前に通知するかの日数
 	 * @return
 	 */
 	public static ShiftTableRule create(
 			NotUseAtr usePublicAtr,
-			NotUseAtr useWorkExpectationAtr,
-			Optional<ShiftTableSetting> shiftTableSetting,
-			List<AssignmentMethod> expectationAssignMethodList,
+			NotUseAtr useWorkAvailabilityAtr,
+			Optional<WorkAvailabilityRule> shiftTableSetting,
+			List<AssignmentMethod> availabilityAtrAssignMethodList,
 			Optional<FromNoticeDays> fromNoticeDays) {
 		
-		if ( useWorkExpectationAtr == NotUseAtr.USE) {
+		if ( useWorkAvailabilityAtr == NotUseAtr.USE) {
 			
 			if (!shiftTableSetting.isPresent()) {
 				throw new RuntimeException("shiftTableSetting is invalid");
 			}
 			
-			if (expectationAssignMethodList.isEmpty()) {
+			if (availabilityAtrAssignMethodList.isEmpty()) {
 				throw new BusinessException("Msg_1937");
 			}
 				
@@ -73,9 +73,9 @@ public class ShiftTableRule implements DomainValue {
 		
 		return new ShiftTableRule(
 				usePublicAtr, 
-				useWorkExpectationAtr, 
+				useWorkAvailabilityAtr, 
 				shiftTableSetting, 
-				expectationAssignMethodList, 
+				availabilityAtrAssignMethodList, 
 				fromNoticeDays);
 		
 	}
@@ -86,11 +86,11 @@ public class ShiftTableRule implements DomainValue {
 	 */
 	public NotificationInfo getTodayNotificationInfo() {
 		
-		if ( this.useWorkExpectationAtr == NotUseAtr.NOT_USE) {
+		if ( this.useWorkAvailabilityAtr == NotUseAtr.NOT_USE) {
 			return NotificationInfo.createWithoutNotify();
 		}
 		
-		DeadlineAndPeriodOfExpectation deadlineAndPriod = this.shiftTableSetting.get().getCorrespondingDeadlineAndPeriod(GeneralDate.today());
+		DeadlineAndPeriodOfWorkAvailability deadlineAndPriod = this.shiftTableSetting.get().getCorrespondingDeadlineAndPeriod(GeneralDate.today());
 		GeneralDate startNotifyDate = deadlineAndPriod.getDeadline().addDays( - this.fromNoticeDays.get().v());
 		if (GeneralDate.today().before(startNotifyDate)) {
 			return NotificationInfo.createWithoutNotify();

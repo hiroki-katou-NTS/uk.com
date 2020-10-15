@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
  * @author dan_pv
  *
  */
-public class HolidayExpectation implements WorkExpectation, DomainValue {
+public class WorkAvailabilityByHoliday implements WorkAvailability, DomainValue {
 
 	@Override
 	public AssignmentMethod getAssignmentMethod() {
@@ -23,7 +23,7 @@ public class HolidayExpectation implements WorkExpectation, DomainValue {
 	}
 
 	@Override
-	public boolean isMatchingExpectation(WorkExpectation.Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(WorkAvailability.Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 
 		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require);
@@ -36,9 +36,9 @@ public class HolidayExpectation implements WorkExpectation, DomainValue {
 	}
 
 	@Override
-	public WorkExpectDisplayInfo getDisplayInformation(WorkExpectation.Require require) {
+	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkExpectDisplayInfo(asignmentMethod, Collections.emptyList(), Collections.emptyList());
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyList(), Collections.emptyList());
 	}
 	
 	public static interface Require extends WorkInformation.Require {

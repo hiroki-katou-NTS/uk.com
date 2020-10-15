@@ -21,7 +21,7 @@ public class NotificationInfo {
 	/**
 	 * 	締切日と期間
 	 */
-	private Optional<DeadlineAndPeriodOfExpectation> deadlineAndPeriod;
+	private Optional<DeadlineAndPeriodOfWorkAvailability> deadlineAndPeriod;
 	
 	/**
 	 * 通知なしで作る
@@ -37,7 +37,7 @@ public class NotificationInfo {
 	 * @param deadlineAndPeriod
 	 * @return
 	 */
-	public static NotificationInfo createNotification(DeadlineAndPeriodOfExpectation deadlineAndPeriod) {
+	public static NotificationInfo createNotification(DeadlineAndPeriodOfWorkAvailability deadlineAndPeriod) {
 		
 		return new NotificationInfo(true, Optional.of(deadlineAndPeriod));
 	}

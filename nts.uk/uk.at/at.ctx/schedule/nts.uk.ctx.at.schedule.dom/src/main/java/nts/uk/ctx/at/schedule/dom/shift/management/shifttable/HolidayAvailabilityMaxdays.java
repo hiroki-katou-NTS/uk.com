@@ -10,11 +10,11 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 @IntegerRange(min =0, max =15)
-public class HolidayExpectationMaxdays extends IntegerPrimitiveValue<HolidayExpectationMaxdays> {
+public class HolidayAvailabilityMaxdays extends IntegerPrimitiveValue<HolidayAvailabilityMaxdays> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public HolidayExpectationMaxdays (int rawValue) {
+	public HolidayAvailabilityMaxdays (int rawValue) {
 		super (rawValue);
 	}
 }
