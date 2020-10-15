@@ -30,14 +30,16 @@
                     <th class="ui-widget-header">#{i18n.getText('KAF020_13')}</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr data-bind="click: detail">
+                <tbody data-bind="foreach: optionalItemAppSet">
+                <tr data-bind="click: function() { return $parent.detail($parent)}">
                     <!--A3_1-->
-                    <td>1</td>
+                    <td data-bind="text: code"></td>
                     <!--A3_2-->
-                    <td>a</td>
+                    <td>
+                        <a class="hyperlink" href="" data-bind="text: name"></a>
+                    </td>
                     <!--A3_3-->
-                    <td>b</td>
+                    <td data-bind="text: note"></td>
                 </tr>
                 </tbody>
             </table>

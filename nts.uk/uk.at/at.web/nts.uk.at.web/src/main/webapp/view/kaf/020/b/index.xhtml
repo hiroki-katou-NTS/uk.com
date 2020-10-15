@@ -8,19 +8,29 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/kaf/020/b/style.css"/>
+        <com:stylefile path="/view/kaf/000/a/component1/kaf000.a.component1.css"/>
+        <com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css"/>
+        <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css"/>
         <com:stylefile path="/view/kaf/000/a/component2/kaf000.a.component2.css"/>
         <com:stylefile path="/view/kaf/000/a/component3/kaf000.a.component3.css"/>
+        <com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css"/>
         <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js"/>
         <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component5/kaf000.a.component5.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js"/>
         <com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js"/>
         <com:scriptfile path="/view/kaf/000/a/component3/kaf000.a.component3.js"/>
         <com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component4/kaf000.a.component4.js"/>
+        <com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js"/>
         <com:scriptfile path="/view/kaf/020/b/kaf020.b.vm.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="goback link-button">#{i18n.getText('KAF020_15')}</button>
-            <button class="proceed">#{i18n.getText('KAF020_16')}</button>
+            <button class="goback link-button" data-bind="text: $vm.$i18n('KAF020_15')"></button>
+            <button class="proceed"  data-bind="text: $vm.$i18n('KAF020_16')"></button>
             <div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -28,21 +38,104 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
         </div>
-        <div id="contents-aria">
-            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+        <div id="contents-area">
+            <div data-bind="component: { name: 'kaf000-a-component1',
+											params: {
+												appType: appType,
+												checkBoxValue: isSendMail,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block;"></div>
+            <div class="table">
+                <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
 								params: {
 									appType: appType,
 									application: application,
 									appDispInfoStartupOutput: appDispInfoStartupOutput
                                          } }"></div>
-
-        </div>
-        <div data-bind="component: { name: 'kaf000-a-component3',
+                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+            </div>
+            <div data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
+            <div data-bind="component: { name: 'kaf000-a-component4',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+
+
+            <!--B2_3-->
+            <div class="label m1">get from server</div>
+            <!--B2_4-->
+            <div id="ruredLine"></div>
+
+            <table id="fixed-table">
+                <colgroup>
+                    <col width="200px"/>
+                    <col width="200px"/>
+                    <col width="40px"/>
+                    <col width="200px"/>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <!--B3_1-->
+                        <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_19')"></th>
+                        <!--B3_2-->
+                        <th colspan="2" class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_20')"></th>
+                        <!--B3_3-->
+                        <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_21')"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <!--B4_1-->
+                            <div class="label">item trans</div>
+                        </td>
+                        <td>
+                            <input data-bind="ntsTextEditor: {value: b4_2value}" />
+                        </td>
+                        <td>
+                            <!--B4_3-->
+                            <div class="label">item trans</div>
+                        </td>
+                        <td>
+                            <div class="label">
+                                <div>
+                                    <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
+                                    <span data-bind="text: $vm.$i18n('KAF020_26')"></span>
+                                    <span data-bind="text: $vm.$i18n('KAF020_27')"></span>
+                                    <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
+                                    <span data-bind="text: $vm.$i18n('KAF020_29')"></span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component5',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+            <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component6',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+        </div>
     </ui:define>
 </ui:composition>
 </body>
