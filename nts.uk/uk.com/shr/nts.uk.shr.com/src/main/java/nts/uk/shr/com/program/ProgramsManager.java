@@ -1918,14 +1918,14 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/kmk/013/q/index.xhtml");
 
     /** KAF022 */
-    public static final Program KAF022X = new Program(WebAppId.AT, ProgramIdConsts.KAF022X, "KAF022_768",
-            "/view/kaf/022/entry/index.xhtml");
-    public static final Program KAF022A = new Program(WebAppId.AT, ProgramIdConsts.KAF022A, "KAF022_769",
-            "/view/kaf/022/company/index.xhtml");
-    public static final Program KAF022L = new Program(WebAppId.AT, ProgramIdConsts.KAF022L, "KAF022_770",
-            "/view/kaf/022/employment/index.xhtml");
-    public static final Program KAF022Z = new Program(WebAppId.AT, ProgramIdConsts.KAF022Z, "KAF022_771",
-            "/view/kaf/022/workplace/index.xhtml");
+    public static final Program KAF022A = new Program(WebAppId.AT, ProgramIdConsts.KAF022A, "KAF022_768",
+            "/view/kaf/022/a/index.xhtml");
+    public static final Program KAF022B = new Program(WebAppId.AT, ProgramIdConsts.KAF022B, "KAF022_769",
+            "/view/kaf/022/b/index.xhtml");
+    public static final Program KAF022C = new Program(WebAppId.AT, ProgramIdConsts.KAF022C, "KAF022_770",
+            "/view/kaf/022/c/index.xhtml");
+    public static final Program KAF022D = new Program(WebAppId.AT, ProgramIdConsts.KAF022D, "KAF022_771",
+            "/view/kaf/022/d/index.xhtml");
     public static final Program KAF022S = new Program(WebAppId.AT, ProgramIdConsts.KAF022S, "KAF022_444",
             "/view/kaf/022/s/index.xhtml");
     public static final Program KAF022O = new Program(WebAppId.AT, ProgramIdConsts.KAF022O, "KAF022_708",
