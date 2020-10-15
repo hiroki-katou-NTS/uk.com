@@ -31,7 +31,7 @@ public enum ChangeClockArt {
 	RETURN(5,"戻り"),
 	
 	/** 応援開始 */
-	FIX(6,"応援開始 "),
+	START_OF_SUPPORT(6,"応援開始 "),
 	
 	/** 臨時出勤 */
 	TEMPORARY_WORK(7,"臨時出勤"),

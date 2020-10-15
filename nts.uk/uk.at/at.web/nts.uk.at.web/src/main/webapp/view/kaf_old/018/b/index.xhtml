@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf018.b.main.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kaf018.b.service.js" />
+			<com:scriptfile path="kaf018.b.vm.js" />
+			<com:scriptfile path="kaf018.b.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- B1_1条件選択に戻る-->
+				<a class="goback"
+					data-bind="ntsLinkButton: {action: goBackA }">#{i18n.getText('KAF018_17')}</a>
+				<!-- B1_2未承認者にメールを送信 -->
+				<button tabindex="1" class="proceed" data-bind="click: sendMails">#{i18n.getText('KAF018_18')}</button>
+			</div>
+			<div id="contents-area">
+				<table id="tbl-control">
+					<colgroup>
+						<col width="100px" />
+						<col width="100px" />
+						<col width="300px" />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- B2対象締め（ラベル） -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+						</td>
+						<td>
+							<!-- B2_1対象締め -->
+							<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
+						</td>
+						<td>
+							<!-- B3対象年月-->
+							<!-- B3_1対象期間-->
+							<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+						</td>
+						<!-- B4未承認項目説明はてな -->
+						<td>
+						</td>
+						<td style="width: 60px;">
+							<button tabindex="-1" class="btn-question" data-bind="ntsHelpButton: {image: '未承認項目説明.jpg', position: 'bottom center', enable: true }">?</button>
+						</td>
+					</tr>
+				</table>
+				<!-- B5 -->
+				<table tabindex="9" id="gridB"></table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

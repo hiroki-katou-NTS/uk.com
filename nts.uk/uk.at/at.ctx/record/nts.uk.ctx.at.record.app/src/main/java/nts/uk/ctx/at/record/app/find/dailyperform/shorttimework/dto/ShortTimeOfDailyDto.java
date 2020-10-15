@@ -11,15 +11,16 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
-import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -48,6 +49,22 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if (domain != null) {
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setYmd(domain.getYmd());
+			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getTimeZone().getShortWorkingTimeSheets(),
+					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
+														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
+														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
+														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
+														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+			result.exsistData();
+		}
+		return result;
+	}
+	public static ShortTimeOfDailyDto getDto(String employeeID,GeneralDate ymd,ShortTimeOfDailyAttd domain){
+		ShortTimeOfDailyDto result = new ShortTimeOfDailyDto();
+		if (domain != null) {
+			result.setEmployeeId(employeeID);
+			result.setYmd(ymd);
 			result.setShortWorkingTimeSheets(ConvertHelper.mapTo(domain.getShortWorkingTimeSheets(),
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
@@ -84,7 +101,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public ShortTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public ShortTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -94,7 +111,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new ShortTimeOfDailyPerformance(emp, toTimeSheetDomain(), date);
+		ShortTimeOfDailyPerformance domain = new ShortTimeOfDailyPerformance(emp, toTimeSheetDomain(), date);
+		return domain.getTimeZone();
 	}
 	
 	private List<ShortWorkingTimeSheet> toTimeSheetDomain() {

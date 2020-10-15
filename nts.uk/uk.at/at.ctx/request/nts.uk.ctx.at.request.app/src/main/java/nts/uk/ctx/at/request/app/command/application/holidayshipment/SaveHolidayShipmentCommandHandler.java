@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,22 +22,19 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -55,7 +51,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.S
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -73,7 +68,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInpu
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -98,8 +92,8 @@ public class SaveHolidayShipmentCommandHandler
 	
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-	@Inject
-	private ApplicationRepository_New appRepo;
+//	@Inject
+//	private ApplicationRepository appRepo;
 	@Inject
 	private WorkTypeRepository wkTypeRepo;
 	@Inject
@@ -112,24 +106,26 @@ public class SaveHolidayShipmentCommandHandler
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	@Inject
 	private HolidaySettingRepository holidayRepo;
-	@Inject
-	private NewBeforeRegister_New processBeforeRegister;
-	@Inject
-	private RegisterAtApproveReflectionInfoService_New registerAppReplection;
-	@Inject
-	private AbsenceLeaveAppRepository absRepo;
-	@Inject
-	private RecruitmentAppRepository recRepo;
+//	@Inject
+//	private NewBeforeRegister processBeforeRegister;
+//	@Inject
+//	private RegisterAtApproveReflectionInfoService registerAppReplection;
+//	@Inject
+//	private AbsenceLeaveAppRepository absRepo;
+//	@Inject
+//	private RecruitmentAppRepository recRepo;
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
-	@Inject
-	private ApplicationApprovalService_New appImp;
-	@Inject
-	private IFactoryApplication IfacApp;
-	@Inject
-	private NewAfterRegister_New newAfterReg;
+//	@Inject
+//	private ApplicationApprovalService appImp;
+//	@Inject
+//	private IFactoryApplication IfacApp;
+//	@Inject
+//	private NewAfterRegister newAfterReg;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
+//	@Inject
+//	private UseDateDeadlineFromDatePeriod dateDeadline;
 	@Inject
 	private InterimRemainDataMngRegisterDateChange registerDateChange;
 	@Inject
@@ -144,8 +140,6 @@ public class SaveHolidayShipmentCommandHandler
 	private DetailBeforeUpdate detailBeforeUpdate;
 	@Inject
 	private RequestSettingRepository requestSettingRepository;
-	@Inject
-	private RemainNumberTempRequireService requireService;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -209,9 +203,10 @@ public class SaveHolidayShipmentCommandHandler
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		
 		if (isSaveRec(comType)) {
-			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
-					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+//			Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
+//					command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -219,12 +214,13 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		if (isSaveAbs(comType)) {
-			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
-					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
-			List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
+//			Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
+//					command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
+			// error EA refactor 4
+			/*List<ConfirmMsgDto> listConfirmMsg =  processBeforeRegister.processBeforeRegister_New(
 					companyID, 
 					EmploymentRootAtr.APPLICATION, 
 					false, 
@@ -232,7 +228,7 @@ public class SaveHolidayShipmentCommandHandler
 					null, 
 					command.getDisplayInforWhenStarting().getAppDispInfoStartup().toDomain().getAppDispInfoWithDateOutput().getErrorFlag(), 
 					new ArrayList<>()).stream().map(c-> new ConfirmMsgDto(c.getMsgID(), c.getParamLst())).collect(Collectors.toList());
-			result.addAll(listConfirmMsg);
+			result.addAll(listConfirmMsg);*/
 		}
 		
 		return result;
@@ -310,12 +306,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「代休消化管理データ更新と消化対象の決定」を実行する
 		updateOfSubstitution(command, wkTypeCD);
 		// ドメイン「振休申請」を1件登録する
-		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
+//		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		return this.newAfterReg.processAfterRegister(absCommonApp);
-
+		/*return this.newAfterReg.processAfterRegister(absCommonApp);*/
+		return null;
 	}
 
 	private void updateDigestionTarget(SaveHolidayShipmentCommand command) {
@@ -336,11 +332,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「振休発生管理データ更新」を実行する
 		updateOccurrenceData(companyID, sID, wkTypeCD, recDate);
 		// 消化対象代休管理を振出申請に追加する
-		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
+//		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
 		//暫定データの登録
 		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		return this.newAfterReg.processAfterRegister(recCommonApp);
+		/*return this.newAfterReg.processAfterRegister(recCommonApp);*/
+		return null;
 	}
 
 	private void updateOccurrenceData(String companyID, String sID, String wkTypeCD, GeneralDate recDate) {
@@ -385,19 +382,22 @@ public class SaveHolidayShipmentCommandHandler
 		// 振休発生消化管理データを登録
 		RegisterDigestionData(command, recDate, companyID, sID);
 
-		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
-
+//		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
+		
+		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		newAfterReg.processAfterRegister(recCommonApp);
+		/*newAfterReg.processAfterRegister(recCommonApp);*/
 
-		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
-
+//		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
+		
+		// error EA refactor 4
 		// アルゴリズム「新規画面登録後の処理」を実行する
-		ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);
+		/*ProcessResult result = newAfterReg.processAfterRegister(absCommonApp);*/
 		// ドメイン「振休振出同時申請管理」を1件登録する
 		createNewComLeaveSilMng(recAppCmd.getAppID(), absAppCmd.getAppID());
 
-		return result;
+		/*return result;*/
+		return null;
 	}
 
 	private void createNewComLeaveSilMng(String recAppID, String absAppID) {
@@ -406,27 +406,29 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private Application_New createNewAbsApp(SaveHolidayShipmentCommand command, String companyID, String sID,
+	private Application createNewAbsApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate absDate, String appReason) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-		Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
-				command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
-
-		// アルゴリズム「登録前共通処理（新規）」を実行する
-		CmProcessBeforeReg(command, commonApp);
-		// ドメイン「振出申請」を1件登録する
-
-		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(command.getAbsCmd());
-		
-		appImp.insert(commonApp);
-		absRepo.insert(absApp);
-		
-		// 暫定データの登録
-		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
-		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
-
-		return commonApp;
+//		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+//		Application_New commonApp = IfacApp.buildApplication(command.getAbsCmd().getAppID(), absDate,
+//				command.getAppCmd().getPrePostAtr(), null, appReason, appType, absDate, absDate, sID);
+//
+//		// アルゴリズム「登録前共通処理（新規）」を実行する
+//		CmProcessBeforeReg(command, commonApp);
+//		// ドメイン「振出申請」を1件登録する
+//
+//		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(command.getAbsCmd());
+//		// error EA refactor 4
+//		/*appImp.insert(commonApp);*/
+//		absRepo.insert(absApp);
+//		
+//		// 暫定データの登録
+//		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
+//		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
+//		// error EA refactor 4
+//		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
+//
+//		return commonApp;
+		return null;
 
 	}
 
@@ -443,27 +445,30 @@ public class SaveHolidayShipmentCommandHandler
 		return absApp;
 	}
 
-	private Application_New createNewRecApp(SaveHolidayShipmentCommand command, String companyID, String sID,
+	private Application createNewRecApp(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, String appReason) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
-		
-		Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
-				command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
-
-		
-		// アルゴリズム「登録前共通処理（新規）」を実行する
-		CmProcessBeforeReg(command, commonApp);
-		// ドメイン「振出申請」を1件登録する
-		RecruitmentApp recApp = createNewRecDomainFromCmd(command.getRecCmd());
-		appImp.insert(commonApp);
-		recRepo.insert(recApp);
-		
-		// 暫定データの登録
-		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
-		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
-
-		return commonApp;
+//		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+//		
+//		Application_New commonApp = IfacApp.buildApplication(command.getRecCmd().getAppID(), recDate,
+//				command.getAppCmd().getPrePostAtr(), null, appReason, appType, recDate, recDate, sID);
+//
+//		
+//		// アルゴリズム「登録前共通処理（新規）」を実行する
+//		CmProcessBeforeReg(command, commonApp);
+//		// ドメイン「振出申請」を1件登録する
+//		RecruitmentApp recApp = createNewRecDomainFromCmd(command.getRecCmd());
+//		// error EA refactor 4
+//		/*appImp.insert(commonApp);*/
+//		recRepo.insert(recApp);
+//		
+//		// 暫定データの登録
+//		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
+//		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
+//		// error EA refactor 4
+//		/*registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);*/
+//
+//		return commonApp;
+		return null;
 	}
 
 	private RecruitmentApp createNewRecDomainFromCmd(RecruitmentAppCommand appCmd) {
@@ -486,9 +491,9 @@ public class SaveHolidayShipmentCommandHandler
 		return recApp;
 	}
 
-	public void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application_New application) {
+	public void CmProcessBeforeReg(SaveHolidayShipmentCommand command, Application application) {
 		// アルゴリズム「新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, command.isCheckOver1Year(), Collections.emptyList());
+		// processBeforeRegister.processBeforeRegister(application, OverTimeAtr.ALL, command.isCheckOver1Year(), Collections.emptyList());
 
 	}
 
@@ -865,8 +870,8 @@ public class SaveHolidayShipmentCommandHandler
 
 		default:
 			// 期限指定のある使用期限日を作成する
-			resultDate = UseDateDeadlineFromDatePeriod.useDateDeadline(requireService.createRequire(), 
-					employmentCd, expTime, recDate);
+			// resultDate = this.dateDeadline.useDateDeadline(employmentCd, expTime, recDate);
+			resultDate = null;
 			break;
 
 		}
@@ -902,20 +907,20 @@ public class SaveHolidayShipmentCommandHandler
 
 	public void vacationTransferCheck(String sID, GeneralDate appDate, int prePostAtr) {
 		// ドメインモデル「申請」を取得する
-		List<Application_New> sameDateApps = appRepo
-				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
-				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
-						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
-						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
-				.collect(Collectors.toList());
-
-		boolean isAppSameDateExists = !CollectionUtil.isEmpty(sameDateApps);
-
-		if (isAppSameDateExists) {
-
-			throw new BusinessException("Msg_700", " ", appDate.toString());
-
-		}
+//		List<Application_New> sameDateApps = appRepo
+//				.getApp(sID, appDate, prePostAtr, ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value).stream()
+//				.filter(x -> !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.CANCELED)
+//						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.WAITCANCEL)
+//						&& !x.getReflectionInformation().getStateReflectionReal().equals(ReflectedState_New.DENIAL))
+//				.collect(Collectors.toList());
+//
+//		boolean isAppSameDateExists = !CollectionUtil.isEmpty(sameDateApps);
+//
+//		if (isAppSameDateExists) {
+//
+//			throw new BusinessException("Msg_700", " ", appDate.toString());
+//
+//		}
 
 	}
 

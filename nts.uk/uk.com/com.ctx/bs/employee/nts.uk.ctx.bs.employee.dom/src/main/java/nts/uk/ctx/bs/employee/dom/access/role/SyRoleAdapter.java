@@ -31,5 +31,5 @@ public interface SyRoleAdapter {
 	
 	//社員参照範囲を取得する
 	EmployeeReferenceRangeImport getRangeByRoleID(String roleID);
-	
+
 }

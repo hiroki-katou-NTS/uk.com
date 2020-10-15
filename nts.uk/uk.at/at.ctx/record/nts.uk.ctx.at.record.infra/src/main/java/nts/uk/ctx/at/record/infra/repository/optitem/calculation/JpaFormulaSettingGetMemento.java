@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingGetMemento;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItem;
-import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSetting;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingItemOrder;
 
 /**
  * The Class JpaFormulaSettingGetMemento.

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 @Stateless
 public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRecordData{
@@ -26,7 +28,9 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByPeriodOrderByYmd(sid, dateData);
 		//残数作成元情報を作成する
-		return RemainNumberCreateInformation.createRemainInfor(lstAttendanceTimeData, lstWorkInfor);
+		return RemainNumberCreateInformation.createRemainInfor(sid,
+				lstAttendanceTimeData.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())), 
+				lstWorkInfor.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
 	}
 	
 	
@@ -37,7 +41,9 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByListDate(sid, dateData);	
 		
-		return RemainNumberCreateInformation.createRemainInfor(lstAttendanceTimeData, lstWorkInfor);
+		return RemainNumberCreateInformation.createRemainInfor(sid,
+				lstAttendanceTimeData.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())), 
+				lstWorkInfor.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
 	}
 	
 }

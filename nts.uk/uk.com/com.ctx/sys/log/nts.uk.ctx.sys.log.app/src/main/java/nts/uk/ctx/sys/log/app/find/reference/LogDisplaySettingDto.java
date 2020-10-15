@@ -32,14 +32,22 @@ public class LogDisplaySettingDto {
 	private Integer dataType;
 	/* Record Type */
 	private int recordType;
-	
+	/* System Type */
+	private int systemType;
 	/** the list of log setting output items */
 	private List<LogSetOutputItemDto> logSetOutputItems; 
 
 	public static LogDisplaySettingDto fromDomain(LogDisplaySetting domain) {
-		return new LogDisplaySettingDto(domain.getLogSetId(), domain.getCid(), domain.getCode().v(), domain.getName().v(),
-				domain.getDataType()==null?null:domain.getDataType().code, domain.getRecordType().code, 
-				domain.getLogSetOutputItems().stream().map(item -> LogSetOutputItemDto.fromDomain(item))
+		return new LogDisplaySettingDto(
+				domain.getLogSetId(), 
+				domain.getCid(), 
+				domain.getCode().v(), 
+				domain.getName().v(),
+				domain.getDataType() == null ? null : domain.getDataType().code, 
+				domain.getRecordType().code, 
+				domain.getSystemType() == null ? null : domain.getSystemType().code, 
+				domain.getLogSetOutputItems().stream()
+					.map(item -> LogSetOutputItemDto.fromDomain(item))
 					.sorted(new Comparator<LogSetOutputItemDto>() {
 						@Override
 						public int compare(LogSetOutputItemDto o1, LogSetOutputItemDto o2) {
@@ -51,7 +59,7 @@ public class LogDisplaySettingDto {
 	
 	public static LogDisplaySettingDto fromDomainNotLogSetOutputItems(LogDisplaySetting domain) {
 		return new LogDisplaySettingDto(domain.getLogSetId(), domain.getCid(), domain.getCode().v(), domain.getName().v(),
-				domain.getDataType()==null?null:domain.getDataType().code, domain.getRecordType().code, null);
+				domain.getDataType()==null?null:domain.getDataType().code, domain.getRecordType().code,domain.getSystemType().code, null);
 	}
 	
 }

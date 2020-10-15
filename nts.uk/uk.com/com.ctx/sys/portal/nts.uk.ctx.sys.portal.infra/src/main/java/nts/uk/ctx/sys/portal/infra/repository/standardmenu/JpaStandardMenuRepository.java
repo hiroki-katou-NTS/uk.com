@@ -3,11 +3,13 @@ package nts.uk.ctx.sys.portal.infra.repository.standardmenu;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
@@ -64,6 +66,16 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ " c.ccgmtStandardMenuPK.companyId = :companyId "
 			+ " AND c.programId = :programId"
 			+ " AND c.screenID = :screenID";
+	
+	private static final String FIND_BY_SYSTEM_MENUCLASSIFICATION_PROGRAMID = SEL
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system "
+			+ "AND s.ccgmtStandardMenuPK.classification IN :classification "
+			+ "AND s.programId IN :programIds "
+			+ "AND s.screenID = :screenId "
+			+ "ORDER BY s.ccgmtStandardMenuPK.system ASC, "
+			+ "s.ccgmtStandardMenuPK.classification ASC, "
+			+ "s.programId ASC";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -77,10 +89,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			 domain.getUrl(), 
 			 domain.getWebMenuSetting().value, 
 			 domain.getAfterLoginDisplay(), 
-			 domain.getLogSettingDisplay(), 
 			 domain.getProgramId(), 
 			 domain.getScreenId(), 
-			 domain.getQueryString()
+			 domain.getQueryString(),
+			 domain.getLogSettingDisplay().getLogLoginDisplay().value,
+			 domain.getLogSettingDisplay().getLogStartDisplay().value,
+			 domain.getLogSettingDisplay().getLogUpdateDisplay().value
 			 );
 	}
 	
@@ -95,10 +109,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			 domain.getUrl(), 
 			 domain.getWebMenuSetting().value, 
 			 domain.getAfterLoginDisplay(), 
-			 domain.getLogSettingDisplay(), 
 			 domain.getProgramId(), 
 			 domain.getScreenId(), 
-			 domain.getQueryString()
+			 domain.getQueryString(),
+			 domain.getLogSettingDisplay().getLogLoginDisplay().value,
+			 domain.getLogSettingDisplay().getLogStartDisplay().value,
+			 domain.getLogSettingDisplay().getLogUpdateDisplay().value
 			 );
 	 }
 
@@ -177,8 +193,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private StandardMenu toDomain(CcgstStandardMenu s) {
 		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.ccgmtStandardMenuPK.code,
 				s.targetItems, s.displayName, s.displayOrder, s.menuAtr, s.url, s.ccgmtStandardMenuPK.system,
-				s.ccgmtStandardMenuPK.classification, s.webMenuSetting, s.afterLoginDisplay, s.logSettingDisplay,
-				s.programId, s.screenID, s.queryString);
+				s.ccgmtStandardMenuPK.classification, s.webMenuSetting, s.afterLoginDisplay,
+				s.programId, s.screenID, s.queryString, s.logLoginDisplay,
+				s.logStartDisplay, s.logUpdateDisplay);
 	}
 
 	/**
@@ -383,5 +400,18 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
 				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+	}
+
+	@Override
+	public List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classification, List<String> programIds, String screenId) {
+		List<Integer> menuClassification = classification.stream().map(m -> m.value)
+				.collect(Collectors.toList());
+		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_PROGRAMID, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("system", system)
+				.setParameter("classification", menuClassification)
+				.setParameter("programIds", programIds)
+				.setParameter("screenId", screenId)
+				.getList(x -> toDomain(x));
 	}
 }

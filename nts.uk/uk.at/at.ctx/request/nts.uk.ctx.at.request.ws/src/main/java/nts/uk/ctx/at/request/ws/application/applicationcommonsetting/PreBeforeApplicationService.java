@@ -16,31 +16,36 @@ import nts.uk.ctx.at.request.app.command.application.common.DeleteAppEmploymentS
 import nts.uk.ctx.at.request.app.command.application.common.UpdateAppEmploymentSetCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppEmploymentSetFinder;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
+import nts.uk.ctx.at.request.app.find.setting.employment.appemploymentsetting.AppEmploymentSetDto;
 
 @Path("at/request/application/common/setting")
 @Produces("application/json")
 public class PreBeforeApplicationService extends WebService{
 	@Inject 
 	private AppEmploymentSetFinder appEmploymentSetFinder;
+
 	@Inject
 	private AddAppEmploymentSetCommandHandler addHandler;
+
 	@Inject
 	private UpdateAppEmploymentSetCommandHandler updateHandler;
+
 	@Inject
 	private DeleteAppEmploymentSetCommandHandler deleteHandler;
+
 	@Inject
 	private CopyAppEmploymentSetCommandHandler copyHandler;
+
 	@POST
 	@Path("findEmploymentSetByCompanyId")
-	public List<AppEmploymentSettingDto> findEmploymentSetByCompanyId(){
-		
-		return appEmploymentSetFinder.findEmploymentSetByCompanyId();
+	public List<AppEmploymentSetDto> findEmploymentSetByCompanyId(){
+		return appEmploymentSetFinder.findAllEmploymentSetting();
 	}
 	
 	@POST
 	@Path("findEmploymentSetByCode")
-	public AppEmploymentSettingDto findEmploymentSetByCode(String employmentCd){		
-		return appEmploymentSetFinder.findEmploymentSetByCode(employmentCd);
+	public AppEmploymentSetDto findEmploymentSetByCode(String employmentCd){
+		return appEmploymentSetFinder.findByEmployment(employmentCd);
 	}
 	
 	@POST
@@ -59,6 +64,7 @@ public class PreBeforeApplicationService extends WebService{
 	public void deleteEmploymentSetting(AppEmploymentSetCommand command){
 		deleteHandler.handle(command);
 	}
+
 	@POST
 	@Path("copyEmploymentSetting")
 	public void copyEmploymentSetting(CopyAppEmploymentSetCommand command){

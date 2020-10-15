@@ -10,14 +10,12 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetNumberOverrunByYM;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 
 /**
@@ -46,9 +44,6 @@ public class DisplayAgreementInfo {
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	
-	@Inject
-	private GetNumberOverrunByYM getNumberOverrunByYM;
-	
 	//36協定情報を表示する
 	public AgreementInfomationDto displayAgreementInfo(String companyId, String employeeId, int year, int month){
 		
@@ -67,34 +62,36 @@ public class DisplayAgreementInfo {
 		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = agreementTimeOfManagePeriodRepository.find(employeeId, YearMonth.of(year, month));
 		
 		if (agreeTimeOpt.isPresent()) {
-			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getStatus().value));
-			result.setAgreementTime36(agreeTimeOpt.get().getAgreementTime().getAgreementTime() != null
-					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime() != null
-							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime().v())
-							: "0:00");
-			
-			Integer valueMaxTime = agreeTimeOpt.get().getAgreementTime() == null ? 0 : (agreeTimeOpt.get()
-					.getAgreementTime().getAgreementTime().getExceptionLimitErrorTime().isPresent())
-							? agreeTimeOpt.get().getAgreementTime().getAgreementTime().getExceptionLimitErrorTime()
-									.get().v()
-							: agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime().v();
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getStatus().value));
+//			result.setAgreementTime36(agreeTimeOpt.get().getAgreementTime().getAgreementTime() != null
+//					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime() != null
+//							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().getAgreementTime().v())
+//							: "0:00");
+//			
+//			Integer valueMaxTime = agreeTimeOpt.get().getAgreementTime() == null ? 0 : (agreeTimeOpt.get()
+//					.getAgreementTime().getAgreementTime().getExceptionLimitErrorTime().isPresent())
+//							? agreeTimeOpt.get().getAgreementTime().getAgreementTime().getExceptionLimitErrorTime()
+//									.get().v()
+//							: agreeTimeOpt.get().getAgreementTime().getAgreementTime().getLimitErrorTime().v();
 									
-			result.setMaxTime(convertTime(valueMaxTime));
+//			result.setMaxTime(convertTime(valueMaxTime));
 		}
 
-		result.setMaxNumber(agreeOperationOpt.isPresent()
-				? String.valueOf(agreeOperationOpt.get().getNumberTimesOverLimitType().value)
-				: "0");
-		Optional<AgreementExcessInfo> agreeExcessOpt = agreeTimeOpt.isPresent()
-				? getNumberOverrunByYM.getNumberOverrunByYearMonth(employeeId,  YearMonth.of(year, month),
-						agreeOperationOpt)
-				: Optional.empty();
-		result.setExcessFrequency(String.valueOf(agreeExcessOpt.isPresent() ? agreeExcessOpt.get().getExcessTimes() : 0 ));
-		if (Integer.parseInt(result.getExcessFrequency()) > Integer.parseInt(result.getMaxNumber())) {
-			result.setCssFrequency(ERROR);
-		}else if(Integer.parseInt(result.getExcessFrequency()) == Integer.parseInt(result.getMaxNumber())) {
-			result.setCssFrequency(ALARM);
-		}
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		result.setMaxNumber(agreeOperationOpt.isPresent()
+//				? String.valueOf(agreeOperationOpt.get().getNumberTimesOverLimitType().value)
+//				: "0");
+//		Optional<AgreementExcessInfo> agreeExcessOpt = agreeTimeOpt.isPresent()
+//				? getNumberOverrunByYM.getNumberOverrunByYearMonth(employeeId,  YearMonth.of(year, month),
+//						agreeOperationOpt)
+//				: Optional.empty();
+//		result.setExcessFrequency(String.valueOf(agreeExcessOpt.isPresent() ? agreeExcessOpt.get().getExcessTimes() : 0 ));
+//		if (Integer.parseInt(result.getExcessFrequency()) > Integer.parseInt(result.getMaxNumber())) {
+//			result.setCssFrequency(ERROR);
+//		}else if(Integer.parseInt(result.getExcessFrequency()) == Integer.parseInt(result.getMaxNumber())) {
+//			result.setCssFrequency(ALARM);
+//		}
 
 		return result;
 	}

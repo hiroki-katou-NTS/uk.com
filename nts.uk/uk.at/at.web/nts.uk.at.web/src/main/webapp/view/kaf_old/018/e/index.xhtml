@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kaf018.e.main.css" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="kaf018.e.service.js" />
+			<com:scriptfile path="kaf018.e.vm.js" />
+			<com:scriptfile path="kaf018.e.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- E1_1 -->
+				<a class="goback" data-bind="ntsLinkButton: {action: goBackA}">#{i18n.getText('KAF018_17')}</a>
+				<!-- E1_2 -->
+				<com:ko-if bind="useSetting.usePersonConfirm">
+					<button tabindex="1" class="proceed"
+						data-bind="click: function(){sendMail(person)}">#{i18n.getText('KAF018_49')}</button>
+				</com:ko-if>
+				<!-- E1_3 -->
+				<com:ko-if bind="useSetting.useBossConfirm">
+					<button tabindex="2" class="proceed"
+						data-bind="click: function(){sendMail(daily)}">#{i18n.getText('KAF018_50')}</button>
+				</com:ko-if>
+				<!-- E1_4 -->
+				<com:ko-if bind="useSetting.monthlyConfirm">
+					<button tabindex="3" class="proceed"
+						data-bind="click: function(){sendMail(monthly)}">#{i18n.getText('KAF018_51')}</button>
+				</com:ko-if>
+			</div>
+			<div id="contents-area">
+				<table id="tbl-control">
+					<colgroup>
+						<col width="100px" />
+						<col width="50px" />
+						<col width="600px" />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- E2 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+						</td>
+						<td>
+							<!-- E2_1 -->
+							<div class="limited-label label" style="width: 45px;"
+								data-bind="text: closureName"></div>
+						</td>
+						<td>
+							<!-- E3 --> <!-- E3_1 -->
+							<div class="limited-label label" style="width: 490px;">
+								<span data-bind="text: processingYm"></span> (<span
+									data-bind="text: startDateFormat"></span> ~ <span
+									data-bind="text: endDateFormat"></span>)
+							</div>
+						</td>
+					</tr>
+				</table>
+				<!-- E5 -->
+			 <table tabindex="9" id="gridE"></table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

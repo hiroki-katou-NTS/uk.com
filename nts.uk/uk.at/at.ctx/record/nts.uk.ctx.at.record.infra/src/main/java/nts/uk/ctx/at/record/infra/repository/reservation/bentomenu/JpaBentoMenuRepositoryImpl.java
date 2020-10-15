@@ -236,6 +236,22 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
+	@SneakyThrows
+	public List<Bento> getBento(String companyID, GeneralDate date) {
+		String query = FIND_BENTO_MENU_DATE;
+		query = query.replaceFirst("companyID", companyID);
+		query = query.replaceAll("date", date.toString());
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			ResultSet rs = stmt.executeQuery();
+			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (bentoMenuLst.isEmpty()) {
+				return new ArrayList<>();
+			}
+			return bentoMenuLst.get(0).getMenu();
+		}
+	}
+
+	@Override
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period) {
 		String query = FIND_BENTO_MENU_PERIOD;
 		query = query.replaceFirst("companyID", companyID);

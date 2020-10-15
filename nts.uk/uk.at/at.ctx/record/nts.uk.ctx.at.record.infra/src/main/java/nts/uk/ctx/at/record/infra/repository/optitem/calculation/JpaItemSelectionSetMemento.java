@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.ItemSelectionSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItem;
 
 /**
  * The Class JpaItemSelectionSetMemento.

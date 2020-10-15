@@ -3,136 +3,145 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     import dialogInfo = nts.uk.ui.dialog.info;
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
+    import alert = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-        listReason: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedReason: KnockoutObservable<ApplicationReason> = ko.observable(null);
+        listReason: KnockoutObservableArray<IAppReasonStandard> = ko.observableArray([]);
+        listReasonByAppType: KnockoutObservableArray<IAppReasonStandard> = ko.observableArray([]);
+        selectedReason: KnockoutObservable<AppReasonStandard> = ko.observable(new AppReasonStandard(0));
         columns: KnockoutObservableArray<any>;
-        listAppType: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedAppType: KnockoutObservable<number> = ko.observable(0);
-        selectedOrder: KnockoutObservable<string> = ko.observable("");
-        listAppEnum: Array<number> = [];
+        listAppType: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        selectedAppType: KnockoutObservable<string> = ko.observable("0");
+        selectedReasonCode: KnockoutObservable<number> = ko.observable(null);
+
         // bien theo doi update mode hay new mode
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+        isUpdate: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
-            
-            self.initData();
-            
-            // subscribe combobox for grid list change
-            self.selectedAppType.subscribe((value) => {
-                if(!_.isNil(value)){
-                    nts.uk.ui.errors.clearAll();
-                    self.getData(value);                    
+            self.columns = ko.observableArray([
+                {headerText: getText("KAF022_694"), key: 'reasonCode', width: 80, formatter: _.escape},
+                {headerText: getText("KAF022_443"), key: 'reasonTemp', width: 220, formatter: _.escape},
+                {headerText: getText("KAF022_441"), key: 'defaultFlg', width: 50, formatter: makeIcon}
+
+            ]);
+
+            // list enum apptype get to combobox
+            const labels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
+            const listApplicationType = __viewContext.enums.ApplicationType;
+            listApplicationType.forEach( (obj, index) => {
+                if (obj.value == 1) {
+                    let listHdType = __viewContext.enums.HolidayAppType;
+                    listHdType.forEach(hdType => {
+                        if (hdType.value < 7) {
+                            self.listAppType.push(new ItemModel(obj.value, getText(labels[index]) + " - " + hdType.name, hdType.value))
+                        }
+                    })
+                } else {
+                    self.listAppType.push(new ItemModel(obj.value, getText(labels[index])));
                 }
             });
 
             // subscribe a item in the list
-            self.selectedOrder.subscribe((value) => {
+            self.selectedReasonCode.subscribe((value) => {
                 if (!isNullOrEmpty(value)) {
                     nts.uk.ui.errors.clearAll();
-                    let reason = _.find(self.listReason(), (o) => { return o.keyToOrder == value });
+                    let reason: IAppReasonStandard = _.find(self.listReasonByAppType(), (o) => {
+                        return o.reasonCode == value
+                    });
                     if (!isNullOrEmpty(reason)) {
-                        self.selectedReason(new ApplicationReason(reason));
+                        self.selectedReason(new AppReasonStandard(reason.appType, reason.hdAppType, reason));
                         self.isUpdate(true);
+                        $("#reasonTemp").focus();
                     }
-                }else{
-                        self.createNew();
-                    }
-            });
-        }
-        
-        initData(){
-            let self = this;
-            
-            self.columns = ko.observableArray([
-                { headerText: getText("KAF022_443"), key: 'keyToOrder', width: 250, hidden: true },
-                { headerText: getText("KAF022_441"), key: 'defaultFlg', width: 100, formatter: makeIcon },
-                { headerText: getText("KAF022_443"), key: 'reasonTemp', width: 250, formatter: _.escape }
-
-            ]);
-            self.listAppEnum.push(ApplicationType.OVER_TIME_APPLICATION.valueOf());
-            self.listAppEnum.push(ApplicationType.ABSENCE_APPLICATION.valueOf());
-            self.listAppEnum.push(ApplicationType.WORK_CHANGE_APPLICATION.valueOf());
-            self.listAppEnum.push(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.valueOf());
-            self.listAppEnum.push(ApplicationType.BREAK_TIME_APPLICATION.valueOf());
-            self.listAppEnum.push(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.valueOf());
-            // list enum apptype get to combobox
-            let listApplicationType = __viewContext.enums.ApplicationType;
-            _.forEach(listApplicationType, (obj) => {
-                if (self.listAppEnum.indexOf(obj.value) > -1) {
-                    self.listAppType.push(new ItemModel(obj.value, obj.name))
+                } else {
+                    const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
+                    self.selectedReason(new AppReasonStandard(tmp.appType, tmp.hdAppType));
+                    self.isUpdate(false);
+                    nts.uk.ui.errors.clearAll();
+                    $("#reasonCode").focus();
                 }
-            });    
-        
+            });
+
+            // subscribe combobox for grid list change
+            self.selectedAppType.subscribe((value) => {
+                if (!_.isNil(value)) {
+                    nts.uk.ui.errors.clearAll();
+                    const tmp = _.find(self.listAppType(), a => a.key == value);
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType), ['reasonCode']));
+                    if (self.listReasonByAppType().length > 0) {
+                        if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
+                            self.selectedReasonCode.valueHasMutated();
+                        else
+                            self.selectedReasonCode(self.listReasonByAppType()[0].reasonCode);
+                    } else {
+                        if (self.selectedReasonCode() != null)
+                            self.selectedReasonCode(null);
+                        else
+                            self.selectedReasonCode.valueHasMutated();
+                    }
+                }
+            });
         }
 
         /** get data to list **/
-        getData(appType: number): JQueryPromise<any> {
+        getData(currentCode?: number): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
-            service.getReason(appType).done((lstData: Array<IApplicationReason>) => {
+            nts.uk.ui.block.invisible();
+            service.getReason().done((lstData: Array<any>) => {
                 if (lstData.length > 0) {
-                    self.listReason(lstData);
-                    let listOrder = _.orderBy(_.map(lstData, (o) => {
-                        o.keyToOrder = o.companyId + "-" + o.dispOrder + "-" + o.reasonID;
-                        return o;
-                    }), ['dispOrder'], ['asc']);
+                    const tmp = [];
+                    lstData.forEach(d => {
+                        d.reasonTypeItemLst.forEach(i => {
+                            tmp.push({
+                                reasonCode: i.appStandardReasonCD,
+                                dispOrder: i.displayOrder,
+                                reasonTemp: i.reasonForFixedForm,
+                                defaultFlg: i.defaultValue,
+                                appType: d.applicationType,
+                                hdAppType: d.opHolidayAppType
+                            })
+                        });
+                    });
+                    const listOrder = _.orderBy(tmp, ['dispOrder'], ['asc']);
                     self.listReason(listOrder);
-                    self.selectedOrder(listOrder[0].keyToOrder);
-                    dfd.resolve();
-                }else{
+                    if (isNullOrEmpty(currentCode)) {
+                        self.selectedAppType.valueHasMutated();
+                    } else {
+                        const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
+                        self.listReasonByAppType(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType));
+                        if (self.selectedReasonCode() == currentCode)
+                            self.selectedReasonCode.valueHasMutated();
+                        else
+                            self.selectedReasonCode(currentCode);
+                    }
+                } else {
                     self.listReason([]);
+                    self.listReasonByAppType([]);
                     self.createNew();
-                    dfd.resolve();
                 }
-            }).fail(function(error) {
+                dfd.resolve();
+            }).fail(function (error) {
                 dfd.reject();
-                alert(error.message);
+                alert(error);
             }).always(() => {
-               nts.uk.ui.block.clear(); 
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
 
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
-            nts.uk.ui.block.grayout();
-            let self = this,
-                dfd = $.Deferred();
-            self.listReason.removeAll();
-            self.getData(self.selectedAppType()).done(function() {
-                if(_.size(self.listReason())){
-                    self.isUpdate(true);
-                    self.selectedOrder(self.listReason()[0].keyToOrder);
-                }
-                dfd.resolve();
-            });
-            nts.uk.ui.block.clear;
-            return dfd.promise();
+            const self = this;
+            return self.getData();
         }
 
         // new button
         createNew() {
-            let self = this,
-                data = {
-                    /** 理由ID */
-                    reasonID: " ",
-                    /** 表示順 */
-                    dispOrder: 0,
-                    /** 定型理由*/
-                    reasonTemp: '',
-                    /** 既定*/
-                    defaultFlg: 0,
-                    keyToOrder : "0"
-                }
-            self.selectedReason(new ApplicationReason(data));
-            self.selectedOrder(null);
-            self.isUpdate(false);
-            nts.uk.ui.errors.clearAll();
+            let self = this;
+            self.selectedReasonCode(null);
         }
 
         // close dialog
@@ -140,313 +149,141 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        update(){
-            let self = this;
-            let order = null;
-            let dfd = $.Deferred();
-            // sắp xếp các phần tử trong list
-            for (let i = 0; i < self.listReason().length; i++) {
-                self.listReason()[i].dispOrder = i;
-            }
-            // update item to list  
-            // tìm item đang được chọn
-            if (self.listReason().length > 0) {
-                order = _.find(self.listReason(), function(d) {  
-                    return d.reasonID === self.selectedReason().reasonID;
-                });
-            }
-            let cmd = {
-                appType: self.selectedAppType(),
-                reasonID: self.selectedReason().reasonID,
-                dispOrder: order ? order.dispOrder : 0,
-                reasonTemp: self.selectedReason().reasonTemp(),
-                defaultFlg: self.selectedReason().defaultFlg() ? 1 : 0,
-                keyToOrder : self.selectedReason().keyToOrder
-            };
-            if(self.listReason().length > 1){
-                // lấy list các phần tử ngoại trừ phần tử đang select
-                let listUpdate = { listCommand: self.listReason() };
-                listUpdate.listCommand = _.remove(listUpdate.listCommand, function(n) {
-                    return n.dispOrder != order.dispOrder;
-                });
-                // lấy list các giá trị default của các phần tử ngoại trừ phần tử hiện tại
-                let listDefault = _.map(listUpdate.listCommand, 'defaultFlg');
-                // nếu phần tử hiện tại đã được check và trong list default cũng tồn tại 1 giá trị được check thì phải reset giá trị default của tất cả các phần tử trong list về 0
-                if (cmd.defaultFlg == 1 && listDefault.indexOf(1) > -1) {
-                    _.forEach(listUpdate.listCommand, (obj) => {
-                        obj.defaultFlg = 0;
-                    });
-                }
-                listUpdate.listCommand.push(cmd);
-                let code = cmd.dispOrder;
-                nts.uk.ui.block.grayout();
-                if (nts.uk.ui.errors.hasError() === false) {
-                    service.update(listUpdate).done(function() {
-                        self.startPage().done(function() {
-                            let reason = _.find(self.listReason(), (o) => { return o.reasonID === cmd.reasonID });
-                            if (!isNullOrEmpty(reason)) {
-                                self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
-                            }
-                            dialogInfo({ messageId: "Msg_15" });
-                        });
-                    }).fail(function(res) {
-                        nts.uk.ui.block.clear();
-                        alert(res.message);
-                        dfd.reject();
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                }
-            }else{
-                let listUpdate = { listCommand:[] };
-                listUpdate.listCommand.push(cmd);
-                let code = cmd.dispOrder;
-                nts.uk.ui.block.grayout();
-                if (nts.uk.ui.errors.hasError() === false) {
-                    service.update(listUpdate).done(function() {
-                        self.startPage().done(function() {
-                            let reason = _.find(self.listReason(), (o) => { return o.reasonID === cmd.reasonID });
-                            if (!isNullOrEmpty(reason)) {
-                                self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
-                            }
-                            dialogInfo({ messageId: "Msg_15" });
-                        });
-                    }).fail(function(res) {
-                        nts.uk.ui.block.clear();
-                        alert(res.message);
-                        dfd.reject();
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                }
-            }
-        }
-        
         /** update or insert data when click button register **/
         register() {
-            let self = this;
-            let dfd = $.Deferred();
-            // sắp xếp các phần tử trong list
-            for (let i = 0; i < self.listReason().length; i++) {
-                self.listReason()[i].dispOrder = i;
-            }
-            _.defer(() => {
-                $('#reason-temp').trigger("validate");
-                if (nts.uk.ui.errors.hasError() === false) {
-                    // update item to list  
-                    // tìm item đang được chọn
-                    let order = _.find(self.listReason(), function(d) {
-                        return d.reasonID === self.selectedReason().reasonID;
-                    });
-                    let key = self.selectedOrder(); 
-                    if (self.isUpdate() == true) {
-                        self.update();
-                        self.selectedOrder(key);
-                    }
-                    else {
-                        let code = self.listReason().length;
-                        let obj = {
-                            appType: self.selectedAppType(),
-                            reasonID: '',
-                            dispOrder: code,
-                            reasonTemp: self.selectedReason().reasonTemp(),
-                            defaultFlg: self.selectedReason().defaultFlg() ? 1 : 0,
-                        }
-                        // Nếu item cần insert có default = 1
-                        if(obj.defaultFlg == 1){
-                            nts.uk.ui.block.grayout();
-                            let listUpdate = { listCommand: self.listReason() };
-                            _.each(listUpdate.listCommand, (obj) => {
-                                obj.defaultFlg = 0;
-                            });
-                            // update list ban đầu
-                            service.update(listUpdate).done(function() {
-                                // insert item to list
-                                service.insert(obj).done(function(result) {
-                                    self.startPage().done(function() {
-                                        dialogInfo({ messageId: "Msg_15" });
-                                        let reason = _.find(self.listReason(), (o) => { return o.reasonId = obj.reasonID});
-                                        if (!isNullOrEmpty(reason)) {
-                                            self.selectedOrder(result);
-                                        }
-                                    });
-                                }).fail(function(res) {
-                                    dfd.reject();
-                                    alert(error.message);
-                                }).always(() => {
-                                    nts.uk.ui.block.clear();
-                                });
-                            })
-                        }else{
-                            // insert item to list
-                            let apptype = self.selectedAppType();
-                            service.insert(obj).done(function(result) {
-                                self.getData(apptype).done(function() {
-                                    dialogInfo({ messageId: "Msg_15" });
-                                    let reason = _.find(self.listReason(), (o) => { return o.reasonId = obj.reasonID });
-                                    if (!isNullOrEmpty(result)) {
-                                        self.selectedOrder(result);
-                                    }
-                                });
-                            }).fail(function(res) {
-                                dfd.reject();
-                                alert(error.message);
-                            }).always(() => {
-                                nts.uk.ui.block.clear();
-                            });
-                        }
-                    }
+            const self = this;
+            $('#reasonCode').trigger("validate");
+            $('#reasonTemp').trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                const current = ko.toJS(self.selectedReason);
+                if (!self.isUpdate() && _.find(self.listReasonByAppType(), i => i.reasonCode == current.reasonCode)) {
+                    alert({ messageId: "Msg_3" });
+                    return;
                 }
-            });
+                let data = ko.toJS(self.listReasonByAppType);
+                if (!self.isUpdate()) {
+                    data.push(current);
+                } else {
+                    data = data.map(d => {
+                        if (d.reasonCode == current.reasonCode)
+                            return current;
+                        return d;
+                    });
+                }
+                data.forEach((d, i) => {
+                    d.dispOrder = i;
+                    if (current.defaultFlg && d.reasonCode != current.reasonCode)
+                        d.defaultFlg = false;
+                });
+                service.saveReason(data).done(() => {
+                    dialogInfo({ messageId: "Msg_15" }).then(() => {
+                        self.getData(current.reasonCode);
+                    });
+                }).fail(error => {
+                    alert(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
 
         /** remove item from list **/
         remove() {
-            let self = this;
-            let count = 0;
-            let appTypeNow = self.selectedAppType();
-            // tìm vị trí của item định xóa
-            for (let i = 0; i <= self.listReason().length; i++) {
-                if (self.listReason()[i].keyToOrder == self.selectedOrder()) {
-                    count = i;
-                    break;
-                }
-            }
-               dialogConfirm({ messageId: "Msg_18" }).ifYes(() => {
-                let cmd = {
-                    appType: self.selectedAppType(),
-                    reasonID: self.selectedReason().reasonID,    
-                }
-                service.deleteReason(cmd).done(function() {
-                    // lấy list các phần tử còn lại ngoại trừ phần tử bị delete
-                    let listNotDel = _.remove(self.listReason(), function(n) {
-                        return n.dispOrder != self.selectedReason().dispOrder();
+            const self = this;
+            dialogConfirm({ messageId: "Msg_18" }).ifYes(() => {
+                const current = self.selectedReasonCode();
+                const currentIndex = _.findIndex(self.listReasonByAppType(), i => i.reasonCode == current);
+                let nextIndex = currentIndex;
+                if (currentIndex == self.listReasonByAppType().length - 1)
+                    nextIndex = currentIndex - 1;
+                service.deleteReason(ko.toJS(self.selectedReason)).done(() => {
+                    self.listReasonByAppType.remove(i => i.reasonCode == current);
+                    const data = ko.toJS(self.listReasonByAppType);
+                    data.forEach((d, i) => {
+                        d.dispOrder = i;
                     });
-                    
-                    let listUpdate = { listCommand: listNotDel };
-                    for(let a = 0; a<listUpdate.listCommand.length; a++){
-                        listUpdate.listCommand[a].dispOrder = a;
-                    }
-                    
-                    // update list ban đầu
-                    service.update(listUpdate).done(function() {
-                        // insert item to list
-                        self.getData(appTypeNow).done(function() {
-                            if (self.listReason().length > 0) {
-                                // delete the last item
-                                if (count == ((self.listReason().length))) {
-                                    self.selectedOrder(self.listReason()[count - 1].keyToOrder);
-                                    dialogInfo({ messageId: "Msg_16" });
-                                    return;
-                                }
-                                // delete the first item
-                                if (count == 0) {
-                                    self.selectedOrder(self.listReason()[0].keyToOrder);
-                                    dialogInfo({ messageId: "Msg_16" });
-                                    return;
-                                }
-                                // delete item at mediate list 
-                                else if (count > 0 && count < self.listReason().length) {
-                                    self.selectedOrder(self.listReason()[count].keyToOrder);
-                                    dialogInfo({ messageId: "Msg_16" });
-                                    return;
-                                }
-                            }
-                            else {
-                                self.selectedOrder(undefined);
-                            }
-                            dialogInfo({ messageId: "Msg_16" });
-                            self.selectedOrder(code);
-                        }).fail(function(res) {
-                            dfd.reject();
-                            alert(res.message);
-                        }).always(() => {
-                            nts.uk.ui.block.clear();
+                    service.saveReason(data).done(() => {
+                        const nextReasonCode = nextIndex > data.length || nextIndex < 0 ? null : data[nextIndex].reasonCode;
+                        dialogInfo({ messageId: "Msg_16" }).then(() => {
+                            self.getData(nextReasonCode)
                         });
+                    }).fail(error => {
+                        alert(error);
                     }).always(() => {
-                            nts.uk.ui.block.clear();
-                        });
+                        nts.uk.ui.block.clear();
+                    });
+                }).fail(error => {
+                    alert(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
-            }).ifNo(() => {
-            })
-       }
-            
+            }).ifNo(function () {
+            });
+        }
+
     }
 
-    export interface IApplicationReason {
+    interface IAppReasonStandard {
         /** 理由ID */
-        reasonID: string;
+        reasonCode: number;
         /** 表示順 */
         dispOrder: number;
         /** 定型理由*/
         reasonTemp: string;
         /** 既定*/
-        defaultFlg: number;
-        
-        appType : number;
-        
-        companyId: string;
+        defaultFlg: boolean;
 
-        keyToOrder: string;
+        appType: number;
+
+        hdAppType: number;
     }
 
-    export class ApplicationReason {
+    class AppReasonStandard {
         /** 理由ID */
-        reasonID: string;
+        reasonCode: KnockoutObservable<number>;
         /** 表示順 */
         dispOrder: KnockoutObservable<number>;
         /** 定型理由*/
         reasonTemp: KnockoutObservable<string>;
         /** 既定*/
-        defaultFlg: KnockoutObservable<number>;
-        
-        keyToOrder: KnockoutObservable<string>;
-        
-        icon: string;
-        constructor(param: IApplicationReason) {
-            let self = this;
-            self.reasonID = param.reasonID;
-            self.dispOrder = ko.observable(param.dispOrder);
-            self.reasonTemp = ko.observable(param.reasonTemp);
-            self.defaultFlg = ko.observable(param.defaultFlg);
-            self.keyToOrder = ko.observable(param.keyToOrder);
+        defaultFlg: KnockoutObservable<boolean>;
 
+        appType: number;
+
+        holidayAppType: number;
+
+        constructor(appType: number, hdAppType?: number, param?: IAppReasonStandard) {
+            let self = this;
+            self.appType = appType;
+            self.reasonCode = ko.observable(param ? param.reasonCode : null);
+            self.dispOrder = ko.observable(param ? param.dispOrder : 0);
+            self.reasonTemp = ko.observable(param ? param.reasonTemp : "");
+            self.defaultFlg = ko.observable(param ? param.defaultFlg : false);
+            self.holidayAppType = hdAppType;
         }
     }
 
     class ItemModel {
-        code: number;
+        key: string;
+        appType: number;
+        hdAppType: number;
         name: string;
 
-        constructor(code: number, name: string) {
-            this.code = code;
+        constructor(appType: number, name: string, hdAppType?: number) {
+            if (hdAppType)
+                this.key = appType + "-" + hdAppType;
+            else
+                this.key = appType.toString();
+            this.appType = appType;
             this.name = name;
+            this.hdAppType = hdAppType;
         }
     }
 
-    export enum ApplicationType {
-        /** 残業申請*/
-        OVER_TIME_APPLICATION = 0,
-        /** 休暇申請*/
-        ABSENCE_APPLICATION = 1,
-        /** 勤務変更申請*/
-        WORK_CHANGE_APPLICATION = 2,
-        /** 直行直帰申請*/
-        GO_RETURN_DIRECTLY_APPLICATION = 4,
-        /** 休出時間申請*/
-        BREAK_TIME_APPLICATION = 6,
-        /** 振休振出申請*/
-        COMPLEMENT_LEAVE_APPLICATION = 10,
-    }
-
     function makeIcon(value) {
-        if (value == 1) {
-            return '<i class="icon icon-dot"></i>';
+        if (value == "true") {
+            return '<i class="icon icon-dot" style="margin: auto; display: block;"/>';
         }
         return '';
     }
 }
-
-
-
-

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -13,7 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //流動勤務専用設定
 @Getter
-public class FlowWorkDedicateSetting extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowWorkDedicateSetting extends WorkTimeDomainObject implements Cloneable{
 
 	/** The overtime setting. */
 	//残業設定
@@ -60,6 +62,17 @@ public class FlowWorkDedicateSetting extends WorkTimeDomainObject {
 			throw new RuntimeException("Screen Mode not found.");
 		}
 	}
-
-
+	
+	@Override
+	public FlowWorkDedicateSetting clone() {
+		FlowWorkDedicateSetting cloned = new FlowWorkDedicateSetting();
+		try {
+			cloned.overtimeSetting = this.overtimeSetting.clone();
+			cloned.calculateSetting = this.calculateSetting.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowWorkDedicateSetting clone error.");
+		}
+		return cloned;
+	}
 }

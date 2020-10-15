@@ -185,7 +185,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
-	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
+//	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
 	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
 	

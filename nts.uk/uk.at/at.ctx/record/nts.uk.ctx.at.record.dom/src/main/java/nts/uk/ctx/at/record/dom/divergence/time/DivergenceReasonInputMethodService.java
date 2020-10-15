@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 
 /**
  * The Interface DivergenceReasonInputMethodService.

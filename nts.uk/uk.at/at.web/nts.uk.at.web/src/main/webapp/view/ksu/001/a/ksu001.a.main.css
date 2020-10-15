@@ -1,21 +1,48 @@
+
+.header-image-no-event {
+    background-size: contain;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    background-repeat: no-repeat;
+}
+
+.header-image-event:hover {
+    cursor: pointer;
+}
+
+.header-image-event {
+    background-size: contain;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    background-repeat: no-repeat;
+}
+
+.btnControlSelected{background-color : #007fff ; color : #ffffff}
+.btnControlUnSelected{background-color : #ffffff ; color : #000000 }
+
+.x-link {
+    white-space: nowrap;
+    text-align: left;
+}
+
 #tab-1, #tab-2 {
 	height: 525px;
 }
 
-#top-area *, #contain-view * {
+.A6_hover:hover {
+    background-color: #007fff !important;
+}
+
+.A6_not_hover:hover {
+    background-color: #ffffff !important;
+}
+
+#functon-area-row2 *, #contain-view-right * {
 	font-size: 11.5px !important;
 	vertical-align: middle;
 }
-
-#master-wrapper {
-	overflow-x: hidden;
-}
-
-/* #extable {
-	float: left;
-	top: 2px;
-	left: 80px;
-} */
 
 #extable td, #extable td>* {
 	font-size: 10.5px;
@@ -26,6 +53,7 @@
 	text-align: center;
 }
 
+
 .ex-header-vert-sum tr:NTH-CHILD(2) {
 	font-size: 90%;
 }
@@ -34,21 +62,28 @@
 	margin-left: 2px;
 }
 
-table th, table td {
-	padding: 5px 5px;
-	border: 1px solid #ccc;
-}
-
 #functions-area>button {
 	margin-left: 5px;
 }
 
-.setting {
-	margin-left: 215px !important;
+#A2_2 {
+	padding-left: 25px;
+}
+
+#A1_11 {
+	margin-left: 48px !important;
+}
+
+#A1_12 {
+	margin-left: 78px !important;	
 }
 
 .hope {
-	margin-left: 145px !important;
+	margin-left: 5px !important;
+}
+
+#A1_7 {
+	margin-left: 40px !important;
 }
 
 .generally, .simulation, .capture {
@@ -66,67 +101,63 @@ table th, table td {
 	width: 80px;
 }
 
-.substitute-holiday, .pause, .annual-holiday, .yearly-reserved {
-	width: 75px;
+.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
+	width: 105px;
 }
 
-.break {
-	margin-left: 80px;
-}
-
-#work-setting, #company-setting {
+#work-setting, #person-setting, #sort-order-setting {
 	margin-left: 10px;
 }
 
-#work-setting button, #company-setting button {
-	width: 109px;
+#work-setting button, #person-setting button, #sort-order-setting button{
+	width: 110px;
 	margin-bottom: 10px;
 }
 
-#top-area {
+.btnSelectMode {
 	float: left;
-	width: 100%;
-	border-bottom: 1px solid #B1B1B1;
-	margin-left: 80px;
-	margin-top: 3px;
-	padding-bottom: 2px;
-	border-bottom: 1px solid #B1B1B1;
-	padding-bottom: 3px;
 }
 
 #oViewModel, #qViewModel {
 	float: left;
-	width: 94%
+	width: 55%;
+	margin-left: 15px;
 }
 
 #qViewModel {
 	margin-top: 3px;
-	height: 120px
+}
+
+#oViewModel {
+	margin-top: 3px;
+}
+
+#group-btmode {
+	float: left;
+	width: 9%;
 }
 
 #group-bt {
 	float: left;
-	width: 6%;
-}
-
-.setting-button {
-	background: url(../image/image008.png) no-repeat center;
-}
-
-.color-button {
-	background: url(../image/image099.png) no-repeat center;
+	width: 134px;
+	border-right: 2px solid #ccc;
+	height: fit-content;
+	margin-top: 3px;
 }
 
 .size-image-button1 {
 	background-size: 20px 20px !important;
-	height: 24px !important;
-	width: 24px;
 }
 
 .size-image-button2 {
 	background-size: 24px 24px !important;
 	height: 27px !important;;
 	width: 27px;
+}
+
+.size-image-button3 {
+	height: 26px !important;;
+	width:  33px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
@@ -147,23 +178,23 @@ table th, table td {
 	margin-top: 16px !important;
 }
 
-#popup-area4 {
-	width: 307px !important;
+#A1_10_1 {
+	width: 362px !important;
+	height: 85px;
 }
 
-#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
-	#popup-area7, #popup-area8, #popup-area9 {
+#A1_7_1 {
+	width: 440px !important;
+	height: 100px;
+}
+
+#A1_10_1, #A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
 	display: none;
-}
-
-#popup-area8 {
-	z-index: 100;
-	top: 100px !important;
 }
 
 #multi-list {
@@ -179,8 +210,8 @@ table th, table td {
 	margin-left: 7px;
 }
 
-#popup-area6 {
-	width: 390px
+#A4_1 {
+	width: 350px
 }
 
 #popup6-radioBox {
@@ -191,16 +222,12 @@ table th, table td {
 	margin-bottom: 10px
 }
 
-#popup-area7>div {
-	margin-top: 15px
-}
-
-#popup-area7>div>button {
-	margin-left: 70px
-}
-
-#popup-area9 {
+#A5_1 {
 	width: 470px
+}
+
+#A16{
+	height: 90px;
 }
 
 .square {
@@ -211,7 +238,7 @@ table th, table td {
 }
 
 .popup-div {
-	width: 140px;
+	width: 152px;
 	display: inline-block;
 	margin-bottom: 10px
 }
@@ -233,49 +260,107 @@ table th, table td {
 }
 
 #paste {
-	background: url(../image/image102.png) no-repeat center;
+	white-space: normal;
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
 }
 
-#copy {
-	background: url(../image/image104.png) no-repeat center;
+#coppy {
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+#input {
+	white-space: normal;
+	width: 38px;
+	height: 38px;
+	font-size: 10px !important;
 }
 
 #undo {
-	margin: 2px 0 0 31px;
-	background: url(../image/image030.png) no-repeat center;
+	margin-top: 6px;
+	width: 38px;
+	height: 38px !important; 
+	background-color: #ffffff;
 }
 
-#prevMonth {
-	background: url(../image/image050.png) no-repeat center;
+button[disabled] {
+    background-color: #d9d9d9 !important;
+    cursor: default;
+    color: #888888;
 }
 
-#nextMonth {
-	background: url(../image/image053.png) no-repeat center;
+#redo {
+	margin-top: 6px;
+	width: 38px;
+	height: 38px !important; 
+	background-color: #ffffff;
+	margin-left: 3px;
+	margin-right: 3px;
 }
 
-#contain-view {
-	float: left;
+#A4_4 > button.nts-switch-button{
+	width: 50px;
+}
+
+#A4_7 > button.nts-switch-button{
+	width: 50px;
+}
+
+#contain-view-left{
+	margin-left: 27px;
+	margin-top: 14px;
+    width: fit-content;
+    height: fit-content;
+    display: inline-block;
+    float: left;
+}
+
+#contain-view-right {
+	display: inline-block;
+	margin-top: 5px;
+	margin-left: 10px;
+	border: 1px solid #cccccc;
+	background: rgb(219, 238, 244);
+	padding: 5px;
+	width: 1085px;
+	height: 92px;
+	border-radius: 5px;
+}
+
+#functon-area-row2 {
+	height: 45px;
+	margin-left: 27px;
 	margin-top: 3px;
-	width: 100%;
-	margin-left: 80px;
+	padding-bottom: 2px;
+	border-bottom: 1px solid #B1B1B1;
+	white-space: nowrap;
 }
 
-.right-content button {
-	height: 27px;
+#functon-area-row2-left {
+	width: 612px;
+	margin-top: 5px;
+	height: 45px;
+	display: inline-block;
 }
 
-#top-area-left {
-	float: left;
-	width: 30%;
+#functon-area-row2-center {
+	width: fit-content;
+	height: 45px;
+	display: inline-block;
+	margin-bottom: 4px;
 }
 
-#top-area-left * {
-	font-size: 21px !important;
-}
-
-#top-area-right {
-	float: left;
-	width: 70%;
+#functon-area-row2-right {
+	margin-top: 5px;
+	width: fit-content;
+	margin-left: 26px;
+	height: 45px;
+	display: inline-block;
 }
 
 #date-time-prev, #date-time-after {
@@ -309,7 +394,7 @@ table th, table td {
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -2px !important
+	margin-top: -4px !important
 }
 
 .mb-5 {
@@ -320,65 +405,146 @@ table th, table td {
 	margin-left: 15px
 }
 
-tbody a.x-link {
-	color: black !important;
-	text-decoration: none !important;
-	cursor: unset !important;
+.hoverEmployeeName {
+  color: #0D86D1 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+tbody a.x-link:hover {
+  color: #0D86D1 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.xcell {
+	text-align: center;
 }
 
 #oViewModel>div:FIRST-CHILD {
 	position: relative;
 }
 
-.extable .xheader td.bg-daily-alter-other {
-	background-color: #CEE6FF;
+.bg-schedule-sunday {
+	background-color: #fabf8f;
+	color: #ff0000 !important;
 }
 
-.extable .xheader td.bg-daily-alter-self {
-	background-color: #94B7FE;
+.bg-schedule-saturday{
+	background-color: #8bd8ff;
+	color: #0000ff !important;
 }
 
-.extable .xheader td.bg-daily-reflect-application {
-	background-color: #BFEA60;
-}
-
-.extable .xheader td.color-schedule-performance {
-	color: #92D050;
-}
-
-.extable .xheader td.color-attendance {
-	color: #0000ff;
-}
-
-.extable .xheader td.color-holiday {
-	color: #ff0000;
-}
-
-.extable .xheader td.color-half-day-work {
-	color: #FF7F27;
-}
-
-.extable .xheader td.color-schedule-sunday {
-	color: #FF0000;
-}
-
-.extable .xheader td.color-schedule-saturday {
-	color: #0000FF;
-}
-
-.extable .xheader td.color-weekdays {
-	color: #404040;
+.bg-weekdays{
+	background-color: #D9D9D9;
+	color: #404040 !important;
 }
 
 .right-content {
-	height: calc(100vh - 141px);
-    overflow-x: auto;
-    overflow-y: hidden;
+	height: calc(100% - 80px);
+	width: calc(100% - 1px);
+   
 }
-#top-area , #contain-view {
-	min-width: 1022px;
-	width: calc(100vw - 80px);
-}
+
 html {
 	overflow: hidden;
+}
+
+.marginleft15px {
+	margin-left: 15px !important;
+}
+
+.marginleft45px {
+	margin-left: 60px !important;
+}
+
+#A3_1 {
+	background: #edfac2;
+	width: max-content;
+	padding: 5px;
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+}
+
+.area6-left {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+	width: 130px ; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+}
+
+.area6-2-left {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+	width: 119px ; 
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+}
+
+.area6-right {
+	margin-bottom: 10px ; 
+	display: inline-block; 
+}
+
+.inline {
+	display: inline-block;
+}
+
+.toLeft {
+	margin-left: 308px;  
+	float: left;
+    height: 18px;
+}
+
+.toRight {
+	float: left;
+    height: 18px;
+}
+
+.toDown {
+	height: 25px;
+	margin-left: 9px;
+	float: left;
+	width: 18px;
+}
+
+.iconToDown {
+	margin-left: -8px;
+	margin-top: -1px;
+}
+
+.iconToLeft {
+	margin-top: -5px;
+}
+
+.iconToRight {
+	margin-top: -5px;
+}
+
+#A5 {
+	width: 30px;
+}
+
+.settingHeightGrid {
+	width: 25px;
+	height: 25px;
+}
+
+#A16 table td {
+	border: 0px solid #ccc !important;
+}
+
+.background-attendance {background-color: #0000ff !important;}
+.background-holiday {background-color: #ff0000 !important;}
+.background-half-day-work {background-color: #FF7F27 !important; }
+.background-schedule-performance {background-color:#008000 !important;}
+.bg-daily-alter-self {background-color:#94B7FE;}
+.bg-daily-alter-other {background-color:#CEE6FF;}
+.background-white {background-color: white}
+.color-default {color : #000000;}
+.bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
+
+table th, table td {
+	padding: 2px 5px;
 }

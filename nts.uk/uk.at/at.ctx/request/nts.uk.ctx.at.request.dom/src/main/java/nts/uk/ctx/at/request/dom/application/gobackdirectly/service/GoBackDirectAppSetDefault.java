@@ -1,27 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -32,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
-	private GoBackDirectlyRepository goBackRepo;
+	private GoBackDirectlyRepository_Old goBackRepo;
 
 	@Inject
 	private WorkLocationAdapter workLocationAdapter;
@@ -44,7 +34,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private WorkTypeRepository workTypeRepo;
 
 	@Inject
-	private ApplicationRepository_New appRepo;
+	private ApplicationRepository appRepo;
 
 	@Inject 
 	private BeforePreBootMode beforePreBootMode;
@@ -59,7 +49,8 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 
 	@Override
 	public GoBackDirectAppSet getGoBackDirectAppSet(String appID) {
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		GoBackDirectAppSet data = new GoBackDirectAppSet();
 		Optional<Application_New> applicationOpt = appRepo.findByID(companyID, appID);
 		if (!applicationOpt.isPresent()) {
@@ -77,7 +68,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		data.appReason = application.getAppReason().v();
 		data.appDate = application.getAppDate().toString(DATE_FORMAT);
 		//アルゴリズム「直行直帰基本データ」を実行する
-		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
+		GoBackDirectly_Old goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
 		data.goBackDirectly.setVersion(application.getVersion());
 		if(goBackDirect.getWorkLocationCD1().isPresent()) {
@@ -105,6 +96,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//Get 14-3
 		DetailScreenInitModeOutput outMode = initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value);
 		data.detailScreenInitModeOutput = outMode;
-		return data;
+		return data;*/
+		return null;
 	}
 }

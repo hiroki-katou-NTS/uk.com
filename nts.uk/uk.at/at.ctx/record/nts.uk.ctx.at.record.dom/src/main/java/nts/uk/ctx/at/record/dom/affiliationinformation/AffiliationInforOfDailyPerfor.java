@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
@@ -17,31 +19,29 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 @Getter
 @NoArgsConstructor
 public class AffiliationInforOfDailyPerfor extends AggregateRoot {
-	
-	private EmploymentCode employmentCode;
-	
+	//社員ID
 	private String employeeId;
-	
-	private String jobTitleID;
-	
-	private String wplID;
-	
+	//年月日
 	private GeneralDate ymd;
-	
-	private ClassificationCode clsCode;
-	
-	private BonusPaySettingCode bonusPaySettingCode;
+	//所属情報
+	private AffiliationInforOfDailyAttd  affiliationInfor;
 
 	public AffiliationInforOfDailyPerfor(EmploymentCode employmentCode, String employeeId, String jobTitleID,
-			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode) {
+			String wplID, GeneralDate ymd, ClassificationCode clsCode, BonusPaySettingCode bonusPaySettingCode,BusinessTypeCode businessTypeCode) {
 		super();
-		this.employmentCode = employmentCode;
 		this.employeeId = employeeId;
-		this.jobTitleID = jobTitleID;
-		this.wplID = wplID;
 		this.ymd = ymd;
-		this.clsCode = clsCode;
-		this.bonusPaySettingCode = bonusPaySettingCode;
+		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,businessTypeCode,
+				bonusPaySettingCode);
 	}
+
+	public AffiliationInforOfDailyPerfor(String employeeId, GeneralDate ymd,
+			AffiliationInforOfDailyAttd affiliationInfor) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.affiliationInfor = affiliationInfor;
+	}
+
 
 }

@@ -1,11 +1,14 @@
 package nts.uk.screen.at.app.query.kdl.kdl014.a;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -16,7 +19,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -64,16 +67,20 @@ public class ReferToTheStampingResultsFinder {
 		
 		// 2.<call> 社員の情報を取得する -> List<社員情報>
 		List<EmployeeInformation> listEmpInfo = step2(param, employeeIds);
+		List<EmployeeInformation> listEmpInfo1 = new ArrayList<>();
+		listEmpInfo1 = listEmpInfo.stream().sorted((o1, o2) -> o1.getEmployeeCode().compareTo(o2.getEmployeeCode())).collect(Collectors.toList());
 		
 		// 3.get*(List<社員の打刻情報．勤務場所コード＞) -> List<勤務場所>
 		List<WorkLocation> workLocationList = step3(listEmployeeStampInfo);
 		
 		// 4.get(会社ID) -> GoogleMap利用するか、マップ表示アドレス
-		ReferToTheStampingResultsDto result = step4(listEmployeeStampInfo, listEmpInfo, workLocationList);
+		ReferToTheStampingResultsDto result = step4(listEmployeeStampInfo, listEmpInfo1, workLocationList);
 		
 		if(param.getMode() == 0 && param.getListEmp().size() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
 		
 		if(param.getMode() == 1 && result.getListEmps().isEmpty()) throw new BusinessException("Msg_1617");
+		
+		result.getListEmps().stream().sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode())).collect(Collectors.toList());
 		
 		return result;
 	}

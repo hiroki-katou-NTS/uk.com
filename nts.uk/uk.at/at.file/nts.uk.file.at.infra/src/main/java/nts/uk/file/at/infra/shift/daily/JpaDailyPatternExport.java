@@ -11,6 +11,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
@@ -75,7 +76,7 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
                 .build());
         data.put(DailyPatternExportImpl.KSM003_41, MasterCellData.builder()
                 .columnId(DailyPatternExportImpl.KSM003_41)
-                .value(  r.getString("NAMET4") == null ?  (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+"マスタ未登録") : (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+r.getString("NAMET4")))
+                .value(  r.getString("NAMET4") == null ?  (StringUtils.isBlank(r.getString("WORKING_CD")) ? null : r.getString("WORKING_CD")+"マスタ未登録") : (StringUtils.isBlank(r.getString("WORKING_CD")) ? null : r.getString("WORKING_CD")+r.getString("NAMET4")))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(DailyPatternExportImpl.KSM003_42, MasterCellData.builder()

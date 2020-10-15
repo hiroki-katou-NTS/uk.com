@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,10 +36,10 @@ public class WorkStampOutPut {
 	/*
 	 * 打刻元情報
 	 */
-	private StampSourceInfo stampSourceInfo;
+	private TimeChangeMeans stampSourceInfo;
 	
 	public WorkStampOutPut(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
-			StampSourceInfo stampSourceInfo) {
+			TimeChangeMeans stampSourceInfo) {
 		super();
 		AfterRoundingTime = afterRoundingTime;
 		this.timeWithDay = timeWithDay;

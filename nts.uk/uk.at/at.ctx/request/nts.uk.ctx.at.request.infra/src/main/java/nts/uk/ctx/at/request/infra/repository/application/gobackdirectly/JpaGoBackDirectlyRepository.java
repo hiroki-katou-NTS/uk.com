@@ -1,157 +1,176 @@
 package nts.uk.ctx.at.request.infra.repository.application.gobackdirectly;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
-import nts.arc.layer.infra.data.DbConsts;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * 
+ * @author hoangnd
+ *
+ */
 @Stateless
 public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBackDirectlyRepository {
+	public static final String FIND_BY_ID = "SELECT *\r\n" + 
+			"  FROM KRQDT_APP_GOBACK_DIRECTLY as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID WHERE a.APP_ID = @appId and a.CID = @companyId";
 
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly c";
+	@Override
+	public Optional<GoBackDirectly> find(String companyId, String appId) {
+		return new NtsStatement(FIND_BY_ID, this.jdbcProxy())
+				.paramString("appId", appId)
+				.paramString("companyId", companyId)
+				.getSingle(res -> toDomain(res));
+	}
 
-	public static final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
-			+ " WHERE c.krqdtGoBackDirectlyPK.companyID =:companyID"
-			+ " AND c.krqdtGoBackDirectlyPK.appID =:appID ";
-	public static final String FIND_BY_LIST_APPID = SELECT_NO_WHERE 
-			+ " WHERE c.krqdtGoBackDirectlyPK.companyID = :companyID"
-			+ " AND c.krqdtGoBackDirectlyPK.appID IN :lstAppID ";
+	@Override
+	public void add(GoBackDirectly domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
 
-	/**
-	 * @param krqdtGoBackDirectly
-	 * @return
-	 */
-	private GoBackDirectly toDomain(KrqdtGoBackDirectly entity) {
-		GoBackDirectly goBackDirectly = new GoBackDirectly(entity.krqdtGoBackDirectlyPK.companyID, 
-				entity.krqdtGoBackDirectlyPK.appID,
-				entity.workTypeCD, 
-				entity.siftCD,
-				entity.workChangeAtr,
-				entity.goWorkAtr1,
-				entity.backHomeAtr1,
-				entity.workTimeStart1,
-				entity.workTimeEnd1, 
-				entity.workLocationCd1,
-				entity.goWorkAtr2,
-				entity.backHomeAtr2,
-				entity.workTimeStart2,
-				entity.workTimeEnd2, 
-				entity.workLocationCd2);
-		goBackDirectly.setVersion(entity.version);
+	@Override
+	public void update(GoBackDirectly domain) {
+		KrqdtGoBackDirectly krqdtGoBackDirectly = toEntity(domain);
+		Optional<KrqdtGoBackDirectly> update = this.queryProxy().find(krqdtGoBackDirectly.krqdtGoBackDirectlyPK, KrqdtGoBackDirectly.class);
+		if (!update.isPresent()) return;
+		
+		update.get().workTypeCD = krqdtGoBackDirectly.workTypeCD;
+		update.get().workTimeCD = krqdtGoBackDirectly.workTimeCD;
+		update.get().workChangeAtr = krqdtGoBackDirectly.workChangeAtr;
+		update.get().goWorkAtr = krqdtGoBackDirectly.goWorkAtr;
+		update.get().backHomeAtr = krqdtGoBackDirectly.backHomeAtr;
+		this.commandProxy().update(update.get());
+			
+	}
+
+	@Override
+	public void remove(GoBackDirectly domain) {
+		this.commandProxy().remove(KrqdtGoBackDirectly.class,
+				new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(), domain.getAppID()));
+
+	}
+
+	public GoBackDirectly toDomain(NtsResultRecord res) {
+		// parse application domain
+		Application application = new Application();
+		String pattern = "yyyy/MM/dd HH:mm:ss";
+		String pattern2 = "yyyy/MM/dd";
+		DateFormat df = new SimpleDateFormat(pattern);
+		DateFormat df2 = new SimpleDateFormat(pattern2);
+		application.setAppID(res.getString("APP_ID"));
+		application.setVersion(res.getInt("EXCLUS_VER"));
+		application.setPrePostAtr(EnumAdaptor.valueOf(res.getInt("PRE_POST_ATR"), PrePostAtr.class));
+		application.setInputDate(GeneralDateTime.fromString(df.format(res.getDate("INPUT_DATE")), pattern));
+		application.setEnteredPersonID(res.getString("ENTERED_PERSON_SID"));
+		if (res.getString("REASON_REVERSION") == null) {
+			application.setOpReversionReason(Optional.ofNullable(null));
+		}else {
+			application.setOpReversionReason(Optional.ofNullable(new ReasonForReversion(res.getString("REASON_REVERSION"))));			
+		}
+		application.setAppDate(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_DATE")), pattern2)));
+		if (res.getInt("FIXED_REASON") == null) {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStandardReasonCD(Optional.ofNullable(new AppStandardReasonCode(res.getInt("FIXED_REASON"))));			
+		}
+		if (res.getString("APP_REASON") == null) {
+			application.setOpAppReason(Optional.ofNullable(null));
+		}else {
+			application.setOpAppReason(Optional.ofNullable(new AppReason(res.getString("APP_REASON"))));			
+		}
+		application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
+		application.setEmployeeID(res.getString("APPLICANTS_SID"));
+		if (res.getDate("APP_START_DATE") == null) {
+			application.setOpAppStartDate(Optional.ofNullable(null));
+		}else {
+			application.setOpAppStartDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_START_DATE")), pattern2))));
+		}
+		if (res.getDate("APP_END_DATE") == null) {
+			application.setOpAppEndDate(Optional.ofNullable(null));
+		} else {
+			application.setOpAppEndDate(Optional.of(new ApplicationDate(GeneralDate.fromString(df2.format(res.getDate("APP_END_DATE")), pattern2))));
+		}
+		
+		if (res.getInt("STAMP_OPTION_ATR") == null) {
+			application.setOpStampRequestMode(Optional.ofNullable(null));
+		}else {
+			application.setOpStampRequestMode(Optional.of(EnumAdaptor.valueOf(res.getInt("STAMP_OPTION_ATR"), StampRequestMode.class)));
+		}
+		
+		
+		GoBackDirectly goBackDirectly = new GoBackDirectly();
+		goBackDirectly.setStraightDistinction(EnumAdaptor.valueOf(res.getInt("GO_WORK_ATR"), NotUseAtr.class));
+		goBackDirectly.setStraightLine(EnumAdaptor.valueOf(res.getInt("BACK_HOME_ATR"), NotUseAtr.class));
+		if (Optional.ofNullable(res.getInt("WORK_CHANGE_ATR")).isPresent()) {
+			goBackDirectly.setIsChangedWork(
+					Optional.of(EnumAdaptor.valueOf(res.getInt("WORK_CHANGE_ATR"), NotUseAtr.class)));
+		}
+		if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()
+				|| Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
+			WorkInformation dataWork = new WorkInformation(null, "");
+			goBackDirectly.setDataWork(Optional.of(dataWork));
+			if (Optional.ofNullable(res.getString("WORK_TYPE_CD")).isPresent()) {
+				dataWork.setWorkTypeCode(new WorkTypeCode(res.getString("WORK_TYPE_CD")));
+			}
+			if (Optional.ofNullable(res.getString("WORK_TIME_CD")).isPresent()) {
+				dataWork.setWorkTimeCode(new WorkTimeCode(res.getString("WORK_TIME_CD")));
+			}
+		}
+
 		return goBackDirectly;
 	}
 
-	/**
-	 * @param domain
-	 * @return
-	 */
-	private KrqdtGoBackDirectly toEntity(GoBackDirectly domain){
-		val entity = new KrqdtGoBackDirectly();
-		entity.krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK();
-		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
-		entity.krqdtGoBackDirectlyPK.appID  = domain.getAppID();
-		entity.version = domain.getVersion();
-		entity.workTypeCD = domain.getWorkTypeCD().map(x -> x.v()).orElse(null);
-		entity.siftCD = domain.getSiftCD().map(x -> x.v()).orElse(null);
-		entity.workChangeAtr = domain.getWorkChangeAtr().map(x -> x.value).orElse(null);
-		entity.workTimeStart1 = domain.getWorkTimeStart1().map(x -> x.v()).orElse(null);
-		entity.workTimeEnd1 = domain.getWorkTimeEnd1().map(x -> x.v()).orElse(null);
-		entity.goWorkAtr1 = domain.getGoWorkAtr1().value;
-		entity.backHomeAtr1  = domain.getBackHomeAtr1().value;
-		entity.workLocationCd1 = domain.getWorkLocationCD1().map(x -> x).orElse(null);
-		entity.workTimeStart2 = domain.getWorkTimeStart2().map(x -> x.v()).orElse(null);
-		entity.workTimeEnd2 = domain.getWorkTimeEnd2().map(x -> x.v()).orElse(null);
-		entity.goWorkAtr2 = domain.getGoWorkAtr2().map(x -> x.value).orElse(null);
-		entity.backHomeAtr2  = domain.getBackHomeAtr2().map(x -> x.value).orElse(null);
-		entity.workLocationCd2 = domain.getWorkLocationCD2().map(x -> x).orElse(null);
-		return entity;
+	public KrqdtGoBackDirectly toEntity(GoBackDirectly domain) {
+		KrqdtGoBackDirectly krqdtGoBackDirectly = new KrqdtGoBackDirectly();
+		krqdtGoBackDirectly.krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(),
+				domain.getAppID());
+		if (domain.getDataWork().isPresent()) {
+			WorkInformation dataWork = domain.getDataWork().get();
+			krqdtGoBackDirectly.workTypeCD = dataWork.getWorkTypeCode().v();
+			if (dataWork.getWorkTimeCode() != null) {
+				krqdtGoBackDirectly.workTimeCD = dataWork.getWorkTimeCode().v();
+			}
+		}
+		if (domain.getIsChangedWork().isPresent()) {
+			krqdtGoBackDirectly.workChangeAtr = domain.getIsChangedWork().get().value;			
+		}
+		krqdtGoBackDirectly.goWorkAtr = domain.getStraightDistinction().value;
+		krqdtGoBackDirectly.backHomeAtr = domain.getStraightLine().value;
+		krqdtGoBackDirectly.contractCd = AppContexts.user().contractCode();
+
+		return krqdtGoBackDirectly;
 	}
 
 	@Override
-	public Optional<GoBackDirectly> findByApplicationID(String companyID, String appID) {
-		Optional<GoBackDirectly> item =  this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
-				.setParameter("companyID", companyID)
-				.setParameter("appID", appID)
-				.getSingle(c -> toDomain(c));
-		if(!item.isPresent()) {
-			return Optional.empty();
-		}
-		return item;
-	}
-	/**
-	 * 
-	 */
-	@Override
-	public void update(GoBackDirectly goBackDirectly) {
-		//get current Entity
-		Optional<KrqdtGoBackDirectly> goBack = this.queryProxy().find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class);
-		if(goBack.isPresent()) {
-			KrqdtGoBackDirectly currentEntity = goBack.get();
-			currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
-			currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
-			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().map(x -> x.v()).orElse(null));
-			currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().map(x -> x.v()).orElse(null));
-			currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().map(x -> x.value).orElse(null));
-			currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().map(x -> x.value).orElse(null));
-			currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().map(x -> x.value).orElse(null));
-			currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().map(x -> x.v()).orElse(null));
-			currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().map(x -> x.v()).orElse(null));
-			currentEntity.setWorkLocationCd1(goBackDirectly.getWorkLocationCD1().map(x -> x).orElse(null));
-			currentEntity.setWorkLocationCd2(goBackDirectly.getWorkLocationCD2().map(x -> x).orElse(null));
-			if(goBackDirectly.getWorkChangeAtr().map(x -> x).orElse(UseAtr.NOTUSE) == UseAtr.USE) {
-				currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse(null));
-				currentEntity.setSiftCD(goBackDirectly.getSiftCD().map(x -> x.v()).orElse(null));
-			}
-			this.commandProxy().update(currentEntity);
-			
-		}
+	public void delete(String companyId, String appId) {
+		this.commandProxy().remove(KrqdtGoBackDirectly.class,
+				new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(), appId));
 		
-	}
-	/**
-	 * 
-	 */
-	@Override
-	public void insert(GoBackDirectly goBackDirectly) {
-		this.commandProxy().insert(toEntity(goBackDirectly));
-	}
-	/**
-	 * 
-	 */
-	@Override
-	public void delete(String companyID, String appID) {
-		this.commandProxy().remove(KrqdtGoBackDirectly.class, new KrqdtGoBackDirectlyPK(companyID, appID));
-	}
-	/**
-	 * @author hoatt
-	 * get List Application Go Back
-	 * @param companyID
-	 * @param appID
-	 * @return
-	 */
-	@Override
-	public List<GoBackDirectly> getListAppGoBack(String companyID, List<String> lstAppID) {
-		if(lstAppID.isEmpty()){
-			return new ArrayList<>();
-		}
-		List<GoBackDirectly> resultList = new ArrayList<>();
-		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtGoBackDirectly.class)
-								  .setParameter("companyID", companyID)
-								  .setParameter("lstAppID", subList)
-								  .getList(item -> toDomain(item)));
-		});
-		return resultList;
 	}
 
 }

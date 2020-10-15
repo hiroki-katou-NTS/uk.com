@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -43,7 +43,7 @@ public class KrcdtDayRemarksColumn extends UkJpaEntity implements Serializable {
 
 	public static KrcdtDayRemarksColumn toEntity(RemarksOfDailyPerform domain) {
 		return new KrcdtDayRemarksColumn(
-									new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarkNo()),
-									domain.getRemarks() == null ? null : domain.getRemarks().v());
+									new KrcdtDayRemarksColumnPK(domain.getEmployeeId(), domain.getYmd(), domain.getRemarks().getRemarkNo()),
+									domain.getRemarks() == null ? null : domain.getRemarks().getRemarks().v());
 	}
 }

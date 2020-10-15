@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyAggregationProcessExport;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfuncti
 public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 
 	@Inject
-	private ApplicationRepository_New respo;
+	private ApplicationRepository respo;
 
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
@@ -37,7 +37,7 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 	@Override
 	public List<DailyAggregationProcessExport> findByIDReflec(List<String> employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.getApplicationBySIDs(employeeID, startDate, endDate, ReflectedState_New.NOTREFLECTED);
+		return this.getApplicationBySIDs(employeeID, startDate, endDate, ReflectedState.NOTREFLECTED);
 	}
 
 	/**
@@ -49,41 +49,41 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 	 * @return List<DailyAggregationProcessExport>
 	 */
 	private List<DailyAggregationProcessExport> getApplicationBySIDs(List<String> employeeID, GeneralDate startDate,
-			GeneralDate endDate, ReflectedState_New stateReflectionReal) {
-		List<Application_New> listApp = this.respo.getApplicationBySIDs(employeeID, startDate, endDate).stream()
-				.filter(x -> x.getReflectionInformation().getStateReflectionReal().value == stateReflectionReal.value)
+			GeneralDate endDate, ReflectedState stateReflectionReal) {
+		List<Application> listApp = this.respo.getApplicationBySIDs(employeeID, startDate, endDate).stream()
+				.filter(x -> x.getAppReflectedState().value == stateReflectionReal.value)
 				.collect(Collectors.toList());
 		;
 
 		List<DailyAggregationProcessExport> dailyAggregationProcessExports = new ArrayList<>();
 		List<GeneralDate> date = new ArrayList<>();
 
-		for (Application_New app : listApp) {
-			if (app.getAppDate().after(startDate) && app.getAppDate().before(endDate)) {
-				date.add(app.getAppDate());
+		for (Application app : listApp) {
+			if (app.getAppDate().getApplicationDate().after(startDate) && app.getAppDate().getApplicationDate().before(endDate)) {
+				date.add(app.getAppDate().getApplicationDate());
 			}
 		}
 		if (date.size() != 0) {
-			List<Application_New> applicationExcessHoliday = listApp.stream()
+			List<Application> applicationExcessHoliday = listApp.stream()
 					.filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value)
 					.collect(Collectors.toList());
-			for (Application_New app : applicationExcessHoliday) {
+			for (Application app : applicationExcessHoliday) {
 				DailyAggregationProcessExport processExport = new DailyAggregationProcessExport();
 				processExport.setEmployeeID(app.getEmployeeID());
-				processExport.setAppDate(app.getAppDate());
+				processExport.setAppDate(app.getAppDate().getApplicationDate());
 				processExport.setAppType(app.getAppType().value);
 				processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent()
 						? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "");
 				dailyAggregationProcessExports.add(processExport);
 			}
 
-			List<Application_New> applicationHoliday = listApp.stream()
+			List<Application> applicationHoliday = listApp.stream()
 					.filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value)
 					.collect(Collectors.toList());
-			for (Application_New application_New : applicationHoliday) {
+			for (Application application_New : applicationHoliday) {
 				DailyAggregationProcessExport applicationExport = new DailyAggregationProcessExport();
 				applicationExport.setEmployeeID(application_New.getEmployeeID());
-				applicationExport.setAppDate(application_New.getAppDate());
+				applicationExport.setAppDate(application_New.getAppDate().getApplicationDate());
 				applicationExport.setAppType(application_New.getAppType().value);
 				applicationExport
 						.setAppTypeName(hdAppDispNameRepository.getHdApp(application_New.getAppType().value).isPresent()

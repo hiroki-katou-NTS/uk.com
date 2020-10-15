@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -24,7 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 流動打刻反映時間帯
 @Getter
-public class FlowStampReflectTimezone extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowStampReflectTimezone extends WorkTimeDomainObject implements Cloneable{
 
 	/** The two times work reflect basic time. */
 	// ２回目勤務の反映基準時間
@@ -82,5 +84,18 @@ public class FlowStampReflectTimezone extends WorkTimeDomainObject {
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.stampReflectTimezones.forEach(item -> item.correctDefaultData(screenMode));
+	}
+	
+	@Override
+	public FlowStampReflectTimezone clone() {
+		FlowStampReflectTimezone cloned = new FlowStampReflectTimezone();
+		try {
+			cloned.twoTimesWorkReflectBasicTime = new ReflectReferenceTwoWorkTime(this.twoTimesWorkReflectBasicTime.v());
+			cloned.stampReflectTimezones = this.stampReflectTimezones.stream().map(c -> c.clone()).collect(Collectors.toList());
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowStampReflectTimezone clone error.");
+		}
+		return cloned;
 	}
 }

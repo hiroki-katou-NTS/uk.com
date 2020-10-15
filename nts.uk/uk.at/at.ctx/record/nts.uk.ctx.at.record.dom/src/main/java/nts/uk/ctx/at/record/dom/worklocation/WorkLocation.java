@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.worklocation;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 @Value
 @EqualsAndHashCode(callSuper= false)

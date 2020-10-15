@@ -13,7 +13,8 @@ __viewContext.ready(function () {
         workTypeName: string;
         workTimeCode: string;
         workTimeName: string;
-        symbol: string;
+        symbolCode: string;
+        symbolName: string;
         startTime: any;
         endTime: any;
         constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, symbol?: any) {
@@ -21,7 +22,8 @@ __viewContext.ready(function () {
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.symbol = symbol !== null ? (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯") : null;
+            this.symbolCode = workTypeCode;
+            this.symbolName = symbol ? symbol : (symbol === null ? null : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯"));
             this.startTime = startTime !== undefined ? startTime : "8:30";
             this.endTime = endTime !== undefined ? endTime : "17:30";
         }
@@ -87,11 +89,11 @@ __viewContext.ready(function () {
                 if (i <= 0) {
                     let d = 31 + i;
                     this["__" + d] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ");
-                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ" + this.empId);
+                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ" + this.empId, "6:00", "16:00", null);
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
-                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null, null, null);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, "1", "通常８ｈ" + this.empId, "3:30", null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
             
@@ -104,7 +106,7 @@ __viewContext.ready(function () {
     let detailHeaderDs = [];
     detailHeaderDs.push(new ExItem(undefined, true));
     detailHeaderDs.push({ empId: "", __25: "over", __26: "", __27: "", __28: "", __29: "", __30: "", __31: "",
-        _1: "セール", _2: "", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
+        _1: "セール", _2: "<div class='header-image'></div>", _3: "", _4: "", _5: "", _6: "", _7: "", _8: "", _9: "特別", _10: "",
          _11: "", _12: "", _13: "", _14: "", _15: "", _16: "Oouch", _17: "", _18: "", _19: "", _20: "", _21: "", _22: "", _23: "",
           _24: "", _25: "", _26: "設定", _27: "", _28: "", _29: "", _30: "", _31: "", });
     
@@ -168,13 +170,19 @@ __viewContext.ready(function () {
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
         }
-        // Add both child cells to mark them respectively
-        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
-        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
+        
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
     }
+    
+    // Add both child cells to mark them respectively
+    detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
+    detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
+    detailContentDeco.push(new CellColor("_2", "2", "#00AABB", 0));
+    detailContentDeco.push(new CellColor("_3", "3", "black-corner-mark", 2));
+    detailContentDeco.push(new CellColor("_3", "4", "red-corner-mark", 3));
+    
     for (let i = 0; i < 10; i++) {
         horzSumContentDs.push({ itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3", 
         _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
@@ -183,73 +191,111 @@ __viewContext.ready(function () {
         leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
     }
     
+     let validateSrv = { 
+        request: (a) => { 
+            let dfd = $.Deferred(); 
+            if (a === "8:30") {
+                dfd.resolve("Good");
+            } else dfd.reject("Not good");
+            return dfd.promise();
+        }, onValid: (a, b) => { 
+            alert(b); 
+        }, onFailed: (a, b) => {
+            alert(b);
+        }
+    };
+    
     let detailColumns = [{
            key: "empId", width: "50px", headerText: "ABC", visible: false
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
+        
+            key: "__25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "__26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "duration/duration", required: true, min: "-12:00", max: "71:59"
+            key: "__27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_4", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
+            key: "__28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "duration/duration", primitiveValue: "TimeWithDayAttr"
+            key: "__29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "__30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_7", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "__31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_8", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_1", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "4:00", max: "19:00", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_9", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_2", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_10", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_3", width: "150px", handlerType: "Input", dataType: "label/label/duration/duration", required: true, min: "-12:00", max: "71:59"
         }, {
-            key: "_11", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_4", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "HolidayAppPrimitiveTime"
         }, {
-            key: "_12", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_5", width: "150px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
         }, {
-            key: "_13", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_6", width: "150px", handlerType: "input", dataType: "label/label/time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_14", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"/*, ajaxValidate: validateSrv */
         }, {
-            key: "_15", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_8", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_16", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_9", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_17", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_10", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_18", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_11", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_19", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_12", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_20", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_13", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_21", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_14", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_22", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_15", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_23", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_16", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_24", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_17", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_25", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_18", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_26", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_19", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_27", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_20", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_28", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_21", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_29", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_22", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_30", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_23", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
-            key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
+            key: "_24", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_25", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_26", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_27", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_28", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_29", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_30", width: "150px", handlerType: "input", dataType: "label/label/time/time"
+        }, {
+            key: "_31", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }];
+    
+    detailColumns.forEach(col => {
+        if (col.visible === false) return;
+        col.headerControl = "link";
+        col.headerHandler = (ui) => {
+            alert(ui.columnKey);
+            return false;
+        };
+    });
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact per-icon", width: "35px" }, 
         css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); }, 
@@ -305,6 +351,32 @@ __viewContext.ready(function () {
         features: [{
             name: "BodyCellStyle",
             decorator: middleContentDeco   
+        }, {
+            name: "Click",
+            handler: function(ui) {
+                if (ui.columnKey !== "over1") return;
+                ui.popupPanel({ wrap: true });
+                ui.popupPanel("show", $("<div/>").css({ width: "100px", height: "70px" })
+                    .html(`認定看護師
+                                                        保健師
+                                                        助産師`));
+                
+//                Unwrapped popup
+//                let panel;
+//                if ($("#tooltip-panel").length === 0) {
+//                    panel = $("<div id='tooltip-panel'/>").css({ width: "100px", height: "70px" })
+//                    .html(`認定看護師
+//                                                        保健師
+//                                                        助産師`).appendTo("body");
+//                } else {
+//                    panel = $("#tooltip-panel");
+//                }
+//                
+//                ui.popupPanel({ panel: panel });
+//                ui.popupPanel("show");
+                
+                setTimeout(() => ui.popupPanel("close"), 3000);
+            }
         }]
     };
     let detailHeader = {
@@ -321,18 +393,34 @@ __viewContext.ready(function () {
         }, {
             name: "ColumnResizes"
         }, {
-            name: "HeaderPopups",
-            menu: {
-                rows: [0],
-                items: [
-                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                    { id: "partition" },
-                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
-                ]
+//            name: "HeaderPopups",
+//            menu: {
+//                rows: [0],
+//                items: [
+//                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+//                    { id: "partition" },
+//                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+//                ]
+//            },
+//            popup: {
+//                rows: [1],
+//                provider: function() { return $("#popup"); }
+//            }
+        }, {
+            name: "Hover",
+            selector: ".header-image",
+            enter: function(ui) {
+                if (ui.rowIdx === 1 && $(ui.target).is(".header-image")) {
+                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: "50px" }).html(`${ui.rowIdx}-${ui.columnKey}`));
+                }
             },
-            popup: {
-                rows: [1],
-                provider: function() { return $("#popup"); }
+            exit: function(ui) {
+                ui.tooltip("hide");
+            }   
+        }, {
+            name: "Click",
+            handler: function(ui) {
+                alert(`${ui.rowIdx}-${ui.columnKey}`);
             }
         }]
     };
@@ -347,21 +435,31 @@ __viewContext.ready(function () {
         }, {
             name: "TimeRange",
             ranges: timeRanges
+        }, {
+            name: "RightClick",
+            handler: function(ui) {
+                let items = [
+                    { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                    { id: "partition" },
+                    { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                ];
+                
+                ui.contextMenu(items);
+                ui.contextMenu("show");
+            }
         }],
         view: function(mode) {
             switch (mode) {
                 case "shortName":
                     return [ "workTypeName", "workTimeName" ];
                 case "symbol": 
-                    return [ "symbol" ];
+                    return [ "symbolName" ];
                 case "time":
-                    return [ "startTime", "endTime" ]; 
+                    return ["workTypeName", "workTimeName", "startTime", "endTime" ]; 
             }
         },
-        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
-        upperInput: "startTime",
-        lowerInput: "endTime",
-        banEmptyInput: [ "time" ]
+        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbolCode", "symbolName", "startTime", "endTime" ],
+//        banEmptyInput: [ "time" ]
     };
     
     let leftHorzColumns = [
@@ -423,22 +521,49 @@ __viewContext.ready(function () {
         dataSource: vertSumContentDs,
         primaryKey: "empId"
     };
+    
+    function customValidate(idx, key, innerIdx, value, obj) {
+        let startTime, endTime;
+        if (innerIdx === 2) {
+            startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+            endTime = !_.isNil(obj.endTime) ? nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue() : 0;
+        } else if (innerIdx === 3) {
+            startTime = !_.isNil(obj.startTime) ? nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue() : 0;
+            endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+        }
+        
+        if (startTime > endTime) {
+            return { isValid: false, message: "start > end" };    
+        }
+        
+        if (innerIdx === 2) {
+            return { isValid: true, innerErrorClear: [3] };
+        } else if (innerIdx === 3) {
+            return { isValid: true, innerErrorClear: [2] };
+        }
+        
+        return { isValid: true };
+    };
+    
+    let start = performance.now();
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
             horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowXOccupation: 170,
+            windowXOccupation: 320,
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "stick",
+            updateMode: "copyPaste",
             pasteOverWrite: true,
             stickOverWrite: true,
-            viewMode: "shortName",
+            viewMode: "time",
             showTooltipIfOverflow: true,
-            secondaryTable: $("#subtable"),
+            errorMessagePopup: true,
+            customValidate: customValidate,
+//            secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
                 columns: ["empName"]
@@ -456,6 +581,9 @@ __viewContext.ready(function () {
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
         .create();
+    
+    $("#extable").exTable("scrollBack", 0, { h: 1050 });
+    console.log(performance.now() - start);
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },
@@ -506,18 +634,18 @@ __viewContext.ready(function () {
         highlight: false,
         primaryKey: "itemId"
     };
-    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
-        headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
-        horizontalSumBodyRowHeight: "20px",
-        areaResize: false, 
-        bodyHeightMode: "fixed",
-        updateMode: "edit",
-        windowXOccupation: 120,
-        windowYOccupation: 600,
-        primaryTable: $("#extable") 
-        })
-    .LeftmostHeader(leftHorzSumHeader2).LeftmostContent(leftHorzSumContent2)
-    .DetailHeader(horizontalSumHeader2).DetailContent(horizontalSumContent2).create();
+//    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
+//        headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
+//        horizontalSumBodyRowHeight: "20px",
+//        areaResize: false, 
+//        bodyHeightMode: "fixed",
+//        updateMode: "edit",
+//        windowXOccupation: 120,
+//        windowYOccupation: 600,
+//        primaryTable: $("#extable") 
+//        })
+//    .LeftmostHeader(leftHorzSumHeader2).LeftmostContent(leftHorzSumContent2)
+//    .DetailHeader(horizontalSumHeader2).DetailContent(horizontalSumContent2).create();
     
         $("#extable").on("extablecellupdated", function() {
         });
@@ -629,21 +757,29 @@ __viewContext.ready(function () {
             columns: newDetailColumns
         };
         $("#show-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent, true);
-            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
+//            $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent, true);
+//            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
+            $("#extable").exTable("scrollBack", 0, { h: 0 });
         });
-        $("#hide-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", { columns: detailColumns }, { columns: detailColumns }, true);
-            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
+    
+        $("#update-detail-color").click(function() {
+            $("#extable").exTable("updateTable", "detail", null, 
+                { features: [{
+                    name: "BodyCellStyle",
+                    decorator: [new CellColor("_3", "2", "#00AABB", 0)]
+                }]});
+            
+            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+//            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
         });
         $("#set-sticker-multi").click(function() {
             return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
+            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", null, null, "6:30", "15:29", "✖"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30", "✖"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
-            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null));
+            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null, "2:15", "15:00", "✖"));
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
 //            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
 //            $("#extable").exTable("stickData", 
@@ -659,20 +795,48 @@ __viewContext.ready(function () {
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");
         });
+        
+        $("#stick-redo").click(function() {
+            $("#extable").exTable("stickRedo");
+        });
+    
         $("#set-sticker-valid").click(function() {
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) { 
+                let dfd = $.Deferred();
                 if (rowIdx > 6) {
-                    return function() {
+                    dfd.resolve(function() {
                         alert("error");
-                    };
-                }
-                return true;
+                    });
+                } else dfd.resolve(true);
+                
+                return dfd.promise();
+            });
+        });
+    
+        $("#set-paste-valid").click(function() {
+            $("#extable").exTable("pasteValidate", function(data) {
+                let dfd = $.Deferred(), invalid = false;
+                _.forEach(data, d => {
+                    if (d.startTime === "6:00") {
+                        invalid = true;
+                        dfd.resolve(function() {
+                            nts.uk.ui.dialog.alert("Error");
+                        });
+                        
+                        return false;
+                    }
+                });
+                
+                if (!invalid) dfd.resolve(true)
+                return dfd.promise();
             });
         });
     
         $("#stick-styler").click(function() {
-            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                return { class: "red-text" };
+            $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                if (innerIdx === 0) return { class: "red-text", background: "#cba" };
+                else if (innerIdx === 1) return { textColor: "#11BBAA", background: "#abc" };
+                else if (innerIdx === -1 || _.isNil(innerIdx)) return { textColor: "#11AABB", background: "red" };
             });
         });    
     

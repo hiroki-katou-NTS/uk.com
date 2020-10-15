@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 
 /**
  * 
@@ -22,21 +24,20 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 @Getter
 @Setter
 public class BreakTimeOfDailyPerformance extends AggregateRoot {
-	
+	//社員ID
 	private String employeeId;
 	
-	private BreakType breakType;
-	
-	private List<BreakTimeSheet> breakTimeSheets;
-	
+	//年月日
 	private GeneralDate ymd;
 	
+	//時間帯
+	private BreakTimeOfDailyAttd timeZone;
 	/**
 	 * 休憩種類の取得
 	 * @return
 	 */
 	public BreakType getcategory() {
-		return this.breakType;
+		return this.timeZone.getBreakType();
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	public int sumBreakTimeIn(TimeSpanForCalc baseTimeSheet) {
 		
-		return this.breakTimeSheets.stream()
+		return this.timeZone.getBreakTimeSheets().stream()
 				.collect(Collectors.summingInt(b -> b.calculateMinutesDuplicatedWith(baseTimeSheet)));
 	}
 	
@@ -55,16 +56,23 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
-		return this.breakTimeSheets.stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
+		return this.timeZone.getBreakTimeSheets().stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
 	}
 
 	public BreakTimeOfDailyPerformance(String employeeId, BreakType breakType, List<BreakTimeSheet> breakTimeSheets,
 			GeneralDate ymd) {
 		super();
 		this.employeeId = employeeId;
-		this.breakType = breakType;
-		this.breakTimeSheets = breakTimeSheets == null ? new ArrayList<>() : breakTimeSheets;
 		this.ymd = ymd;
+		this.timeZone = new BreakTimeOfDailyAttd(breakType, breakTimeSheets == null ? new ArrayList<>() : breakTimeSheets);
 	}
+
+	public BreakTimeOfDailyPerformance(String employeeId, GeneralDate ymd, BreakTimeOfDailyAttd timeZone) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.timeZone = timeZone;
+	}
+	
 
 }

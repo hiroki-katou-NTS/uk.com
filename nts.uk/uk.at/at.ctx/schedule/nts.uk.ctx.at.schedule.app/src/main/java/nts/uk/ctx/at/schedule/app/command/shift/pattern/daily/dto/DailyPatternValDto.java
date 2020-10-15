@@ -34,7 +34,7 @@ public class DailyPatternValDto {
 	 * @return
 	 */
 	public WorkCycleInfo toDomain(){
-		WorkCycleInfo result = WorkCycleInfo.create(days,new WorkInformation(getWorkingHoursCd(),getWorkTypeSetCd()));
+		WorkCycleInfo result = WorkCycleInfo.create(days,new WorkInformation(getWorkTypeSetCd(), getWorkingHoursCd()));
 		return result;
 	}
 

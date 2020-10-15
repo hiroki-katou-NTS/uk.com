@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.algorithm.difftimecorrection;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;

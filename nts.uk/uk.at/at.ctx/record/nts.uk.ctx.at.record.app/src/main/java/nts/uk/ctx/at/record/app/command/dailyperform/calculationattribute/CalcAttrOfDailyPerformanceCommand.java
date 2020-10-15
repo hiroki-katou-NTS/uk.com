@@ -15,7 +15,8 @@ public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? null : ((CalcAttrOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate());
+		CalAttrOfDailyPerformance CalAttrOfDailyPerformance = new CalAttrOfDailyPerformance(getEmployeeId(), getWorkDate(), ((CalcAttrOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? null :CalAttrOfDailyPerformance ;
 	}
 
 	@Override

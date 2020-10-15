@@ -468,6 +468,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 													                        .jobTitleName(jobInfo.getJobTitleName().v())
 													                        .startDate(jobHis.start())
 													                        .endDate(jobHis.end())
+													                        .jobTitleCode(jobInfo.getJobTitleCode() != null ? jobInfo.getJobTitleCode().v() : null)
 													                        .build();
                 listEmployeeJobHistExport.add(data);
         	});

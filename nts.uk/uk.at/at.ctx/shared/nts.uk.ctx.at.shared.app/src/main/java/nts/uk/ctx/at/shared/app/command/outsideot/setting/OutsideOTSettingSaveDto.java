@@ -12,11 +12,11 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.outsideot.breakdown.OutsideOTBRDItemSaveDto;
 import nts.uk.ctx.at.shared.app.command.outsideot.overtime.OvertimeSaveDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
 
 /**
  * The Class OutsideOTSettingSaveDto.

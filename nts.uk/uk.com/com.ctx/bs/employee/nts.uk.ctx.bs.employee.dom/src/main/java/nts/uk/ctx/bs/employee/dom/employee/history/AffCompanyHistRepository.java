@@ -9,11 +9,12 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 public interface AffCompanyHistRepository {
 	/** add new affiliation history */
+	/**[0] insert ( 所属会社履歴 ) **/
 	void add(AffCompanyHist domain);
-
+	/** [1] update ( 所属会社履歴 ) **/
 	/** update one affiliation history */
 	void update(AffCompanyHist domain);
-
+	
 	/** remove all affiliation history of one person */
 	void remove(AffCompanyHist domain);
 
@@ -22,10 +23,11 @@ public interface AffCompanyHistRepository {
 
 	/** remove affiliation history of one employee */
 	void remove(String pId, String employeeId);
-
+	
 	/** remove all affiliation history of one person */
+	/**[2] delete ( 個人ID )	**/
 	void remove(String pId);
-
+	/**[3-1] 社員IDを指定して履歴を取得する ( 社員ID ) **/
 	AffCompanyHist getAffCompanyHistoryOfPerson(String personId);
 
 	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
@@ -41,7 +43,7 @@ public interface AffCompanyHistRepository {
 	Map<String, AffCompanyHist> getAffCompanyHistoryOfEmployee(String cid, List<String> sids);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
-	
+	/**[3-2] *社員IDを指定して履歴を取得する ( List<社員ID> )**/
 	/**
 	 * return AffCompanyHistByEmployee
 	 * @param employeeIds
@@ -93,4 +95,6 @@ public interface AffCompanyHistRepository {
 
 	// get data cps013
 	List<AffCompanyHist> getAffComHistOfEmployeeListAndNoBaseDateV3(List<String> sids);
+	/** [4] 期間を指定して社員ID付き履歴項目を取得する **/
+	List<CompanyWithEmployeeID> getHistoryItemByEmpID(List<String> lstEmpId , DatePeriod datePeriod);
 }

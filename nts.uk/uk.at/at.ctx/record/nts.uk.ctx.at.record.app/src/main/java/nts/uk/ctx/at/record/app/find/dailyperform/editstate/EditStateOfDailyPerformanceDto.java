@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 @AttendanceItemRoot(rootName = ItemConst.DAILY_EDIT_STATE_NAME)
 @Data
@@ -44,7 +45,17 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		if(c == null) {
 			return new EditStateOfDailyPerformanceDto();
 		}
-		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
+		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getEditState().getAttendanceItemId(), c.getYmd(),
+				c.getEditState().getEditStateSetting() == null ? 0 : c.getEditState().getEditStateSetting().value);
+		dto.exsistData();
+		return dto;
+	}
+	
+	public static EditStateOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd,EditStateOfDailyAttd c) {
+		if(c == null) {
+			return new EditStateOfDailyPerformanceDto();
+		}
+		EditStateOfDailyPerformanceDto dto = new EditStateOfDailyPerformanceDto(employeeID, c.getAttendanceItemId(), ymd,
 				c.getEditStateSetting() == null ? 0 : c.getEditStateSetting().value);
 		dto.exsistData();
 		return dto;
@@ -76,7 +87,7 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public EditStateOfDailyPerformance toDomain(String employeeId, GeneralDate date) {
+	public EditStateOfDailyAttd toDomain(String employeeId, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -86,7 +97,8 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date, state());
+		EditStateOfDailyPerformance domain =  new EditStateOfDailyPerformance(employeeId, attendanceItemId, date, state());
+		return domain.getEditState();
 	}
 	
 	public EditStateSetting state(){

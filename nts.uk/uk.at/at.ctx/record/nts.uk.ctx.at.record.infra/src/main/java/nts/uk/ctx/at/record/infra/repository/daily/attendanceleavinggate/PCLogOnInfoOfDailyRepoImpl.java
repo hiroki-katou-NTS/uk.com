@@ -20,10 +20,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayPcLogonInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
@@ -107,11 +107,11 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		if(entities.isEmpty()) {
 			add(domain);
 		} else {
-			List<Integer> nos = domain.getLogOnInfo().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
+			List<Integer> nos = domain.getTimeZone().getLogOnInfo().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
 			List<KrcdtDayPcLogonInfo> toDelete = entities.stream()
 					.filter(c -> !nos.contains(c.id.pcLogNo)).collect(Collectors.toList());
 			this.commandProxy().removeAll(toDelete);
-			domain.getLogOnInfo().stream().forEach(c -> {
+			domain.getTimeZone().getLogOnInfo().stream().forEach(c -> {
 				Optional<KrcdtDayPcLogonInfo> entityOp = entities.stream().filter(e -> e.id.pcLogNo == c.getWorkNo().v())
 																		.findFirst();
 				if(entityOp.isPresent()) {
@@ -131,7 +131,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
-			for(LogOnInfo logOnInfo : domain.getLogOnInfo()){
+			for(LogOnInfo logOnInfo : domain.getTimeZone().getLogOnInfo()){
 				Integer logOff = logOnInfo.getLogOff().isPresent() ? logOnInfo.getLogOff().get().valueAsMinutes() : null;
 				Integer logOn = logOnInfo.getLogOn().isPresent() ? logOnInfo.getLogOn().get().valueAsMinutes() : null;
 				

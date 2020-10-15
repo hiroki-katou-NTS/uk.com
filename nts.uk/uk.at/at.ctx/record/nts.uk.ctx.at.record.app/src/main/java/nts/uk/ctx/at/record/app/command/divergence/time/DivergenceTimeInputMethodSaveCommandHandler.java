@@ -10,8 +10,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 
 /**
  * The Class DivergenceTimeInputMethodSaveCommandHandler.
@@ -49,7 +49,7 @@ public class DivergenceTimeInputMethodSaveCommandHandler extends CommandHandler<
 				command.isDivergenceReasonSelected());
 		// convert to domain
 
-		DivergenceTime divTime = new DivergenceTime(divTimeCommand);
+		DivergenceTimeRoot divTime = new DivergenceTimeRoot(divTimeCommand);
 		DivergenceReasonInputMethod divReasonInput = new DivergenceReasonInputMethod(divReasonCommand);
 		// update
 		this.divTimeRepo.update(divTime);

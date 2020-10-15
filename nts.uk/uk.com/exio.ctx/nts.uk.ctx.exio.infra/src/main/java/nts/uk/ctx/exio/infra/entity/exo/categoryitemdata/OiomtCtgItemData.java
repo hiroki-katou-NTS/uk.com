@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CTG_ITEM_DATA")
+@Table(name = "OIOMT_EX_OUT_CTG_ITEM_DT")
 public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -111,6 +111,13 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "SEARCH_VALUE_CD")
 	public String searchValueCd;
+	
+	/**
+	 * 予約語区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "KEYWORD_ATR")
+	public int keywordAtr;
 
 	@Override
 	protected Object getKey() {
@@ -121,7 +128,7 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 		return new CtgItemData(this.tblAlias, this.ctgItemDataPk.categoryId, this.dataType, this.tableName,
 				this.fieldName, this.primarykeyClassfication, this.dateClassfication, this.specialItem,
 				this.displayTableName, this.displayClassfication, this.ctgItemDataPk.itemNo, this.itemName,
-				this.requiredCategory, this.searchValueCd);
+				this.requiredCategory, this.searchValueCd, this.keywordAtr);
 	}
 
 	public static OiomtCtgItemData toEntity(CtgItemData domain) {
@@ -129,13 +136,14 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 				domain.getTblAlias(), domain.getDataType().value, domain.getTableName(), domain.getFieldName(),
 				domain.getPrimarykeyClassfication().get().value, domain.getDateClassfication().get(), domain.getSpecialItem().value,
 				domain.getDisplayTableName(), domain.getDisplayClassfication().value, domain.getItemName().v(),
-				domain.getRequiredCategory().value, domain.getSearchValueCd().get());
+				domain.getRequiredCategory().value, domain.getSearchValueCd().get(), domain.getKeywordAtr().value);
 	}
 
 	public OiomtCtgItemData(OiomtCtgItemDataPk ctgItemDataPk, String tblAlias, int dataType, String tableName,
 			String fieldName, int primarykeyClassfication, String dateClassfication, int specialItem,
 			String displayTableName, int displayClassfication, String itemName, int requiredCategory,
-			String searchValueCd) {
+			String searchValueCd,
+			int keywordAtr) {
 		super();
 		this.ctgItemDataPk = ctgItemDataPk;
 		this.tblAlias = tblAlias;
@@ -150,6 +158,7 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 		this.itemName = itemName;
 		this.requiredCategory = requiredCategory;
 		this.searchValueCd = searchValueCd;
+		this.keywordAtr = keywordAtr;
 	}
 
 }

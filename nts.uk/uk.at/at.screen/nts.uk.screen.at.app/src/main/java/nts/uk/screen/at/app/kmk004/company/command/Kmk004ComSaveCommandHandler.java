@@ -12,9 +12,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.SaveComMonthCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.SaveComStatWorkTimeSetCommandHandler;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.ReferencePredTimeOfFlex;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

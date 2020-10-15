@@ -19,27 +19,27 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.PSBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.PersonalBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkingTimesheetBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -95,37 +95,37 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput, String appDate,
 			String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
-		if (appCommonSettingOutput != null) {
-			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
-				if (useAtr == UseAtr.USE.value) {
-					if (appDate != null) {
-						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
-						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
-								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-						if (overtimeInstruct != null) {
-							TimeWithDayAttr startTime = new TimeWithDayAttr(
-									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
-							TimeWithDayAttr endTime = new TimeWithDayAttr(
-									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
-							overtimeInstructInformation
-									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
-											+ startTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getStartClock().v()) + "~"
-											+ endTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getEndClock().v()) + " "
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
-						} else {
-							overtimeInstructInformation.setOvertimeInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
-						}
-					}
-				} else {
-					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
-				}
-			}
-		}
+//		if (appCommonSettingOutput != null) {
+//			if(appCommonSettingOutput.approvalFunctionSetting != null){
+//				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
+//				if (useAtr == UseAtr.USE.value) {
+//					if (appDate != null) {
+//						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
+//						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
+//								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+//						if (overtimeInstruct != null) {
+//							TimeWithDayAttr startTime = new TimeWithDayAttr(
+//									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+//							TimeWithDayAttr endTime = new TimeWithDayAttr(
+//									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
+//							overtimeInstructInformation
+//									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
+//											+ startTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getStartClock().v()) + "~"
+//											+ endTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getEndClock().v()) + " "
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+//						} else {
+//							overtimeInstructInformation.setOvertimeInstructInfomation(
+//									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+//						}
+//					}
+//				} else {
+//					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
+//				}
+//			}
+//		}
 		return overtimeInstructInformation;
 	}
 
@@ -157,7 +157,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return result;
 		}
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
 			return result;
 		}
@@ -175,7 +175,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 	
 	@Override
-	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport) {
+	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport) {
 		String companyID = AppContexts.user().companyId();
 		AppOvertimeReference result = new AppOvertimeReference();
 		result.setAppDateRefer(date.toString(DATE_FORMAT));
@@ -208,11 +208,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if(recordWorkInfoImport.getWorkTimeCode().equals(workTime)){
 			// Input．実績内容.就業時間帯コード=Input．就業時間帯コード
 			result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
-			overTimeInputsRefer.stream().forEach(x -> {
+			/*overTimeInputsRefer.stream().forEach(x -> {
 				x.setApplicationTime(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.filter(y -> y.getFrameNo()==x.getFrameNo()).findAny()
 						.map(z -> z.getResultCaculation()).orElse(null));
-			});
+			});*/
 			result.setOverTimeInputsRefer(overTimeInputsRefer);
 			return result;
 		}
@@ -230,7 +230,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport) {
+	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport) {
 		String companyID = AppContexts.user().companyId();
 		AppOvertimeReference result = new AppOvertimeReference();
 		result.setAppDateRefer(date.toString(DATE_FORMAT));
@@ -249,11 +249,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if(recordWorkInfoImport.getWorkTimeCode().equals(workTime)){
 			// Input．実績内容.就業時間帯コード=Input．就業時間帯コード
 			result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
-			overTimeInputsRefer.stream().forEach(x -> {
+			/*overTimeInputsRefer.stream().forEach(x -> {
 				x.setApplicationTime(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.filter(y -> y.getFrameNo()==x.getFrameNo()).findAny()
 						.map(z -> z.getResultCaculation()).orElse(null));
-			});
+			});*/
 			result.setOverTimeInputsRefer(overTimeInputsRefer);
 			return result;
 		}
@@ -270,11 +270,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		return result;
 	}
 	
-	private List<OvertimeRefer> convertOTReferFromReal(RecordWorkInfoImport recordWorkInfoImport){
+	private List<OvertimeRefer> convertOTReferFromReal(RecordWorkInfoImport_Old recordWorkInfoImport){
 		List<OvertimeRefer> overtimeReferLst = new ArrayList<>();
-		overtimeReferLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream().map(x -> new OvertimeRefer(x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
+		/*overtimeReferLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream().map(x -> new OvertimeRefer(x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 		overtimeReferLst.add(new OvertimeRefer(11, recordWorkInfoImport.getShiftNightCaculation()));
-		overtimeReferLst.add(new OvertimeRefer(12, recordWorkInfoImport.getFlexCaculation()));
+		overtimeReferLst.add(new OvertimeRefer(12, recordWorkInfoImport.getFlexCaculation()));*/
 		return overtimeReferLst;
 	}
 	

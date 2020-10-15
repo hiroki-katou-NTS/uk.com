@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingSetMemento;
 
 /**
  * The Class UsageUnitSettingDto.

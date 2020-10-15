@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone;
 
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+
 /**
  * 1日の範囲を時間帯で返す
  * 

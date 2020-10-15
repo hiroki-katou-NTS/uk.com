@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.app.command.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMnt;
 
 /**
  * The class add insufficient flex holiday command

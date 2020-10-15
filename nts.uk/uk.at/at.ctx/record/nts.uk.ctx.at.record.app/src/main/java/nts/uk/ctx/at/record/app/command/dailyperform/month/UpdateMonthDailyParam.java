@@ -5,9 +5,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 
 @Data
 @AllArgsConstructor

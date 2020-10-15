@@ -15,11 +15,11 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecord;
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecordPK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecordRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksNo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 

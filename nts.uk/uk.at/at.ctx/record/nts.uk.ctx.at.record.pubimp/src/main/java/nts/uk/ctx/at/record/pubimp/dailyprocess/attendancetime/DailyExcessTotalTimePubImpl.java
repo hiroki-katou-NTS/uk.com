@@ -41,24 +41,24 @@ public class DailyExcessTotalTimePubImpl implements DailyExcessTotalTimePub{
 			AttendanceTime flexOverTime = new AttendanceTime(0);
 			AttendanceTime excessMidTime = new AttendanceTime(0);
 			if(domain != null
-			   && domain.getActualWorkingTimeOfDaily() != null
-			   && domain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-				if(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
+			   && domain.getTime().getActualWorkingTimeOfDaily() != null
+			   && domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				if(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
 					//残業＆フレ
-					if(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-						overTime = new AttendanceTime(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime()
-												  		+ domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime());
-						flexOverTime = domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().greaterThan(0)
-										? new AttendanceTime(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes())
+					if(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+						overTime = new AttendanceTime(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTotalFrameTime()
+												  		+ domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcTransTotalFrameTime());
+						flexOverTime = domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().greaterThan(0)
+										? new AttendanceTime(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes())
 										: new AttendanceTime(0);
 					}
 					//休出
-					if(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
-						holidayWorkTime = new AttendanceTime(domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime()
-																+ domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime());
+					if(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
+						holidayWorkTime = new AttendanceTime(domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTotalFrameTime()
+																+ domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime());
 						
 					}
-					excessMidTime = domain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getCalcTime();
+					excessMidTime = domain.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getTime().getCalcTime();
 				}
 			}
 			returnMap.put(domain.getYmd(), new DailyExcessTotalTimeExpParam(overTime, holidayWorkTime, flexOverTime, excessMidTime));

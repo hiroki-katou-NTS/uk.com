@@ -23,56 +23,7 @@ import lombok.val;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.text.StringUtil;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.ConstraintTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
-import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
-import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
-import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
@@ -82,9 +33,62 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -1275,6 +1279,22 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	@Column(name = "SP_RAISESALARY_OUT_TIME10")
 	public int spRaiseSalaryOutTime10;
 	
+	/** インターバル出勤時刻 */
+	@Column(name = "INTERVAL_ATTENDANCE_CLOCK")
+	public int intervalAttendance;
+	
+	/** インターバル時間 */
+	@Column(name = "INTERVAL_TIME")
+	public int intervalTime;
+	
+	/** 振休使用時間 */
+	@Column(name = "HOL_TRANSFER_USE_TIME")
+	public int transferHolidayTime;
+	
+	/** 計算差異時間 */
+	@Column(name = "CALC_DIFF_TIME")
+	public int calcDiffTime;
+	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
 	@Override
@@ -1313,12 +1333,12 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	
 	public void setData(AttendanceTimeOfDailyPerformance attendanceTime) {
 		/*----------------------日別実績の勤怠時間------------------------------*/
-		ActualWorkingTimeOfDaily actualWork = attendanceTime.getActualWorkingTimeOfDaily();
+		ActualWorkingTimeOfDaily actualWork = attendanceTime.getTime().getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWork = actualWork == null ? null :actualWork.getTotalWorkingTime();
 		ConstraintTime constraintTime = actualWork == null ? null : actualWork.getConstraintTime();
 		ExcessOfStatutoryMidNightTime excessStt = totalWork == null ? null : totalWork.getExcessOfStatutoryTimeOfDaily() == null ? null 
 				: totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
-		StayingTimeOfDaily staying = attendanceTime.getStayingTime();
+		StayingTimeOfDaily staying = attendanceTime.getTime().getStayingTime();
 		if(totalWork != null){
 			/* 総労働時間 */
 			this.totalAttTime = totalWork.getTotalTime() == null ? 0 : totalWork.getTotalTime().valueAsMinutes();
@@ -1329,7 +1349,18 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			/* 勤務回数 */
 			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
 			/*休暇加算時間*/
-			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();		
+			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();
+			
+			if (totalWork.getIntervalTime() != null) {
+				this.intervalAttendance = totalWork.getIntervalTime().getIntervalAttendance() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalAttendance().valueAsMinutes();
+				this.intervalTime = totalWork.getIntervalTime().getIntervalTime() == null ? 
+						0 : totalWork.getIntervalTime().getIntervalTime().valueAsMinutes();
+			} else {
+				this.intervalAttendance = 0;
+				this.intervalTime = 0;
+			}
+			this.calcDiffTime = totalWork.getCalcDiffTime().valueAsMinutes();
 		}
 		if(constraintTime != null){
 			/* 総拘束時間 */
@@ -1354,9 +1385,9 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		}
 		
 		/* 予実差異時間 */
-		this.budgetTimeVariance = attendanceTime.getBudgetTimeVariance() == null ? 0 : attendanceTime.getBudgetTimeVariance().valueAsMinutes();
+		this.budgetTimeVariance = attendanceTime.getTime().getBudgetTimeVariance() == null ? 0 : attendanceTime.getTime().getBudgetTimeVariance().valueAsMinutes();
 		/* 不就労時間 */
-		this.unemployedTime = attendanceTime.getUnEmployedTime() == null ? 0 : attendanceTime.getUnEmployedTime().valueAsMinutes();
+		this.unemployedTime = attendanceTime.getTime().getUnEmployedTime() == null ? 0 : attendanceTime.getTime().getUnEmployedTime().valueAsMinutes();
 		
 		if(staying != null){
 			/* 滞在時間 */
@@ -1397,8 +1428,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		
 		if(attendanceTime != null) {
 			/*----------------------日別実績の予定時間------------------------------*/
-			if(attendanceTime.getWorkScheduleTimeOfDaily() !=null) {
-				val domain = attendanceTime.getWorkScheduleTimeOfDaily(); 
+			if(attendanceTime.getTime().getWorkScheduleTimeOfDaily() !=null) {
+				val domain = attendanceTime.getTime().getWorkScheduleTimeOfDaily(); 
 				/*勤務予定時間*/
 				this.workScheduleTime = domain.getWorkScheduleTime() == null || domain.getWorkScheduleTime().getTotal() == null ? 0 
 					: domain.getWorkScheduleTime().getTotal().valueAsMinutes();
@@ -1409,7 +1440,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			}
 			/*----------------------日別実績の予定時間------------------------------*/
 			
-			if(attendanceTime.getActualWorkingTimeOfDaily() != null) {
+			if(attendanceTime.getTime().getActualWorkingTimeOfDaily() != null) {
 				/*----------------------日別実績の乖離時間------------------------------*/
 				if(actualWork != null&& actualWork.getDivTime() != null) {
 					val a = actualWork.getDivTime();
@@ -1419,13 +1450,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					}
 				}
 				/*----------------------日別実績の乖離時間------------------------------*/
-				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 					/*----------------------日別実績の休憩時間------------------------------*/
-					if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
-						val recordTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
-						val dedTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
-						val duringTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();
-						val workTimes = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getGooutTimes();
+					if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily() != null) {
+						val recordTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime();
+						val dedTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getDeductionTotalTime();
+						val duringTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime();
+						val workTimes = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getGooutTimes();
 						if(recordTime.getTotalTime() != null) {
 							this.toRecordTotalTime = recordTime.getTotalTime().getTime() == null ? 0 : recordTime.getTotalTime().getTime().valueAsMinutes();
 							this.calToRecordTotalTime = recordTime.getTotalTime().getCalcTime() == null ? 0 : recordTime.getTotalTime().getCalcTime().valueAsMinutes();
@@ -1464,7 +1495,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					}
 					/*----------------------日別実績の休憩時間------------------------------*/
 					/*----------------------日別実績の休出枠時間------------------------------*/
-					val test = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
+					val test = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily();
 					val domain = test == null ? null : test.getWorkHolidayTime().orElse(null);
 					
 					if(domain != null && domain.getHolidayWorkFrameTime() != null || !domain.getHolidayWorkFrameTime().isEmpty()){
@@ -1677,7 +1708,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 					
 					/*----------------------日別実績の休暇------------------------------*/
-					val vacationDomain = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily();
+					val vacationDomain = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily();
 					this.annualleaveTime = 0;
 					this.annualleaveTdvTime = 0;
 					this.compensatoryLeaveTime = 0;
@@ -2210,7 +2241,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
 		 return decisionConnectSpan(overTimeSheet.stream()
  				 								 .filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
- 				 								 .map(tc -> tc.getTimeSpan())
+ 				 								 .map(tc -> tc.getTimeSpan().getTimeSpan())
  				 								 .collect(Collectors.toList()));
 	}
 
@@ -2371,7 +2402,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				  new SubstituteHolidayOfDaily(new AttendanceTime(compensatoryLeaveTime),new AttendanceTime(compensatoryLeaveTdvTime)),
 				  new OverSalaryOfDaily(new AttendanceTime(excessSalaryiesTime),new AttendanceTime(excessSalaryiesTdvTime)),
 				  new SpecialHolidayOfDaily(new AttendanceTime(specialHolidayTime),new AttendanceTime(specialHolidayTdvTime)),
-				  new AnnualOfDaily(new AttendanceTime(annualleaveTime), new AttendanceTime(annualleaveTdvTime))
+				  new AnnualOfDaily(new AttendanceTime(annualleaveTime), new AttendanceTime(annualleaveTdvTime)),
+				  new TransferHolidayOfDaily(new AttendanceTime(transferHolidayTime))
 				 );
 		/*日別実績の予定時間*/
 		val shedule =  new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(this.workScheduleTime), new AttendanceTime(0), new AttendanceTime(0)),
@@ -2449,16 +2481,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 
 		/*日別実績の残業時間帯*/
 		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime1StrClc),new TimeWithDayAttr(this.overTime1EndClc)),new OverTimeFrameNo(1)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime2StrClc),new TimeWithDayAttr(this.overTime2EndClc)),new OverTimeFrameNo(2)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime3StrClc),new TimeWithDayAttr(this.overTime3EndClc)),new OverTimeFrameNo(3)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime4StrClc),new TimeWithDayAttr(this.overTime4EndClc)),new OverTimeFrameNo(4)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime5StrClc),new TimeWithDayAttr(this.overTime5EndClc)),new OverTimeFrameNo(5)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime6StrClc),new TimeWithDayAttr(this.overTime6EndClc)),new OverTimeFrameNo(6)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime7StrClc),new TimeWithDayAttr(this.overTime7EndClc)),new OverTimeFrameNo(7)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime8StrClc),new TimeWithDayAttr(this.overTime8EndClc)),new OverTimeFrameNo(8)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime9StrClc),new TimeWithDayAttr(this.overTime9EndClc)),new OverTimeFrameNo(9)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime10StrClc),new TimeWithDayAttr(this.overTime10EndClc)),new OverTimeFrameNo(10)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime1StrClc),new TimeWithDayAttr(this.overTime1EndClc)),new OverTimeFrameNo(1)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime2StrClc),new TimeWithDayAttr(this.overTime2EndClc)),new OverTimeFrameNo(2)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime3StrClc),new TimeWithDayAttr(this.overTime3EndClc)),new OverTimeFrameNo(3)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime4StrClc),new TimeWithDayAttr(this.overTime4EndClc)),new OverTimeFrameNo(4)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime5StrClc),new TimeWithDayAttr(this.overTime5EndClc)),new OverTimeFrameNo(5)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime6StrClc),new TimeWithDayAttr(this.overTime6EndClc)),new OverTimeFrameNo(6)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime7StrClc),new TimeWithDayAttr(this.overTime7EndClc)),new OverTimeFrameNo(7)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime8StrClc),new TimeWithDayAttr(this.overTime8EndClc)),new OverTimeFrameNo(8)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime9StrClc),new TimeWithDayAttr(this.overTime9EndClc)),new OverTimeFrameNo(9)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(this.overTime10StrClc),new TimeWithDayAttr(this.overTime10EndClc)),new OverTimeFrameNo(10)));
 		
 		val overTime = new OverTimeOfDaily(timeSheet, 
 				   						   list,
@@ -2637,9 +2669,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
 				test.get(0),
-				vacation
-				);
-
+				vacation,
+				IntervalTimeOfDaily.of(
+						new AttendanceClock(this.intervalAttendance), 
+						new AttendanceTime(this.intervalTime)));
+		totalTime.setVacationAddTime(new AttendanceTime(this.vactnAddTime));
+		totalTime.setCalcDiffTime(new AttendanceTime(this.calcDiffTime));
+		
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
 				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayPremiumTime.toDomain());
@@ -2771,21 +2807,22 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				  new SubstituteHolidayOfDaily(new AttendanceTime(entity.compensatoryLeaveTime),new AttendanceTime(entity.compensatoryLeaveTdvTime)),
 				  new OverSalaryOfDaily(new AttendanceTime(entity.excessSalaryiesTime),new AttendanceTime(entity.excessSalaryiesTdvTime)),
 				  new SpecialHolidayOfDaily(new AttendanceTime(entity.specialHolidayTime),new AttendanceTime(entity.specialHolidayTdvTime)),
-				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime))
+				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime)),
+				  new TransferHolidayOfDaily(new AttendanceTime(entity.transferHolidayTime))
 				 );
 		
 		/*日別実績の残業時間帯*/
 		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
 		
 		/*日別実績の残業時間*/
 		List<OverTimeFrameTime> list = new ArrayList<>();
@@ -3038,10 +3075,12 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 														  new WorkTimes(entity.workTimes),
 														  new TemporaryTimeOfDaily(),
 														  test.get(0),
-														  vacation
-														  );
+														  vacation,
+														  IntervalTimeOfDaily.of(
+																  new AttendanceClock(entity.intervalAttendance), 
+																  new AttendanceTime(entity.intervalTime)));
 		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
-		
+		totalTime.setCalcDiffTime(new AttendanceTime(entity.calcDiffTime));
 		
 		//実働時間/実績時間  - 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.of(totalTime,

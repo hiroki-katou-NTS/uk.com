@@ -21,6 +21,8 @@
 
 .view-kmp {
 	float: left;
+	margin-left: 25px;
+	margin-top: 25px;
 }
 
 .view-kmp .model-component {
@@ -28,7 +30,7 @@
 }
 
 .ntsSearchBox_Component {
-	margin-top: 4px;	
+	margin-top: 4px;
 }
 
 .view-kmp .model-component table.layout-grid td div {
@@ -58,12 +60,12 @@
 }
 
 #func-notifier-errors {
-    top: 143px;
-    left: 120px;
-    position: fixed;
-    width: 100px;
-    height: 24px;
-    z-index: 999999;
+	top: 143px;
+	left: 120px;
+	position: fixed;
+	width: 100px;
+	height: 24px;
+	z-index: 999999;
 }
 
 .view-kmp .model-component table td.label-column-left ~ div {
@@ -116,29 +118,99 @@
 
 #stampcard-list_container {
 	margin-top: 15px;
-	margin-left: 45px;	
+	margin-left: 45px;
 }
-
 
 #stampcard-list_container .ui-icon.ui-icon-triangle-1-e {
 	display: none;
 }
 
 #stampcard-list_container .ui-iggrid-rowselector-class,
-#stampcard-list_container .ui-iggrid-rowselector-header.ui-iggrid-header.ui-widget-header {
+	#stampcard-list_container .ui-iggrid-rowselector-header.ui-iggrid-header.ui-widget-header
+	{
 	text-align: center;
 }
 
 #stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal,
-#stampcard-list_container .ui-iggrid-rowselector-header .ui-igcheckbox-normal {
+	#stampcard-list_container .ui-iggrid-rowselector-header .ui-igcheckbox-normal
+	{
 	float: none !important;
 }
 
-#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on {
+#stampcard-list_container .ui-iggrid-rowselector-class .ui-igcheckbox-normal>.ui-igcheckbox-normal-on
+	{
 	left: 0;
 	float: none !important;
 }
 
 .ui-iggrid-header ui-widget-header {
-    background-color: orange;
+	background-color: orange;
+}
+
+.view-kmp .list-panel {
+	float: left;
+	margin-top: 15px;
+}
+
+.view-kmp .list-panel .supper {
+	margin-right: 15px;
+	margin-top: 15px;
+	padding: 7px;
+	width: 350px;
+	height: 160px;
+}
+
+.view-kmp .list-panel .supper .panel-gray-bg .title {
+	font-size: 25px;
+	color: white;
+}
+
+.view-kmp .list-panel .supper .content {
+	margin-top: 10px;
+	height: 50px;
+}
+
+.view-kmp .list-panel .supper .button-select {
+	text-align: right;
+}
+
+.view-kmp .view-e-content {
+	width: 700px;
+	margin-top: 10px;
+}
+
+.view-kmp .view-e-content .ntsRadioBox {
+	margin-top: 25px;
+	margin-bottom: 10px;
+}
+
+.view-kmp .view-e-content .view-e-bg-button {
+	width: 700px;
+	text-align: right;
+    margin-top: 25px;
+}
+
+.view-kmp .view-e-content .view-e-bg-button .view-e-button {
+	text-align: center;
+	width: 100px;
+}
+
+.view-kmp .view-h-title {
+	width: 728px;
+}
+
+.panel.panel-gray-bg {
+	background-color: #A5A5A5;
+}
+
+.view-kmp .search_label {
+	padding-bottom: 0px;
+	margin-bottom: 6px;
+}
+
+.caret-inline:after {
+	margin-left: -2px;
+}
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header, .ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active, .ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus, .ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+	white-space: pre;
 }

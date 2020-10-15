@@ -30,7 +30,7 @@ public interface RankRepository {
 	List<Rank> getListRank(String companyId, List<RankCode> listRankCd);
 
 	/**
-	 * 
+	 * [2] コード順でランクリストを取得する
 	 * @param companyId
 	 * @return
 	 */

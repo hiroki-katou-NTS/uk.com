@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTime;
 import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTimePK;
 

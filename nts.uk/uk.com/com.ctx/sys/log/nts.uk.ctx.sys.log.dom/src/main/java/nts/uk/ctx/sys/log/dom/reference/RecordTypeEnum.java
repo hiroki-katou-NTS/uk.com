@@ -13,8 +13,14 @@ public enum RecordTypeEnum {
 	DATA_MANIPULATION(5, "Enum_RecordType_DataManipulation"),
 	DATA_CORRECT(6, "Enum_RecordType_DataCorrect"),
 	MY_NUMBER(7, "Enum_RecordType_MyNumber"),
-	TERMINAL_COMMUNICATION_INFO(8, "Enum_RecordType_TerminalCommucationInfo");
+	TERMINAL_COMMUNICATION_INFO(8, "Enum_RecordType_TerminalCommucationInfo"),
 	
+	// field データ保存
+	DATA_STORAGE(9,"Enum_RecordType_DataStorage"),
+	// field データ復旧
+	DATA_RECOVERY(10,"Enum_RecordType_DataRecovery"),
+	// field データ削除
+	DATA_DELETION(11,"Enum_RecordType_DataDeletion");
 	/** The code. */
 	public final int code;
 

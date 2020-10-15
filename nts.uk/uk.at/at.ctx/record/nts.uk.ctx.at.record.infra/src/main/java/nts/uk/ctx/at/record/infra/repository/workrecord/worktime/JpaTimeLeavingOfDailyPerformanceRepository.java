@@ -26,13 +26,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
@@ -40,7 +34,17 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -130,6 +134,15 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 				entity.leaveWorkNumberStamp = rec.getInt("LWK_NUMBER_STAMP");
 
+				entity.atdOvertime = rec.getInt("ATD_OVERTIME");
+				entity.atdLateNightOvertime = rec.getInt("ATD_LATE_NIGHT_OVERTIME");
+				entity.atdBreakStart = rec.getInt("ATD_BREAK_START");
+				entity.atdBreakEnd = rec.getInt("ATD_BREAK_END");
+				
+				entity.lwkOvertime = rec.getInt("LWK_OVERTIME");
+				entity.lwkLateNightOvertime = rec.getInt("LWK_LATE_NIGHT_OVERTIME");
+				entity.lwkBreakStart = rec.getInt("LWK_BREAK_START");
+				entity.lwkBreakEnd = rec.getInt("LWK_BREAK_END");
 				return entity;
 			});
 		}
@@ -168,10 +181,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		// this.getEntityManager().flush();
 	}
 
-	private void internalUpdate(TimeLeavingOfDailyPerformance domain, KrcdtDaiLeavingWork entity) {
+	private void internalUpdate(TimeLeavingOfDailyPerformance domain,KrcdtDaiLeavingWork entity) {
 		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
-		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
-		domain.getTimeLeavingWorks().stream().forEach(c -> {
+		entity.workTimes = domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v();
+		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
 							&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0)
@@ -186,19 +199,34 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				TimeActualStamp attendanceStamp = c.getAttendanceStamp().get();
 				WorkStamp attendanceActualS = attendanceStamp.getActualStamp().orElse(null);
 				WorkStamp attendanceS = attendanceStamp.getStamp().orElse(null);
+				// set 時間外時間
+				OvertimeDeclaration overtimeDeclaration = attendanceStamp.getOvertimeDeclaration().orElse(null);
+				if (overtimeDeclaration != null) {
+					krcdtTimeLeavingWork.atdOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
+					krcdtTimeLeavingWork.atdLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
+				}else {
+					krcdtTimeLeavingWork.atdOvertime = null;
+					krcdtTimeLeavingWork.atdLateNightOvertime = null;
+				}
+				//set 時間休暇時間帯
+				TimeZone timeZone = attendanceStamp.getTimeVacation().orElse(null);
+				if (timeZone != null) {
+					krcdtTimeLeavingWork.atdBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
+					krcdtTimeLeavingWork.atdBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
+				}else {
+					krcdtTimeLeavingWork.atdBreakStart = null;
+					krcdtTimeLeavingWork.atdBreakEnd = null;
+				}
 				if (attendanceActualS != null) {
 					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendanceActualS.getAfterRoundingTime() == null
 							? null : attendanceActualS.getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceActualTime = attendanceActualS.getTimeWithDay() == null ? null
-							: attendanceActualS.getTimeWithDay().valueAsMinutes();
-					if (attendanceActualS.getLocationCode() != null) {
-						krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode()
-								.isPresent() ? null : attendanceActualS.getLocationCode().get().v();
-					} else {
-						krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
-					}
-					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getStampSourceInfo() == null ? 0
-							: attendanceActualS.getStampSourceInfo().value;
+					krcdtTimeLeavingWork.attendanceActualTime = attendanceActualS.getTimeDay().getTimeWithDay().isPresent() ? attendanceActualS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
+							: null;
+					krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendanceActualS.getLocationCode().isPresent()
+							? null : attendanceActualS.getLocationCode().get().v();
+					krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+							: attendanceActualS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+
 				} else {
 					krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 					krcdtTimeLeavingWork.attendanceActualTime = null;
@@ -208,17 +236,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				if (attendanceS != null) {
 					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceS.getAfterRoundingTime() == null ? null
 							: attendanceS.getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.attendanceStampTime = attendanceS.getTimeWithDay() == null ? null
-							: attendanceS.getTimeWithDay().valueAsMinutes();
-					if (attendanceS.getLocationCode() != null) {
-						krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent()
-								? null
-								: attendanceS.getLocationCode().get().v();
-					}else {
-						krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
-					}
-					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getStampSourceInfo() == null ? 0
-							: attendanceS.getStampSourceInfo().value;
+					krcdtTimeLeavingWork.attendanceStampTime = attendanceS.getTimeDay().getTimeWithDay().isPresent() ? attendanceS.getTimeDay().getTimeWithDay().get().valueAsMinutes()
+							: null;
+					krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendanceS.getLocationCode().isPresent() ? null
+							: attendanceS.getLocationCode().get().v();
+					krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+							: attendanceS.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+
 				} else {
 					krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
 					krcdtTimeLeavingWork.attendanceStampTime = null;
@@ -231,19 +255,34 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				TimeActualStamp ls = c.getLeaveStamp().get();
 				WorkStamp as = ls.getActualStamp().orElse(null);
 				WorkStamp s = ls.getStamp().orElse(null);
+				// set 時間外時間
+				OvertimeDeclaration overtimeDeclaration = ls.getOvertimeDeclaration().orElse(null);
+				if (overtimeDeclaration != null) {
+					krcdtTimeLeavingWork.lwkOvertime = overtimeDeclaration.getOverTime() == null?null:overtimeDeclaration.getOverTime().valueAsMinutes();
+					krcdtTimeLeavingWork.lwkLateNightOvertime = overtimeDeclaration.getOverLateNightTime() == null?null:overtimeDeclaration.getOverLateNightTime().valueAsMinutes();
+				}else {
+					krcdtTimeLeavingWork.lwkOvertime = null;
+					krcdtTimeLeavingWork.lwkLateNightOvertime = null;
+				}
+				//set 時間休暇時間帯
+				TimeZone timeZone = ls.getTimeVacation().orElse(null);
+				if (timeZone != null) {
+					krcdtTimeLeavingWork.lwkBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
+					krcdtTimeLeavingWork.lwkBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
+				}else {
+					krcdtTimeLeavingWork.lwkBreakStart = null;
+					krcdtTimeLeavingWork.lwkBreakEnd = null;
+				}
+				
 				if (as != null) {
 					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = as.getAfterRoundingTime() == null ? null
 							: as.getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeWithDay() == null ? null
-							: as.getTimeWithDay().valueAsMinutes();
-					if (as.getLocationCode() != null) {
-						krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
-								: as.getLocationCode().get().v();
-					} else {
-						krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
-					}
-					krcdtTimeLeavingWork.leaveActualSourceInfo = as.getStampSourceInfo() == null ? 0
-							: as.getStampSourceInfo().value;
+					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeDay().getTimeWithDay() == null ? null
+							: as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
+							: as.getLocationCode().get().v();
+					krcdtTimeLeavingWork.leaveActualSourceInfo = as.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+							: as.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 				} else {
 					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
 					krcdtTimeLeavingWork.leaveWorkActualTime = null;
@@ -253,16 +292,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				if (s != null) {
 					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = s.getAfterRoundingTime() == null ? null
 							: s.getAfterRoundingTime().valueAsMinutes();
-					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeWithDay() == null ? null
-							: s.getTimeWithDay().valueAsMinutes();
-					if (s.getLocationCode() != null) {
-						krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
-								: s.getLocationCode().get().v();
-					} else {
-						krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
-					}
-					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s.getStampSourceInfo() == null ? 0
-							: s.getStampSourceInfo().value;
+					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeDay().getTimeWithDay() == null ? null
+							: s.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
+							: s.getLocationCode().get().v();
+					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
+							: s.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
 				} else {
 					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
 					krcdtTimeLeavingWork.leaveWorkStampTime = null;
@@ -350,6 +385,17 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				entity.leaveWorkStampPlaceCode = rec.getString("LWK_STAMP_PLACE_CODE");
 				entity.leaveWorkStampSourceInfo = rec.getInt("LWK_STAMP_SOURCE_INFO");
 				entity.leaveWorkNumberStamp = rec.getInt("LWK_NUMBER_STAMP");
+				
+				entity.atdOvertime = rec.getInt("ATD_OVERTIME");
+				entity.atdLateNightOvertime = rec.getInt("ATD_LATE_NIGHT_OVERTIME");
+				entity.atdBreakStart = rec.getInt("ATD_BREAK_START");
+				entity.atdBreakEnd = rec.getInt("ATD_BREAK_END");
+				
+				entity.lwkOvertime = rec.getInt("LWK_OVERTIME");
+				entity.lwkLateNightOvertime = rec.getInt("LWK_LATE_NIGHT_OVERTIME");
+				entity.lwkBreakStart = rec.getInt("LWK_BREAK_START");
+				entity.lwkBreakEnd = rec.getInt("LWK_BREAK_END");
+				
 				return entity;
 			});
 
@@ -372,10 +418,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 			String insertTableSQL = "INSERT INTO KRCDT_DAI_LEAVING_WORK ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
 					+ timeLeavingOfDailyPerformance.getEmployeeId() + "' , '" + timeLeavingOfDailyPerformance.getYmd()
-					+ "' , " + timeLeavingOfDailyPerformance.getWorkTimes().v() + " )";
+					+ "' , " + timeLeavingOfDailyPerformance.getAttendance().getWorkTimes().v() + " )";
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
-			for (TimeLeavingWork timeLeavingWork : timeLeavingOfDailyPerformance.getTimeLeavingWorks()) {
+			for (TimeLeavingWork timeLeavingWork : timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks()) {
 				// TimeLeavingWork - attendanceStamp - actualStamp
 				Integer attActualRoundingTime = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent())
@@ -384,13 +430,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer attActualTime = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent())
-								? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeWithDay()
+								? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				Integer attActualStampSource = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent())
 								? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get()
-										.getStampSourceInfo().value
+										.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String attActualStampLocationCode = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent()
@@ -408,12 +454,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer attStampTime = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
+								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				Integer attStampSource = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo().value
+								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String attStampLocationCode = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
@@ -433,13 +479,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer leaveActualTime = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent())
-								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeWithDay()
+								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				Integer leaveActualStampSource = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent())
 								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
-										.getStampSourceInfo().value
+										.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String leaveActualStampLocationCode = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent()
@@ -456,12 +502,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer leaveStampTime = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
+								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				Integer leaveStampSource = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo().value
+								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String leaveStampLocationCode = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
@@ -472,10 +518,48 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
 				Integer leaveNumberReflec = timeLeavingWork.getLeaveStamp().isPresent()
 						? timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() : null;
+				
+				// overtimeDeclaration 
+				//attendance
+				Integer atdOvertime = (timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().isPresent())
+						? timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().get().getOverTime().valueAsMinutes()
+						: null;
+				Integer atdLateNightOvertime = (timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().isPresent())
+						? timeLeavingWork.getAttendanceStamp().get().getOvertimeDeclaration().get().getOverLateNightTime().valueAsMinutes()
+						: null;
+				Integer atdBreakStart = (timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getAttendanceStamp().get().getTimeVacation().isPresent())
+						? timeLeavingWork.getAttendanceStamp().get().getTimeVacation().get().getStart().valueAsMinutes()
+						: null;
+				Integer atdBreakEnd = (timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getAttendanceStamp().get().getTimeVacation().isPresent())
+						? timeLeavingWork.getAttendanceStamp().get().getTimeVacation().get().getEnd().valueAsMinutes()
+						: null;
+						
+				//leaveStamp
+				Integer lwkOvertime = (timeLeavingWork.getLeaveStamp().isPresent()
+						&& timeLeavingWork.getLeaveStamp().get().getOvertimeDeclaration().isPresent())
+						? timeLeavingWork.getLeaveStamp().get().getOvertimeDeclaration().get().getOverTime().valueAsMinutes()
+						: null;
+				Integer lwkLateNightOvertime = (timeLeavingWork.getLeaveStamp().isPresent()
+						&& timeLeavingWork.getLeaveStamp().get().getOvertimeDeclaration().isPresent())
+						? timeLeavingWork.getLeaveStamp().get().getOvertimeDeclaration().get().getOverLateNightTime().valueAsMinutes()
+						: null;
+				Integer lwkBreakStart = (timeLeavingWork.getLeaveStamp().isPresent()
+						&& timeLeavingWork.getLeaveStamp().get().getTimeVacation().isPresent())
+						? timeLeavingWork.getLeaveStamp().get().getTimeVacation().get().getStart().valueAsMinutes()
+						: null;
+				Integer lwkBreakEnd = (timeLeavingWork.getLeaveStamp().isPresent()
+						&& timeLeavingWork.getLeaveStamp().get().getTimeVacation().isPresent())
+						? timeLeavingWork.getLeaveStamp().get().getTimeVacation().get().getEnd().valueAsMinutes()
+						: null;
 
 				String insertTimeLeaving = "INSERT INTO KRCDT_TIME_LEAVING_WORK ( SID , WORK_NO , YMD , TIME_LEAVING_TYPE, ATD_ACTUAL_ROUDING_TIME_DAY, ATD_ACTUAL_TIME , ATD_ACTUAL_PLACE_CODE , "
 						+ " ATD_ACTUAL_SOURCE_INFO, ATD_STAMP_ROUDING_TIME_DAY , ATD_STAMP_TIME , ATD_STAMP_PLACE_CODE, ATD_STAMP_SOURCE_INFO, ATD_NUMBER_STAMP, LWK_ACTUAL_ROUDING_TIME_DAY, "
-						+ " LWK_ACTUAL_TIME, LWK_ACTUAL_PLACE_CODE , LWK_ACTUAL_SOURCE_INFO, LWK_STAMP_ROUDING_TIME_DAY, LWK_STAMP_TIME, LWK_STAMP_PLACE_CODE , LWK_STAMP_SOURCE_INFO, LWK_NUMBER_STAMP ) "
+						+ " LWK_ACTUAL_TIME, LWK_ACTUAL_PLACE_CODE , LWK_ACTUAL_SOURCE_INFO, LWK_STAMP_ROUDING_TIME_DAY, LWK_STAMP_TIME, LWK_STAMP_PLACE_CODE , LWK_STAMP_SOURCE_INFO, LWK_NUMBER_STAMP , "
+						+ " ATD_OVERTIME, ATD_LATE_NIGHT_OVERTIME, ATD_BREAK_START,ATD_BREAK_END, LWK_OVERTIME, LWK_LATE_NIGHT_OVERTIME, LWK_BREAK_START, LWK_BREAK_END  ) "
 						+ "VALUES( '" + timeLeavingOfDailyPerformance.getEmployeeId() + "' , "
 						+ timeLeavingWork.getWorkNo().v() + " , '" + timeLeavingOfDailyPerformance.getYmd() + "', " + 0
 						+ ", " + attActualRoundingTime + ", " + attActualTime + ", " + attActualStampLocationCode
@@ -483,7 +567,9 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						+ attStampLocationCode + " , " + attStampSource + ", " + attNumberReflec + ", "
 						+ leaveActualRoundingTime + ", " + leaveActualTime + ", " + leaveActualStampLocationCode + " , "
 						+ leaveActualStampSource + " , " + leaveStampRoundingTime + ", " + leaveStampTime + ", "
-						+ leaveStampLocationCode + " , " + leaveStampSource + ", " + leaveNumberReflec + " )";
+						+ leaveStampLocationCode + " , " + leaveStampSource + ", " + leaveNumberReflec + ", "
+						+ atdOvertime + " , " + atdLateNightOvertime + ", " + atdBreakStart + ", " + atdBreakEnd + ", "
+						+ lwkOvertime + " , " + lwkLateNightOvertime + " , " + lwkBreakStart + " , " + lwkBreakEnd+ " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTimeLeaving));
 			}
 		} catch (Exception e) {
@@ -567,7 +653,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 													r.getInt("ATD_STAMP_TIME"),
 													r.getString("ATD_STAMP_PLACE_CODE"), 
 													r.getInt("ATD_STAMP_SOURCE_INFO")),
-						r.getInt("ATD_NUMBER_STAMP")),
+						r.getInt("ATD_NUMBER_STAMP"),
+						r.getInt("ATD_OVERTIME") == null || r.getInt("ATD_LATE_NIGHT_OVERTIME") == null  ?null:
+										getOvertimeDeclaration(r.getInt("ATD_OVERTIME"), 
+															   r.getInt("ATD_LATE_NIGHT_OVERTIME")),
+						r.getInt("ATD_BREAK_START") == null || r.getInt("ATD_BREAK_END") == null  ?null:
+										getTimeZone(r.getInt("ATD_BREAK_START"), 
+													r.getInt("ATD_BREAK_END"))
+						),
 				new TimeActualStamp(
 						r.getInt("LWK_ACTUAL_TIME") == null ? null : 
 										getWorkStamp(r.getInt("LWK_ACTUAL_ROUDING_TIME_DAY"), 
@@ -579,7 +672,15 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 													r.getInt("LWK_STAMP_TIME"),
 													r.getString("LWK_STAMP_PLACE_CODE"), 
 													r.getInt("LWK_STAMP_SOURCE_INFO")),
-						r.getInt("LWK_NUMBER_STAMP")));
+						r.getInt("LWK_NUMBER_STAMP"),
+						r.getInt("LWK_OVERTIME") == null || r.getInt("LWK_LATE_NIGHT_OVERTIME") == null  ?null:
+							getOvertimeDeclaration(r.getInt("LWK_OVERTIME"), 
+												   r.getInt("LWK_LATE_NIGHT_OVERTIME")),
+						r.getInt("LWK_BREAK_START") == null || r.getInt("LWK_BREAK_END") == null  ?null:
+										getTimeZone(r.getInt("LWK_BREAK_START"), 
+													r.getInt("LWK_BREAK_END"))
+						)
+				);
 		return domain;
 	}
 
@@ -588,7 +689,17 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
-				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
+				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
+	}
+	private OvertimeDeclaration getOvertimeDeclaration(Integer overTime, Integer overLateNightTime) {
+		return new OvertimeDeclaration(
+				overTime == null ? null : new AttendanceTime(overTime),
+				overLateNightTime == null ? null : new AttendanceTime(overLateNightTime));
+	}
+	private TimeZone getTimeZone(Integer breakStart, Integer breakEnd) {
+		return new TimeZone(
+				breakStart == null ? null : new TimeWithDayAttr(breakStart),
+				breakEnd == null ? null : new TimeWithDayAttr(breakEnd));
 	}
 
 	private <T> List<T> getCurrent(Map<String, Map<GeneralDate, List<T>>> scheTimes,

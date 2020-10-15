@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /*
  * 休憩系打刻漏れをチェックする
@@ -27,8 +27,8 @@ public class BreakTimeStampLeakageChecking {
 		// breakTimeOfDailyPerformanceRepository.findByKey(employeeID,
 		// processingDate);
 
-		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
-			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets().isEmpty()) {
+			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getTimeZone().getBreakTimeSheets();
 
 			List<Integer> attendanceItemIDList = new ArrayList<>();
 

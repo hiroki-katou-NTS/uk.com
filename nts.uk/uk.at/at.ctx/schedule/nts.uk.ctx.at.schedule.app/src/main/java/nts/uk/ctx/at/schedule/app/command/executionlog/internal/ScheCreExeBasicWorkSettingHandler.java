@@ -137,7 +137,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkplace(
+	public Optional<BasicWorkSetting> getBasicWorkSettingByWorkplace(
 			BasicWorkSettingByWorkplaceGetterCommand command) {
 		for (String workplaceId : command.getWorkplaceIds()) {
 			// find basic work by id
@@ -285,7 +285,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<Integer> getWorkdayDivisionByClass(WorkdayAttrByClassGetterCommand command) {
+	public Optional<Integer> getWorkdayDivisionByClass(WorkdayAttrByClassGetterCommand command) {
 
 		// find calendar classification by id
 		Optional<CalendarClass> optionalCalendarClass = this.calendarClassRepository.findCalendarClassByDate(
@@ -431,7 +431,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSettingByClassification(
+	public Optional<BasicWorkSetting> getBasicWorkSettingByClassification(
 			BasicWorkSettingByClassificationGetterCommand command) {
 		// find classification basic work by id
 		Optional<ClassificationBasicWork> optionalClassificationBasicWork = this.classificationBasicWorkRepository

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class ScheduleErrorLog.
  */
-// スケジュール作成エラーログ
+// Domain: スケジュール作成エラーログ
 @Getter
 public class ScheduleErrorLog extends AggregateRoot {
 
@@ -104,5 +104,9 @@ public class ScheduleErrorLog extends AggregateRoot {
 		this.executionId = executionId;
 		this.date = date;
 		this.employeeId = employeeId;
+	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
 	}
 }

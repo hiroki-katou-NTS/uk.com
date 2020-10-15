@@ -1,15 +1,16 @@
 package nts.uk.ctx.at.record.dom.calculationattribute;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
@@ -19,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
  *
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class CalAttrOfDailyPerformance extends AggregateRoot {
 	
@@ -29,23 +29,8 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	//年月日: 年月日
 	private GeneralDate ymd;
 	
-	//フレックス超過時間: フレックス超過時間の自動計算設定
-	private AutoCalFlexOvertimeSetting flexExcessTime;
-	
-	//加給: 加給の自動計算設定
-	private AutoCalRaisingSalarySetting rasingSalarySetting;
-	
-	//休出時間: 休出時間の自動計算設定
-	private AutoCalRestTimeSetting holidayTimeSetting;
-	
-	//残業時間: 残業時間の自動計算設定
-	private AutoCalOvertimeSetting overtimeSetting;
-	
-	//遅刻早退: 遅刻早退の自動計算設定
-	private AutoCalcOfLeaveEarlySetting leaveEarlySetting;
-	
-	//乖離時間: 乖離時間の自動計算設定
-	private AutoCalcSetOfDivergenceTime divergenceTime; 
+	//計算区分
+	private CalAttrOfDailyAttd calcategory;
 	
 //	/**
 //	 * 計算区分を全て「する」に変更する
@@ -63,11 +48,34 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	public CalAttrOfDailyPerformance reCreate(AutoCalAtrOvertime atr) {
 		return new CalAttrOfDailyPerformance(this.employeeId,
 											 this.ymd,
-											 this.flexExcessTime,
-											 this.rasingSalarySetting,
-											 this.holidayTimeSetting,
-											 this.overtimeSetting.changeNormalAutoCalcSetting(atr),
-											 this.leaveEarlySetting,
-											 this.divergenceTime);
+											 new CalAttrOfDailyAttd(
+														 this.calcategory.getFlexExcessTime(),
+														 this.calcategory.getRasingSalarySetting(),
+														 this.calcategory.getHolidayTimeSetting(),
+														 this.calcategory.getOvertimeSetting().changeNormalAutoCalcSetting(atr),
+														 this.calcategory.getLeaveEarlySetting(),
+														 this.calcategory.getDivergenceTime()
+													 )
+											 );
 	}
+
+public CalAttrOfDailyPerformance(String employeeId, GeneralDate ymd, AutoCalFlexOvertimeSetting flexExcessTime,
+		AutoCalRaisingSalarySetting rasingSalarySetting, AutoCalRestTimeSetting holidayTimeSetting,
+		AutoCalOvertimeSetting overtimeSetting, AutoCalcOfLeaveEarlySetting leaveEarlySetting,
+		AutoCalcSetOfDivergenceTime divergenceTime) {
+	super();
+	this.employeeId = employeeId;
+	this.ymd = ymd;
+	this.calcategory = new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
+}
+
+public CalAttrOfDailyPerformance(String employeeId, GeneralDate ymd, CalAttrOfDailyAttd calcategory) {
+	super();
+	this.employeeId = employeeId;
+	this.ymd = ymd;
+	this.calcategory = calcategory;
+}
+
+
+	
 }

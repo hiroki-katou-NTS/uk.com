@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
@@ -38,7 +38,7 @@ public class ParamCaculationOvertime {
 	private List<Integer> endTimeRests;
 	private boolean displayCaculationTime;
 	private boolean isFromStepOne;
-	public ApplicationDto_New opAppBefore;
+	public ApplicationDto opAppBefore;
 	public boolean beforeAppStatus;
 	public int actualStatus;
 	public List<OvertimeColorCheck> actualLst;

@@ -141,7 +141,7 @@ public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
     public static WorkCycleInfo toDomain(KdpstDailyPatternVal entity) {
         return WorkCycleInfo.create(
                 entity.days,
-                new WorkInformation(entity.workingHoursCd, entity.workTypeSetCd)
+                new WorkInformation(entity.workTypeSetCd,entity.workingHoursCd)
         );
     }
 }

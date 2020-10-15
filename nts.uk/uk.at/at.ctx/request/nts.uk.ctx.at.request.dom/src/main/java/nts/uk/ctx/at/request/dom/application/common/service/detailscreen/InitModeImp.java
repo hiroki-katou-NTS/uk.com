@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -21,7 +20,7 @@ public class InitModeImp implements InitMode {
 	ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
-	public DetailScreenInitModeOutput getDetailScreenInitMode(User user, Integer reflectPerState) {
+	public OutputMode getDetailScreenInitMode(User user, Integer reflectPerState) {
 		String companyID = AppContexts.user().companyId();
 		
 		OutputMode outputMode;
@@ -46,7 +45,6 @@ public class InitModeImp implements InitMode {
 				 */
 				if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
 						reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
-						reflectPerState.equals(ReflectPlanPerState.WAITCANCEL.value) || 
 						reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
 					outputMode = OutputMode.DISPLAYMODE;
 				} else {
@@ -66,7 +64,7 @@ public class InitModeImp implements InitMode {
 				outputMode = OutputMode.DISPLAYMODE;
 			}
 		}
-		return new DetailScreenInitModeOutput(outputMode);
+		return outputMode;
 	}
 
 }

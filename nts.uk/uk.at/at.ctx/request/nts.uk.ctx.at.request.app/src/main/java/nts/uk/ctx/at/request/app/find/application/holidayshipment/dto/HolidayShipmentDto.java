@@ -6,15 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 /*import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;*/
@@ -40,7 +38,7 @@ public class HolidayShipmentDto {
 	/**
 	 * 申請承認機能設定
 	 */
-	private ApprovalFunctionSettingDto approvalFunctionSetting;
+	// private ApprovalFunctionSettingDto approvalFunctionSetting;
 	/**
 	 * 基準日
 	 */
@@ -71,7 +69,7 @@ public class HolidayShipmentDto {
 
 	private boolean manualSendMailAtr;
 
-	private List<ApplicationReasonDto> appReasonComboItems;
+	// private List<ApplicationReasonDto> appReasonComboItems;
 
 	private WorkTimeInfoDto workTimeInfo;
 
@@ -98,7 +96,7 @@ public class HolidayShipmentDto {
 	/**
 	 * 申請
 	 */
-	private ApplicationDto_New application;
+	private ApplicationDto application;
 
 	/**
 	 * 申請種類別設定

@@ -68,8 +68,12 @@ public class StdOutputCondSetFinder {
 				.stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 		if(listCondSetDto.size() == 0) return Collections.emptyList();
 		// アルゴリズム「外部出力設定一覧カテゴリ確認」を実行する
-		List<Integer> listCategoryId = acquisitionExternalOutputCategory.getExternalOutputCategoryList(param.getEmpRole()).stream().map(item -> item.getCategoryId().v()).collect(Collectors.toList());
-		List<CondSetDto> result = listCondSetDto.stream().filter(item -> listCategoryId.contains(Integer.valueOf(item.getCategoryId()))).collect(Collectors.toList());
+		List<Integer> listCategoryId = acquisitionExternalOutputCategory.getExternalOutputCategoryList(param.getEmpRole()).stream()
+				.map(item -> item.getCategoryId().v())
+				.collect(Collectors.toList());
+		List<CondSetDto> result = listCondSetDto.stream()
+				.filter(item -> listCategoryId.contains(Integer.valueOf(item.getCategoryId())))
+				.collect(Collectors.toList());
 		return result;
 	}
 

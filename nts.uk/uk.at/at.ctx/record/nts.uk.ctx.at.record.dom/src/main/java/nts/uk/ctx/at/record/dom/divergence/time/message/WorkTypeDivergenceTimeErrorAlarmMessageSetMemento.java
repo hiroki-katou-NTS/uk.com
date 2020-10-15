@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
 /**
  * The Interface WorkTypeDivergenceTimeErrorAlarmMessageSetMemento.

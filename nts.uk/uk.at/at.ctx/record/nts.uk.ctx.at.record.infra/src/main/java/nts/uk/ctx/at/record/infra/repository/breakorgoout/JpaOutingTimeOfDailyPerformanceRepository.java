@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -20,17 +21,17 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -124,7 +125,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
-			for (OutingTimeSheet outingTimeSheet : outing.getOutingTimeSheets()) {
+			for (OutingTimeSheet outingTimeSheet : outing.getOutingTime().getOutingTimeSheets()) {
 
 				// OutingTimeSheet - goOut - actualStamp
 				Integer outActualRoundingTime = (outingTimeSheet.getGoOut().isPresent()
@@ -133,8 +134,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer outActualTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeWithDay()
+						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent()) &&  outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent() ? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				String outActualStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
@@ -144,7 +144,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 								+ "'" : null;
 				Integer outActualStampSource = (outingTimeSheet.getGoOut().isPresent()
 						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getActualStamp().get().getStampSourceInfo().value
+								? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 
 				// OutingTimeSheet - goOut - stamp
@@ -154,8 +154,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer outStampTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeWithDay().valueAsMinutes()
+						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()) && outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
 				String outStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
 						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
@@ -165,7 +165,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer outStampSource = (outingTimeSheet.getGoOut().isPresent()
 						&& outingTimeSheet.getGoOut().get().getStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getStamp().get().getStampSourceInfo().value : null;
+								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 
 				// OutingTimeSheet - goOut - numberOfReflectionStamp
 				Integer outNumberReflec = outingTimeSheet.getGoOut().isPresent()
@@ -178,8 +178,9 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 										.valueAsMinutes()
 								: null;
 				Integer backActualTime = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeWithDay()
+						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent()) 
+						&& outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()
+								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
 										.valueAsMinutes()
 								: null;
 				String backActualStampLocationCode = (outingTimeSheet.getComeBack().isPresent()
@@ -190,7 +191,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer backActualStampSource = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getActualStamp().get().getStampSourceInfo().value
+								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 
 				// OutingTimeSheet - comeBack - stamp
@@ -201,11 +202,12 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 								: null;
 				Integer backStampTime = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeWithDay().valueAsMinutes()
+						&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
 				Integer backStampSource = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getStamp().get().getStampSourceInfo().value
+								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String backStampLocationCode = (outingTimeSheet.getComeBack().isPresent()
 						&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
@@ -248,7 +250,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void update(OutingTimeOfDailyPerformance domain) {
-		List<Integer> outingFrameNos = domain.getOutingTimeSheets().stream().map(item -> {
+		List<Integer> outingFrameNos = domain.getOutingTime().getOutingTimeSheets().stream().map(item -> {
 			return item.getOutingFrameNo().v();
 		}).collect(Collectors.toList());
 		
@@ -262,7 +264,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				.getList());
 		});
 
-		List<OutingTimeSheet> outingTimeSheets = domain.getOutingTimeSheets();
+		List<OutingTimeSheet> outingTimeSheets = domain.getOutingTime().getOutingTimeSheets();
 
 		outingTimeSheets.stream().forEach(outingTimeSheet -> {
 			KrcdtDaiOutingTime krcdtDaiOutingTime = krcdtDaiOutingTimeLists.stream()
@@ -309,10 +311,10 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo() == null ? null
-					: stamp.getStampSourceInfo().value;
-			krcdtDaiOutingTime.backActualTime = stamp.getTimeWithDay() == null ? null
-					: stamp.getTimeWithDay().valueAsMinutes();
+			krcdtDaiOutingTime.backActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
+					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+			krcdtDaiOutingTime.backActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
+					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setBackActualStampNull(krcdtDaiOutingTime);
 		}
@@ -324,10 +326,10 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.backStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo() == null ? null
-					: stamp.getStampSourceInfo().value;
-			krcdtDaiOutingTime.backStampTime = stamp.getTimeWithDay() == null ? null
-					: stamp.getTimeWithDay().valueAsMinutes();
+			krcdtDaiOutingTime.backStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
+					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+			krcdtDaiOutingTime.backStampTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
+					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setBackStampNull(krcdtDaiOutingTime);
 		}
@@ -367,10 +369,10 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outActualRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo() == null ? null
-					: stamp.getStampSourceInfo().value;
-			krcdtDaiOutingTime.outActualTime = stamp.getTimeWithDay() == null ? null
-					: stamp.getTimeWithDay().valueAsMinutes();
+			krcdtDaiOutingTime.outActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
+					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+			krcdtDaiOutingTime.outActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
+					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setGoOutActualStampNull(krcdtDaiOutingTime);
 		}
@@ -389,10 +391,10 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					: stamp.getLocationCode().get().v();
 			krcdtDaiOutingTime.outStampRoundingTimeDay = stamp.getAfterRoundingTime() == null ? null
 					: stamp.getAfterRoundingTime().valueAsMinutes();
-			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo() == null ? null
-					: stamp.getStampSourceInfo().value;
-			krcdtDaiOutingTime.outStampTime = stamp.getTimeWithDay() == null ? null
-					: stamp.getTimeWithDay().valueAsMinutes();
+			krcdtDaiOutingTime.outStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
+					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
+			krcdtDaiOutingTime.outStampTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
+					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 		} else {
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
@@ -429,29 +431,29 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
-		WorkStamp outStamp = new WorkStamp(
+		WorkStamp outStamp = x.outStampTime == null ? null :  new WorkStamp(
 				x.outStampRoundingTimeDay != null ? new TimeWithDayAttr(x.outStampRoundingTimeDay) : null,
 				x.outStampTime != null ? new TimeWithDayAttr(x.outStampTime) : null,
 				x.outStampPlaceCode != null ? new WorkLocationCD(x.outStampPlaceCode) : null,
-				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, StampSourceInfo.class) : null);
-		WorkStamp outActualStamp = new WorkStamp(
+				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, TimeChangeMeans.class) : null);
+		WorkStamp outActualStamp = x.outActualTime == null ? null :  new WorkStamp(
 				x.outActualRoundingTimeDay != null ? new TimeWithDayAttr(x.outActualRoundingTimeDay) : null,
 				x.outActualTime != null ? new TimeWithDayAttr(x.outActualTime) : null,
 				x.outActualPlaceCode != null ? new WorkLocationCD(x.outActualPlaceCode) : null,
-				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, StampSourceInfo.class)
+				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, TimeChangeMeans.class)
 						: null);
 		TimeActualStamp goOut = new TimeActualStamp(outActualStamp, outStamp, x.outNumberStamp);
-		WorkStamp backStamp = new WorkStamp(
+		WorkStamp backStamp = 	x.backStampTime == null ? null : new WorkStamp(
 				x.backStampRoundingTimeDay != null ? new TimeWithDayAttr(x.backStampRoundingTimeDay) : null,
 				x.backStampTime != null ? new TimeWithDayAttr(x.backStampTime) : null,
 				x.backStampPlaceCode != null ? new WorkLocationCD(x.backStampPlaceCode) : null,
-				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, StampSourceInfo.class)
+				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, TimeChangeMeans.class)
 						: null);
-		WorkStamp backActualStamp = new WorkStamp(
+		WorkStamp backActualStamp = x.backActualTime == null ? null : new WorkStamp(
 				x.backActualRoundingTimeDay != null ? new TimeWithDayAttr(x.backActualRoundingTimeDay) : null,
 				x.backActualTime != null ? new TimeWithDayAttr(x.backActualTime) : null,
 				x.backActualPlaceCode != null ? new WorkLocationCD(x.backActualPlaceCode) : null,
-				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, StampSourceInfo.class)
+				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, TimeChangeMeans.class)
 						: null);
 		TimeActualStamp comeBack = new TimeActualStamp(backActualStamp, backStamp, x.backNumberStamp);
 		GoingOutReason reasonForGoOut = EnumAdaptor.valueOf(x.outingReason, GoingOutReason.class);

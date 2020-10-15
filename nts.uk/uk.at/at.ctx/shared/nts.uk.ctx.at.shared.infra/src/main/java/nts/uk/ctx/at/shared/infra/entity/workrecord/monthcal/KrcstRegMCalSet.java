@@ -11,8 +11,8 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.RegularWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.BooleanGetAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

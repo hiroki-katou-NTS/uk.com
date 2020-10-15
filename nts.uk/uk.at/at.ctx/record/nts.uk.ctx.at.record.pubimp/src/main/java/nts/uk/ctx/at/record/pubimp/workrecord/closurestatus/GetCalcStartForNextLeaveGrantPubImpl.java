@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetCalcStartForNextLeaveGrant;
 import nts.uk.ctx.at.record.pub.workrecord.closurestatus.GetCalcStartForNextLeaveGrantPub;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

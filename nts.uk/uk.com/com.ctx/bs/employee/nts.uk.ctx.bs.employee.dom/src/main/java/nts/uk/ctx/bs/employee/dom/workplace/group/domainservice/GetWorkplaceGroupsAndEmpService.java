@@ -84,7 +84,7 @@ public class GetWorkplaceGroupsAndEmpService {
 		 * if $管理職場IDリスト.isEmpty() return Map.empty
 		 */
 		if (listWorkplaceID.isEmpty()) {
-			return Collections.emptyMap();
+			return new HashMap<>();
 		}
 		/*
 		 * return require.指定職場の職場グループ所属情報を取得する( $管理職場IDリスト ): map $.職場グループID
