@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
 public interface ApproveWidgetRepository {
 
-	StandardWidget findByCompanyId(String companyId);
+	StandardWidget findByWidgetTypeAndCompanyId(int standardWidgetType, String companyId);
 
-	void update(StandardWidget standardWidget, String companyId);
+	void updateApproveStatus(StandardWidget standardWidget, String companyId);
 }

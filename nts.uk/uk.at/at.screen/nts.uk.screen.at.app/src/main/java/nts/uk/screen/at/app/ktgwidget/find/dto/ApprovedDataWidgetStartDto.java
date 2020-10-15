@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 
@@ -9,14 +11,15 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
  *
  */
 @Setter
+@Getter
 public class ApprovedDataWidgetStartDto {
 	
 	//承認すべきデータのウィジェットを起動する
-	ApprovedDataExecutionResultDto approvedDataExecutionResultDto;
+	public ApprovedDataExecutionResultDto approvedDataExecutionResultDto;
 	
 	//ドメインモデル「３６協定運用設定」を取得する
 	
 	//承認処理の利用設定を取得する
-	ApprovalProcessingUseSetting approvalProcessingUseSetting;
+	public ApprovalProcessingUseSetting approvalProcessingUseSetting;
 
 }

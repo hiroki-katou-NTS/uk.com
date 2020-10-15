@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDet
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -104,6 +105,7 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 
 		standardWidget.setName(this.getTopPagePartName());
 		standardWidget.setApprovedAppStatusDetailedSettingList(approvedAppStatusDetailedSettings);
+		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
 		return standardWidget;
 	}
 

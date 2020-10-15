@@ -113,7 +113,7 @@ public class KTG001QueryProcessor_ver04 {
 		List<ClosureIdPresentClosingPeriod> closingPeriods = new ArrayList<>();
 
 		// 1. 指定するウィジェットの設定を取得する
-		StandardWidget standardWidget = approveWidgetRepository.findByCompanyId(companyId);
+		StandardWidget standardWidget = approveWidgetRepository.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS.value, companyId);
 		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
 		
 		// 2. 全ての締めの処理年月と締め期間を取得する
@@ -243,7 +243,7 @@ public class KTG001QueryProcessor_ver04 {
 	 */
 	public void updateSetting(StandardWidget standardWidget) {
 		
-		approveWidgetRepository.update(standardWidget, AppContexts.user().companyId());
+		approveWidgetRepository.updateApproveStatus(standardWidget, AppContexts.user().companyId());
 	}
 
 	/**
