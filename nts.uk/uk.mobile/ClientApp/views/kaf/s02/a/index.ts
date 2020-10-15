@@ -1182,17 +1182,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
         return true;
     }
 
-    // ※12
-    // get condition12() {
-    //     const self = this;
-
-    //     if (self.isError) {
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
-
     // ※10
     get condition10() {
         const self = this;
