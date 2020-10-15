@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -27,7 +26,6 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.common.TableItemValidation;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.TableListRestorationService;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.ThresholdConfigurationCheck;
 import nts.uk.ctx.sys.assist.dom.storage.DataObservable;
-import nts.uk.ctx.sys.assist.dom.storage.ObservableService;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -58,11 +56,9 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 
 	@Inject
 	private EmployeeRestoration employeeRestoration;
-	
-	@Inject
-	private ObservableService observableService;
 
 	private static final String STATUS = "status";
+	private static final String DATA_STORAGE_PROCESS_ID = "dataStorageProcessId";
 	public static final DataObservable OBSERVABLE = new DataObservable();
 	
 
@@ -70,7 +66,6 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	@Override
 	protected void handle(CommandHandlerContext<SyncServerUploadProcessingCommand> context) {
 		val asyncTask = context.asAsync();
-		String contractCode = AppContexts.user().contractCode();
 		TaskDataSetter setter = asyncTask.getDataSetter();
 		String processId = context.getCommand().getProcessingId();
 		String fileId = context.getCommand().getFileId();
@@ -149,8 +144,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		serverPrepareMngRepository.update(serverPrepareMng);
 		if (!tableList.isEmpty()) {
-			observableService.getObservable(contractCode)
-							.setDataStorageProcessId(tableList.get(0).getDataStorageProcessingId());
+			setter.setData(DATA_STORAGE_PROCESS_ID, tableList.get(0).getDataStorageProcessingId());
 		}
 	}
 

@@ -401,7 +401,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
       let self = this;
       block.invisible();
       //Get Data TableList for Screen E
-      debugger;
       service.setScreenItem(self.dataRecoverySelection().selectedRecoveryFile()).done((data) => {
         self.itemSets = data;
         let listCategory: Array<CategoryInfo> = [];

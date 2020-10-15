@@ -46,11 +46,9 @@ module nts.uk.com.view.cmf004.d {
           password: self.password()
         };
         service.extractData(fileInfo).done(function (data) {
-          self.storeProcessingId = data.storageProcessId;
-          const result = data.taskInfo;
           dfd.resolve();
           block.invisible();
-          let taskId = result.id;
+          let taskId = data.id;
           // 1秒おきに下記を実行
           nts.uk.deferred.repeat(conf => conf
             .task(() => {
@@ -58,13 +56,14 @@ module nts.uk.com.view.cmf004.d {
                 // update state on screen
                 let status;
                 if (res.taskDatas.length > 0) {
-                  status = JSON.parse(res.taskDatas[0].valueAsString);
+                  status = JSON.parse((_.filter(res.taskDatas, { key: 'status' }).pop() as any).valueAsString);
                   self.statusLabel(getText(status.conditionName));
                 }
                 if (res.succeeded || res.failed) {
                   if (status) {
                     self.convertToDisplayStatus(status);
                     if (status.processingType == 3 && status.processingStatus == 2) {
+                      self.storeProcessingId = (_.filter(res.taskDatas, { key: 'dataStorageProcessId' }).pop() as any).valueAsString;
                       self.isSuccess(true);
                       $('#D3_2').focus();
                     } else {
