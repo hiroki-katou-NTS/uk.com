@@ -128,6 +128,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         undoNumberClick = 0;
         redoNumberClick = 0;
         numberCellsUpdatedAfterUndo = 0;
+        pathToLeft = '';
+        pathToRight = '';
+        pathToDown = '';
+        pathToUp = '';
         
         constructor() {
             let self = this;
@@ -367,6 +371,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
                 
+                self.setIconEventHeader();
+                
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
@@ -418,6 +424,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").on("extablerowupdated", (dataCell) => {
                 self.checkExitCellUpdated();
             });
+            
+            self.pathToLeft = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("152.png").serialize();
+            
+            self.pathToRight = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("153.png").serialize();
+            
+            self.pathToDown = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("150.png").serialize();
+            
+            self.pathToUp = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("151.png").serialize();
         }
         // end constructor
         
@@ -668,6 +694,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         userInfor.shiftPalettePageNumberOrg);
                 }
                 __viewContext.viewModel.viewAC.flag = true;
+                
+                // check enable or disable tbaleButton
+                self.checkEnabDisableTblBtn();
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
@@ -970,7 +999,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data middle
                 let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid == emp.employeeId; });
                 if(personalCond.length > 0){
-                   middleDs.push({ sid: i.toString() , employeeId: emp.employeeId, team: personalCond[0].teamName, rank: personalCond[0].rankName, qualification: personalCond[0].licenseClassification });
+                   middleDs.push({ 
+                    sid: i.toString(), 
+                    employeeId: emp.employeeId, 
+                    team: _.isNil(personalCond[0].teamName) ? '' : personalCond[0].teamName , 
+                    rank: _.isNil(personalCond[0].rankName) ? '' : personalCond[0].rankName, 
+                    qualification: _.isNil(personalCond[0].licenseClassification) ? '' : personalCond[0].licenseClassification });
                 }
                 
                 // set data to detailContent : datasource va deco
@@ -1331,7 +1365,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (dateInfo.isToday) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
-                } else if (dateInfo.htmlTooltip != null) {
+                } else if (dateInfo.isSpecificDay) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                 } else if (dateInfo.isHoliday) {
@@ -1355,6 +1389,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
                 }
             });
+            
+            self.setIconEventHeader();
+            
             self.listColorOfHeader(detailHeaderDeco);
             result = {
                 leftmostDs: leftmostDs,
@@ -1381,6 +1418,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return result;
         }
 
+        setIconEventHeader() {
+            setTimeout(() => {
+                
+                // set icon Employee
+                let iconEmpPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("7.png").serialize();
+                $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
+                
+                // set backgound image icon header
+                let iconEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("120.png").serialize();
+                $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
+
+                let iconNoEventPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                    .mergeRelativePath("121.png").serialize();
+                $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
+            }, 1);
+        }
+            
         saveModeGridToLocalStorege(mode) {
             let self = this;
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2046,24 +2108,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // xử lý cho button A13
         toLeft() {
             let self = this;
+            
+            
             if (self.indexBtnToLeft % 2 == 0) {
                 if (self.showA9) {
                     $("#extable").exTable("hideMiddle");
                 }
-                $(".toLeft").css("background", "url(../image/toright.png) no-repeat center");
+                $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
+                
                 $(".toLeft").css("margin-left", "188px");
                 
-                let marginleft = $("#extable").width() - 160 - 27 - 27 - 30;
+                let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
                     $("#extable").exTable("showMiddle");
                 }
-                $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
+                $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30 - 10;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
@@ -2073,10 +2138,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toRight() {
             let self = this;
             if (self.indexBtnToRight % 2 == 0) {
-                $(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
+                $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
+                //$(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
 
             } else {
-                $(".toRight").css("background", "url(../image/toright.png) no-repeat center");
+                $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
             }
             self.indexBtnToRight = self.indexBtnToRight + 1;
         }
@@ -2084,10 +2150,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toDown() {
             let self = this;
             if (self.indexBtnToDown % 2 == 0) {
-                $(".toDown").css("background", "url(../image/toup.png) no-repeat center");
+                //$(".toDown").css("background", "url(../image/toup.png) no-repeat center");
+                $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
 
             } else {
-                $(".toDown").css("background", "url(../image/todown.png) no-repeat center");
+                //$(".toDown").css("background", "url(../image/todown.png) no-repeat center");
+                $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
         }
@@ -2099,14 +2167,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
-                $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
+                //$(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
+                //$('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
 
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
 
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32;
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() - 32;
+                marginleftOfbtnToRight = $("#extable").width() - 32 - 10;
             }
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
@@ -2302,15 +2371,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
             
-            let listLinkLeftmost = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLinkLeftmost.length; i++) {
-                $(listLinkLeftmost[i]).css("pointer-events", "");
-            }
-            
-            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
-            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
-                $(listLinkHeaderDetail[i]).css("pointer-events", "");
-            }
+            $('div.ex-body-leftmost a').css("pointer-events", "");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "");
             
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
@@ -2366,7 +2428,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.visibleBtnInput(false);
                 self.enableBtnInput(false);
-                $("#shiftPallet-Control").removeClass("disabledShiftControl");
+                self.shiftPalletControlEnable();
             }
             nts.uk.ui.block.clear();
         }
@@ -2379,21 +2441,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
-            let listLinkLeftmost = $('div.ex-body-leftmost a');
-            for (let i = 0; i < listLinkLeftmost.length; i++) {
-                $(listLinkLeftmost[i]).css("pointer-events", "none");
-            }
-
-            let listLinkHeaderDetail = $('div.ex-header-detail.xheader a');
-            for (let i = 0; i < listLinkHeaderDetail.length; i++) {
-                $(listLinkHeaderDetail[i]).css("pointer-events", "none");
-            }
+            $('div.ex-body-leftmost a').css("pointer-events", "none");
+            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
-            //let arrTmp = _.clone(arrCellUpdated);
-            //let arrLockCellAfterSave = $("#extable").exTable("lockCells");
-            //self.confirmModeAct();
-            //$("#extable").exTable("updateMode", "determine");
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
@@ -2446,9 +2497,47 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.visibleBtnInput(false);
                 self.enableBtnInput(false);
-                $("#shiftPallet-Control").addClass("disabledShiftControl");
+                self.shiftPalletControlDisable();
             }
             nts.uk.ui.block.clear();
+        }
+        
+        shiftPalletControlEnable() {
+            let self = this;
+            self.checkEnabDisableTblBtn();
+            $('.listLink a').css("pointer-events", "");
+            __viewContext.viewModel.viewAC.enableSwitchBtn(true);
+            __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(true);
+            __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(true);
+        }
+        
+        shiftPalletControlDisable() {
+            let self = this;
+            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                $('#tableButton1 button').addClass('disabledShiftControl');
+            } else {
+                $('#tableButton2 button').addClass('disabledShiftControl');
+            }
+            $('.listLink a').css("pointer-events", "none");
+            __viewContext.viewModel.viewAC.enableSwitchBtn(false);
+            __viewContext.viewModel.viewAC.enableCheckBoxOverwrite(false);
+            __viewContext.viewModel.viewAC.enableBtnOpenDialogJB1(false);
+        }
+        
+        checkEnabDisableTblBtn() {
+            if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                    $('#tableButton1 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                }
+            } else {
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('#tableButton2 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                }
+            }
         }
         
         removeClass() {
@@ -2540,6 +2629,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         dfd.resolve(true);
                     }
                 } else if (userInfor.disPlayFormat == 'shift') {
+                    // truong hop listPage empty thi khong can validate
+                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
+                            dfd.reject();
+                            return;
+                    }
+
+                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 2 && (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true)) {
+                        dfd.reject();
+                        return;
+                    } 
+                    
                     // neu data = {} thi la co  shiftmaster đa bị xóa
                     // => stick show mess 1728
                     let isRemove = Object.keys(data).length === 0 && data.constructor === Object;
@@ -2770,8 +2870,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor : IUserInfor = JSON.parse(item.get());
 
-            setShared('dataShareDialogU', {
-                baseDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+             setShared('dataShareDialogU', {                
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 unit: userInfor.unit,
                 workplaceId: userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId,
