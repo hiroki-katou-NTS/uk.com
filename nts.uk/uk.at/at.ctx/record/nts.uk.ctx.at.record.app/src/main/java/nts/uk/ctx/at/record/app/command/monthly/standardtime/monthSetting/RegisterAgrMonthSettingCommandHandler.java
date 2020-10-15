@@ -32,7 +32,8 @@ public class RegisterAgrMonthSettingCommandHandler extends CommandHandler<Regist
 
         //2:[Not 年月.empty]
         if (agreementMonthSetting.isPresent()){
-            throw new BusinessException("Msg_61");
+            YearMonth yearMonth = agreementMonthSetting.get().getYearMonthValue();
+            throw new BusinessException("Msg_61",yearMonth.year() + "/" + yearMonth.month());
         }
 
         //3: create(会社ID,年月,1年間のエラーアラーム時間)
