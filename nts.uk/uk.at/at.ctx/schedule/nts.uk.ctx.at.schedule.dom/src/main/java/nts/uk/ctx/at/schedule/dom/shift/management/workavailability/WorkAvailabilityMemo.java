@@ -1,14 +1,14 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(100)
-public class WorkExpectationMemo extends StringPrimitiveValue<WorkExpectationMemo>{
+public class WorkAvailabilityMemo extends StringPrimitiveValue<WorkAvailabilityMemo>{
 	
 	private static final long serialVersionUID = -8249746777865553044L;
 
-	public WorkExpectationMemo(String rawValue) {
+	public WorkAvailabilityMemo(String rawValue) {
 		super(rawValue);
 	}
 

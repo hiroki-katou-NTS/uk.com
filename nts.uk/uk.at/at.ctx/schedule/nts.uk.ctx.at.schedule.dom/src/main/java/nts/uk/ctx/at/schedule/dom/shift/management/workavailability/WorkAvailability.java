@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  * @author dan_pv
  *
  */
-public interface WorkExpectation {
+public interface WorkAvailability {
 	
 	/**
 	 * 指定方法を取得する	
@@ -22,7 +22,7 @@ public interface WorkExpectation {
 	/**
 	 * 休日の勤務希望である
 	 */
-	public default boolean isHolidayExpectation(){ 
+	public default boolean isHolidayAvailability(){ 
 		return this.getAssignmentMethod() == AssignmentMethod.HOLIDAY;
     } 
 	
@@ -33,7 +33,7 @@ public interface WorkExpectation {
 	 * @param timeZoneList
 	 * @return
 	 */
-	public boolean isMatchingExpectation(Require require, 
+	public boolean isMatchingWorkAvailability(Require require, 
 			WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList);
 	
@@ -42,10 +42,10 @@ public interface WorkExpectation {
 	 * @param require
 	 * @return
 	 */
-	public WorkExpectDisplayInfo getDisplayInformation(Require require);
+	public WorkAvailabilityDisplayInfo getDisplayInformation(Require require);
 	
 	
-	public static interface Require extends HolidayExpectation.Require, ShiftExpectation.Require {
+	public static interface Require extends WorkAvailabilityByHoliday.Require, WorkAvailabilityByShiftMaster.Require {
 		
 	}
 

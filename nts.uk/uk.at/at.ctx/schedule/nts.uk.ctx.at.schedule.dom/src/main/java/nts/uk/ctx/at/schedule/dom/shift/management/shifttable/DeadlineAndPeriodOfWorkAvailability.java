@@ -11,7 +11,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Value
-public class DeadlineAndPeriodOfExpectation {
+public class DeadlineAndPeriodOfWorkAvailability {
 	
 	/**
 	 * 締切日

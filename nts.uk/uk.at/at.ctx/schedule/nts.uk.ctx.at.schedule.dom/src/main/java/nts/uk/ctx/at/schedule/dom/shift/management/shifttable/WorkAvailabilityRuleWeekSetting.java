@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.seek.DateSeek;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 
 /**
  * シフト表の曜日設定
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfO
  *
  */
 @Value
-public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
+public class WorkAvailabilityRuleWeekSetting implements WorkAvailabilityRule, DomainValue {
 
 	/**
 	 * 開始曜日
@@ -30,8 +30,8 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	private final DeadlineDayOfWeek expectDeadLine;
 	
 	@Override
-	public ShiftPeriodUnit getShiftPeriodUnit() {
-		return ShiftPeriodUnit.WEEKLY;
+	public WorkAvailabilityPeriodUnit getShiftPeriodUnit() {
+		return WorkAvailabilityPeriodUnit.WEEKLY;
 	}
 	
 	@Override
@@ -40,22 +40,22 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 	}
 
 	@Override
-	public boolean isOverDeadline(GeneralDate expectingDate) {
+	public boolean isOverDeadline(GeneralDate availabilityDate) {
 
-		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		GeneralDate startDate = availabilityDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		GeneralDate deadline = this.expectDeadLine.getLastDeadlineWithWeekAtr(startDate);
 		
 		return GeneralDate.today().after(deadline);
 	}
 
 	@Override
-	public boolean isOverHolidayMaxDays(List<WorkExpectationOfOneDay> workExpectList) {
+	public boolean isOverHolidayMaxDays(List<WorkAvailabilityOfOneDay> workAvailabilityList) {
 		
 		return false;
 	}
 	
 	@Override
-	public DeadlineAndPeriodOfExpectation getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
+	public DeadlineAndPeriodOfWorkAvailability getCorrespondingDeadlineAndPeriod(GeneralDate baseDate) {
 		
 		// get deadline
 		GeneralDate mostRecentDeadline = this.expectDeadLine.getMostRecentDeadlineIncludeTargetDate(baseDate);
@@ -70,13 +70,13 @@ public class ShiftTableWeekSetting implements ShiftTableSetting, DomainValue {
 				nextDeadline : nextDeadline.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		DatePeriod period = new DatePeriod(startDate, startDate.addDays(6));
 		
-		return new DeadlineAndPeriodOfExpectation(mostRecentDeadline, period);
+		return new DeadlineAndPeriodOfWorkAvailability(mostRecentDeadline, period);
 	}
 
 	@Override
-	public DatePeriod getPeriodWhichIncludeExpectingDate(GeneralDate expectingDate) {
+	public DatePeriod getPeriodWhichIncludeAvailabilityDate(GeneralDate availabilityDate) {
 		
-		GeneralDate startDate = expectingDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
+		GeneralDate startDate = availabilityDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		return new DatePeriod(startDate, startDate.addDays(6));
 	}
 

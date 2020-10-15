@@ -15,7 +15,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -31,9 +31,9 @@ public class ShiftTableRuleTest {
 				Optional.empty());
 	}
 	
-	private DeadlineAndPeriodOfExpectation creatWithDeadline(GeneralDate deadline) {
+	private DeadlineAndPeriodOfWorkAvailability creatWithDeadline(GeneralDate deadline) {
 		
-		return new DeadlineAndPeriodOfExpectation(deadline, 
+		return new DeadlineAndPeriodOfWorkAvailability(deadline, 
 				new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 	}
 	
@@ -86,7 +86,7 @@ public class ShiftTableRuleTest {
 			ShiftTableRule.create(
 					NotUseAtr.USE,
 					NotUseAtr.USE, // 勤務希望運用区分
-					Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+					Optional.of(WorkAvailabilityRuleDateSettingHelper.defaultCreate()),
 					Collections.emptyList(), // 勤務希望の指定できる方法リスト
 					Optional.empty());
 		});
@@ -98,7 +98,7 @@ public class ShiftTableRuleTest {
 		ShiftTableRule.create(
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE, // 勤務希望運用区分
-				Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+				Optional.of(WorkAvailabilityRuleDateSettingHelper.defaultCreate()),
 				Collections.emptyList(), // 勤務希望の指定できる方法リスト
 				Optional.empty());
 	}
@@ -115,7 +115,7 @@ public class ShiftTableRuleTest {
 			ShiftTableRule.create( 
 					NotUseAtr.USE,
 					NotUseAtr.USE, // 勤務希望運用区分
-					Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+					Optional.of(WorkAvailabilityRuleDateSettingHelper.defaultCreate()),
 					Arrays.asList(AssignmentMethod.HOLIDAY),
 					Optional.empty()); // 何日前に通知するかの日数	
 		});
@@ -127,7 +127,7 @@ public class ShiftTableRuleTest {
 		ShiftTableRule.create( 
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE, // 勤務希望運用区分
-				Optional.of(ShiftTableDateSettingHelper.defaultCreate()),
+				Optional.of(WorkAvailabilityRuleDateSettingHelper.defaultCreate()),
 				Arrays.asList(AssignmentMethod.HOLIDAY),
 				Optional.empty()); // 何日前に通知するかの日数	
 	}
@@ -135,7 +135,7 @@ public class ShiftTableRuleTest {
 	@Test
 	public void testCreate_success_useWorkExpectationAtr_isTrue() {
 		
-		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRule setting = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		FromNoticeDays days = new FromNoticeDays(3);
 		
 		ShiftTableRule rule = ShiftTableRule.create( NotUseAtr.USE, NotUseAtr.USE, 
@@ -144,9 +144,9 @@ public class ShiftTableRuleTest {
 				Optional.of(days));
 		
 		assertThat( rule.getUsePublicAtr()).isEqualTo( NotUseAtr.USE);
-		assertThat( rule.getUseWorkExpectationAtr()).isEqualTo( NotUseAtr.USE);
+		assertThat( rule.getUseWorkAvailabilityAtr()).isEqualTo( NotUseAtr.USE);
 		assertThat( rule.getShiftTableSetting().get()).isEqualTo(setting);
-		assertThat( rule.getExpectationAssignMethodList()).containsOnly(AssignmentMethod.HOLIDAY);
+		assertThat( rule.getAvailabilityAssignMethodList()).containsOnly(AssignmentMethod.HOLIDAY);
 		assertThat( rule.getFromNoticeDays().get()).isEqualTo(days);
 	}
 	
@@ -174,14 +174,14 @@ public class ShiftTableRuleTest {
 	public void testIsTodayTheNotify_false() {
 		
 		// Arrange
-		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRule setting = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
 				NotUseAtr.USE, // 勤務希望運用
 				Optional.of(setting), 
 				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
+		DeadlineAndPeriodOfWorkAvailability deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 6, 0, 0, 0); // TODAY = 2020/10/6
 		
 		new Expectations( setting , NotificationInfo.class) {
@@ -203,14 +203,14 @@ public class ShiftTableRuleTest {
 	public void testIsTodayTheNotify_true_startNotify() {
 		
 		// Arrange
-		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRule setting = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
 				NotUseAtr.USE, // 勤務希望運用
 				Optional.of(setting), 
 				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
+		DeadlineAndPeriodOfWorkAvailability deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 7, 0, 0, 0); // TODAY = 2020/10/7
 		
 		new Expectations(setting, NotificationInfo.class) {
@@ -232,14 +232,14 @@ public class ShiftTableRuleTest {
 	public void testIsTodayTheNotify_true_endNotify() {
 		
 		// Arrange
-		ShiftTableSetting setting = ShiftTableDateSettingHelper.defaultCreate();
+		WorkAvailabilityRule setting = WorkAvailabilityRuleDateSettingHelper.defaultCreate();
 		ShiftTableRule rule = ShiftTableRuleHelper.createWithParam( 
 				NotUseAtr.USE, // 勤務希望運用
 				Optional.of(setting), 
 				Optional.of(new FromNoticeDays(3)) );
 		
 		// Mock
-		DeadlineAndPeriodOfExpectation deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
+		DeadlineAndPeriodOfWorkAvailability deadlineAndPeriod = creatWithDeadline(GeneralDate.ymd(2020, 10, 10));
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2020, 10, 10, 0, 0, 0); // TODAY = 2020/10/10
 		
 		new Expectations(setting, NotificationInfo.class) {

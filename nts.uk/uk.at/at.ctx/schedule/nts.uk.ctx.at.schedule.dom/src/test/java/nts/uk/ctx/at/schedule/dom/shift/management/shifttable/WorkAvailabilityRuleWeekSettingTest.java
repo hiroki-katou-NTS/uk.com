@@ -12,30 +12,30 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 
-public class ShiftTableWeekSettingTest {
+public class WorkAvailabilityRuleWeekSettingTest {
 	
 	@Test
 	public void getters() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper.defaultCreate();
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper.defaultCreate();
 		NtsAssert.invokeGetters(target);  
 	}
 	
 	@Test
 	public void TestGetShiftPeriodUnit() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper.defaultCreate();
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper.defaultCreate();
 		
-		assertThat(target.getShiftPeriodUnit()).isEqualTo(ShiftPeriodUnit.WEEKLY);
+		assertThat(target.getShiftPeriodUnit()).isEqualTo(WorkAvailabilityPeriodUnit.WEEKLY);
 	}
 	
 	@Test
 	public void testIsOverDeadline_ONE_WEEK_AGO_false() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
 		// today = 2020/10/8 THU
@@ -50,7 +50,7 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testIsOverDeadline_ONE_WEEK_AGO_true() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
 		// today = 2020/10/9 FRI
@@ -64,7 +64,7 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testIsOverDeadline_TWO_WEEK_AGO_false() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
 		// today = 2020/10/1 THU
@@ -79,7 +79,7 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testIsOverDeadline_TWO_WEEK_AGO_true() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
 		// today = 2020/10/2 FRI
@@ -93,14 +93,14 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testIsOverHolidayMaxdays() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper.defaultCreate();
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper.defaultCreate();
 		
-		List<WorkExpectationOfOneDay> expectations = Arrays.asList(
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				ShiftTableDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
+		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 1), AssignmentMethod.SHIFT),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 2), AssignmentMethod.TIME_ZONE),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
 				);
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(expectations);
@@ -115,10 +115,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case1() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
@@ -133,10 +133,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case2() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
@@ -151,10 +151,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case3() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
@@ -169,10 +169,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case4() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 4));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
@@ -187,10 +187,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case5() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 8));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 8));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
@@ -204,10 +204,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_case6() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 9));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 15));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 25) );
@@ -221,10 +221,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_special_1() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.SUNDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
@@ -238,10 +238,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetcorrespondingDeadlineAndPeriod_special_2() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.TWO_WEEK_AGO, DayOfWeek.SUNDAY);
 		
-		DeadlineAndPeriodOfExpectation ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
+		DeadlineAndPeriodOfWorkAvailability ruleInfo = target.getCorrespondingDeadlineAndPeriod(GeneralDate.ymd(2020, 10, 1));
 		
 		assertThat(ruleInfo.getDeadline()).isEqualTo(GeneralDate.ymd(2020, 10, 4));
 		assertThat( ruleInfo.getPeriod().start() ).isEqualTo( GeneralDate.ymd(2020, 10, 18) );
@@ -251,10 +251,10 @@ public class ShiftTableWeekSettingTest {
 	@Test
 	public void testGetPeriodWhichIncludeExpectingDate() {
 		
-		ShiftTableWeekSetting target = ShiftTableWeekSettingHelper
+		WorkAvailabilityRuleWeekSetting target = WorkAvailabilityRuleWeekSettingHelper
 				.createWithParam(DayOfWeek.SUNDAY, DeadlineWeekAtr.ONE_WEEK_AGO, DayOfWeek.THURSDAY);
 		
-		DatePeriod period = target.getPeriodWhichIncludeExpectingDate(GeneralDate.ymd(2020, 10, 15));
+		DatePeriod period = target.getPeriodWhichIncludeAvailabilityDate(GeneralDate.ymd(2020, 10, 15));
 		
 		assertThat( period.start() ).isEqualTo( GeneralDate.ymd(2020, 10, 11) );
 		assertThat( period.end() ).isEqualTo( GeneralDate.ymd(2020, 10, 17) );

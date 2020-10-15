@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 @Value
-public class ShiftExpectation implements WorkExpectation, DomainValue  {
+public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainValue  {
 
 	/**
 	 * 勤務可能なシフトのリスト
@@ -33,13 +33,13 @@ public class ShiftExpectation implements WorkExpectation, DomainValue  {
 	 * @param workableShiftCodeList 社員の勤務希望シフトリスト
 	 * @return
 	 */
-	public static ShiftExpectation create(List<ShiftMasterCode> workableShiftCodeList) {
+	public static WorkAvailabilityByShiftMaster create(List<ShiftMasterCode> workableShiftCodeList) {
 
 		if (workableShiftCodeList.isEmpty()) {
 			throw new RuntimeException("workable shift code list is empty!");
 		}
 
-		return new ShiftExpectation(workableShiftCodeList);
+		return new WorkAvailabilityByShiftMaster(workableShiftCodeList);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ShiftExpectation implements WorkExpectation, DomainValue  {
 	}
 
 	@Override
-	public boolean isMatchingExpectation(WorkExpectation.Require require, WorkInformation workInformation,
+	public boolean isMatchingWorkAvailability(WorkAvailability.Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
 		Optional<ShiftMaster> shiftMaster = require.getShiftMasterByWorkInformation(
@@ -64,13 +64,13 @@ public class ShiftExpectation implements WorkExpectation, DomainValue  {
 	}
 
 	@Override
-	public WorkExpectDisplayInfo getDisplayInformation(WorkExpectation.Require require) {
+	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {
 		List<String> shiftMasterNameList = require.getShiftMaster(this.workableShiftCodeList)
 												.stream().map(shiftmaster -> shiftmaster.getDisplayInfor().getName().v())
 												.collect(Collectors.toList());
 		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkExpectDisplayInfo(asignmentMethod, shiftMasterNameList, Collections.emptyList());
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, shiftMasterNameList, Collections.emptyList());
 	}
 	
 	public static interface Require {

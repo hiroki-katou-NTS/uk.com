@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -10,14 +10,14 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Value
-public class WorkExpectDisplayInfoOfOneDay {
+public class WorkAvailabilityDisplayInfoOfOneDay {
 	
 	private String employeeId;
 	
-	private GeneralDate expectingDate;
+	private GeneralDate availabilityDate;
 	
-	private WorkExpectationMemo memo;
+	private WorkAvailabilityMemo memo;
 	
-	private WorkExpectDisplayInfo displayInfo;
+	private WorkAvailabilityDisplayInfo displayInfo;
 
 }

@@ -12,9 +12,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.TimeZoneExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByTimeZone;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
@@ -33,13 +33,13 @@ public class KscdtAvailabilityTs extends ContractCompanyUkJpaEntity {
 		return this.pk;
 	}
 	
-	public static List<KscdtAvailabilityTs> fromDomain( WorkExpectationOfOneDay expectation) {
+	public static List<KscdtAvailabilityTs> fromDomain( WorkAvailabilityOfOneDay expectation) {
 		
 		if ( expectation.getWorkExpectation().getAssignmentMethod() != AssignmentMethod.TIME_ZONE) {
 			return new ArrayList<>();
 		}
 		
-		TimeZoneExpectation timeZoneExpectation = (TimeZoneExpectation) expectation.getWorkExpectation();
+		WorkAvailabilityByTimeZone timeZoneExpectation = (WorkAvailabilityByTimeZone) expectation.getWorkExpectation();
 		return timeZoneExpectation.getWorkableTimeZoneList().stream()
 			.map(t -> new KscdtAvailabilityTs(
 							new KscdtAvailabilityTsPk(

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.infra.repository.shift.management.workavailability;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +13,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.workexpect.KscdtAvailability;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.workexpect.KscdtAvailabilityPk;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.workexpect.KscdtAvailabilityShift;
@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implements WorkExpectationOfOneDayRepository{
+public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository implements WorkAvailabilityOfOneDayRepository{
 
 	private static final String QUERY_SHIFT_EXPECTATION_ONE_DAY =
 			"SELECT * FROM KSCDT_AVAILABILITY_SHIFT" + 
@@ -56,7 +56,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 			" ORDER BY YMD ASC";
 	
 	@Override
-	public Optional<WorkExpectationOfOneDay> get(String employeeID, GeneralDate expectingDate) {
+	public Optional<WorkAvailabilityOfOneDay> get(String employeeID, GeneralDate expectingDate) {
 		Optional<KscdtAvailability> availability = this.queryProxy()
 				.find(new KscdtAvailabilityPk(employeeID, expectingDate), KscdtAvailability.class);
 		
@@ -83,7 +83,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<WorkExpectationOfOneDay> getList(String employeeID, DatePeriod period) {
+	public List<WorkAvailabilityOfOneDay> getList(String employeeID, DatePeriod period) {
 		
 		List<KscdtAvailability> availabilityList = new NtsStatement(QUERY_EXPECTATION_PERIOD, this.jdbcProxy())
 												.paramString("employeeID", employeeID)
@@ -123,7 +123,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void add(WorkExpectationOfOneDay expectation) {
+	public void add(WorkAvailabilityOfOneDay expectation) {
 		Entities entities = toEntities(expectation);
 		
 		this.commandProxy().insert(entities.getAvailability());
@@ -132,7 +132,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void update(WorkExpectationOfOneDay expectation) {
+	public void update(WorkAvailabilityOfOneDay expectation) {
 		Entities entities = toEntities(expectation);
 		
 		this.commandProxy().update(entities.getAvailability());
@@ -150,7 +150,7 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 		
 	}
 	
-	private Entities toEntities(WorkExpectationOfOneDay expectation) {
+	private Entities toEntities(WorkAvailabilityOfOneDay expectation) {
 		KscdtAvailability availability = KscdtAvailability.fromDomain(expectation); 
 		List<KscdtAvailabilityShift> availabilityShiftList = KscdtAvailabilityShift.fromDomain(expectation);
 		List<KscdtAvailabilityTs> availabilityTSList = KscdtAvailabilityTs.fromDomain(expectation);

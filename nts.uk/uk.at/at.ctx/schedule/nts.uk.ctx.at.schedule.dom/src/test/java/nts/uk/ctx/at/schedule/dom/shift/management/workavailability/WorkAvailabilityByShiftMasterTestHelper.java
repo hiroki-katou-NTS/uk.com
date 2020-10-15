@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.workexpect;
+package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,21 +11,21 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 
-public class ShiftExpectationTestHelper {
+public class WorkAvailabilityByShiftMasterTestHelper {
 	
-	public static ShiftExpectation defaultCreate() {
+	public static WorkAvailabilityByShiftMaster defaultCreate() {
 		
-		return new ShiftExpectation( Arrays.asList(new ShiftMasterCode("001")));
+		return new WorkAvailabilityByShiftMaster( Arrays.asList(new ShiftMasterCode("001")));
 	}
 	
 	
-	public static ShiftExpectation createWithShiftCodes(String ...shiftMasterCodes) {
+	public static WorkAvailabilityByShiftMaster createWithShiftCodes(String ...shiftMasterCodes) {
 		
 		List<ShiftMasterCode> shiftMasterCodeList = Arrays.asList(shiftMasterCodes).stream()
 				.map(c -> new ShiftMasterCode(c))
 				.collect(Collectors.toList());
 		
-		return new ShiftExpectation(shiftMasterCodeList);
+		return new WorkAvailabilityByShiftMaster(shiftMasterCodeList);
 		
 	}
 	

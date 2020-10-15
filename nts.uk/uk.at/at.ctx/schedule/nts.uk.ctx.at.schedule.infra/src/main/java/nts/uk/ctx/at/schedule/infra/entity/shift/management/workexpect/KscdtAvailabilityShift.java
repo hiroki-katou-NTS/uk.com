@@ -13,9 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.ShiftExpectation;
-import nts.uk.ctx.at.schedule.dom.shift.management.workexpect.WorkExpectationOfOneDay;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByShiftMaster;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
@@ -36,13 +36,13 @@ public class KscdtAvailabilityShift extends ContractCompanyUkJpaEntity {
 	}
 	
 	public static List<KscdtAvailabilityShift> fromDomain(
-			WorkExpectationOfOneDay expectation) {
+			WorkAvailabilityOfOneDay expectation) {
 		
 		if (expectation.getWorkExpectation().getAssignmentMethod() != AssignmentMethod.SHIFT) {
 			return new ArrayList<>();
 		}
 		
-		ShiftExpectation shiftExpectation =  (ShiftExpectation) expectation.getWorkExpectation();
+		WorkAvailabilityByShiftMaster shiftExpectation =  (WorkAvailabilityByShiftMaster) expectation.getWorkExpectation();
 		return shiftExpectation.getWorkableShiftCodeList().stream()
 				.map(s -> new KscdtAvailabilityShift(
 							new KscdtAvailabilityShiftPk(
