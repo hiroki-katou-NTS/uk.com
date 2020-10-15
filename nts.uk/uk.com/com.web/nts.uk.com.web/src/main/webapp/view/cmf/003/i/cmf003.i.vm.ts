@@ -114,31 +114,33 @@ module nts.uk.com.view.cmf003.i {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.saveName));
       }
-      const param = {
-        objects: arr,
-        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
-        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
-      };
-      return service.findData(param).then((data: DataDto[]) => {
-        const res: DataDto[] = [];
-        if (data && data.length) {
-          _.each(data, (x, i) => {
-            x.rowNumber = i + 1;
-            x.id = nts.uk.util.randomId();
-            x.targetNumberPeople += "人";
-            x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
-            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
-            x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD HH:mm:ss");
-            x.save = getText("CMF003_330");
-            x.saveForm = vm.getSaveForm(Number(x.saveForm));
-            x.deleteFile = x.deletedFiles === 0 ? "1" : null;
-            x.downloadFile = x.deletedFiles === 0 ? "1" : null;
-            res.push(x);
-          });
-        }
-        vm.resultItems(res);
-        vm.loadDataGrid();
-      });
+      if (arr.length > 0) {
+        const param = {
+          objects: arr,
+          from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+          to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+        };
+        return service.findData(param).then((data: DataDto[]) => {
+          const res: DataDto[] = [];
+          if (data && data.length) {
+            _.each(data, (x, i) => {
+              x.rowNumber = i + 1;
+              x.id = nts.uk.util.randomId();
+              x.targetNumberPeople += "人";
+              x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
+              x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
+              x.saveEndDatetime = moment.utc(x.saveEndDatetime).format("YYYY/MM/DD HH:mm:ss");
+              x.save = getText("CMF003_330");
+              x.saveForm = vm.getSaveForm(Number(x.saveForm));
+              x.deleteFile = x.deletedFiles === 0 ? "1" : null;
+              x.downloadFile = x.deletedFiles === 0 ? "1" : null;
+              res.push(x);
+            });
+          }
+          vm.resultItems(res);
+          vm.loadDataGrid();
+        });
+      }
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {

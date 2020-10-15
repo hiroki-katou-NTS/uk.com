@@ -205,7 +205,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				.collect(Collectors.toList());
 		int countCategoryFieldMts = categoryFieldMts.stream()
 				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
-		if (categorys.size() != countCategoryFieldMts) {
+		if (categoryIds.size() != countCategoryFieldMts) {
 //			return ResultState.ABNORMAL_END;
 			repoDataSto.update(storeProcessingId, countCategoryFieldMts, 0,
 					OperatingCondition.SAVING);

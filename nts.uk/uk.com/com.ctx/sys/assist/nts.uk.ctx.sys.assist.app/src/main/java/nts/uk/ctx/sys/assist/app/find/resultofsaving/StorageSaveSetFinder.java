@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,9 +31,13 @@ public class StorageSaveSetFinder {
 	public List<SaveSetDto> findSaveSet(GeneralDateTime from, GeneralDateTime to) {
 		List<ResultOfSaving> ros = resultOfSavingRepository.getByStartDatetime(from, to);
 		return ros.stream().map(r -> {
-			ManualSetOfDataSave mal = manualSetOfDataSaveRepository.getManualSetOfDataSaveById(r.getStoreProcessingId()).get();
-			return new SaveSetDto(r.getPatternCode().v(), mal.getSaveSetName().v());
+			Optional<ManualSetOfDataSave> mal = manualSetOfDataSaveRepository.getManualSetOfDataSaveById(r.getStoreProcessingId());
+			if (mal.isPresent()) {
+				return new SaveSetDto(r.getPatternCode().v(), mal.get().getSaveSetName().v());
+			}
+			return null;
 		})
+				.filter(Objects::nonNull)
 				.sorted(Comparator.comparing(SaveSetDto::getPatternCode))
 				.distinct()
 				.collect(Collectors.toList());

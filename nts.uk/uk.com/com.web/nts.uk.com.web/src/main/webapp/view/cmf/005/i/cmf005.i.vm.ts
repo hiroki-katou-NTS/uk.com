@@ -108,31 +108,34 @@ module nts.uk.com.view.cmf005.i {
         searchValue = vm.getSearchValue(vm.searchValue());
         arr.push(new FindDataHistoryDto(searchValue.patternCode, searchValue.delName));
       }
-      const param = {
-        objects: arr,
-        from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
-        to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
-      };
-      return service.findData(param).then((data: DataDto[]) => {
-        const res: DataDto[] = [];
-        if (data && data.length) {
-          _.each(data, (x, i) => {
-            x.rowNumber = i + 1;
-            x.id = nts.uk.util.randomId();
-            x.numberEmployees += "人";
-            x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
-            x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
-            x.startDateTimeDel = moment.utc(x.startDateTimeDel).format("YYYY/MM/DD HH:mm:ss");
-            x.delete = getText("CMF005_141");
-            x.delType = getText(x.delType);
-            x.deleteFile = !x.deletedFilesFlg ? "1" : null;
-            x.downloadFile = !x.deletedFilesFlg? "1" : null;
-            res.push(x);
-          });
-        }
-        vm.resultItems(res);
-        vm.loadDataGrid();
-      });
+      if (arr.length > 0) {
+        const param = {
+          objects: arr,
+          from: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD HH:mm:ss").toISOString(),
+          to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
+        };
+        return service.findData(param).then((data: DataDto[]) => {
+          const res: DataDto[] = [];
+          if (data && data.length) {
+            _.each(data, (x, i) => {
+              x.rowNumber = i + 1;
+              x.id = nts.uk.util.randomId();
+              x.numberEmployees += "人";
+              x.fileSize = Math.round(Number(x.fileSize) / 1024) + "KB";
+              x.saveStartDatetime = moment.utc(x.saveStartDatetime).format("YYYY/MM/DD HH:mm:ss");
+              x.startDateTimeDel = moment.utc(x.startDateTimeDel).format("YYYY/MM/DD HH:mm:ss");
+              x.delete = getText("CMF005_141");
+              x.delType = getText(x.delType);
+              x.deleteFile = !x.deletedFilesFlg ? "1" : null;
+              x.downloadFile = !x.deletedFilesFlg? "1" : null;
+              res.push(x);
+            });
+          }
+          vm.resultItems(res);
+          vm.loadDataGrid();
+        });
+      }
+      return null;
     }
 
     public getSearchValue(val: any): SaveSetHistoryDto {
