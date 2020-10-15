@@ -37,6 +37,25 @@ module nts.uk.ui.at.ksu002.a {
             finish: KnockoutObservable<number | null>;
             required: KnockoutObservable<WORKTYPE_SETTING>;
         };
+        state: {
+            wtype: KnockoutObservable<EDIT_STATE>;
+            wtime: KnockoutObservable<EDIT_STATE>;
+            value: {
+                begin: KnockoutObservable<EDIT_STATE>;
+                finish: KnockoutObservable<EDIT_STATE>;
+            }
+        }
+    }
+
+    export enum EDIT_STATE {
+        // 手修正（本人）
+        HAND_CORRECTION_MYSELF = 0,
+        // 手修正（他人）
+        HAND_CORRECTION_OTHER = 1,
+        // 申請反映
+        REFLECT_APPLICATION = 2,
+        // 打刻反映
+        IMPRINT = 3
     }
 
     const COMPONENT_NAME = 'scheduler';

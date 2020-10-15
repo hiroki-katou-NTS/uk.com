@@ -120,12 +120,20 @@ module nts.uk.ui.at.ksu002.a {
 											value: {
 												begin: ko.observable($raw.startTime),
 												finish: ko.observable($raw.endTime),
-												required: ko.observable(WORKTYPE_SETTING.NOT_REQUIRED)
+												required: ko.observable($raw.needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
 											comfirmed: ko.observable($raw.confirmed),
-											achievement: ko.observable(arch === NO ? null : $raw.achievements)
+											achievement: ko.observable(arch === NO ? null : $raw.achievements),
+											state: {
+												value: {
+													begin: ko.observable(EDIT_STATE.IMPRINT),
+													finish: ko.observable(EDIT_STATE.IMPRINT),
+												},
+												wtime: ko.observable(EDIT_STATE.IMPRINT),
+												wtype: ko.observable(EDIT_STATE.IMPRINT)
+											}
 										};
 
 										const { dateInfoDuringThePeriod } = $raw;
@@ -375,16 +383,5 @@ module nts.uk.ui.at.ksu002.a {
 		attendanceItemId: number;
 		// 編集状態: 日別実績の編集状態
 		editStateSetting: EDIT_STATE;
-	}
-
-	enum EDIT_STATE {
-		// 手修正（本人）
-		HAND_CORRECTION_MYSELF = 0,
-		// 手修正（他人）
-		HAND_CORRECTION_OTHER = 1,
-		// 申請反映
-		REFLECT_APPLICATION = 2,
-		// 打刻反映
-		IMPRINT = 3
 	}
 }
