@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
@@ -26,7 +27,7 @@ public class WorkStatusOutputSettings extends AggregateRoot {
     private String settingId;
 
     //  設定表示コード ->(出力項目設定コード)
-    private ExportSettingCode settingDisplayCode;
+    private OutputItemSettingCode settingDisplayCode;
 
     // 	設定名称 ->(出力項目設定名称)
     private OutputItemSettingName settingName;

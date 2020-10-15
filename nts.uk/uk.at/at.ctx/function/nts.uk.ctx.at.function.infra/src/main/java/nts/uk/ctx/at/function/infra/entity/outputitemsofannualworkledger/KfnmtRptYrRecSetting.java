@@ -17,10 +17,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_SETTING")
 @AllArgsConstructor
-public class AnnualWorkLedgerSettings extends UkJpaEntity implements Serializable {
+public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
-    public AnnualWorkLedgerSettingsPk pk;
+    public KfnmtRptYrRecSettingPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")

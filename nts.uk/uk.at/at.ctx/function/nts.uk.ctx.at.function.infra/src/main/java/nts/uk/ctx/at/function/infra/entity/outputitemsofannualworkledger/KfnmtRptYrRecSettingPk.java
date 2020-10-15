@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author : chinh.hm
  */
 @Embeddable
-public class AnnualWorkLedgerSettingsPk implements Serializable {
+public class KfnmtRptYrRecSettingPk implements Serializable {
     private static long serialVersionUID = 1l;
     // 	設定ID
     @Column(name = "ID")

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DisplayContentsOfAnnualWorkLedgerPk implements Serializable {
+public class KfnmtRptYrRecDispContPk implements Serializable {
     public static final long serialVersionUID = 1L;
 
     // 	設定ID

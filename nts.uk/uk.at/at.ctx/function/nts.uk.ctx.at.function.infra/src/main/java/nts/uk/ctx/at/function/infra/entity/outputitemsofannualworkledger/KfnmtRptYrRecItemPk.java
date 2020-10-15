@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Embeddable
 @AllArgsConstructor
-public class ItemsInTheAnnualWorkLedgerPk implements Serializable {
+public class KfnmtRptYrRecItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
     // 	設定ID
     @Column(name = "ID")

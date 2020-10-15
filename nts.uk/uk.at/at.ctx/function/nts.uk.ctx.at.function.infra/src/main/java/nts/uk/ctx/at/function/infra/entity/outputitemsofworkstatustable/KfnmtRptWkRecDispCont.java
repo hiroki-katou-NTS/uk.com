@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "KFNMT_RPT_WK_REC_DISP_CONT")
 @AllArgsConstructor
-public class DisplayContentsOfWorkStatus extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
     public static long serialVersionUID = 1L;
     @EmbeddedId
-    public DisplayContentsOfWorkStatusPk pk;
+    public KfnmtRptWkRecDispContPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -42,13 +42,13 @@ public class DisplayContentsOfWorkStatus extends UkJpaEntity implements Serializ
         return pk;
     }
 
-    public static List<DisplayContentsOfWorkStatus>fromDomain(String cid, WorkStatusOutputSettings outputSettings,
-                                                              List<OutputItem> outputItemList,
-                                                              List<OutputItemDetailSelectionAttendanceItem> attendanceItemList){
-        val rs = new ArrayList<DisplayContentsOfWorkStatus>();
+    public static List<KfnmtRptWkRecDispCont>fromDomain(String cid, WorkStatusOutputSettings outputSettings,
+                                                        List<OutputItem> outputItemList,
+                                                        List<OutputItemDetailSelectionAttendanceItem> attendanceItemList){
+        val rs = new ArrayList<KfnmtRptWkRecDispCont>();
         for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
-            rs.addAll(outputItemList.stream().map(e->new DisplayContentsOfWorkStatus(
-                    new DisplayContentsOfWorkStatusPk(outputSettings.getSettingId(),e.getRank(),i.getAttendanceItemId()),
+            rs.addAll(outputItemList.stream().map(e->new KfnmtRptWkRecDispCont(
+                    new KfnmtRptWkRecDispContPk(outputSettings.getSettingId(),e.getRank(),i.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     cid,
                     i.getOperator().value

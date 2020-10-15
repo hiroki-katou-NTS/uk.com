@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -13,8 +12,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Entity: 	勤務状況表の設定
@@ -25,10 +22,10 @@ import java.util.List;
 @Entity
 @Table(name = "KFNMT_RPT_WK_REC_SETTING")
 @AllArgsConstructor
-public class WorkStatusTableSettings extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    public WorkStatusTableSettingPk pk;
+    public KfnmtRptWkRecSettingPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -59,12 +56,12 @@ public class WorkStatusTableSettings extends UkJpaEntity implements Serializable
         return pk;
     }
 
-    public static WorkStatusTableSettings fromDomain(WorkStatusOutputSettings domain,String cid){
-        return new WorkStatusTableSettings(
-                new WorkStatusTableSettingPk(domain.getSettingId()),
+    public static KfnmtRptWkRecSetting fromDomain(WorkStatusOutputSettings domain, String cid){
+        return new KfnmtRptWkRecSetting(
+                new KfnmtRptWkRecSettingPk(domain.getSettingId()),
                 AppContexts.user().contractCode(),// TODO
                 cid,
-                domain.getSettingDisplayCode().v().intValue(),
+                Integer.parseInt(domain.getSettingDisplayCode().v()),
                 domain.getSettingName().v(),
                 domain.getEmployeeId(),
                 domain.getDesignateFreeClassing().value

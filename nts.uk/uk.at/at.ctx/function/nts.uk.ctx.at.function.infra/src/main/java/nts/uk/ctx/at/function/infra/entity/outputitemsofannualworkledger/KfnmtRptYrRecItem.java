@@ -17,9 +17,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_ITEM")
 @AllArgsConstructor
-public class ItemsInTheAnnualWorkLedger extends UkJpaEntity implements Serializable {
+public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
     @EmbeddedId
-    public ItemsInTheAnnualWorkLedgerPk pk;
+    public KfnmtRptYrRecItemPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
     public String contractCode;

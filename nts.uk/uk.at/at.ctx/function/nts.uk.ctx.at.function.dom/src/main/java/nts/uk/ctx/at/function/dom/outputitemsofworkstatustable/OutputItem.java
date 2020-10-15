@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
@@ -15,6 +17,8 @@ import java.util.List;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OutputItem extends ValueObject {
     // 順位
     private int rank;

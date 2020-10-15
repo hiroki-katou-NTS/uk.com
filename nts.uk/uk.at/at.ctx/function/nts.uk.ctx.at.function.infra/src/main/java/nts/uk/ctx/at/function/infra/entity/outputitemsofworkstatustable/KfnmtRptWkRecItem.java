@@ -12,19 +12,17 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "KFNMT_RPT_WK_REC_ITEM")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemsInTheWorkStatus extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
-    public ItemsInTheWorkStatusPk pk;
+    public KfnmtRptWkRecItemPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -40,7 +38,7 @@ public class ItemsInTheWorkStatus extends UkJpaEntity implements Serializable {
 
     //	出力印刷対象フラグ	->出力項目.印刷対象フラグ
     @Column(name = "ITEM_IS_PRINTED")
-    boolean itemIsPrintEd;
+    public boolean itemIsPrintEd;
 
     //	出力項目詳細の単独計算区分->出力項目.単独計算区分
     @Column(name = "ITEM_TYPE")
@@ -55,9 +53,9 @@ public class ItemsInTheWorkStatus extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<ItemsInTheWorkStatus> fromDomain(String cid,WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList){
-       return outputItemList.stream().map(e->new ItemsInTheWorkStatus(
-               new ItemsInTheWorkStatusPk(outputSettings.getSettingId(),e.getRank()),
+    public static List<KfnmtRptWkRecItem> fromDomain(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList){
+       return outputItemList.stream().map(e->new KfnmtRptWkRecItem(
+               new KfnmtRptWkRecItemPk(outputSettings.getSettingId(),e.getRank()),
                AppContexts.user().contractCode(),
                cid,
                e.getName().v(),

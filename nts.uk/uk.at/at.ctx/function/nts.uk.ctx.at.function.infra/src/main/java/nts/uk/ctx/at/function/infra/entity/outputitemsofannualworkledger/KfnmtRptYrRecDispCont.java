@@ -15,12 +15,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_DISP_CONT")
 @AllArgsConstructor
-public class DisplayContentsOfAnnualWorkLedger extends UkJpaEntity implements Serializable {
+public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
 
     private static long serialVersionUID = 1L;
 
     @EmbeddedId
-    public DisplayContentsOfAnnualWorkLedgerPk pk;
+    public KfnmtRptYrRecDispContPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
     private String contractCode;

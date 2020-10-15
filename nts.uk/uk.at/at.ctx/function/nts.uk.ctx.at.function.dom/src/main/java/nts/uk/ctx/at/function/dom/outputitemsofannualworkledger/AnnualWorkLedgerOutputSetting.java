@@ -18,7 +18,7 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     private String id;
 
     //コード
-    private ExportSettingCode code;
+    private OutputItemSettingCode code;
 
     // 名称
     private OutputItemSettingName name;
