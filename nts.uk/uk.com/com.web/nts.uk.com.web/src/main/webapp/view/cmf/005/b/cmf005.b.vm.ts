@@ -255,6 +255,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
           arr.push(p);
         });
         self.patternList(arr);
+        self.patternList(_.orderBy(self.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
         self.systemTypes(res.systemTypes);
         self.selectedPatternId(self.patternList()[0].displayCode);
         self.selectPattern(self.patternList()[0].displayCode);
