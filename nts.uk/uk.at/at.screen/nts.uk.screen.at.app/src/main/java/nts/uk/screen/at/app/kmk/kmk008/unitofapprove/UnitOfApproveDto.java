@@ -11,11 +11,6 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.
 public class UnitOfApproveDto {
 
     /**
-     * 会社ID
-     */
-    private String companyID;
-
-    /**
      * 職場を利用する
      */
     private int useWorkplace;
@@ -24,6 +19,6 @@ public class UnitOfApproveDto {
         if (data == null){
             return new UnitOfApproveDto();
         }
-        return new UnitOfApproveDto(data.getCompanyID(),data.getUseWorkplace().value);
+        return new UnitOfApproveDto(data.getUseWorkplace().value);
     }
 }

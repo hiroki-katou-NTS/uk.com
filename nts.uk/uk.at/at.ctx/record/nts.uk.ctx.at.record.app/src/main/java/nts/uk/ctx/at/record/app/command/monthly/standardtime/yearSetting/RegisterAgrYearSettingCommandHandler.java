@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.monthly.standardtime.yearSetting;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
@@ -9,9 +10,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
- * 特別条項設定を更新登録する（年度）
+ * 特別条項設定を新規登録する（年度）
  */
 @Stateless
 public class RegisterAgrYearSettingCommandHandler extends CommandHandler<RegisterAgrYearSettingCommand> {
@@ -24,7 +26,16 @@ public class RegisterAgrYearSettingCommandHandler extends CommandHandler<Registe
 
         RegisterAgrYearSettingCommand command = context.getCommand();
 
-        //1: set(会社ID,年月,１ヶ月時間)
+
+        //1: get(社員ID,年度) : ３６協定年度設定
+        Optional<AgreementYearSetting> agreementYearSetting = repo.findByKey(command.getEmployeeId(), command.getYear());
+
+        //2
+        if (agreementYearSetting.isPresent()){
+            throw new BusinessException("Msg_61");
+        }
+
+        //3: create(会社ID,年月,１ヶ月時間)
         AgreementYearSetting setting = new AgreementYearSetting(command.getEmployeeId(),command.getYear(),
                 OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTime()),new AgreementOneYearTime(command.getAlarmTime())));
         repo.add(setting);

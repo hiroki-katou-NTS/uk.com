@@ -30,4 +30,16 @@ public class Kmk008FWebservice {
         return this.agreeYearSetScreenProcessor.find(request);
     }
 
+    @POST
+    @Path("getAllMonthSetting")
+    public List<EmployeeMonthSettingDto> getAllAgreeMonthSetting(RequestEmployee request) {
+        return this.agreeMonthSetScreenProcessor.findAll(request);
+    }
+
+    @POST
+    @Path("getAllYearSetting")
+    public List<EmployeeYearSettingDto> getAllAgreeYearSetting(RequestEmployee request) {
+        return this.agreeYearSetScreenProcessor.findAll(request);
+    }
+
 }

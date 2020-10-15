@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exce
 public interface AgreementYearSettingRepository {
 	
 	List<AgreementYearSetting> find(String employeeId);
-	
+
 	void add(AgreementYearSetting agreementYearSetting);
 	
 	void update(AgreementYearSetting agreementYearSetting);
@@ -26,6 +26,6 @@ public interface AgreementYearSettingRepository {
 
 	void delete(AgreementYearSetting agreementYearSetting);
 
-
+	List<AgreementYearSetting> findByListEmployee(List<String> employeeIds);
 
 }
