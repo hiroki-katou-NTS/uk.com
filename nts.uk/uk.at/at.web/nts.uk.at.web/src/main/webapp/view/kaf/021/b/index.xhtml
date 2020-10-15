@@ -21,22 +21,22 @@
         <div id="content-area">
             <div class="kaf021b-content">
                 <!--B1_1-->
-                <a class="goback" tabindex="2" data-bind="ntsLinkButton: { action: preScreen }">#{i18n.getText('KAF021_20')}</a>
+                <a class="goback" tabindex="2" data-bind="ntsLinkButton: { action: preScreen }, text: vm.$i18n('KAF021_20')"></a>
                 <!--B1_2-->
                 <div id="B1_2" class="panel panel-frame">
                     <!--B1_3-->
-                    <div class="label">#{i18n.getText('KAF021_21')}</div>
+                    <div class="label" data-bind="text: vm.$i18n('KAF021_21')"></div>
                 </div>
                 <div id="tbl-control" class="table">
                     <div class="cell valign-center">
                     </div>
                     <div class="cell valign-center">
                         <!--B1_4-->
-                        <span class="label">#{i18n.getText('KAF021_22')}</span>
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_22')"></span>
                     </div>
                     <div class="cell valign-center">
                         <!--B2_1-->
-                        <button tabindex="1" class="proceed" data-bind="click: register">#{i18n.getText('KAF021_24')}</button>
+                        <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24')"></button>
                     </div>
                 </div>
                 <!--B4_14-->

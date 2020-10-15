@@ -166,19 +166,19 @@ module nts.uk.at.kaf021.a {
             switch (vm.appTypeSelected()) {
                 case common.AppTypeEnum.CURRENT_MONTH:
                     vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = vm.convertData(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = vm.convertData(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
                 case common.AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = vm.convertData(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
                     break;
@@ -187,6 +187,17 @@ module nts.uk.at.kaf021.a {
                     vm.$blockui("clear");
             }
             return dfd.promise();
+        }
+
+        convertData(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
+            const vm = this;
+            let results : Array<EmployeeAgreementTime> = [];
+            _.each(data, (item: IEmployeeAgreementTime) => {
+                let result = new EmployeeAgreementTime(item)
+                result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : vm.$i18n("KAF021_72");
+                results.push(result);
+            })
+            return results
         }
 
         loadMGrid() {
@@ -215,7 +226,7 @@ module nts.uk.at.kaf021.a {
                     {
                         name: 'CheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId, columnKey, value, rowData) {
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
                             vm.checkNextScreen(rowId, value);
                         }
                     }
@@ -359,7 +370,7 @@ module nts.uk.at.kaf021.a {
             return 'month' + month + 'Str';
         }
 
-        getMonthStatusColor(status: AgreementTimeStatusOfMonthly) {
+        getMonthStatusColor(status: common.AgreementTimeStatusOfMonthly) {
             switch (status) {
                 case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
                 case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
@@ -552,7 +563,7 @@ module nts.uk.at.kaf021.a {
                 datas.push(dto);
             }
 
-            vm.datas = EmployeeAgreementTime.fromApp(datas);
+            vm.datas = vm.convertData(datas);
         }
     }
 
@@ -801,7 +812,7 @@ module nts.uk.at.kaf021.a {
             this.checked = false;
             this.status = data.status;
             this.isApplying = this.status == common.ApprovalStatusEnum.UNAPPROVED || this.status == common.ApprovalStatusEnum.DENY;
-            this.statusStr = this.isApplying ? "申請中" : "";
+            //this.statusStr = this.isApplying ? "申請中" : "";
             this.wkpName = data.affiliationName;
             this.employeeName = data.employeeCode + "　" + data.employeeName;
 
@@ -943,10 +954,6 @@ module nts.uk.at.kaf021.a {
             this.monthAverage6Status = data.monthAverage6?.status;
 
             this.exceededNumber = data.exceededNumber;
-        }
-
-        static fromApp(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
-            return _.map(data, (item: IEmployeeAgreementTime) => { return new EmployeeAgreementTime(item) })
         }
 
         static getCellTime(time?: number, maxTime?: number) {

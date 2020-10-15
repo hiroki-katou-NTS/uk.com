@@ -15,11 +15,11 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- D1_1 -->
-            <button tabindex="1" data-bind="click: approval">#{i18n.getText('KAF021_46')}</button>
+            <button tabindex="1" data-bind="click: approval, text: vm.$i18n('KAF021_46')"></button>
             <!-- D1_2 -->
-            <button tabindex="2" data-bind="click: bulkApproval">#{i18n.getText('KAF021_47')}</button>
+            <button tabindex="2" data-bind="click: bulkApproval, text: vm.$i18n('KAF021_47')"></button>
             <!-- D1_3 -->
-            <button tabindex="3" data-bind="click: denial">#{i18n.getText('KAF021_38')}</button>
+            <button tabindex="3" data-bind="click: denial, text: vm.$i18n('KAF021_38')"></button>
         </div>
         <div id="content-area">
             <div class="kaf021d-content">
@@ -28,7 +28,7 @@
                         <div class="table tbl-left">
                             <div class="cell valign-center">
                                 <!-- D1_4 -->
-                                <div class="label">#{i18n.getText('KAF021_31')}</div>
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_31')"></div>
                             </div>
                             <div class="cell valign-center right-align">
                                 <!-- D1_5 -->
@@ -38,7 +38,7 @@
                         <div class="table tbl-left">
                             <div class="cell valign-center">
                                 <!-- D1_6 -->
-                                <div class="label">#{i18n.getText('KAF021_32')}</div>
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_32')"></div>
                             </div>
                             <div class="cell valign-center right-align">
                                 <!-- D1_7 -->
@@ -48,7 +48,7 @@
                         <div class="table tbl-left">
                             <div class="cell valign-center">
                                 <!-- D1_8 -->
-                                <div class="label">#{i18n.getText('KAF021_33')}</div>
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_33')"></div>
                             </div>
                             <div class="cell valign-center right-align">
                                 <!-- D1_9 -->
@@ -62,29 +62,29 @@
                             <div class="table tbl-right">
                                 <div class="cell valign-center">
                                     <!-- D1_11 -->
-                                    <div class="label">#{i18n.getText('KAF021_34')}</div>
+                                    <div class="label" data-bind="text: vm.$i18n('KAF021_34')"></div>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- D1_12 -->
-                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: unapproveChecked}">#{i18n.getText('KAF021_36')}</div>
+                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: unapproveChecked}, text: vm.$i18n('KAF021_36')"></div>
                                     <!-- D1_13 -->
-                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: approveChecked}">#{i18n.getText('KAF021_37')}</div>
+                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: approveChecked}, text: vm.$i18n('KAF021_37')"></div>
                                     <!-- D1_14 -->
-                                    <div tabindex="6" data-bind="ntsCheckBox: { checked: denialChecked}">#{i18n.getText('KAF021_38')}</div>
+                                    <div tabindex="6" data-bind="ntsCheckBox: { checked: denialChecked}, text: vm.$i18n('KAF021_38')"></div>
                                 </div>
                             </div>
                             <div class="table tbl-right">
                                 <div class="cell valign-center">
                                     <!-- D1_21 -->
-                                    <div class="label">#{i18n.getText('KAF021_50')}</div>
+                                    <div class="label" data-bind="text: vm.$i18n('KAF021_50')"></div>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- D1_15 -->
-                                    <div tabindex="7" data-bind="ntsDateRangePicker: { name: '#{i18n.getText('KAF021_39')}', required: false, enable: true, showNextPrevious: true, value: datePeriod, maxRange: 'oneMonth'}"/>
+                                    <div tabindex="7" data-bind="ntsDateRangePicker: { name: vm.$i18n('KAF021_39'), required: false, enable: true, showNextPrevious: true, value: datePeriod, maxRange: 'oneMonth'}"></div>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- D1_18 -->
-                                    <button tabindex="9" class="small">#{i18n.getText('KAF021_40')}</button>
+                                    <button tabindex="9" class="small" data-bind="text: vm.$i18n('KAF021_40')"></button>
                                 </div>
                             </div>
                         </div>
@@ -95,11 +95,11 @@
                     </div>
                     <div class="cell valign-center">
                         <!--D1_19-->
-                        <span class="label">#{i18n.getText('KAF021_22')}</span>
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_22')"></span>
                     </div>
                     <div class="cell valign-center">
                         <!--D1_20-->
-                        <span class="label">#{i18n.getText('KAF021_23')}</span>
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_23')"></span>
                     </div>
                 </div>
                  <!--D3_24-->
