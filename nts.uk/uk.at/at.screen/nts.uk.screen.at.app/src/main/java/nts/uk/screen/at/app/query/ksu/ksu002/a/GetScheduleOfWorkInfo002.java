@@ -157,7 +157,8 @@ public class GetScheduleOfWorkInfo002 {
 						.supportCategory(SupportCategory.NOT_CHEERING.value).workTypeCode(null).workTypeName(null)
 						.workTypeEditStatus(null).workTimeCode(null).workTimeName(null).workTimeEditStatus(null)
 						.startTime(null).startTimeEditState(null).endTime(null).endTimeEditState(null)
-//						.workHolidayCls(null).isEdit(true) //
+						.workHolidayCls(null)
+//						.isEdit(true) 
 //						.isActive(true) //
 						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
@@ -295,7 +296,8 @@ public class GetScheduleOfWorkInfo002 {
 										? new EditStateOfDailyAttdDto(endTimeEditStatus.get().getAttendanceItemId(),
 												endTimeEditStatus.get().getEditStateSetting().value)
 										: null)
-//						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null).isEdit(true) //
+						.workHolidayCls(workStyle.map(m -> m.value).orElse(null))
+//						.isEdit(true) 
 //						.isActive(true) //
 						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
