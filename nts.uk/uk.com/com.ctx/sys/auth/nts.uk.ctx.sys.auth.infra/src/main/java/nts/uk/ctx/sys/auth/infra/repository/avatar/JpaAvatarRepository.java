@@ -12,7 +12,7 @@ import java.util.Optional;
 public class JpaAvatarRepository extends JpaRepository implements AvatarRepository {
 
     //select by personal ID
-    private static final String SELECT_BY_PERSONAL_ID = "SELECT avatar FROM BpsdtPsAvatar avatar WHERE avatar.bpsdtPsAvatarPK.personalId =: personalId";
+    private static final String SELECT_BY_PERSONAL_ID = "SELECT avatar FROM BpsdtPsAvatar avatar WHERE avatar.bpsdtPsAvatarPK.personalId = :personalId";
 
     private static BpsdtPsAvatar toEntity(UserAvatar domain) {
         BpsdtPsAvatar entity = new BpsdtPsAvatar();
