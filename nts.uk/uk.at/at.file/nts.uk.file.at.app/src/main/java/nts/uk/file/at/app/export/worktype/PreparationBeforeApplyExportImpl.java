@@ -1229,7 +1229,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         Map<String, MasterCellData> rowData = new HashMap<>();
                         for (int col = 0; col < 3; col++) {
                             String value;
-                            if (col == 0 && row == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
+                            if (col == 0 && row == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
                             else if (col == 1 && row == 0) value = ot.name;
                             else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
                             else value = "";
