@@ -26,6 +26,9 @@ module nts.uk.ui.at.ksu002.a {
             begin: number | null;
             finish: number | null;
         }
+        state: StateEdit<EDIT_STATE>;
+        comfirmed: boolean;
+        achievement: boolean | null;
     }
 
     export interface ObserverScheduleData<R = any> extends c.DataInfo {
@@ -42,12 +45,12 @@ module nts.uk.ui.at.ksu002.a {
         achievement: KnockoutObservable<boolean | null>;
     }
 
-    export interface StateEdit {
-        wtype: KnockoutObservable<EDIT_STATE>;
-        wtime: KnockoutObservable<EDIT_STATE>;
+    export interface StateEdit<T = KnockoutObservable<EDIT_STATE>> {
+        wtype: T;
+        wtime: T;
         value: {
-            begin: KnockoutObservable<EDIT_STATE>;
-            finish: KnockoutObservable<EDIT_STATE>;
+            begin: T;
+            finish: T;
         }
     }
 

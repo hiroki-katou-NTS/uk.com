@@ -22,7 +22,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (exist) {
 				const { data } = exist;
-				const { wtime, wtype, value } = replacer.data;
+				const { wtime, wtype, value, state } = replacer.data;
 
 				data.wtime.code(wtime.code);
 				data.wtime.name(wtime.name);
@@ -32,6 +32,12 @@ module nts.uk.ui.at.ksu002.a {
 
 				data.value.begin(value.begin);
 				data.value.finish(value.finish);
+
+				data.state.wtype(state.wtype);
+				data.state.wtime(state.wtime);
+
+				data.state.value.begin(state.value.begin);
+				data.state.value.finish(state.value.finish);
 			}
 		}
 	};
@@ -277,12 +283,7 @@ module nts.uk.ui.at.ksu002.a {
 									data.value.finish(wtime.value.finish);
 								}
 							})
-							.then(() => {
-								const { state } = current.data;
-								const changed: DayData = ko.toJS(current);
-
-								vm.compare(cloned, changed, state);
-							})
+							.then(() => vm.compare(cloned, current))
 							// save to memento after change data
 							.then(() => vm.memento(current, preview));
 					}
@@ -316,12 +317,7 @@ module nts.uk.ui.at.ksu002.a {
 						data.value.begin(value.begin);
 						data.value.finish(value.finish);
 					})
-					.then(() => {
-						const { state } = preview.data;
-						const changed: DayData = ko.toJS(preview);
-
-						vm.compare(cloned, changed, state);
-					});
+					.then(() => vm.compare(cloned, preview));
 			}
 		}
 
@@ -340,7 +336,10 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
-		private compare(cloned: DayData, changed: DayData, state: StateEdit) {
+		private compare(cloned: DayData, current: DayDataRawObsv) {
+			const { state } = current.data;
+			const changed: DayData = ko.toJS(current);
+
 			if (changed.data.wtype.code !== cloned.data.wtype.code) {
 				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
