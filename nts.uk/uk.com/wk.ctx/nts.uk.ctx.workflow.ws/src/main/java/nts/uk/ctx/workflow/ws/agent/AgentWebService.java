@@ -13,11 +13,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.app.command.agent.AddAgentCommandHandler;
-import nts.uk.ctx.workflow.app.command.agent.AgentCommandBase;
-import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommand;
-import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommandHandler;
-import nts.uk.ctx.workflow.app.command.agent.UpdateAgentCommandHandler;
+import nts.uk.ctx.workflow.app.command.agent.*;
 import nts.uk.ctx.workflow.app.find.agent.AgentDto;
 import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -41,6 +37,9 @@ public class AgentWebService extends WebService {
 	
 	@Inject
 	private EmployeeAdapter employeeAdapter;
+
+	@Inject
+	private SendMailToApproverCommandHandler sendMailToApproverCommandHandler;
 
 	@Path("find/{employeeId}")
 	@POST
@@ -92,5 +91,11 @@ public class AgentWebService extends WebService {
 	public EmpInfoImport findEmpName(String sId) {
 		List<EmpInfoImport> result = employeeAdapter.getEmpInfo(Collections.singletonList(sId));
 		return CollectionUtil.isEmpty(result) ? null : result.get(0);
+	}
+
+	@Path("sendMail")
+	@POST
+	public void sendEmail(SendEmailCommand command) {
+		this.sendMailToApproverCommandHandler.handle(command);
 	}
 }

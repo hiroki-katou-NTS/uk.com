@@ -369,6 +369,25 @@ module cmm044.a.viewmodel {
             }
         }
 
+        openCDialog() {
+            let self = this;
+            // nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.setShared('cmm044_Email', {
+                startDate: self.currentItem().startDate(),
+                endDate: self.currentItem().endDate(),
+                targetId: self.selectedItem(),
+                targetCode: _.find(self.employeeInputList(), e => e.id == self.selectedItem()).code,
+                targetName: _.find(self.employeeInputList(), e => e.id == self.selectedItem()).businessName,
+                approverId: self.currentItem().agentSid1(),
+                approverCode: self.currentItem().employeeCodeScreen1(),
+                approverName: self.currentItem().employeeNameScreen1()
+            });
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/c/index.xhtml').onClosed(function(): any {
+                // nts.uk.ui.block.clear();
+            });
+
+        }
+
         openDDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -500,7 +519,7 @@ module cmm044.a.viewmodel {
 
             this.dateValue.subscribe(value => {
                 this.startDate(value.startDate ? new Date(value.startDate).toISOString() : "");
-                this.endDate(value.startDate ? new Date(value.endDate).toISOString() : "");
+                this.endDate(value.endDate ? new Date(value.endDate).toISOString() : "");
             });
         }
 
