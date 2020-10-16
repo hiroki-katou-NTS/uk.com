@@ -242,7 +242,8 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
@@ -276,7 +277,8 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
@@ -310,7 +312,8 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
@@ -398,7 +401,8 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
@@ -594,7 +598,8 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
@@ -666,7 +671,8 @@ module nts.uk.com.view.cmm018.a {
                         servicebase.getNameAppType().done(function(lstName){
                             self.lstNameS = lstName;
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, 
                                                 self.findName(lstName, item.appType).appName,1, null));
@@ -1926,7 +1932,8 @@ module nts.uk.com.view.cmm018.a {
                     let check = false;
                     _.each(root, function(itemRoot){
                         color = itemRoot.lstAppPhase.length > 0 ? true : false;
-                        if(item.value != 14 && item.value == itemRoot.applicationType){
+						// refactor5 remove 36 application
+                        if(item.value == itemRoot.applicationType){
                             lstbyApp.push(new vmbase.CompanyAppRootADto(color, itemRoot.employmentRootAtr, item.value,item.localizedName, itemRoot.approvalId,
                                     itemRoot.historyId,itemRoot.branchId,
                                     self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
@@ -1934,7 +1941,8 @@ module nts.uk.com.view.cmm018.a {
                             check = true;
                         }
                     });
-                    if(!check && item.value != 14){//chua co du lieu
+					// refactor5 remove 36 application
+                    if(!check){//chua co du lieu
                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, item.employRootAtr, item.value, item.localizedName,index,'','',a,a,a,a,a));
                     }
                 });
@@ -1969,7 +1977,8 @@ module nts.uk.com.view.cmm018.a {
                     }
                     _.each(self.lstNameAppType(), function(appType, index){
                         index++;
-                        if(appType.value != 14 && !vmbase.ProcessHandler.checkExist(lstbyApp, appType.value, appType.employRootAtr)){
+						// refactor5 remove 36 application
+                        if(!vmbase.ProcessHandler.checkExist(lstbyApp, appType.value, appType.employRootAtr)){
                             lstbyApp.push(new vmbase.CompanyAppRootADto(false, appType.employRootAtr, appType.value, appType.employRootAtr == 0 ? getText('CMM018_109') : appType.localizedName, index.toString(), '','', a, a, a, a, a)); 
                         }
                     });
