@@ -261,6 +261,7 @@ interface ComponentViewModel {
 		(selector: string): JQueryDeferred<boolean>;
 		(selectors: string[]): JQueryDeferred<boolean>;
 		(...selectors: string[]): JQueryDeferred<boolean>;
+		readonly valid: KnockoutReadonlyComputed<boolean>;
 		readonly constraint: {
 			(): JQueryDeferred<PrimitiveConstraints>;
 			(name: string): JQueryDeferred<Constraint>;
