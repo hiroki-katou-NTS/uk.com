@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetSettlementPeriodOfDefor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -233,9 +234,8 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(companyId, employeeId, yearMonth, this.weekAggrPeriod,
-							workingSystem, aggregateAtr,
-							settingsByReg, settingsByDefo, aggregateTotalWorkingTime,
-							weekStart, this.weekPremiumTimeOfPrevMonth,
+							datePeriod, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
+							aggregateTotalWorkingTime, weekStart, this.weekPremiumTimeOfPrevMonth,
 							attendanceTimeOfDailyMap, companySets);
 					resultWeeks.add(newWeek);
 					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
@@ -299,37 +299,12 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			MonthlyCalculatingDailys monthlyCalcDailys){
 		
 		// 前月の最終週を集計するか判断する
-		{
-			// 労働条件のループの1回目の処理か確認する　（週NOが1以外なら、その月度の1回目ではない）
-			if (startWeekNo != 1) return;
-			
-			// 前月の最終日の労働制を確認する
-			val workingConditionItemOpt = require.workingConditionItem(employeeId, datePeriod.start().addDays(-1));
-			if (!workingConditionItemOpt.isPresent()) return;
-			val prevWorkingSystem = workingConditionItemOpt.get().getLaborSystem();
-			
-			if (workingSystem == WorkingSystem.REGULAR_WORK){
-				if (prevWorkingSystem != WorkingSystem.REGULAR_WORK) return;
-			}
-			if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
-				if (prevWorkingSystem == WorkingSystem.FLEX_TIME_WORK) return;
-			}
-		}
+		if(!shouldCalcPrevMonthLastWeek(require, employeeId, datePeriod, workingSystem, 
+				startWeekNo, companySets.getVerticalTotalMethod()))
+			return;
 		
 		// 前月の最終週の期間を求める
-		val employee = employeeSets.getEmployee();
-		DatePeriod lastWeekPeriod = null;
-		if (!MonthlyCalculation.isWeekStart(datePeriod.start(), weekStart)){
-			GeneralDate startDate = datePeriod.start().addDays(-1);
-			for (int i = 0; i < 6; i++){
-				if (MonthlyCalculation.isWeekStart(startDate, weekStart)) break;
-				startDate = startDate.addDays(-1);
-			}
-			GeneralDate endDate = datePeriod.start().addDays(-1);
-			lastWeekPeriod = MonthlyCalculation.confirmProcPeriod(
-					new DatePeriod(startDate, endDate),
-					new DatePeriod(employee.getEntryDate(), employee.getRetiredDate()));
-		}
+		DatePeriod lastWeekPeriod = getPrevMonthLastWeek(datePeriod, weekStart, employeeSets);
 		if (lastWeekPeriod == null) return;
 		
 		// 最終週用の集計総労働時間を用意する
@@ -393,6 +368,50 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		val weekPremiumTime = TargetPrmTimeWeekOfPrevMonLast.askPremiumTimeWeek(
 				companyId, employeeId, lastWeekPeriod, addSet, prevTotalWorkingTime);
 		this.weekPremiumTimeOfPrevMonth = new AttendanceTimeMonth(weekPremiumTime.getTargetTime().v());
+	}
+
+	/** ○前月の最終週の期間を求める */
+	private DatePeriod getPrevMonthLastWeek(DatePeriod datePeriod, WeekStart weekStart,
+			MonAggrEmployeeSettings employeeSets) {
+		val employee = employeeSets.getEmployee();
+		DatePeriod lastWeekPeriod = null;
+		if (!MonthlyCalculation.isWeekStart(datePeriod.start(), weekStart)){
+			GeneralDate startDate = datePeriod.start().addDays(-1);
+			for (int i = 0; i < 6; i++){
+				if (MonthlyCalculation.isWeekStart(startDate, weekStart)) break;
+				startDate = startDate.addDays(-1);
+			}
+			GeneralDate endDate = datePeriod.start().addDays(-1);
+			lastWeekPeriod = MonthlyCalculation.confirmProcPeriod(
+					new DatePeriod(startDate, endDate),
+					new DatePeriod(employee.getEntryDate(), employee.getRetiredDate()));
+		}
+		return lastWeekPeriod;
+	}
+
+	/** ○前月の最終週を集計するか判断する */
+	private boolean shouldCalcPrevMonthLastWeek(RequireM2 require, String employeeId, DatePeriod datePeriod,
+			WorkingSystem workingSystem, int startWeekNo, AggregateMethodOfMonthly verticalTotalMethod) {
+		
+		/** 「月別実績の縦計方法。前月の最終週を含めて計算するか」を確認する*/
+		if (!verticalTotalMethod.isCalcWithPreviousMonthLastWeek()) return false;
+		
+		// 労働条件のループの1回目の処理か確認する　（週NOが1以外なら、その月度の1回目ではない）
+		if (startWeekNo != 1) return false;
+		
+		// 前月の最終日の労働制を確認する
+		val workingConditionItemOpt = require.workingConditionItem(employeeId, datePeriod.start().addDays(-1));
+		if (!workingConditionItemOpt.isPresent()) return false;
+		val prevWorkingSystem = workingConditionItemOpt.get().getLaborSystem();
+		
+		if (workingSystem == WorkingSystem.REGULAR_WORK){
+			if (prevWorkingSystem != WorkingSystem.REGULAR_WORK) return false;
+		}
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			if (prevWorkingSystem == WorkingSystem.FLEX_TIME_WORK) return false;
+		}
+		
+		return true;
 	}
 	
 	/**

@@ -15,19 +15,19 @@ public interface VerticalTotalMethodOfMonthlyRepository {
 	 * @param companyId the company id
 	 * @return the vertical total method of monthly
 	 */
-	public Optional<VerticalTotalMethodOfMonthly> findByCid(String companyId);
+	public Optional<AggregateMethodOfMonthly> findByCid(String companyId);
 	
 	/**
 	 * Insert.
 	 *
 	 * @param setting the setting
 	 */
-	public void insert(VerticalTotalMethodOfMonthly setting);
+	public void insert(AggregateMethodOfMonthly setting);
 	
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-	public void update(VerticalTotalMethodOfMonthly setting);
+	public void update(AggregateMethodOfMonthly setting);
 }

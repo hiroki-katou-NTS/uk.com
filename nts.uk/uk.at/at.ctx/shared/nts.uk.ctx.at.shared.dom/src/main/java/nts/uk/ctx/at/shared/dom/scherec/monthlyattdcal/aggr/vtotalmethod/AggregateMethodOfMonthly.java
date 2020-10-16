@@ -9,13 +9,13 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 月別実績の縦計方法
+ * 月別実績の集計方法
  * @author shuichu_ishida
  */
 @Getter
 @Setter
 @AllArgsConstructor
-public class VerticalTotalMethodOfMonthly extends AggregateRoot {
+public class AggregateMethodOfMonthly extends AggregateRoot {
 
 	/** 会社ID */
 	private String companyId;
@@ -23,32 +23,39 @@ public class VerticalTotalMethodOfMonthly extends AggregateRoot {
 	private TADaysCountOfMonthlyAggr transferAttendanceDays;
 	/** 特定日 */
 	private SpecTotalCountMonthly specTotalCountMonthly;
+	/** 前月の最終週を含めて計算するか */
+	private boolean calcWithPreviousMonthLastWeek;
 	
 	/**
 	 * コンストラクタ
 	 * @param companyId 会社ID
 	 */
-	public VerticalTotalMethodOfMonthly(String companyId){
+	public AggregateMethodOfMonthly(String companyId){
 		
 		super();
 		this.companyId = companyId;
 		this.transferAttendanceDays = new TADaysCountOfMonthlyAggr();
 		this.specTotalCountMonthly = new SpecTotalCountMonthly();
+		this.calcWithPreviousMonthLastWeek = false;
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param companyId 会社ID
 	 * @param transferAttendanceDays 振出日数
+	 * @param specTotalCountMonthly 特定日
+	 * @param calcWithPreviousMonthLastWeek 前月の最終週を含めて計算するか
 	 * @return 月別実績の縦計方法
 	 */
-	public static VerticalTotalMethodOfMonthly of(String companyId,
+	public static AggregateMethodOfMonthly of(String companyId,
 			TADaysCountOfMonthlyAggr transferAttendanceDays,
-			SpecTotalCountMonthly specTotalCountMonthly){
+			SpecTotalCountMonthly specTotalCountMonthly,
+			boolean calcWithPreviousMonthLastWeek){
 
-		VerticalTotalMethodOfMonthly domain = new VerticalTotalMethodOfMonthly(companyId);
+		AggregateMethodOfMonthly domain = new AggregateMethodOfMonthly(companyId);
 		domain.transferAttendanceDays = transferAttendanceDays;
 		domain.specTotalCountMonthly = specTotalCountMonthly;
+		domain.calcWithPreviousMonthLastWeek = calcWithPreviousMonthLastWeek;
 		return domain;
 	}
 	
