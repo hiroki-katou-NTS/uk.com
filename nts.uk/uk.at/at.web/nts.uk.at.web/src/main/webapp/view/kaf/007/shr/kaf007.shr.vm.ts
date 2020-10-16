@@ -59,7 +59,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     readonly: false,
                                                     required: true,
                                                     name: $i18n('KAF007_62'),
-                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                                                    enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
                 <!-- A7_2 -->
                 <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     readonly: false,
                                                     required: true,
                                                     name: $i18n('KAF007_63'),
-                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                                                    enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                     <!-- A7_6	 -->
                     <span class="label comment2" data-bind="text: $vm.comment2"></span>
                 </div>
@@ -89,7 +89,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     readonly: false,
                                                     required: false,
                                                     name: $i18n('KAF007_64'),
-                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                                                    enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
                 <!-- A8_2 -->
                 <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     readonly: false,
                                                     required: false,
                                                     name: $i18n('KAF007_65'),
-                                                    enable: (isEdit && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
+                                                    enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                     <!-- A8_6	 -->
                     <span class="label comment2" data-bind="text: $vm.comment2, visible: reflectWorkChange.whetherReflectAttendance() == 1"></span>
         
@@ -144,13 +144,19 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             vm.isStraightGo = params.isStraightGo;
 
             if(params.isEdit) {
-                vm.isEdit(ko.toJS(params.isEdit));
+                vm.isEdit = params.isEdit;
             }
+
+            // vm.model().appDispInfoStartupOutput.subscribe(() => {
+            //     if(params.isEdit) {
+            //         vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
+            //     }
+            // });
         }
 
         mounted() {
             const vm = this;
-
+            
         }
 
         openKDL003Click() {
@@ -190,19 +196,28 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                 vm.appWorkChange.startTime2(null);
                                 vm.appWorkChange.endTime2(null)
                             }
+                        } else {
+                            vm.appWorkChange.startTime1(null);
+                            vm.appWorkChange.endTime1(null);
+                            vm.appWorkChange.startTime2(null);
+                            vm.appWorkChange.endTime2(null);
                         }
                     }
                 }).then(() => {
                     return vm.$ajax(API.getByWorkType + "/" + vm.model().workTypeCD())
                 }).done((res) => {
                     if(res !== null || res !== undefined) {
+                        vm.$errors("clear");
                         vm.model().setupType(res);
                     }
                 }).fail(fail => console.log(fail))
+                .always(() => {
+                    if(vm.isEdit() && vm.model().setupType() === 0 && ko.toJS(vm.model().reflectWorkChangeAppDto().whetherReflectAttendance) === 1) {
+                        $('#time1Start').focus();
+                    }
+                })
                 
-            }).always(() => {
-                    $('#time1Start').focus();
-            });;
+            });
         }
 
         // public conditionA14() {
