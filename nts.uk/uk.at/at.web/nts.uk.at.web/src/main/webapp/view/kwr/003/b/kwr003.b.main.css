@@ -1,0 +1,37 @@
+
+#master-wrapper {
+  height: auto;
+  overflow: hidden;
+}
+
+.kwr-003b #functions-area button.danger {
+  margin-left: 25px;
+  margin-right: 45px;
+}
+.kwr-003b #content-area {
+  padding: 37px;
+  overflow: hidden;
+}
+
+.kwr-003b .nts-searchbbox-wrapper input.ntsSearchBox {
+  width: 250px !important;
+}
+
+.kwr-003b .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr-003b .d-flex:first-child {
+  margin-bottom: 24px;
+}
+.kwr-003b .d-flex .form-label {
+  margin-right: 32px;
+}
+.kwr-003b .d-flex .code {
+  width: 50px;
+}
+
+.kwr-003b .pull-left .panel.ntsPanel {
+  height: 470px;
+}

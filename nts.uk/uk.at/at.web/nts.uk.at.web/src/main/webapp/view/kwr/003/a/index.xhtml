@@ -20,7 +20,7 @@
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
         <com:stylefile path="kwr003.a.main.css" />
-        <!--  <com:scriptfile path="kwr003.a.service.js" /> -->
+        <com:scriptfile path="kwr003.a.common.js" />
         <com:scriptfile path="kwr003.a.vm.js" />
       </ui:define>
 
@@ -132,7 +132,7 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="7"
-                        data-bind="enable: isEnableSelectedCode()"
+                        data-bind="enable: isEnableSelectedCode(), click: showDialogScreenB"
                       >
                         #{i18n.getText('KWR003_112')}
                       </button>
@@ -164,7 +164,7 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="9"
-                        data-bind="enable: !isEnableSelectedCode()"
+                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB"
                       >
                         #{i18n.getText('KWR003_112')}
                       </button>
