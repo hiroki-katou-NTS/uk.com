@@ -2155,7 +2155,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 10;
+                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
             }
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
