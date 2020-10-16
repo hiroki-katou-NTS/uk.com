@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 
