@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * Refactor5
  * @author hoangnd
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="WWFMT_APPROVAL_HR")
 @AllArgsConstructor
 @NoArgsConstructor
-public class JcmmtRootArpWF extends UkJpaEntity implements Serializable{
+public class JcmmtRootArpWF extends ContractUkJpaEntity implements Serializable{
 	
 	public  static final long serialVersionUID = 1L;
 	
