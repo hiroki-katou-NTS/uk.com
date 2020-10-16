@@ -45,9 +45,7 @@ public class DeleteCategoryInitDisplayFinder {
 				.findByContractCd(user.contractCode());
 
 		// ２．ログイン者が担当者か判断する
-//		LoginPersonInCharge pic = picService.getPic();
-		//FAKE-DATA
-		LoginPersonInCharge pic = picService.fakePic();
+		LoginPersonInCharge pic = picService.getPic();
 		dto.setPic(pic);
 
 		// List <削除カテゴリマスタ>を取得する

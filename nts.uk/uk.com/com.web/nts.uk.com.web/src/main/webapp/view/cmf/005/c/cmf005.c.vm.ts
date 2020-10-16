@@ -333,7 +333,7 @@ module nts.uk.com.view.cmf005.c {
         param.patternCompressionPwd = vm.password();
         param.withoutPassword = Boolean(vm.usePasswordChecked()) ? 1 : 0;
         param.patternSuppleExplanation = vm.explanation();
-        
+
         service.addPattern(param).then(() => {
           vm.$dialog.info({ messageId: "Msg_15" });
           if (vm.screenMode() === ScreenMode.NEW) {
@@ -426,38 +426,39 @@ module nts.uk.com.view.cmf005.c {
       param.patternClassification = patternClassification;
       param.categories = vm.categoriesDefault();
       service.selectPattern(param).then((res) => {
-        console.log(res);
-        const pattern: any = res.selectedCategories[0].pattern;
         vm.screenMode(ScreenMode.UPDATE);
         vm.screenMode.valueHasMutated();
-        vm.codeValue(pattern.patternCode);
-        vm.nameValue(pattern.patternName);
-        vm.categoriesFiltered([]);
-        let arr: Category[] = [];
-        _.forEach(res.selectableCategories, c => {
-          let category = vm.convertToCategory(c);
-          arr.push(category);
-        });
-        vm.categoriesFiltered(arr);
-        arr = [];
-        vm.currentCateSelected([]);
-        _.forEach(res.selectedCategories, c => {
-          let category = vm.convertToCategory(c);
-          arr.push(category);
-        });
-        vm.currentCateSelected(arr);
-        vm.saveFormatChecked(pattern.idenSurveyArch === 1);
-        vm.saveFormatEnabled(pattern.patternClassification === 0);
-        vm.disableMoveButton(pattern.patternClassification === 1);
-        vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
-        vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
-        vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferMonth));
-        vm.selectedMonthlyTargetYear(vm.getReferValue(pattern.monthlyReferYear));
-        vm.selectedAnnualTargetYear(vm.getReferValue(pattern.annualReferYear));
-        vm.usePasswordChecked(pattern.withoutPassword === 1);
-        vm.password(pattern.patternCompressionPwd);
-        vm.confirmPassword(pattern.patternCompressionPwd);
-        vm.explanation(pattern.patternSuppleExplanation);
+        if (res.selectedCategories && res.selectedCategories.length > 0) {
+          const pattern: any = res.selectedCategories[0].pattern;
+          vm.codeValue(pattern.patternCode);
+          vm.nameValue(pattern.patternName);
+          vm.categoriesFiltered([]);
+          let arr: Category[] = [];
+          _.forEach(res.selectableCategories, c => {
+            let category = vm.convertToCategory(c);
+            arr.push(category);
+          });
+          vm.categoriesFiltered(arr);
+          arr = [];
+          vm.currentCateSelected([]);
+          _.forEach(res.selectedCategories, c => {
+            let category = vm.convertToCategory(c);
+            arr.push(category);
+          });
+          vm.currentCateSelected(arr);
+          vm.saveFormatChecked(pattern.idenSurveyArch === 1);
+          vm.saveFormatEnabled(pattern.patternClassification === 0);
+          vm.disableMoveButton(pattern.patternClassification === 1);
+          vm.selectedDailyTargetMonth(vm.getReferValue(pattern.dailyReferMonth));
+          vm.selectedDailyTargetYear(vm.getReferValue(pattern.dailyReferYear));
+          vm.selectedMonthlyTargetMonth(vm.getReferValue(pattern.monthlyReferMonth));
+          vm.selectedMonthlyTargetYear(vm.getReferValue(pattern.monthlyReferYear));
+          vm.selectedAnnualTargetYear(vm.getReferValue(pattern.annualReferYear));
+          vm.usePasswordChecked(pattern.withoutPassword === 1);
+          vm.password(pattern.patternCompressionPwd);
+          vm.confirmPassword(pattern.patternCompressionPwd);
+          vm.explanation(pattern.patternSuppleExplanation);
+        }
 
         //revalidate
         vm.$errors("clear");

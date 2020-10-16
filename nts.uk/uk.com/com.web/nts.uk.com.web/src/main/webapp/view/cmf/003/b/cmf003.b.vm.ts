@@ -585,7 +585,7 @@ module nts.uk.com.view.cmf003.b {
        */
       private next() {
         const self = this;
-        if (self.selectedTitleAtr() === 1) 
+        if (self.selectedTitleAtr() === 1)
           $('#ex_accept_wizard').ntsWizard("next");
         else {
           self.initE();
@@ -608,8 +608,8 @@ module nts.uk.com.view.cmf003.b {
         //   if (self.isCompressPass()) {
         //     if (self.password() == self.confirmPassword()) {
         //       if (self.categorys().length > 0) {
-                self.next();
-                $(".selectEmpType").focus();
+        self.next();
+        $(".selectEmpType").focus();
         //       } else {
         //         alertError({ messageId: 'Msg_471' });
         //       }
@@ -796,7 +796,7 @@ module nts.uk.com.view.cmf003.b {
 
       private selectPattern(displayCode: string) {
         const self = this;
-        block.grayout();  
+        block.grayout();
         const pattern = _.find(self.patternList(), { 'displayCode': displayCode });
         let param = {
           patternClassification: pattern.patternClassification,
@@ -811,22 +811,24 @@ module nts.uk.com.view.cmf003.b {
           self.confirmPassword(res.patternCompressionPwd);
           self.explanation(res.patternSuppleExplanation);
 
-          const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
-          self.categorys(_.map(res.selectCategories, (x: any) => {
-            const params: string[] = _.map(x.holder.params, (text: string) => getText(text));
-            const category: Category = {
-              categoryId: x.categoryId,
-              categoryName: x.categoryName,
-              displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
-              periodDivision: x.periodDivision,
-              separateCompClassification: x.separateCompClassification,
-              specifiedMethod: x.specifiedMethod,
-              storeRange: x.storeRange,
-              systemType: x.systemType,
-              id: nts.uk.util.randomId()
-            };
-            return category;
-          }));
+          if (res.selectCategories && res.selectCategories.length > 0) {
+            const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
+            self.categorys(_.map(res.selectCategories, (x: any) => {
+              const params: string[] = _.map(x.holder.params, (text: string) => getText(text));
+              const category: Category = {
+                categoryId: x.categoryId,
+                categoryName: x.categoryName,
+                displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
+                periodDivision: x.periodDivision,
+                separateCompClassification: x.separateCompClassification,
+                specifiedMethod: x.specifiedMethod,
+                storeRange: x.storeRange,
+                systemType: x.systemType,
+                id: nts.uk.util.randomId()
+              };
+              return category;
+            }));
+          }
 
           if (res.dailyReferMonth && res.dailyReferYear) {
             self.dayValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
@@ -874,7 +876,7 @@ module nts.uk.com.view.cmf003.b {
 
       constructor(passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
         executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string,
-        suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, 
+        suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number,
         employees: Array<TargetEmployee>, category: Array<Category>, patternCode: string) {
         this.passwordAvailability = passwordAvailability;
         this.saveSetName = saveSetName;

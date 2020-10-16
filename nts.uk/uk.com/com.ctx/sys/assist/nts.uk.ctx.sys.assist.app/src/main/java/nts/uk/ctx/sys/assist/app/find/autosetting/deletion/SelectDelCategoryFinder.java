@@ -44,9 +44,6 @@ public class SelectDelCategoryFinder {
 	private DataDeletionPatternSettingRepository dataDeletionPatternSettingRepository;
 
 	public DataDeletionPatternSettingDto findSelectCategoryInfo(SelectDelCategoryCommand command) {
-		
-		//FAKE-DATA
-		command.setSystemType(Arrays.stream(SystemType.values()).map(t -> t.value).collect(Collectors.toList()));
 
 		List<DelSelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
 

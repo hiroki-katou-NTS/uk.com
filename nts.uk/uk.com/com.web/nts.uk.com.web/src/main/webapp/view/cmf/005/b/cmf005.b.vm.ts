@@ -276,7 +276,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         systemType: self.systemTypes()
       };
       service.patternSettingSelect(param).done((res) => {
-        console.log(res);
         self.savedName(res.patternName);
         self.deleteSetName(res.patternName);
         self.isExistCompressPasswordFlg(res.withoutPassword === 1);
@@ -284,23 +283,26 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         self.confirmPasswordForCompressFile(res.patternCompressionPwd);
         self.supplementExplanation(res.patternSuppleExplanation);
 
-        const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
-        self.listDataCategory(_.map(res.selectCategories, (x: any) => {
-          const params: string[] = _.map(x.holder.params, (text: string) => getText(text));
-          const category: Category = {
-            categoryId: x.categoryId,
-            categoryName: x.categoryName,
-            displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
-            timeStore: x.periodDivision,
-            separateCompClassification: x.separateCompClassification,
-            specifiedMethod: x.specifiedMethod,
-            storeRange: x.storeRange,
-            systemType: x.systemType,
-            timeStop: x.timeStop,
-            id: nts.uk.util.randomId()
-          };
-          return category;
-        }));
+        if (res.selectCategories && res.selectCategories.length > 0) {
+          const textToFormat: string = getText(res.selectCategories[0].holder.textToFormat);
+          self.listDataCategory(_.map(res.selectCategories, (x: any) => {
+            const params: string[] = _.map(x.holder.params, (text: string) => getText(text));
+            const category: Category = {
+              categoryId: x.categoryId,
+              categoryName: x.categoryName,
+              displayName: x.categoryName + nts.uk.text.format(textToFormat, params),
+              timeStore: x.periodDivision,
+              separateCompClassification: x.separateCompClassification,
+              specifiedMethod: x.specifiedMethod,
+              storeRange: x.storeRange,
+              systemType: x.systemType,
+              timeStop: x.timeStop,
+              id: nts.uk.util.randomId()
+            };
+            debugger;
+            return category;
+          }));
+        }
 
         if (res.dailyReferMonth && res.dailyReferYear) {
           self.dateValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
@@ -803,7 +805,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
     public gotoscreenF(): void {
       let self = this;
       let params = {};
-      
+
       params.delId = self.delId();
       params.deleteSetName = self.deleteSetName();
       params.dateValue = self.dateValue();
@@ -841,7 +843,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         })
       } else {
         setShared("CMF005_E_PARAMS", params);
-       
+
         nts.uk.ui.windows.sub.modal("/view/cmf/005/f/index.xhtml").onClosed(() => {
           self.buttonEnable(false);
         });

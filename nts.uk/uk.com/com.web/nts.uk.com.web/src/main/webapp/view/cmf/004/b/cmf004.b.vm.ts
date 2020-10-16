@@ -723,9 +723,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     restoreData_click(): void {
       let self = this;
+      if (self.employeeListScreenG().length !== self.selectedEmployeeCodeScreenG().length) {
+        self.employeeListScreenG(_.filter(self.employeeListScreenG(), e => _.includes(self.selectedEmployeeCodeScreenG(), e.code)));
+      }
       setShared("CMF004IParams", {
         saveForm: self.saveForm(),
-        employeeList: ko.toJS(self.employeeListScreenH),
+        employeeList: ko.toJS(self.employeeListScreenG),
         recoveryCategoryList: ko.toJS(self.dataRecoverySummary().recoveryCategoryList),
         recoveryFile: self.recoverySourceFile(),
         recoverySourceCode: self.recoverySourceCode(),
@@ -796,9 +799,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         dateValue.dateRange(self.dateValue().dateRange);
         dateValue.monthRange(self.dateValue().monthRange);
         dateValue.yearRange(self.dateValue().yearRange);
-      }
-      if (self.employeeListScreenG().length !== self.selectedEmployeeCodeScreenG().length) {
-        self.employeeListScreenG(_.filter(self.employeeListScreenG(), e => _.includes(self.selectedEmployeeCodeScreenG(), e.code)));
       }
       return new ManualSettingModal(Number(self.isCheckboxActive()),
         self.dataContentConfirm().dataContentcategoryList().map(data => data.saveSetName()).pop(), moment.utc().toISOString(), self.pwdCompressEdt.value(),

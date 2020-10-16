@@ -54,8 +54,6 @@ public class SelectCategoryFinder {
 	}
 
 	private List<SaveSelectionCategoryNameDto> findSelectionCategoryName(SelectCategoryCommand command) {
-		//FAKE-DATA
-		command.setSystemType(Arrays.stream(SystemType.values()).map(t -> t.value).collect(Collectors.toList()));
 
 		// 選択カテゴリを取得する
 		List<DataStorageSelectionCategory> selectCategories = dataStorageSelectionCategoryRepository
