@@ -262,7 +262,9 @@ export class KafS00BComponent extends Vue {
     public prePostAtrWatcher() {
         const self = this;
         self.params.output.prePostAtr = self.prePostAtr;
-        self.$emit('kaf000BChangePrePost', self.prePostAtr);
+        if (self.displayPrePost) {
+            self.$emit('kaf000BChangePrePost', self.prePostAtr);
+        }
     }
 }
 
