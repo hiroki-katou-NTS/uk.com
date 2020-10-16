@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import java.util.Optional;
+
+import lombok.Getter;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 
 /**
  * 集計期間の子の看護介護休暇情報
   * @author yuri_tamakoshi
  */
+@Getter
 public class ChildCareNurseAggrPeriodInfo {
 	/** 子の看護介護休暇の時間休暇使用回数 */
 	private Integer usedCount;

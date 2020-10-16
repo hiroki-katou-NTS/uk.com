@@ -44,7 +44,7 @@ public class ChildNursingLeaveFinder {
 		NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
 				.manageType(childNursingLeave.getManageType().value)
 				.nursingCategory(childNursingLeave.getNursingCategory().value)
-				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : 0)
+				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : null)
 				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
 				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
 				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))

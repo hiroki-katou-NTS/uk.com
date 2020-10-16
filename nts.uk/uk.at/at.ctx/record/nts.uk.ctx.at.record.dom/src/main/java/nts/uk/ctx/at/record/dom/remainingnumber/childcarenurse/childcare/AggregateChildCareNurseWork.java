@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
-
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -10,7 +10,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.service.TempChild
  * 子の看護介護休暇 集計期間WORK
   * @author yuri_tamakoshi
  */
- 	public class AggregateChildCareNurseWork {
+@Getter
+public class AggregateChildCareNurseWork {
 	/** 期間 */
 	private DatePeriod period;
 	/** 暫定子の看護介護管理データ */
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.service.TempChild
 	/** 本年翌年の期間区分 */
 	private YearAtr yearAtr;
 	/** 集計結果（finally） */
-	private Finally<AggrResultOfChildCareNurse> aggrResultOfChildCareNurse;
+	private Finally<ChildCareNurseCalcResultWithinPeriod> aggrResultOfChildCareNurse;
 
 	/**
 	 * コンストラクタ
@@ -48,7 +49,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.service.TempChild
 		TempChildCareNurseManagement provisionalDate,
 		NextDayAfterPeriodEndWork nextDayAfterPeriodEnd,
 		YearAtr yearAtr,
-		Finally<AggrResultOfChildCareNurse> aggrResultOfChildCareNurse){
+		Finally<ChildCareNurseCalcResultWithinPeriod> aggrResultOfChildCareNurse){
 
 	AggregateChildCareNurseWork domain = new AggregateChildCareNurseWork();
 	domain.period = period;
@@ -57,5 +58,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.service.TempChild
 	domain.yearAtr = yearAtr;
 	domain.aggrResultOfChildCareNurse = aggrResultOfChildCareNurse;
 	return domain;
+	}
+
+	public boolean isThisYear() {
+		return this.yearAtr == YearAtr.THIS_YEAR;
+	}
+
+	public boolean isNextYear() {
+		return this.yearAtr == YearAtr.NEXT_YEAR;
 	}
 }
