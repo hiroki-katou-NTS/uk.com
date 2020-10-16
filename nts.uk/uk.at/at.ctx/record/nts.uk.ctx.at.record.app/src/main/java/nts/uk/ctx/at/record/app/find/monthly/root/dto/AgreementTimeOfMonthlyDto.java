@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -64,15 +68,11 @@ public class AgreementTimeOfMonthlyDto implements ItemConst, AttendanceItemDataG
 		case AGREEMENT:
 			return Optional.of(ItemValue.builder().value(agreementTime).valueType(ValueType.TIME));
 		case LIMIT_ALARM:
-			return Optional.of(ItemValue.builder().value(limitAlarmTime).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(alarmTime).valueType(ValueType.TIME));
 		case LIMIT_ERROR:
-			return Optional.of(ItemValue.builder().value(limitErrorTime).valueType(ValueType.TIME));
-		case STATE:
-			return Optional.of(ItemValue.builder().value(status).valueType(ValueType.ATTR));
-		case (EXCEPTION +  LIMIT_ALARM):
-			return Optional.of(ItemValue.builder().value(exceptionLimitAlarmTime).valueType(ValueType.TIME));
-		case (EXCEPTION +  LIMIT_ERROR):
-			return Optional.of(ItemValue.builder().value(exceptionLimitErrorTime).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(errorTime).valueType(ValueType.TIME));
+		case UPPER_LIMIT:
+			return Optional.of(ItemValue.builder().value(exceptionLimitTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -84,9 +84,7 @@ public class AgreementTimeOfMonthlyDto implements ItemConst, AttendanceItemDataG
 		case AGREEMENT:
 		case LIMIT_ALARM:
 		case LIMIT_ERROR:
-		case STATE:
-		case (EXCEPTION +  LIMIT_ALARM):
-		case (EXCEPTION +  LIMIT_ERROR):
+		case UPPER_LIMIT:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -100,19 +98,13 @@ public class AgreementTimeOfMonthlyDto implements ItemConst, AttendanceItemDataG
 			agreementTime = value.valueOrDefault(0);
 			break;
 		case LIMIT_ALARM:
-			limitAlarmTime = value.valueOrDefault(0);
+			alarmTime = value.valueOrDefault(0);
 			break;
 		case LIMIT_ERROR:
-			limitErrorTime = value.valueOrDefault(0);
+			errorTime = value.valueOrDefault(0);
 			break;
-		case STATE:
-			status = value.valueOrDefault(0);
-			break;
-		case (EXCEPTION +  LIMIT_ALARM):
-			exceptionLimitAlarmTime = value.valueOrDefault(null);
-			break;
-		case (EXCEPTION +  LIMIT_ERROR):
-			exceptionLimitErrorTime = value.valueOrDefault(null);
+		case UPPER_LIMIT:
+			exceptionLimitTime = value.valueOrDefault(0);
 			break;
 		default:
 		}

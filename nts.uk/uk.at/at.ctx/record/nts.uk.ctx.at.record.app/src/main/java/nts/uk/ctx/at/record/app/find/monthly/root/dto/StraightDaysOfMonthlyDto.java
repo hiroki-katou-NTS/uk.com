@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
 
@@ -43,10 +47,12 @@ public class StraightDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
-		case ATTENDANCE:
-			return Optional.of(ItemValue.builder().value(payAttendanceDays).valueType(ValueType.DAYS));
-		case ABSENCE:
-			return Optional.of(ItemValue.builder().value(payAbsenceDays).valueType(ValueType.DAYS));
+		case STRAIGHT_GO:
+			return Optional.of(ItemValue.builder().value(straightGo).valueType(ValueType.DAYS));
+		case STRAIGHT_BACK:
+			return Optional.of(ItemValue.builder().value(straightBack).valueType(ValueType.DAYS));
+		case STRAIGHT_GO_BACK:
+			return Optional.of(ItemValue.builder().value(straightGoBack).valueType(ValueType.DAYS));
 		default:
 		}
 		return AttendanceItemDataGate.super.valueOf(path);
@@ -55,8 +61,9 @@ public class StraightDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case ATTENDANCE:
-		case ABSENCE:
+		case STRAIGHT_GO:
+		case STRAIGHT_BACK:
+		case STRAIGHT_GO_BACK:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -66,13 +73,13 @@ public class StraightDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGa
 	@Override
 	public void set(String path, ItemValue value) {
 		switch (path) {
-		case ATTENDANCE:
-			payAttendanceDays = value.valueOrDefault(0d); break;
-		case ABSENCE:
-			payAbsenceDays = value.valueOrDefault(0d); break;
+		case STRAIGHT_GO:
+			straightGo = value.valueOrDefault(0d); break;
+		case STRAIGHT_BACK:
+			straightBack = value.valueOrDefault(0d); break;
+		case STRAIGHT_GO_BACK:
+			straightGoBack = value.valueOrDefault(0d); break;
 		default:
 		}
 	}
-
-	
 }

@@ -1,11 +1,12 @@
-package nts.uk.ctx.at.record.dom.attendanceitem.util;
+package nts.uk.ctx.at.shared.dom.attendance.util;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+
 
 public interface AttendanceItemConverter {
 	

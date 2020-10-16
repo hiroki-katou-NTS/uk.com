@@ -488,7 +488,7 @@ public class DivTimeSysFixedCheckService {
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
 			val valued = shareContainer.getShared(CONVERTER_KEY, () -> convertHelper.createDailyConverter())
-					.withTimeLeaving(employeeId, workingDate, timeLeave.get().getAttendance()).convert(TIME_LEAVE_ITEM);
+					.withTimeLeaving(timeLeave.get().getAttendance()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
 				GeneralDateTime now = shareContainer.getShared(TIME_NOW_KEY, () -> GeneralDateTime.now());
 				int currentTime = now.hours() * 60 + now.minutes();

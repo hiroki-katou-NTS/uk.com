@@ -45,6 +45,7 @@ import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInfor;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -86,6 +88,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrecti
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -102,6 +105,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorD
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -184,7 +188,7 @@ public class DailyModifyResCommandFacade {
 			boolean flagCalculation, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
 		
 		if (!flagCalculation) {
-			val result =  this.handler.processCalcDaily(commandNew, commandOld, dailyItems, true, month);
+			val result =  this.handler.processCalcDaily(commandNew, commandOld, dailyItems, true, month, ExecutionType.NORMAL_EXECUTION);
 			validatorDataDaily.removeErrorRemarkAll(AppContexts.user().companyId(), result.getLstDailyDomain(), dtoNews);
 			return result;
 		} else {
@@ -1072,8 +1076,6 @@ public class DailyModifyResCommandFacade {
 				item.getLineBreakPosition(), item.getAttendanceAtr(), item.getTypeGroup(), item.getPrimitive());
 	}
 
-	private Map<Pair<String, GeneralDate>, List<DPItemValue>> releaseSign(List<DPItemCheckBox> dataCheckApproval,
-			List<DPItemValue> resultError, List<DailyRecordDto> dailys, String employeeId, boolean onlyCheckBox) {
 	private ItemFlex convertMonthToItem(MonthlyRecordWorkDto monthDto, DPMonthValue monthValue) {
 		ItemFlex itemResult = new ItemFlex();
 		MonthlyModifyResult result = MonthlyModifyResult.builder()
@@ -1264,6 +1266,17 @@ public class DailyModifyResCommandFacade {
 			flexShortageRCDto.setVersion(monthValue.getVersion());
 			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
 		}
+		if (mode == 0 && monthlyParam.getHasFlex() != null && monthlyParam.getHasFlex()) {
+			val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(), monthlyParam);
+			if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
+				hasError = true;
+				if(!resultIU.getLstMonthDomain().isEmpty())
+					flexShortageRCDto.createDataCalc(convertMonthToItem(
+							MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
+			}
+			flexShortageRCDto.setVersion(monthValue.getVersion());
+			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
+		}
 		// 残数系のエラーチェック（月次集計なし）
 		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
 		val pairError = mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),
@@ -1369,8 +1382,8 @@ public class DailyModifyResCommandFacade {
 			List<EmpErrorCode> lstError28 = values.stream().filter(x -> x.getItemId() != null && x.getItemId() == 28)
 					.collect(Collectors.toList());
 			List<EmpErrorCode> lstErrorOtherHoliday28 = values.stream()
-					.filter(x -> x.itemId() == null || (x.itemId() != 28)
-							|| (x.itemId() == 28
+					.filter(x -> x.getItemId() == null || (x.getItemId() != 28)
+							|| (x.getItemId() == 28
 									&& !x.getErrorCode().equals(ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE)))
 					.collect(Collectors.toList());
 			Optional<EmpErrorCode> errorCheck = lstError28.stream()

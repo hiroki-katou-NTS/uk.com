@@ -5,10 +5,12 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -96,8 +98,8 @@ public class MonthlyCalculationDto implements ItemConst, AttendanceItemDataGate 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
-		case AGREEMENT:
-			return new AgreementTimeOfMonthlyDto();
+//		case AGREEMENT:
+//			return new AgreementTimeOfMonthlyDto();
 //		case (AGREEMENT + UPPER_LIMIT):
 //			return new AgreMaxTimeOfMonthlyDto();
 		case FLEX:
@@ -116,8 +118,8 @@ public class MonthlyCalculationDto implements ItemConst, AttendanceItemDataGate 
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
-		case AGREEMENT:
-			return Optional.ofNullable(agreementTime);
+//		case AGREEMENT:
+//			return Optional.ofNullable(agreementTime);
 //		case (AGREEMENT + UPPER_LIMIT):
 //			return Optional.ofNullable(agreMaxTime);
 		case FLEX:
@@ -162,9 +164,9 @@ public class MonthlyCalculationDto implements ItemConst, AttendanceItemDataGate 
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
-		case AGREEMENT:
-			agreementTime = (AgreementTimeOfMonthlyDto) value;
-			break;
+//		case AGREEMENT:
+//			agreementTime = (AgreementTimeOfMonthlyDto) value;
+//			break;
 //		case (AGREEMENT + UPPER_LIMIT):
 //			agreMaxTime = ( AgreMaxTimeOfMonthlyDto) value;
 //			break;

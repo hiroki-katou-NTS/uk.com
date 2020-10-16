@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 
 @Data
@@ -33,23 +36,24 @@ public class PremiumTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 		return PremiumTimeOfMonthly.of(ConvertHelper.mapTo(premiumTimes, c -> c.toDomain()));
 	}
 
-	@Override
-	public Optional<ItemValue> valueOf(String path) {
-		switch (path) {
-		case LATE_NIGHT:
-			return Optional.of(ItemValue.builder().value(midnightTime).valueType(ValueType.TIME));
-		case (ILLEGAL + HOLIDAY_WORK):
-			return Optional.of(ItemValue.builder().value(illegalHolidayWorkTime).valueType(ValueType.TIME));
-		case (ILLEGAL + TIME):
-			return Optional.of(ItemValue.builder().value(illegalOutsideWorkTime).valueType(ValueType.TIME));
-		case (LEGAL + HOLIDAY_WORK):
-			return Optional.of(ItemValue.builder().value(legalHolidayWorkTime).valueType(ValueType.TIME));
-		case (LEGAL + TIME):
-			return Optional.of(ItemValue.builder().value(legalOutsideWorkTime).valueType(ValueType.TIME));
-		default:
-			return Optional.empty();
-		}
-	}
+//ichiokaDEL
+//	@Override
+//	public Optional<ItemValue> valueOf(String path) {
+//		switch (path) {
+//		case LATE_NIGHT:
+//			return Optional.of(ItemValue.builder().value(midnightTime).valueType(ValueType.TIME));
+//		case (ILLEGAL + HOLIDAY_WORK):
+//			return Optional.of(ItemValue.builder().value(illegalHolidayWorkTime).valueType(ValueType.TIME));
+//		case (ILLEGAL + TIME):
+//			return Optional.of(ItemValue.builder().value(illegalOutsideWorkTime).valueType(ValueType.TIME));
+//		case (LEGAL + HOLIDAY_WORK):
+//			return Optional.of(ItemValue.builder().value(legalHolidayWorkTime).valueType(ValueType.TIME));
+//		case (LEGAL + TIME):
+//			return Optional.of(ItemValue.builder().value(legalOutsideWorkTime).valueType(ValueType.TIME));
+//		default:
+//			return Optional.empty();
+//		}
+//	}
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
@@ -70,12 +74,12 @@ public class PremiumTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case LATE_NIGHT:
-		case (ILLEGAL + HOLIDAY_WORK):
-		case (ILLEGAL + TIME):
-		case (LEGAL + HOLIDAY_WORK):
-		case (LEGAL + TIME):
-			return PropType.VALUE;
+//		case LATE_NIGHT:
+//		case (ILLEGAL + HOLIDAY_WORK):
+//		case (ILLEGAL + TIME):
+//		case (LEGAL + HOLIDAY_WORK):
+//		case (LEGAL + TIME):
+//			return PropType.VALUE;
 		case PREMIUM:
 			return PropType.IDX_LIST;
 		default:
@@ -92,22 +96,22 @@ public class PremiumTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGat
 		return AttendanceItemDataGate.super.gets(path);
 	}
 
-	@Override
-	public void set(String path, ItemValue value) {
-		switch (path) {
-		case LATE_NIGHT:
-			midnightTime = value.valueOrDefault(0); break;
-		case (ILLEGAL + HOLIDAY_WORK):
-			illegalHolidayWorkTime = value.valueOrDefault(0); break;
-		case (ILLEGAL + TIME):
-			illegalOutsideWorkTime = value.valueOrDefault(0); break;
-		case (LEGAL + HOLIDAY_WORK):
-			legalHolidayWorkTime = value.valueOrDefault(0); break;
-		case (LEGAL + TIME):
-			legalOutsideWorkTime = value.valueOrDefault(0); break;
-		default:
-		}
-	}
+//	@Override
+//	public void set(String path, ItemValue value) {
+//		switch (path) {
+//		case LATE_NIGHT:
+//			midnightTime = value.valueOrDefault(0); break;
+//		case (ILLEGAL + HOLIDAY_WORK):
+//			illegalHolidayWorkTime = value.valueOrDefault(0); break;
+//		case (ILLEGAL + TIME):
+//			illegalOutsideWorkTime = value.valueOrDefault(0); break;
+//		case (LEGAL + HOLIDAY_WORK):
+//			legalHolidayWorkTime = value.valueOrDefault(0); break;
+//		case (LEGAL + TIME):
+//			legalOutsideWorkTime = value.valueOrDefault(0); break;
+//		default:
+//		}
+//	}
 
 	@SuppressWarnings("unchecked")
 	@Override

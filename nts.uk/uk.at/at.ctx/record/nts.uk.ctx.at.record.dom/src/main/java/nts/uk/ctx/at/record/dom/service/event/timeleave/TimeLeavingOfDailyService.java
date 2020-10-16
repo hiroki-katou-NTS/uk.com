@@ -85,7 +85,7 @@ public class TimeLeavingOfDailyService {
 		 DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 																		.employeeId(wi.getEmployeeId())
 																		.workingDate(wi.getYmd())
-																		.withTimeLeaving(wi.getEmployeeId(), wi.getYmd(),tlo !=null ? tlo.getAttendance():null);
+																		.withTimeLeaving(tlo !=null ? tlo.getAttendance():null);
 		
 		List<Integer> canbeCorrectedItem = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
 		List<ItemValue> beforeCorrectItemValues = converter.convert(canbeCorrectedItem);
@@ -173,7 +173,7 @@ public class TimeLeavingOfDailyService {
 			List<ItemValue> beforeCorrectItemValues) {
 		working.setAttendanceLeave(Optional.ofNullable(correctedTlo == null?null:correctedTlo.getAttendance()));
 
-		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(working.getEmployeeId(), working.getYmd(),correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
+		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
 		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.itemId()).collect(Collectors.toList());
 		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.itemId()));
 		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());

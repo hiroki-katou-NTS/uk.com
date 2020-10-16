@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -26,6 +27,98 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 //move at record -> at shared
 public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConverter {
 
+//ichiokaDEL
+//	Optional<ItemValue> convert(int attendanceItemId);
+//
+//	List<ItemValue> convert(Collection<Integer> attendanceItemIds);
+//	
+//	void merge(ItemValue value);
+//	
+//	void merge(Collection<ItemValue> values);
+//		
+//	IntegrationOfDaily toDomain();
+//	
+//	DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain);
+//
+//	DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain);
+//	
+//	DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain);
+//
+//	DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain);
+//
+//	DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain);
+//
+//	DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain);
+//
+//	DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withShortTime(ShortTimeOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withSpecificDateAttr(SpecificDateAttrOfDailyPerfor domain);
+//
+//	DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(AttendanceLeavingGateOfDaily domain);
+//
+//	DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain);
+//
+//	DailyRecordToAttendanceItemConverter withEditStates(EditStateOfDailyPerformance domain);
+//
+//	DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain);
+//
+//	DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyPerformance domain);
+//	
+//	DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDaily domain);
+//	
+//	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyPerform> domain);
+//
+//	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
+//
+//	DailyRecordToAttendanceItemConverter workingDate(GeneralDate workingDate);
+//
+//	DailyRecordToAttendanceItemConverter completed();
+//	
+//	WorkInfoOfDailyPerformance workInfo();
+//
+//	CalAttrOfDailyPerformance calcAttr();
+//
+//	Optional<WorkTypeOfDailyPerformance> businessType();
+//	
+//	AffiliationInforOfDailyPerfor affiliationInfo();
+//
+//	Optional<OutingTimeOfDailyPerformance> outingTime();
+//
+//	List<BreakTimeOfDailyPerformance> breakTime();
+//
+//	Optional<AttendanceTimeOfDailyPerformance> attendanceTime();
+//
+//	Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork();
+//
+//	Optional<TimeLeavingOfDailyPerformance> timeLeaving();
+//
+//	Optional<ShortTimeOfDailyPerformance> shortTime();
+//
+//	Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr();
+//
+//	Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate();
+//
+//	Optional<AnyItemValueOfDaily> anyItems();
+//
+//	List<EditStateOfDailyPerformance> editStates();
+//
+//	Optional<TemporaryTimeOfDailyPerformance> temporaryTime();
+//	
+//	Optional<PCLogOnInfoOfDaily> pcLogInfo();
+//	
+//	List<RemarksOfDailyPerform> remarks();
+
+	
 	Optional<ItemValue> convert(int attendanceItemId);
 
 	List<ItemValue> convert(Collection<Integer> attendanceItemIds);
@@ -38,43 +131,43 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 	
 	DailyRecordToAttendanceItemConverter setData(IntegrationOfDaily domain);
 
-	DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyAttendance domain);
 
-	DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain);
+//	DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain);
 	
-	DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain);
+	DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyAttd domain);
 
 	DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain);
 
-	DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain);
+	DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyAttd> domain);
 
-	DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyAttendance domain);
 
-	DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain);
+//	DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain);
 
-	DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withShortTime(ShortTimeOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withShortTime(ShortTimeOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withSpecificDateAttr(SpecificDateAttrOfDailyPerfor domain);
+	DailyRecordToAttendanceItemConverter withSpecificDateAttr(SpecificDateAttrOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(AttendanceLeavingGateOfDaily domain);
+	DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(AttendanceLeavingGateOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain);
+	DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withEditStates(EditStateOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withEditStates(EditStateOfDailyAttd domain);
 
-	DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain);
+	DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyAttd> domain);
 
-	DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyPerformance domain);
+	DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyAttd domain);
 	
-	DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDaily domain);
+	DailyRecordToAttendanceItemConverter withPCLogInfo(PCLogOnInfoOfDailyAttd domain);
 	
-	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyPerform> domain);
+	DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyAttd> domain);
 
 	DailyRecordToAttendanceItemConverter employeeId(String employeeId);
 
@@ -82,38 +175,38 @@ public interface DailyRecordToAttendanceItemConverter extends AttendanceItemConv
 
 	DailyRecordToAttendanceItemConverter completed();
 	
-	WorkInfoOfDailyPerformance workInfo();
+	WorkInfoOfDailyAttendance workInfo();
 
-	CalAttrOfDailyPerformance calcAttr();
+	CalAttrOfDailyAttd calcAttr();
 
-	Optional<WorkTypeOfDailyPerformance> businessType();
+//	Optional<WorkTypeOfDailyPerformance> businessType();
 	
-	AffiliationInforOfDailyPerfor affiliationInfo();
+	AffiliationInforOfDailyAttd affiliationInfo();
 
-	Optional<OutingTimeOfDailyPerformance> outingTime();
+	Optional<OutingTimeOfDailyAttd> outingTime();
 
-	List<BreakTimeOfDailyPerformance> breakTime();
+	List<BreakTimeOfDailyAttd> breakTime();
 
-	Optional<AttendanceTimeOfDailyPerformance> attendanceTime();
+	Optional<AttendanceTimeOfDailyAttendance> attendanceTime();
 
-	Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork();
+//	Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork();
 
-	Optional<TimeLeavingOfDailyPerformance> timeLeaving();
+	Optional<TimeLeavingOfDailyAttd> timeLeaving();
 
-	Optional<ShortTimeOfDailyPerformance> shortTime();
+	Optional<ShortTimeOfDailyAttd> shortTime();
 
-	Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr();
+	Optional<SpecificDateAttrOfDailyAttd> specificDateAttr();
 
-	Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate();
+	Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate();
 
-	Optional<AnyItemValueOfDaily> anyItems();
+	Optional<AnyItemValueOfDailyAttd> anyItems();
 
-	List<EditStateOfDailyPerformance> editStates();
+	List<EditStateOfDailyAttd> editStates();
 
-	Optional<TemporaryTimeOfDailyPerformance> temporaryTime();
+	Optional<TemporaryTimeOfDailyAttd> temporaryTime();
 	
-	Optional<PCLogOnInfoOfDaily> pcLogInfo();
+	Optional<PCLogOnInfoOfDailyAttd> pcLogInfo();
 	
-	List<RemarksOfDailyPerform> remarks();
+	List<RemarksOfDailyAttd> remarks();
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+
 public interface AttendanceItemDataGate {
 	
 	public default Optional<ItemValue> valueOf(String path) { return Optional.empty(); }

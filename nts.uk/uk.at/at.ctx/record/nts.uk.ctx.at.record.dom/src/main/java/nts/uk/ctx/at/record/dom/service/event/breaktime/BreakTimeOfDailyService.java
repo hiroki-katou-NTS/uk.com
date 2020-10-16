@@ -81,7 +81,7 @@ public class BreakTimeOfDailyService {
 		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 				.employeeId(wi.getEmployeeId())
 				.workingDate(wi.getYmd())
-				.withBreakTime(Arrays.asList(breakTimeRecord));
+				.withBreakTime(Arrays.asList(breakTimeRecord.getTimeZone()));
 
 		List<ItemValue> beforeCorrectItemValues = converter.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -107,7 +107,7 @@ public class BreakTimeOfDailyService {
 		working.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 		working.getBreakTime().add(breakTime.getTimeZone());
 		
-		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(Arrays.asList(breakTime))
+		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(Arrays.asList(breakTime.getTimeZone()))
 															.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
@@ -177,11 +177,11 @@ public class BreakTimeOfDailyService {
 		if (!itemsToMerge.isEmpty()) {
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter()
 																	.employeeId(empId).workingDate(targetDate)
-																	.withBreakTime(Arrays.asList(breakTimeRecord));
+																	.withBreakTime(Arrays.asList(breakTimeRecord.getTimeZone()));
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			
-			converter.withBreakTime(empId, targetDate, new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
+			converter.withBreakTime(new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
 			
 //			List<ItemValue> recordVal = converter.convert(itemsToMerge);
 			

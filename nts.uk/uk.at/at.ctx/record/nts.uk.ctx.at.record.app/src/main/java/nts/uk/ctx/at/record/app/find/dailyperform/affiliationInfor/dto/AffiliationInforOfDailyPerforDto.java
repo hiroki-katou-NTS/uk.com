@@ -17,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -62,12 +64,30 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 	public static AffiliationInforOfDailyPerforDto getDto(AffiliationInforOfDailyPerfor domain){
 		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
 		if(domain != null){
+			dto.setClsCode(domain.getAffiliationInfor().getClsCode() == null ? null : domain.getAffiliationInfor().getClsCode().v());
+			dto.setEmploymentCode(domain.getAffiliationInfor().getEmploymentCode() == null ? null : domain.getAffiliationInfor().getEmploymentCode().v());
+			dto.setJobId(domain.getAffiliationInfor().getJobTitleID());
+			dto.setSubscriptionCode(domain.getAffiliationInfor().getBonusPaySettingCode() == null ? null 
+					: domain.getAffiliationInfor().getBonusPaySettingCode().v());
+			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	public static AffiliationInforOfDailyPerforDto getDto(String employeeID,GeneralDate ymd,AffiliationInforOfDailyAttd domain){
+		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
+		if(domain != null){
 			dto.setClsCode(domain.getClsCode() == null ? null : domain.getClsCode().v());
 			dto.setEmploymentCode(domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v());
 			dto.setJobId(domain.getJobTitleID());
 			dto.setSubscriptionCode(domain.getBonusPaySettingCode() == null ? null 
 					: domain.getBonusPaySettingCode().v());
 			dto.setWorkplaceID(domain.getWplID());
+			dto.setBaseDate(ymd);
+			dto.setEmployeeId(employeeID);
+			dto.setBusinessTypeCode(domain.getBusinessTypeCode() != null && domain.getBusinessTypeCode().isPresent()?
+					domain.getBusinessTypeCode().get().v():null);
 			dto.exsistData();
 		}
 		return dto;

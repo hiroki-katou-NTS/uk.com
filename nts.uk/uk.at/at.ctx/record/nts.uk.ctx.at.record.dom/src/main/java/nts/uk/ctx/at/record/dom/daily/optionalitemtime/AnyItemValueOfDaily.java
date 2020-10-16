@@ -130,7 +130,7 @@ public class AnyItemValueOfDaily {
         		}     
             	dailyAnyItem.get().setItems(forcsItem);
             	//
-            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(employeeId,ymd,dailyAnyItem.get()));
+            	dailyRecordDto = Optional.of(dailyRecordDto.get().withAnyItems(dailyAnyItem.get()));
         	}
         }
         

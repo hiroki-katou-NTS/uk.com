@@ -8,11 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
@@ -183,8 +186,12 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			return new ReservationOfMonthlyDto();
 		case DIVERGENCE:
 			return new DivergenceTimeOfMonthlyDto();
-		case HOLIDAY:
+		case TOPPAGE:
+			return new TopPageDisplayTimeOfMonthlyDto();
+		case (HOLIDAY + USAGE):
 			return new HolidayTimeOfMonthlyDto();
+		case LABOR:
+			return new LaborTimeMonthlyDto();
 		default:
 			return null;
 		}
@@ -207,8 +214,12 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.ofNullable(attendanceLeave);
 		case RESERVATION:
 			return Optional.ofNullable(reservation);
-		case HOLIDAY:
-			return Optional.ofNullable(holidayTime);
+		case TOPPAGE:
+			return Optional.ofNullable(topPage);
+		case (HOLIDAY + USAGE):
+			return Optional.ofNullable(holidayUse);
+		case LABOR:
+			return Optional.ofNullable(laborTime);
 		default:
 			return Optional.empty();
 		}
@@ -231,6 +242,8 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 	public PropType typeOf(String path) {
 		switch (path) {
 		case PLAN_ACTUAL_DIFF:
+		case INTERVAL:
+		case (INTERVAL + DEDUCTION):
 			return PropType.VALUE;
 		case MEDICAL: 
 			return PropType.ENUM_LIST;
@@ -259,8 +272,14 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	@Override
 	public void set(String path, ItemValue value) {
-		if (PLAN_ACTUAL_DIFF.equals(path)) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
 			budgetTimeVarience = value.valueOrDefault(0);
+		case INTERVAL:
+			intervalTime = value.valueOrDefault(0);
+		case (INTERVAL + DEDUCTION):
+			intervalExemptionTime = value.valueOrDefault(0);
+		default:
 		}
 	}
 
@@ -281,8 +300,12 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 			(attendanceLeave) = (AttendanceLeaveGateTimeOfMonthlyDto) value; break;
 		case RESERVATION:
 			(reservation) = (ReservationOfMonthlyDto) value; break;
-		case HOLIDAY:
-			(holidayTime) = (HolidayTimeOfMonthlyDto) value; break;
+		case TOPPAGE:
+			(topPage) = (TopPageDisplayTimeOfMonthlyDto) value; break;
+		case (HOLIDAY + USAGE):
+			(holidayUse) = (HolidayUseMonthlyDto) value; break;
+		case LABOR:
+			(laborTime) = (LaborTimeMonthlyDto) value; break;
 		default:
 		}
 	}

@@ -21,6 +21,7 @@ public class BreakTimeOfDailyAttd implements DomainObject {
 	private BreakType breakType;
 	//時間帯
 	private List<BreakTimeSheet> breakTimeSheets;
+	
 	public BreakTimeOfDailyAttd(BreakType breakType, List<BreakTimeSheet> breakTimeSheets) {
 		super();
 		this.breakType = breakType;

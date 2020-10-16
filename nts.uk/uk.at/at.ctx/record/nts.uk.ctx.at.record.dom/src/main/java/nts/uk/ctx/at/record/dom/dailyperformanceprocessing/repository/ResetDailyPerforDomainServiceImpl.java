@@ -422,26 +422,26 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							// set data in converter, for update value of
 							// attendance item id
 							// set data of stampBeforeReflection in converter
-							converter.withTimeLeaving(employeeID, processingDate, stampBeforeReflection.getTimeLeavingOfDailyPerformance().getAttendance())
+							converter.withTimeLeaving(stampBeforeReflection.getTimeLeavingOfDailyPerformance().getAttendance())
 									.employeeId(employeeID).workingDate(processingDate);
-							converter.withOutingTime(employeeID, processingDate, stampBeforeReflection.getOutingTimeOfDailyPerformance().getOutingTime());
-							converter.withTemporaryTime(employeeID, processingDate, stampBeforeReflection.getTemporaryTimeOfDailyPerformance().getAttendance());
+							converter.withOutingTime(stampBeforeReflection.getOutingTimeOfDailyPerformance().getOutingTime());
+							converter.withTemporaryTime(stampBeforeReflection.getTemporaryTimeOfDailyPerformance().getAttendance());
 							converter
-									.withAttendanceLeavingGate(employeeID, processingDate, stampBeforeReflection.getAttendanceLeavingGateOfDaily().getTimeZone());
-							converter.withPCLogInfo(employeeID, processingDate, stampBeforeReflection.getPcLogOnInfoOfDaily().getTimeZone());
+									.withAttendanceLeavingGate(stampBeforeReflection.getAttendanceLeavingGateOfDaily().getTimeZone());
+							converter.withPCLogInfo(stampBeforeReflection.getPcLogOnInfoOfDaily().getTimeZone());
 
 							// set data of stampOutPut in converter
 							converter2
 									.withTimeLeaving(
-											employeeID, processingDate, stampOutput.getReflectStampOutput().getTimeLeavingOfDailyPerformance().getAttendance())
+											stampOutput.getReflectStampOutput().getTimeLeavingOfDailyPerformance().getAttendance())
 									.employeeId(employeeID).workingDate(processingDate);
 							converter2.withOutingTime(
-									employeeID, processingDate, stampOutput.getReflectStampOutput().getOutingTimeOfDailyPerformance().getOutingTime());
+									stampOutput.getReflectStampOutput().getOutingTimeOfDailyPerformance().getOutingTime());
 							converter2.withTemporaryTime(
-									employeeID, processingDate, stampOutput.getReflectStampOutput().getTemporaryTimeOfDailyPerformance().getAttendance());
+									stampOutput.getReflectStampOutput().getTemporaryTimeOfDailyPerformance().getAttendance());
 							converter2.withAttendanceLeavingGate(
-									employeeID, processingDate, stampOutput.getReflectStampOutput().getAttendanceLeavingGateOfDaily().getTimeZone());
-							converter2.withPCLogInfo(employeeID, processingDate, stampOutput.getReflectStampOutput().getPcLogOnInfoOfDaily().getTimeZone());
+									stampOutput.getReflectStampOutput().getAttendanceLeavingGateOfDaily().getTimeZone());
+							converter2.withPCLogInfo(stampOutput.getReflectStampOutput().getPcLogOnInfoOfDaily().getTimeZone());
 							
 							// ---------------------
 							// neu nhu attItemIdStateOfTimeLeaving chua gia tri cua Id nao, thi Id do lay

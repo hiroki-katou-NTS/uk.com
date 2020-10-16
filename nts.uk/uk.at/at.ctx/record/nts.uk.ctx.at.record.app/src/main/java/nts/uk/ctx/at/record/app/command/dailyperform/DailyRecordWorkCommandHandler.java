@@ -531,14 +531,38 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		executorService.submit(task);
 	}
 
-	public RCDailyCorrectionResult handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
-			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+	public RCDailyCorrectionResult handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
+			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
 		
+		//employeeErrorRepo.removeParam(toMapParam(commandNew));
+
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
+
+//		registerNotCalcDomain(commandNew, isUpdate);
+
+//		List<IntegrationOfDaily> lastDt = updateDomainAfterCalcAndRunStored(domainDailyNew, null);
+
+//		registerErrorWhenCalc(lstError);
+//
+//		if (mode == 0 && month.getNeedCallCalc()) {
+//			List<IntegrationOfMonthly> lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, lastDt,
+//					month == null ? Optional.empty() : month.getDomainMonth(), month);
+//			
+//			lstMonthDomain.forEach(x -> {
+//				if (!x.getEmployeeMonthlyPerErrorList().isEmpty()) {
+//					val error = x.getEmployeeMonthlyPerErrorList().get(0);
+//					employeeMonthlyPerErrorRepository.removeAll(error.getEmployeeID(), error.getYearMonth(),
+//							error.getClosureId(), error.getClosureDate());
+//				}
+//			});
+//			updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
+//		}
+//
+//		excuteLog(lastDt, lstAttendanceItem, commandOld, commandNew, dailyItems);
 		
 		return new RCDailyCorrectionResult(domainDailyNew, (month == null || !month.getDomainMonth().isPresent()) ? null : Arrays.asList(month.getDomainMonth().get()), commandNew, commandOld, dailyItems, isUpdate);
 	}
-
+	
 	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
 		updateWorkInfoAfterCalc(calced);
 

@@ -106,7 +106,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainList()));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainData()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});
@@ -170,7 +170,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainList()));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainData()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});

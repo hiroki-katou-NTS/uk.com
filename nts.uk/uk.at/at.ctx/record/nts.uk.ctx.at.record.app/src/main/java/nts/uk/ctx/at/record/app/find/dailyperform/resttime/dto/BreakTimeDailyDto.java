@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -43,19 +44,19 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FAKED, 
 			listMaxLength = 2, enumField = DEFAULT_ENUM_FIELD_NAME, listNoIndex = true)
 	private List<DailyBreakDto> breakTimes = new ArrayList<>();
-	
+		
 	public static BreakTimeDailyDto getDto(List<BreakTimeOfDailyPerformance> domain) {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		if(domain != null && !domain.isEmpty()){
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYmd(domain.get(0).getYmd());
-			dto.setBreakTimes(domain.stream().map(tz -> new DailyBreakDto(ConvertHelper.mapTo(tz.getBreakTimeSheets(), 
+			dto.setBreakTimes(domain.stream().map(tz -> new DailyBreakDto(ConvertHelper.mapTo(tz.getTimeZone().getBreakTimeSheets(), 
 					(c) -> new TimeSheetDto(
 							c.getBreakFrameNo().v().intValue(),
 							getTimeStamp(c.getStartTime()),
 							getTimeStamp(c.getEndTime()),
 							c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())),
-					tz.getBreakType() == null ? 0 : tz.getBreakType().value)).collect(Collectors.toList()));
+					tz.getTimeZone().getBreakType() == null ? 0 : tz.getTimeZone().getBreakType().value)).collect(Collectors.toList()));
 //			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
 //			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
 //													(c) -> new TimeSheetDto(
@@ -67,6 +68,48 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	public static BreakTimeDailyDto getDto(String employeeID, GeneralDate ymd, List<BreakTimeOfDailyAttd> domain) {
+		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+		if(domain != null && !domain.isEmpty()){
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
+			dto.setBreakTimes(domain.stream().map(tz -> new DailyBreakDto(ConvertHelper.mapTo(tz.getBreakTimeSheets(), 
+					(c) -> new TimeSheetDto(
+							c.getBreakFrameNo().v().intValue(),
+							getTimeStamp(c.getStartTime()),
+							getTimeStamp(c.getEndTime()),
+							c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())),
+					tz.getBreakType() == null ? 0 : tz.getBreakType().value)).collect(Collectors.toList()));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+//ichiokaDEL
+//	public static BreakTimeDailyDto getDto(String employeeID,GeneralDate ymd,BreakTimeOfDailyAttd x) {
+//		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+//		if(x != null){
+//			dto.setEmployeeId(employeeID);
+//			dto.setYmd(ymd);
+//			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
+////			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
+////													(c) -> new TimeSheetDto(
+////														c.getBreakFrameNo().v().intValue(),
+////														getTimeStamp(c.getStartTime()),
+////														getTimeStamp(c.getEndTime()),
+////														c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())));
+//			dto.setBreakTimes(new DailyBreakDto(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
+//					(c) -> new TimeSheetDto(
+//							c.getBreakFrameNo().v().intValue(),
+//							getTimeStamp(c.getStartTime()),
+//							getTimeStamp(c.getEndTime()),
+//							c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes()),
+//					tz.getTimeZone().getBreakType() == null ? 0 : tz.getTimeZone().getBreakType().value)));
+//			dto.exsistData();
+//		}
+//		return dto;
+//	}
 	
 	@Override
 	public BreakTimeDailyDto clone() {
@@ -94,18 +137,36 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		return this.ymd;
 	}
 	
+//	@Override
+//	public List<BreakTimeOfDailyPerformance> toDomain(String emp, GeneralDate date) {
+//		if(!this.isHaveData()) {
+//			return null;
+//		}
+//		String empId = emp == null ? this.employeeId() : emp;
+//		GeneralDate ymd = date == null ? this.workingDate() : date;
+//		
+//		return breakTimes.stream().map(c -> new BreakTimeOfDailyPerformance(empId,
+//				c.getAttr() == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
+//				c.getTimeZone().stream().filter(tz -> judgNotNull(tz)).map(tz -> toTimeSheet(tz)).collect(Collectors.toList()),
+//				ymd)).collect(Collectors.toList());
+//	}
+	
 	@Override
-	public List<BreakTimeOfDailyPerformance> toDomain(String emp, GeneralDate date) {
+	public List<BreakTimeOfDailyAttd> toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
 		String empId = emp == null ? this.employeeId() : emp;
 		GeneralDate ymd = date == null ? this.workingDate() : date;
 		
-		return breakTimes.stream().map(c -> new BreakTimeOfDailyPerformance(empId,
-				c.getAttr() == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
-				c.getTimeZone().stream().filter(tz -> judgNotNull(tz)).map(tz -> toTimeSheet(tz)).collect(Collectors.toList()),
-				ymd)).collect(Collectors.toList());
+		return breakTimes.stream()
+				.map(c -> new BreakTimeOfDailyAttd(
+						c.getAttr() == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
+						c.getTimeZone().stream()
+								.filter(tz -> judgNotNull(tz))
+								.map(tz -> toTimeSheet(tz))
+								.collect(Collectors.toList())))
+				.collect(Collectors.toList());
 	}
 	
 	private boolean judgNotNull(TimeSheetDto d){

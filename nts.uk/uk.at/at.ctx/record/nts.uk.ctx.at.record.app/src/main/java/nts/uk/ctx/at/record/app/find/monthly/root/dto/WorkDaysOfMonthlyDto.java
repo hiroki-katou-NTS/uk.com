@@ -8,11 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonDaysOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.TimeConsumpVacationDaysOfMonthly;
@@ -205,8 +208,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case SUSPENS_WORK:
 			return new LeaveOfMonthlyDto();
-		case FOR_SALARY:
-			return new PayDaysOfMonthlyDto();
+		case STRAIGHT_GO_BACK:
+			return new StraightDaysOfMonthlyDto();
 		case ABSENCE:
 			return new CommonDaysOfMonthlyDto();
 		case WITHIN_STATUTORY:
@@ -226,8 +229,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case SUSPENS_WORK:
 			return Optional.ofNullable(leave);
-		case FOR_SALARY:
-			return Optional.ofNullable(payDays);
+		case STRAIGHT_GO_BACK:
+			return Optional.ofNullable(straightDays);
 		case ABSENCE:
 			return Optional.ofNullable(absenceDays);
 		case WITHIN_STATUTORY:
@@ -305,8 +308,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case SUSPENS_WORK:
 			leave = (LeaveOfMonthlyDto) value; break;
-		case FOR_SALARY:
-			payDays = (PayDaysOfMonthlyDto) value; break;
+		case STRAIGHT_GO_BACK:
+			straightDays = (StraightDaysOfMonthlyDto) value; break;
 		case ABSENCE:
 			absenceDays = (CommonDaysOfMonthlyDto) value; break;
 		case WITHIN_STATUTORY:

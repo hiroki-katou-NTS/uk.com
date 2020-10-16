@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -47,9 +48,10 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public List<RemarksOfDailyPerform> toDomain(String employeeId, GeneralDate date) {
+	public List<RemarksOfDailyAttd> toDomain(String employeeId, GeneralDate date) {
 		if (this.isHaveData()) {
-			return remarks.stream().map(c -> new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(c.getRemark()), c.getNo()))
+			return remarks.stream()
+					.map(c -> new RemarksOfDailyAttd(new RecordRemarks(c.getRemark()), c.getNo()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
@@ -60,12 +62,38 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		if(domain != null && !domain.isEmpty()){
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYmd(domain.get(0).getYmd());
-			dto.setRemarks(domain.stream().map(c -> new RemarkDto(c.getRemarks().v(), c.getRemarkNo()))
+			dto.setRemarks(domain.stream().map(c -> new RemarkDto(c.getRemarks().getRemarks().v(), c.getRemarks().getRemarkNo()))
 											.collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
 	}
+	
+	public static RemarksOfDailyDto getDto(String employeeID, GeneralDate ymd, List<RemarksOfDailyAttd> domain) {
+		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+		if(domain != null && !domain.isEmpty()){
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
+			dto.setRemarks(domain.stream()
+					.map(c -> new RemarkDto(c.getRemarks().v(), c.getRemarkNo()))
+					.collect(Collectors.toList()));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+//ichiokaDEL
+//	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
+//		RemarksOfDailyDto dto = new RemarksOfDailyDto();
+//		if(x != null){
+//			dto.setEmployeeId(employeeID);
+//			dto.setYmd(ymd);
+//			dto.setRemark(x.getRemarks().v());
+//			dto.setNo(x.getRemarkNo());
+//			dto.exsistData();
+//		}
+//		return dto;
+//	}
 
 	@Override
 	public RemarksOfDailyDto clone() {
