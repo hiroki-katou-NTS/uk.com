@@ -846,6 +846,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
 
 
+            } else {
+                self.$mask('hide');
             }
 
 
