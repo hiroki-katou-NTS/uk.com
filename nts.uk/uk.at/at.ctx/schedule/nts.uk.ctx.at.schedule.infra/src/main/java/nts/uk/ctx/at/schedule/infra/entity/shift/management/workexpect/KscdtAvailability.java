@@ -46,9 +46,9 @@ public class KscdtAvailability extends ContractCompanyUkJpaEntity{
 	
 	public static KscdtAvailability fromDomain(WorkAvailabilityOfOneDay expectation) {
 		return new KscdtAvailability(
-				new KscdtAvailabilityPk(expectation.getEmployeeId(), expectation.getExpectingDate()), 
+				new KscdtAvailabilityPk(expectation.getEmployeeId(), expectation.getWorkAvailabilityDate()), 
 				expectation.getMemo().v(),
-				expectation.getWorkExpectation().getAssignmentMethod().value);
+				expectation.getWorkAvailability().getAssignmentMethod().value);
 	}
 	
 	public WorkAvailabilityOfOneDay toDomain(List<ShiftMasterCode> shiftMasterCodeList,

@@ -35,16 +35,16 @@ public class KscdtAvailabilityTs extends ContractCompanyUkJpaEntity {
 	
 	public static List<KscdtAvailabilityTs> fromDomain( WorkAvailabilityOfOneDay expectation) {
 		
-		if ( expectation.getWorkExpectation().getAssignmentMethod() != AssignmentMethod.TIME_ZONE) {
+		if ( expectation.getWorkAvailability().getAssignmentMethod() != AssignmentMethod.TIME_ZONE) {
 			return new ArrayList<>();
 		}
 		
-		WorkAvailabilityByTimeZone timeZoneExpectation = (WorkAvailabilityByTimeZone) expectation.getWorkExpectation();
+		WorkAvailabilityByTimeZone timeZoneExpectation = (WorkAvailabilityByTimeZone) expectation.getWorkAvailability();
 		return timeZoneExpectation.getWorkableTimeZoneList().stream()
 			.map(t -> new KscdtAvailabilityTs(
 							new KscdtAvailabilityTsPk(
 									expectation.getEmployeeId(), 
-									expectation.getExpectingDate(), 
+									expectation.getWorkAvailabilityDate(), 
 									t.startValue().intValue(), 
 									t.endValue().intValue()) 
 							))
