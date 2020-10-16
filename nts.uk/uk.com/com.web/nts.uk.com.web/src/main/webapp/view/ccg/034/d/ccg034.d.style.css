@@ -9,14 +9,23 @@
   padding: 10px 40px 20px 10px;
   box-sizing: border-box;
 }
-#menu-item-container > .menu-creation-option {
+.menu-creation-option {
+  z-index: 5;
   width: 100%;
+  max-width: 190px;
   height: 40px;
-  border: 1px solid #999999;
+  border: 1px solid #bcbcbc;
   cursor: grab;
   box-sizing: border-box;
+  background-color: #eeeeee;
+  padding: 5px;
+  display: flex;
+  align-items: center;
 }
-#menu-item-container > .menu-creation-option:not(:last-child) {
+.menu-creation-option > .menu-icon {
+  margin-right: 10px;
+}
+#menu-item-container .menu-creation-option:not(:last-child) {
   border-bottom: 0;
 }
 
@@ -48,8 +57,8 @@
   z-index: 2;
   position: absolute;
   box-sizing: border-box;
-  background-color: antiquewhite;
-  border: 2px solid #aaaaaa;
+  background-color: white;
+  border: 1px solid #aaaaaa;
 }
 #menu-creation-layout > .menu-creation-item:hover {
   cursor: pointer;
@@ -67,4 +76,60 @@
   position: absolute;
   background-color: #e0f59e;
   opacity: 0.5;
+}
+
+/* Part class */
+#menu-creation-layout > .part-menu {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: aqua;
+}
+#menu-creation-layout > .part-label {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: #97d155;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#menu-creation-layout > .part-link {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: lightblue;
+}
+#menu-creation-layout > .part-attachment {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: aquamarine;
+}
+#menu-creation-layout > .part-image {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: lightcoral;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#menu-creation-layout > .part-arrow {
+  position: absolute;
+  box-sizing: border-box;
+  background-color: lightyellow;
+}
+
+/* Setting part class */
+#menu-creation-layout .part-setting-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+#menu-creation-layout .part-setting-container > .part-setting {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+#menu-creation-layout .part-setting-container > .part-setting:hover {
+  background-color: rgba(64, 64, 64, 0.5);
 }
