@@ -18,31 +18,31 @@ public class ChildCareNurseErrors {
 	/** 子の看護介護エラー対象年月日 */
 	private GeneralDate ymd;
 
-/**
- * コンストラクタ
- */
-public ChildCareNurseErrors(){
+	/**
+	 * コンストラクタ
+	 */
+	public ChildCareNurseErrors(){
 
-	this.usedNumber = new ChildCareNurseUsedNumber();
-	this.limitDays = new Double(0.0);
-	this.ymd = GeneralDate.today();
-}
-/**
- * ファクトリー
- * @param usedNumber 子の看護介護使用数
- * @param limitDays 子の看護介護上限日数
- * @param ymd 子の看護介護エラー対象年月日
- * @return 子の看護介護エラー情報
- */
-public static ChildCareNurseErrors of(
-		ChildCareNurseUsedNumber usedNumber,
-		Double limitDays,
-		GeneralDate ymd) {
+		this.usedNumber = new ChildCareNurseUsedNumber();
+		this.limitDays = new Double(0.0);
+		this.ymd = GeneralDate.today();
+	}
+	/**
+	 * ファクトリー
+	 * @param usedNumber 子の看護介護使用数
+	 * @param limitDays 子の看護介護上限日数
+	 * @param ymd 子の看護介護エラー対象年月日
+	 * @return 子の看護介護エラー情報
+	 */
+	public static ChildCareNurseErrors of(
+			ChildCareNurseUsedNumber usedNumber,
+			Double limitDays,
+			GeneralDate ymd) {
 
-	ChildCareNurseErrors domain = new ChildCareNurseErrors();
-	domain.usedNumber = usedNumber;
-	domain.limitDays = limitDays;
-	domain.ymd = ymd;
-	return domain;
-}
+		ChildCareNurseErrors domain = new ChildCareNurseErrors();
+		domain.usedNumber = usedNumber;
+		domain.limitDays = limitDays;
+		domain.ymd = ymd;
+		return domain;
+	}
 }
