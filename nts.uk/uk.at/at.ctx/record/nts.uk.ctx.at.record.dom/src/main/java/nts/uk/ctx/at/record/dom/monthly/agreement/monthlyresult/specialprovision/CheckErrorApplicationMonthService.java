@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
@@ -49,8 +50,8 @@ public class CheckErrorApplicationMonthService {
         }
 
         // 3:<call>
-        val agreementTimes = new HashMap<YearMonth, AgreementOneMonthTime>();
-        agreementTimes.put(monthlyAppContent.getYm(), monthlyAppContent.getErrTime());
+        val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+        agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
         AgreMaxAverageTimeMulti multiMonthAverage = require.getMaxAverageMulti(monthlyAppContent.getApplicant(),
                 baseDate, monthlyAppContent.getYm(),agreementTimes);
 
@@ -126,14 +127,14 @@ public class CheckErrorApplicationMonthService {
          * アルゴリズム.[No.683]指定する年月の時間をもとに36協定時間を集計する(社員ID,基準日,年月,36協定時間)
          */
         AgreMaxAverageTimeMulti getMaxAverageMulti(String sid, GeneralDate baseDate, YearMonth ym,
-                                                 Map<YearMonth, AgreementOneMonthTime> agreementTimes);
+                                                 Map<YearMonth, AttendanceTimeMonth> agreementTimes);
 
         /**
          * 	[R-2] 年間時間を集計する
          * 	アルゴリズム.[No.684]指定する年度の時間をもとに36協定時間を集計する(社員ID,基準日,年度,36協定時間)
          */
         AgreementTimeYear timeYear(String sid, GeneralDate baseDate, Year year,
-                                           Map<YearMonth, AgreementOneMonthTime> agreementTimes);
+                                           Map<YearMonth, AttendanceTimeMonth> agreementTimes);
 
         /**
          * [R-3] 超過回数を取得する
