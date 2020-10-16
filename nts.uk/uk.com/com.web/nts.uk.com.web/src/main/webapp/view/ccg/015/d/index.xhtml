@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+      <com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg015.d.style.css" />
+			<com:scriptfile path="ccg015.d.vm.js" />
+			<script>var dialogSize = { width: 930 , height: 550};</script>
+		</ui:define>
+		<ui:define name="content">
+      <div class="ccg015-d-content">
+        <div class="float-left">
+          <button ></button>
+        </div>
+      </div>
+      <div id="functions-area-bottom">
+        <!-- btn close dialog -->
+        <button class="large" data-bind="click: close">#{i18n.getText('KDL052_15')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+</html>
