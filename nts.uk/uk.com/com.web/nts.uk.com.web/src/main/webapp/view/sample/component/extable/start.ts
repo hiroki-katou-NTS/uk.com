@@ -13,7 +13,8 @@ __viewContext.ready(function () {
         workTypeName: string;
         workTimeCode: string;
         workTimeName: string;
-        symbol: string;
+        symbolCode: string;
+        symbolName: string;
         startTime: any;
         endTime: any;
         constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, symbol?: any) {
@@ -21,7 +22,8 @@ __viewContext.ready(function () {
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.symbol = symbol ? symbol : (symbol === null ? null : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯"));
+            this.symbolCode = workTypeCode;
+            this.symbolName = symbol ? symbol : (symbol === null ? null : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯"));
             this.startTime = startTime !== undefined ? startTime : "8:30";
             this.endTime = endTime !== undefined ? endTime : "17:30";
         }
@@ -189,6 +191,20 @@ __viewContext.ready(function () {
         leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
     }
     
+     let validateSrv = { 
+        request: (a) => { 
+            let dfd = $.Deferred(); 
+            if (a === "8:30") {
+                dfd.resolve("Good");
+            } else dfd.reject("Not good");
+            return dfd.promise();
+        }, onValid: (a, b) => { 
+            alert(b); 
+        }, onFailed: (a, b) => {
+            alert(b);
+        }
+    };
+    
     let detailColumns = [{
            key: "empId", width: "50px", headerText: "ABC", visible: false
         }, {
@@ -221,7 +237,7 @@ __viewContext.ready(function () {
         }, {
             key: "_6", width: "150px", handlerType: "input", dataType: "label/label/time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"/*, ajaxValidate: { request: () => { let dfd = $.Deferred(); dfd.resolve("Good"); return dfd.promise();}, onValid: (a, b) => {alert(b);}, onFailed: () => {} }*/
+            key: "_7", width: "150px", handlerType: "input", dataType: "label/label/time/time"/*, ajaxValidate: validateSrv */
         }, {
             key: "_8", width: "150px", handlerType: "input", dataType: "label/label/time/time"
         }, {
@@ -437,12 +453,12 @@ __viewContext.ready(function () {
                 case "shortName":
                     return [ "workTypeName", "workTimeName" ];
                 case "symbol": 
-                    return [ "symbol" ];
+                    return [ "symbolName" ];
                 case "time":
                     return ["workTypeName", "workTimeName", "startTime", "endTime" ]; 
             }
         },
-        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
+        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbolCode", "symbolName", "startTime", "endTime" ],
 //        banEmptyInput: [ "time" ]
     };
     
@@ -510,9 +526,9 @@ __viewContext.ready(function () {
         let startTime, endTime;
         if (innerIdx === 2) {
             startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-            endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+            endTime = !_.isNil(obj.endTime) ? nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue() : 0;
         } else if (innerIdx === 3) {
-            startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+            startTime = !_.isNil(obj.startTime) ? nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue() : 0;
             endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
         }
         
@@ -540,7 +556,7 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "edit",
+            updateMode: "copyPaste",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
@@ -791,9 +807,27 @@ __viewContext.ready(function () {
                     dfd.resolve(function() {
                         alert("error");
                     });
-                }
+                } else dfd.resolve(true);
                 
-                dfd.resolve(true);
+                return dfd.promise();
+            });
+        });
+    
+        $("#set-paste-valid").click(function() {
+            $("#extable").exTable("pasteValidate", function(data) {
+                let dfd = $.Deferred(), invalid = false;
+                _.forEach(data, d => {
+                    if (d.startTime === "6:00") {
+                        invalid = true;
+                        dfd.resolve(function() {
+                            nts.uk.ui.dialog.alert("Error");
+                        });
+                        
+                        return false;
+                    }
+                });
+                
+                if (!invalid) dfd.resolve(true)
                 return dfd.promise();
             });
         });

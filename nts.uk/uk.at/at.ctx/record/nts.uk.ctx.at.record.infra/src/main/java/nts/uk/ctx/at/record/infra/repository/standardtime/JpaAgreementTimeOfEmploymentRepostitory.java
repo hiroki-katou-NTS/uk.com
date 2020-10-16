@@ -95,15 +95,17 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 	
 	@Override
 	public List<AgreementTimeOfEmployment> findEmploymentSetting(String comId, List<String> employments) {
-		if(employments.isEmpty()){
-			return new ArrayList<>();
-		}
-		String query = "SELECT a FROM KmkmtAgeementTimeEmployment a WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId"
-				+ " AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode IN :employments";
-		
-		return this.queryProxy().query(query, KmkmtAgeementTimeEmployment.class)
-				.setParameter("companyId", comId).setParameter("employments", employments)
-				.getList(f -> toDomain(f));
+//		if(employments.isEmpty()){
+//			return new ArrayList<>();
+//		}
+//		String query = "SELECT a FROM KmkmtAgeementTimeEmployment a WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId"
+//				+ " AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode IN :employments";
+//		
+//		return this.queryProxy().query(query, KmkmtAgeementTimeEmployment.class)
+//				.setParameter("companyId", comId).setParameter("employments", employments)
+//				.getList(f -> toDomain(f));
+
+		return new ArrayList<>();
 	}
 
 	private KmkmtAgeementTimeEmployment toEntity(AgreementTimeOfEmployment agreementTimeOfEmployment) {

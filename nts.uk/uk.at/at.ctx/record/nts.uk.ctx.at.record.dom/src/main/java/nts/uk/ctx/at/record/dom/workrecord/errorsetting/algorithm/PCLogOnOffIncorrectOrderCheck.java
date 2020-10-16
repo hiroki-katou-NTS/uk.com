@@ -178,7 +178,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 			// 2回目のログオンと出勤．打刻が存在するか確認する(check second LogOn and stamp of
 			// attendance of second timeLeavingWork has data or not)
-			if (logOnInfos.get(1).getLogOn() != null && timeLeavingWorks.get(1).getAttendanceStamp().isPresent()
+			if (logOnInfos.get(1).getLogOn() != null && timeLeavingWorks.size()>1 && timeLeavingWorks.get(1).getAttendanceStamp().isPresent()
 					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(1).getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(1).getLogOn().get().greaterThan(
@@ -190,7 +190,7 @@ public class PCLogOnOffIncorrectOrderCheck {
 
 			// 2回目のログオフと退勤．打刻が存在するか確認する(check second LogOff and stamp of leave
 			// of second timeLeavingWork has data or not)
-			if (logOnInfos.get(1).getLogOff() != null && timeLeavingWorks.get(1).getLeaveStamp().isPresent()
+			if (logOnInfos.get(1).getLogOff() != null && timeLeavingWorks.size()>1 && timeLeavingWorks.get(1).getLeaveStamp().isPresent()
 					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().isPresent()
 					&& timeLeavingWorks.get(1).getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 				if (logOnInfos.get(1).getLogOff().get()

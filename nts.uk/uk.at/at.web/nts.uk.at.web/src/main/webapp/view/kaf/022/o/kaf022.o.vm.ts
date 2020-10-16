@@ -121,44 +121,30 @@ module nts.uk.at.view.kaf022.o.viewmodel {
                 dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             self.getData(self.selectedOvertimeAppAtr(), self.selectedFlexWorkAtr()).done(() => {
-                service.getOTFrames().done(otFrames => {
-                    self.overtimeWorkFrames = ko.observableArray(otFrames.map(f => {
-                        return new OTWorkFrame(self.overTimeQuotaSettings().indexOf(f.overtimeWorkFrNo) >= 0, f.overtimeWorkFrNo, f.overtimeWorkFrName, self.handleCheck);
+                service.getOTFrames().done((otFrames: Array<any>) => {
+                    self.overtimeWorkFrames(otFrames.map(f => {
+                        return new OTWorkFrame(!!_.find(self.overTimeQuotaSettings(), s => s.overTimeFrame == f.overtimeWorkFrNo), f.overtimeWorkFrNo, f.overtimeWorkFrName, self.handleCheck);
                     }));
                     dfd.resolve();
-                }).fail(error => {
+                }).fail((error: any) => {
                     dfd.reject();
-                    alert(error.message);
+                    alert(error);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
             });
-            // $.when(service.getOTFrames(), service.getOTQuota())
-            //     .done((otFrames, otQuotaSettings) => {
-            //         self.overTimeQuotaSettings(otQuotaSettings.map(q => new OTQuota(q.overtimeAtr, q.flexAtr, q.overTimeFrame)));
-            //         const targetFrames = self.overTimeQuotaSettings().filter(q => q.overtimeAtr == self.selectedOvertimeAppAtr() && q.flexAtr == self.selectedFlexWorkAtr()).map(q => q.overTimeFrame);
-            //         self.overtimeWorkFrames = ko.observableArray(otFrames.map(f => {
-            //             return new OTWorkFrame(targetFrames.indexOf(f.overtimeWorkFrNo) >= 0, f.overtimeWorkFrNo, f.overtimeWorkFrName, self.handleCheck);
-            //         }));
-            //         dfd.resolve();
-            //     }).fail(error => {
-            //         dfd.reject();
-            //         alert(error.message);
-            //     }).always(() => {
-            //         nts.uk.ui.block.clear();
-            //     });
             return dfd.promise();
         }
 
         getData(overtimeAtr: number, flexWorkAtr: number): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getOTQuota(overtimeAtr, flexWorkAtr).done((otQuotaSettings) => {
+            service.getOTQuota(overtimeAtr, flexWorkAtr).done((otQuotaSettings: Array<any>) => {
                 self.overTimeQuotaSettings(otQuotaSettings.map(q => new OTQuota(q.overtimeAtr, q.flexAtr, q.overTimeFrame)));
                 dfd.resolve();
-            }).fail(error => {
+            }).fail((error: any) => {
                 dfd.reject();
-                alert(error.message);
+                alert(error);
             });
             return dfd.promise();
         }
