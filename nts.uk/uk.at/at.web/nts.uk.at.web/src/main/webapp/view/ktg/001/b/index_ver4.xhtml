@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 600, height: 200 };</script>
+			<!-- <com:stylefile path="ktg001.ver4.b.style.css" />
+			<com:scriptfile path="ktg001.ver4.b.vm.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<!-- <div class ="title">
+					<div data-bind="ntsFormLabel: { constraint: 'TitleName', required: true, text: $i18n('KTG001_7')"></div>
+					<input id="title-txt" tabindex="1" data-bind="ntsTextEditor: { value: title, constraint: 'TitleName', required: true }" />
+				</div>
+				<div>
+				<table id="single-list" data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: items,
+						primaryKey: 'code',
+						columns: columns2,
+						deleteOptions : {visible : true, deleteField: 'deletable'},
+						features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
+						multiple: false,
+						value: currentCode }">
+				</table>
+				</div> -->
+			
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
