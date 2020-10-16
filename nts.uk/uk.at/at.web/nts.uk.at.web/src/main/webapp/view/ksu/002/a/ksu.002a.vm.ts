@@ -169,7 +169,7 @@ module nts.uk.ui.at.ksu002.a {
 												const events: string[] = [];
 
 												events.push(`${vm.$i18n('KSU001_4014')}${vm.$i18n('KSU001_4018')}${_.escape(optCompanyEventName)}`);
-												
+
 												exits.data.event(events.join('<br />'));
 											}
 										}
@@ -262,7 +262,7 @@ module nts.uk.ui.at.ksu002.a {
 					 */
 
 					// UI-5: 不正な勤務情報の貼り付けのチェック
-					if (wtype.type === REQUIRED && wtime.code === 'none') {
+					if (wtype.type === REQUIRED && (wtime.code === 'none' || (wtime.code === 'deferred' && !cloned.data.wtime.code))) {
 						vm.$dialog.error({ messageId: 'Msg_1809' });
 					} else {
 						// UI-5: エラーがならない場合は、常に勤務情報を勤務予定セルに反映する。
