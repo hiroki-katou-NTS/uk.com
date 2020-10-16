@@ -39,26 +39,26 @@ public class AppSpecialProvisionMonthWebService extends WebService {
 
     @Path("register-month")
     @POST
-    public void registerMonth(List<RegisterAppSpecialProvisionMonthCommand> commands) {
-        this.registerAppSpecialProvisionMonthCommandHandler.handle(commands);
+    public List<ErrorResultDto> registerMonth(List<RegisterAppSpecialProvisionMonthCommand> commands) {
+        return this.registerAppSpecialProvisionMonthCommandHandler.handle(commands);
     }
 
     @Path("register-year")
     @POST
-    public void registerYear(List<RegisterAppSpecialProvisionYearCommand> commands) {
-        this.registerAppSpecialProvisionYearCommandHandler.handle(commands);
+    public List<ErrorResultDto> registerYear(List<RegisterAppSpecialProvisionYearCommand> commands) {
+        return this.registerAppSpecialProvisionYearCommandHandler.handle(commands);
     }
 
     @Path("apply-month")
     @POST
-    public void applyMonth(List<ApplyAppSpecialProvisionMonthCommand> commands) {
-        this.aplyAppSpecialProvisionMonthCommandHandler.handle(commands);
+    public List<ErrorResultDto> applyMonth(List<ApplyAppSpecialProvisionMonthCommand> commands) {
+        return this.aplyAppSpecialProvisionMonthCommandHandler.handle(commands);
     }
 
     @Path("apply-year")
     @POST
-    public void applyYear(List<ApplyAppSpecialProvisionYearCommand> commands) {
-        this.applyAppSpecialProvisionYearCommandHandler.handle(commands);
+    public List<ErrorResultDto> applyYear(List<ApplyAppSpecialProvisionYearCommand> commands) {
+        return this.applyAppSpecialProvisionYearCommandHandler.handle(commands);
     }
 
     @Path("delete")

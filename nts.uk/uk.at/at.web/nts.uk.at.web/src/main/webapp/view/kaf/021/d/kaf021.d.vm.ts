@@ -3,6 +3,14 @@
 module nts.uk.at.kaf021.d {
     import parseTime = nts.uk.time.parseTime;
 
+    const API = {
+        INIT: 'screen/at/kaf021/init-display',
+        APPROVE_DENIAL_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-approver',
+        APPROVE_DENIAL_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-confirmer',
+        BULK_APPROVE_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-approver',
+        BULK_APPROVE_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-confirmer'
+    };
+
     @bean()
     class ViewModel extends ko.ViewModel {
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(false);
@@ -68,14 +76,14 @@ module nts.uk.at.kaf021.d {
                     {
                         name: 'ApprovalCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId, columnKey, value, rowData) {
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
                             //vm.checkDelete(rowId, value);
                         }
                     },
                     {
                         name: 'DenialCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId, columnKey, value, rowData) {
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
                             //vm.checkDelete(rowId, value);
                         }
                     }

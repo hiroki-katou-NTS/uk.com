@@ -41,11 +41,11 @@ module nts.uk.at.kaf021.a {
                     vm.canNextScreen(vm.empItems.length > 0);
                     vm.appTypeSelected(cache.appType);
                 } else {
-                    vm.getMockData();
+                    // vm.getMockData();
                     vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
                 }
             } else {
-                vm.getMockData();
+                // vm.getMockData();
                 vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
             }
 
@@ -526,6 +526,7 @@ module nts.uk.at.kaf021.a {
                         alarm: 50 * i
                     },
                     year: {
+                        year: 2020,
                         limitTime: 1000 * i,
                         time: 10000 * i,
                         status: common.AgreTimeYearStatusOfMonthly.EXCESS_LIMIT,
@@ -776,6 +777,7 @@ module nts.uk.at.kaf021.a {
         month12Error: any;
         month12Alarm: any;
 
+        year: any;
         yearStr: any;
         yearTime: any;
         yearMaxTime: any;
@@ -924,6 +926,7 @@ module nts.uk.at.kaf021.a {
             this.month12Error = data.month12?.error;
             this.month12Alarm = data.month12?.alarm;
 
+            this.year = data.year?.year;
             this.yearTime = data.year?.time;
             this.yearMaxTime = data.year?.limitTime;
             this.yearTimeStr = parseTime(this.yearTime, true).format();
@@ -1100,6 +1103,10 @@ module nts.uk.at.kaf021.a {
     }
 
     interface IAgreementTimeYear {
+        /**
+         * 年間
+         */
+        year: number;
         /**
          * 限度時間
          */

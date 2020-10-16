@@ -5,8 +5,8 @@ module nts.uk.at.kaf021.c {
 
     const API = {
         INIT: 'screen/at/kaf021/init-display',
-        SEARCH: 'screen/at/kaf021/search',
-        CURRENT_MONTH: 'screen/at/kaf021/get-current-month'
+        APPLY_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/apply-month',
+        APPLY_YEAR: 'at/record/monthly/agreement/monthly-result/special-provision/apply-year'
     };
 
     @bean()
@@ -74,7 +74,7 @@ module nts.uk.at.kaf021.c {
                     {
                         name: 'CheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId, columnKey, value, rowData) {
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
                             //vm.checkDelete(rowId, value);
                         }
                     }

@@ -7,7 +7,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYe
 @Getter
 public class AgreementTimeYearDto {
 
-    public AgreementTimeYearDto(AgreementTimeYear domain) {
+    public AgreementTimeYearDto(int year, AgreementTimeYear domain) {
+        this.year = year;
         AgreementTimeOfYear time = domain.getRecordTime();
         this.limitTime = time.getThreshold().getUpperLimit().v();
         this.time = time.getTargetTime().v();
@@ -15,6 +16,11 @@ public class AgreementTimeYearDto {
         this.error = time.getThreshold().getErAlTime().getError().v();
         this.alarm = time.getThreshold().getErAlTime().getAlarm().v();
     }
+
+    /**
+     * 年間
+     */
+    private int year;
 
     /**
      * 限度時間

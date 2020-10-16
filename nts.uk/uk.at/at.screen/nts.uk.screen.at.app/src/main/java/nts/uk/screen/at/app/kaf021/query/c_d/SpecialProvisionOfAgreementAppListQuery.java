@@ -7,6 +7,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -32,7 +34,7 @@ public class SpecialProvisionOfAgreementAppListQuery {
     @Inject
     private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
     @Inject
-    private SyEmployeeAdapter syEmpAdapter;
+    private IPersonInfoPub personInfoPub;
     @Inject
     private EmployeeInformationRepository employeeInformationRepo;
 
@@ -86,14 +88,14 @@ public class SpecialProvisionOfAgreementAppListQuery {
         applicantsSIDs = applicantsSIDs.stream().distinct().collect(Collectors.toList());
 
         // 入力者の社員情報
-        Map<String, SyEmployeeImport> enteredPersonInfoAll = syEmpAdapter.getPersonInfor(enteredPersonSIDs)
-                .stream().collect(Collectors.toMap(SyEmployeeImport::getEmployeeId, x -> x));
+        Map<String, PersonInfoExport> enteredPersonInfoAll = personInfoPub.listPersonInfor(enteredPersonSIDs)
+                .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
         // 承認者の社員情報
-        Map<String, SyEmployeeImport>  approvalInfoAll = syEmpAdapter.getPersonInfor(approverSIDs)
-                .stream().collect(Collectors.toMap(SyEmployeeImport::getEmployeeId, x -> x));
+        Map<String, PersonInfoExport>  approvalInfoAll = personInfoPub.listPersonInfor(approverSIDs)
+                .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
         // 確認者の社員情報
-        Map<String, SyEmployeeImport>  confirmerInfoAll = syEmpAdapter.getPersonInfor(confirmSIDs)
-                .stream().collect(Collectors.toMap(SyEmployeeImport::getEmployeeId, x -> x));
+        Map<String, PersonInfoExport>  confirmerInfoAll = personInfoPub.listPersonInfor(confirmSIDs)
+                .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
 
         // <<Public>> 社員の情報を取得する
         EmployeeInformationQuery employeeInformationQuery = EmployeeInformationQuery.builder()

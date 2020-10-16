@@ -16,8 +16,8 @@ module nts.uk.at.kaf021.b {
         appType: common.AppTypeEnum = null;
         processingMonth: number;
 
-        yearTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: false });
-        monthTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneMonthTime", { required: false });
+        //yearTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: false });
+        //monthTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneMonthTime", { required: false });
         constructor() {
             super();
             const vm = this;
@@ -82,7 +82,7 @@ module nts.uk.at.kaf021.b {
                     {
                         name: 'CheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId, columnKey, value, rowData) {
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
                             //vm.checkDelete(rowId, value);
                         }
                     }
@@ -199,6 +199,7 @@ module nts.uk.at.kaf021.b {
                     monthError: item["month" + month + "Error"],
                     monthAlarm: item["month" + month + "Alarm"],
 
+                    year: item.year,
                     yearStr: item.yearStr,
                     yearTime: item.yearTime,
                     yearMaxTime: item.yearMaxTime,
@@ -241,7 +242,7 @@ module nts.uk.at.kaf021.b {
                         employeeId: item.employeeId,
                         errorTime: moment.duration(item.newMax).asMinutes(),
                         alarmTime: moment.duration(item.newMax).asMinutes(),
-                        year: 2020, //TODO
+                        year: item.year,
                         reason: item.reason
                     };
                     let screenInfo: ScreenDisplayInfoCommand = {
@@ -274,9 +275,13 @@ module nts.uk.at.kaf021.b {
                     };
                     commandYears.push(commandYear);
                 })
-                vm.$ajax(API.REGISTER_YEAR, commandYears).done((res: any) => {
-                    localStorage.setItem('kaf021b_cache', null);
-                    vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                vm.$ajax(API.REGISTER_YEAR, commandYears).done((empErrors: Array<common.ErrorResultDto>) => {
+                    if (empErrors && !_.isEmpty(empErrors)) {
+                        common.showErrors(empErrors);
+                    } else {
+                        localStorage.setItem('kaf021b_cache', null);
+                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                    }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
                 })
@@ -287,7 +292,7 @@ module nts.uk.at.kaf021.b {
                         employeeId: item.employeeId,
                         errorTime: moment.duration(item.newMax).asMinutes(),
                         alarmTime: moment.duration(item.newMax).asMinutes(),
-                        yearMonth: vm.processingMonth,
+                        yearMonth: vm.getYearMonth(),
                         reason: item.reason
                     };
                     let screenInfo: ScreenDisplayInfoCommand = {
@@ -320,15 +325,17 @@ module nts.uk.at.kaf021.b {
                     };
                     commandMonths.push(commandYear);
                 })
-                vm.$ajax(API.REGISTER_MONTH, commandMonths).done((res: any) => {
-                    localStorage.setItem('kaf021b_cache', null);
-                    vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                vm.$ajax(API.REGISTER_MONTH, commandMonths).done((empErrors: Array<common.ErrorResultDto>) => {
+                    if (empErrors && !_.isEmpty(empErrors)) {
+                        common.showErrors(empErrors);
+                    } else {
+                        localStorage.setItem('kaf021b_cache', null);
+                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                    }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
                 })
             }
-
-           
         }
 
         preScreen() {
@@ -354,6 +361,26 @@ module nts.uk.at.kaf021.b {
             return month;
         }
 
+        getDate(){
+            const vm = this;
+            let date = new Date(formatYearMonth(vm.processingMonth));
+            let month = date.getMonth();
+            if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
+                month = date.getMonth() + 1;
+            }
+            return new Date(date.setMonth(month));
+        }
+
+        getYearMonth() {
+            const vm = this;
+            return Number(moment(vm.getDate()).format("YYYYMM"));
+        }
+
+        getYear() {
+            const vm = this;
+            return Number(moment(vm.getDate()).format("YYYY"));
+        }
+
         getCurrentMaxKey() {
             const vm = this;
             if (vm.isYearMode()) {
@@ -366,7 +393,7 @@ module nts.uk.at.kaf021.b {
         getCurrentMaxHeader() {
             const vm = this;
             if (vm.isYearMode()) {
-                return vm.$i18n("KAF021_67");
+                return vm.$i18n("KAF021_67", [vm.getYear().toString()]);
             } else {
                 let month = vm.getMonth();
                 return vm.$i18n("KAF021_64", [month.toString()])
@@ -392,6 +419,7 @@ module nts.uk.at.kaf021.b {
         monthError: any;
         monthAlarm: any;
 
+        year: any;
         yearStr: any;
         yearTime: any;
         yearMaxTime: any;

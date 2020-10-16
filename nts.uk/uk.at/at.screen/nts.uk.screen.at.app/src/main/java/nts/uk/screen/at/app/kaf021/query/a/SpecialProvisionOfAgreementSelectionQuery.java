@@ -198,7 +198,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             mappingPeriodMonth(result, yearMonthPeriod, agrTimePeriods);
 
             // fill data AgreementTimeOutput
-            mappingYearAndMonthAverage(result, agreementTimeYearAll, agreMaxAverageTimeMultiAll);
+            mappingYearAndMonthAverage(result, startYm.year(), agreementTimeYearAll, agreMaxAverageTimeMultiAll);
 
             // fill data monthsExceeded
             if (monthsExceededAll.containsKey(result.getEmployeeId())) {
@@ -267,6 +267,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
     }
 
     private void mappingYearAndMonthAverage(EmployeeAgreementTimeDto result,
+                                            int year,
                                             Map<String, AgreementTimeYear> agreementTimeYearAll,
                                             Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll) {
         if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
@@ -274,7 +275,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
             if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
                 AgreementTimeYear agreementTimeYear = agreementTimeYearAll.get(result.getEmployeeId());
-                result.setYear(new AgreementTimeYearDto(agreementTimeYear));
+                result.setYear(new AgreementTimeYearDto(year, agreementTimeYear));
             }
             // fill average range month
             if (agreMaxAverageTimeMultiAll.containsKey(result.getEmployeeId())) {

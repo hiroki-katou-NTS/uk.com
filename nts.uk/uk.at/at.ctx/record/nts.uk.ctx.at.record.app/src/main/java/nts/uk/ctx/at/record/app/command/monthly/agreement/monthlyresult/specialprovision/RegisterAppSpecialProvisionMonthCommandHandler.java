@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision;
 
 import lombok.AllArgsConstructor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -43,9 +45,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 36協定特別条項の適用申請の登録を行う（1ヶ月）
@@ -54,7 +58,8 @@ import java.util.Optional;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandler<List<RegisterAppSpecialProvisionMonthCommand>> {
+public class RegisterAppSpecialProvisionMonthCommandHandler
+        extends CommandHandlerWithResult<List<RegisterAppSpecialProvisionMonthCommand>, List<ErrorResultDto>> {
 
     @Inject
     private RecordDomRequireService requireService;
@@ -84,9 +89,11 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
     private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
     @Inject
     private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+    @Inject
+    private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
 
     @Override
-    protected void handle(CommandHandlerContext<List<RegisterAppSpecialProvisionMonthCommand>> context) {
+    protected List<ErrorResultDto> handle(CommandHandlerContext<List<RegisterAppSpecialProvisionMonthCommand>> context) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
@@ -97,10 +104,28 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
                 affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
                 agreementTimeOfEmploymentRepo, agreementTimeCompanyRepo);
         List<RegisterAppSpecialProvisionMonthCommand> commands = context.getCommand();
+        List<ErrorResultDto> errorResults = new ArrayList<>();
         for (RegisterAppSpecialProvisionMonthCommand command : commands) {
-            OneMonthAppCreate.create(require, cid, sid, command.getContent().toMonthlyAppContent(),
+            // 1ヶ月申請を登録する
+            AppCreationResult result = OneMonthAppCreate.create(require, cid, sid, command.getContent().toMonthlyAppContent(),
                     command.getScreenInfo().toScreenDisplayInfo());
+            if (result.getAtomTask().isPresent()){
+                transaction.execute(result.getAtomTask().get());
+            }
+            // get errors
+            List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
+            errorResults.add(new ErrorResultDto(command.getContent().getEmployeeId(),
+                    null, null, errors));
         }
+
+        // 社員IDから個人社員基本情報を取得
+        List<String> employeeIds = errorResults.stream().map(ErrorResultDto::getEmployeeId)
+                .distinct().collect(Collectors.toList());
+        Map<String, PersonEmpBasicInfoDto> empInfo = personEmpBasicInfoAdapter.getPerEmpBasicInfo(employeeIds)
+                .stream().collect(Collectors.toMap(PersonEmpBasicInfoDto::getEmployeeId, c -> c));
+        errorResults.forEach(x -> x.mappingEmpInfo(empInfo));
+
+        return errorResults;
     }
 
 
@@ -130,9 +155,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler extends CommandHandl
         }
 
         @Override
-        public Optional<ApproverItem> getApproverHistoryItem(GeneralDate baseDate) {
-            // return approver36AgrByCompanyRepo.getByCompanyIdAndDate(cid, baseDate);
-            return Optional.empty();
+        public Optional<Approver36AgrByCompany> getApproverHistoryItem(GeneralDate baseDate) {
+            return approver36AgrByCompanyRepo.getByCompanyIdAndDate(companyId, baseDate);
         }
 
         @Override
