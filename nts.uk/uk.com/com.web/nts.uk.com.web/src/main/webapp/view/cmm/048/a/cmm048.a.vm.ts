@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm048.a {
       { id: 'tab-3', title: this.generateTitleTab(this.$i18n('CMM048_94'), 'notification'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
       { id: 'tab-4', title: this.generateTitleTab(this.$i18n('CMM048_95'), 'language'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
     ]);
-    selectedTab: KnockoutObservable<string> = ko.observable('tab-3');
+    selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
 
     //A
     A7_3_Value: KnockoutObservable<string> = ko.observable('');
@@ -58,9 +58,9 @@ module nts.uk.com.view.cmm048.a {
     private generateTitleTab(rsCode: string, icon: string): string {
       return (
         `<span>
-        <img class="tab-icon" src="./resource/`+ icon + `.svg" />
-        <span>`+ rsCode + `</span>
-      </span>`
+            <img class="tab-icon" src="./resource/`+ icon + `.svg" />
+            <span>`+ rsCode + `</span>
+        </span>`
       )
     }
 
@@ -72,9 +72,16 @@ module nts.uk.com.view.cmm048.a {
 
     public addNewAnniversary() {
       const vm = this;
+      vm.$blockui('grayout')
       vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
-      console.log(1)
-      vm.$ajax(API.find).then(data =>  console.log(data));
+      vm.$ajax(API.find).then(data =>  console.log(data))
+      .fail(error => {
+        vm.$blockui('clear')
+        vm.$dialog.error(error);
+      })
+      .always(() => {
+        vm.$blockui('clear');
+      });
     }
 
     public removeAnniversary(anniversary: AnniversaryNotification) {
