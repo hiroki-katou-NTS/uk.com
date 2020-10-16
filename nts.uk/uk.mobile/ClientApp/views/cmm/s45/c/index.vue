@@ -148,6 +148,8 @@
       <app2 v-if="appType==2" v-bind:params="appTransferData" />
       <app3 v-if="appType==3" v-bind:params="appTransferData"/>
       <app4 v-if="appType==4" v-bind:params="appTransferData" />
+      <app70 v-if="appType==7 && appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode==0" v-bind:params="appTransferData" />
+      <app71 v-if="appType==7 && appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode==1" v-bind:params="appTransferData" />
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
