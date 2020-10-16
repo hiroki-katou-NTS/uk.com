@@ -554,8 +554,8 @@ module nts.uk.ui.at.ksu002.a {
                             tabindex: $tabindex
                         },
                         ntsTimeEditor: {
-                            name: 'Duration',
-                            constraint: 'SampleTimeDuration',
+                            name: $component.$i18n('KSU002_28'),
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
@@ -579,8 +579,8 @@ module nts.uk.ui.at.ksu002.a {
                             tabindex: $tabindex
                         },
                         ntsTimeEditor: {
-                            name: 'Duration',
-                            constraint: 'SampleTimeDuration',
+                            name: $component.$i18n('KSU002_29'),
+                            constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
@@ -626,6 +626,7 @@ module nts.uk.ui.at.ksu002.a {
 
             created() {
                 const vm = this;
+                const pt = nts.uk.time.parseTime;
                 const { data, model, text } = vm;
                 const { context, dayData } = data;
                 const cache: { begin: number | null; finish: number | null; } = { begin: null, finish: null };
@@ -659,26 +660,68 @@ module nts.uk.ui.at.ksu002.a {
                     });
 
                     model.begin
-                        .subscribe((c: number) => {
-                            if (_.isNumber(c) && cache.begin !== c && ko.unwrap(value.begin) !== c) {
-                                cache.begin = c;
-                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+                        .subscribe((b: number | null) => {
+                            const f = ko.unwrap(model.finish);
+                            const $begin = $(vm.$el).find('input.begin');
+                            const $finish = $(vm.$el).find('input.finish');
 
-                                clone.data.value.begin = c;
+                            if (_.isNumber(b) && cache.begin !== b && ko.unwrap(value.begin) !== b) {
+                                if (b > f) {
+                                    if (!$begin.ntsError('hasError')) {
+                                        $begin.ntsError('set', { messageId: 'Msg_1811' });
+                                    }
 
-                                context.$change.apply(context.$vm, [clone]);
+                                    if (!$finish.ntsError('hasError')) {
+                                        $finish.ntsError('set', { messageId: 'Msg_1811' });
+                                    }
+
+                                    $.Deferred()
+                                        .resolve(true)
+                                        .then(() => $begin.val(pt(b, true).format()))
+                                        .then(() => $finish.val(pt(f, true).format()));
+                                } else {
+                                    cache.begin = b;
+                                    const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+
+                                    clone.data.value.begin = b;
+
+                                    context.$change.apply(context.$vm, [clone]);
+
+                                    $finish.ntsError('clearByCode', 'Msg_1811');
+                                }
                             }
                         });
 
                     model.finish
-                        .subscribe(c => {
-                            if (_.isNumber(c) && cache.finish !== c && ko.unwrap(value.finish) !== c) {
-                                cache.finish = c;
-                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+                        .subscribe((f: number | null) => {
+                            const b = ko.unwrap(model.begin);
+                            const $begin = $(vm.$el).find('input.begin');
+                            const $finish = $(vm.$el).find('input.finish');
 
-                                clone.data.value.finish = c;
+                            if (_.isNumber(f) && cache.finish !== f && ko.unwrap(value.finish) !== f) {
+                                if (b > f) {
+                                    if (!$begin.ntsError('hasError')) {
+                                        $begin.ntsError('set', { messageId: 'Msg_1811' });
+                                    }
 
-                                context.$change.apply(context.$vm, [clone]);
+                                    if (!$finish.ntsError('hasError')) {
+                                        $finish.ntsError('set', { messageId: 'Msg_1811' });
+                                    }
+
+                                    $.Deferred()
+                                        .resolve(true)
+                                        .then(() => $begin.val(pt(b, true).format()))
+                                        .then(() => $finish.val(pt(f, true).format()));
+                                } else {
+                                    cache.finish = f;
+                                    const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
+
+                                    clone.data.value.finish = f;
+
+                                    context.$change.apply(context.$vm, [clone]);
+
+                                    $begin.ntsError('clearByCode', 'Msg_1811');
+                                }
                             }
                         });
 
