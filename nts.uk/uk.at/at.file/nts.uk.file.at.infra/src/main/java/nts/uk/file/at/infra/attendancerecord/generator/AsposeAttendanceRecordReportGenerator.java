@@ -166,20 +166,31 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	/** The report approval */
 	private String REPORT_APPROVAL = "AB7:AC7";
 	
+	/** The report approval */
 	private static final String APPROVAL = "確認済";
 		
+	/** The report monthly title start row */
 	private static final int MONTHLY_TITLE_START_ROW = 4;
 	
+	/** The report monthly title fix */
 	private String MONTHLY_TITLE_FIX = "C4:Z5";
+	
+	/** The report monthly content fix */
+	private String MONTHLY_CONTENT_FIX = "C6:Z7";
 
+	/** The report monthly cumulative total fix */
 	private String MONTHLY_CUMULATIVE_TOTAL_FIX = "A4:B7";
 	
+	/** The report report cumulative fix */
 	private String REPORT_CUMULATIVE_FIX = "A%d:B%d";
 	
+	/** The report daily title fix left */
 	private String DAILY_TITLE_FIX_LEFT = "A9:T10";
 	
+	/** The report daily title fix right */
 	private String DAILY_TITLE_FIX_RIGHT = "V9:AO10";
 	
+	/** The report daily title start row */
 	private static final int DAILY_TITLE_START_ROW = 9;
 	/*
 	 * (non-Javadoc)
@@ -223,6 +234,14 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			REPORT_APPROVAL = "AF7:AG7";
 			
+			MONTHLY_TITLE_FIX = "C4:AD5";
+			
+			MONTHLY_CONTENT_FIX = "C6:AD7";
+			
+			DAILY_TITLE_FIX_LEFT = "A9:X10";
+			
+			DAILY_TITLE_FIX_RIGHT = "Z9:AS10";
+			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
@@ -251,6 +270,14 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					.asList(new String[] { "BD1", "BB1", "AZ1", "AX1", "AV1", "AT1" });
 			
 			REPORT_APPROVAL = "AJ7:AK7";
+			
+			MONTHLY_TITLE_FIX = "C4:AH5";
+			
+			MONTHLY_CONTENT_FIX = "C6:AH7";
+			
+			DAILY_TITLE_FIX_LEFT = "A9:AB10";
+			
+			DAILY_TITLE_FIX_RIGHT = "AD9:AW10";
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
@@ -414,6 +441,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					(startNewPage + MONTHLY_TITLE_START_ROW), (startNewPage + MONTHLY_TITLE_START_ROW + 1)));
 			monthTitleRange.copyData(fixMonthyHeader);
 			monthTitleRange.copy(fixMonthyHeader);
+			
+			// copy layout content monthly 
+			Range fixMonthyLayoutContent = worksheet.getCells().createRange(MONTHLY_CONTENT_FIX); 
+			monththDataRange.copy(fixMonthyLayoutContent);
 			
 			// copy lai KWR002_221 月間累計
 			Range fixCumulativeTotal = worksheet.getCells().createRange(MONTHLY_CUMULATIVE_TOTAL_FIX);
@@ -600,8 +631,4 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		style.getFont().setBold(true);
 		cell.setStyle(style);
 	}
-	
-//	private void setBorderThin(Range range, ) {
-//		
-//	}
 }
