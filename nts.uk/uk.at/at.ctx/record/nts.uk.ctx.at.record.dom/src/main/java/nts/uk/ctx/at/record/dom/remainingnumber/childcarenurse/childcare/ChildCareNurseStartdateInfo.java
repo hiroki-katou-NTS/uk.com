@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
+import lombok.Getter;
 
 /**
  * 起算日から子の看護介護休暇情報
  * @author yuri_tamakoshi
  */
+@Getter
 public class ChildCareNurseStartdateInfo {
 	/** 起算日からの子の看護介護休暇使用数 */
 	private ChildCareNurseUsedNumber usedDays;
@@ -28,7 +30,7 @@ public class ChildCareNurseStartdateInfo {
 	 * @param limitDays 子の看護介護休暇上限日数
 	 * @return 起算日から子の看護介護休暇情報
 	 */
-	public ChildCareNurseStartdateInfo of (
+	public static ChildCareNurseStartdateInfo of (
 			ChildCareNurseUsedNumber usedDays,
 			ChildCareNurseRemainingNumber remainingNumber,
 			ChildCareNurseUpperLimit limitDays) {

@@ -66,7 +66,6 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	public ChildCareNurseUsedNumber toDomain() {
 		return ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDays),
 																	Optional.ofNullable(usedMinutes == null ? null : new TimeOfUse(usedMinutes)));
-//																	Optional.ofNullable(usedMinutes == null ? null : new Integer(usedMinutes)));
 	}
 
 	/**
@@ -75,8 +74,6 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	 */
 	public void fromDomainForPersist(String employeeId, ChildCareNurseUsedNumber domain) {
 
-		//this.pk = new KrcdtHdnursingUsePK(employeeId, 1);
-		//this.pk = new KrcdtHdnursingUsePK(employeeId, NursingCategory.Nursing.value);
 		this.pk = new KrcdtHdnursingUsePK();
 		this.fromDomainForUpdate(employeeId, domain);
 	}
