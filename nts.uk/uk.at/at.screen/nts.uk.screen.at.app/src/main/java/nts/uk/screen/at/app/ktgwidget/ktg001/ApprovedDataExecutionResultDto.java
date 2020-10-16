@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ktgwidget.find.dto;
+package nts.uk.screen.at.app.ktgwidget.ktg001;
 
 import java.util.List;
 
@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
 
 /**
+ * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.アルゴリズム.承認すべきデータのウィジェットを起動する.承認すべきデータの実行結果
  * 
  * @author tutt
  *
