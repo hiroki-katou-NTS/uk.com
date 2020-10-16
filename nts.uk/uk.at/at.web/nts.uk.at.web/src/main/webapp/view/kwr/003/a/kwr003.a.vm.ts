@@ -34,8 +34,8 @@ module nts.uk.at.view.kwr003.a {
     isMultiSelect: KnockoutObservable<boolean>;
     isShowWorkPlaceName: KnockoutObservable<boolean>;
     isShowSelectAllButton: KnockoutObservable<boolean>;
-    disableSelection : KnockoutObservable<boolean>;
-    
+    disableSelection: KnockoutObservable<boolean>;
+
     employeeList: KnockoutObservableArray<common.UnitModel>;
     baseDate: KnockoutObservable<Date>;
     // end KCP005
@@ -132,7 +132,7 @@ module nts.uk.at.view.kwr003.a {
       vm.isShowWorkPlaceName = ko.observable(true);
       vm.isShowSelectAllButton = ko.observable(true);
       //vm.disableSelection = ko.observable(false);
-      vm.employeeList = ko.observableArray<common.UnitModel>([]);  
+      vm.employeeList = ko.observableArray<common.UnitModel>([]);
 
       vm.listComponentOption = {
         isShowAlreadySet: vm.isShowAlreadySet(),
@@ -153,30 +153,42 @@ module nts.uk.at.view.kwr003.a {
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)
     }
-    
+
     /**
      *  get employees from CCG001
      */
 
-    getListEmployees( data: common.Ccg001ReturnedData) {
+    getListEmployees(data: common.Ccg001ReturnedData) {
       let vm = this,
-          employeeSearchs: Array<common.UnitModel> = [];
+        employeeSearchs: Array<common.UnitModel> = [];
 
-      _.forEach(data.listEmployee, function(value : any) {
-          var employee: common.UnitModel = {
-              id: value.employeeId,
-              code: value.employeeCode,
-              name: value.employeeName,
-              affiliationName: value.affiliationName
-          };
-          employeeSearchs.push(employee);    
+      _.forEach(data.listEmployee, function (value: any) {
+        var employee: common.UnitModel = {
+          id: value.employeeId,
+          code: value.employeeCode,
+          name: value.employeeName,
+          affiliationName: value.affiliationName
+        };
+        employeeSearchs.push(employee);
       });
 
       vm.employeeList(employeeSearchs);
     }
 
-    showDialogScreenB() {
+    /**
+     * Duplicate Setting
+     * */
 
+    showDialogScreenB() {
+      let vm = this;
+
+      let params = {}
+
+      vm.$window.storage('KWR003_B13', ko.toJS(params)).then(() => {
+        vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
+        });
+      });
     }
+
   }
 }

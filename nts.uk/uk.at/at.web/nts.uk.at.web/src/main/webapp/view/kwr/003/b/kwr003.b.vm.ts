@@ -163,6 +163,9 @@ module nts.uk.at.view.kwr003.b {
       _.orderBy(vm.settingListItemsDetails(), ['id', 'name'], ['asc', 'asc']);
     }
 
+    /**
+     *
+    */
     creatDefaultSettingDetails() {
       let vm = this;
       //clear
@@ -172,6 +175,8 @@ module nts.uk.at.view.kwr003.b {
         vm.addRowItem(newIitem);
       }
     }
+
+
     getSettingListForPrint(code: string) {
       let vm = this;
       if (!_.isNil(code)) {
