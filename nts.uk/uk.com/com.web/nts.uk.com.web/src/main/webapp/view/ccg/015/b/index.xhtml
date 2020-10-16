@@ -5,189 +5,122 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 850, height: 650 };</script>
-			<com:stylefile path="ccg015.b.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="ccg015.b.start.js" />
-			<com:scriptfile path="ccg015.b.service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
+      </com:ValidatorScript>
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="ccg015.b.style.css" />
+      <com:scriptfile path="ccg015.b.service.js" />
 			<com:scriptfile path="ccg015.b.vm.js" />
 		</ui:define>
+
 		<ui:define name="content">
-			<div id="contents-area">
-				<div data-bind="with: myPageSettingModel" id="contents-left">
-					<div>#{i18n.getText('CCG015_21')}</div>
-					<BR />
-					<div class="float_left" id="lbl_code_name"
-						data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_20')}<br /></label>
-					</div>
-					<div tabindex="1" class="padding_top_3 cf float_left"
-						data-bind="ntsSwitchButton: {
-						options: $parent.useDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: useMyPage,
-						enable: true }"></div>
-					<BR />
-					<BR />
-					<BR />
-					<div>
-						<div tabindex="2" id="tab-panel" class="cf"
-							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
-							<div id="standar_widget">
-								<com:ko tag="template"
-									bind="{name: 'standar-template', data: topPagePartSettingItems()[0]}"></com:ko>
-							</div>
-							<div id="optional_widget">
-								<com:ko tag="template"
-									bind="{name: 'optional-template', data: topPagePartSettingItems()[1]}"></com:ko>
-							</div>
-							<div id="dash_board">
-								<com:ko tag="template"
-									bind="{name: 'dashboard-template', data: topPagePartSettingItems()[2]}"></com:ko>
-							</div>
-							<div id="flow_menu">
-								<com:ko tag="template"
-									bind="{name: 'flow-template', data: topPagePartSettingItems()[3]}"></com:ko>
-							</div>
-							<div id="url">
-								<com:ko tag="template"
-									bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[4]}"></com:ko>
-							</div>
-						</div>
-					</div>
+			<div id="functions-area" class="divHeader">
+				<div class="float_left">
+          <!-- B1_1 -->
+          <a class="goback" id="B1_1" data-bind="ntsLinkButton: { jump: '/view/ccg/015/a/index.xhtml' }">#{i18n.getText('CCG015_56')}</a>
+          <!-- B1_2 -->
+          <button tabindex="5" data-bind="click: newTopPage" id="btn_new" class="btnStyle">#{i18n.getText('CCG015_4')}</button>
+          <!-- B1_3 -->
+          <button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty" class="proceed btnStyle" id="btn_save">#{i18n.getText('CCG015_5')}</button>
+          <!-- B1_4 -->
+					<button tabindex="7" data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing" class="btnStyle">#{i18n.getText('CCG015_6')}</button>
+          <!-- B1_5 -->
+					<button tabindex="10" data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle" id="btn_delete">#{i18n.getText('CCG015_7')}</button>
 				</div>
 			</div>
-			<div id="functions-area-bottom">
-				<span>
-					<button data-bind="click : updateMyPageSetting"
-						class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
-				</span> <span class="padding_left_20"><button
-						onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button></span>
+			<div id="contents-area" data-bind="visible: true" style="display: none">
+				<table style="margin: 20px 0px 0px 20px">
+					<tr>
+						<td id="contents-left">
+							<div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+								<div id="box_search" tabindex="12"
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
+									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+								<table id="single-list"
+									data-bind="ntsGridList: {
+										height: 340,
+										options: listTopPage,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: false,
+										value: toppageSelectedCode
+									}"></table>
+							</div>
+						</td>
+						<td id="contents-right">
+							<table id="tableRight">
+								<tr data-bind="with: topPageModel">
+									<td class="contentsRL">
+										<div id="lbl_code_name"
+											data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
+											<label>#{i18n.getText('CCG015_13')}<br /></label>
+										</div>
+									</td>
+									<td class="contentsRR pad_left_20"><input tabindex="2" id="inp_code"
+										class="nts-input tr40 save-error"
+										data-bind="ntsTextEditor: {
+											name: '#[CCG015_42]',
+											value: topPageCode,
+											enable: $parent.isNewMode(),
+											required:true,
+											constraint: 'TopPageCode'}" />
+									</td>
+									<td class = "pad_left_20"><input tabindex="3" id="inp_name"
+										class="nts-input save-error"
+										data-bind="ntsTextEditor: {
+											name: '#[CCG015_43]',
+											value: topPageName,
+											enable: true,
+											required: true,
+											constraint: 'TopPageName'}" />
+									</td>
+                </tr>
+                <tr class="mt-20">
+                  <td>
+                    <!-- B5_1 -->
+                    <div id="B5_1"
+											data-bind="ntsFormLabel: {required: true}">
+											<label>#{i18n.getText('CCG015_57')}<br /></label>
+										</div>
+                  </td>
+                  <td>
+                    <!-- <div data-bind="ntsRadioBoxGroup: {
+                      options: itemList,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: selectedId,
+                      enable: true}"></div> -->
+                      <div class="cell" tabIndex = "-1"
+                        data-bind="ntsRadioButton: {
+                        option: itemList()[0],
+                        optionValue: 'code',
+                        optionText: 'name',
+                        checked: selectedId,
+                        group: 'enumOption'}">
+                      </div>
+                      <span>Huycv</span>
+                      <div class="cell" tabIndex = "-1"
+                        data-bind="ntsRadioButton: {
+                        option: itemList()[1],
+                        optionValue: 'code',
+                        optionText: 'name', 
+                        checked: selectedId,
+                        group: 'enumOption'}">
+                      </div>
+                      <!-- <div data-bind="ntsRadioButton: {checked: 1,  option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}">
+                        <span class="box"></span><span class="label" data-bind="text: text"></span>
+                      </div> -->
+                  </td>
+                </tr>
+							</table>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<script type="text/html" id="standar-template">
-					<div class="float_left" id="standar_widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_28')}<br /></label>
-					</div>
-					<div tabindex ="3" class="padding_top_3 cf switch_btn_style"
-						data-bind="ntsSwitchButton: {
-						options: $parents[1].useDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: usePart,
-						enable: true }"></div>
-					<div>
-						<table tabindex ="4" id="standarWidget-list" data-bind="ntsGridList: {	
-								showNumbering: false,							
-								height: 350,
-								dataSource: settingItems,
-								primaryKey: 'itemCode',
-								columns: $parents[1].columns,
-								multiple: false,
-								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
-								value: $parents[1].currentCode
-							}"
-							class="cf"></table>
-					</div>
-			
-			</script>
-			
-			<script type="text/html" id="optional-template">
-					<div class="float_left" id="optional_widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_28')}<br /></label>
-					</div>
-					<div tabindex ="3" class="padding_top_3 cf switch_btn_style"
-						data-bind="ntsSwitchButton: {
-						options: $parents[1].useDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: usePart,
-						enable: true }"></div>
-					<div>
-						<table tabindex ="4" id="optionalWidget-list" data-bind="ntsGridList: {	
-								showNumbering: false,							
-								height: 350,
-								dataSource: settingItems,
-								primaryKey: 'itemCode',
-								columns: $parents[1].columns,
-								multiple: false,
-								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
-								value: $parents[1].currentCode
-							}"
-							class="cf"></table>
-					</div>
-			
-			</script>
-
-			<script type="text/html" id="dashboard-template">
-					<div class = "float_left" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_28')}<br /></label>
-					</div>
-					<div tabindex ="5" class="padding_top_3 cf switch_btn_style"
-						data-bind="ntsSwitchButton: {
-						options: $parents[1].useDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: usePart,
-						enable: true }"></div>
-					<div>
-						<table tabindex ="6" id="dashboard-list" data-bind="ntsGridList: {	
-								showNumbering: false,							
-								height: 350,
-								dataSource: settingItems,
-								primaryKey: 'itemCode',
-								columns: $parents[1].columns,
-								multiple: false,
-								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
-								value: $parents[1].currentCode
-							}"
-							class="cf"></table>
-					</div>
-			
-			</script>
-
-			<script type="text/html" id="flow-template">
-					<div class = "float_left" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_28')}<br /></label>
-					</div>
-					<div tabindex ="7" class="padding_top_3 cf switch_btn_style"
-						data-bind="ntsSwitchButton: {
-						options: $parents[1].useDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: usePart,
-						enable: true }"></div>
-					<div>
-						<table tabindex ="8" id="flow-list" data-bind="ntsGridList: {	
-								showNumbering: false,							
-								height: 350,
-								dataSource: settingItems,
-								primaryKey: 'itemCode',
-								columns: $parents[1].columns,
-								multiple: false,
-								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
-								value: $parents[1].currentCode
-							}"
-							class="cf"></table>
-					</div>
-			
-			</script>
-
-			<script type="text/html" id="tab-URL-template">
-					<div class = "float_left" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>#{i18n.getText('CCG015_32')}<br /></label>
-					</div>
-					<div class="padding_top_3 cf switch_btn_style"
-						data-bind="ntsSwitchButton: {
-						options: $parents[1].permissionDivisionOptions,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: usePart,
-						enable: true }"></div>
-			</script>
-
 		</ui:define>
 	</ui:composition>
 </body>
