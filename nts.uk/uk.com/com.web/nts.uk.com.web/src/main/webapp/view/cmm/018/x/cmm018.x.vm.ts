@@ -34,9 +34,24 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 		}
 		jumpToCmm013H() {	
 			const self = this;
-			self.$jump('/view/cmm/013/h/index.xhtml', {
-            
-        	});
+			self.$window
+				.modal('com', '/view/cmm/013/h/index.xhtml', {})
+				.then((result: any) => {
+					// bussiness logic after modal closed
+					// location.reload();
+				});
+		}
+		openDialogM() {
+			const self = this;
+			let param = {
+				sysAtr: ko.toJS(self.systemAtr)
+			}
+			
+			self.$window.storage('CMM018M_PARAM', param)
+			.then(() => self.$window .modal('com', '/view/cmm/018/m/index.xhtml'))
+			.then((result: any) => {
+				// bussiness logic after modal closed
+			});
 		}
 		
 	}

@@ -652,6 +652,8 @@ module nts.uk.com.view.cmm018.a {
                 });
                 return dfd.promise();
             }
+			// Refactor5 利用している申請承認ルート
+			// UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.承認設定.アルゴリズム.利用している申請承認ルート
             getAppDis(transferData): JQueryPromise<any>{
                 let dfd = $.Deferred();
                 let self = this;
@@ -2054,10 +2056,10 @@ module nts.uk.com.view.cmm018.a {
             /**
              * open dialog M: マスタリスト
              */
-            openDialogM(){
-                setShared('CMM018M_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
-                modal("/view/cmm/018/m/index.xhtml");
-            }
+            // openDialogM(){
+               // setShared('CMM018M_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
+               // modal("/view/cmm/018/m/index.xhtml");
+            //}
             /**
              * open dialog N: 承認者一覧
              */
