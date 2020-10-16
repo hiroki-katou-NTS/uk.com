@@ -17,9 +17,6 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRp
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSetting;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSettingPk;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispCont;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecItem;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSetting;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSettingPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -58,7 +55,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_FREE_SETTING_ITEM = builderString.toString();
-        
+
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
