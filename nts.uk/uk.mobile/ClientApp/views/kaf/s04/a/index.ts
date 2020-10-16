@@ -20,6 +20,7 @@ import {
     IResDetail,
     IParamS00C,
     IParamS00B,
+    IResAppDate,
 } from './define';
 
 @component({
@@ -204,10 +205,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         let schedTime = vm.res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
                         schedTime.forEach((item) => {
                             if (item.opAchievementDetail != null) {
-                                vm.kafS00P1Params1.scheduleTime  = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                                vm.kafS00P1Params2.scheduleTime  = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                                vm.kafS00P1Params3.scheduleTime  = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                                vm.kafS00P1Params4.scheduleTime  = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                                vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                                vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                                vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                                vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
                             }
                         });
                     }
@@ -677,22 +678,29 @@ export class KafS04AComponent extends KafS00ShrComponent {
             setting: vm.infoOutPut.lateEarlyCancelAppSet
         };
         if (paramsDate.startDate) {
-            vm.$http.post('at', API.changeAppDate, params).then((res: any) => {
-                const { data } = res;
-                const { appDispInfoWithDateOutput } = data;
-                const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
+            vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
 
-                opActualContentDisplayLst.forEach((i) => {
+                response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                    if (item.opAchievementDetail) {
+                        vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                        vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                        vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                        vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                    } else {
+                        vm.kafS00P1Params1.scheduleTime = null;
+                        vm.kafS00P1Params2.scheduleTime = null;
+                        vm.kafS00P1Params3.scheduleTime = null;
+                        vm.kafS00P1Params4.scheduleTime = null;
+                    }
+                });
+
+                response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
                     if (i.opAchievementDetail) {
                         if (i.opAchievementDetail.opWorkTime != null && i.opAchievementDetail.opLeaveTime != null) {
                             vm.time.attendanceTime = i.opAchievementDetail.opWorkTime;
                             vm.time.leaveTime = i.opAchievementDetail.opLeaveTime;
                             vm.time.attendanceTime2 = i.opAchievementDetail.opWorkTime2;
                             vm.time.leaveTime2 = i.opAchievementDetail.opDepartureTime2;
-                            vm.kafS00P1Params1.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                            vm.kafS00P1Params2.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                            vm.kafS00P1Params3.scheduleTime = i.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                            vm.kafS00P1Params4.scheduleTime = i.opAchievementDetail.achievementEarly.scheDepartureTime2;
                             vm.check.cbCancelLate.isDisable = false;
                             vm.check.cbCancelEarlyLeave.isDisable = false;
                         }

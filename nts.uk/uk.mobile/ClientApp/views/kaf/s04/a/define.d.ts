@@ -240,26 +240,7 @@ export interface IAppDispInfoStartupOutput {
         opAdvanceReceptionDate: null,
         opEmployeeInfo: null
     };
-    appDispInfoWithDateOutput: {
-        approvalFunctionSet: {
-            appUseSetLst: IAppUseSetLst[]
-        },
-        prePostAtr: 0 | 1;
-        baseDate: string;
-        empHistImport: IEmpHistImport;
-        appDeadlineUseCategory: number | null;
-        opEmploymentSet: {
-            companyID: string;
-            employmentCD: string;
-            targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[];
-        },
-        opListApprovalPhaseState: IOpListApprovalPhaseState[];
-        opErrorFlag: number | null;
-        opActualContentDisplayLst: IOpActualContentDisplayLst[];
-        opPreAppContentDispDtoLst: null;
-        opAppDeadline: string;
-        opWorkTimeLst: IOpWorkTimeLst[];
-    };
+    appDispInfoWithDateOutput: IAppDispInfoWithDateOutput;
     appDetailScreenInfo: {
         application: {
             version: number | null;
@@ -434,5 +415,34 @@ export interface IResDetail {
     lateEarlyCancelAppSet: {
         cancelAtr: number | null;
         companyId: string;
+    }
+}
+
+export interface IAppDispInfoWithDateOutput {
+    approvalFunctionSet: {
+        appUseSetLst: IAppUseSetLst[]
+    },
+    prePostAtr: 0 | 1;
+    baseDate: string;
+    empHistImport: IEmpHistImport;
+    appDeadlineUseCategory: number | null;
+    opEmploymentSet: {
+        companyID: string;
+        employmentCD: string;
+        targetWorkTypeByAppLst: ITargetWorkTypeByAppLst[];
+    },
+    opListApprovalPhaseState: IOpListApprovalPhaseState[];
+    opErrorFlag: number | null;
+    opActualContentDisplayLst: IOpActualContentDisplayLst[];
+    opPreAppContentDispDtoLst: null;
+    opAppDeadline: string;
+    opWorkTimeLst: IOpWorkTimeLst[];
+}
+
+export interface IResAppDate {
+    data: {
+        appDispInfoWithDateOutput: IAppDispInfoWithDateOutput;
+        errorInfo: string;
+        lateOrEarlyInfoLst: ILateOrLeaveEarlies;
     }
 }
