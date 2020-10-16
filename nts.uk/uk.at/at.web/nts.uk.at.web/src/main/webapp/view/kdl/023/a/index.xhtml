@@ -32,7 +32,7 @@
                 <!--A4_2-->
                 <div  tabindex="14" class="exec-mode" data-bind="ntsCheckBox: { checked: isOverWrite, style: 'warnpanel' }">#{i18n.getText('KDL023_37')}</div><br/>
                 <!--A4_3-->
-                <button tabindex="15" id="btnDecide" class="large proceed exec-mode" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
+                <button tabindex="15" id="btnDecide" class="large proceed exec-mode" data-bind="click: decide, enable: $root.errors.isEmpty">#{i18n.getText('KDL023_38')}</button>
                 <!--A4_4-->
                 <button tabindex="16" id="btnCancel" class="medium exec-mode" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
             </com:ko-if>

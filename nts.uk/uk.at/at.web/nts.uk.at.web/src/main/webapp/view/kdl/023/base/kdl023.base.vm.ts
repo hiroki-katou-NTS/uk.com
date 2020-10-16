@@ -1,6 +1,5 @@
 module nts.uk.at.view.kdl023.base.viewmodel {
 
-    import WorkDayDivision = service.model.WorkDayDivision;
     import WeeklyWorkSetting = service.model.WeeklyWorkSetting;
     import PublicHoliday = service.model.PublicHoliday;
     import ReflectionMethod = service.model.ReflectionMethod;
@@ -21,7 +20,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM',
-        MOMENT_DATE_FORMAT: 'YYYY-MM-DD'
+        MOMENT_DATE_FORMAT: 'YYYY-MM-DD',
+		DEFAULT_REF_ORDER:[WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY]
     };
 
     export abstract class BaseScreenModel extends ko.ViewModel{
@@ -185,11 +185,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 							vm.reflectionSetting().holidaySetting.useClassification(false);
 							vm.workCycleEnable1(true);
 							$('#kdl023-holiday-warning-label').hide();
+							$('#kdl023-holiday-warning-label-replace').show();
 						} else {
 							vm.workCycleEnable1(false);
 							vm.workCycleEnable2(false);
 							vm.workCycleEnable3(false);
 							$('#kdl023-holiday-warning-label').show();
+							$('#kdl023-holiday-warning-label-replace').hide();
 							vm.reflectionSetting().statutorySetting.useClassification(true);
 							vm.reflectionSetting().nonStatutorySetting.useClassification(true);
 							vm.reflectionSetting().holidaySetting.useClassification(true);
@@ -328,8 +330,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     }
 
 					let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
-					if(holidayListsErrors.length > 0){
-						nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
+					if(holidayListsErrors > 0){
 						vm.$blockui('clear');
 						dfd.fail();
 					}
@@ -412,35 +413,39 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.onBtnApplySetting(vm.slideDays());
         }
 
-		private checkEmptyFor3HolidayLists(): any {
+		private checkEmptyFor3HolidayLists(): number {
 			let vm = this;
 
-			let holidayListsErrors = [];
+			$('#cbb-work-type-statutory').removeClass('error').ntsError('clear');
+			$('#cbb-work-type-non-statutory').removeClass('error').ntsError('clear');
+			$('#cbb-work-type-holiday').removeClass('error').ntsError('clear');
+
+			let errorCount:number = 0;
 			if (vm.listSatHoliday().length == 0 && vm.reflectionSetting().statutorySetting.useClassification()){
-				holidayListsErrors.push({
-					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_6')]),
+				$('#cbb-work-type-statutory').addClass('error').ntsError('set', {
 					messageId: "MsgB_2",
-					supplements: {}
+					messageParams: [vm.$i18n('KDL023_6')]
 				});
+				errorCount++;
 			}
 
 			if (vm.listNonSatHoliday().length == 0 && vm.reflectionSetting().nonStatutorySetting.useClassification()){
-				holidayListsErrors.push({
-					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_7')]),
+				$('#cbb-work-type-non-statutory').addClass('error').ntsError('set', {
 					messageId: "MsgB_2",
-					supplements: {}
+					messageParams: [vm.$i18n('KDL023_7')]
 				});
+				errorCount++;
 			};
 
 			if (vm.listPubHoliday().length == 0 && vm.reflectionSetting().holidaySetting.useClassification()) {
-				holidayListsErrors.push({
-					message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_8')]),
+				$('#cbb-work-type-holiday').addClass('error').ntsError('set', {
 					messageId: "MsgB_2",
-					supplements: {}
+					messageParams: [vm.$i18n('KDL023_8')]
 				});
+				errorCount++;
 			}
 
-			return holidayListsErrors;
+			return errorCount;
 		}
 
         public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
@@ -450,15 +455,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			let dfd = $.Deferred();
 
 			let holidayListsErrors = vm.checkEmptyFor3HolidayLists();
-			if(holidayListsErrors.length > 0){
-				nts.uk.ui.dialog.bundledErrors({ errors: holidayListsErrors });
-				vm.$blockui('clear');
-				dfd.fail();
-
-				return dfd.promise();
-			}
-
-			if(nts.uk.ui.errors.hasError()) {
+			if(holidayListsErrors > 0){
 				vm.$blockui('clear');
 				dfd.fail();
 
@@ -480,43 +477,42 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
             }
 
-            let focusElementId = '#cbb-reflection-order-1';
+            let errorElementId = '#cbb-reflection-order-1';
+			$('#cbb-reflection-order-1').removeClass('error').ntsError('clear');
+			$('#cbb-reflection-order-2').removeClass('error').ntsError('clear');
+			$('#cbb-reflection-order-3').removeClass('error').ntsError('clear');
             if(vm.reflectionMethod() === 2){
                 if(vm.reflectionOrder1() != WorkCreateMethod.NON){
                     refOrder.push(vm.reflectionOrder1());
-					focusElementId = '#cbb-reflection-order-2';
+					errorElementId = '#cbb-reflection-order-2';
                     if(vm.reflectionOrder2() != WorkCreateMethod.NON){
                         refOrder.push(vm.reflectionOrder2());
-						focusElementId = '#cbb-reflection-order-3';
+						errorElementId = '#cbb-reflection-order-3';
                         if(vm.reflectionOrder3() != WorkCreateMethod.NON){
                             refOrder.push(vm.reflectionOrder3());
                         }
                     }
                 }
-            } else if(vm.reflectionMethod() === 0){
-                refOrder = [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK];
-            } else {
-                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE];
-            }
 
-            if(refOrder.length < 3){
-				nts.uk.ui.dialog.bundledErrors({
-					errors: [{
-						message: nts.uk.resource.getMessage('MsgB_2', [vm.$i18n('KDL023_3')]),
+				if (refOrder.length < 3) {
+					$(errorElementId).addClass('error').ntsError('set', {
 						messageId: "MsgB_2",
-						supplements: {}
-					}]
-				}).then(() => {
-					$(focusElementId).focus();
-				});
-                vm.$blockui('clear');
-				dfd.fail();
+						messageParams: [vm.$i18n('KDL023_3')]
+					});
 
-                return dfd.promise();
+					vm.$blockui('clear');
+					dfd.fail();
+
+					return dfd.promise();
+				}
+            } else if(vm.reflectionMethod() === 0){
+                refOrder = CONST.DEFAULT_REF_ORDER;
+            } else {
+                refOrder = [WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE];
             }
 
-            let perStart	: number = vm.yearMonthPicked();
-			let perEnd	: number = vm.yearMonthPicked();
+            let perStart : number = vm.yearMonthPicked();
+			let perEnd : number = vm.yearMonthPicked();
 			if (vm.isExecMode()) {
 				perStart	= vm.dateValue().startDate;
 				perEnd	= vm.dateValue().endDate;
@@ -543,7 +539,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			// Set pattern's range
 			vm.setPatternRange().done(() => {
-				$('#component-calendar-kcp006').focus(); // Set focus control
 			});
 
 			dfd.resolve();
@@ -649,6 +644,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     self.listSatHoliday(list.satHoliday);
                     self.listNonSatHoliday(list.nonSatHoliday);
                     self.isExecMode(param.bootMode === 1);
+
+					let holidayListsErrors = self.checkEmptyFor3HolidayLists();
+					if(holidayListsErrors > 0){
+						self.$blockui('clear');
+						dfd.fail();
+
+						return dfd.promise();
+					}
+
                     self.refImageEachDayDto(list.reflectionImage);
                     if(param.bootMode === 1){
                         $('#daterangepicker').focus();
@@ -815,7 +819,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 creationPeriodStartDate : defaultStartDate,
                 creationPeriodEndDate : defaultEndDate,
                 workCycleCode : self.shared.selectedPatternCd,
-                refOrder : [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK],
+                refOrder : CONST.DEFAULT_REF_ORDER,
                 numOfSlideDays : 0
             }
         }
@@ -829,13 +833,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.optionDates(temp);
             let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
             if(self.isExecMode()){
-                //self.reflectionSetting.monthlyPatternCode('001');
                 data.forEach( (item) => {
                     workMonthlySettingTemp.push(self.setMonthlySetting(item));}
                 );
                 self.workMonthlySetting(workMonthlySettingTemp);
             }
         }
+
         private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
         	const vm = this;
 
@@ -851,17 +855,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             let workTypeStr:string = '';
 			let workTimeStr:string = '';
-            if (refImage.workInformation.workTypeName) {
-				workTypeStr = refImage.workInformation.workTypeName;
-			} else {
-				workTypeStr = refImage.workInformation.workTypeCode + ' ' + vm.$i18n('KDL023_41');
-				textColor = '#000000';
+			if (refImage.workInformation.workTypeCode) {
+				if (refImage.workInformation.workTypeName) {
+					workTypeStr = refImage.workInformation.workTypeName;
+				} else {
+					workTypeStr = refImage.workInformation.workTypeCode + ' ' + vm.$i18n('KDL023_41');
+					textColor = '#000000';
+				}
 			}
 
-			if (refImage.workInformation.workTimeName) {
-				workTimeStr = refImage.workInformation.workTimeName;
-			} else {
-				workTimeStr = refImage.workInformation.workTimeCode + ' ' + vm.$i18n('KDL023_41');
+			if (refImage.workInformation.workTimeCode) {
+				if (refImage.workInformation.workTimeName) {
+					workTimeStr = refImage.workInformation.workTimeName;
+				} else {
+					workTimeStr = refImage.workInformation.workTimeCode + ' ' + vm.$i18n('KDL023_41');
+				}
 			}
 
             let backgroundColor = 'white';

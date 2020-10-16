@@ -129,3 +129,8 @@
 #functions-area-bottom {
 	position: fixed !important;
 }
+
+#kdl023-holiday-warning-label-replace {
+	display: none;
+	height: 38px;
+}
