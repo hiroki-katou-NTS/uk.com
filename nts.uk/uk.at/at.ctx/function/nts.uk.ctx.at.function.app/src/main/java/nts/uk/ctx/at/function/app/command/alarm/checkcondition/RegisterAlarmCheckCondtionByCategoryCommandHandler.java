@@ -19,6 +19,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCondOtCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppApprovalFixedExtractConditionDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
 import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
@@ -160,8 +161,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				String appAlarmId = IdentifierUtil.randomUniqueId();
 				extractionCondition = command.getApprovalAlarmCheckConDto() == null ? null
 						: new AppApprovalAlarmCheckCondition(appAlarmId);
-				for (AppFixedConditionWorkRecordDto dto : command.getApprovalAlarmCheckConDto()
-						.getListAppFixedConditionWorkRecordDto()) {
+				for (AppApprovalFixedExtractConditionDto dto : command.getApprovalAlarmCheckConDto()
+						.getListFixedExtractConditionWorkRecord()) {
 					if (dto.getAppAlarmConId() == null || dto.getAppAlarmConId().equals("")) {
 						dto.setAppAlarmConId(dto.getAppAlarmConId());
 						this.appApprovalFixedExtractConditionRepository
@@ -472,8 +473,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				String appAlarmId = IdentifierUtil.randomUniqueId();
 				extractionCondition = command.getApprovalAlarmCheckConDto() == null ? null
 						: new AppApprovalAlarmCheckCondition(appAlarmId);
-				for (AppFixedConditionWorkRecordDto dto : command.getApprovalAlarmCheckConDto()
-						.getListAppFixedConditionWorkRecordDto()) {
+				for (AppApprovalFixedExtractConditionDto dto : command.getApprovalAlarmCheckConDto()
+						.getListFixedExtractConditionWorkRecord()) {
 					dto.setAppAlarmConId(appAlarmId);
 					appApprovalFixedExtractConditionRepository
 							.add(new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(), dto.getNo(),

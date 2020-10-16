@@ -51,8 +51,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
 
-        // tabAppFixCondition: tab.ApprovalFixedCheckConditionTab;
-
         constructor() {
             var self = this;
 
@@ -179,7 +177,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL) {
-                service.getAllFixedConData().done((data: Array<any>) => {
+                service.getAllFixedApprovalItem().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.ApprovalFixedConditionWorkRecord> = _.map(data, acc => {
                             return new model.ApprovalFixedConditionWorkRecord({ appAlarmConId: "", name: acc.name, no: acc.no, displayMessage: acc.displayMessage, useAtr: false, erAlAtr: acc.erAlAtr });
@@ -547,9 +545,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         self.tabAnnualHolidayCon.loadData();
                         self.tabAnnualHolidaySubCon.loadData();
                     }
+
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MASTER_CHECK) {
                         self.tabMasterCheckFixedCon.listFixedMasterCheckCondition([]);
                     }
+
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.APPLICATION_APPROVAL) {
+                        self.tabAppFixCondition.listFixedConditionWorkRecord([]);
+                    }
+
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -591,7 +595,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 result.targetCondition.targetJobTitle,
                                 result.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(result.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix); });
-                        let _appFixedList: Array<model.ApprovalFixedConditionWorkRecord> = _.map(result.approvalAlarmCheckConDto.listAppFixedConditionWorkRecordDto, (fix: model.IAppFixedConditionWorkRecord) => { return new model.ApprovalFixedConditionWorkRecord(fix)});
+                        let _appFixedList: Array<model.ApprovalFixedConditionWorkRecord> = _.map(result.approvalAlarmCheckConDto.listFixedExtractConditionWorkRecord, (fix: model.IAppFixedConditionWorkRecord) => { return new model.ApprovalFixedConditionWorkRecord(fix)});
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
                         item.dailyAlarmCheckCondition(
                             new model.DailyAlarmCheckCondition(

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.find.alarm.mastercheck;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.ErrorAlarmAtr;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.mastercheck.MasterCheckFixedExtractCondition;
 

@@ -22,7 +22,7 @@ public class JpaAppApprovalFixedExtractItemRepository extends JpaRepository impl
 		return this.queryProxy().query(query, KrqmtAppApprovalFixedExtractItem.class).getList()
 				.stream().map(a -> new AppApprovalFixedExtractItem(
 						a.getNo(), new ErrorAlarmMessage(a.getInitMessage())
-						, ErrorAlarmAtr.values()[a.getElAlAtr()], AppApprovalFixedCheckItem.valueOf(a.getName())))
+						, ErrorAlarmAtr.values()[a.getElAlAtr()], AppApprovalFixedCheckItem.fromName(a.getName())))
 				.collect(Collectors.toList());
 	}
 }

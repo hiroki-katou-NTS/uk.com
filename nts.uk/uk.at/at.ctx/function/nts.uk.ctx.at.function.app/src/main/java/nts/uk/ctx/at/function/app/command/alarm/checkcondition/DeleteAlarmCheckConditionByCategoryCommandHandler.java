@@ -86,7 +86,7 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 		}
 		
 		if (command.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
-			String appAlarmConId = command.getApprovalAlarmCheckConDto().getListAppFixedConditionWorkRecordDto().get(0).getAppAlarmConId();
+			String appAlarmConId = command.getApprovalAlarmCheckConDto().getListFixedExtractConditionWorkRecord().get(0).getAppAlarmConId();
 			this.appApprovalFixedExtractConditionRepository.delete(appAlarmConId);
 		}
 		

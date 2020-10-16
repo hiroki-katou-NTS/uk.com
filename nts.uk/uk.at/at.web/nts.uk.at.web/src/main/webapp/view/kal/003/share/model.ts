@@ -8,7 +8,7 @@ module nts.uk.at.view.kal003.share.model {
         return [
             //            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
             //            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
-            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
+            new ItemModel(2, getText('4週4休')),
             //            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
             //            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),

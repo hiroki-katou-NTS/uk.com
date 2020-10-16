@@ -6,7 +6,8 @@ package nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval;
 public enum ErrorAlarmAtr {
 
 	ER(0, "エラー"),
-	AL(1, "アラーム");
+	AL(1, "アラーム"),
+	OTH(2, "その他");
 	
 	public int value;
 	
