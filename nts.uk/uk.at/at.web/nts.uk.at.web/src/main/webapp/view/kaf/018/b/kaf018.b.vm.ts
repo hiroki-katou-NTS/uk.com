@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		// refactor 5
 		maxItemDisplay: KnockoutObservable<number> = ko.observable(100);
 		
-        created() {
+        created(params: any) {
 			const self = this;
 			window.onresize = function(event: any) {
             	$("#gridB_scrollContainer").height(window.innerHeight - 269);
@@ -40,6 +40,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			// self.tempData.push(new model.ConfStatusDta('', '', false, false, '', '', '', ''));
 			// self.initNtsGrid([]);
 			self.createMGrid();
+			let wkpInfoLst = params.selectWorkplaceInfo,
+				wsParam = { wkpInfoLst };
+			self.$ajax('at', API.getStatusExecution, wkpInfoLst);
 //			self.startPage().done(() => {
 //				$("#fixed-table").focus();
 //			});
@@ -363,6 +366,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
     const API = {
 		getAppSttByWorkpace: "at/request/application/approvalstatus/getAppSttByWorkpace",
         exeSendUnconfirmedMail: "at/request/application/approvalstatus/exeSendUnconfirmedMail",
-        getCheckSendMail: "at/request/application/approvalstatus/getCheckSendMail"
+        getCheckSendMail: "at/request/application/approvalstatus/getCheckSendMail",
+		// refactor 5
+		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution"
     }
 }
