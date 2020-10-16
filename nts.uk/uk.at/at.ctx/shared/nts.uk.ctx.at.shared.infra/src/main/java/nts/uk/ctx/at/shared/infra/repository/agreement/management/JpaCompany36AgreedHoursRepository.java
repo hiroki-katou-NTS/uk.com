@@ -14,10 +14,10 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     private static String FIND_BY_CID;
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT a ");
-        builderString.append("FROM Ksrmt36AgrMgtCmp a ");
-        builderString.append("WHERE a.ksrmt36AgrMgtCmpPk.companyID = :cid ");
-        builderString.append("AND a.ksrmt36AgrMgtCmpPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCmp a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtCmpPk.companyID = :cid");
+        builderString.append(" AND a.ksrmt36AgrMgtCmpPk.laborSystemAtr = :laborSystemAtr");
         FIND_BY_CID = builderString.toString();
     }
     @Override
