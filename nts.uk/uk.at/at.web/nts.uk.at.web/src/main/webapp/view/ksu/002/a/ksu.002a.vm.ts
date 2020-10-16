@@ -136,6 +136,7 @@ module nts.uk.ui.at.ksu002.a {
 											comfirmed: ko.observable($raw.confirmed),
 											achievement: ko.observable(arch === NO ? null : $raw.achievements),
 											classification: ko.observable($raw.workHolidayCls),
+											need2Work: ko.observable($raw.needToWork),
 											state: {
 												value: {
 													begin: ko.observable(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT),
@@ -160,11 +161,15 @@ module nts.uk.ui.at.ksu002.a {
 
 											// What is this???
 											if (holiday) {
-												exits.data.holiday(`${listSpecDayNameCompany.join('\n')}\n${listSpecDayNameWorkplace.join('\n')}`);
+												exits.data.holiday('');
 											}
 
-											if (specificDay || optCompanyEventName || optWorkplaceEventName) {
-												exits.data.event(`${optCompanyEventName || ''}\n${optWorkplaceEventName || ''}`);
+											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {
+												const events: string[] = [];
+
+												events.push(`${vm.$i18n('KSU001_4014')}${vm.$i18n('KSU001_4018')}${_.escape(optCompanyEventName)}`);
+												
+												exits.data.event(events.join('<br />'));
 											}
 										}
 									}

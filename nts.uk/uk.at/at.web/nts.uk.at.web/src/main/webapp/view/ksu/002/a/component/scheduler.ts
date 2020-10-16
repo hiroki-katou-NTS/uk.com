@@ -30,6 +30,7 @@ module nts.uk.ui.at.ksu002.a {
         comfirmed: boolean;
         classification: WORK_STYLE | null;
         achievement: boolean | null;
+        need2Work: boolean;
     }
 
     export interface ObserverScheduleData<R = any> extends c.DataInfo {
@@ -45,6 +46,7 @@ module nts.uk.ui.at.ksu002.a {
         comfirmed: KnockoutObservable<boolean>;
         classification: KnockoutObservable<WORK_STYLE | null>;
         achievement: KnockoutObservable<boolean | null>;
+        need2Work: KnockoutObservable<boolean>;
     }
 
     export interface StateEdit<T = KnockoutObservable<EDIT_STATE>> {
@@ -346,6 +348,20 @@ module nts.uk.ui.at.ksu002.a {
                                 className.push(c.COLOR_CLASS.ACHIEVEMENT);
                             } else {
                                 className.remove(c.COLOR_CLASS.ACHIEVEMENT);
+                            }
+                        },
+                        owner: dayData,
+                        disposeWhenNodeIsRemoved: element
+                    });
+
+                    ko.computed({
+                        read: () => {
+                            const need2Work = ko.unwrap(data.need2Work);
+
+                            if (!need2Work) {
+                                className.push(c.COLOR_CLASS.NEED2WORK);
+                            } else {
+                                className.remove(c.COLOR_CLASS.NEED2WORK);
                             }
                         },
                         owner: dayData,

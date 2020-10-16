@@ -42,7 +42,7 @@ module nts.uk.ui.calendar {
 		CONFIRMED = 'confirmed',
 		SELF_ALTER = 'self-alter',
 		SELF_ALTER_WTYPE = 'self-alter-wtype',
-		SELF_ALTER_WTIME = 'self-alter-wttime',
+		SELF_ALTER_WTIME = 'self-alter-wtime',
 		OTHER_ALTER = 'other-alter',
 		OTHER_ALTER_WTYPE = 'other-alter-wtype',
 		OTHER_ALTER_WTIME = 'other-alter-wtime',
@@ -59,6 +59,7 @@ module nts.uk.ui.calendar {
 		SAME_MONTH = 'same-month',
 		READONLY = 'readonly',
 		ACHIEVEMENT = 'achievement',
+		NEED2WORK = 'need-2work',
 		CLASSIFICATION = 'classification',
 		CLASSIFICATION_FULLTIME = 'classification-fulltime',
 		CLASSIFICATION_MORNING = 'classification-morning',
@@ -387,8 +388,10 @@ module nts.uk.ui.calendar {
 
 							if (event) {
 								className.push(COLOR_CLASS.EVENT);
+								className.push(COLOR_CLASS.SPECIAL);
 							} else {
 								className.remove(COLOR_CLASS.EVENT);
+								className.remove(COLOR_CLASS.SPECIAL);
 							}
 
 							ko.applyBindingsToNode(element, { icon: !!event ? 120 : 121 });
@@ -404,7 +407,7 @@ module nts.uk.ui.calendar {
 							if (event !== null) {
 								const { width, x, y } = element.getBoundingClientRect();
 
-								$$popper.innerHTML = `<div class="epc"><div class="data">${_.escape(event).replace(/\n/g, '<br />').replace(/\s/g, '&nbsp;')}</div></div>`;
+								$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
 
 								const pbound = $$popper.getBoundingClientRect();
 
