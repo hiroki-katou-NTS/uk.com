@@ -469,8 +469,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < MAIN_COL_SIZE; col++) {
                 boolean value;
-                if (row == 0) value = recordDateAtr == RecordDate.SYSTEM_DATE;
-                if (row == 1) value = approvalByPersonAtr == 1;
+                if (row == 0) value = recordDateAtr == RecordDate.APP_DATE;
+                else if (row == 1) value = approvalByPersonAtr == 1;
                 else value = includeConcurrentPersonel;
                 rowData.put(
                         COLUMN_NO_HEADER + col,
@@ -491,7 +491,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         if (col == 1 && row == 1) return TextResource.localize("KAF022_462");
         if (col == 1 && row == 2) return TextResource.localize("KAF022_498");
         if (col == MAIN_COL_SIZE - 1) {
-            if (row == 0) return value ? TextResource.localize("KAF022_403") : TextResource.localize("KAF022_404");
+            if (row == 0) return value ? TextResource.localize("KAF022_404") : TextResource.localize("KAF022_403");
             if (row == 1) return value ? TextResource.localize("KAF022_272") : TextResource.localize("KAF022_273");
             else return value ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
         }
