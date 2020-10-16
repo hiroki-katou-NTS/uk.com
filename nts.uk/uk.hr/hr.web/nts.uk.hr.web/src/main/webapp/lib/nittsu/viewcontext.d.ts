@@ -117,8 +117,8 @@ interface PrimitiveConstraints {
 
 // Constraint structure
 interface Constraint {
-	min?: number | Date;
-	max?: number | Date;
+	min?: number | Date | string;
+	max?: number | Date | string;
 	maxLength?: number;
 	mantissaMaxLength?: number;
 	isZeroPadded?: boolean;
