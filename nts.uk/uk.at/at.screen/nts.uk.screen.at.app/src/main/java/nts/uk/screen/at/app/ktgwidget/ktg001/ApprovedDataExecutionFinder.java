@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
@@ -23,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author tutt
  *
  */
+@Stateless
 public class ApprovedDataExecutionFinder {
 
 	@Inject

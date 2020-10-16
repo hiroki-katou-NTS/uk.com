@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
+@Stateless
 public class GetYearProcessAndPeriod {
 
 	/** The work time hist repo. */

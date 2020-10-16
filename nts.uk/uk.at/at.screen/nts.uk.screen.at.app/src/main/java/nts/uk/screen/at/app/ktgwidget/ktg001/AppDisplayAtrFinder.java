@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ktgwidget.ktg001;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -17,6 +18,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
  * @author tutt
  *
  */
+@Stateless
 public class AppDisplayAtrFinder {
 
 	@Inject

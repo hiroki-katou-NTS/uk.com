@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.ktgwidget.ktg001;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureIdPresentClosingPeriod;
@@ -14,6 +15,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
  * @author tutt
  *
  */
+@Stateless
 public class ApprovedInfoFinder {
 
 	@Inject

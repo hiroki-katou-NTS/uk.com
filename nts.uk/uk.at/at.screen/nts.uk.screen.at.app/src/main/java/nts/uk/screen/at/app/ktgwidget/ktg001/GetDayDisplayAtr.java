@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ktgwidget.ktg001;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
@@ -18,6 +19,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationS
  * @author tutt
  *
  */
+@Stateless
 public class GetDayDisplayAtr {
 	
 	@Inject

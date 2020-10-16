@@ -29,9 +29,6 @@ public class KTG001QueryProcessor_ver04 {
 	@Inject
 	private ApprovedDataExecutionFinder finder;
 	
-	@Inject
-	private ApproveWidgetRepository approveWidgetRepository;
-
 	/**
 	 * 起動する
 	 * 「承認すべきデータ」ウィジェットを起動する
@@ -51,13 +48,4 @@ public class KTG001QueryProcessor_ver04 {
 		
 		return approvedDataWidgetStartDto;
 	}
-
-	/**
-	 * 
-	 * @param standardWidget
-	 */
-	public void updateSetting(StandardWidget standardWidget) {
-		approveWidgetRepository.updateApproveStatus(standardWidget, AppContexts.user().companyId());
-	}
-
 }
