@@ -186,7 +186,7 @@ module kaf001.a.viewmodel {
                             }
                             case ApplicationScreenID.COMPLEMENT_LEAVE_APPLICATION : {
                                 self.isVisiableComplementLeaveApp(true);
-                                obj.stamp = app.displayName;
+                                obj.complt = app.displayName;
                                 break;
                             }
                             case ApplicationScreenID.ANNUAL_HOLIDAY_APPLICATION : {
@@ -355,7 +355,7 @@ module kaf001.a.viewmodel {
         STAMP_NR_APPLICATION                    = "",   /**打刻申請（NR形式）*/
         LONG_BUSINESS_TRIP_APPLICATION          = "",   /**連続出張申請*/
         BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = "",   /**出張申請オフィスヘルパー*/
-        APPLICATION_36                          = "",   /**３６協定時間申請*/
+        APPLICATION_36                          = "KAF021",   /**３６協定時間申請*/
     }
 
     //Interfaces
