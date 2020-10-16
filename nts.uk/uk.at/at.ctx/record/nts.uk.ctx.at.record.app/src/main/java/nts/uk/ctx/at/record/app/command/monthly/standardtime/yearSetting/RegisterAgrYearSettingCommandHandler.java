@@ -32,7 +32,7 @@ public class RegisterAgrYearSettingCommandHandler extends CommandHandler<Registe
 
         //2
         if (agreementYearSetting.isPresent()){
-            throw new BusinessException("Msg_61");
+            throw new BusinessException("Msg_61", agreementYearSetting.get().getYearValue().v().toString());
         }
 
         //3: create(会社ID,年月,１ヶ月時間)
