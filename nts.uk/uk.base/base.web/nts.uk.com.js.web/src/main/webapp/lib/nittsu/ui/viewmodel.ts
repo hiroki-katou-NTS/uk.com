@@ -61,6 +61,7 @@ function component(options: { name: string; template: string; }): any {
 									}
 								});
 
+								// run if component mode
 								Object.defineProperty($viewModel, 'dispose', {
 									value: function dispose() {
 
@@ -92,6 +93,12 @@ function handler(params: { virtual?: boolean; bindingName: string; validatable?:
 }
 
 module nts.uk.ui.viewmodel {
+	type KibanViewModel = {
+		errorDialogViewModel: {
+			errors: KnockoutObservableArray<any>;
+		}
+	};
+
 	const prefix = 'nts.uk.storage'
 		, OPENWD = 'OPEN_WINDOWS_DATA'
 		, { ui, request, resource } = nts.uk
@@ -100,7 +107,8 @@ module nts.uk.ui.viewmodel {
 			if (arguments.length === 2) {
 				// setter method
 				if (params === undefined) {
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => {
 							nts.uk.localStorage.removeItem(`${prefix}.${name}`);
 						})
@@ -110,14 +118,16 @@ module nts.uk.ui.viewmodel {
 				const $value = JSON.stringify({ $value: params })
 					, $saveValue = btoa(_.map($value, (s: string) => s.charCodeAt(0)).join('-'));
 
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => {
 						nts.uk.localStorage.setItem(`${prefix}.${name}`, $saveValue);
 					})
 					.then(() => $storeSession(name));
 			} else if (arguments.length === 1) {
 				// getter method
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => {
 						const $result = nts.uk.localStorage.getItem(`${prefix}.${name}`);
 
@@ -142,7 +152,8 @@ module nts.uk.ui.viewmodel {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
-			return $.Deferred().resolve()
+			return $.Deferred()
+				.resolve(true)
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
 					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
@@ -342,13 +353,19 @@ module nts.uk.ui.viewmodel {
 	});
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
+		mode: {
+			get() {
+				return window === window.top ? 'view' : 'modal';
+			}
+		},
 		size: {
 			value: $size
 		},
 		close: {
 			value: function $close(result?: any) {
 				if (window.top !== window) {
-					$.Deferred().resolve()
+					$.Deferred()
+						.resolve(true)
 						.then(() => $storage(result))
 						.then(() => windows.close());
 				}
@@ -474,7 +491,8 @@ module nts.uk.ui.viewmodel {
 							return value;
 						});
 				} else {
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => {
 							return $storeSession(name, params)
 								// for old page
@@ -508,20 +526,25 @@ module nts.uk.ui.viewmodel {
 	};
 
 	BaseViewModel.prototype.$errors = function $errors() {
+		const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
 		const args: any[] = Array.prototype.slice.apply(arguments);
 
 		if (args.length == 1) {
 			// if action is clear, call validate clear action
 			if (args[0] === 'clear') {
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => $('.nts-input').ntsError('clear'))
+					// if some element remove before clear func call
+					.then(() => kvm.errorDialogViewModel.errors([]))
 					.then(() => !$('.nts-input').ntsError('hasError'));
 			} else {
 				const errors: {
 					[name: string]: any;
 				} = args[0];
 
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => {
 						_.each(errors, (value: any, key: string) => $(key).ntsError('set', value));
 					})
@@ -535,23 +558,27 @@ module nts.uk.ui.viewmodel {
 				if (_.isString(messageId)) {
 					const $selector = messageId;
 
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => $($selector).ntsError('clear'))
 						.then(() => !$($selector).ntsError('hasError'));
 				} else if (_.isArray(messageId)) {
 					const $selectors = messageId.join(', ');
 
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => $($selectors).ntsError('clear'))
 						.then(() => !$($selectors).ntsError('hasError'));
 				}
 			} else {
 				if (_.isString(messageId)) {
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => $(name).ntsError('set', { messageId }))
 						.then(() => !$(name).ntsError('hasError'));
 				} else {
-					return $.Deferred().resolve()
+					return $.Deferred()
+						.resolve(true)
 						.then(() => $(name).ntsError('set', messageId))
 						.then(() => !$(name).ntsError('hasError'));
 				}
@@ -560,13 +587,15 @@ module nts.uk.ui.viewmodel {
 			if (args[0] === 'clear') {
 				const $selectors = args.join(', ').replace(/^clear ,/, '');
 
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => $($selectors).ntsError('clear'))
 					.then(() => !$($selectors).ntsError('hasError'));
 			}
 		}
 
-		return $.Deferred().resolve()
+		return $.Deferred()
+			.resolve(true)
 			/** Nếu có lỗi thì trả về false, không thì true */
 			.then(() => !$('.nts-input').ntsError('hasError'));;
 	};
@@ -576,7 +605,8 @@ module nts.uk.ui.viewmodel {
 		const args: string[] = Array.prototype.slice.apply(arguments);
 
 		if (args.length === 0) {
-			return $.Deferred().resolve()
+			return $.Deferred()
+				.resolve(true)
 				/** Gọi xử lý validate của kiban */
 				.then(() => $('.nts-input').trigger("validate"))
 				/** Nếu có lỗi thì trả về false, không thì true */
@@ -590,7 +620,8 @@ module nts.uk.ui.viewmodel {
 				selectors = act.join(', ');
 			}
 
-			return $.Deferred().resolve()
+			return $.Deferred()
+				.resolve(true)
 				/** Gọi xử lý validate của kiban */
 				.then(() => $(selectors).trigger("validate"))
 				/** Nếu có lỗi thì trả về false, không thì true */
@@ -598,7 +629,8 @@ module nts.uk.ui.viewmodel {
 		} else {
 			let selectors = args.join(', ');
 
-			return $.Deferred().resolve()
+			return $.Deferred()
+				.resolve(true)
 				/** Gọi xử lý validate của kiban */
 				.then(() => $(selectors).trigger("validate"))
 				/** Nếu có lỗi thì trả về false, không thì true */
@@ -609,13 +641,16 @@ module nts.uk.ui.viewmodel {
 	Object.defineProperty($validate, "constraint", {
 		value: function $constraint(name: string, value: any) {
 			if (arguments.length === 0) {
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => __viewContext.primitiveValueConstraints);
 			} else if (arguments.length === 1) {
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => _.get(__viewContext.primitiveValueConstraints, name));
 			} else {
-				return $.Deferred().resolve()
+				return $.Deferred()
+					.resolve(true)
 					.then(() => (ui.validation as any).writeConstraint(name, value));
 			}
 		}
