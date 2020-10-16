@@ -148,10 +148,10 @@ module nts.uk.com.view.cmm024.f {
 			}
 
 			if (!nts.uk.ui.errors.hasError()) {
-				let newEmployees = _.orderBy(vm.currentCodeListSwap(), 'employeeCode', 'asc');			
+				//let newEmployees = _.orderBy(vm.currentCodeListSwap(), 'employeeCode', 'asc');			
 				vm.$window.storage('newWorkPlaceCodeList', {
 					workplaceId: vm.multiSelectedId()[0],
-					codeList: newEmployees
+					codeList: vm.currentCodeListSwap()
 				});
 				vm.$window.close();
 				return false;
