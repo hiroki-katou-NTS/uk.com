@@ -1,14 +1,24 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalculationClassification;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import java.util.List;
+
 /**
  *ValueObject: 出力項目
  * @author chinh.hm
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OutputItem extends ValueObject {
     // 順位
     private int rank;
@@ -29,7 +39,7 @@ public class OutputItem extends ValueObject {
     private CommonAttributesOfForms itemDetailAttributes;
 
     //  選択勤怠項目リスト
-    private OutputItemDetailSelectionAttendanceItem  selectedAttendanceItemList;
+    private List<OutputItemDetailSelectionAttendanceItem> selectedAttendanceItemList;
 
 
 }

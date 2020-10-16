@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -17,10 +21,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_SETTING")
 @AllArgsConstructor
-public class AnnualWorkLedgerSettings extends UkJpaEntity implements Serializable {
+@Getter
+@Setter
+public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
-    public AnnualWorkLedgerSettingsPk pk;
+    public KfnmtRptYrRecSettingPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -28,7 +34,7 @@ public class AnnualWorkLedgerSettings extends UkJpaEntity implements Serializabl
 
     // 	会社ID
     @Column(name = "CID")
-    public String companyID;
+    public String companyId;
 
     //	表示コード -> 年間勤務台帳の出力設定.コード
     @Column(name = "DISPLAY_CODE")
@@ -49,5 +55,17 @@ public class AnnualWorkLedgerSettings extends UkJpaEntity implements Serializabl
     @Override
     protected Object getKey() {
         return null;
+    }
+
+    public static KfnmtRptYrRecSetting fromDomain(String cid,AnnualWorkLedgerOutputSetting outputSetting){
+        return  new KfnmtRptYrRecSetting(
+                new KfnmtRptYrRecSettingPk(outputSetting.getID()),
+                AppContexts.user().contractCode(),
+                cid,
+                Integer.parseInt(outputSetting.getCode().v()),
+                outputSetting.getName().v(),
+                outputSetting.getEmployeeId(),
+                outputSetting.getStandardFreeDivision().value
+        );
     }
 }

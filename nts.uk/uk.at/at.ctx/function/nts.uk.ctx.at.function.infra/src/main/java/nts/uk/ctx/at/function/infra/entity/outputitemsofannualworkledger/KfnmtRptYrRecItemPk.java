@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,7 +13,9 @@ import java.io.Serializable;
  */
 @Embeddable
 @AllArgsConstructor
-public class ItemsInTheAnnualWorkLedgerPk implements Serializable {
+@Getter
+@Setter
+public class KfnmtRptYrRecItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
     // 	設定ID
     @Column(name = "ID")

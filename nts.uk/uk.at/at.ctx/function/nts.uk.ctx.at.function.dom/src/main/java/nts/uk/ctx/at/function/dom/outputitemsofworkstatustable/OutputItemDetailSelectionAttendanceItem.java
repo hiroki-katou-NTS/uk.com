@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
@@ -9,6 +11,8 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * 	@author chinh.hm
  */
 @AllArgsConstructor
+@Getter
+@Setter
 public class   OutputItemDetailSelectionAttendanceItem extends ValueObject {
     //	演算子
     private OperatorsCommonToForms operator ;

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -8,17 +10,21 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
+import java.util.List;
+
 /**
  * AggregateRoot: 年間勤務台帳の出力設定
  * @author chinh.hm
  */
 @AllArgsConstructor
+@Setter
+@Getter
 public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     //ID -> GUID
-    private String id;
+    private String iD;
 
     //コード
-    private ExportSettingCode code;
+    private OutputItemSettingCode code;
 
     // 名称
     private OutputItemSettingName name;
@@ -29,11 +35,12 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     // 日次出力項目リスト
     private DailyOutputItemsAnnualWorkLedger dailyOutputItemList;
 
-    // 出力項目
-    private OutputItem outputItemList;
-
     //社員ID
     private String employeeId;
+
+    // 出力項目
+    private List<OutputItem> outputItemList;
+
 
     // 	[C-0] 年間勤務台帳の出力設定を作成する
 

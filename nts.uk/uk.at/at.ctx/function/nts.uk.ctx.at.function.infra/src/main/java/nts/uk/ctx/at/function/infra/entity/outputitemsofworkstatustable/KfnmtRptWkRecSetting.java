@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable;
 
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -18,10 +21,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_RPT_WK_REC_SETTING")
-public class WorkStatusTableSettings extends UkJpaEntity implements Serializable {
+@AllArgsConstructor
+public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    public WorkStatusTableSettingPk pk;
+    public KfnmtRptWkRecSettingPk pk;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -51,4 +55,17 @@ public class WorkStatusTableSettings extends UkJpaEntity implements Serializable
     protected Object getKey() {
         return pk;
     }
+
+    public static KfnmtRptWkRecSetting fromDomain(WorkStatusOutputSettings domain, String cid){
+        return new KfnmtRptWkRecSetting(
+                new KfnmtRptWkRecSettingPk(domain.getSettingId()),
+                AppContexts.user().contractCode(),// TODO
+                cid,
+                Integer.parseInt(domain.getSettingDisplayCode().v()),
+                domain.getSettingName().v(),
+                domain.getEmployeeId(),
+                domain.getDesignateFreeClassing().value
+        );
+    }
+
 }
