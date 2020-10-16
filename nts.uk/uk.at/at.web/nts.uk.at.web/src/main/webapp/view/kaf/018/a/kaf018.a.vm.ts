@@ -9,11 +9,13 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		dateValue: KnockoutObservable<any> = ko.observable({});
 		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = null;
+		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
+		
 		
         created() {
 			const vm = this;
@@ -33,8 +35,10 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 tabindex: 1,
                 systemType: 2
             };
-			$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
-            });
+			$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {});
+			vm.multiSelectedWorkplaceId.subscribe(() => {
+				vm.selectWorkplaceInfo = $('#tree-grid').getRowSelected();
+			});
 			vm.$ajax(API.getApprovalStatusActivation).done((data) => {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName);
@@ -66,7 +70,10 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return;
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
-			vm.$jump("/view/kaf/018/b/index.xhtml", vm.initDisplayOfApprovalStatus);
+			let initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+				selectWorkplaceInfo: Array<DisplayWorkplace> = vm.selectWorkplaceInfo,
+				data = { initDisplayOfApprovalStatus, selectWorkplaceInfo };
+			vm.$jump("/view/kaf/018/b/index.xhtml", data);
 		}
         
 		emailSetting() {
@@ -101,6 +108,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		applicationApprovalFlg: boolean;
 		// 日別実績の本人確認・上長承認の状況を表示する
 		confirmAndApprovalDailyFlg: boolean;
+	}
+	
+	interface DisplayWorkplace {
+		code: string;
+		id: string;
 	}
 
     const API = {
