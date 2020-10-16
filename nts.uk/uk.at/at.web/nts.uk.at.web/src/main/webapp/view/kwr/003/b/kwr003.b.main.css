@@ -9,7 +9,7 @@
   margin-right: 45px;
 }
 .kwr-003b #content-area {
-  padding: 37px;
+  padding: 30px 37px;
   overflow: hidden;
 }
 
@@ -34,4 +34,11 @@
 
 .kwr-003b .pull-left .panel.ntsPanel {
   height: 470px;
+}
+
+.kwr-003b .nts-editor-wrapped .nts-editor {
+  width: auto !important;
+}
+.kwr-003b .nts-editor-wrapped .nts-editor.code {
+  max-width: 70px;
 }

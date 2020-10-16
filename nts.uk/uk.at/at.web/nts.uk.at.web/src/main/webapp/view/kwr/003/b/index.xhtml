@@ -10,7 +10,7 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 350, height: 400 };
+          var dialogSize = { width: 1200, height: 700 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr003.b.main.css" />
@@ -30,7 +30,7 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR003_201'), click: addNewRow, enable: isEnaleAddButton"
+              data-bind="text: $i18n('KWR003_201'), click: addNewRow, enable: isEnableAddButton"
             />
             <!-- B1_2 -->
             <button
@@ -44,14 +44,14 @@
               tabindex="3"
               id="btnB13"
               class="normal"
-              data-bind="text: $i18n('KWR003_204'), click: showDialogC"
+              data-bind="text: $i18n('KWR003_204'), click: showDialogC, enable: isEnableDuplicateButton"
             />
             <!-- B1_2 -->
             <button
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR003_205'), click: deteleSetting, enable: isEnaleRemoveButton"
+              data-bind="text: $i18n('KWR003_205'), click: deteleSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
@@ -73,7 +73,7 @@
                   searchMode: 'highlight',
                   targetKey: 'code',
                   comId: 'multiList', 
-                  items: listItems,
+                  items: settingListItems,
                   selected: currentCodeList,
                   selectedKey: 'code',                 
                   fields: ['name', 'code'],
@@ -83,7 +83,7 @@
                   id="multiList"
                   data-bind="ntsGridList: {
                     height: 320,
-                    options: listItems,
+                    options: settingListItems,
                     optionsValue: 'code',
                     columns: [
                       { headerText: $i18n('KWR003_207'), prop: 'code', width: 90 },
@@ -108,10 +108,13 @@
                   <input
                     class="code"
                     tabindex="7"
+                    id="KWR003_B42"
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
+                      required: true,
                       constraint: 'ExportSettingCode',
-                      name: $i18n('KWR003_210')
+                      name: $i18n('KWR003_210'),
+                      enable: isEnableAttendanceCode
                     }"
                   />
                   <input
@@ -119,6 +122,7 @@
                     tabindex="8"
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
+                      required: true,
                       constraint: 'ExportSettingName',
                       name: $i18n('KWR003_211')
                     }"
@@ -159,7 +163,7 @@
                         ></th>
                       </tr>
                     </thead>
-                    <tbody data-bind="foreach: settingListItems">
+                    <tbody data-bind="foreach: settingListItemsDetails">
                       <tr data-bind="attr: {id: 'row-' + id}">
                         <td>
                           <div
@@ -172,7 +176,12 @@
                           <input
                             tabindex="-1"
                             class="nts-editor"
-                            data-bind="attr: { id: 'textName' + id }, ntsTextEditor: { value: name }"
+                            data-bind="attr: { id: 'textName' + id }, 
+                                  ntsTextEditor: { 
+                                    value: name,
+                                    name: $i18n('KWR003_215'),
+                                    constraint: 'ExportSettingName'
+                                  }"
                           />
                         </td>
                         <td>
@@ -186,6 +195,7 @@
                             }"
                           ></div>
                           <button
+                            tabindex="9"
                             data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>
