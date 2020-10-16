@@ -82,10 +82,12 @@ public class ConvertTimeRecordReservationServiceTest {
 	public void testEmpInfoTerNoPresentSetting() {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		new Expectations() {
 			{
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
@@ -104,10 +106,12 @@ public class ConvertTimeRecordReservationServiceTest {
 	public void testExistHistory() {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
@@ -139,10 +143,12 @@ public class ConvertTimeRecordReservationServiceTest {
 	public void testRegistDoneData() {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
@@ -170,10 +176,12 @@ public class ConvertTimeRecordReservationServiceTest {
 	public void testNoFindStampCard(@Mocked BentoMenu menu) {
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
@@ -203,10 +211,12 @@ public class ConvertTimeRecordReservationServiceTest {
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional.of(
 				new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), "", null, null, null).build());
 
@@ -245,10 +255,12 @@ public class ConvertTimeRecordReservationServiceTest {
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
-		Optional<EmpInfoTerminal> empInfoTer = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"),
-				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
+		Optional<EmpInfoTerminal> empInfoTer = Optional
+				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
+								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
+								.build());
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional.of(
 				new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), "", null, null, null).build());
 
