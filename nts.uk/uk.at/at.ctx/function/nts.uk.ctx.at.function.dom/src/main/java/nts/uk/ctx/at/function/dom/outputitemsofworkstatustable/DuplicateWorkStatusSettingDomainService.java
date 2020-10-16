@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,7 +35,7 @@ public class DuplicateWorkStatusSettingDomainService {
             throw new BusinessException("Msg_1753");
         }
         // 5.設定IDを生成する
-        val id = new RandomStringUtils();
+        val id = IdentifierUtil.randomUniqueId();
         // 6.勤務状況設定の複製
         return AtomTask.of(() ->
                 // 7.設定を複製する(会社ID, GUID, GUID, 勤務状況の設定表示コード, 勤務状況の設定名称)
