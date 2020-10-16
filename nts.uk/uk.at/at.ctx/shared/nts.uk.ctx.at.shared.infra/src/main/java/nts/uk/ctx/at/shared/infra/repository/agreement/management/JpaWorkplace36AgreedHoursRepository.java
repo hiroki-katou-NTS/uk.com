@@ -25,22 +25,22 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT a");
-        builderString.append("FROM Ksrmt36AgrMgtWkp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.workplaceId IN :listWorkplaceId ");
+        builderString.append(" SELECT a ");
+        builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
+        builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.workplaceId IN :listWorkplaceId ");
         FIND_BY_LIST_WKP = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("SELECT a");
-        builderString.append("FROM Ksrmt36AgrMgtWkp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
-        builderString.append("AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtWkp a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
+        builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_WKP = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("SELECT a ");
-        builderString.append("FROM Ksrmt36AgrMgtWkp a ");
-        builderString.append("AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" SELECT a ");
+        builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
+        builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_WORKPLACE_SETTING = builderString.toString();
     }
 

@@ -24,17 +24,17 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
 
     static {
         StringBuilder builderString  = new StringBuilder();
-        builderString.append("SELECT");
-        builderString.append("FROM Ksrmt36AgrMgtCls a");
-        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCls a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
         FIND_BY_CID = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("SELECT a");
-        builderString.append("FROM Ksrmt36AgrMgtCls a");
-        builderString.append("WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
-        builderString.append("AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
-        builderString.append("AND a.ksrmt36AgrMgtClsPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCls a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        builderString.append(" AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
+        builderString.append(" AND a.ksrmt36AgrMgtClsPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID_AND_CLS_CD = builderString.toString();
     }
     @Override
