@@ -33,11 +33,6 @@
     margin-bottom: 15px;
 }
 
-.cmm024-f .ntsSwapList .ntsMoveDataArea {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 .cmm024-f .ntsSwapList .ntsMoveDataArea .move-button {
     width: 50px;
 }
@@ -48,4 +43,12 @@
 
 .cmm024-f .ntsSwapList .ntsSearchArea {
     height: 35px !important;
+}
+.cmm024-f .row .col-right .swap-list {
+    display: flex;
+    align-items: center;
+}
+
+.cmm024-f .row .col-right #up-down {
+    margin-left: 10px;
 }
