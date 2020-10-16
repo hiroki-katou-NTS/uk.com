@@ -5,10 +5,10 @@ module nts.uk.at.view.kmk008.b {
             enable: KnockoutObservable<boolean>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             // selectedTab: KnockoutObservable<string>;
-            viewmodelC: any;
+            // viewmodelC: any;
             viewmodelD: any;
             viewmodelE: any;
-            viewmodelF: any;
+            //viewmodelF: any;
             laborSystemAtr: number = 0;
 
             useEmployment: KnockoutObservable<boolean>;
@@ -54,12 +54,13 @@ module nts.uk.at.view.kmk008.b {
                 let dfd = $.Deferred();
                 $('#work-place-base-date').prop('tabIndex', -1);
                 nts.uk.ui.errors.clearAll();
-                self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
-                self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
+                // self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
+				self.laborSystemAtr = 1;
+                // self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
-                self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
-                self.viewmodelC.startPage();
+                //self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
+                // self.viewmodelC.startPage();
                 self.viewmodelE.startPage();
 
                 service.getData().done(function(item) {
@@ -90,7 +91,7 @@ module nts.uk.at.view.kmk008.b {
 
             tabpanel1Click() {
                 let self = this;
-                self.viewmodelC.startPage();
+                // self.viewmodelC.startPage();
             }
 
             tabpanel2Click() {
@@ -105,7 +106,7 @@ module nts.uk.at.view.kmk008.b {
 
             tabpanel4Click() {
                 let self = this;
-                self.viewmodelF.startPage();
+                //self.viewmodelF.startPage();
             }
         }
     }
