@@ -9,6 +9,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -19,6 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "SPTDT_GENERIC_SEARCH_HIST")
 @EqualsAndHashCode(callSuper = true)
@@ -154,6 +156,11 @@ public class SptdtGenericSearchHist extends UkJpaEntity implements GeneralSearch
 			return this.pk.contents;
 		}
 		return null;
+	}
+	
+	public SptdtGenericSearchHist(SptdtGenericSearchHistPK pk, GeneralDateTime searchDate) {
+		this.pk = pk;
+		this.searchDate = searchDate;
 	}
 
 }

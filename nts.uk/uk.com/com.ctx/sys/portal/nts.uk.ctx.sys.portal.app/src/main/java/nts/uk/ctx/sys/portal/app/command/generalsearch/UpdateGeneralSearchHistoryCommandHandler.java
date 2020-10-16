@@ -10,11 +10,11 @@ import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
 
 /**
- * The Class AddGeneralSearchHistoryCommandHandler.
+ * The Class UpdateGeneralSearchHistoryCommandHandler.
  */
 @Stateless
 @Transactional
-public class AddGeneralSearchHistoryCommandHandler extends CommandHandler<GeneralSearchHistoryCommand> {
+public class UpdateGeneralSearchHistoryCommandHandler extends CommandHandler<GeneralSearchHistoryCommand> {
 	/** The repo. */
 	@Inject
 	private GeneralSearchRepository repo;
@@ -27,6 +27,6 @@ public class AddGeneralSearchHistoryCommandHandler extends CommandHandler<Genera
 	@Override
 	protected void handle(CommandHandlerContext<GeneralSearchHistoryCommand> context) {
 		GeneralSearchHistoryCommand command = context.getCommand();
-		this.repo.insert(GeneralSearchHistory.createFromMemento(command));
+		this.repo.update(GeneralSearchHistory.createFromMemento(command));
 	}
 }

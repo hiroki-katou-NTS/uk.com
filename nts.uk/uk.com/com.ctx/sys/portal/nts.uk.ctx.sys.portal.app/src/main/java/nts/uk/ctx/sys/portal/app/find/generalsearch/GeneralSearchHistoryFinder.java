@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.app.find.generalsearch;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
 /**
  * The Class GeneralSearchHistoryFinder.
  */
+@Stateless
 public class GeneralSearchHistoryFinder {
 
 	/** The repo. */
@@ -67,7 +69,7 @@ public class GeneralSearchHistoryFinder {
 	 * @return the by contents
 	 */
 	public List<GeneralSearchHistoryDto> getByContents(String userID, String companyID, int searchCategory, String searchContent) {
-		return this.repo.getByContents(userID, companyID, searchCategory, searchContent).stream()
+		return this.repo.getByContents(userID, companyID, searchCategory, searchContent.trim()).stream()
 				.map(item -> GeneralSearchHistoryDto.builder()
 						.companyID(item.getCompanyID())
 						.searchCategory(item.getSearchCategory().value)

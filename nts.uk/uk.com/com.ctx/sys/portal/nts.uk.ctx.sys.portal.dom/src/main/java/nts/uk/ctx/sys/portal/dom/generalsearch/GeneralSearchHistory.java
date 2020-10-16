@@ -79,4 +79,5 @@ public class GeneralSearchHistory extends AggregateRoot {
 		GeneralDateTime getSearchDate();
 		String getContents();
 	}
+	
 } 

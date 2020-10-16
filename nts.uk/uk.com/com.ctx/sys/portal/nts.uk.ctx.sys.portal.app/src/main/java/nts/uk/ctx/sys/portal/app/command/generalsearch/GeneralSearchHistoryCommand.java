@@ -3,20 +3,11 @@ package nts.uk.ctx.sys.portal.app.command.generalsearch;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
+import nts.uk.shr.com.context.AppContexts;
 
 @Setter
 public class GeneralSearchHistoryCommand implements GeneralSearchHistory.MementoGetter {
 
-	/** The user ID.
-	 * ユーザID
-	 **/
-	private String userID;
-	
-	/** The company ID. 
-	 * 会社ID
-	 **/
-	private String companyID;
-	
 	/** The search category. 
 	 * 検索区分
 	 **/
@@ -34,11 +25,11 @@ public class GeneralSearchHistoryCommand implements GeneralSearchHistory.Memento
 	private String contents;
 
 	public String getUserID() {
-		return this.userID;
+		return AppContexts.user().userId();
 	}
 
 	public String getCompanyID() {
-		return this.companyID;
+		return AppContexts.user().companyId();
 	}
 
 	public int getSearchCategory() {
@@ -52,5 +43,6 @@ public class GeneralSearchHistoryCommand implements GeneralSearchHistory.Memento
 	public String getContents() {
 		return this.contents;
 	}
+	
 	
 }
