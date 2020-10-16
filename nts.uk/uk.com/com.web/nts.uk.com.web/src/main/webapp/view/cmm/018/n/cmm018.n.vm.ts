@@ -68,7 +68,7 @@ export module viewmodel {
 				um.id = i.employeeCode;
 				um.code = i.employeeCode;
 				um.name = i.employeeName;
-				um.workplaceName = 'do not found';
+				um.affiliationName = i.workplaceName;
 				dataList.push(um);
 			});
 			let employeeList = ko.observableArray<UnitModel>(dataList);
@@ -84,7 +84,10 @@ export module viewmodel {
 				isShowNoSelectRow: isShowNoSelectRow(),
 				isShowWorkPlaceName: isShowWorkPlaceName(),
 				isShowSelectAllButton: isShowSelectAllButton(),
-				disableSelection : disableSelection()
+				disableSelection : disableSelection(),
+				maxHeight: 375,
+                maxRows: 15
+				
 			} as any;
 			
 			$('#component-items-list').ntsListComponent(listComponentOption);
@@ -243,7 +246,7 @@ export module viewmodel {
 			id?: string;
 	        code: string;
 	        name?: string;
-	        workplaceName?: string;
+	        affiliationName?: string;
 	        isAlreadySetting?: boolean;
 	        optionalColumn?: any;
 		}
