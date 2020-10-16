@@ -549,9 +549,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         // });
         self.buttonProceed(true);
       } else self.buttonProceed(false);
-      let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
-      _employeeList = _.sortBy(_employeeList, ["code"]);
-      self.employeeListScreenH(_employeeList);
+      if (self.dataContentConfirm().selectedRecoveryMethod() === 1) {
+        let _employeeList = self.getRecoveryEmployee(self.employeeListScreenG(), self.selectedEmployeeCodeScreenG());
+        _employeeList = _.sortBy(_employeeList, ["code"]);
+        self.employeeListScreenH(_employeeList);
+      }
       let _recoveryMethod = self.dataContentConfirm().selectedRecoveryMethod();
       let _recoveryMethodDescription1 = self.getRecoveryMethodDescription1(_recoveryMethod);
       let _recoveryMethodDescription2 = self.getRecoveryMethodDescription2(_recoveryMethod);
