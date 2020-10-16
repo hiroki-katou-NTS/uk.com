@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

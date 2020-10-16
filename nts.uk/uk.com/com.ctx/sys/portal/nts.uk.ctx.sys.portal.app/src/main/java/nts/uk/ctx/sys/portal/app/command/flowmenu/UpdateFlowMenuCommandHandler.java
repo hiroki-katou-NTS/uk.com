@@ -11,9 +11,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.service.FlowMenuService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

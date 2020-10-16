@@ -1,6 +1,6 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu.service;
+package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.service;
 
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
 
 /**
  * @author HieuLT

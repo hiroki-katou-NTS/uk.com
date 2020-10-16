@@ -1,7 +1,7 @@
 /**
  * author hieult
  */
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated;
 
 import lombok.Getter;
 import lombok.Setter;

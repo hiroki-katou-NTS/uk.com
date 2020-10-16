@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.portal.app.find.placement;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 

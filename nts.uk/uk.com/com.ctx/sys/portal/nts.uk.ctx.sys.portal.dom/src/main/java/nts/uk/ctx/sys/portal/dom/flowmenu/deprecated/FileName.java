@@ -1,5 +1,5 @@
 
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
