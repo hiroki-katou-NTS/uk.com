@@ -1,8 +1,11 @@
 package nts.uk.ctx.sys.assist.infra.repository.storage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +18,7 @@ import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfLog;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -23,7 +27,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtResultOfSaving f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.storeProcessingId =:storeProcessingId ";
+			+ " WHERE  f.storeProcessingId IN :storeProcessingId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
 				+ " WHERE f.cid =:cid "
 				+ " AND f.saveStartDatetime >=:startDateOperator "
@@ -34,7 +38,13 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 				+ " AND f.saveStartDatetime =:startDateOperator "
 				+ " AND f.saveStartDatetime =:endDateOperator "
 				+ " AND f.practitioner IN :practitioner ";
-	
+	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE f.patternCode IN :saveSetCodes";
+	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspmtResultOfSaving r "
+			+ "WHERE r.saveStartDatetime >= :start AND r.saveStartDatetime <= :end ";
+	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspmtResultOfSaving f "
+			+ "WHERE f.fileId = :fileId";
+
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtResultOfSaving.class)
@@ -44,7 +54,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
-				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> c.toDomain());
+				.setParameter("storeProcessingId", Collections.singletonList(storeProcessingId)).getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -81,7 +91,15 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void update(ResultOfSaving data) {
-		this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
+		Optional<SspmtResultOfSaving> op = this.queryProxy().find(data.getStoreProcessingId(), SspmtResultOfSaving.class);
+		op.ifPresent(oldEntity -> {
+			oldEntity.pcAccount = data.getLoginInfo().getAccount();
+			oldEntity.pcId = data.getLoginInfo().getIpAddress();
+			oldEntity.pcName = data.getLoginInfo().getPcName();
+			oldEntity.listResultOfLogs = data.getListResultLogSavings().stream()
+					.map(SspmtResultOfLog::toEntity).collect(Collectors.toList());
+			this.commandProxy().update(oldEntity);
+		});
 	}
 
 	@Override
@@ -92,6 +110,19 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			this.commandProxy().update(data);
 		});
 		
+	}
+	
+	@Override
+	public void update(String fileId) {
+		Optional<SspmtResultOfSaving> op = this.queryProxy()
+												.query(SELECT_BY_FILE_ID, SspmtResultOfSaving.class)
+												.setParameter("fileId", fileId)
+												.getSingle();
+		op.ifPresent(data -> {
+			data.deletedFiles = NotUseAtr.USE.value;
+			this.commandProxy().update(data);
+		});
+								
 	}
 
 	@Override
@@ -120,5 +151,29 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 					.getList(item -> item.toDomain()));
 		}
 		return resultOfSavings;
+	}
+
+	@Override
+	public List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
+				.setParameter("storeProcessingId", Arrays.asList(storeProcessingIds))
+				.getList(SspmtResultOfSaving::toDomain); 
+	}
+	
+	@Override
+	public List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes) {
+		return this.queryProxy().query(SELECT_BY_SAVE_SET_CODE, SspmtResultOfSaving.class)
+				.setParameter("saveSetCodes", saveSetCodes)
+				.getList(SspmtResultOfSaving::toDomain);
+				
+	}
+	
+	@Override
+	public List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
+		List<ResultOfSaving> list = this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspmtResultOfSaving.class)
+				.setParameter("start", from)
+				.setParameter("end", to)
+				.getList(SspmtResultOfSaving::toDomain);
+		return list;
 	}
 }

@@ -41,7 +41,7 @@
             <div style="color: red; font-size: 90%" v-if="condition2 && itemWH.errorMsg !== null && condition1(itemWH)">{{ itemWH.errorMsg }}</div>
             <!-- A3_1 -->
             <div class="card-body" v-if="condition1(itemWH)">
-              <nts-time-range-input class="mb-1" v-model="itemWH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0" />
+              <nts-time-range-input class="mb-1" v-model="itemWH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxWH.filter((x) => x === itemWH.frame).length > 0 && condition2" />
               <!-- A3_4 -->
               <nts-checkbox
                 class="checkbox-text uk-text-dark-gray"
@@ -67,7 +67,7 @@
             <div style="color: red; font-size: 90%" v-if="condition2 && condition12">{{ itemTH.errorMsg }}</div>
             <!-- A3_1 -->
             <div class="card-body">
-              <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0" />
+              <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2" />
               <!-- A3_4 -->
               <nts-checkbox
                 class="checkbox-text uk-text-dark-gray"
@@ -102,7 +102,7 @@
           <div style="color: red; font-size: 90%" v-if="condition2 && condition12">{{ itemGH.errorMsg }}</div>
           <!-- A4_1 -->
           <div class="card-body">
-            <nts-time-range-input v-model="itemGH.hours" v-bind:showTile="false" v-bind:disabled="checkboxGH.filter((x) => x === itemGH.frame).length > 0" />
+            <nts-time-range-input v-model="itemGH.hours" v-bind:showTile="false" v-bind:disabled="checkboxGH.filter((x) => x === itemGH.frame).length > 0 && condition2" />
             <!-- A4_4 -->
             <div class="card-body w-100 mt-n3">
               <nts-switchbox v-for="option in dataSource" :key="option.id"
@@ -158,7 +158,7 @@
           <div style="color: red; font-size: 90%" v-if="condition2 && condition12">{{ itemBH.errorMsg }}</div>
           <!-- A5_1 -->
           <div class="card-body">
-            <nts-time-range-input class="mb-1" v-model="itemBH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxBH.filter((x) => x === itemBH.frame).length > 0" />
+            <nts-time-range-input class="mb-1" v-model="itemBH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxBH.filter((x) => x === itemBH.frame).length > 0 && condition2" />
             <!-- A5_5 -->
             <nts-checkbox
               class="checkbox-text uk-text-dark-gray"
@@ -205,7 +205,7 @@
           <div style="color: red; font-size: 90%" v-if="condition2 && condition12">{{ itemCH.errorMsg }}</div>
           <!-- A6_1 -->
           <div class="card-body">
-            <nts-time-range-input class="mb-1" v-model="itemCH.workHour" v-bind:showTile="false" v-bind:disabled="checkboxCH.filter((x) => x === itemCH.frame).length > 0" />
+            <nts-time-range-input class="mb-1" v-model="itemCH.workHour" v-bind:showTile="false" v-bind:disabled="checkboxCH.filter((x) => x === itemCH.frame).length > 0 && condition2" />
             <!-- A6_5 -->
             <nts-checkbox
               class="checkbox-text uk-text-dark-gray"
@@ -238,7 +238,7 @@
           <div style="color: red; font-size: 90%" v-if="condition2">{{ itemLH.errorMsg }}</div>
           <!-- A7_1 -->
           <div class="card-body">
-            <nts-time-range-input class="mb-1" v-model="itemLH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxLH.filter((x) => x === itemLH.frame).length > 0" />
+            <nts-time-range-input class="mb-1" v-model="itemLH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxLH.filter((x) => x === itemLH.frame).length > 0 && condition2" />
             <!-- A7_5 -->
             <nts-checkbox
               class="checkbox-text uk-text-dark-gray"

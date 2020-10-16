@@ -49420,6 +49420,7 @@ function component(options) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -49458,14 +49459,16 @@ var nts;
                     if (arguments.length === 2) {
                         // setter method
                         if (params === undefined) {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 nts.uk.localStorage.removeItem(prefix + "." + name);
                             })
                                 .then(function () { return $storeSession(name); });
                         }
                         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
                         })
@@ -49473,7 +49476,8 @@ var nts;
                     }
                     else if (arguments.length === 1) {
                         // getter method
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             var $result = nts.uk.localStorage.getItem(prefix + "." + name);
                             if ($result.isPresent()) {
@@ -49494,7 +49498,8 @@ var nts;
                         return $storeSession(OPENWD, $data);
                     }
                     else if (arguments.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $storeSession(OPENWD); })
                             .then(function (value) {
                             nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
@@ -49658,13 +49663,19 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
                     size: {
                         value: $size
                     },
                     close: {
                         value: function $close(result) {
                             if (window.top !== window) {
-                                $.Deferred().resolve()
+                                $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return viewmodel.$storage(result); })
                                     .then(function () { return windows.close(); });
                             }
@@ -49777,7 +49788,8 @@ var nts;
                                 });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
                                         // for old page
@@ -49809,17 +49821,22 @@ var nts;
                     });
                 };
                 BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length == 1) {
                         // if action is clear, call validate clear action
                         if (args[0] === 'clear') {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
                         else {
                             var errors_3 = args[0];
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
                             })
@@ -49831,25 +49848,29 @@ var nts;
                         if (name_1 === 'clear') {
                             if (_.isString(messageId_1)) {
                                 var $selector_1 = messageId_1;
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selector_1).ntsError('clear'); })
                                     .then(function () { return !$($selector_1).ntsError('hasError'); });
                             }
                             else if (_.isArray(messageId_1)) {
                                 var $selectors_1 = messageId_1.join(', ');
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selectors_1).ntsError('clear'); })
                                     .then(function () { return !$($selectors_1).ntsError('hasError'); });
                             }
                         }
                         else {
                             if (_.isString(messageId_1)) {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', messageId_1); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
@@ -49858,12 +49879,14 @@ var nts;
                     else if (args.length > 2) {
                         if (args[0] === 'clear') {
                             var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $($selectors_2).ntsError('clear'); })
                                 .then(function () { return !$($selectors_2).ntsError('hasError'); });
                         }
                     }
-                    return $.Deferred().resolve()
+                    return $.Deferred()
+                        .resolve(true)
                         /** Nếu có lỗi thì trả về false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
@@ -49872,7 +49895,8 @@ var nts;
                 var $validate = function $validate(act) {
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49886,7 +49910,8 @@ var nts;
                         else if (_.isArray(act)) {
                             selectors_1 = act.join(', ');
                         }
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49894,7 +49919,8 @@ var nts;
                     }
                     else {
                         var selectors_2 = args.join(', ');
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49904,15 +49930,18 @@ var nts;
                 Object.defineProperty($validate, "constraint", {
                     value: function $constraint(name, value) {
                         if (arguments.length === 0) {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return __viewContext.primitiveValueConstraints; });
                         }
                         else if (arguments.length === 1) {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
                         }
                         else {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return ui.validation.writeConstraint(name, value); });
                         }
                     }

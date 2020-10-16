@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -17,6 +18,11 @@ public class CategoryFieldMtForDelete extends AggregateRoot {
 	 * カテゴリID
 	 */
 	private String categoryId;
+
+	/**
+	 * システム種類
+	 */
+	private SystemType systemType;
 
 	/**
 	 * テーブルNo
@@ -352,7 +358,7 @@ public class CategoryFieldMtForDelete extends AggregateRoot {
 	 * 親テーブル日本語名
 	 */
 	private String parentTblJpName;
-	
+
 	/**
 	 * 親テーブル有無
 	 */
@@ -487,11 +493,10 @@ public class CategoryFieldMtForDelete extends AggregateRoot {
 	 */
 	private String fieldAcqStartDate;
 
-	public CategoryFieldMtForDelete(String categoryId, int tableNo, String tableJapanName, String tableEnglishName,
-			String timeStopDelete, String clsKeyQuery1, String clsKeyQuery2,
-			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5,
-			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8,
-			String clsKeyQuery9, String clsKeyQuery10, String defaultCondKeyQuery,
+	public CategoryFieldMtForDelete(String categoryId, int systemType, int tableNo, String tableJapanName,
+			String tableEnglishName, String timeStopDelete, String clsKeyQuery1, String clsKeyQuery2,
+			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5, String clsKeyQuery6, String clsKeyQuery7,
+			String clsKeyQuery8, String clsKeyQuery9, String clsKeyQuery10, String defaultCondKeyQuery,
 			String fieldKeyQuery1, String fieldKeyQuery2, String fieldKeyQuery3, String fieldKeyQuery4,
 			String fieldKeyQuery5, String fieldKeyQuery6, String fieldKeyQuery7, String fieldKeyQuery8,
 			String fieldKeyQuery9, String fieldKeyQuery10, String fieldDate1, String fieldDate2, String fieldDate3,
@@ -504,14 +509,15 @@ public class CategoryFieldMtForDelete extends AggregateRoot {
 			String filedKeyUpdate11, String filedKeyUpdate12, String filedKeyUpdate13, String filedKeyUpdate14,
 			String filedKeyUpdate15, String filedKeyUpdate16, String filedKeyUpdate17, String filedKeyUpdate18,
 			String filedKeyUpdate19, String filedKeyUpdate20, int historyCls, String parentTblJpName,
-			int hasParentTblFlg, String parentTblName, String fieldParent1, String fieldParent2,
-			String fieldParent3, String fieldParent4, String fieldParent5, String fieldParent6, String fieldParent7,
-			String fieldParent8, String fieldParent9, String fieldParent10, String fieldChild1, String fieldChild2,
-			String fieldChild3, String fieldChild4, String fieldChild5, String fieldChild6, String fieldChild7,
-			String fieldChild8, String fieldChild9, String fieldChild10, String fieldAcqCid, String fieldAcqDateTime,
+			int hasParentTblFlg, String parentTblName, String fieldParent1, String fieldParent2, String fieldParent3,
+			String fieldParent4, String fieldParent5, String fieldParent6, String fieldParent7, String fieldParent8,
+			String fieldParent9, String fieldParent10, String fieldChild1, String fieldChild2, String fieldChild3,
+			String fieldChild4, String fieldChild5, String fieldChild6, String fieldChild7, String fieldChild8,
+			String fieldChild9, String fieldChild10, String fieldAcqCid, String fieldAcqDateTime,
 			String fieldAcqEmployeeId, String fieldAcqEndDate, String fieldAcqStartDate) {
 		super();
 		this.categoryId = categoryId;
+		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.tableNo = tableNo;
 		this.tableJapanName = tableJapanName;
 		this.tableEnglishName = tableEnglishName;
@@ -608,6 +614,4 @@ public class CategoryFieldMtForDelete extends AggregateRoot {
 		this.fieldAcqStartDate = fieldAcqStartDate;
 	}
 
-	
-	
 }
