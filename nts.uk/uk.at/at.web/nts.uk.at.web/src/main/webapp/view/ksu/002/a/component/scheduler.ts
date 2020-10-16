@@ -25,7 +25,11 @@ module nts.uk.ui.at.ksu002.a {
         value: {
             begin: number | null;
             finish: number | null;
-        }
+        };
+        valid: {
+            begin: boolean;
+            finish: boolean;
+        };
         state: StateEdit<EDIT_STATE>;
         comfirmed: boolean;
         classification: WORK_STYLE | null;
@@ -41,6 +45,10 @@ module nts.uk.ui.at.ksu002.a {
             begin: KnockoutObservable<number | null>;
             finish: KnockoutObservable<number | null>;
             required: KnockoutObservable<WORKTYPE_SETTING>;
+        };
+        valid: {
+            begin: KnockoutObservable<boolean>;
+            finish: KnockoutObservable<boolean>;
         };
         state: StateEdit;
         comfirmed: KnockoutObservable<boolean>;
@@ -307,6 +315,10 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     export module controls {
+        const RO = 'readonly';
+        const CLBC = 'clearByCode';
+        const MSG_1811 = 'Msg_1811';
+        const VALIDATE = 'validate';
         const COMPONENT_NAME = 'scheduler-data-info';
 
         @handler({
@@ -633,24 +645,50 @@ module nts.uk.ui.at.ksu002.a {
 
                 if (dayData.data) {
                     const { data } = dayData;
-                    const { wtype, wtime, value } = data;
+                    const { wtype, wtime, value, valid } = data;
 
                     text.wtype = wtype.name;
                     text.wtime = wtime.name;
 
-                    ko.computed({
-                        read: () => {
-                            model.begin(ko.unwrap(value.begin));
-                        },
-                        owner: vm
-                    });
+                    value.begin
+                        .subscribe((b) => {
+                            const $begin = $(vm.$el).find('input.begin');
+                            const $finish = $(vm.$el).find('input.finish');
 
-                    ko.computed({
-                        read: () => {
-                            model.finish(ko.unwrap(value.finish));
-                        },
-                        owner: vm
-                    });
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => $begin.ntsError('clear'))
+                                .then(() => model.begin(b))
+                                .then(() => valid.begin(!$begin.ntsError('hasError')))
+                                .then(() => {
+                                    if ($finish.ntsError('hasError')) {
+                                        $finish.trigger(VALIDATE);
+                                    }
+                                })
+                                .then(() => valid.finish(!$finish.ntsError('hasError')));
+                        });
+
+                    value.begin.valueHasMutated();
+
+                    value.finish
+                        .subscribe((f) => {
+                            const $begin = $(vm.$el).find('input.begin');
+                            const $finish = $(vm.$el).find('input.finish');
+
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => $finish.ntsError('clear'))
+                                .then(() => model.finish(f))
+                                .then(() => valid.finish(!$finish.ntsError('hasError')))
+                                .then(() => {
+                                    if ($begin.ntsError('hasError')) {
+                                        $begin.trigger(VALIDATE);
+                                    }
+                                })
+                                .then(() => valid.begin(!$begin.ntsError('hasError')));
+                        });
+
+                    value.finish.valueHasMutated();
 
                     ko.computed({
                         read: () => {
@@ -660,20 +698,26 @@ module nts.uk.ui.at.ksu002.a {
                     });
 
                     model.begin
-                        .subscribe((b: number | null) => {
+                        .subscribe((b: number | string | null) => {
                             const f = ko.unwrap(model.finish);
                             const $begin = $(vm.$el).find('input.begin');
                             const $finish = $(vm.$el).find('input.finish');
 
-                            if (_.isNumber(b) && cache.begin !== b && ko.unwrap(value.begin) !== b) {
+                            if (b === null || _.isString(b)) {
+                                valid.begin(false);
+                                $finish.ntsError(CLBC, MSG_1811);
+                            } else if (_.isNumber(b) && cache.begin !== b && ko.unwrap(value.begin) !== b) {
                                 if (b > f) {
                                     if (!$begin.ntsError('hasError')) {
-                                        $begin.ntsError('set', { messageId: 'Msg_1811' });
+                                        $begin.ntsError('set', { messageId: MSG_1811 });
                                     }
 
                                     if (!$finish.ntsError('hasError')) {
-                                        $finish.ntsError('set', { messageId: 'Msg_1811' });
+                                        $finish.ntsError('set', { messageId: MSG_1811 });
                                     }
+
+                                    valid.begin(false);
+                                    valid.finish(false);
 
                                     $.Deferred()
                                         .resolve(true)
@@ -681,32 +725,40 @@ module nts.uk.ui.at.ksu002.a {
                                         .then(() => $finish.val(pt(f, true).format()));
                                 } else {
                                     cache.begin = b;
+                                    valid.begin(true);
+
                                     const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
                                     clone.data.value.begin = b;
 
                                     context.$change.apply(context.$vm, [clone]);
 
-                                    $finish.ntsError('clearByCode', 'Msg_1811');
+                                    $finish.ntsError(CLBC, MSG_1811);
                                 }
                             }
                         });
 
                     model.finish
-                        .subscribe((f: number | null) => {
+                        .subscribe((f: number | string | null) => {
                             const b = ko.unwrap(model.begin);
                             const $begin = $(vm.$el).find('input.begin');
                             const $finish = $(vm.$el).find('input.finish');
 
-                            if (_.isNumber(f) && cache.finish !== f && ko.unwrap(value.finish) !== f) {
+                            if (f === null || _.isString(f)) {
+                                valid.finish(false);
+                                $begin.ntsError(CLBC, MSG_1811);
+                            } else if (_.isNumber(f) && cache.finish !== f && ko.unwrap(value.finish) !== f) {
                                 if (b > f) {
                                     if (!$begin.ntsError('hasError')) {
-                                        $begin.ntsError('set', { messageId: 'Msg_1811' });
+                                        $begin.ntsError('set', { messageId: MSG_1811 });
                                     }
 
                                     if (!$finish.ntsError('hasError')) {
-                                        $finish.ntsError('set', { messageId: 'Msg_1811' });
+                                        $finish.ntsError('set', { messageId: MSG_1811 });
                                     }
+
+                                    valid.begin(false);
+                                    valid.finish(false);
 
                                     $.Deferred()
                                         .resolve(true)
@@ -714,13 +766,15 @@ module nts.uk.ui.at.ksu002.a {
                                         .then(() => $finish.val(pt(f, true).format()));
                                 } else {
                                     cache.finish = f;
+                                    valid.finish(true);
+
                                     const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
                                     clone.data.value.finish = f;
 
                                     context.$change.apply(context.$vm, [clone]);
 
-                                    $begin.ntsError('clearByCode', 'Msg_1811');
+                                    $begin.ntsError(CLBC, MSG_1811);
                                 }
                             }
                         });
@@ -739,11 +793,32 @@ module nts.uk.ui.at.ksu002.a {
 
             mounted() {
                 const vm = this;
-                const { click } = vm;
+                const { click, model } = vm;
                 const $begin = $(vm.$el).find('input.begin');
                 const $finish = $(vm.$el).find('input.finish');
+                const validate = () => {
+                    const b = ko.unwrap(model.begin);
+                    const f = ko.unwrap(model.finish);
+
+                    if (b !== null && f !== null && b > f) {
+                        if (!$begin.ntsError('hasError')) {
+                            $begin.ntsError('set', { messageId: MSG_1811 });
+                        }
+
+                        if (!$finish.ntsError('hasError')) {
+                            $finish.ntsError('set', { messageId: MSG_1811 });
+                        }
+                    } else {
+                        $begin.ntsError(CLBC, MSG_1811);
+                        $finish.ntsError(CLBC, MSG_1811);
+                    }
+                };
 
                 $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+
+                $begin.on(VALIDATE, validate);
+
+                $finish.on(VALIDATE, validate);
 
                 ko.computed({
                     read: () => {
@@ -751,9 +826,9 @@ module nts.uk.ui.at.ksu002.a {
 
                         if ($begin.length) {
                             if (!readonly) {
-                                $begin.removeAttr('readonly');
+                                $begin.removeAttr(RO);
                             } else {
-                                $begin.attr('readonly', 'readonly');
+                                $begin.attr(RO, RO);
                             }
                         }
                     },
@@ -767,9 +842,9 @@ module nts.uk.ui.at.ksu002.a {
 
                         if ($finish.length) {
                             if (!readonly) {
-                                $finish.removeAttr('readonly');
+                                $finish.removeAttr(RO);
                             } else {
-                                $finish.attr('readonly', 'readonly');
+                                $finish.attr(RO, RO);
                             }
                         }
                     },

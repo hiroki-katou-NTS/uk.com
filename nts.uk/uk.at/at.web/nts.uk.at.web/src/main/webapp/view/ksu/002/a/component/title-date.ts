@@ -48,6 +48,7 @@ module nts.uk.ui.at.ksu002.a {
 			ntsSwitchButton: {
 				name: $i18n('KSU002_6'),
 				value: $component.achievement,
+				enable: $component.$validate.valid(),
 				options: [
 					{ code: 1, name: $i18n('KSU002_8') },
 					{ code: 0, name: $i18n('KSU002_9') }
@@ -232,6 +233,7 @@ module nts.uk.ui.at.ksu002.a {
 
 					// first load
 					if (cache.yearMonth === null) {
+						vm.$errors('clear');
 						cache.yearMonth = cmd.yearMonth;
 						vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 					} else if (cache.yearMonth !== cmd.yearMonth) {
@@ -240,6 +242,7 @@ module nts.uk.ui.at.ksu002.a {
 								.confirm({ messageId: 'Msg_1732' })
 								.then((v) => {
 									if (v === 'yes') {
+										vm.$errors('clear');
 										cache.yearMonth = cmd.yearMonth;
 										vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 									} else {
@@ -266,6 +269,7 @@ module nts.uk.ui.at.ksu002.a {
 
 						if (exist) {
 							if (cache.dateRange === null) {
+								vm.$errors('clear');
 								cache.dateRange = c;
 
 								const { finish, begin, wpId } = exist;
@@ -278,6 +282,7 @@ module nts.uk.ui.at.ksu002.a {
 										.confirm({ messageId: 'Msg_1732' })
 										.then((v) => {
 											if (v === 'yes') {
+												vm.$errors('clear');
 												cache.dateRange = c;
 
 												const { finish, begin, wpId } = exist;

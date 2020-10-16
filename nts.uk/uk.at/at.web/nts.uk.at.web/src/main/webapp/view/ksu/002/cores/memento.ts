@@ -13,7 +13,7 @@ module nts.uk.ui.memento {
 
 	export interface Options {
 		size: number;
-		replace: (sources: any, replacer: any) => void;
+		replace: (sources: any, state: StateMemento, act: 'undo' | 'redo') => boolean;
 	}
 
 	interface Memento {
@@ -21,16 +21,16 @@ module nts.uk.ui.memento {
 		redo: KnockoutObservableArray<StateMemento>;
 	}
 
-	interface StateMemento {
-		current: any;
-		preview: any;
+	export interface StateMemento<T = any> {
+		current: T;
+		preview: T;
 	}
 
 	const memento = function (target: KnockoutObservableArray<any>, options: Options) {
 		if (!options) {
 			options = {
 				size: 9999,
-				replace: function () { }
+				replace: function () { return true; }
 			};
 		}
 
@@ -39,7 +39,7 @@ module nts.uk.ui.memento {
 		}
 
 		if (!options.replace) {
-			options.replace = function () { };
+			options.replace = function () { return true; };
 		}
 
 		const hasChange = ko.observable(false);
@@ -72,7 +72,7 @@ module nts.uk.ui.memento {
 			},
 			memento: function $$memento(state: StateMemento) {
 				hasChange(true);
-				
+
 				$memento.redo([]);
 
 				// push old data to memories			
@@ -85,11 +85,19 @@ module nts.uk.ui.memento {
 				if (ko.unwrap($memento.undo).length) {
 					const state = $memento.undo.shift();
 
-					$memento.redo.unshift(state);
+					// try undo
+					const valid = options.replace.apply(target, [ko.unwrap(target), state, 'undo']);
+
+					if (valid) {
+						// if success, add state to redo
+						$memento.redo.unshift(state);
+					} else {
+						// orelse rollback sttate to undo
+						$memento.undo.unshift(state);
+					}
+
 					// remove old record when memory size has large than config
 					stripMemory();
-
-					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
 			},
 			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
@@ -97,12 +105,19 @@ module nts.uk.ui.memento {
 				if (ko.unwrap($memento.redo).length) {
 					const state = $memento.redo.shift();
 
-					$memento.undo.unshift(state);
+					// try redo
+					const valid = options.replace.apply(target, [ko.unwrap(target), state, 'redo']);
+
+					if (valid) {
+						// if success, add state to undo
+						$memento.undo.unshift(state);
+					} else {
+						// orelse rollback sttate to redo
+						$memento.redo.unshift(state);
+					}
 
 					// remove old record when memory size has large than config
 					stripMemory();
-
-					options.replace.apply(target, [ko.unwrap(target), state.current]);
 				}
 			},
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),

@@ -17,12 +17,13 @@ module nts.uk.ui.at.ksu002.a {
 	const memento: m.Options = {
 		size: 20,
 		// callback function raise when undo or redo
-		replace: function (data: DayDataRawObsv[], replacer: DayData) {
-			const exist = _.find(data, f => moment(f.date).isSame(replacer.date, 'date'));
+		replace: function (data: DayDataRawObsv[], memento: m.StateMemento<DayData>, act: 'undo' | 'redo') {
+			const exist = _.find(data, f => moment(f.date).isSame(memento.current.date, 'date'));
 
-			if (exist) {
+			if (exist && exist.data.valid.begin() && exist.data.valid.finish()) {
 				const { data } = exist;
-				const { wtime, wtype, value, state } = replacer.data;
+				const { preview, current } = memento;
+				const { wtime, wtype, value, state } = (act === 'undo' ? preview : current).data;
 
 				data.wtime.code(wtime.code);
 				data.wtime.name(wtime.name);
@@ -38,7 +39,11 @@ module nts.uk.ui.at.ksu002.a {
 
 				data.state.value.begin(state.value.begin);
 				data.state.value.finish(state.value.finish);
+
+				return true;
 			}
+
+			return false;
 		}
 	};
 
@@ -131,6 +136,10 @@ module nts.uk.ui.at.ksu002.a {
 												begin: ko.observable($raw.startTime),
 												finish: ko.observable($raw.endTime),
 												required: ko.observable($raw.needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
+											},
+											valid: {
+												begin: ko.observable(true),
+												finish: ko.observable(true)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),

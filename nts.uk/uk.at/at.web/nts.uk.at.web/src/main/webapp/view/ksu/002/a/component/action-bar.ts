@@ -15,7 +15,8 @@ module nts.uk.ui.at.ksu002.a {
 					attr: {
 						tabindex: $$tabindex
 					},
-					click: function() { $component.data.mode('copy'); }
+					click: function() { $component.data.mode('copy'); },
+					enable: $component.$validate.valid()
 				"></button>
 			<button class="small btn-edit" data-bind="
 					i18n: 'KSU002_11',
@@ -32,7 +33,7 @@ module nts.uk.ui.at.ksu002.a {
 		<div class="cf">
 			<button class="small btn-undo" data-bind="
 					icon: 44,
-					enable: $component.data.clickable.undo,
+					enable: $component.data.clickable.undo() && $component.$validate.valid(),
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['undo']); },
 					attr: {
@@ -41,7 +42,7 @@ module nts.uk.ui.at.ksu002.a {
 				"></button>
 			<button class="small btn-redo" data-bind="
 					icon: 154,
-					enable: $component.data.clickable.redo,
+					enable: $component.data.clickable.redo() && $component.$validate.valid(),
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['redo']); },
 					attr: {
