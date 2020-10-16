@@ -828,6 +828,8 @@ module nts.uk.com.view.cmf003.b {
               };
               return category;
             }));
+          } else {
+            self.categorys([]);
           }
 
           if (res.dailyReferMonth && res.dailyReferYear) {

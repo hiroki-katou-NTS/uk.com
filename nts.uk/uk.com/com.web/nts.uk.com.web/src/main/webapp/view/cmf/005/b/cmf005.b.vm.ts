@@ -302,6 +302,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             debugger;
             return category;
           }));
+        } else {
+          self.listDataCategory([]);
         }
 
         if (res.dailyReferMonth && res.dailyReferYear) {
