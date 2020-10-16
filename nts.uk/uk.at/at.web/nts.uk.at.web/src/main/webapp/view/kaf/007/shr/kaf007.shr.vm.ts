@@ -207,6 +207,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     return vm.$ajax(API.getByWorkType + "/" + vm.model().workTypeCD())
                 }).done((res) => {
                     if(res !== null || res !== undefined) {
+                        vm.$errors("clear");
                         vm.model().setupType(res);
                     }
                 }).fail(fail => console.log(fail))

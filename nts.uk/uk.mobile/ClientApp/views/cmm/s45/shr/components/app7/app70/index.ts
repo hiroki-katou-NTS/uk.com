@@ -1,13 +1,13 @@
 import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeSetDisp, TimeZone, TimeStampAppOtherDto, DestinationTimeZoneAppDto, DestinationTimeAppDto, TimeStampAppDto } from '../../../../../kaf/s02/shr';
+import { TimeSetDisp, TimeZone, TimeStampAppOtherDto, DestinationTimeZoneAppDto, DestinationTimeAppDto, TimeStampAppDto } from 'views/kaf/s02/shr';
 import {
     KafS00SubP3Component
 } from 'views/kaf/s00/sub/p3';
 
 @component({
     name: 'cmms45shrcomponentsapp70',
-    route: '/cmm/s45/shr/components/app70',
+    route: '/cmm/s45/shr/components/app7/app70',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
