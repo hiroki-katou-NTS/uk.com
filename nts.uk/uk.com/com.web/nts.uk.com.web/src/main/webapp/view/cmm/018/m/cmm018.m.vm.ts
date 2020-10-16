@@ -10,7 +10,6 @@ module nts.uk.com.view.cmm018.m {
             isPerson: KnockoutObservable<Boolean> = ko.observable(false);            
             date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
             sysAtr: KnockoutObservable<number> = ko.observable(0);
-            lstAppName: Array<any>;
 			sv: SettingVisible = new SettingVisible();
 			lstNameAppType: KnockoutObservableArray<vmbase.ApplicationType>;
             constructor(params: any) {
@@ -122,13 +121,13 @@ module nts.uk.com.view.cmm018.m {
                     return;    
                 }
                 let master = new service.MasterApproverRootQuery(self.date(), ko.toJS(self.isCompany), 
-                        ko.toJS(self.isWorkplace), ko.toJS(self.isPerson), self.sysAtr(), self.lstAppName);
-                nts.uk.ui.block.grayout();
+                        ko.toJS(self.isWorkplace), ko.toJS(self.isPerson), self.sysAtr(), ko.toJS(self.lstNameAppType));
+                block.grayout();
                 service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){
-                    nts.uk.ui.block.clear();
+                    block.clear();
                 }).fail(function(res: any){
                     nts.uk.ui.dialog.alert({ messageId: res.messageId});  
-                    nts.uk.ui.block.clear();                      
+                    block.clear();                      
                 });
             }
         }
