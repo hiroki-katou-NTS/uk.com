@@ -114,14 +114,14 @@ export class KafS00BComponent extends Vue {
         if (!self.params) {
             return;
         }
-        if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
-            // self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
-            self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
-        } else {
-            // self.$output.prePostAtr = null;
-            self.prePostAtr = null;
-        }
         if (self.$input.newModeContent) {
+            if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
+                // self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+                self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+            } else {
+                // self.$output.prePostAtr = null;
+                self.prePostAtr = null;
+            }
             if (self.$input.newModeContent.initSelectMultiDay) {
                 self.$updateValidator('dateRange', { validate: true });
                 self.$updateValidator('date', { validate: false });
@@ -138,6 +138,7 @@ export class KafS00BComponent extends Vue {
             }
         }
         if (self.$input.detailModeContent) {
+            self.prePostAtr = self.$input.detailModeContent.prePostAtr;
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
             // self.$updateValidator('params.output.prePostAtr', { validate: false });
@@ -290,7 +291,7 @@ interface NewModeContent {
 // 詳細モード内容
 interface DetailModeContent {
     // 事前事後区分
-    prePostAtr: string;
+    prePostAtr: number;
     // 申請者名
     employeeName: string;
     // 申請開始日
