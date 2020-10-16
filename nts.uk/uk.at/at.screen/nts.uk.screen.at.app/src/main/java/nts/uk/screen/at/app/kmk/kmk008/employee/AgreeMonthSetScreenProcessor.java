@@ -36,6 +36,6 @@ public class AgreeMonthSetScreenProcessor {
         data = data.stream().filter(x ->  x.getYearMonthValue().v() >= yearMonth.v() ).collect(Collectors.toList());
         Map<String, List<AgreementMonthSetting>> mapData = data.stream().collect(Collectors.groupingBy(AgreementMonthSetting::getEmployeeId));
 
-        return EmployeeMonthSettingDto.setData(mapData);
+        return EmployeeMonthSettingDto.setData(mapData,requestMonth.getEmployeeIds());
     }
 }

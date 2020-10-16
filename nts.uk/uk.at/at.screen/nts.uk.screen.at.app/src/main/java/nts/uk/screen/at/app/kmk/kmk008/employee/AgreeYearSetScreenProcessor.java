@@ -36,6 +36,6 @@ public class AgreeYearSetScreenProcessor {
         data = data.stream().filter(x -> x.getYearValue().v() >= year.v() ).collect(Collectors.toList());
         Map<String, List<AgreementYearSetting>> mapData = data.stream().collect(Collectors.groupingBy(AgreementYearSetting::getEmployeeId));
 
-        return EmployeeYearSettingDto.setData(mapData);
+        return EmployeeYearSettingDto.setData(mapData,requestMonth.getEmployeeIds());
     }
 }

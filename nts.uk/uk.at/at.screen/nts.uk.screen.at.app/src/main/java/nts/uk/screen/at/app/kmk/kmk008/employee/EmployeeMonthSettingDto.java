@@ -5,8 +5,10 @@ import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +18,7 @@ public class EmployeeMonthSettingDto {
 
     private List<AgreementMonthSettingDto> settingDtos;
 
-    public static List<EmployeeMonthSettingDto> setData(Map<String, List<AgreementMonthSetting>> data){
+    public static List<EmployeeMonthSettingDto> setData(Map<String, List<AgreementMonthSetting>> data,List<String> employeeIds){
 
         List<EmployeeMonthSettingDto> employeeMonthSettingDtos = new ArrayList<>();
 
@@ -34,6 +36,14 @@ public class EmployeeMonthSettingDto {
                     key,
                     settingDtos
             ));
+        });
+
+        List<String> sidsInDb = employeeMonthSettingDtos.stream().map(x -> x.employeeId).collect(Collectors.toList());
+
+        List<String> sidsNew = employeeIds.stream().filter(x -> !sidsInDb.contains(x)).collect(Collectors.toList());
+
+        sidsNew.forEach(x -> {
+            employeeMonthSettingDtos.add(new EmployeeMonthSettingDto(x, Arrays.asList()));
         });
 
         return employeeMonthSettingDtos;
