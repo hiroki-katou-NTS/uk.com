@@ -754,7 +754,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 							dailyData.setColumnDatas(columnDatas);
 							dailyData.setSecondCol(flag <= 15 ? false : true);
-//							dailyData.setAttribute(attribute);
 							dailyDataList.add(dailyData);
 							// Check end of week
 							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {

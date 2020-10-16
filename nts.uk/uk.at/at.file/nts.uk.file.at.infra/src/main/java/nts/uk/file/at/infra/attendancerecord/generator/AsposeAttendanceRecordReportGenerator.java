@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
 import com.aspose.cells.HorizontalPageBreakCollection;
@@ -121,7 +122,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int START_REPORT_DATA_ROW = 11;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
-	private int MAX_ROW_PER_EMPL = 50;
+	private static final int MAX_ROW_PER_EMPL = 50;
 
 	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
@@ -142,8 +143,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int EMPL_YEARMONTH_INDEX = 0;
 
 	/** The Constant MONTHLY_DATA_START_ROW. */
-	private static final int MONTHLY_DATA_START_ROW = 6;
-
+	private int MONTHLY_DATA_START_ROW = 6;
+	
 	/** The Constant REPORT_ROW_BG_WHITE. */
 	private static final int REPORT_ROW_BG_WHITE = 1;
 
@@ -166,7 +167,20 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private String REPORT_APPROVAL = "AB7:AC7";
 	
 	private static final String APPROVAL = "確認済";
+		
+	private static final int MONTHLY_TITLE_START_ROW = 4;
+	
+	private String MONTHLY_TITLE_FIX = "C4:Z5";
 
+	private String MONTHLY_CUMULATIVE_TOTAL_FIX = "A4:B7";
+	
+	private String REPORT_CUMULATIVE_FIX = "A%d:B%d";
+	
+	private String DAILY_TITLE_FIX_LEFT = "A9:T10";
+	
+	private String DAILY_TITLE_FIX_RIGHT = "V9:AO10";
+	
+	private static final int DAILY_TITLE_START_ROW = 9;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -199,7 +213,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
 			
-			MAX_ROW_PER_EMPL = 80;
 			
 			SEAL_RANGE_TMPL_ADDR = "AY14:AZ17";
 			
@@ -229,7 +242,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			WEEKLY_RANGE_TMPL_ADDR = "BG11:CH12";
 			
-			MAX_ROW_PER_EMPL = 80;
 			
 			SEAL_RANGE_TMPL_ADDR = "BG14:BH17";
 			
@@ -258,12 +270,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// Prepare template ranges
 			Worksheet templateSheet = worksheetCollection.get(0);
-			Range reportPageTmpl = templateSheet.getCells().createRange(REPORT_PAGE_ADDR + MAX_ROW_PER_EMPL);
 			Range dailyWTmpl = templateSheet.getCells().createRange(DAILY_W_RANGE_TMPL_ADDR);
 			Range dailyBTmpl = templateSheet.getCells().createRange(DAILY_B_RANGE_TMPL_ADDR);
 			Range weeklyRangeTmpl = templateSheet.getCells().createRange(WEEKLY_RANGE_TMPL_ADDR);
 
 			// Generate seal column
+			// TODO : sửa lại phần này trong vòng for
 			this.generateSealColumn(templateSheet, data.getSealColName());
 
 			// Init report page
@@ -271,22 +283,22 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// Start loop to create report for earch month
 			Map<String, List<AttendanceRecordReportEmployeeData>> reportDatas = data.getReportData();
+			// set sheet name report
+			String sheetName = data.getReportName();
+			// create new sheet from template sheet
+			worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
+			Worksheet worksheet = worksheetCollection.get(sheetName);
+			int startNewPage = 0;
 			for (String employeeCd : reportDatas.keySet()) {
+				
 				// get list employee data
 				List<AttendanceRecordReportEmployeeData> reportEmployeeDatas = reportDatas.get(employeeCd);
+				Range reportPageTmpl = templateSheet.getCells().createRange(REPORT_PAGE_ADDR + (MAX_ROW_PER_EMPL * reportDatas.keySet().size() * reportEmployeeDatas.size()));
 				// Generate employee report page
 				for (AttendanceRecordReportEmployeeData employeeData : reportEmployeeDatas) {
-					int startNewPage = 0;
-					String sheetName = employeeCd + "-" + employeeData.getReportYearMonth();
-					
-					// create new sheet from template sheet
-					worksheetCollection.get(worksheetCollection.addCopy(0)).setName(sheetName);
-					
-					// get new sheet
-					Worksheet worksheet = worksheetCollection.get(sheetName);
 					startNewPage = this.generateEmployeeReportPage(startNewPage, worksheet, employeeData, page,
 							reportPageTmpl, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
-//					page++;
+					page++;
 
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
@@ -302,29 +314,27 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
 					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
 					
-					// Delete template column
-					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-						worksheet.getCells().deleteColumns(42, 20, true);
-					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
-						worksheet.getCells().deleteColumns(50, 24, true);
-					} else {
-						worksheet.getCells().deleteColumns(58, 28, true);
-					}
-					
-					
 					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 					if (dataSource.getMode() == EXPORT_EXCEL) {
 						pageSetup.setZoom(100);
-						pageSetup.setFitToPagesTall(1);
-						pageSetup.setFitToPagesWide(1);
 					} else if (dataSource.getMode() == EXPORT_PDF) {
 						pageSetup.setFitToPagesTall(1);
 						pageSetup.setFitToPagesWide(1);
 					}
+					startNewPage += MAX_ROW_PER_EMPL;
 					
 				}
+				
 			}
-
+			// Delete template column
+			if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
+				worksheet.getCells().deleteColumns(42, 20, true);
+			} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+				worksheet.getCells().deleteColumns(50, 24, true);
+			} else {
+				worksheet.getCells().deleteColumns(58, 28, true);
+			}
+			
 			// delete template sheet
 			worksheetCollection.removeAt(0);
 			worksheetCollection.setActiveSheetIndex(0);
@@ -393,6 +403,38 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// Add monthly data
 		Range monththDataRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
 				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
+		Range dataMonthRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
+				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
+		
+		// voi TH next page thi copy lai phan monthly header 
+		if (startNewPage > 0) {
+			// copy monthly header 
+			Range fixMonthyHeader = worksheet.getCells().createRange(MONTHLY_TITLE_FIX);
+			Range monthTitleRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
+					(startNewPage + MONTHLY_TITLE_START_ROW), (startNewPage + MONTHLY_TITLE_START_ROW + 1)));
+			monthTitleRange.copyData(fixMonthyHeader);
+			monthTitleRange.copy(fixMonthyHeader);
+			
+			// copy lai KWR002_221 月間累計
+			Range fixCumulativeTotal = worksheet.getCells().createRange(MONTHLY_CUMULATIVE_TOTAL_FIX);
+			Range monthCumulativeRange = worksheet.getCells().createRange(String.format(REPORT_CUMULATIVE_FIX,
+					(startNewPage + MONTHLY_TITLE_START_ROW), (startNewPage + MONTHLY_TITLE_START_ROW + 3)));
+			monthCumulativeRange.copy(fixCumulativeTotal);
+			monthCumulativeRange.copyData(fixCumulativeTotal);
+			// copy daily header left
+			Range fixLeftDailyHeader = worksheet.getCells().createRange(DAILY_TITLE_FIX_LEFT);
+			Range leftDailyTitleRange = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR,
+					(startNewPage + DAILY_TITLE_START_ROW), (startNewPage + DAILY_TITLE_START_ROW + 1)));
+			leftDailyTitleRange.copy(fixLeftDailyHeader);
+			leftDailyTitleRange.copyData(fixLeftDailyHeader);
+			
+			// copy daily header right 
+			Range fixRightDailyHeader = worksheet.getCells().createRange(DAILY_TITLE_FIX_RIGHT);
+			Range rightDailyTitleRange = worksheet.getCells().createRange(String.format(REPORT_RIGHT_COL_ADDR,
+					(startNewPage + DAILY_TITLE_START_ROW), (startNewPage + DAILY_TITLE_START_ROW + 1)));
+			rightDailyTitleRange.copy(fixRightDailyHeader);
+			rightDailyTitleRange.copyData(fixRightDailyHeader);
+		} 
 		List<AttendanceRecordReportColumnData> monthLyData = employeeData.getEmployeeMonthlyData();
 		for (int i = 0, j = monthLyData.size(); i < j; i++) {
 			monththDataRange.get(0, i * 2).setValue(monthLyData.get(i).getUper());
@@ -407,6 +449,17 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		Range employeeYearInfo = worksheet.getCells().createRange(String.format(REPORT_LEFT_COL_ADDR,
 				(startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW), (startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW)));
 
+		employeeInfoL.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+		employeeInfoL.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		employeeInfoR.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		employeeYearInfo.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		this.setFontBold(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX));
+		this.setFontBold(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX));
+		this.setFontBold(employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX));
+		this.setFontBold(employeeInfoL.get(0, EMPL_TITLE_INDEX));
+		this.setFontBold(employeeInfoL.get(0, EMPL_WORKTYPE_INDEX));
+		this.setFontBold(employeeInfoL.get(0, EMPL_YEARMONTH_INDEX));
+		
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
@@ -431,7 +484,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 		}
 
-		if ( employeeData.isApprovalStatus()) {
+		// trường này cũng cần sửa nếu in tất cả thành 1 sheet
+		if (employeeData.isApprovalStatus()) {
 			Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
 			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
 			approvalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THICK, Color.getRed());
@@ -440,12 +494,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			approvalRange.get(0, 0).setValue(APPROVAL);
 		}
 		// update start page row value
-		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
+//		startNewPage = dataRow.get(REPORT_START_PAGE_ROW) - 1;
 
 		VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
-//		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
+		vPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1 ));
 		HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-//		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1));
+		hPageBreaks.add(END_REPORT_PAGE_BREAK + (startNewPage + 1 ));
 
 		return startNewPage;
 	}
@@ -540,4 +594,14 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				dataRow.get(REPORT_LEFT_ROW) < dataRow.get(REPORT_RIGHT_ROW) ? dataRow.get(REPORT_RIGHT_ROW)
 						: dataRow.get(REPORT_LEFT_ROW));
 	}
+	
+	private void setFontBold(Cell cell) {
+		Style style = cell.getStyle();
+		style.getFont().setBold(true);
+		cell.setStyle(style);
+	}
+	
+//	private void setBorderThin(Range range, ) {
+//		
+//	}
 }
