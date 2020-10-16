@@ -27,7 +27,7 @@ public class GettingApproverDomainService {
 		val usageSetting = require.getUsageSetting();
 
 		// if $利用設定.職場を利用する = する
-		if (usageSetting.getUseWorkplace() == DoWork.USE) {
+		if (usageSetting != null && usageSetting.getUseWorkplace() == DoWork.USE) {
 			Optional<ApproverItem> optWorkplaceApproverItem
 					= GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, empId);
 
