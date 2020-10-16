@@ -74,7 +74,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
                 if (isExtracting) {
                     self.extractingFlg = isExtracting;
                     nts.uk.ui.dialog.info({ messageId: "Msg_993" }).then(function() {
-                        nts.uk.ui.windows.close();
+                        // nts.uk.ui.windows.close();
                     });
                     block.clear();
                     return;
