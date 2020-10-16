@@ -27,7 +27,7 @@ public class GettingApproverDomainService {
 		val usageSetting = require.getUsageSetting();
 
 		// if $利用設定.職場を利用する = する
-		if (usageSetting.getUseWorkplace() == DoWork.USE) {
+		if (usageSetting !=null && usageSetting.getUseWorkplace() == DoWork.USE) {
 			Optional<ApproverItem> optWorkplaceApproverItem
 					= GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, empId);
 
@@ -39,7 +39,10 @@ public class GettingApproverDomainService {
 		val baseDate = GeneralDate.today();
 		val optCompanyApprover = require.getApproverHistoryItem(baseDate);
 		if (optCompanyApprover.isPresent()) {
-			return optCompanyApprover;
+			return Optional.of(new ApproverItem(
+					optCompanyApprover.get().getApproverList(),
+					optCompanyApprover.get().getConfirmerList()
+			));
 		}
 
 		return Optional.empty();
@@ -51,7 +54,7 @@ public class GettingApproverDomainService {
 		 * [R-1] 承認者の履歴項目を取得する Get the approver's history item
 		 * 会社別の承認者（36協定）Repository.get(会社ID,基準日)
 		 */
-		Optional<ApproverItem> getApproverHistoryItem(GeneralDate baseDate);
+		Optional<Approver36AgrByCompany> getApproverHistoryItem(GeneralDate baseDate);
 
 		/**
 		 * [R-2] 利用設定を取得する - Get usage setting
