@@ -90,7 +90,8 @@ module nts.uk.ui.at.ksu002.a {
 						endDate: moment(finish).toISOString()
 					};
 
-					vm.$blockui('show')
+					vm.$errors('clear')
+						.then(() => vm.$blockui('show'))
 						.then(() => vm.$ajax('at', API.GSCHE, command))
 						.then((response: WorkSchedule<string>[]) => _.chain(response)
 							.orderBy(['date'])

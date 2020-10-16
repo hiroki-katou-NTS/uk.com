@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.time.TimeWithDayAttr
+			</com:ValidatorScript>
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu.002a.style.css" />
 			<com:scriptfile path="../cores/memento.js" />
