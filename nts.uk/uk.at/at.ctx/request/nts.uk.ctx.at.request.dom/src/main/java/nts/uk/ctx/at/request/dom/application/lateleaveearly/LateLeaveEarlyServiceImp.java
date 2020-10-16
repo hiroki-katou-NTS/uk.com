@@ -523,27 +523,27 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
 
-		if (attendTime != null && leaveTime != null && attendTime >= leaveTime) {
+		if (attendTime != null && leaveTime != null && attendTime > leaveTime) {
 			throw new BusinessException("Msg_1677");
 		}
 
-		if (leaveTime != null && attendTime2 != null && leaveTime >= attendTime2) {
+		if (leaveTime != null && attendTime2 != null && leaveTime > attendTime2) {
 			throw new BusinessException("Msg_1677");
 		}
 
-		if (attendTime2 != null && leaveTime2 != null && attendTime2 >= leaveTime2) {
+		if (attendTime2 != null && leaveTime2 != null && attendTime2 > leaveTime2) {
 				throw new BusinessException("Msg_1677");
 			}
 
-		if (attendTime != null && leaveTime2 != null && attendTime >= leaveTime2) {
+		if (attendTime != null && leaveTime2 != null && attendTime > leaveTime2) {
 			throw new BusinessException("Msg_1677");
 		}
 
-		if (leaveTime != null && leaveTime2 != null && leaveTime >= leaveTime2) {
+		if (leaveTime != null && leaveTime2 != null && leaveTime > leaveTime2) {
 			throw new BusinessException("Msg_1677");
 		}
 
-		if (attendTime != null && attendTime2 != null && attendTime >= attendTime2) {
+		if (attendTime != null && attendTime2 != null && attendTime > attendTime2) {
 			throw new BusinessException("Msg_1677");
 		}
 
