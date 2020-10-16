@@ -2046,6 +2046,9 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program CMM001F = new Program(WebAppId.COM, ProgramIdConsts.CMM001F, "CMM001_69",
             "/view/cmm/001/f/index.xhtml");
 
+    public static final Program CMM002A = new Program(WebAppId.COM, ProgramIdConsts.CMM002A, "CMM002_11",
+            "/view/cmm/002/a/index.xhtml");
+    
     /**
      * CMM020A
      */
@@ -2648,6 +2651,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/kaf/s05/a");
     public static final Program KAFS07A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS07A, "KAFS07A",
             "/kaf/s07/a");
+    public static final Program KAFS09A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS09A, "KAFS09A",
+            "/kaf/s09/a");
     public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
             "/kaf/s05/b");
     public static final Program CMMS45B = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45B, "CMMS45B",

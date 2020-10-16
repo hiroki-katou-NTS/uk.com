@@ -134,10 +134,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case ABSENCE_APPLICATION:
 			break;
 		case WORK_CHANGE_APPLICATION:
-			asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B15");
-			remarkLabel = worksheet.getCells().get("B18");
-			reasonContent = worksheet.getCells().get("D15");
+			int deleteCntWC = asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B" + (15- deleteCntWC));
+			remarkLabel = worksheet.getCells().get("B" + (18- deleteCntWC));
+			reasonContent = worksheet.getCells().get("D" + (15- deleteCntWC));
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:

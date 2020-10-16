@@ -4,9 +4,17 @@ const prefix = 'nts.uk.storage'
 	, OPENWD = 'OPEN_WINDOWS_DATA'
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
-	, $storeSession = function (name: string, params?: any) {
+	, $storeSession = function (name: string, params?: any): JQueryPromise<any> {
 		if (arguments.length === 2) {
 			// setter method
+			if (params === undefined) {
+				return $.Deferred().resolve()
+					.then(() => {
+						nts.uk.localStorage.removeItem(`${prefix}.${name}`);
+					})
+					.then(() => $storeSession(name));
+			}
+
 			const $value = JSON.stringify({ $value: params })
 				, $saveValue = btoa(_.map($value, (s: string) => s.charCodeAt(0)).join('-'));
 
@@ -26,10 +34,18 @@ const prefix = 'nts.uk.storage'
 							.split('-').map((s: string) => String.fromCharCode(Number(s)))
 							.join('');
 
-						return JSON.parse($string).$value;
+						const shared = JSON.parse($string).$value;
+
+						if (shared !== undefined) {
+							return shared;
+						}
 					}
 
-					return windows.getShared(name);
+					const shared = windows.getShared(name);
+
+					windows.setShared(name, undefined);
+
+					return shared;
 				});
 		}
 	}
@@ -559,9 +575,9 @@ const $validate = function $validate(act: string[]) {
 
 Object.defineProperty($validate, "constraint", {
 	value: function $constraint(name: string, value: any) {
-		if(arguments.length === 0) {
+		if (arguments.length === 0) {
 			return $.Deferred().resolve()
-			.then(() => __viewContext.primitiveValueConstraints);
+				.then(() => __viewContext.primitiveValueConstraints);
 		} else if (arguments.length === 1) {
 			return $.Deferred().resolve()
 				.then(() => _.get(__viewContext.primitiveValueConstraints, name));
@@ -596,20 +612,20 @@ class I18nBindingHandler implements KnockoutBindingHandler {
 	virtual: false
 })
 class IconBindingHandler implements KnockoutBindingHandler {
-	update(el: HTMLElement, value: () => KnockoutObservable<number> | number) {
-		ko.computed(() => {
-			const numb: number = ko.toJS(value());
-			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
+	update(el: HTMLElement, value: () => KnockoutObservable<number> | number, allBindingsAccessor: KnockoutAllBindingsAccessor) {
+		const numb: number = ko.unwrap(value());
+		const size: string = allBindingsAccessor.get('size') || 'contain';
+		const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
 
-			$.get(url)
-				.then(() => {
-					$(el).css({
-						'background-image': `url('${url}')`,
-						'background-repeat': 'no-repeat',
-						'background-position': 'center'
-					});
+		$.get(url)
+			.then(() => {
+				$(el).css({
+					'background-image': `url('${url}')`,
+					'background-repeat': 'no-repeat',
+					'background-position': 'center',
+					'background-size': size
 				});
-		});
+			});
 	}
 }
 

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
@@ -17,8 +19,14 @@ import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDe
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
@@ -26,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterServi
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkChangeCheckRegOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -79,14 +88,15 @@ public class AppWorkChangeFinder {
 		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 
-	public AppWorkChangeDispInfoDto_Old changeAppDate(AppWorkChangeParamPC param) {
-//		String companyID = AppContexts.user().companyId();
-//		List<GeneralDate> dateLst = param.dateLst.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
-//				.collect(Collectors.toList());
-//		AppWorkChangeDispInfo_Old appWorkChangeDispInfo = appWorkChangeService.changeAppDate(companyID, dateLst,
-//				param.appWorkChangeDispInfoCmd.toDomain());
-//		return AppWorkChangeDispInfoDto_Old.fromDomain(appWorkChangeDispInfo);
-		return null;
+	public AppWorkChangeDispInfoDto changeAppDate(AppWorkChangeAppdateDto param) {
+		String companyID = AppContexts.user().companyId();
+		List<GeneralDate> dateLst = param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
+				.collect(Collectors.toList());
+		AppWorkChangeDispInfo appWorkChangeDispInfo = appWorkChangeService.changeAppDate(
+		        companyID, 
+		        dateLst, 
+		        param.getAppWorkChangeDispInfo().toDomain());
+		return AppWorkChangeDispInfoDto.fromDomain(appWorkChangeDispInfo);
 	}
 
 	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
@@ -331,9 +341,10 @@ public class AppWorkChangeFinder {
 		ApplicationDto applicationDto = command.getApplicationDto();
 		applicationDto.setEmployeeID(sId);
 		Application application = applicationDto.toDomain();
-//		if (command.getAppWorkChangeDto().getAppID() != null ) {
-//			application.setAppID(command.getAppWorkChangeDto().getAppID());
-//		}
+//      if (command.getAppWorkChangeDto().getAppID() != null ) {
+//          application.setAppID(command.getAppWorkChangeDto().getAppID());
+//      }
+		
 		AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
 		int isError = command.getIsError();
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
@@ -343,6 +354,42 @@ public class AppWorkChangeFinder {
 		return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 
 	}
+	
+	// 勤務変更申請の登録前チェック処理
+    public WorkChangeCheckRegisterDto checkBeforeRegisterPC(AddAppWorkChangeCommandCheck command) {
+
+        Boolean mode = command.getMode();
+        String companyId = command.getCompanyId();
+        String sId = AppContexts.user().employeeId();
+        Application application = new Application();
+        ApplicationDto applicationDto = command.getApplicationDto();
+        applicationDto.setEmployeeID(sId);
+        if (StringUtils.isBlank(applicationDto.getAppID())) {
+            application = Application.createFromNew(
+                    EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class), 
+                    applicationDto.getEmployeeID(), 
+                    EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class), 
+                    new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")), 
+                    applicationDto.getEnteredPerson(), 
+                    applicationDto.getOpStampRequestMode() == null ? Optional.empty() : Optional.ofNullable(EnumAdaptor.valueOf(applicationDto.getOpStampRequestMode(), StampRequestMode.class)), 
+                            applicationDto.getOpReversionReason() == null ? Optional.empty() : Optional.ofNullable(new ReasonForReversion(applicationDto.getOpReversionReason())), 
+                                    applicationDto.getOpAppStartDate() == null ? Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                                            applicationDto.getOpAppEndDate() == null ? Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                                                    applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.ofNullable(new AppReason(applicationDto.getOpAppReason())), 
+                                                            applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.ofNullable(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())));
+        } else {
+            application = applicationDto.toDomain();
+        }
+        
+        AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
+        int isError = command.getIsError();
+        WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
+                application, appWorkChangeDto.toDomain(application),
+                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain());
+
+        return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
+
+    }
 
 	// 起動する B KAFS07
 	public AppWorkChangeOutputDto getDetailKAFS07(AppWorkChangeDetailParam appWorkChangeDetailParam) {

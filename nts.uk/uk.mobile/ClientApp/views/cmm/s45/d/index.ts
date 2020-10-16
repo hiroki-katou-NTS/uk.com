@@ -167,7 +167,7 @@ export class CmmS45DComponent extends Vue {
                 for (let frame of phase.listApprovalFrame) {
                     for (let approver of frame.listApprover) {
                         if (user.employeeId != approver.approverID) {
-                            return;
+                            continue;
                         }
                         find = true;
                         if (approver.approvalAtrValue == 2) {
@@ -176,6 +176,10 @@ export class CmmS45DComponent extends Vue {
                         if (approver.approvalAtrValue == 1) {
                             self.commentColor = 'uk-bg-alice-blue';
                         }
+                        break;
+                    }
+                    if (find) {
+                        break;    
                     }
                 }
                 if (find) {
@@ -662,6 +666,9 @@ export class CmmS45DComponent extends Vue {
         });
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
+        }
+        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '' + ' ' + vm.$i18n('CMMS45_87');
         }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');

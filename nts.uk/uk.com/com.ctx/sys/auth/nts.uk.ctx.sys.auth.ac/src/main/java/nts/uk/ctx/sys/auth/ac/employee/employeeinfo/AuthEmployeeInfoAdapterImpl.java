@@ -1,21 +1,23 @@
 package nts.uk.ctx.sys.auth.ac.employee.employeeinfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoByCidSidPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoByCidSidImport;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.*;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
@@ -25,6 +27,15 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 
 	@Inject
 	private EmpInfoByCidSidPub empInfoByCidSidPub;
+
+	@Inject
+	private WorkplacePub workPlacePub;
+
+	@Inject
+	private SyJobTitlePub syJobTitlePub;
+
+	@Inject
+	private RoleExportRepo roleExportRepo;
 
 	@Override
 	public List<EmployeeInfoImport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate baseDate) {
@@ -59,4 +70,19 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 		}
 	}
 
+	@Override
+	public EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate) {
+
+		EmployeeJobHistExport employeeJobHistExport = syJobTitlePub.findBySid(employeeId, baseDate).orElse(null);
+		SWkpHistExport sWkpHistExport = workPlacePub.findBySid(employeeId, baseDate).orElse(null);
+		RoleWhetherLoginPubExport roleWhetherLoginPubExport = roleExportRepo.getWhetherLoginerCharge();
+		
+		String positionName =employeeJobHistExport == null ? null : employeeJobHistExport.getJobTitleName();
+		String wkpDisplayName = sWkpHistExport == null ? null : sWkpHistExport.getWkpDisplayName();
+		boolean permision = false;
+		if(roleWhetherLoginPubExport.isEmployeeCharge() || roleWhetherLoginPubExport.isSalaryProfessional() || roleWhetherLoginPubExport.isHumanResOfficer()){
+			permision = true;
+		}
+		return new EmployeeInformationImport(employeeId, permision, positionName, wkpDisplayName);
+	}
 }

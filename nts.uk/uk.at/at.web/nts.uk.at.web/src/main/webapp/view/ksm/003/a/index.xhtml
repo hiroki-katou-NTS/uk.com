@@ -16,7 +16,7 @@
             <com:scriptfile path="ksm003.a.vm.js" />
         </ui:define>
         <ui:define name="content">
-            <div id="functions-area" style="height: 55px">
+            <div id="functions-area">
                 <!-- B1_1: Button New -->
                 <button tabindex="1" id="btn_001" class="button separate-button fix-button"
                     data-bind="click: switchNewMode">#{i18n.getText('KSM003_20')}</button>
@@ -25,10 +25,10 @@
                     data-bind="click: saveWorking, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
                 <!-- B1_3: Button Display pattern -->
                 <button tabindex="3" id="btn_005" class="button separate-button fix-button"
-                    data-bind="click: openDialogWorking, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_35')}</button>
+                    data-bind="click: openDialogWorking, enable: isEditting()">#{i18n.getText('KSM003_35')}</button>
                 <!-- B1_4: Button Delete -->
                 <button tabindex="4" id="btn_004" class="button danger separate-button fix-button"
-                    data-bind="click: deletePattern, enable: $root.errors.isEmpty() &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
+                    data-bind="click: deletePattern, enable: isEditting()">#{i18n.getText('KSM003_22')}</button>
                 <!-- B1_4: Button Export Excel -->
                 <button tabindex="5" data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
             </div>
@@ -53,24 +53,24 @@
                     </div>
                 </div>
                 <div id="right-content" style="float: left;">
-                    <div class="work-cycle-header">
+                    <div class="work-cycle-header" data-bind="with: mainModel">
                         <div data-bind="ntsFormLabel: {required: true,constraint:['WorkCycleCode','WorkCycleName'] }">
                             #{i18n.getText('KSM003_28')}</div>
                         <input tabindex="7" class="nts-input" id="inpCode" data-bind="ntsTextEditor: {
 										  name: '#[KSM003_36]',
-                                          value: selectedCode,
+                                          value: patternCode,
                                           constraint: 'WorkCycleCode',
-                                          enable: !isEditting(),
+                                          enable: !$parent.isEditting(),
                                           required: true}" />
                         <!-- B3_3:Pattern Name-->
                         <input tabindex="8" class="nts-input" id="inpPattern" data-bind="ntsTextEditor: {
 										  name: '#[KSM003_37]',
-                                          value: selectedName,
+                                          value: patternName,
                                           constraint: 'WorkCycleName',
                                           required: true}" />
                     </div>
                     <!-- Button -->
-                    <div style="padding-bottom: 10px;">
+                    <div>
                         <Button tabindex="9" class="button"
                             data-bind="click: addNewItem, enable: lessThan99Items()">#{i18n.getText('KSM003_4')}</Button>
                         <Button tabindex="10" class="button danger"

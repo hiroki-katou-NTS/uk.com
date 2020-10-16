@@ -148,7 +148,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
@@ -1629,6 +1629,9 @@ public class ScheduleCreatorExecutionTransaction {
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
 		WorkScheduleMasterReferenceAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
+		
+		WorkScheduleMasterReferenceAtr referenceBasicWork = itemDto.get().getScheduleMethod().get()
+				.getWorkScheduleBusCal().get().getReferenceBasicWork();
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
@@ -1690,7 +1693,7 @@ public class ScheduleCreatorExecutionTransaction {
 								.getWorkdayDivisionByWkp(workdayDivisions);
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
-								dateInPeriod, creator, workdayDivision, workplaceHistItem,
+								dateInPeriod, creator, workdayDivision, referenceBasicWork,
 								workdayDivisions.getWorkplaceIds(),
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 
@@ -1725,7 +1728,7 @@ public class ScheduleCreatorExecutionTransaction {
 						Optional<Integer> workdayDivision = basicWorkSettingHandler
 								.getWorkdayDivisionByClass(baseGetter);
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
-								dateInPeriod, creator, workdayDivision, workplaceHistItem, new ArrayList<>(), null,
+								dateInPeriod, creator, workdayDivision, referenceBasicWork, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
 										.getClassificationCode());
 						return basicWorkSettings;
@@ -1808,8 +1811,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// 入力パラメータ「再作成区分」を判断 - check parameter ReCreateAtr onlyUnconfirm
 		// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 		// (kiểm tra thông tin 「予定確定区分」 của domain 「勤務予定基本情報」)
-		if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ALL_CASE
-				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
+		if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
 					basicSchedule, employmentInfo, workingConditionItem, masterCache)) {

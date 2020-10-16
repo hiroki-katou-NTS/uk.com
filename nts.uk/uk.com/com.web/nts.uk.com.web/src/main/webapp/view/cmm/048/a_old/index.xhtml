@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+
+		<ui:define name="htmlHead">
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="cmm048.a_old.style.css" />
+			<com:scriptfile path="cmm048.a_old.service.js" />
+			<com:scriptfile path="../b/cmm048.b.service.js" />
+			<com:scriptfile path="cmm048.a_old.start.js" />
+			<com:scriptfile path="cmm048.a_old.vm.js" />
+
+			<!-- Begin tab 01 -->
+			<com:scriptfile path="../a1/cmm048.a1_old.vm.js" />
+			<com:stylefile path="../a1/cmm048.a1_old.style.css" />
+			<!-- End tab 01 -->
+
+			<!-- Begin tab 02 -->
+			<com:scriptfile path="../a2/cmm048.a2_old.vm.js" />
+			<com:stylefile path="../a2/cmm048.a2_old.style.css" />
+			<!-- End tab 02 -->
+
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.person.dom.person.contact.MailAddress
+				nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum
+				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+			</com:ValidatorScript>
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="button-save" tabindex="1" class="proceed"
+					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CMM048_3')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="tab-panel" tabindex="3"
+					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="tab-content-1">
+						<div class="tab-outline"
+							data-bind="ntsCMM048A1: {
+							model: mainModel
+						}">
+						</div>
+					</div>
+					<div class="tab-content-2">
+						<div class="tab-outline"
+							data-bind="ntsCMM048A2: {
+							model: mainModel
+						}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

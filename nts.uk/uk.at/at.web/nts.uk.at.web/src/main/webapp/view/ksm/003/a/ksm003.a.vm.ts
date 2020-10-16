@@ -113,7 +113,11 @@ module nts.uk.at.view.ksm003.a {
                         $("#inpPattern").focus();
                     }
                 }
-            );
+            ).fail((error) => {
+                vm.$dialog.info({ messageId: error.messageId }).then(() => {
+                    return;
+                });
+            });
         }
 
         public switchNewMode(): void {
@@ -293,13 +297,17 @@ module nts.uk.at.view.ksm003.a {
             let dailyPatternVals = vm.mainModel().dailyPatternVals();
             let totalItems: number = dailyPatternVals.length > 0 ? dailyPatternVals.length + 1 : 1;
 
-            if (totalItems > vm.maxWorkingTimeItems) {
+            if (totalItems >= vm.maxWorkingTimeItems) {
+                vm.lessThan99Items(false);
+            } else
+                vm.lessThan99Items(true);
+
+            /* if (totalItems > vm.maxWorkingTimeItems) {
                 vm.$dialog.info({ messageId: "Msg_1688" }).then(() => {
                     vm.lessThan99Items(false);
                 });
-
                 return;
-            }
+            } */
 
             nts.uk.ui.errors.clearAll();
 
@@ -346,7 +354,7 @@ module nts.uk.at.view.ksm003.a {
             if (dailyPatternValModel.length <= 0) vm.selectedCheckAll(false);
             vm.enableRemoveItem(false);
 
-	        nts.uk.ui.errors.clearAll();
+            nts.uk.ui.errors.clearAll();
         }
 
         /*
@@ -440,16 +448,15 @@ module nts.uk.at.view.ksm003.a {
 
             //get first, last item and set to default
             let newSelectedItem: DailyPatternItemDto = null;
+            let totalRecord = dataHistory.length;
 
             dataHistory && dataHistory.some((item, i) => {
                 if (item.code == vm.selectedCode()) {
-                    if (dataHistory.length == 1) {
-
+                    if (totalRecord == 1) {
                         vm.itemLst([]);
                         vm.switchNewMode()
                         return;
-
-                    } else if (i == 0) {
+                    } else if (i < totalRecord - 1) {
                         newSelectedItem = dataHistory[i + 1];
                     } else {
                         newSelectedItem = dataHistory[i - 1];
@@ -533,6 +540,7 @@ module nts.uk.at.view.ksm003.a {
 
 
             let detailDto = vm.mainModel().toDto();
+
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
                 let selectedName = vm.selectedName();
@@ -555,7 +563,7 @@ module nts.uk.at.view.ksm003.a {
                     detailDto = new DailyPatternDetailDto(selectedCode, selectedName, lstVal);
                 }
             } else {
-                detailDto.workCycleName = vm.selectedName();
+                detailDto.workCycleName = detailDto.name; //vm.selectedName();
             }
 
             this.saveDailyPattern(detailDto).done(function (res) {
@@ -588,9 +596,7 @@ module nts.uk.at.view.ksm003.a {
                         }
 
                         if (!nts.uk.util.isNullOrEmpty(MsgId)) {
-                            let mgsError = vm.$i18n.message(MsgId);
-                            mgsError = (i + 1) + '行目: ' + mgsError;
-                            $('#btnVal' + infosData[i].dispOrder).ntsError('set', { messageId: MsgId, message: mgsError });
+                            $('#btnVal' + infosData[i].dispOrder).ntsError('set', { messageId: MsgId });
                         }
                     })
 
@@ -636,6 +642,10 @@ module nts.uk.at.view.ksm003.a {
             $('#inpCode').ntsEditor('validate');
             $('#inpPattern').ntsEditor('validate');
 
+            if (nts.uk.ui.errors.hasError()) {
+                return true;
+            }
+
             if (nts.uk.util.isNullOrEmpty(self.mainModel().dailyPatternVals())) {
                 $('.fixed-table').ntsError('set', { messageId: "Msg_31" });
             }
@@ -645,13 +655,12 @@ module nts.uk.at.view.ksm003.a {
             self.mainModel().dailyPatternVals().map((item, index) => {
                 //day > 0 & workingCode null
                 if (nts.uk.text.isNullOrEmpty(item.typeCode())) {
-                    $('#days' + item.dispOrder).ntsEditor('validate');
-                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
+                    $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_1690", messageParams: [self.$i18n('KSM003_23')] });
                     hasRowIsNull = true;
                 }
-                //day null & workingCode !null
-                if (nts.uk.text.isNullOrEmpty(item.days()) || item.days() <= 0) {
-                    $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
+
+                if (!hasRowIsNull && (nts.uk.text.isNullOrEmpty(item.days()) || item.days() <= 0)) {
+                    $('#days' + item.dispOrder).ntsEditor('validate');
                     hasRowIsNull = true;
                 }
             });
@@ -739,13 +748,14 @@ module nts.uk.at.view.ksm003.a {
                 currentRow: DailyPatternValModel = data;
 
             self.$window.storage("parentCodes", {
-	              selectedWorkTypeCode: currentRow.typeCode(),
-	              selectedWorkTimeCode: currentRow.timeCode()
+                selectedWorkTypeCode: currentRow.typeCode(),
+                selectedWorkTimeCode: currentRow.timeCode()
             });
 
+            //self.$window.storage("childData", undefined).then(() => {
             self.$window
                 .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
-                .then(function (result) {
+                .then(function () {
                     self.$window.storage("childData").then((resultData) => {
                         if (resultData) {
                             currentRow.typeCode(resultData.selectedWorkTypeCode);
@@ -769,6 +779,7 @@ module nts.uk.at.view.ksm003.a {
                         }
                     });
                 });
+            //});
         }
 
         displayWorkingInfo(patternCode: string) {
@@ -913,7 +924,7 @@ module nts.uk.at.view.ksm003.a {
             this.code = code;
             this.name = name;
             this.infos = infos;
-
+            //send to server
             this.workCycleCode = code;
             this.workCycleName = name;
             this.workInformations = infos;
@@ -968,15 +979,4 @@ module nts.uk.at.view.ksm003.a {
             this.name(data && data.name || null);
         }
     }
-
-    // cos ver van de nam o day
-    // Trong knockoutjs,
-    // vaf trong javascript, doi tuong la bat cu kieu gi, vis duj khoi tao tu class, khoi tao nhu moojt anonymus object.
-
-    // Viết lại định nghĩa đối tượng sẽ bind vào danh sách và bind vào trong gridlist/
-
-    // Interface là giao diện nhìn của một đối tượng nào đó
-    // tức là khi ta chỉ định một đối tượng nào đó có kiểu như thế nào, ta sẽ chỉ định interface cho nó.
-    // vì igGrid là control của jquery, nó không phải là một observable, nên ta chỉ cần các đối tượng js đơn giản (chỉ chứa các primitive value)
-    // là được, (dùng interface để định nghĩa cấu trúc cho data thôi), không cần tạo class.
 }

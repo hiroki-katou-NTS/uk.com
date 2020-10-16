@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.D
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -79,7 +80,7 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 	}
 	@Override
 	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional,
-			Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag) {
+			Optional<AppRecordImage> appRecoderImageOptional, Boolean recoderFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		
 		appRepository.update(application);
 		if (recoderFlag) {
@@ -95,7 +96,7 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 					
 		}
 //		4-2.詳細画面登録後の処理 
-		return detailAfterUpdate.processAfterDetailScreenRegistration(AppContexts.user().companyId(), application.getAppID());
+		return detailAfterUpdate.processAfterDetailScreenRegistration(AppContexts.user().companyId(), application.getAppID(), appDispInfoStartupOutput);
 	}
 	
 
