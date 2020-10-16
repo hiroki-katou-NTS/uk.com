@@ -146,12 +146,6 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             if(params.isEdit) {
                 vm.isEdit = params.isEdit;
             }
-
-            // vm.model().appDispInfoStartupOutput.subscribe(() => {
-            //     if(params.isEdit) {
-            //         vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
-            //     }
-            // });
         }
 
         mounted() {
@@ -218,17 +212,6 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 
             });
         }
-
-        // public conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
     }
 
     const API = {
