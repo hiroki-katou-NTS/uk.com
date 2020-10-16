@@ -47,11 +47,12 @@ public class ManualSettingCommand {
 	private String patternCode;
 
 	public ManualSetOfDataSave toDomain(String cid, String storeProcessingId, String practitioner) {
-		return new ManualSetOfDataSave(cid, storeProcessingId, passwordAvailability, saveSetName,
-				referenceDate, compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
-				monthSaveEndDate.toString("yyyy-MM"), monthSaveStartDate.toString("yyyy-MM"), suppleExplanation,
-				endYear, startYear, presenceOfEmployee,
-				practitioner, StorageClassification.MANUAL.value, employees.stream().map(x -> {
+		return new ManualSetOfDataSave(cid, storeProcessingId, passwordAvailability, saveSetName, referenceDate,
+				compressedPassword, executionDateAndTime, daySaveEndDate, daySaveStartDate,
+				monthSaveEndDate != null ? monthSaveEndDate.toString("yyyy-MM") : null,
+				monthSaveStartDate != null ? monthSaveStartDate.toString("yyyy-MM") : null, suppleExplanation, endYear,
+				startYear, presenceOfEmployee, practitioner, StorageClassification.MANUAL.value,
+				employees.stream().map(x -> {
 					return new TargetEmployees(storeProcessingId, x.getSid(), new BusinessName(x.getBusinessname()),
 							new EmployeeCode(x.getScd()));
 				}).collect(Collectors.toList()), category.stream().map(x1 -> {

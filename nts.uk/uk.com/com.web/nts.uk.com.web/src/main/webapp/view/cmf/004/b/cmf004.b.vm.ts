@@ -795,12 +795,16 @@ module nts.uk.com.view.cmf004.b.viewmodel {
         dateValue.monthRange(self.dateValue().monthRange);
         dateValue.yearRange(self.dateValue().yearRange);
       }
+      if (self.employeeListScreenG().length !== self.selectedEmployeeCodeScreenG().length) {
+        self.employeeListScreenG(_.filter(self.employeeListScreenG(), e => _.includes(self.selectedEmployeeCodeScreenG(), e.code)));
+      }
       return new ManualSettingModal(Number(self.isCheckboxActive()),
         self.dataContentConfirm().dataContentcategoryList().map(data => data.saveSetName()).pop(), moment.utc().toISOString(), self.pwdCompressEdt.value(),
         moment.utc().toISOString(), moment.utc(dateValue.dateRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.dateRange().startDate, "YYYY/MM/DD").toISOString(),
         moment.utc(dateValue.monthRange().endDate, "YYYY/MM/DD").toISOString(), moment.utc(dateValue.monthRange().startDate, "YYYY/MM/DD").toISOString(), self.explanationValue(),
         Number(dateValue.yearRange().endDate), Number(dateValue.yearRange().startDate), self.dataContentConfirm().selectedRecoveryMethod(),
-        self.selectedEmployee(), self.dataRecoverySummary().recoveryCategoryList().map(data => new CategoryTableList(data.categoryId(), data.systemType())), self.recoverySourceCode());
+        self.employeeListScreenG(), _.map(self.dataRecoverySummary().recoveryCategoryList(), data => new CategoryTableList(data.categoryId(), data.systemType())), 
+        self.recoverySourceCode());
     }
 
     backToPreviousScreen(): void {
@@ -1022,21 +1026,21 @@ module nts.uk.com.view.cmf004.b.viewmodel {
     constructor(passwordAvailability: number, saveSetName: string, referenceDate: string, compressedPassword: string,
       executionDateAndTime: string, daySaveEndDate: string, daySaveStartDate: string, monthSaveEndDate: string, monthSaveStartDate: string,
       suppleExplanation: string, endYear: number, startYear: number, presenceOfEmployee: number, 
-      employees: EmployeeSearchDto[], category: CategoryTableList[], patternCode: string) {
+      employees: UnitModel[], category: CategoryTableList[], patternCode: string) {
       this.passwordAvailability = passwordAvailability;
       this.saveSetName = saveSetName;
       this.referenceDate = referenceDate;
-      this.compressedPassword = compressedPassword ? compressedPassword : null;
+      this.compressedPassword = compressedPassword;
       this.executionDateAndTime = executionDateAndTime;
-      this.daySaveEndDate = daySaveEndDate ? daySaveEndDate : null;
-      this.daySaveStartDate = daySaveStartDate ? daySaveStartDate : null;
-      this.monthSaveEndDate = monthSaveEndDate ? monthSaveEndDate : null;
-      this.monthSaveStartDate = monthSaveStartDate ? monthSaveStartDate : null;
-      this.suppleExplanation = suppleExplanation ? suppleExplanation : null;
-      this.endYear = endYear ? endYear : null;
-      this.startYear = startYear ? startYear : null;
+      this.daySaveEndDate = daySaveEndDate;
+      this.daySaveStartDate = daySaveStartDate;
+      this.monthSaveEndDate = monthSaveEndDate;
+      this.monthSaveStartDate = monthSaveStartDate;
+      this.suppleExplanation = suppleExplanation;
+      this.endYear = endYear;
+      this.startYear = startYear;
       this.presenceOfEmployee = presenceOfEmployee;
-      this.employees = _.map(employees, e => new TargetEmployee(e.employeeId, e.employeeCode, e.employeeName));
+      this.employees = _.map(employees, e => new TargetEmployee(e.id, e.code, e.name));
       this.category = category;
       this.patternCode = patternCode;
     }

@@ -155,10 +155,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			// ドメインモデル「データ保存動作管理」を登録する
-			List<String> categoryIds = manualSetting.getCategory().stream()
-					.map(TargetCategory::getCategoryId)
-					.distinct()
-					.collect(Collectors.toList());
+			List<String> categoryIds = manualSetting.getCategory().stream().map(TargetCategory::getCategoryId)
+					.distinct().collect(Collectors.toList());
 //			if (!repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
 //					OperatingCondition.SAVING)) {
 //				return;
@@ -200,17 +198,14 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		List<Category> categorys = repoCategory.getCategoryByListId(categoryIds);
 		List<CategoryFieldMt> categoryFieldMts = targetCategories.stream()
 				.map(c -> repoCateField.findByCategoryIdAndSystemType(c.getCategoryId(), c.getSystemType().value))
-				.flatMap(List::stream)
-				.distinct()
-				.collect(Collectors.toList());
+				.flatMap(List::stream).distinct().collect(Collectors.toList());
 		int countCategoryFieldMts = categoryFieldMts.stream()
 				.collect(Collectors.groupingBy(CategoryFieldMt::getCategoryId)).keySet().size();
 		if (categoryIds.size() != countCategoryFieldMts) {
 //			return ResultState.ABNORMAL_END;
-			repoDataSto.update(storeProcessingId, countCategoryFieldMts, 0,
-					OperatingCondition.SAVING);
-		} else repoDataSto.update(storeProcessingId, categoryIds.size(), 0,
-				OperatingCondition.SAVING);
+			repoDataSto.update(storeProcessingId, countCategoryFieldMts, 0, OperatingCondition.SAVING);
+		} else
+			repoDataSto.update(storeProcessingId, categoryIds.size(), 0, OperatingCondition.SAVING);
 
 		String cId = optManualSetting.getCid();
 
@@ -254,21 +249,29 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 				switch (retentionPeriodCls) {
 				case DAILY:
-					saveDateFrom = optManualSetting.getDaySaveStartDate().toString();
-					saveDateTo = optManualSetting.getDaySaveEndDate().toString();
+					saveDateFrom = optManualSetting.getDaySaveStartDate() != null
+							? optManualSetting.getDaySaveStartDate().toString()
+							: null;
+					saveDateTo = optManualSetting.getDaySaveEndDate() != null
+							? optManualSetting.getDaySaveEndDate().toString()
+							: null;
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case MONTHLY:
-					saveDateFrom = optManualSetting.getMonthSaveStartDate().replace('-', '/');
-					saveDateTo = optManualSetting.getMonthSaveEndDate().replace('-', '/');
+					saveDateFrom = optManualSetting.getMonthSaveStartDate() != null
+							? optManualSetting.getMonthSaveStartDate().replace('-', '/')
+							: null;
+					saveDateTo = optManualSetting.getMonthSaveEndDate() != null
+							? optManualSetting.getMonthSaveEndDate().replace('-', '/')
+							: null;
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
 					if (optManualSetting.getStartYear().isPresent()) {
-						saveDateFrom = optManualSetting.getStartYear().get().v().toString();
+						saveDateFrom = optManualSetting.getStartYear().map(y -> y.v().toString()).orElse(null);
 					}
 					if (optManualSetting.getEndYear().isPresent()) {
-						saveDateTo = optManualSetting.getEndYear().get().v().toString();
+						saveDateTo = optManualSetting.getEndYear().map(y -> y.v().toString()).orElse(null);
 					}
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
@@ -383,7 +386,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
-				List<String> ids = tableLists.stream().map(TableList::getCategoryId).distinct().collect(Collectors.toList());
+				List<String> ids = tableLists.stream().map(TableList::getCategoryId).distinct()
+						.collect(Collectors.toList());
 				int i = 0;
 				for (TableList tableList : tableLists) {
 					rowCsv = getDataTableListeCsv(rowCsv, headerCsv, tableList);
