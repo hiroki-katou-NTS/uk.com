@@ -104,7 +104,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				}
 			}).done((res: any) => {
 				vm.fetchData(res);
-				// $('#kaf000-a-component4-singleDate').focus();
 			}).fail(err => {
 				console.log(err)
 				if (err.messageId === "Msg_43") {
@@ -128,7 +127,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				predetemineTimeSetting: ko.observable(params.predetemineTimeSetting),
 				appWorkChangeSet: params.appWorkChangeSet
 			});
-			// vm.reflectWorkChange = params.reflectWorkChangeAppDto;
 			vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
 			vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
 			vm.getWorkDispName(params.workTypeLst,
@@ -250,9 +248,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			// if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
-			// 	vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
-			// }
 			
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
@@ -288,10 +283,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
 					};
-					// if (!_.isEmpty(res.confirmMsgLst)) {
-					// 	let listTemp = _.clone(res.confirmMsgLst);
-					// };
-					// return;
 				}).then((result) => {
 					if(result) {
 						return vm.registerData(command);
@@ -329,25 +320,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 		handleConfirmMessage(listMes: any, vmParam: any): any {
 			const vm = this;
-			// if (!_.isEmpty(listMes)) {
-			// 	let item = listMes.shift();
-			// 	return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst })
-			// 		.then((value) => {
-			// 			if (value == 'yes') {
-			// 				if (_.isEmpty(listMes)) {
-			// 					return vm.registerData(res);
-			// 				} 
-			// 				// else {
-			// 				// 	return vm.handleConfirmMessage(listMes, res);
-			// 				// }
-			// 				return;
-			// 			}
-			// 		}).then((result) => {
-			// 			if(!result) {
-			// 				return vm.handleConfirmMessage(listMes, res);
-			// 			}
-			// 		});
-			// }
 
 			return new Promise((resolve: any) => {
 				if(_.isEmpty(listMes)) {
@@ -371,17 +343,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			return vm.$ajax(API.register, params);
 		}
-
-		// public conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
 	}
 
 	const API = {
