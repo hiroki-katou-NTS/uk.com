@@ -831,7 +831,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
             appDispInfoStartupDto: self.appDispInfoStartupOutput
         }).then((res: any) => {
-            self.$mask('hide');
+            //self.$mask('hide');
             // confirmMsgLst
             // holidayDateLst
             let isConfirm = true;
