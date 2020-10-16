@@ -49,5 +49,4 @@ public class CreateWorkStatusSettingDomainService {
         void duplicateConfigurationDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId,
                                            OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName);
     }
-    public class RequireImpl
 }
