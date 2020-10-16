@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 350, height: 400 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kwr003.b.main.css" />
+        <com:scriptfile path="kwr003.b.vm.js" />
+
+        <com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
+          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div class="kwr-003b">
+          <div id="functions-area">
+            <!-- B1_1 -->
+            <button
+              tabindex="1"
+              id="btnB11"
+              class="normal"
+              data-bind="text: $i18n('KWR003_201'), click: addNewRow, enable: isEnaleAddButton"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="2"
+              id="btnB12"
+              class="proceed"
+              data-bind="text: $i18n('KWR003_203'), click: registerSetting"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="3"
+              id="btnB13"
+              class="normal"
+              data-bind="text: $i18n('KWR003_204'), click: showDialogC"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="4"
+              id="btnB14"
+              class="danger"
+              data-bind="text: $i18n('KWR003_205'), click: deteleSetting, enable: isEnaleRemoveButton"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="5"
+              id="btnB15"
+              class="normal"
+              data-bind="text: $i18n('KWR003_206'), click: closeDialog"
+            />
+          </div>
+          <!-- A1_2-->
+          <div id="content-area">
+            <div class="pull-left">
+              <div
+                data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
+              >
+                <div
+                  tabindex="6"
+                  data-bind="ntsSearchBox: {
+                  searchMode: 'highlight',
+                  targetKey: 'code',
+                  comId: 'multiList', 
+                  items: listItems,
+                  selected: currentCodeList,
+                  selectedKey: 'code',                 
+                  fields: ['name', 'code'],
+                  mode: 'igGrid'}"
+                />
+                <table
+                  id="multiList"
+                  data-bind="ntsGridList: {
+                    height: 320,
+                    options: listItems,
+                    optionsValue: 'code',
+                    columns: [
+                      { headerText: $i18n('KWR003_207'), prop: 'code', width: 90 },
+                      { headerText: $i18n('KWR003_208'), prop: 'name', width: 230 }
+                    ],
+                    multiple: false,
+                    value: currentCodeList
+                  }"
+                ></table>
+              </div>
+            </div>
+            <div class="pull-left">
+              <div class="row d-flex">
+                <div
+                  class="form-label required broken"
+                  data-bind="ntsFormLabel: { 
+                    required: true, 
+                    text: $i18n('KWR003_209'), 
+                    constraint: ['ExportSettingCode', 'ExportSettingName']}"
+                ></div>
+                <div class="textEditor">
+                  <input
+                    class="code"
+                    tabindex="7"
+                    data-bind="ntsTextEditor: {
+                      value: attendanceCode, 
+                      constraint: 'ExportSettingCode',
+                      name: $i18n('KWR003_210')
+                    }"
+                  />
+                  <input
+                    class="name"
+                    tabindex="8"
+                    data-bind="ntsTextEditor: {
+                      value: attendanceName,
+                      constraint: 'ExportSettingName',
+                      name: $i18n('KWR003_211')
+                    }"
+                  />
+                </div>
+              </div>
+              <div class="row d-flex">
+                <div
+                  data-bind="ntsFormLabel: { required: false, text: $i18n('KWR003_212') }"
+                ></div>
+              </div>
+              <div class="row">
+                <div class="ui-iggrid">
+                  <table id="multiGridList" width="100%">
+                    <colgroup>
+                      <col width="35px" />
+                      <col width="190px" />
+                      <col width="160px" />
+                      <col width="250px" />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th class="ui-widget-header" style="text-align: center">
+                          <div
+                            tabindex="-1"
+                            class="chkboxItem"
+                            data-bind="ntsCheckBox: { checked: isSelectAll, name: 'CheckAll' }"
+                          ></div>
+                        </th>
+                        <th
+                          class="ui-widget-header"
+                          data-bind="text: $i18n('KWR003_213')"
+                        ></th>
+                        <th class="ui-widget-header"></th>
+                        <th
+                          class="ui-widget-header"
+                          data-bind="text: $i18n('KWR003_214')"
+                        ></th>
+                      </tr>
+                    </thead>
+                    <tbody data-bind="foreach: settingListItems">
+                      <tr data-bind="attr: {id: 'row-' + id}">
+                        <td>
+                          <div
+                            tabindex="-1"
+                            class="chkboxItem"
+                            data-bind="ntsCheckBox: { checked: isChecked, name: 'CheckItem' }"
+                          ></div>
+                        </td>
+                        <td>
+                          <input
+                            tabindex="-1"
+                            class="nts-editor"
+                            data-bind="attr: { id: 'textName' + id }, ntsTextEditor: { value: name }"
+                          />
+                        </td>
+                        <td>
+                          <div
+                            class="cf"
+                            data-bind="ntsSwitchButton: {
+                              options: $vm.settingRules,
+                              optionsValue: 'code',
+                              optionsText: 'name',
+                              value: setting
+                            }"
+                          ></div>
+                          <button
+                            data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
+                          />
+                        </td>
+                        <td><span data-bind="text: selectionItem"></span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

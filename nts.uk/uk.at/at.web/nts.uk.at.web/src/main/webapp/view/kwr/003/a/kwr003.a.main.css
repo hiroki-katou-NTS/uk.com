@@ -6,18 +6,20 @@
   margin-left: 80px;
 }
 .kwr-003 .fixed-flex-layout-left .employees-list {
-  width: 400px;
+  width: auto;
 }
 .kwr-003 .employees-list .date-time-picker {
   margin-bottom: 10px;
 }
 .kwr-003 .employees-list .date-time-picker-label {
-  width: 30%;
+  margin-right: 32px;
 }
 .kwr-003 .fixed-flex-layout-right {
   width: 600px;
 }
-
+.kwr-003 .panel > div {
+  padding: 0 !important;
+}
 .kwr-003 .panel .panel-row {
   display: flex;
   margin-bottom: 10px;
