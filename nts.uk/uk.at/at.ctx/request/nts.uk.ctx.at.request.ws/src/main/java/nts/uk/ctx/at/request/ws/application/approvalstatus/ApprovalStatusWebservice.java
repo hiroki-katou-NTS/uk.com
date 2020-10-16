@@ -21,8 +21,11 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusM
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
@@ -40,6 +43,9 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
+	
+	@Inject
+	private ApprovalStatusService approvalStatusService;
 
 	@POST
 	@Path("getMailTemp")
@@ -132,5 +138,11 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("getApprovalStatusActivation")
 	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId){
 		return finder.getApprovalStatusActivation(selectClosureId);
+	}
+	
+	@POST
+	@Path("getStatusExecution")
+	public List<ApprSttExecutionOutput> getStatusExecution(List<DisplayWorkplace> wkpInfoLst){
+		return approvalStatusService.getStatusExecution(wkpInfoLst);
 	}
 }
