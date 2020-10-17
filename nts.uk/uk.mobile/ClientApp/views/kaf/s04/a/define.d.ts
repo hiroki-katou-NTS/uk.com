@@ -446,3 +446,14 @@ export interface IResAppDate {
         lateOrEarlyInfoLst: ILateOrLeaveEarlies;
     }
 }
+
+export interface Params {
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
+    arrivedLateLeaveEarly: IArrivedLateLeaveEarly;
+    earlyInfos: IEarlyInfos;
+    lateEarlyCancelAppSet: {
+        cancelAtr: 0 | 1 | 2;
+        companyId: string;
+
+    }
+}

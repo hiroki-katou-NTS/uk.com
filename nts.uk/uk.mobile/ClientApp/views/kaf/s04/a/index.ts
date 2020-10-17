@@ -2,7 +2,6 @@ import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { KafS04BComponent } from '../b';
 import { KafS00SubP1Component, KAFS00P1Params } from '../../s00/sub/p1';
 
 
@@ -21,6 +20,7 @@ import {
     IParamS00C,
     IParamS00B,
     IResAppDate,
+    Params,
 } from './define';
 
 @component({
@@ -40,12 +40,13 @@ import {
         'kaf-s00-b': KafS00BComponent,
         'kaf-s00-c': KafS00CComponent,
         'kaf-s00-shr': KafS00ShrComponent,
-        'kaf-s04-b': KafS04BComponent,
         'kaf-s00-p1': KafS00SubP1Component,
     },
     constraints: []
 })
 export class KafS04AComponent extends KafS00ShrComponent {
+    @Prop({ default: null })
+    public readonly params!: Params;
     public title: string = 'KafS04A';
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: IParamS00B;
@@ -124,15 +125,32 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public isCheck: boolean = false;
 
 
-    @Prop({ default: true }) public readonly mode!: boolean;
+    public mode: boolean = true;
 
     @Prop({ default: () => ({}) }) public readonly res!: IResDetail;
 
     public created() {
         const vm = this;
 
+        if (vm.params) {
+            vm.mode = false;
+        }
+
         if (!vm.mode) {
-            vm.res.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, idx) => {
+            vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                if (item.opAchievementDetail != null) {
+                    vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                    vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
+                    vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                    vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
+                } else {
+                    vm.kafS00P1Params1.scheduleTime = null;
+                    vm.kafS00P1Params2.scheduleTime = null;
+                    vm.kafS00P1Params3.scheduleTime = null;
+                    vm.kafS00P1Params4.scheduleTime = null;
+                }
+            });
+            vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, idx) => {
                 if (idx == 0) {
                     vm.time.attendanceTime = item.timeWithDayAttr;
                 }
@@ -199,19 +217,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.initComponentA();
                     vm.initComponetB();
                     vm.initComponentC();
-                    vm.initComponentP1();
-
-                    if (!vm.mode) {
-                        let schedTime = vm.res.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
-                        schedTime.forEach((item) => {
-                            if (item.opAchievementDetail != null) {
-                                vm.kafS00P1Params1.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime1;
-                                vm.kafS00P1Params2.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime1;
-                                vm.kafS00P1Params3.scheduleTime = item.opAchievementDetail.achievementEarly.scheAttendanceTime2;
-                                vm.kafS00P1Params4.scheduleTime = item.opAchievementDetail.achievementEarly.scheDepartureTime2;
-                            }
-                        });
-                    }
 
                     if (!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles) {
                         vm.conditionLateEarlyLeave2Show = false;
@@ -232,10 +237,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     get showCheckBox() {
         const vm = this;
-
-        if (!vm.mode) {
-
-        }
 
         if (vm.application.prePostAtr == 1) {
             if (vm.cancelAtr == 1 || vm.cancelAtr == 2) {
@@ -371,8 +372,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
 
         if (!vm.mode) {
-            const { res } = vm;
-            const { appDispInfoStartupOutput } = res;
+            const { params } = vm;
+            const { appDispInfoStartupOutput } = params;
 
             const { appDetailScreenInfo, appDispInfoNoDateOutput } = appDispInfoStartupOutput;
             const { employeeInfoLst } = appDispInfoNoDateOutput;
@@ -384,7 +385,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 prePostAtr,
                 startDate: opAppStartDate,
                 endDate: opAppEndDate,
-                employeeName: _.isEmpty(employeeInfoLst) ? 'empty' : vm.res.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+                employeeName: _.isEmpty(employeeInfoLst) ? 'empty' : vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
     }
@@ -414,14 +415,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                opAppStandardReasonCD: vm.mode ? null : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                opAppReason: vm.mode ? null : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: vm.mode ? '' : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: vm.mode ? '' : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
-                opAppReason: vm.mode ? '' : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+                opAppReason: vm.mode ? '' : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
             }
         };
     }
@@ -575,7 +576,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         agentAtr: true,
                         isNew: true,
                         infoOutput: vm.infoOutPut,
-                        application: vm.mode ? vm.application : vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application,
+                        application: vm.mode ? vm.application : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application,
                     };
 
                     vm.$mask('show');
@@ -608,7 +609,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 mode: vm.mode,
                 res: null,
             };
-            vm.$emit('nextComponentA0', vm.paramsAComponent);
+            vm.$goto('kafs04a1', vm.paramsAComponent);
             vm.$mask('hide');
         });
     }
@@ -619,7 +620,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         let paramsUpdate = {
             application: vm.application,
             arrivedLateLeaveEarlyDto: vm.infoOutPut.arrivedLateLeaveEarly,
-            appDispInfoStartupDto: vm.res.appDispInfoStartupOutput
+            appDispInfoStartupDto: vm.params.appDispInfoStartupOutput
         };
         vm.$mask('show');
         vm.$http.post('at', API.updateApp, paramsUpdate).then((res: any) => {
@@ -628,7 +629,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 mode: vm.mode,
                 res: null,
             };
-            vm.$emit('nextComponentA0', vm.paramsAComponent);
+            vm.$goto('kafs04a1', vm.paramsAComponent);
             vm.$mask('hide');
         });
         //do something
@@ -732,9 +733,9 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.application.opAppEndDate = startDate;
         }
         if (!vm.mode) {
-            vm.res.appDispInfoStartupOutput.appDetailScreenInfo.application;
-            const { res } = vm;
-            const { appDispInfoStartupOutput } = res;
+            vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            const { params } = vm;
+            const { appDispInfoStartupOutput } = params;
 
             const { appDetailScreenInfo } = appDispInfoStartupOutput;
             const { application } = appDetailScreenInfo;
