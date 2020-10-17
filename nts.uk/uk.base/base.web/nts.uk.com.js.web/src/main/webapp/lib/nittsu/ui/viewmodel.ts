@@ -1,5 +1,11 @@
 /// <reference path="./viewcontext.d.ts" />
 
+type KibanViewModel = {
+	errorDialogViewModel: {
+		errors: KnockoutObservableArray<string>;
+	}
+};
+
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(dialogOption?: DialogOption): any {
 	return function (ctor: any): any {
@@ -7,6 +13,8 @@ function bean(dialogOption?: DialogOption): any {
 			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
 				const $viewModel = new ctor($params)
 					, $created = $viewModel['created'];
+
+				_.extend($viewModel, { $el: undefined });
 
 				// hook to created function
 				if ($created && _.isFunction($created)) {
@@ -16,8 +24,19 @@ function bean(dialogOption?: DialogOption): any {
 				// hook to mounted function
 				$viewModel.$nextTick(() => {
 					const $mounted = $viewModel['mounted'];
+					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
 
 					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+					if (kvm) {
+						ko.computed({
+							read: () => {
+								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+							},
+							owner: $viewModel,
+							disposeWhenNodeIsRemoved: $viewModel.$el
+						});
+					}
 
 					if ($mounted && _.isFunction($mounted)) {
 						$mounted.apply($viewModel, []);
@@ -45,6 +64,8 @@ function component(options: { name: string; template: string; }): any {
 								const $viewModel = new ctor($params)
 									, $created = $viewModel['created'];
 
+								_.extend($viewModel, { $el: undefined });
+
 								// hook to created function
 								if ($created && _.isFunction($created)) {
 									$created.apply($viewModel, [$params]);
@@ -53,8 +74,19 @@ function component(options: { name: string; template: string; }): any {
 								// hook to mounted function
 								$viewModel.$nextTick(() => {
 									const $mounted = $viewModel['mounted'];
+									const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
 
 									_.extend($viewModel, { $el: $el.element });
+
+									if (kvm) {
+										ko.computed({
+											read: () => {
+												$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+											},
+											owner: $viewModel,
+											disposeWhenNodeIsRemoved: $el.element
+										});
+									}
 
 									if ($mounted && _.isFunction($mounted)) {
 										$mounted.apply($viewModel, []);
@@ -93,12 +125,6 @@ function handler(params: { virtual?: boolean; bindingName: string; validatable?:
 }
 
 module nts.uk.ui.viewmodel {
-	type KibanViewModel = {
-		errorDialogViewModel: {
-			errors: KnockoutObservableArray<any>;
-		}
-	};
-
 	const prefix = 'nts.uk.storage'
 		, OPENWD = 'OPEN_WINDOWS_DATA'
 		, { ui, request, resource } = nts.uk
@@ -638,20 +664,25 @@ module nts.uk.ui.viewmodel {
 		}
 	};
 
-	Object.defineProperty($validate, "constraint", {
-		value: function $constraint(name: string, value: any) {
-			if (arguments.length === 0) {
-				return $.Deferred()
-					.resolve(true)
-					.then(() => __viewContext.primitiveValueConstraints);
-			} else if (arguments.length === 1) {
-				return $.Deferred()
-					.resolve(true)
-					.then(() => _.get(__viewContext.primitiveValueConstraints, name));
-			} else {
-				return $.Deferred()
-					.resolve(true)
-					.then(() => (ui.validation as any).writeConstraint(name, value));
+	Object.defineProperties($validate, {
+		valid: {
+			value: ko.observable(true)
+		},
+		constraint: {
+			value: function $constraint(name: string, value: any) {
+				if (arguments.length === 0) {
+					return $.Deferred()
+						.resolve(true)
+						.then(() => __viewContext.primitiveValueConstraints);
+				} else if (arguments.length === 1) {
+					return $.Deferred()
+						.resolve(true)
+						.then(() => _.get(__viewContext.primitiveValueConstraints, name));
+				} else {
+					return $.Deferred()
+						.resolve(true)
+						.then(() => (ui.validation as any).writeConstraint(name, value));
+				}
 			}
 		}
 	});

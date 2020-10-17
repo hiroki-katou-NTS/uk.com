@@ -49378,6 +49378,7 @@ function bean(dialogOption) {
         __viewContext.ready(function () {
             nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49385,7 +49386,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49408,6 +49419,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49415,7 +49427,17 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
@@ -49927,22 +49949,27 @@ var nts;
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
-                Object.defineProperty($validate, "constraint", {
-                    value: function $constraint(name, value) {
-                        if (arguments.length === 0) {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return __viewContext.primitiveValueConstraints; });
-                        }
-                        else if (arguments.length === 1) {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                        }
-                        else {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return ui.validation.writeConstraint(name, value); });
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
                         }
                     }
                 });
