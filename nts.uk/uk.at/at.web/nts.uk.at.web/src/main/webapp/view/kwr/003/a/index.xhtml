@@ -31,31 +31,24 @@
             tabindex="1"
             id="btnExportExcel"
             class="proceed"
-            data-bind="enable: $root.errors.isEmpty"
-          >
-            #{i18n.getText('KWR003_101')}
-          </button>
+            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_101')"
+         />
           <!-- A1_2 -->
           <button
             tabindex="2"
             id="btnExportPdf"
             class="proceed"
-            data-bind="enable: $root.errors.isEmpty"
-          >
-            #{i18n.getText('KWR003_102')}
-          </button>
+            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_102')"/>
         </div>
         <!-- A1_2-->
         <div id="content-area" class="kwr-003">
           <!-- A3_1-->
-          <div id="CCG001"></div>
+          <div id="CCG001" tabindex="-1"></div>
           <div class="pull-left fixed-flex-layout-left">
             <div class="employees-list">
               <!-- A2_1, A2_2, A2_3 -->
               <div class="panel panel-frame date-time-picker">
-                <div class="date-time-picker-label" data-bind="ntsFormLabel: {}">
-                  #{i18n.getText('KWR003_103')}
-                </div>
+                <div class="date-time-picker-label" data-bind="ntsFormLabel: {}, text:  $i18n('KWR003_103')"></div>
                 <!-- YearMonth Picker -->
                 <div
                   tabindex="3"
@@ -82,9 +75,7 @@
               <div class="panel-row">
                 <div class="row-left">
                   <!-- A5_1-->
-                  <div class="label" data-bind="ntsFormLabel: {}">
-                    #{i18n.getText('KWR003_104')}
-                  </div>
+                  <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KWR003_104')"></div>
                 </div>
                 <div class="row-right">
                   <div class="radios-group">
@@ -93,14 +84,14 @@
                       tabindex="5"
                       data-bind="ntsRadioBoxGroup: {
                         options: [
-                          { id: 0, name: '#{i18n.getText('KWR003_105')}'},
-                          { id: 1, name: '#{i18n.getText('KWR003_106')}'},
+                          { id: 0, name: $i18n('KWR003_105')},
+                          { id: 1, name: $i18n('KWR003_106')},
                         ],
                         optionsValue: 'id',
                         optionsText: 'name',
                         value: rdgSelectedId,
                         enable: true,
-                        name: '#{i18n.getText('KWR003_104')}'
+                        name: $i18n('KWR003_104')
                       }"
                     ></div>
                   </div>
@@ -111,7 +102,7 @@
                         tabindex="6"
                         id="combo-box"
                         data-bind="ntsComboBox: {
-                          name: '#{i18n.getText('KWR003_105')}',
+                          name: $i18n('KWR003_105'),
                           options:  [
                             { code: 0, name: '基本給 0'},
                             { code: 1, name: '基本給 1'},
@@ -132,18 +123,17 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="7"
-                        data-bind="enable: isEnableSelectedCode(), click: showDialogScreenB"
-                      >
-                        #{i18n.getText('KWR003_112')}
-                      </button>
+                        data-bind="enable: isEnableSelectedCode() &amp;&amp; isWorker, 
+                                  click: showDialogScreenB, text: $i18n('KWR003_112')"
+                      />
                     </div>
                     <div class="item item-2">
-                      <!-- A5_3_2 - KWR003_105-->
+                      <!-- A5_4_2 - KWR003_106-->
                       <div
                         tabindex="8"
                         id="combo-box"
                         data-bind="ntsComboBox: {
-                          name: '#{i18n.getText('KWR003_106')}',
+                          name: $i18n('KWR003_106'),
                           options:  [
                             { code: 0, name: '基本給 0'},
                             { code: 1, name: '基本給 1'},
@@ -153,7 +143,7 @@
                           ],
                           optionsValue: 'code',
                           visibleItemsCount: 5,
-                          value: standardSelectedCode,
+                          value: freeSelectedCode,
                           optionsText: 'name',
                           editable: false,
                           enable: !isEnableSelectedCode(),
@@ -164,10 +154,7 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="9"
-                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB"
-                      >
-                        #{i18n.getText('KWR003_112')}
-                      </button>
+                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR003_112')"/>
                     </div>
                   </div>
                 </div>
@@ -175,9 +162,7 @@
               <div class="panel-row">
                 <div class="row-left">
                   <!-- A6_1-->
-                  <div class="label" data-bind="ntsFormLabel: {}">
-                    #{i18n.getText('KWR003_107')}
-                  </div>
+                  <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KWR003_107')"></div>
                 </div>
                 <div class="row-right row-switch-button">
                   <!-- A6_2 -->
@@ -185,10 +170,10 @@
                     tabindex="10"
                     class="cf"
                     data-bind="ntsSwitchButton: {
-                    name: '#{i18n.getText('KWR003_107')}',
+                    name: $i18n('KWR003_107'),
                     options: [
-                      { code: 0, name: '#{i18n.getText('KWR003_108')}'},
-                      { code: 1, name: '#{i18n.getText('KWR003_109')}'}
+                      { code: 0, name: $i18n('KWR003_108')},
+                      { code: 1, name: $i18n('KWR003_109')}
                     ],
                     optionsValue: 'code',
                     optionsText: 'name',
@@ -201,9 +186,7 @@
               <div class="panel-row">
                 <div class="row-left">
                   <!-- A7_1-->
-                  <div class="label" data-bind="ntsFormLabel: {}">
-                    #{i18n.getText('KWR003_110')}
-                  </div>
+                  <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KWR003_110')"></div>
                 </div>
                 <div class="row-right row-switch-button">
                   <!-- A7_2 -->
@@ -211,14 +194,14 @@
                     tabindex="11"
                     class="cf"
                     data-bind="ntsSwitchButton: {
-                    name: '#{i18n.getText('KWR003_110')}',
+                    name: $i18n('KWR003_110'),
                     options: [
-                      { code: 0, name: '#{i18n.getText('KWR003_111')}'},
-                      { code: 1, name: '#{i18n.getText('KWR003_113')}'}
+                      { code: 0, name: $i18n('KWR003_111')},
+                      { code: 1, name: $i18n('KWR003_113')}
                     ],
                     optionsValue: 'code',
                     optionsText: 'name',
-                    value: specifyingPageBreaks,
+                    value: pageBreakSpecification,
                     required: false,
                     enable: true }"
                   ></div>

@@ -28,6 +28,22 @@ module nts.uk.at.view.kwr003.b {
     isEnableDeleteButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
 
+    //KDL 047, 048
+    shareParam = new SharedParams();
+
+    position: KnockoutObservable<number> = ko.observable(1);
+    attendanceItemName: KnockoutObservable<string> = ko.observable('勤務種類');
+    //attendanceCode: KnockoutObservable<string> = ko.observable('02');
+    //attendanceName: KnockoutObservable<string> = ko.observable('出勤簿');
+    columnIndex: KnockoutObservable<number> = ko.observable(1);
+    isDisplayItemName: KnockoutObservable<boolean> = ko.observable(true);
+    isDisplayTitle: KnockoutObservable<boolean> = ko.observable(true);
+    isEnableComboBox: KnockoutObservable<number> = ko.observable(2);
+    isEnableTextEditor: KnockoutObservable<number> = ko.observable(2);
+    comboSelected: KnockoutObservable<any> = ko.observable(null);
+    tableSelected: KnockoutObservable<any> = ko.observable(null);
+
+
     constructor(params: any) {
       super();
       let vm = this;
@@ -61,6 +77,33 @@ module nts.uk.at.view.kwr003.b {
       vm.isSelectAll.subscribe(newValue => {
         vm.selectAllChange(newValue);
       });
+
+      //KDL 047, 048      
+      vm.shareParam.titleLine.displayFlag = vm.isDisplayTitle();
+      vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
+      vm.shareParam.titleLine.layoutName = vm.attendanceName();
+
+      const positionText = vm.position() === 1 ? "上" : "下";
+      vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
+      vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
+      vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
+      vm.shareParam.itemNameLine.name = vm.attendanceItemName();
+      vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
+      vm.shareParam.attribute.selected = vm.comboSelected();
+      vm.shareParam.selectedTime = vm.tableSelected();
+
+      vm.shareParam.attribute.attributeList = [
+        new AttendaceType(1, vm.$i18n('KWR002_141')),
+        new AttendaceType(2, vm.$i18n('KWR002_142')),
+        new AttendaceType(3, vm.$i18n('KWR002_143')),
+        /* new AttendaceType(4, vm.$i18n('KWR002_180')),
+        new AttendaceType(5, vm.$i18n('KWR002_181')),
+        new AttendaceType(6, vm.$i18n('KWR002_182')),
+        new AttendaceType(7, vm.$i18n('KWR002_183')) */
+      ]
+
+      vm.shareParam.attendanceItems = vm.getDiligenceProject();
+      vm.shareParam.diligenceProjectList = vm.getDiligenceProject();
     }
 
     created(params: any) {
@@ -69,7 +112,10 @@ module nts.uk.at.view.kwr003.b {
 
     mounted() {
       let vm = this;
-      $("#multiGridList").ntsFixedTable({ height: 370 });
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
+        $("#multiGridList").ntsFixedTable({ height: 368 });
+      else
+        $("#multiGridList").ntsFixedTable({ height: 370 });
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -137,10 +183,8 @@ module nts.uk.at.view.kwr003.b {
             if (_.isNil(data)) {
               return;
             }
-
             vm.attendanceCode(data.code);
             vm.attendanceName(data.name);
-
           });
         });
       });
@@ -184,6 +228,9 @@ module nts.uk.at.view.kwr003.b {
         if (!_.isNil(selectedObj)) {
           vm.attendanceCode(selectedObj.code);
           vm.attendanceName(selectedObj.name);
+          //KDL 047, 048
+          vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
+          vm.shareParam.titleLine.layoutName = vm.attendanceName();
 
           vm.isEnableAttendanceCode(false);
           vm.isEnableAddButton(true);
@@ -221,18 +268,50 @@ module nts.uk.at.view.kwr003.b {
     openDialogKDL(data: SettingForPrint) {
       let vm = this;
 
-      if (!data.setting())
-        vm.openDialogKDL048(data.id);
+      if (data.setting())
+        vm.openDialogKDL048(data);
       else
-        vm.openDialogKDL047(data.id);
+        vm.openDialogKDL047(data);
     }
 
-    openDialogKDL047(id: number) {
-      console.log(id);
+    openDialogKDL047(row: any) {
+      let vm = this;
+      nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
+      nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
+        const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
+        console.log(attendanceItem);
+        if (!attendanceItem) {
+          return;
+        }
+        vm.comboSelected = ko.observable(attendanceItem.attribute);
+        vm.tableSelected = ko.observable(attendanceItem.attendanceId);
+        vm.attendanceItemName(attendanceItem.attendanceItemName);
+        alert('Code selection in combo: ' + vm.comboSelected() + ' and ' + 'Code selection in table ' + vm.tableSelected())
+      });
     }
 
-    openDialogKDL048(id: number) {
-      console.log(id);
+    openDialogKDL048(row: any) {
+      let vm = this;
+
+      vm.shareParam.attribute.attributeList = [       
+        new AttendaceType(4, vm.$i18n('KWR002_180')),
+        new AttendaceType(5, vm.$i18n('KWR002_181')),
+        //new AttendaceType(6, vm.$i18n('KWR002_182')),
+        new AttendaceType(7, vm.$i18n('KWR002_183'))
+      ]
+
+      nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
+      nts.uk.ui.windows.sub.modal('/view/kdl/048/index.xhtml').onClosed(() => {
+        const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
+        if (!attendanceItem) {
+          return;
+        }
+        vm.attendanceItemName(attendanceItem.attendanceItemName);
+        //vm.data(attendanceItem.selectedTimeList);
+        vm.shareParam.selectedTimeList = attendanceItem.selectedTimeList;
+        vm.shareParam.attribute.selected = attendanceItem.attribute.selected
+        vm.shareParam.itemNameLine.name =  attendanceItem.itemNameLine.name
+      });
     }
 
     checkItem(data: SettingForPrint) {
@@ -248,6 +327,48 @@ module nts.uk.at.view.kwr003.b {
       _.forEach(vm.settingListItemsDetails(), (row, index) => {
         row.isChecked(newValue);
       })
+    }
+
+    getDiligenceProject() {
+      let DiligenceProjects = [
+        new DiligenceProject(1, '予定勤務種類', '', 0),
+        new DiligenceProject(28, '勤務種類', '勤務種類', 28),
+        new DiligenceProject(2, '予定就業時間帯', '予定就業時間帯', 2),
+        new DiligenceProject(3, '予定出勤時刻1', '予定出勤時刻1', 3),
+        new DiligenceProject(5, '予定出勤時刻5', '予定出勤時刻5', 5),
+        new DiligenceProject(6, '予定出勤時刻6', '予定出勤時刻6', 6),
+        new DiligenceProject(8, '予定出勤時刻8', '予定出勤時刻8', 8),
+        new DiligenceProject(9, '予定出勤時刻9', '予定出勤時刻9', 9),
+        new DiligenceProject(10, '予定出勤時刻10', '予定出勤時刻10', 10),
+        new DiligenceProject(11, '予定出勤時111', '予定出勤時刻11', 11),
+        new DiligenceProject(12, '予定出勤時刻12', '予定出勤時刻12', 12),
+        new DiligenceProject(13, '予定出勤時刻13', '予定出勤時刻13', 13),
+        new DiligenceProject(14, '予定出勤時刻14', '予定出勤時刻14', 14),
+        new DiligenceProject(15, '予定出勤時刻15', '予定出勤時刻15', 15),
+        new DiligenceProject(16, '予定出勤時刻16', '予定出勤時刻16', 16),
+        new DiligenceProject(4, '予定退勤時刻1', '予定退勤時刻1', 4),
+        new DiligenceProject(7, '予定休憩開始時刻1', '予定休憩開始時刻1', 7),
+        new DiligenceProject(8, '予定休憩終了時刻1', '予定休憩終了時刻1', 8),
+        new DiligenceProject(27, '予定時間', '予定時間', 27),
+        new DiligenceProject(216, '残業１', '残業１', 216),
+        new DiligenceProject(461, '勤務回数', '勤務回数', 461),
+        new DiligenceProject(534, '休憩回数', '休憩回数', 534),
+        new DiligenceProject(641, 'aaaaaaaaa回数', 'aaaaaaaaa回数', 641),
+        new DiligenceProject(642, 'tukijikan回数', 'tukijikan回数', 642),
+        new DiligenceProject(643, 'tukikin', 'tukikin', 643),
+        new DiligenceProject(644, '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', '出有ｵﾝ無ｵﾌ有ｶｳﾝﾄ（日次ﾄﾘｶﾞ）ｄ', 644),
+        new DiligenceProject(645, '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）', 645),
+        new DiligenceProject(680, '任意項目４０', '任意項目４０', 680),
+        new DiligenceProject(681, '任意項目４１', '任意項目４１', 681),
+        new DiligenceProject(682, '任意項目４２月別', '任意項目４２月別', 682),
+        new DiligenceProject(683, '任意項目４３', '任意項目４３', 683),
+        new DiligenceProject(267, '振替休日１', '振替休日１', 267),
+        new DiligenceProject(268, '計算休日出勤１', '計算休日出勤１', 268),
+        new DiligenceProject(269, '計算振替休日１', '計算振替休日１', 269),
+        new DiligenceProject(270, '事前休日出勤１', '事前休日出勤１', 270)
+      ];
+
+      return DiligenceProjects;
     }
   }
 
@@ -289,6 +410,101 @@ module nts.uk.at.view.kwr003.b {
       this.code = code;
       this.name = name;
       this.settingForPrint = settings;
+    }
+  }
+
+  //KDL 047, 048
+  // Display object mock
+  export class SharedParams {
+    // タイトル行
+    titleLine: TitleLineObject = new TitleLineObject();
+    // 項目名行
+    itemNameLine: ItemNameLineObject = new ItemNameLineObject();
+    // 属性
+    attribute: AttributeObject = new AttributeObject();
+    // List<勤怠項目>KDL 048
+    diligenceProjectList: DiligenceProject[] = [];
+    // List<勤怠項目> KDL 047
+    attendanceItems: DiligenceProject[] = [];
+    // List<選択済み勤怠項目>
+    selectedTimeList: SelectedTimeListParam[] = [];
+    // 選択済み勤怠項目ID
+    selectedTime: number;
+  }
+  export class SelectedTimeListParam {
+    // 項目ID
+    itemId: any | null = null;
+    // 演算子
+    operator: String | null = null;
+
+    constructor(itemId: any, operator: String) {
+      this.itemId = itemId;
+      this.operator = operator;
+    }
+  }
+
+  export class TitleLineObject {
+    // 表示フラグ
+    displayFlag: boolean = false;
+    // 出力項目コード
+    layoutCode: String | null = null;
+    // 出力項目名
+    layoutName: String | null = null;
+    // コメント
+    directText: String | null = null;
+  }
+
+  export class ItemNameLineObject {
+    // 表示フラグ
+    displayFlag: boolean = false;
+    // 表示入力区分
+    displayInputCategory: number = 1;
+    // 名称
+    name: String | null = null;
+  }
+
+  export class AttributeObject {
+    // 選択区分
+    selectionCategory: number = 2;
+    // List<属性>
+    attributeList: AttendaceType[] = [];
+    // 選択済み
+    selected: number = 1;
+  }
+
+  export class AttendaceType {
+    attendanceTypeCode: number;
+    attendanceTypeName: string;
+    constructor(attendanceTypeCode: number, attendanceTypeName: string) {
+      this.attendanceTypeCode = attendanceTypeCode;
+      this.attendanceTypeName = attendanceTypeName;
+    }
+  }
+
+  export class DiligenceProject {
+    attendanceItemId: any;
+    attendanceItemName: any;
+    attributes: any;
+    displayNumbers: any;
+    //48
+     // ID
+     id: any;
+     // 名称
+     name: any;
+     // 属性
+     //attributes: any;
+     // 表示番号
+     indicatesNumber: any;
+    constructor(id: any, name: any, attributes: any, indicatesNumber: any) {
+      this.attendanceItemId = id;
+      this.attendanceItemName = name;
+      this.attributes = attributes;
+      this.displayNumbers = indicatesNumber;
+      //48
+      this.id = id;
+      this.name = name;
+      //this.attributes = attributes;
+      this.indicatesNumber = indicatesNumber;
     }
   }
 }

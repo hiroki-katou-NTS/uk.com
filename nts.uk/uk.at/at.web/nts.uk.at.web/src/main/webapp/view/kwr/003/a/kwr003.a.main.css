@@ -30,6 +30,10 @@
 .kwr-003 .panel .panel-row .row-left {
   flex: 1;
 }
+.kwr-003 .panel .panel-row .row-left .label {
+  display: flex;
+  align-items: center;
+}
 .kwr-003 .panel .panel-row .row-right {
   flex: 2;
   display: flex;
