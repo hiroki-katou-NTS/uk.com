@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import jdk.nashorn.internal.objects.annotations.Setter;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.Independent
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -22,20 +25,48 @@ import java.util.List;
 @Stateless
 public class CreateWorkStatusSettingDomainService {
     public static AtomTask updateSetting(Require require, OutputItemSettingCode code,
-                                         OutputItemSettingName name,WorkStatusOutputSettings settingCategory,
-                                         List<Integer> listRank,List<Boolean> listPrintTaget,
-                                         List<FormOutputItemName> outputItemNameList,List<IndependentCalculationClassification>independentCalculationCatelogyList,
-                                         List<CommonAttributesOfForms> attributesOfFormsList,List<OperatorsCommonToForms>commonToFormsList,List<String> listAttendanceItemID
+                                         OutputItemSettingName name, SettingClassificationCommon settingCategory,
+                                         List<OutputItem> outputItemList
 
     ) {
-        if(settingCategory.getDesignateFreeClassing() == SettingClassificationCommon.FREE_SETTING){
-            val cid = AppContexts.user().companyId();
-            val checkDuplicateStandard = settingCategory.checkDuplicateStandardSelections(require,code.v(),cid);
+        Boolean checkDuplicate = false;
+        val cid = AppContexts.user().companyId();
+        val empId = AppContexts.user().employeeId();
+        if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
+
+            checkDuplicate = new WorkStatusOutputSettings().checkDuplicateStandardSelections(require, code.v(), cid);
         }
-//        // 1.定型選択の重複をチェックする(出力項目設定コード, 会社ID)
-//        val isCheckDuplicateFixedSelection = require.exist(settingCode, cid);
-//        // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-//        val isCheckDuplicateFreeSetting = require.exist(settingCode, cid, settingCategory.getEmployeeId());
+        if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
+            checkDuplicate = new WorkStatusOutputSettings().checkDuplicateFreeSettings(require, code.v(), cid, empId);
+        }
+
+        if (checkDuplicate) {
+            throw new BusinessException("Msg_1753");
+        }
+        WorkStatusOutputSettings outputSettings;
+        val settingId = IdentifierUtil.randomUniqueId();
+        if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
+            outputSettings = new WorkStatusOutputSettings(
+                    settingId,
+                    code,
+                    name,
+                    null,
+                    settingCategory,
+                    null
+            );
+
+        }
+        if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
+            outputSettings = new WorkStatusOutputSettings(
+                    settingId,
+                    code,
+                    name,
+                    empId,
+                    settingCategory,
+                    null
+            );
+        }
+
         return AtomTask.of(() -> {
 
         });
