@@ -31,8 +31,8 @@ module nts.uk.com.view.cmm024.f {
 			let vm = this;
 
 			vm.columns = ko.observableArray([
-				{ headerText: vm.$i18n('CMM024_50'), key: 'employeeCode', width: 120, formatter: _.escape },
-				{ headerText: vm.$i18n('CMM024_51'), key: 'employeeName', width: 140, formatter: _.escape },
+				{ headerText: vm.$i18n('CMM024_50'), key: 'employeeCode', width: 90, formatter: _.escape },
+				{ headerText: vm.$i18n('CMM024_51'), key: 'employeeName', width: 150, formatter: _.escape },
 				{ headerText: '', key: 'employeeId', hidden: true, formatter: _.escape },
 			]);
 
@@ -125,7 +125,8 @@ module nts.uk.com.view.cmm024.f {
 
 						//clear emplyees list
 						vm.itemsSwap([]);
-						vm.itemsSwap(employees);
+						let newEmployees = _.orderBy(employees, 'employeeCode', 'asc');
+						vm.itemsSwap(newEmployees);
 						vm.$blockui('hide');
 
 					})
@@ -147,10 +148,10 @@ module nts.uk.com.view.cmm024.f {
 			}
 
 			if (!nts.uk.ui.errors.hasError()) {
-				let newEmployees = _.orderBy(vm.currentCodeListSwap(), 'employeeCode', 'asc');			
+				//let newEmployees = _.orderBy(vm.currentCodeListSwap(), 'employeeCode', 'asc');			
 				vm.$window.storage('newWorkPlaceCodeList', {
 					workplaceId: vm.multiSelectedId()[0],
-					codeList: newEmployees
+					codeList: vm.currentCodeListSwap()
 				});
 				vm.$window.close();
 				return false;

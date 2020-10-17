@@ -26,7 +26,7 @@
                             data-bind="click: function() { screenShowDialogBD() }, enable: screenBModeEdit">#{i18n.getText('CMM024_5')}</button>
                     </div>
                     <div class="ntsGrid" tabindex="1">
-                        <table id="historyListB" data-bind="ntsGridList: {
+                        <table tabindex="-1" id="historyListB" data-bind="ntsGridList: {
                                 height: 260,
                                 dataSource: workplaceScheduleHistoryList,
                                 primaryKey: 'code',
