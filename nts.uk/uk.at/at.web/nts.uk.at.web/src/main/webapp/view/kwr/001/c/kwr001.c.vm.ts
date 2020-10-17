@@ -493,6 +493,7 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 self.currentCodeList('');
                 self.C3_2_value('');
+                self.getDataService();
                 self.C3_3_value('');
                 $('#C3_2').focus();
                 self.selectedSizeClassificationType(FontSizeEnum.BIG);

@@ -2054,7 +2054,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.DAYMONTH);
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.DAY);
 		} else {
-			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
+			headerData.fixedHeaderData.add(TextResource.localize("KWR001_115"));
 		}
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.REMARK);
 	}
@@ -2626,7 +2626,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// A9_1 - A13_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116") + levelIterator.next());
+			workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116", Integer.toString(levelIterator.next())));
 			
 			// A9_2 - A13_2
 			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / chunkSize);
@@ -3225,7 +3225,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// B7_1 - B11_1
 				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-				workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116") + level);
+				workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116", Integer.toString(level)));
 				
 				// B7_2 - B11_2
 				currentRow = writeWorkplaceTotal(currentRow
