@@ -61,8 +61,9 @@ module nts.uk.at.view.kmk008.g {
 
             vm.$ajax(PATH_API.registerData, new OperationSettingModelUpdate(vm.operationSetting()))
                 .done(() => {
-                    vm.$dialog.info({messageId: "Msg_15"});
-                    vm.closeDialog();
+                    vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.closeDialog();
+                    });
                 })
                 .fail(res => {
                     vm.$dialog.error(res.message);
@@ -125,7 +126,8 @@ module nts.uk.at.view.kmk008.g {
             vm.specialConditionApplicationUse = Boolean(data.specialConditionApplicationUse());
             vm.yearSpecicalConditionApplicationUse = Boolean(data.yearSpecialConditionApplicationUse());
 
-            vm.lastDayOfMonth = vm.closureDay === data.closureDateEnum[data.closureDateEnum.length - 1].value;
+            // vm.lastDayOfMonth = vm.closureDay === data.closureDateEnum[data.closureDateEnum.length - 1].value;
+            vm.lastDayOfMonth = false;
         }
     }
 

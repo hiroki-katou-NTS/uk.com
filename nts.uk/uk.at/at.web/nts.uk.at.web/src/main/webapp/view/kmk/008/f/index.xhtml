@@ -29,7 +29,7 @@
         <div id="contents-area">
             <div id="ccgcomponent" tabindex="1"></div>
 
-            <div id="main" class=" container cf">
+            <div id="main" class="container cf">
                 <div id="component-items-list"></div>
 
                 <div class="container-right">
@@ -38,32 +38,46 @@
                         <span class="label" data-bind="text: selectedEmpCode"></span>
                         <span class="label" data-bind="text: employeeName"></span>
                     </div>
-                    <div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+                    <div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: {
+                        dataSource: [
+                            { id: 'tab-1', title: '#{i18n.getText('KMK008_29')}', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                            { id: 'tab-2', title: '#{i18n.getText('KMK008_30')}', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                        ],
+                        active: selectedTab
+                    }">
                         <button class="settingButton small" tabindex="3"
                                 data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
 
                         <div class="tab-content-1">
-                            <table id="single-list"
-                                   data-bind="ntsGridList: {
-									height: 250,
-									dataSource: items,
-									primaryKey: 'year',
-									columns: columns,
-									multiple: false,
-									value: currentCode
-								    }">
+                            <table id="single-list" data-bind="ntsGridList: {
+                                name: '#{i18n.getText('KMK008_29',['#KMK008_10'])}',
+                                height: 250,
+                                dataSource: items,
+                                primaryKey: 'year',
+                                columns: [
+                                    { headerText: '#{i18n.getText('KMK008_29')}', key: 'year', width: 100 },
+                                    { headerText: '#{i18n.getText('KMK008_19')}', key: 'error', width: 150 },
+                                    { headerText: '#{i18n.getText('KMK008_20')}', key: 'alarm', width: 150 }
+                                ],
+                                multiple: false,
+                                value: currentCode
+                            }">
                             </table>
                         </div>
                         <div class="tab-content-2">
-                            <table id="single-list"
-                                   data-bind="ntsGridList: {
-									height: 250,
-									dataSource: items,
-									primaryKey: 'year',
-									columns: columns2,
-									multiple: false,
-									value: currentCode
-								    }">
+                            <table id="single-list" data-bind="ntsGridList: {
+                                name: '#{i18n.getText('KMK008_30',['#KMK008_10'])}',
+                                height: 250,
+                                dataSource: items,
+                                primaryKey: 'year',
+                                columns: [
+                                    { headerText: '#{i18n.getText('KMK008_30')}', key: 'year', width: 100 },
+                                    { headerText: '#{i18n.getText('KMK008_19')}', key: 'error', width: 150 },
+                                    { headerText: '#{i18n.getText('KMK008_20')}', key: 'alarm', width: 150 }
+                                ],
+                                multiple: false,
+                                value: currentCode
+                            }">
                             </table>
                         </div>
                     </div>

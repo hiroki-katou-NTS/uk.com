@@ -14,7 +14,6 @@ module nts.uk.at.view.kmk008.h {
         employmentUseAtr: KnockoutObservable<boolean> = ko.observable(true); //３６協定単位設定.雇用利用区分
         workPlaceUseAtr: KnockoutObservable<boolean> = ko.observable(true); //３６協定単位設定.職場利用区分
 
-
         constructor() {
             super();
             const vm = this;
@@ -58,8 +57,9 @@ module nts.uk.at.view.kmk008.h {
                     workPlaceUseAtr: vm.workPlaceUseAtr() ? 1 : 0
                 })
                 .done(() => {
-                    vm.$dialog.info({messageId: "Msg_15"});
-                    vm.closeDialog();
+                    vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.closeDialog();
+                    });
                 })
                 .fail(res => {
                     vm.$dialog.error(res.message);
