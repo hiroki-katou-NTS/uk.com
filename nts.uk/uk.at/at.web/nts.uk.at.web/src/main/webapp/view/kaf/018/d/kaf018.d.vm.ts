@@ -54,6 +54,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				dataSource: vm.dataSource,
 				virtualization: true,
 				virtualizationMode: 'continuous',
+				cellClick: (evt: any, ui: any) => {
+					vm.cellGridClick(evt, ui); 
+				},
 				columns: vm.columns,
 				features: [
 					{
@@ -67,12 +70,18 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			const vm = this;
 			return value+1;
 		}
+		
+		cellGridClick(evt: any, ui: any) {
+			const vm = this;
+			if(ui.colKey=="wkpName") {
+				vm.$window.modal('/view/kaf/018/e/index.xhtml');
+			}
+		}
 
 		getTargetDate(): string {
 			const vm = this;
 			return "";
 		}
-
 		
 		close() {
 			const vm = this;
