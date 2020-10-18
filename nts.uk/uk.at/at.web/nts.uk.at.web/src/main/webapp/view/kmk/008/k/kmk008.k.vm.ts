@@ -77,6 +77,7 @@ module nts.uk.at.view.kmk008.k {
                 vm.updateEnable(true);
                 vm.deleteEnable(true);
                 vm.$errors("clear");
+                $("#txt-year-error-time").focus();
             });
 
 

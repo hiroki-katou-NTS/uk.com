@@ -148,6 +148,7 @@ module nts.uk.at.view.kmk008.f {
                         settingDtos = _.find(monthDataList, item => {
                             return item.employeeId === value;
                         }).settingDtos;
+                        settingDtos = _.orderBy(settingDtos, ['yearMonthValue'], ['desc']);
                         if (settingDtos && settingDtos.length) {
                             _.forEach(settingDtos, (value) => {
                                 monthData.push(new ItemModel(
@@ -162,6 +163,7 @@ module nts.uk.at.view.kmk008.f {
                         settingDtos = _.find(yearDataList, item => {
                             return item.employeeId === value;
                         }).settingDtos;
+                        settingDtos = _.orderBy(settingDtos, ['yearValue'], ['desc']);
                         if (settingDtos && settingDtos.length) {
                             _.forEach(settingDtos, (value) => {
                                 yearData.push(new ItemModel(
