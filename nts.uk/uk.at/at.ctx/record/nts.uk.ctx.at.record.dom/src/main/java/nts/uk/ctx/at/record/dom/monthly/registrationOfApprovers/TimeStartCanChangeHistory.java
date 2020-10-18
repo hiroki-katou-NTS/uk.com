@@ -1,15 +1,10 @@
 package nts.uk.ctx.at.record.dom.monthly.registrationOfApprovers;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Unit;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,7 +36,6 @@ public class TimeStartCanChangeHistory {
                 return false;
             }
         }
-
 
         return true;
     }

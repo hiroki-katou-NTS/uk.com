@@ -38,21 +38,15 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public void update(Approver36AgrByWorkplace domain,GeneralDate startDateBeforeChange){
-
+	public void update(Approver36AgrByWorkplace domain){
 		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
-		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
-		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvWkp.class);
+		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvWkp.class);
 		if (findResult.isPresent()) {
-
-			this.commandProxy().remove(Krcmt36AgrApvWkp.class,pk);
-			this.getEntityManager().flush();
-			this.commandProxy().insert(domainData);
+			this.commandProxy().update(domainData);
 		} else {
 			this.commandProxy().insert(domainData);
 		}
 	}
-
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public void delete(Approver36AgrByWorkplace domain){
@@ -159,6 +153,21 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 			return Optional.of(result.toDomain());
 		} catch (NoResultException e){
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void updateStartDate(Approver36AgrByWorkplace domain, GeneralDate startDateBeforeChange) {
+		val domainData =Krcmt36AgrApvWkp.fromDomain(domain);
+		val pk = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(),startDateBeforeChange);
+		Optional<Krcmt36AgrApvWkp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvWkp.class);
+		if (findResult.isPresent()) {
+
+			this.commandProxy().remove(Krcmt36AgrApvWkp.class,pk);
+			this.getEntityManager().flush();
+			this.commandProxy().insert(domainData);
+		} else {
+			this.commandProxy().insert(domainData);
 		}
 	}
 }

@@ -15,9 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOfWorkPlaceDomainService {
 
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
-
-	@Inject
 	private AgreementTimeOfWorkPlaceRepository agreementTimeOfWorkPlaceRepository;
 
 	@Override
@@ -27,7 +24,6 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfWorkPlace);
 
 		if (errors.isEmpty()) {
-			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 			this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
 		}
 
@@ -40,7 +36,6 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfWorkPlace);
 		if (errors.isEmpty()) {
 			this.agreementTimeOfWorkPlaceRepository.update(agreementTimeOfWorkPlace);
-			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		}
 
 		return errors;
@@ -48,7 +43,6 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 
 	@Override
 	public void remove(String basicSettingId, String workPlaceId, int laborSystemAtr) {
-		this.basicAgreementSettingRepository.remove(basicSettingId);
 
 		this.agreementTimeOfWorkPlaceRepository.remove(workPlaceId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));

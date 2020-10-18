@@ -28,6 +28,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	private static final String IS_EXIST_DATA;
 	private static final String FIND_BY_ID;
 	private static final String FIND_BY_IDS;
+	private static final String FIND_BY_SID_AND_YEAR;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -73,6 +74,14 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
 		FIND_BY_IDS = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :year ");
+		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
+		FIND_BY_SID_AND_YEAR = builderString.toString();
 	}
 
 	@Override
@@ -105,6 +114,14 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	@Override
 	public void delete(AgreementYearSetting agreementYearSetting) {
 		this.commandProxy().remove(toEntity(agreementYearSetting));
+	}
+
+	@Override
+	public Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year) {
+		return this.queryProxy().query(FIND_BY_SID_AND_YEAR, KmkmtAgeementYearSetting.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("year", year)
+				.getSingle(f -> toDomain(f));
 	}
 
 	@Override

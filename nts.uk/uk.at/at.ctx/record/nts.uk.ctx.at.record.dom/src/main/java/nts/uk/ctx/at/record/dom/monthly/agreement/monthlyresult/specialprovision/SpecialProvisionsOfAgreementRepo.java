@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +25,38 @@ public interface SpecialProvisionsOfAgreementRepo {
     void delete(SpecialProvisionsOfAgreement domain);
 
     /**
-     * [4] get by approver
+     * 	[4] 承認すべき申請を取得する
      */
-    List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove);
+    List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove);
 
     /**
-     * [4] get by confirmer
+     * 	[5] 確認すべき申請を取得する
      */
-    List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<String> listApprove);
+    List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove);
 
     /**
-     * [4] get applicationID
+     * [6] get applicationID
      */
     Optional<SpecialProvisionsOfAgreement> getByAppId(String applicationID);
+
+    /**
+     * [7] 1ヶ月申請を取得する
+     */
+    Optional<SpecialProvisionsOfAgreement> getByYearMonth(String applicantsSID,YearMonth yearMonth);
+
+    /**
+     * [8] 1年間申請を取得する
+     */
+    Optional<SpecialProvisionsOfAgreement> getByYear(String applicantsSID,Year year);
+
+    /**
+     * [9] get
+     */
+    List<SpecialProvisionsOfAgreement> getByPersonSID(String enteredPersonSID,GeneralDate startDate,GeneralDate endDate, List<ApprovalStatus> listApprove);
+
+    /**
+     * [10] get
+     */
+    List<SpecialProvisionsOfAgreement> getBySID(String employeeId,GeneralDate startDate,GeneralDate endDate, List<ApprovalStatus> listApprove);
 
 }

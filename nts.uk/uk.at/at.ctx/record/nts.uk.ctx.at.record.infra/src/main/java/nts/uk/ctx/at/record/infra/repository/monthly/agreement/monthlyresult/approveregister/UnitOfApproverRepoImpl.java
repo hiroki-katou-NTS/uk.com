@@ -20,7 +20,8 @@ public class UnitOfApproverRepoImpl extends JpaRepository implements UnitOfAppro
 
     @Override
     public UnitOfApprover getByCompanyId(String companyId) {
-        Krcmt36ArgApvUnit krcmt36ArgApvUnit = this.queryProxy().find(companyId, Krcmt36ArgApvUnit.class).get();
+        Krcmt36ArgApvUnit krcmt36ArgApvUnit = this.queryProxy().find(companyId, Krcmt36ArgApvUnit.class).orElse(null);
+        if (krcmt36ArgApvUnit == null) return null;
         return Krcmt36ArgApvUnit.toDomain(krcmt36ArgApvUnit);
     }
 }

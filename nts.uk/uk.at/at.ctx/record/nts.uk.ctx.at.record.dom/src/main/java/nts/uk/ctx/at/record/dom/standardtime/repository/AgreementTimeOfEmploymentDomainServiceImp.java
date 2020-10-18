@@ -15,9 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeOfEmploymentDomainService {
 
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
-
-	@Inject
 	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepostitory;
 
 	@Override
@@ -26,15 +23,12 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfEmployment);
 		if (errors.isEmpty()) {
 			this.agreementTimeOfEmploymentRepostitory.add(agreementTimeOfEmployment);
-			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
 		}
 		return errors;
 	}
 
 	@Override
 	public void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId) {
-
-		this.basicAgreementSettingRepository.remove(basicSettingId);
 
 		this.agreementTimeOfEmploymentRepostitory.remove(companyId, employmentCategoryCode,
 				EnumAdaptor.valueOf(laborSystemtAtr, LaborSystemtAtr.class));
@@ -46,7 +40,6 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfEmployment);
 		if (errors.isEmpty()) {
 			this.agreementTimeOfEmploymentRepostitory.update(agreementTimeOfEmployment);
-			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		}
 		return errors;
 	}

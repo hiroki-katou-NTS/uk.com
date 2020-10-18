@@ -4,11 +4,10 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
-
 import javax.ejb.Stateless;
 import java.util.Optional;
 
@@ -55,38 +54,49 @@ public class AppApproval {
 
 		val empId = app.getApplicantsSID();
 		val agrType = app.getApplicationTime().getTypeAgreement();
-		val monthTime = app.getApplicationTime().getOneMonthTime().get();
-		val yearTime = app.getApplicationTime().getOneYearTime().get();
 
-		// $３６協定年月
-		val monthSetting = new AgreementMonthSetting(empId, monthTime.getYearMonth(), monthTime.getErrorTimeInMonth());
+		Optional<AgreementMonthSetting> exMonthSetting = Optional.empty();
+		AgreementMonthSetting monthSetting =null;
+		Optional<AgreementYearSetting> exYearSetting = Optional.empty();
+		AgreementYearSetting yearSetting = null;
 
-		// $既存の３６協定年月
-		val exMonthSetting = require.getYearMonthSetting(empId, monthTime.getYearMonth()); // R2
+		if (approvalStatus == ApprovalStatus.APPROVED){
+			if (agrType == TypeAgreementApplication.ONE_MONTH) {
+				val monthTime = app.getApplicationTime().getOneMonthTime().get();
+				// $３６協定年月
+				monthSetting = new AgreementMonthSetting(empId, monthTime.getYearMonth(), monthTime.getErrorTimeInMonth());
 
-		// $３６協定年
-		val yearSetting = new AgreementYearSetting(empId, yearTime.getYear().v(), yearTime.getErrorTimeInYear());
+				// $既存の３６協定年月
+				exMonthSetting = require.getYearMonthSetting(empId, monthTime.getYearMonth()); // R2
 
-		// $既存の３６協定年
-		val exYearSetting = require.getYearSetting(empId, yearTime.getYear()); // R3
+			}
+			if (agrType == TypeAgreementApplication.ONE_YEAR){
+				val yearTime = app.getApplicationTime().getOneYearTime().get();
+				// $３６協定年
+				yearSetting = new AgreementYearSetting(empId, yearTime.getYear().v(), yearTime.getErrorTimeInYear());
+
+				// $既存の３６協定年
+				exYearSetting = require.getYearSetting(empId, yearTime.getYear()); // R3
+			}
+		}
+
+		Optional<AgreementMonthSetting> finalExMonthSetting = exMonthSetting;
+		AgreementMonthSetting finalMonthSetting = monthSetting;
+		Optional<AgreementYearSetting> finalExYearSetting = exYearSetting;
+		AgreementYearSetting finalYearSetting = yearSetting;
 
 		return AtomTask.of(() -> {
 			require.updateApp(app); // R4
 
-			if (approvalStatus == ApprovalStatus.APPROVED) {
-				if (agrType == TypeAgreementApplication.ONE_MONTH) {
-					if (exMonthSetting.isPresent()) {
-						require.updateYearMonthSetting(exMonthSetting.get()); // R6
-					} else {
-						require.addYearMonthSetting(monthSetting); // R5
-					}
-				} else if (agrType == TypeAgreementApplication.ONE_YEAR) {
-					if (exYearSetting.isPresent()) {
-						require.updateYearSetting(exYearSetting.get());
-					} else {
-						require.addYearSetting(yearSetting); // R7
-					}
-				}
+			if (finalExMonthSetting.isPresent()) {
+				require.updateYearMonthSetting(finalExMonthSetting.get()); // R6
+			} else {
+				require.addYearMonthSetting(finalMonthSetting); // R5
+			}
+			if (finalExYearSetting.isPresent()) {
+				require.updateYearSetting(finalExYearSetting.get());
+			} else {
+				require.addYearSetting(finalYearSetting); // R7
 			}
 		});
 	}

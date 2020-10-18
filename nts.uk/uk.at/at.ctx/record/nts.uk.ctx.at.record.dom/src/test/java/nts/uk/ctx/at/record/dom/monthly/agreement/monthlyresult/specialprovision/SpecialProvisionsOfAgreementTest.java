@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
@@ -32,6 +32,24 @@ public class SpecialProvisionsOfAgreementTest {
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
 		NtsAssert.invokeGetters(target);
+	}
+
+	@Test
+	public void createTest_1() {
+		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
+		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
+
+		ApplicationTime applicationTime = new ApplicationTime(TypeAgreementApplication.ONE_MONTH, Optional.of(oneMonthTime), Optional.of(oneYearTime));
+		ApprovalStatusDetails approvalStatusDetails = ApprovalStatusDetails.create(ApprovalStatus.UNAPPROVED, Optional.empty(), Optional.empty(), Optional.empty());
+		List<String> listConfirmSID = Arrays.asList("confirmSid1","confirmSid2");
+
+		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
+				new ReasonsForAgreement("reasonsForAgreement"),Arrays.asList(),listConfirmSID,new ScreenDisplayInfo());
+
+		assertThat(target.getInputDate()).isEqualTo(GeneralDate.today());
+		assertThat(target.getApprovalStatusDetails()).isEqualToComparingFieldByField(approvalStatusDetails);
+		assertThat(target.getConfirmationStatusDetails().size()).isEqualTo(2);
+
 	}
 
 	@Test
