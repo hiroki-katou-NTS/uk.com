@@ -10,20 +10,20 @@
         <ui:insert name="title"/>
         <span class="action-bar">
                 <a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }"
-                   tabindex="1"> #{i18n.getText('KSM008_134')} </a>
+                   tabindex="1">#{i18n.getText('KSM008_134')}</a>
                 <button tabindex="2" class="proceed"
                         data-bind="click: saveConsecutiveDays">#{i18n.getText('KSM008_135')}</button>
 			    <button tabindex="3" class="danger"
-                        data-bind="click: deleteConsecutiveDays, enable: true">#{i18n.getText('KSM008_136')}</button>
+                        data-bind="click: deleteConsecutiveDays, enable: deleteEnable">#{i18n.getText('KSM008_136')}</button>
         </span>
     </div>
 
     <div class="contents-area cf" >
-        <div id="G3_1" class="label" data-bind="">aaaa</div>
+        <div id="G3_1" class="label" data-bind="text: codeAndConditionName"></div>
 
         <div class="message-area" data-bind=" ">
             <div class="label">&lt;#{i18n.getText('KSM008_137')}&gt;</div>
-            <div class="label" data-bind="">fffffffffffffffffffff</div>
+            <div class="label" data-bind="text: explanation"></div>
         </div>
 
         <div class="lineContent">

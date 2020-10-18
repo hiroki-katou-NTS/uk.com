@@ -7,9 +7,9 @@
 <body>
 <ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="sidebar-head">
-        <!--<com:ValidatorScript>-->
-            <!--nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays-->
-        <!--</com:ValidatorScript>-->
+        <com:ValidatorScript>
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays
+        </com:ValidatorScript>
 
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
@@ -24,21 +24,27 @@
 
     <ui:define name="sidebar">
         <ul tabindex="-1" class="navigator">
-            <li data-bind="click: onSelectCompany"><a tabindex="-1" href="#tabpanel-1" role="tab-navigator"
-                                                      class="active">#{i18n.getText('Com_Company')}</a></li>
-            <li data-bind="click: onSelectOrganization"><a tabindex="-1" href="#tabpanel-2"
-                                                           role="tab-navigator">#{i18n.getText('KSM008_133')}</a></li>
+            <li data-bind="click: onSelectCom">
+                <a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active">
+                    #{i18n.getText('Com_Company')}
+                </a>
+            </li>
+            <li data-bind="click: onSelectOrg">
+                <a tabindex="-1" href="#tabpanel-2" role="tab-navigator">
+                    #{i18n.getText('KSM008_133')}
+                </a>
+            </li>
         </ul>
     </ui:define>
 
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel">
-            <com:ko tag="if" bind="isCompanySelected()">
+            <com:ko tag="if" bind="isComSelected">
                 <ui:include src="g.xhtml"/>
             </com:ko>
         </div>
         <div id="tabpanel-2" role="tabpanel">
-            <com:ko tag="if" bind="isOrganizationSelected()">
+            <com:ko tag="if" bind="isOrgSelected">
                 <ui:include src="h.xhtml"/>
             </com:ko>
         </div>

@@ -13,26 +13,29 @@
     <ui:define name="table-content">
         <tr>
             <td>
-                <div id="H1_1" class=""
-                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM008_141')}</div>
+                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM008_141')}</div>
             </td>
             <td>
                 <button id="H1_2">#{i18n.getText('KSM008_142')}</button>
             </td>
             <td>
                 <div class="labelWorkplace">
-                    <span class="label">abc</span>
-                    <span class="label">xyz</span>
+                    <span class="label" data-bind="text: unit"></span>
+                    <span class="label" data-bind="text: displayName"></span>
                 </div>
             </td>
         </tr>
         <tr>
             <td>
-                <div id="H3_1" class=""
-                     data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('KSM008_143')}</div>
+                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', required: true }">#{i18n.getText('KSM008_143')}</div>
             </td>
             <td>
-                <input id="H2_2" class="validate_form" data-bind="ntsTextEditor: {value: simpleValue, constraint: constraint, required: true, enable: true, name:'#{i18n.getText('KSM008_144')}'}"/>
+                <input id="H2_2" data-bind="ntsTextEditor: {
+                    name:'#{i18n.getText('KSM008_144')}'},
+                    value: maxConsDays,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                />
             </td>
             <td>
                 <div class="labelWorkplace">

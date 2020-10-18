@@ -13,11 +13,15 @@
     <ui:define name="table-content">
         <tr>
             <td>
-                <div id="G5_1" class=""
-                     data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('KSM008_138')}</div>
+                <div data-bind="ntsFormLabel: {constraint: 'ConsecutiveNumberOfDays', required: true}">#{i18n.getText('KSM008_138')}</div>
             </td>
             <td>
-                <input id="G5_2" class="validate_form" data-bind=""/>
+                <input id="G5_2" data-bind="ntsTextEditor: {
+                    name: '#{i18n.getText('KSM008_139')}',
+                    value: maxConsDays,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                />
             </td>
             <td>
                 <div class="labelWorkplace">
