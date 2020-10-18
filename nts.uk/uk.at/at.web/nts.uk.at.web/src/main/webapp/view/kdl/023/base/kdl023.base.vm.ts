@@ -21,7 +21,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		DATE_FORMAT: 'yyyy-MM-yy',
 		YEAR_MONTH: 'yyyy/MM',
 		MOMENT_DATE_FORMAT: 'YYYY-MM-DD',
-		DEFAULT_REF_ORDER: [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY]
+		DEFAULT_REF_ORDER: [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY],
+		REF_METHOD_WORK_CYCLE_FIRST: 0,
+		REF_METHOD_CUSTOM: 2,
 	};
 
 	export abstract class BaseScreenModel extends ko.ViewModel {
@@ -169,20 +171,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						vm.loadDailyPatternDetail(code);
 					});
 
-					// Set tabindex.
-					vm.isReflectionMethodEnable.subscribe(val => {
-						if (val) {
-							$('#reflection-method-radio-group').attr('tabindex', '8');
-						} else {
-							$('#reflection-method-radio-group').attr('tabindex', '-1');
-						}
-					});
-
-					vm.reflectionMethod.subscribe(val => {
+					vm.reflectionMethod.subscribe(refMethod => {
 						vm.reCheckEmptyHoliday();
+						vm.clearRefOrderErrors();
 						vm.promise(true);
 
-						if (val === 2) {
+						if (refMethod === CONST.REF_METHOD_CUSTOM) {
 							vm.reflectionSetting().statutorySetting.useClassification(false);
 							vm.reflectionSetting().nonStatutorySetting.useClassification(false);
 							vm.reflectionSetting().holidaySetting.useClassification(false);
@@ -492,22 +486,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
 			}
 
-			let errorElementId = '#cbb-reflection-order-1';
-			vm.clearRefOrderErrors();
-			if (vm.reflectionMethod() === 2) {
-				if (vm.reflectionOrder1() != WorkCreateMethod.NON) {
-					refOrder.push(vm.reflectionOrder1());
-					errorElementId = '#cbb-reflection-order-2';
-					if (vm.reflectionOrder2() != WorkCreateMethod.NON) {
-						refOrder.push(vm.reflectionOrder2());
-						errorElementId = '#cbb-reflection-order-3';
-						if (vm.reflectionOrder3() != WorkCreateMethod.NON) {
-							refOrder.push(vm.reflectionOrder3());
-						}
+			if (vm.reflectionMethod() === CONST.REF_METHOD_CUSTOM) {
+				refOrder.push(vm.reflectionOrder1());
+				if (vm.reflectionOrder2() != WorkCreateMethod.NON) {
+					refOrder.push(vm.reflectionOrder2());
+
+					if (vm.reflectionOrder3() != WorkCreateMethod.NON) {
+						refOrder.push(vm.reflectionOrder3());
 					}
 				}
 
 				if (refOrder.length < 3) {
+					let errorElementId = '#cbb-reflection-order-' + (refOrder.length + 1);
 					$(errorElementId).addClass('error').ntsError('set', {
 						messageId: "MsgB_2",
 						messageParams: [vm.$i18n('KDL023_3')]
@@ -516,7 +506,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					vm.$blockui('clear');
 					dfd.fail();
 				}
-			} else if (vm.reflectionMethod() === 0) {
+			} else if (vm.reflectionMethod() === CONST.REF_METHOD_WORK_CYCLE_FIRST) {
 				refOrder = CONST.DEFAULT_REF_ORDER;
 			} else {
 				refOrder = [WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE];
@@ -563,7 +553,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		}
 
 		private clearRefOrderErrors(): void {
-			$('#cbb-reflection-order-1').removeClass('error').ntsError('clear');
 			$('#cbb-reflection-order-2').removeClass('error').ntsError('clear');
 			$('#cbb-reflection-order-3').removeClass('error').ntsError('clear');
 		}
