@@ -1,25 +1,20 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk008.f {
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
 
     const PATH_API = {
-        getMonth: "screen/at/kmk008/f/getMonthSetting",
-        getYear: "screen/at/kmk008/f/getYearSetting",
+        getAllMonth: "screen/at/kmk008/f/getAllMonthSetting",
+        getAllYear: "screen/at/kmk008/f/getAllYearSetting",
     };
 
     @bean()
     export class KMK008FViewModel extends ko.ViewModel {
-        tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
 
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         items2: KnockoutObservableArray<ItemModel2> = ko.observableArray([]);
-        columns: KnockoutObservableArray<any>;
-        columns2: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
 
         isShowButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -31,7 +26,7 @@ module nts.uk.at.view.kmk008.f {
         listComponentOption: any;
         selectedEmpCode: KnockoutObservable<string> = ko.observable('');
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
-        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray<UnitAlreadySettingModel>([]);
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
         //search
         ccg001ComponentOption: any;
@@ -57,65 +52,10 @@ module nts.uk.at.view.kmk008.f {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 disableSelection: false,
-                maxRows: 12,
-                tabindex: 4
+                maxRows: 12
             };
 
             vm.reloadCcg001();
-
-            vm.tabs = ko.observableArray([
-                {
-                    id: 'tab-1',
-                    title: vm.$i18n("KMK008_29"),
-                    content: '.tab-content-1',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                },
-                {
-                    id: 'tab-2',
-                    title: vm.$i18n("KMK008_30"),
-                    content: '.tab-content-2',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                }
-            ]);
-            vm.selectedTab.subscribe(x => {
-                if (vm.selectedId()) {
-                    return vm.getDetail(vm.selectedId());
-                } else {
-                    vm.items([]);
-                    vm.items2([]);
-                }
-            });
-
-            vm.columns = ko.observableArray([
-                {headerText: vm.$i18n("KMK008_29"), key: 'year', width: 100},
-                {headerText: vm.$i18n("KMK008_19"), key: 'error', width: 150},
-                {headerText: vm.$i18n("KMK008_20"), key: 'alarm', width: 150}
-            ]);
-            vm.columns2 = ko.observableArray([
-
-                {headerText: vm.$i18n("KMK008_30"), key: 'year', width: 100},
-                {headerText: vm.$i18n("KMK008_19"), key: 'error', width: 150},
-                {headerText: vm.$i18n("KMK008_20"), key: 'alarm', width: 150}
-            ]);
-
-            vm.selectedEmpCode.subscribe(newValue => {
-                if (!nts.uk.text.isNullOrEmpty(newValue)) {
-                    let data = vm.selectedEmployee();
-                    let employee = _.find(data, function (o) {
-                        return o.employeeCode == vm.selectedEmpCode();
-                    });
-                    vm.getDetail(employee.employeeId);
-                    vm.selectedId(employee.employeeId);
-                    vm.employeeName(employee.employeeName);
-                } else {
-                    vm.selectedId("");
-                    vm.employeeName("");
-                    vm.items([]);
-                    vm.items2([]);
-                }
-            });
         }
 
         reloadCcg001() {
@@ -163,14 +103,130 @@ module nts.uk.at.view.kmk008.f {
                         return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
                     }));
                     if (vm.employeeList() && vm.employeeList().length > 0) {
-                        vm.selectedEmpCode(vm.employeeList()[0].code);
+                        vm.initData().done(() => {
+                            vm.selectedEmpCode(vm.employeeList()[0].code);
+                        });
                     }
                 }
             }
         }
 
+        initData() {
+            const vm = this;
+            let dfd = $.Deferred();
+
+            let employeeIds = _.map(vm.employeeList(), item => {
+                return item.employeeId;
+            });
+
+            vm.alreadySettingList([]);
+
+            let oldUnitModel: UnitModel;
+            let newUnitModel: UnitModel;
+            let monthData: Array<ItemModel> = [];
+            let yearData: Array<ItemModel> = [];
+            let monthData2: Array<ItemModel2> = [];
+            let yearData2: Array<ItemModel2> = [];
+            let settingDtos: Array<any> = [];
+
+            let monthQuery = vm.$ajax(PATH_API.getAllMonth, {employeeIds: employeeIds});
+            let yearQuery = vm.$ajax(PATH_API.getAllYear, {employeeIds: employeeIds});
+
+            vm.$blockui("invisible");
+            $.when(monthQuery, yearQuery)
+                .done((monthDataList: any, yearDataList: any) => {
+                    _.forEach(employeeIds, (value) => {
+                        monthData = [];
+                        yearData = [];
+                        monthData2 = [];
+                        yearData2 = [];
+
+                        oldUnitModel = _.find(vm.employeeList(), item => {
+                            return item.employeeId === value;
+                        });
+
+                        settingDtos = _.find(monthDataList, item => {
+                            return item.employeeId === value;
+                        }).settingDtos;
+                        if (settingDtos && settingDtos.length) {
+                            _.forEach(settingDtos, (value) => {
+                                monthData.push(new ItemModel(
+                                    nts.uk.time.parseYearMonth(value.yearMonthValue).format(),
+                                    nts.uk.time.parseTime(value.errorOneMonth, true).format(),
+                                    nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
+
+                                monthData2.push(new ItemModel2(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
+                            });
+                        }
+
+                        settingDtos = _.find(yearDataList, item => {
+                            return item.employeeId === value;
+                        }).settingDtos;
+                        if (settingDtos && settingDtos.length) {
+                            _.forEach(settingDtos, (value) => {
+                                yearData.push(new ItemModel(
+                                    value.yearValue.toString(),
+                                    nts.uk.time.parseTime(value.errorOneYear, true).format(),
+                                    nts.uk.time.parseTime(value.alarmOneYear, true).format()));
+
+                                yearData2.push(new ItemModel2(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                            });
+                        }
+
+                        newUnitModel = new UnitModel(
+                            oldUnitModel.code,
+                            oldUnitModel.name,
+                            oldUnitModel.affiliationName,
+                            oldUnitModel.employeeId,
+                            monthData,
+                            yearData,
+                            monthData2,
+                            yearData2
+                        );
+
+                        vm.employeeList.replace(oldUnitModel, newUnitModel);
+                        vm.alreadySettingList.push(new UnitAlreadySettingModel(oldUnitModel.code, monthData2.length > 0 || yearData2.length > 0));
+                    });
+
+                    dfd.resolve();
+                })
+                .fail((err1: any, err2: any) => {
+                    if (err1) {
+                        vm.$dialog.error(err1.message).then(() => {
+                        });
+                    }
+                    if (err2) {
+                        vm.$dialog.error(err1.message).then(() => {
+                        });
+                    }
+                    dfd.reject();
+                })
+                .always(() => vm.$blockui("clear"));
+
+            return dfd.promise();
+        }
+
         created() {
             const vm = this;
+            vm.selectedTab.subscribe(x => {
+                if (vm.selectedId()) {
+                    return vm.getDetail(vm.selectedEmpCode());
+                } else {
+                    vm.items([]);
+                    vm.items2([]);
+                }
+            });
+
+            vm.selectedEmpCode.subscribe(newValue => {
+                if (!nts.uk.text.isNullOrEmpty(newValue)) {
+                    vm.getDetail(vm.selectedEmpCode());
+                } else {
+                    vm.selectedId("");
+                    vm.employeeName("");
+                    vm.items([]);
+                    vm.items2([]);
+                }
+            });
 
             if (!vm.selectedEmpCode()) {
                 vm.isShowButton(false);
@@ -184,20 +240,20 @@ module nts.uk.at.view.kmk008.f {
 
         openDiaglog() {
             const vm = this;
-
-            setShared("KMK_008_PARAMS", {
+            const data = {
                 employeeCode: vm.selectedEmpCode(),
                 employeeId: vm.selectedId(),
                 employeeName: vm.employeeName(),
-                isYearMonth: vm.selectedTab() == "tab-2"
-            });
+                isYearMonth: vm.selectedTab() == "tab-2",
+                itemData: vm.items2()
+            };
 
-            setShared("KMK_008_DATA", vm.items2);
-
-            modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
-                if (vm.selectedId()) {
-                    vm.getDetail(vm.selectedId());
-                }
+            vm.$window.modal('../../../kmk/008/k/index.xhtml', data).then(() => {
+                vm.initData().done(() => {
+                    if (vm.selectedEmpCode()) {
+                    vm.getDetail(vm.selectedEmpCode());
+                    }
+                });
             });
         }
 
@@ -205,41 +261,27 @@ module nts.uk.at.view.kmk008.f {
             const vm = this;
             vm.isShowButton(true);
 
-            vm.$blockui("invisible");
+            let employeeModel: UnitModel = _.find(vm.employeeList(), item => {
+                return item.code === employmentCategoryCode;
+            });
 
+            vm.selectedId(employeeModel.employeeId);
+            vm.employeeName(employeeModel.name);
+
+            vm.items([]);
+            vm.items2([]);
             if (vm.selectedTab() == "tab-2") {
-                vm.$ajax(PATH_API.getMonth, {employeeId: employmentCategoryCode})
-                    .done(function (monthData: Array<MonthDto>) {
-                        vm.items([]);
-                        vm.items2([]);
-                        if (monthData && monthData.length) {
-                            _.forEach(monthData, function (value) {
-                                vm.items.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
-                                vm.items2.push(new ItemModel2(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
-                            });
-                        }
-                    })
-                    .fail(res => {
-                        vm.$dialog.error(res.message);
-                    })
-                    .always(() => vm.$blockui("clear"));
+                vm.items(employeeModel.monthSettingList);
+                vm.items2(employeeModel.monthSettingList2);
             } else {
-                vm.$ajax(PATH_API.getYear, {employeeId: employmentCategoryCode})
-                    .done(function (yearData: Array<YearDto>) {
-                        vm.items([]);
-                        vm.items2([]);
-                        if (yearData && yearData.length) {
-                            _.forEach(yearData, function (value) {
-                                vm.items.push(new ItemModel(value.yearValue.toString(), nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
-                                vm.items2.push(new ItemModel2(value.yearValue, value.errorOneYear, value.alarmOneYear));
-                            });
-                        }
-                    })
-                    .fail(res => {
-                        vm.$dialog.error(res.message);
-                    })
-                    .always(() => vm.$blockui("clear"));
+                vm.items(employeeModel.yearSettingList);
+                vm.items2(employeeModel.yearSettingList2);
             }
+        }
+
+        close() {
+            const vm = this;
+            vm.$window.close();
         }
     }
 
@@ -273,17 +315,38 @@ module nts.uk.at.view.kmk008.f {
         affiliationName: string;
         employeeId: string;
 
-        constructor(code: string, name: string, affiliationName: string, employeeId: string) {
+        monthSettingList: Array<ItemModel>;
+        yearSettingList: Array<ItemModel>;
+        monthSettingList2: Array<ItemModel2>;
+        yearSettingList2: Array<ItemModel2>;
+
+        constructor(code: string, name: string,
+                    affiliationName: string,
+                    employeeId: string,
+                    monthSettingList: Array<ItemModel> = [],
+                    yearSettingList: Array<ItemModel> = [],
+                    monthSettingList2: Array<ItemModel2> = [],
+                    yearSettingList2: Array<ItemModel2> = []) {
             this.code = code;
             this.name = name;
             this.affiliationName = affiliationName;
             this.employeeId = employeeId;
+
+            this.monthSettingList = monthSettingList;
+            this.yearSettingList = yearSettingList;
+            this.monthSettingList2 = monthSettingList2;
+            this.yearSettingList2 = yearSettingList2;
         }
     }
 
-    export interface UnitAlreadySettingModel {
+    export class UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+
+        constructor(code: string, isAlreadySetting: boolean) {
+            this.code = code;
+            this.isAlreadySetting = isAlreadySetting;
+        }
     }
 
     export class MonthDto {

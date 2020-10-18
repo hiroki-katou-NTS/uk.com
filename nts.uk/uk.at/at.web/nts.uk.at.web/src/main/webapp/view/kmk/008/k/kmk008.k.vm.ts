@@ -1,8 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk008.k {
-    import getShared = nts.uk.ui.windows.getShared;
-
     const PATH_API = {
         getDetailYearMonth: "screen/at/kmk008/k/getYearMonth",
         addAgreementMonthSetting: "monthly/estimatedtime/monthSetting/register",
@@ -19,36 +17,35 @@ module nts.uk.at.view.kmk008.k {
     export class KMK008KViewModel extends ko.ViewModel {
         currentCodeSelect: KnockoutObservable<number> = ko.observable(null);
         currentSelectItem: KnockoutObservable<SettingModel>;
-        isUpdate: boolean = true;
         updateEnable: KnockoutObservable<boolean> = ko.observable(true);
-        newMode: KnockoutObservable<boolean> = ko.observable(false);
+        deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
+
         isYearMonth: boolean;
         employeeId: string;
         employeeCode: string;
         employeeName: string;
         yearLabel: string;
-        yearErrorTimeLabel: string;
-        yearAlarmTimeLabel: string;
         inputFormatYearOrYearMonth: string;
         dateFormat: string;
         listItemDataGrid: KnockoutObservableArray<ShowListModel> = ko.observableArray([]);
-        deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
+
 
         //３６協定基本設定.３６協定1年間.特例条項による上限.上限時間
         //３６協定基本設定.３６協定1ヶ月.特例条項による上限.上限時間
-        oneMonthOrYearUpperLimit: KnockoutObservable<Number> = ko.observable();
+        oneMonthOrYearUpperLimit: KnockoutObservable<Number> = ko.observable(-1);
         oneMonthOrYearUpperLimitString: KnockoutObservable<string> = ko.observable();
 
         constraintTime: string;
 
-        constructor() {
+        constructor(params: any) {
             super();
             const vm = this;
-            let dto: IData = getShared("KMK_008_PARAMS") || {
+            let dto: IData = params || {
                 employeeCode: '',
                 employeeId: '',
                 employeeName: '',
-                isYearMonth: false
+                isYearMonth: false,
+                itemData: null
             };
 
             vm.isYearMonth = dto.isYearMonth;
@@ -57,8 +54,6 @@ module nts.uk.at.view.kmk008.k {
             vm.employeeName = dto.employeeName;
 
             vm.currentSelectItem = ko.observable(new SettingModel(null, vm.employeeId));
-            vm.yearErrorTimeLabel = vm.$i18n("KMK008_19");
-            vm.yearAlarmTimeLabel = vm.$i18n("KMK008_20");
             if (vm.isYearMonth) {
                 vm.yearLabel = vm.$i18n("KMK008_30");
                 vm.inputFormatYearOrYearMonth = 'YYYYMM';
@@ -79,7 +74,6 @@ module nts.uk.at.view.kmk008.k {
                     return item.yearOrYearMonthValue == newValueNum;
                 });
                 vm.currentSelectItem(new SettingModel(itemSelect, vm.employeeId));
-                vm.newMode(false);
                 vm.updateEnable(true);
                 vm.deleteEnable(true);
                 vm.$errors("clear");
@@ -87,41 +81,39 @@ module nts.uk.at.view.kmk008.k {
 
 
             vm.listItemDataGrid([]);
-            let data = getShared("KMK_008_DATA") || null;
-            if (data && data.length) {
-                _.forEach(data, item => {
+            if (dto.itemData && dto.itemData.length) {
+                _.forEach(dto.itemData, item => {
                     vm.listItemDataGrid.push(new ShowListModel(Number(item.year), Number(item.error), Number(item.alarm)));
                 });
-                vm.isUpdate = true;
                 vm.updateEnable(true);
                 vm.currentCodeSelect(vm.listItemDataGrid()[0].yearOrYearMonthValue);
             } else {
                 vm.setNewMode();
             }
 
+            vm.oneMonthOrYearUpperLimitString(vm.$i18n("KMK008_185", [""]));
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.getDetailYearMonth, {employeeId: vm.employeeId}).done(data => {
                     vm.oneMonthOrYearUpperLimit(data.oneMonthUpperLimit);
-                    vm.oneMonthOrYearUpperLimitString(nts.uk.time.parseTime(data.oneMonthUpperLimit, true).format());
+                    vm.oneMonthOrYearUpperLimitString(vm.$i18n("KMK008_185", [nts.uk.time.parseTime(data.oneMonthUpperLimit, true).format()]));
                 });
             } else {
                 vm.$ajax(PATH_API.getDetailYear, {employeeId: vm.employeeId}).done(data => {
                     vm.oneMonthOrYearUpperLimit(data.oneYearUpperLimit);
-                    vm.oneMonthOrYearUpperLimitString(nts.uk.time.parseTime(data.oneYearUpperLimit, true).format());
+                    vm.oneMonthOrYearUpperLimitString(vm.$i18n("KMK008_185", [nts.uk.time.parseTime(data.oneYearUpperLimit, true).format()]));
                 });
             }
         }
 
-        created() {
+        created(params: any) {
             const vm = this;
-
             _.extend(window, {vm});
         }
 
         mounted() {
             const vm = this;
 
-            if (vm.isUpdate) {
+            if (vm.updateEnable()) {
                 $("#txt-year-error-time").focus();
             } else {
                 $("#txt-year").focus();
@@ -130,30 +122,24 @@ module nts.uk.at.view.kmk008.k {
 
         setNewMode() {
             const vm = this;
-            vm.newMode(true);
-            vm.isUpdate = false;
             vm.deleteEnable(false);
             vm.currentSelectItem(new SettingModel(null, vm.employeeId));
             vm.currentCodeSelect(null);
             vm.updateEnable(false);
-            vm.$validate('input.nts-input');
             $("#txt-year").focus();
         }
 
         addOrUpdateClick() {
             const vm = this;
-            vm.$validate('input.nts-input');
-
-            vm.$validate('.nts-editor')
-                .then((valid: boolean) => {
-                    if (valid) {
-                        if (vm.isUpdate) {
-                            vm.updateData();
-                            return;
-                        } else
-                            vm.register();
-                    }
-                });
+            vm.$validate('.nts-editor').then((valid: boolean) => {
+                if (valid) {
+                    if (vm.updateEnable()) {
+                        vm.updateData();
+                        return;
+                    } else
+                        vm.register();
+                }
+            });
         }
 
         register() {
@@ -164,14 +150,27 @@ module nts.uk.at.view.kmk008.k {
                 return;
             }
 
+            if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+                return vm.$dialog.error({
+                    messageId: "Msg_59",
+                    messageParams: [vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185")]
+                });
+            }
+            else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
+                return vm.$dialog.error({
+                    messageId: "Msg_59",
+                    messageParams: [vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                });
+            }
+
             vm.$blockui("invisible");
 
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.addAgreementMonthSetting, new AddUpdateMonthSettingModel(vm.currentSelectItem()))
                     .done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
-
-                        vm.reloadData(yearOrYearMonth);
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.reloadData(yearOrYearMonth);
+                        });
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -180,9 +179,9 @@ module nts.uk.at.view.kmk008.k {
             } else {
                 vm.$ajax(PATH_API.addAgreementYearSetting, new AddUpdateYearSettingModel(vm.currentSelectItem()))
                     .done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
-
-                        vm.reloadData(yearOrYearMonth);
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.reloadData(yearOrYearMonth);
+                        });
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -197,22 +196,35 @@ module nts.uk.at.view.kmk008.k {
                 return;
             }
 
+            if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+                return vm.$dialog.error({
+                    messageId: "Msg_59",
+                    messageParams: [vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185")]
+                });
+            }
+            else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
+                return vm.$dialog.error({
+                    messageId: "Msg_59",
+                    messageParams: [vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                });
+            }
+
             vm.$blockui("invisible");
 
             if (vm.isYearMonth) {
                 vm.$ajax(PATH_API.updateAgreementMonthSetting, new AddUpdateMonthSettingModel(vm.currentSelectItem()))
                     .done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
-
-                        vm.listItemDataGrid.replace(
-                            _.find(vm.listItemDataGrid(), item => {
-                                return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
-                            }),
-                            new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
-                                vm.currentSelectItem().errorOneYearOrYearMonth(),
-                                vm.currentSelectItem().alarmOneYearOrYearMonth()
-                            )
-                        );
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.listItemDataGrid.replace(
+                                _.find(vm.listItemDataGrid(), item => {
+                                    return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
+                                }),
+                                new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
+                                    vm.currentSelectItem().errorOneYearOrYearMonth(),
+                                    vm.currentSelectItem().alarmOneYearOrYearMonth()
+                                )
+                            );
+                        });
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -221,17 +233,17 @@ module nts.uk.at.view.kmk008.k {
             } else {
                 vm.$ajax(PATH_API.updateAgreementYearSetting, new AddUpdateYearSettingModel(vm.currentSelectItem()))
                     .done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
-
-                        vm.listItemDataGrid.replace(
-                            _.find(vm.listItemDataGrid(), item => {
-                                return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
-                            }),
-                            new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
-                                vm.currentSelectItem().errorOneYearOrYearMonth(),
-                                vm.currentSelectItem().alarmOneYearOrYearMonth()
-                            )
-                        );
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.listItemDataGrid.replace(
+                                _.find(vm.listItemDataGrid(), item => {
+                                    return item.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue();
+                                }),
+                                new ShowListModel(vm.currentSelectItem().yearOrYearMonthValue(),
+                                    vm.currentSelectItem().errorOneYearOrYearMonth(),
+                                    vm.currentSelectItem().alarmOneYearOrYearMonth()
+                                )
+                            );
+                        });
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
@@ -281,26 +293,28 @@ module nts.uk.at.view.kmk008.k {
                 return item.yearOrYearMonthValue == oldSelectCode;
             });
 
-            if (vm.listItemDataGrid().length) {
-                vm.isUpdate = true;
-                if (isRemove) {
-                    vm.listItemDataGrid.remove(
-                        vm.listItemDataGrid()[oldSelectIndex]
-                    );
-
+            if (isRemove) {
+                vm.listItemDataGrid.remove(
+                    vm.listItemDataGrid()[oldSelectIndex]
+                );
+                if (vm.listItemDataGrid().length) {
                     vm.currentCodeSelect(vm.getNewSelectRemove(oldSelectIndex));
-                } else {
-                    vm.listItemDataGrid.push(new ShowListModel(
-                        vm.currentSelectItem().yearOrYearMonthValue(),
-                        vm.currentSelectItem().errorOneYearOrYearMonth(),
-                        vm.currentSelectItem().alarmOneYearOrYearMonth()
-                    ));
-                    vm.listItemDataGrid(_.orderBy(vm.listItemDataGrid(), ['yearOrYearMonthValue'], ['desc']));
-
-                    vm.currentCodeSelect(oldSelectCode);
+                }
+                else {
+                    vm.setNewMode();
                 }
             } else {
-                vm.setNewMode();
+                vm.listItemDataGrid.push(new ShowListModel(
+                    vm.currentSelectItem().yearOrYearMonthValue(),
+                    vm.currentSelectItem().errorOneYearOrYearMonth(),
+                    vm.currentSelectItem().alarmOneYearOrYearMonth()
+                ));
+                vm.listItemDataGrid(_.orderBy(vm.listItemDataGrid(), ['yearOrYearMonthValue'], ['desc']));
+                if (!vm.updateEnable()) {
+                    vm.updateEnable(true);
+                    vm.deleteEnable(true);
+                }
+                vm.currentCodeSelect(oldSelectCode);
             }
         }
 
@@ -319,9 +333,9 @@ module nts.uk.at.view.kmk008.k {
             return null;
         }
 
-        closeDialogK() {
+        closeDialog() {
             const vm = this;
-            vm.$window.close();
+            vm.$window.close({});
         }
     }
 
@@ -416,9 +430,10 @@ module nts.uk.at.view.kmk008.k {
     }
 
     interface IData {
-        employeeId?: string;
+        employeeId: string;
         employeeCode: string;
         employeeName: string;
         isYearMonth: boolean;
+        itemData: any;
     }
 }
