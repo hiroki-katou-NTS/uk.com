@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
     勤務サイクル
  */
 @Getter
-@AllArgsConstructor
 public class WorkCycle extends AggregateRoot {
 
     /*
@@ -46,6 +45,15 @@ public class WorkCycle extends AggregateRoot {
         return new WorkCycle(cid, new WorkCycleCode(code), new WorkCycleName(name), infos );
     }
 
+	/**
+	 * Private constructor
+	 */
+	private WorkCycle(String cid, WorkCycleCode wcCode, WorkCycleName wcName, List<WorkCycleInfo> infos) {
+		this.cid = cid;
+		this.code = wcCode;
+		this.name = wcName;
+		this.infos = infos;
+	}
 
     /**
      * 	[1] 勤務情報を取得する
