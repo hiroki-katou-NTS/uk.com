@@ -17,42 +17,28 @@ module nts.uk.ui.at.ksu002.a {
 	const memento: m.Options = {
 		size: 20,
 		// callback function raise when undo or redo
-		replace: function (data: DayDataRawObsv[], memento: m.StateMemento<DayData>) {
-			const { preview, current } = memento;
-			const exist = _.find(data, f => moment(f.date).isSame(current.date, 'date'));
+		replace: function (data: DayDataRawObsv[], preview: DayData) {
+			const exist = _.find(data, f => moment(f.date).isSame(preview.date, 'date'));
 
 			if (exist) {
 				const { data } = exist;
-				const valid = ko.unwrap(data.value.validate);
+				const { wtime, wtype, value, state } = preview.data;
 
-				if (valid) {
-					const { wtime, wtype, value, state } = (preview).data;
+				data.wtime.code(wtime.code);
+				data.wtime.name(wtime.name);
 
-					data.wtime.code(wtime.code);
-					data.wtime.name(wtime.name);
+				data.wtype.code(wtype.code);
+				data.wtype.name(wtype.name);
 
-					data.wtype.code(wtype.code);
-					data.wtype.name(wtype.name);
+				data.value.begin(value.begin);
+				data.value.finish(value.finish);
 
-					data.value.begin(value.begin);
-					data.value.finish(value.finish);
+				data.state.wtype(state.wtype);
+				data.state.wtime(state.wtime);
 
-					data.state.wtype(state.wtype);
-					data.state.wtime(state.wtime);
-
-					data.state.value.begin(state.value.begin);
-					data.state.value.finish(state.value.finish);
-
-					return true;
-				} else {
-					data.value.begin.valueHasMutated();
-					data.value.finish.valueHasMutated();
-					
-					return false;
-				}
+				data.state.value.begin(state.value.begin);
+				data.state.value.finish(state.value.finish);
 			}
-
-			return false;
 		}
 	};
 

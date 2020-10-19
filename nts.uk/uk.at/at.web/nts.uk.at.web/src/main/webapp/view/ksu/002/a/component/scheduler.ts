@@ -23,8 +23,8 @@ module nts.uk.ui.at.ksu002.a {
         wtype: WData;
         wtime: WData;
         value: {
-            begin: number | null;
-            finish: number | null;
+            begin: string | number | null;
+            finish: string | number | null;
         };
         state: StateEdit<EDIT_STATE>;
         comfirmed: boolean;
@@ -38,8 +38,8 @@ module nts.uk.ui.at.ksu002.a {
         wtype: WData<KnockoutObservable<string>>;
         wtime: WData<KnockoutObservable<string>>;
         value: {
-            begin: KnockoutObservable<number | null>;
-            finish: KnockoutObservable<number | null>;
+            begin: KnockoutObservable<string | number | null>;
+            finish: KnockoutObservable<string | number | null>;
             validate: KnockoutObservable<boolean>;
             required: KnockoutObservable<WORKTYPE_SETTING>;
         };
@@ -610,7 +610,7 @@ module nts.uk.ui.at.ksu002.a {
                     required: ko.observable(false)
                 };
 
-            click: WorkTimeRange = {
+            click: WorkTimeRange<number> = {
                 begin: ko.observable(CL_VALUE),
                 finish: ko.observable(CL_VALUE)
             };
@@ -634,7 +634,7 @@ module nts.uk.ui.at.ksu002.a {
                 const pt = nts.uk.time.parseTime;
                 const { data, model, text } = vm;
                 const { context, dayData } = data;
-                const cache: { begin: number | null; finish: number | null; } = { begin: null, finish: null };
+                const cache: { begin: string | number | null; finish: string | number | null; } = { begin: null, finish: null };
 
                 if (dayData.data) {
                     const { data } = dayData;
@@ -652,6 +652,7 @@ module nts.uk.ui.at.ksu002.a {
                                 .resolve(true)
                                 .then(() => $begin.ntsError('clear'))
                                 .then(() => model.begin(b))
+                                .then(() => $begin.trigger(VALIDATE))
                                 .then(() => {
                                     if ($finish.ntsError('hasError')) {
                                         $finish.trigger(VALIDATE);
@@ -671,6 +672,7 @@ module nts.uk.ui.at.ksu002.a {
                                 .resolve(true)
                                 .then(() => $finish.ntsError('clear'))
                                 .then(() => model.finish(f))
+                                .then(() => $finish.trigger(VALIDATE))
                                 .then(() => {
                                     if ($begin.ntsError('hasError')) {
                                         $begin.trigger(VALIDATE);
@@ -690,81 +692,28 @@ module nts.uk.ui.at.ksu002.a {
 
                     model.begin
                         .subscribe((b: number | string | null) => {
-                            const f = ko.unwrap(model.finish);
-                            const $begin = $(vm.$el).find('input.begin');
-                            const $finish = $(vm.$el).find('input.finish');
+                            if (cache.begin !== b && ko.unwrap(value.begin) !== b) {
+                                cache.begin = b;
 
-                            if (b === null || _.isString(b)) {
-                                value.validate(false);
-                                $finish.ntsError(CLBC, MSG_1811);
-                            } else if (_.isNumber(b) && cache.begin !== b && ko.unwrap(value.begin) !== b) {
-                                if (_.isNumber(f) && b > f) {
-                                    value.validate(false);
+                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
-                                    if (!$begin.ntsError('hasError')) {
-                                        $begin.ntsError('set', { messageId: MSG_1811 });
-                                    }
+                                clone.data.value.begin = b;
 
-                                    if (!$finish.ntsError('hasError')) {
-                                        $finish.ntsError('set', { messageId: MSG_1811 });
-                                    }
-
-                                    $.Deferred()
-                                        .resolve(true)
-                                        .then(() => $begin.val(pt(b, true).format()))
-                                        .then(() => $finish.val(pt(f, true).format()));
-                                } else {
-                                    cache.begin = b;
-                                    value.validate(true);
-
-                                    const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
-
-                                    clone.data.value.begin = b;
-
-                                    context.$change.apply(context.$vm, [clone]);
-
-                                    $finish.ntsError(CLBC, MSG_1811);
-                                }
+                                context.$change.apply(context.$vm, [clone]);
                             }
                         });
 
                     model.finish
                         .subscribe((f: number | string | null) => {
-                            const b = ko.unwrap(model.begin);
-                            const $begin = $(vm.$el).find('input.begin');
-                            const $finish = $(vm.$el).find('input.finish');
+                            if (cache.finish !== f && ko.unwrap(value.finish) !== f) {
+                                cache.finish = f;
+                                value.validate(true);
 
-                            if (f === null || _.isString(f)) {
-                                value.validate(false);
-                                $begin.ntsError(CLBC, MSG_1811);
-                            } else if (_.isNumber(f) && cache.finish !== f && ko.unwrap(value.finish) !== f) {
-                                if (_.isNumber(b) && b > f) {
-                                    value.validate(false);
+                                const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
-                                    if (!$begin.ntsError('hasError')) {
-                                        $begin.ntsError('set', { messageId: MSG_1811 });
-                                    }
+                                clone.data.value.finish = f;
 
-                                    if (!$finish.ntsError('hasError')) {
-                                        $finish.ntsError('set', { messageId: MSG_1811 });
-                                    }
-
-                                    $.Deferred()
-                                        .resolve(true)
-                                        .then(() => $begin.val(pt(b, true).format()))
-                                        .then(() => $finish.val(pt(f, true).format()));
-                                } else {
-                                    cache.finish = f;
-                                    value.validate(true);
-
-                                    const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
-
-                                    clone.data.value.finish = f;
-
-                                    context.$change.apply(context.$vm, [clone]);
-
-                                    $begin.ntsError(CLBC, MSG_1811);
-                                }
+                                context.$change.apply(context.$vm, [clone]);
                             }
                         });
 
@@ -897,7 +846,7 @@ module nts.uk.ui.at.ksu002.a {
 
         type INPUT_TYPE = 'begin' | 'finish';
 
-        interface WorkTimeRange<T = number | null> {
+        interface WorkTimeRange<T = string | number | null> {
             begin: KnockoutObservable<T>;
             finish: KnockoutObservable<T>;
         }

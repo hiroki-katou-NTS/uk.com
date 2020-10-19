@@ -13,7 +13,7 @@ module nts.uk.ui.memento {
 
 	export interface Options {
 		size: number;
-		replace: (sources: any, state: StateMemento, act: 'undo' | 'redo') => boolean;
+		replace: (sources: any, preview: any) => void;
 	}
 
 	export interface StateMemento<T = any> {
@@ -85,39 +85,27 @@ module nts.uk.ui.memento {
 				if (ko.unwrap($memento.undo).length) {
 					const state = $memento.undo.shift();
 
-					// try undo
-					const valid = options.replace.apply(target, [ko.unwrap(target), state]);
-
-					if (!valid) {
-						// if not valid, rollback sttate to undo
-						$memento.undo.unshift(state);
-					} else {
-						// orelse, add state to redo
-						$memento.redo.unshift({ current: state.preview, preview: state.current });
-					}
+					// add state to redo
+					$memento.redo.unshift({ current: state.preview, preview: state.current });
 
 					// remove old record when memory size has large than config
 					stripMemory();
+
+					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
 			},
 			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
 			redo: function $$redo() {
 				if (ko.unwrap($memento.redo).length) {
 					const state = $memento.redo.shift();
-
-					// try redo
-					const valid = options.replace.apply(target, [ko.unwrap(target), state]);
-
-					if (!valid) {
-						// if not valid, rollback state to redo
-						$memento.redo.unshift(state);
-					} else {
-						// orelse add state to undo
-						$memento.undo.unshift({ current: state.preview, preview: state.current });
-					}
+					
+					// add state to undo
+					$memento.undo.unshift({ current: state.preview, preview: state.current });
 
 					// remove old record when memory size has large than config
 					stripMemory();
+
+					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
 			},
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),
