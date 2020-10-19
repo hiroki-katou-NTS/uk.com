@@ -4,6 +4,7 @@ module nts.uk.at.view.kwr003.a {
   import common = nts.uk.at.view.kwr003.common;
   import ComponentOption = kcp.share.list.ComponentOption;
 
+  const  WORK_STATUS = 'WorkStatus';
   @bean()
   class ViewModel extends ko.ViewModel {
 
@@ -21,8 +22,8 @@ module nts.uk.at.view.kwr003.a {
 
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
     zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
-    specifyingPageBreaks: KnockoutObservable<number> = ko.observable(0);
-
+    pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
+    isWorker: KnockoutObservable<boolean> = ko.observable(true);
     // start declare KCP005
     listComponentOption: any;
     selectedCode: KnockoutObservable<string>;
@@ -40,6 +41,8 @@ module nts.uk.at.view.kwr003.a {
     baseDate: KnockoutObservable<Date>;
     // end KCP005
 
+    mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
+
     constructor(params: any) {
       super();
       let vm = this;
@@ -50,6 +53,7 @@ module nts.uk.at.view.kwr003.a {
 
       vm.CCG001_load();
       vm.KCP005_load();
+      vm.initialWorkStatusInformation();
     }
 
     created(params: any) {
@@ -58,6 +62,8 @@ module nts.uk.at.view.kwr003.a {
 
     mounted() {
       let vm = this;
+
+      $('#kcp005 table').attr('tabindex', '-1');
     }
 
     CCG001_load() {
@@ -102,6 +108,7 @@ module nts.uk.at.view.kwr003.a {
         showWorktype: true,
         isMutipleCheck: true,
 
+        tabindex: - 1,
         /**
         * vm-defined function: Return data from CCG001
         * @param: data: the data return from CCG001
@@ -111,7 +118,7 @@ module nts.uk.at.view.kwr003.a {
         }
       }
       // Start component
-      $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
+      $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);      
     }
 
     KCP005_load() {
@@ -190,5 +197,17 @@ module nts.uk.at.view.kwr003.a {
       });
     }
 
+    initialWorkStatusInformation() {
+      let vm = this;
+      vm.$window.storage('WORK_STATUS').then((data: any) => {
+        if( !_.isNil(data)) {
+          vm.rdgSelectedId(data.itemSelection); //項目選択
+          vm.standardSelectedCode(data.standardSelectedCode); //定型選択
+          vm.freeSelectedCode(data.freeSelectedCode); //自由設定
+          vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
+          vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
+        }
+      });
+    }
   }
 }

@@ -10,7 +10,7 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 1200, height: 700 };
+          var dialogSize = { width: 1200, height: 750 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr003.b.main.css" />
@@ -153,12 +153,12 @@
                           ></div>
                         </th>
                         <th
-                          class="ui-widget-header"
+                          class="ui-widget-header text-center"
                           data-bind="text: $i18n('KWR003_213')"
                         ></th>
                         <th class="ui-widget-header"></th>
                         <th
-                          class="ui-widget-header"
+                          class="ui-widget-header text-center"
                           data-bind="text: $i18n('KWR003_214')"
                         ></th>
                       </tr>
@@ -175,6 +175,7 @@
                         <td>
                           <input
                             tabindex="-1"
+                            size="19"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
