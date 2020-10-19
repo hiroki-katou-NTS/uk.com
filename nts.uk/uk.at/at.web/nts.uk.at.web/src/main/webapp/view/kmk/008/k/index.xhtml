@@ -29,10 +29,13 @@
 
         <div id="functions-area">
             <div id="functions-area-content">
-                <button class="" tabindex="1" data-bind="click : setNewMode, enable : updateEnable">#{i18n.getText('KMK008_40')}</button>
-                <button class="proceed" tabindex="2" data-bind="click : addOrUpdateClick, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
-                <button class="danger" tabindex="3" data-bind="click: removeData, enable: deleteEnable">#{i18n.getText('KMK008_16')}</button>
-                <button class="" tabindex="4" data-bind="click: closeDialogK">#{i18n.getText('KMK008_41')}</button>
+                <button class="" tabindex="1"
+                        data-bind="click : setNewMode, enable : updateEnable">#{i18n.getText('KMK008_40')}</button>
+                <button class="proceed" tabindex="2"
+                        data-bind="click : addOrUpdateClick, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
+                <button class="danger" tabindex="3"
+                        data-bind="click: removeData, enable: deleteEnable">#{i18n.getText('KMK008_16')}</button>
+                <button class="" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KMK008_41')}</button>
             </div>
         </div>
 
@@ -46,13 +49,13 @@
                 <div id="contents-area-show-data-left"
                      data-bind="ntsPanel:{width: '210px', height: '310px', direction: 'right', showIcon: false, visible: true}">
                     <table id="single-list" tabindex="5"
-                        data-bind="ntsGridList: {
+                           data-bind="ntsGridList: {
                         height: 300,
                         width: 200,
                         dataSource: listItemDataGrid,
                         primaryKey: 'yearOrYearMonthValue',
                         columns: [
-                        { headerText: '', key: 'yearOrYearMonthValue',	 hidden: true },
+                        { headerText: '', key: 'yearOrYearMonthValue', hidden: true },
                         { headerText: yearLabel, key: 'yearOrYearMonthFormat', width: 150}
                         ],
                         multiple: false,
@@ -64,11 +67,10 @@
                 <div id="contents-area-show-data-right" data-bind="with: currentSelectItem">
 
                     <div class="valign-center control-group control-group-1">
-                        <div id="year-label" data-bind="ntsFormLabel: { required: true }">
-                            <span data-bind="text: $parent.yearLabel"></span>
-                        </div>
+                        <div id="year-label"
+                             data-bind="ntsFormLabel: { required: true, text: $parent.yearLabel }"></div>
                         <div id="txt-year" tabindex="6"
-                            data-bind="ntsDatePicker: {
+                             data-bind="ntsDatePicker: {
                             name: $parent.yearLabel,
                             value: yearOrYearMonthValue,
                             dateFormat: $parent.dateFormat,
@@ -80,11 +82,10 @@
 
 
                     <div class="valign-center control-group control-group-2">
-                        <div id="year-error-time-label" data-bind="ntsFormLabel: { required: true }">
-                            <span data-bind="text: $parent.yearErrorTimeLabel"></span>
-                        </div>
+                        <div id="year-error-time-label"
+                             data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_19')}</div>
                         <input id="txt-year-error-time" tabindex="7"
-                            data-bind="ntsTimeEditor: {
+                               data-bind="ntsTimeEditor: {
                             name: '#[KMK008_42]',
                             constraint: $parent.constraintTime,
                             value: errorOneYearOrYearMonth,
@@ -94,17 +95,15 @@
                             readonly: false,
                             required: true }"/>
                         <div class="time-limit">
-                            <label data-bind="text: '限度時間'"></label>
                             <label data-bind="text: $parent.oneMonthOrYearUpperLimitString"></label>
                         </div>
                     </div>
 
                     <div class="valign-center control-group control-group-3">
-                        <div id="year-alarm-time-label" data-bind="ntsFormLabel: { required: true }">
-                            <span data-bind="text: $parent.yearAlarmTimeLabel"></span>
-                        </div>
+                        <div id="year-alarm-time-label"
+                             data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_20')}</div>
                         <input id="txt-year-alarm-time" tabindex="8"
-                            data-bind="ntsTimeEditor: {
+                               data-bind="ntsTimeEditor: {
                             name: '#[KMK008_43]',
                             constraint: $parent.constraintTime,
                             value:alarmOneYearOrYearMonth,

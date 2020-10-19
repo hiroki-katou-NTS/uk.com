@@ -1,0 +1,651 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kmk008.b.main.css" />
+			<com:scriptfile path="kmk008.b.service.js" />
+			<com:scriptfile path="kmk008.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<ul id="B1_1" tabindex="1" class="navigator">
+				<li><a id="B1_2" tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click:tabpanel1Click">#{i18n.getText('Com_Company')}</a></li>
+				<li><a id="B1_3" tabindex="-1" href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('Com_Employment')}</a></li>
+                <li><a id="B1_4" tabindex="-1" href="#tabpanel-3" role="tab-navigator" class="active">#{i18n.getText('Com_Workplace')}</a></li>
+                <li><a id="B1_5" tabindex="-1" href="#tabpanel-4" role="tab-navigator" class="active">#{i18n.getText('Com_Class')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+            <div id="tabpanel-1" role="tabpanel">
+                <div class="sidebar-content-header">
+                    <span class="title" data-bind="text: vm.textOvertimeName"></span>
+                    <a id="B2_1" class="goback" tabindex="5" data-bind="ntsLinkButton:{jump: '/view/kmk/008/a/index.xhtml'}">#{i18n.getText('KMK008_13')}</a>
+                    <button id="B2_2" class="proceed" tabindex="6" data-bind="click: saveEmpSetting, enable: true">#{i18n.getText('KMK008_14')}</button>
+                    <button id="B2_3" class="test" tabindex="6" data-bind="click: copyEmpSetting, enable: true">#{i18n.getText('KMK008_15')}</button>
+                    <button id="B2_4" class="danger register-button" tabindex="7" data-bind="click: deleteEmpSetting, enable: true">#{i18n.getText('KMK008_16')}</button>
+                </div>
+                <div class="contents-area">
+                    <table id="contents-left-right-b">
+                        <tr>
+                            <td></td>
+                            <td id="right-content-b">
+                                <table id="B3_3">
+                                    <colgroup>
+                                        <col width="330"/>
+                                        <col width="100"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                    <tr>
+                                        <td id="B3_4" data-bind="text: $i18n('KMK008_162')"></td>
+                                        <td>
+                                            <div id="B3_5" tabindex="15" data-bind="ntsComboBox: {
+                                                    name: $i18n('KMK008_34'),
+                                                    options: [
+                                                        {code: kmk008.Limit.LIMIT_0_TIME ,name : $i18n('KMK008_190')},
+                                                        {code: kmk008.Limit.LIMIT_1_TIME ,name : $i18n('KMK008_191')},
+                                                        {code: kmk008.Limit.LIMIT_2_TIME ,name : $i18n('KMK008_192')},
+                                                        {code: kmk008.Limit.LIMIT_3_TIME ,name : $i18n('KMK008_193')},
+                                                        {code: kmk008.Limit.LIMIT_4_TIME ,name : $i18n('KMK008_194')},
+                                                        {code: kmk008.Limit.LIMIT_5_TIME ,name : $i18n('KMK008_195')},
+                                                        {code: kmk008.Limit.LIMIT_6_TIME ,name : $i18n('KMK008_196')},
+                                                        {code: kmk008.Limit.LIMIT_7_TIME ,name : $i18n('KMK008_197')},
+                                                        {code: kmk008.Limit.LIMIT_8_TIME ,name : $i18n('KMK008_198')},
+                                                        {code: kmk008.Limit.LIMIT_9_TIME ,name : $i18n('KMK008_199')},
+                                                        {code: kmk008.Limit.LIMIT_10_TIME, name : $i18n('KMK008_200')},
+                                                        {code: kmk008.Limit.LIMIT_11_TIME, name : $i18n('KMK008_201')},
+                                                        {code: kmk008.Limit.LIMIT_12_TIME, name : $i18n('KMK008_202')}
+                                                    ],
+                                                    optionsValue: 'code',
+                                                    visibleItemsCount: 13,
+                                                    value: vm.selectedLimit,
+                                                    optionsText: 'name',
+                                                    editable: false,
+                                                    enable: true,
+                                                    option: {width: '64px'},
+                                                    columns: [{ prop: 'name', length: 4 }]}">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <table id="B3_6">
+                                    <colgroup>
+                                        <col width="50"/>
+                                        <col width="140"/>
+                                        <col width="140"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead>
+                                    <tr id="B3_6_header" class="tr-common-height">
+                                        <th id="B3_7" colspan="3" class="ui-widget-header" data-bind="text: $i18n('KMK008_89')"></th>
+                                        <th id="B3_8" class="ui-widget-header" data-bind="text: $i18n('KMK008_90')"></th>
+                                        <th id="B3_9" class="ui-widget-header" data-bind="text: $i18n('KMK008_91')"></th>
+                                        <th id="B3_10" class="ui-widget-header" data-bind="text: $i18n('KMK008_164')"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="tr-common-height">
+                                        <td id="B3_11" class="cell-with-background" data-bind="text: $i18n('KMK008_25')"></td>
+                                        <td id="B3_12" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_163').split('｛0｝')[0]"></td>
+                                        <td class="cell-with-background" >
+                                            <input id="B3_13" style="width: auto;" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            <span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span>
+                                        </td>
+                                        <td>
+                                            <input id="B3_14" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="B3_15" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="B3_16" data-bind="text: $i18n('KMK008_165')"></td>
+                                    </tr>
+                                    <tr class="tr-common-height">
+                                        <td class="cell-with-background"></td>
+                                        <td id="B3_17" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_167').split('｛0｝')[0]"></td>
+                                        <td class="cell-with-background vertical-align-bottom">
+                                            <input id="B3_18" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            <span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span>
+                                        </td>
+                                        <td>
+                                            <input id="B3_19" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="B3_20" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="B3_21" data-bind="text: $i18n('KMK008_166')"></td>
+                                    </tr>
+                                    <tr class="tr-common-height">
+                                        <td id="B3_22" class="cell-with-background" data-bind="text: $i18n('KMK008_28')"></td>
+                                        <td colspan="2" class="cell-with-background"></td>
+                                        <td>
+                                            <input id="B3_23" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="B3_24" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="B3_25" data-bind="text: $i18n('KMK008_165')"></td>
+                                    </tr>
+                                    <tr class="tr-common-height">
+                                        <td class="cell-with-background"></td>
+                                        <td id="B3_26" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_168').split('｛0｝')[0]"></td>
+                                        <td class="cell-with-background vertical-align-bottom">
+                                            <input id="B3_27" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            <span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span>
+                                        </td>
+                                        <td>
+                                            <input id="B3_28" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="B3_29" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="B3_30" data-bind="text: $i18n('KMK008_167')"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <table id="B3_31">
+                                    <colgroup>
+                                        <col width="190"/>
+                                        <col width="140"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                    <tr class="tr-common-height">
+                                        <td id="B3_32" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_169').split('｛0｝')[0]"></td>
+                                        <td class="cell-with-background vertical-align-bottom">
+                                            <input id="B3_33" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            <span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span>
+                                        </td>
+                                        <td>
+                                            <input id="B3_34" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="B3_35" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="B3_36" data-bind="text: $i18n('KMK008_165')"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!--<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">-->
+                                <!--<table class="form-default" style="margin-left: 87px;">-->
+                                <!--<tr>-->
+                                <!--<td colspan="2" style="padding-bottom: 20px;">-->
+                                <!--<div>#{i18n.getText('KMK008_150')}</div>-->
+                                <!--</td>-->
+                                <!--<td colspan="2" style="padding-bottom: 20px;">-->
+                                <!--&lt;!&ndash;<span data-bind="text: $parent.selectedItem"></span>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<span data-bind="text: $parent.selectedName"></span>&ndash;&gt;-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="3">-->
+                                <!--&lt;!&ndash;<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK008_93')}</div>&ndash;&gt;-->
+                                <!--</td>-->
+                                <!--<td>-->
+                                <!--&lt;!&ndash;<div id="employment-manage" tabindex="9" class="btn-switch"&ndash;&gt;-->
+                                <!--&lt;!&ndash;data-bind="ntsSwitchButton: {&ndash;&gt;-->
+                                <!--&lt;!&ndash;options: $parent.manageDistinctEnums,&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+                                <!--&lt;!&ndash;enable: $parent.hasEmp,&ndash;&gt;-->
+                                <!--&lt;!&ndash;value: isManage}"></div>&ndash;&gt;-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="4">-->
+                                <!--<div style="margin-top: -17px;">-->
+                                <!--<hr />-->
+                                <!--</div>-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="4" style="padding-left: 40px;">-->
+                                <!--&lt;!&ndash;<div data-bind="ntsFormLabel: {}">&ndash;&gt;-->
+                                <!--&lt;!&ndash;#{i18n.getText('KMK008_92')}</div>&ndash;&gt;-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="4" style="padding-left: 40px;">-->
+                                <!--<div style="margin-top: -17px;">-->
+                                <!--<hr />-->
+                                <!--</div>-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMK008_94')}</td>-->
+                                <!--<td>-->
+                                <!--<div>-->
+                                <!--&lt;!&ndash;<div tabindex="10"&ndash;&gt;-->
+                                <!--&lt;!&ndash;data-bind="ntsComboBox: {&ndash;&gt;-->
+                                <!--&lt;!&ndash;options: $parent.vacationExpirationEnums,&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+                                <!--&lt;!&ndash;value: expirationDate,&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+                                <!--&lt;!&ndash;visibleItemsCount: 15,&ndash;&gt;-->
+                                <!--&lt;!&ndash;editable: false,&ndash;&gt;-->
+                                <!--&lt;!&ndash;enable: $parent.isEmpManaged,&ndash;&gt;-->
+                                <!--&lt;!&ndash;columns: [&ndash;&gt;-->
+                                <!--&lt;!&ndash;{ prop: 'localizedName', length: 10 }&ndash;&gt;-->
+                                <!--&lt;!&ndash;]}"></div>&ndash;&gt;-->
+                                <!--</div>-->
+                                <!--</td>-->
+                                <!--</tr>-->
+                                <!--<tr>-->
+                                <!--<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMK008_95')}</td>-->
+                                <!--&lt;!&ndash;<td><div tabindex="11"&ndash;&gt;-->
+                                <!--&lt;!&ndash;data-bind="ntsSwitchButton: {&ndash;&gt;-->
+                                <!--&lt;!&ndash;options: $parent.applyPermissionEnums,&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+                                <!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+                                <!--&lt;!&ndash;enable: $parent.isEmpManaged,&ndash;&gt;-->
+                                <!--&lt;!&ndash;value: allowPrepaidLeave}">&ndash;&gt;-->
+                                <!--&lt;!&ndash;</div></td>&ndash;&gt;-->
+                                <!--</tr>-->
+                                <!--</table>-->
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+                    <span class="title">WorkingSystem>#{i18n.getText('Com_Employment')}</span>
+					<a id="C2_1" class="goback" tabindex="5" data-bind="ntsLinkButton:{jump: '/view/kmk/008/a/index.xhtml'}">#{i18n.getText('KMK008_13')}</a>
+					<button id="C2_2" class="proceed" tabindex="6" data-bind="click: saveEmpSetting, enable: true">#{i18n.getText('KMK008_14')}</button>
+                    <button id="C2_3" class="test" tabindex="6" data-bind="click: copyEmpSetting, enable: true">#{i18n.getText('KMK008_15')}</button>
+					<button id="C2_4" class="danger register-button" tabindex="7" data-bind="click: deleteEmpSetting, enable: true">#{i18n.getText('KMK008_16')}</button>
+				</div>
+				<div class="contents-area-c">
+					<table id="contents-left-right-c">
+						<tr>
+							<td>
+								<div tabindex ="8" id="left-content-c">
+                                    <div data-itemno="C3_1" id="empt-list-setting"></div>
+                                </div>
+							</td>
+
+							<td id="right-content-c">
+                                <div id="C3_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Employment')])}</div>
+                                <span id="C3_3">01 上</span>
+                                <table id="C4_3">
+                                    <colgroup>
+                                        <col width="330"/>
+                                        <col width="100"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="C4_4" data-bind="text: $i18n('KMK008_162')"></td>
+                                            <td>
+                                                <div id="C4_5" tabindex="15" data-bind="ntsComboBox: {
+                                                    name: $i18n('KMK008_34'),
+                                                    options: [
+                                                        {code: kmk008.Limit.LIMIT_0_TIME ,name : $i18n('KMK008_190')},
+                                                        {code: kmk008.Limit.LIMIT_1_TIME ,name : $i18n('KMK008_191')},
+                                                        {code: kmk008.Limit.LIMIT_2_TIME ,name : $i18n('KMK008_192')},
+                                                        {code: kmk008.Limit.LIMIT_3_TIME ,name : $i18n('KMK008_193')},
+                                                        {code: kmk008.Limit.LIMIT_4_TIME ,name : $i18n('KMK008_194')},
+                                                        {code: kmk008.Limit.LIMIT_5_TIME ,name : $i18n('KMK008_195')},
+                                                        {code: kmk008.Limit.LIMIT_6_TIME ,name : $i18n('KMK008_196')},
+                                                        {code: kmk008.Limit.LIMIT_7_TIME ,name : $i18n('KMK008_197')},
+                                                        {code: kmk008.Limit.LIMIT_8_TIME ,name : $i18n('KMK008_198')},
+                                                        {code: kmk008.Limit.LIMIT_9_TIME ,name : $i18n('KMK008_199')},
+                                                        {code: kmk008.Limit.LIMIT_10_TIME, name : $i18n('KMK008_200')},
+                                                        {code: kmk008.Limit.LIMIT_11_TIME, name : $i18n('KMK008_201')},
+                                                        {code: kmk008.Limit.LIMIT_12_TIME, name : $i18n('KMK008_202')}
+                                                    ],
+                                                    optionsValue: 'code',
+                                                    visibleItemsCount: 13,
+                                                    value: vm.selectedLimit,
+                                                    optionsText: 'name',
+                                                    editable: false,
+                                                    enable: true,
+                                                    option: {width: '64px'},
+                                                    columns: [{ prop: 'name', length: 4 }]}">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table id="C4_6">
+                                    <colgroup>
+                                        <col width="50"/>
+                                        <col width="140"/>
+                                        <col width="140"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead>
+                                        <tr id="C4_6_header-c" class="tr-common-height">
+                                            <th id="C4_7" colspan="3" class="ui-widget-header" data-bind="text: $i18n('KMK008_89')"></th>
+                                            <th id="C4_8" class="ui-widget-header" data-bind="text: $i18n('KMK008_90')"></th>
+                                            <th id="C4_9" class="ui-widget-header" data-bind="text: $i18n('KMK008_91')"></th>
+                                            <th id="C4_10" class="ui-widget-header" data-bind="text: $i18n('KMK008_164')"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="tr-common-height">
+                                            <td id="C4_11" class="cell-with-background" data-bind="text: $i18n('KMK008_25')"></td>
+                                            <td id="C4_12" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_163').split('｛0｝')[0]"></td>
+                                            <td class="cell-with-background" >
+                                                <input id="C4_13" style="width: auto;" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                                <span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span>
+                                            </td>
+                                            <td>
+                                                <input id="C4_14" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input id="C4_15" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" id="C4_16" data-bind="text: $i18n('KMK008_165')"></td>
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td class="cell-with-background"></td>
+                                            <td id="C4_17" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_167').split('｛0｝')[0]"></td>
+                                            <td class="cell-with-background vertical-align-bottom">
+                                                <input id="C4_18" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                                <span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span>
+                                            </td>
+                                            <td>
+                                                <input id="C4_19" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input id="C4_20" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" id="C4_21" data-bind="text: $i18n('KMK008_166')"></td>
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td id="C4_22" class="cell-with-background" data-bind="text: $i18n('KMK008_28')"></td>
+                                            <td colspan="2" class="cell-with-background"></td>
+                                            <td>
+                                                <input id="C4_23" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input id="C4_24" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" id="C4_25" data-bind="text: $i18n('KMK008_165')"></td>
+                                        </tr>
+                                        <tr class="tr-common-height">
+                                            <td class="cell-with-background"></td>
+                                            <td id="C4_26" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_168').split('｛0｝')[0]"></td>
+                                            <td class="cell-with-background vertical-align-bottom">
+                                                <input id="C4_27" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                                <span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span>
+                                            </td>
+                                            <td>
+                                                <input id="C4_28" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td>
+                                                <input id="C4_29" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            </td>
+                                            <td class="wrap-white-space-pre-line" id="C4_30" data-bind="text: $i18n('KMK008_167')"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table id="C4_31">
+                                    <colgroup>
+                                        <col width="190"/>
+                                        <col width="140"/>
+                                        <col width="100"/>
+                                        <col width="100"/>
+                                        <col width="250"/>
+                                    </colgroup>
+                                    <thead></thead>
+                                    <tbody>
+                                    <tr class="tr-common-height">
+                                        <td id="C4_32" class="cell-with-background wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_169').split('｛0｝')[0]"></td>
+                                        <td class="cell-with-background vertical-align-bottom">
+                                            <input id="C4_33" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                            <span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span>
+                                        </td>
+                                        <td>
+                                            <input id="C4_34" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td>
+                                            <input id="C4_35" data-bind="ntsTimeEditor: {
+                                                name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+                                                constraint: 'PrimitiveValue',
+                                                value: theTime,
+                                                option: {width: '60px'},
+                                                inputFormat: 'time'}" />
+                                        </td>
+                                        <td class="wrap-white-space-pre-line" id="C4_36" data-bind="text: $i18n('KMK008_165')"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+								<!--<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">-->
+                                <!--<table class="form-default" style="margin-left: 87px;">-->
+									<!--<tr>-->
+										<!--<td colspan="2" style="padding-bottom: 20px;">-->
+											<!--<div>#{i18n.getText('KMK008_150')}</div>-->
+										<!--</td>-->
+										<!--<td colspan="2" style="padding-bottom: 20px;">-->
+											<!--&lt;!&ndash;<span data-bind="text: $parent.selectedItem"></span>&ndash;&gt;-->
+											<!--&lt;!&ndash;<span data-bind="text: $parent.selectedName"></span>&ndash;&gt;-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="3">-->
+											<!--&lt;!&ndash;<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK008_93')}</div>&ndash;&gt;-->
+										<!--</td>-->
+										<!--<td>-->
+											<!--&lt;!&ndash;<div id="employment-manage" tabindex="9" class="btn-switch"&ndash;&gt;-->
+												<!--&lt;!&ndash;data-bind="ntsSwitchButton: {&ndash;&gt;-->
+																<!--&lt;!&ndash;options: $parent.manageDistinctEnums,&ndash;&gt;-->
+																<!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+																<!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+																<!--&lt;!&ndash;enable: $parent.hasEmp,&ndash;&gt;-->
+																<!--&lt;!&ndash;value: isManage}"></div>&ndash;&gt;-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="4">-->
+											<!--<div style="margin-top: -17px;">-->
+												<!--<hr />-->
+											<!--</div>-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="4" style="padding-left: 40px;">-->
+											<!--&lt;!&ndash;<div data-bind="ntsFormLabel: {}">&ndash;&gt;-->
+												<!--&lt;!&ndash;#{i18n.getText('KMK008_92')}</div>&ndash;&gt;-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="4" style="padding-left: 40px;">-->
+											<!--<div style="margin-top: -17px;">-->
+												<!--<hr />-->
+											<!--</div>-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMK008_94')}</td>-->
+										<!--<td>-->
+											<!--<div>-->
+												<!--&lt;!&ndash;<div tabindex="10"&ndash;&gt;-->
+													<!--&lt;!&ndash;data-bind="ntsComboBox: {&ndash;&gt;-->
+																			<!--&lt;!&ndash;options: $parent.vacationExpirationEnums,&ndash;&gt;-->
+																			<!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+																			<!--&lt;!&ndash;value: expirationDate,&ndash;&gt;-->
+																			<!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+																			<!--&lt;!&ndash;visibleItemsCount: 15,&ndash;&gt;-->
+																			<!--&lt;!&ndash;editable: false,&ndash;&gt;-->
+																			<!--&lt;!&ndash;enable: $parent.isEmpManaged,&ndash;&gt;-->
+																			<!--&lt;!&ndash;columns: [&ndash;&gt;-->
+																				<!--&lt;!&ndash;{ prop: 'localizedName', length: 10 }&ndash;&gt;-->
+																			<!--&lt;!&ndash;]}"></div>&ndash;&gt;-->
+											<!--</div>-->
+										<!--</td>-->
+									<!--</tr>-->
+									<!--<tr>-->
+										<!--<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMK008_95')}</td>-->
+										<!--&lt;!&ndash;<td><div tabindex="11"&ndash;&gt;-->
+												<!--&lt;!&ndash;data-bind="ntsSwitchButton: {&ndash;&gt;-->
+															<!--&lt;!&ndash;options: $parent.applyPermissionEnums,&ndash;&gt;-->
+															<!--&lt;!&ndash;optionsValue: 'value',&ndash;&gt;-->
+															<!--&lt;!&ndash;optionsText: 'localizedName',&ndash;&gt;-->
+															<!--&lt;!&ndash;enable: $parent.isEmpManaged,&ndash;&gt;-->
+															<!--&lt;!&ndash;value: allowPrepaidLeave}">&ndash;&gt;-->
+											<!--&lt;!&ndash;</div></td>&ndash;&gt;-->
+									<!--</tr>-->
+								<!--</table>-->
+
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

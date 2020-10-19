@@ -7,13 +7,13 @@ module nts.uk.at.view.kmk008.i {
         registerData: 'monthly/estimatedtime/unitOfApprove/register',
     };
 
-	@bean()
-	export class KMK008IViewModel extends ko.ViewModel {
+    @bean()
+    export class KMK008IViewModel extends ko.ViewModel {
         useWorkPlace: KnockoutObservable<boolean> = ko.observable(true); //職場を利用する
 
-		constructor() {
-			super();
-			const vm = this;
+        constructor() {
+            super();
+            const vm = this;
 
             vm.$blockui("invisible");
             vm.$ajax(PATH_API.getData)
@@ -28,36 +28,37 @@ module nts.uk.at.view.kmk008.i {
                 .always(() => {
                     vm.$blockui("clear");
                 });
-		}
+        }
 
-		created() {
-			const vm = this;
+        created() {
+            const vm = this;
 
-			_.extend(window, { vm });
-		}
+            _.extend(window, {vm});
+        }
 
-		mounted() {
-			$('.chk_I13').focus();
-		}
+        mounted() {
+            $('.chk_I13').focus();
+        }
 
-		submitAndCloseDialog() {
-			let vm = this;
+        submitAndCloseDialog() {
+            let vm = this;
 
             vm.$blockui("invisible");
-            vm.$ajax(PATH_API.registerData,{useWorkplace: vm.useWorkPlace()})
+            vm.$ajax(PATH_API.registerData, {useWorkplace: vm.useWorkPlace()})
                 .done(() => {
-                    vm.$dialog.info({messageId: "Msg_15"});
-                    vm.closeDialog();
+                    vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.closeDialog();
+                    });
                 })
                 .fail(res => {
                     vm.$dialog.error(res.message);
                 })
                 .always(() => vm.$blockui("clear"));
-		}
+        }
 
-		closeDialog() {
-			let vm = this;
-			vm.$window.close();
-		}
-	}
+        closeDialog() {
+            let vm = this;
+            vm.$window.close();
+        }
+    }
 }

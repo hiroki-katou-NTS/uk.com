@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk008.c {
+module nts.uk.at.view.kmk008.b {
 	import getText = nts.uk.resource.getText;
 	import alertError = nts.uk.ui.dialog.alertError;
 
@@ -33,11 +33,9 @@ module nts.uk.at.view.kmk008.c {
 		nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
 		nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
 
-		selectedLimit: KnockoutObservable<number> = ko.observable(0);
+		selectedLimit: KnockoutObservable<number> = ko.observable(Limit.LIMIT_6_TIME);
 		someText: string;
-
 		theTime: KnockoutObservable<number> = ko.observable(0);
-
 		empListCmp: EmpListCmp;
 
 		constructor() {
@@ -49,6 +47,9 @@ module nts.uk.at.view.kmk008.c {
 			vm.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
 			vm.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
 			vm.empListCmp = new EmpListCmp();
+
+			vm.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
+			alert(vm.laborSystemAtr);
 		}
 
 		created() {
@@ -57,17 +58,15 @@ module nts.uk.at.view.kmk008.c {
 			_.extend(window, {vm});
 
 			// extend window with view constant
-			const kmk008c = nts.uk.at.view.kmk008.c;
-			_.extend(window, {kmk008c});
+			const kmk008 = nts.uk.at.view.kmk008.b;
+			_.extend(window, {kmk008});
 		}
-
 
 		mounted() {
 			const vm = this;
 
 			vm.startPage();
 		}
-
 
 		startPage(): JQueryPromise<any> {
 			let vm = this;
@@ -94,6 +93,9 @@ module nts.uk.at.view.kmk008.c {
 			// }); TODO
 
 			$('#empt-list-setting').ntsListComponent(vm.empListCmp.listComponentOption);
+			$("#B4_3").ntsFixedTable({});
+			$("#B4_6").ntsFixedTable({});
+			$("#B4_31").ntsFixedTable({});
 			$("#C4_3").ntsFixedTable({});
 			$("#C4_6").ntsFixedTable({});
 			$("#C4_31").ntsFixedTable({});
@@ -158,6 +160,44 @@ module nts.uk.at.view.kmk008.c {
 				});
 			}
 		}
+
+		tabpanel1Click() {
+			let vm = this;
+			vm.initB().done(()=>{
+			});
+		}
+
+		initB(): JQueryPromise<any> {
+			let vm = this;
+			let dfd = $.Deferred();
+
+			vm.$blockui("grayout");
+
+			nts.uk.ui.errors.clearAll();
+			if (vm.laborSystemAtr == 0) {
+				vm.textOvertimeName(vm.$i18n('KMK008_12', ['{#KMK008_8}', '{#Com_Company}']));
+			} else {
+				vm.textOvertimeName(vm.$i18n('KMK008_12', ['{#KMK008_8}', '{#Com_Company}']));
+			}
+
+			new service.Service().getB(vm.laborSystemAtr).done(data => {
+				// self.timeOfCompany(new TimeOfCompanyModel(data));
+				// if (data.updateMode) {
+				//     self.isUpdate = true;
+				// } else {
+				//     self.isUpdate = false;
+				// }
+				// $("#errorCheckInput").focus();
+				vm.$blockui("clear");
+				dfd.resolve();
+			}).fail(error => {
+			}).always(() => {
+				vm.$blockui("clear");
+			});
+
+			return dfd.promise();
+		}
+
 
 	}
 
@@ -350,7 +390,7 @@ module nts.uk.at.view.kmk008.c {
 		isAlreadySetting: boolean;
 	}
 
-	export enum MonthlyLimit {
+	export enum Limit {
 		LIMIT_0_TIME = <number> 0,
 		LIMIT_1_TIME = <number> 1,
 		LIMIT_2_TIME = <number> 2,
