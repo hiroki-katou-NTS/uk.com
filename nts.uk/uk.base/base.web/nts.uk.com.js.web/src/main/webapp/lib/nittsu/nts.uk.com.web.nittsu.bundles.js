@@ -270,14 +270,24 @@ var nts;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
             function felica(cb, once) {
                 if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
@@ -49378,6 +49388,7 @@ function bean(dialogOption) {
         __viewContext.ready(function () {
             nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49385,7 +49396,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49408,6 +49429,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49415,7 +49437,17 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
@@ -49682,34 +49714,34 @@ var nts;
                         }
                     },
                     modal: {
-                        value: function $modal(webapp, path, params) {
+                        value: function $modal(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modal(webapp)
+                                    windows.sub.modal(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modal(webapp, path)
+                                    windows.sub.modal(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
                                     });
                                 });
                             }
@@ -49717,34 +49749,34 @@ var nts;
                         }
                     },
                     modeless: {
-                        value: function $modeless(webapp, path, params) {
+                        value: function $modeless(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modeless(webapp)
+                                    windows.sub.modeless(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modeless(webapp, path)
+                                    windows.sub.modeless(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
                                     });
                                 });
                             }
@@ -49927,22 +49959,27 @@ var nts;
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
-                Object.defineProperty($validate, "constraint", {
-                    value: function $constraint(name, value) {
-                        if (arguments.length === 0) {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return __viewContext.primitiveValueConstraints; });
-                        }
-                        else if (arguments.length === 1) {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                        }
-                        else {
-                            return $.Deferred()
-                                .resolve(true)
-                                .then(function () { return ui.validation.writeConstraint(name, value); });
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
                         }
                     }
                 });

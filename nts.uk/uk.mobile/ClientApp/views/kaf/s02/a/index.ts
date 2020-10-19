@@ -66,9 +66,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public application: any = {
         version: 1,
-        // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
         prePostAtr: 1,
-        // employeeID: '',
         appType: 7,
         appDate: this.$dt(new Date(), 'YYYY/MM/DD'),
         enteredPerson: '1',
@@ -142,11 +140,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
     ];
 
     // value workHours
-    public workHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_4', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public workHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_6', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour3 = new WorkHour({ startTime: null, endTime: null, frame: 3, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public workHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_4', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public workHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_6', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour3 = new WorkHour({ startTime: null, endTime: null, frame: 3, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public workHourLst = [this.workHour1, this.workHour2];
     public checkboxWH = [];
@@ -154,29 +152,29 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public checkboxTH = [];
 
     // value goOut hour
-    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public goOutLst = [this.goOut1, this.goOut2];
     public checkboxGH = [];
 
     // value break time
-    public break1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public break2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public break1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public break2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public breakLst = [this.break1, this.break2];
     public checkboxBH = [];
 
     // childCare time
-    public childCareTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public childCareTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public childCareTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public childCareTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public childCareLst = [this.childCareTime1, this.childCareTime2];
     public checkboxCH = [];
 
     // long-term care time
-    public longTermTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public longTermTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public longTermTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public longTermTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public longTermLst = [this.longTermTime1, this.longTermTime2];
     public checkboxLH = [];
@@ -195,6 +193,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         if (self.mode) {
             self.fetchStart();
         } else {
+            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
             self.fetchDataEdit();
         }
     }
@@ -757,27 +756,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
         self.kaf000_B_Params = null;
         let paramb = {
-            input: {
-                mode: self.mode ? 0 : 1,
-                appDisplaySetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: false,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
-
-
+            mode: self.mode ? 0 : 1,
+            appDisplaySetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: false,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: null,
-                endDate: null
-            }
+            detailModeContent: null
         };
         if (!self.mode) {
-            paramb.input.detailModeContent = {
+            paramb.detailModeContent = {
                 prePostAtr: data.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
                 startDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
                 endDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
@@ -794,13 +784,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     return;
                 }
                 let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
                     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
                 }
 
                 if (!_.isNull(endDate)) {
                     let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
                         while (startDate.getTime() <= endDate.getTime()) {
                             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
                             startDate.setDate(startDate.getDate() + 1);
@@ -812,7 +802,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             });
 
             self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
 
                     return;
                 }
@@ -825,7 +815,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 let listDate = [];
                 if (!_.isNull(startDate)) {
                     let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
                         while (startDate.getTime() <= endDate.getTime()) {
                             listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
                             startDate.setDate(startDate.getDate() + 1);
@@ -835,7 +825,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                 self.changeDate(listDate);
             });
-            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
+            self.$watch('kaf000_B_Params.newModeContent.initSelectMultiDay', (newV, oldV) => {
             });
 
         }
@@ -846,36 +836,28 @@ export class KafS02AComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -886,7 +868,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             companyId: self.user.companyId,
             appStampOutputDto: self.appStampOutputDto,
             date: dates,
-            recorderFlag: true,
+            recorderFlag: false,
         };
         self.$http.post('at', API.changeDate, command)
             .then((res: any) => {
@@ -1006,7 +988,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public handleErrorMessage(res: any) {
         const self = this;
-        // self.$mask('hide');
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -1054,7 +1035,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
         });
         if (currentFrame < 10) {
-            // let goOutHour = new GoBackHour(null, null, (currentFrame + 1), 1, 'KAFS02_9', true, false, false, null, null);
             let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: 1, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
 
             self.goOutLst.push(goOutHour);
@@ -1076,7 +1056,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
         });
 
         if (currentFrame < 10) {
-            // let breakTime = new WorkHour(null, null, (currentFrame + 1), 'KAFS02_12', true, false, false, null, null);
             let breakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
             self.breakLst.push(breakTime);
@@ -1144,7 +1123,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
             appStampOutputDto: self.appStampOutputDto
         };
 
-        return self.$http.post('at', API.checkBeforeRegister, command);
+        if (self.mode) {
+            return self.$http.post('at', API.checkBeforeRegister, command);
+        } else {
+            return self.$http.post('at', API.checkBeforeUpdate, command);
+        }
     }
 
     private registerData(): any {
@@ -1158,7 +1141,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
             recoderFlag: false
         };
 
-        return self.$http.post('at', API.register, command);
+        if (self.mode) {
+            return self.$http.post('at', API.register, command);
+        } else {
+            return self.$http.post('at', API.update, command);
+        }
     }
 
     private bindDataAppStamp() {
@@ -1254,7 +1241,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         } else {
             // work hour
             self.workHourLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxWH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(0, item.frame, 0);
 
@@ -1283,7 +1270,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // tempo hour
             self.tempWorkHourLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxTH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(1, item.frame, 0);
 
@@ -1312,7 +1299,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // goout hour
             self.goOutLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxGH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(2, item.frame, 0);
 
@@ -1341,7 +1328,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // break hour
             self.breakLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxBH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(2, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1358,7 +1345,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // child care hour
             self.childCareLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxCH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(0, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1375,7 +1362,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // long term hour
             self.longTermLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxLH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(1, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1403,7 +1390,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
 
         if (!self.mode) {
-            self.application = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
         }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
@@ -1413,7 +1400,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             if (self.mode) {
                 self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
                 self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                if (self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
                     self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
                 } else {
                     self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
@@ -1446,7 +1433,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition2() {
         const self = this;
 
-        if (self.kaf000_B_Params != null && self.kaf000_B_Params.output.prePostAtr === 0) {
+        if (self.application.prePostAtr === 0) {
             return false;
         }
 
@@ -1535,19 +1522,33 @@ export class KafS02AComponent extends KafS00ShrComponent {
     }
 
     public kaf000BChangeDate(objectDate) {
-        console.log('emit' + objectDate);
+        const self = this;
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
     }
 
     public kaf000BChangePrePost(prePostAtr) {
-        console.log('emit' + prePostAtr);
+        const self = this;
+        self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
-        console.log('emit' + opAppStandardReasonCD);
+        const self = this;
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
-        console.log('emit' + opAppReason);
+        const self = this;
+        self.application.opAppReason = opAppReason;
     }
 }
 
@@ -1555,5 +1556,7 @@ const API = {
     startStampApp: 'at/request/application/stamp/startStampApp',
     changeDate: 'at/request/application/stamp/changeAppDateMobile',
     checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
-    register: 'at/request/application/stamp/register'
+    checkBeforeUpdate: 'at/request/application/stamp/checkBeforeUpdate',
+    register: 'at/request/application/stamp/register',
+    update: 'at/request/application/stamp/updateNew'
 };
