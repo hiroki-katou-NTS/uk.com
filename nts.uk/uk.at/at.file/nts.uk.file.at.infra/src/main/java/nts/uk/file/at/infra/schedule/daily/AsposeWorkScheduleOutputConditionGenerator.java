@@ -727,8 +727,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Set<String> lstWorkplaceIdWithData;
 		lstWorkplaceIdWithData = lstEmployeeWithData.stream().map(employeeId -> {
 			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().get(employeeId);
-			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-			return code.getHierarchyCode().v();
+			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
+				return !x.getLstWkpHierarchy().isEmpty()
+					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+					 : false;
+			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+			return code != null ? code.getHierarchyCode().v() : "";
 		}).collect(Collectors.toSet());
 //#102989 - ea_3011 && ea_3012
 //		// This employee list with data, find out all other employees who don't have data.
@@ -1805,8 +1809,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
 		WkpHistImport workplaceImport = lstWorkplaceHistImport.get(employeeId);
 		//WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-		HierarchyCode hierarchyCode = code.getHierarchyCode();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
+			return !x.getLstWkpHierarchy().isEmpty()
+					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+					 : false;
+			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			//reportData.period = workplaceInfo.getDatePeriod();
 			return mapWorkplaceInfo.get(hierarchyCode.v());
@@ -1837,8 +1845,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, DailyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
 		WkpHistImport workplaceImport = lstWkpHistImport.get(employeeId);
 		//WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-		HierarchyCode hierarchyCode = code.getHierarchyCode();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
+			return !x.getLstWkpHierarchy().isEmpty()
+				 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+				 : false;
+		}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			//workplaceData.period = workplaceInfo.getDatePeriod();
 			return mapWorkplaceInfo.get(hierarchyCode.v());
