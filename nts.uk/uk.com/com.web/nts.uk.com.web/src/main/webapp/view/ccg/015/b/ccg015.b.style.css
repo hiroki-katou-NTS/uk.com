@@ -56,7 +56,7 @@ vertical-align: top !important;
 }
 
 #contents-right {
-/* width: 670px; */
+  width: 100%;
 }
 
 .leftTop {
@@ -144,6 +144,10 @@ width: 327px;
 padding-left: 20px;
 }
 
+.pad_top_30 {
+  padding-top: 30px;
+}
+
 .drop_links {
 max-height: 50px;
 margin-left: 270px;
@@ -165,6 +169,46 @@ overflow: hidden;
 line-height: 0px !important;
 }
 
+/* margin css */
 .mt-20 {
 margin-top: 20px;
+}
+
+.ml-5 {
+  margin-left: 5px;
+}
+
+.ml-15 {
+  margin-left: 15px;
+}
+
+.ml-20 {
+  margin-left: 20px;
+}
+
+.mr-5 {
+  margin-right: 5px;
+}
+
+/* inline row */
+.inline-row {
+  display: inline-flex;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.fix-margin {
+  height: 25px;
+}
+
+.button-fix {
+  width: 200px;
+  display: flex;
+}
+
+.fix_span_62 {
+  width: 200px;
+  text-align: right;
 }

@@ -223,6 +223,11 @@ module nts.uk.com.view.ccg015.b.screenModel {
       });
       return ind;
     }
+
+    private openDialogCCG015D() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/015/d/index.xhtml');
+    }  
   }
 
   export class Node {

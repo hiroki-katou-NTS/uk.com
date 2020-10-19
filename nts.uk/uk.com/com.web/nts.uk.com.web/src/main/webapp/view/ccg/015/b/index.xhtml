@@ -51,35 +51,40 @@
 									}"></table>
 							</div>
 						</td>
-						<td id="contents-right">
-							<table id="tableRight">
-								<tr data-bind="with: topPageModel">
+						<td id="contents-right" class="w-100">
+							<table id="tableRight table_data" class="w-100">
+								<tr data-bind="with: topPageModel" class="w-100">
 									<td class="contentsRL">
 										<div id="lbl_code_name"
 											data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
 											<label>#{i18n.getText('CCG015_13')}<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR pad_left_20"><input tabindex="2" id="inp_code"
-										class="nts-input tr40 save-error"
-										data-bind="ntsTextEditor: {
-											name: '#[CCG015_42]',
-											value: topPageCode,
-											enable: $parent.isNewMode(),
-											required:true,
-											constraint: 'TopPageCode'}" />
-									</td>
-									<td class = "pad_left_20"><input tabindex="3" id="inp_name"
-										class="nts-input save-error"
-										data-bind="ntsTextEditor: {
-											name: '#[CCG015_43]',
-											value: topPageName,
-											enable: true,
-											required: true,
-											constraint: 'TopPageName'}" />
+									<td class="contentsRR pad_left_20">
+                    <div class="inline-row">
+                      <input tabindex="2" id="inp_code"
+                        class="nts-input tr40 save-error"
+                        data-bind="ntsTextEditor: {
+                          name: '#[CCG015_42]',
+                          value: topPageCode,
+                          enable: $parent.isNewMode(),
+                          required:true,
+                          constraint: 'TopPageCode'}" />
+                      <input tabindex="3" id="inp_name"
+                        class="nts-input save-error ml-20"
+                        data-bind="ntsTextEditor: {
+                          name: '#[CCG015_43]',
+                          value: topPageName,
+                          enable: true,
+                          required: true,
+                          constraint: 'TopPageName'}" />
+                    </div>
+                  </td>
+									<td class = "pad_left_20">
 									</td>
                 </tr>
-                <tr class="mt-20">
+                <tr class="fix-margin"></tr>
+                <tr class="w-100">
                   <td>
                     <!-- B5_1 -->
                     <div id="B5_1"
@@ -87,14 +92,11 @@
 											<label>#{i18n.getText('CCG015_57')}<br /></label>
 										</div>
                   </td>
-                  <td>
-                    <!-- <div data-bind="ntsRadioBoxGroup: {
-                      options: itemList,
-                      optionsValue: 'code',
-                      optionsText: 'name',
-                      value: selectedId,
-                      enable: true}"></div> -->
-                      <div class="cell" tabIndex = "-1"
+                  <!-- B5_2 -->
+                  <td class="inline-row w-100 pad_left_20" id="B5_2">
+                    <div class="inline-row">
+                      <!-- B5_2_1 -->
+                      <div id="B5_2_1" class="cell" tabIndex = "-1"
                         data-bind="ntsRadioButton: {
                         option: itemList()[0],
                         optionValue: 'code',
@@ -102,18 +104,100 @@
                         checked: selectedId,
                         group: 'enumOption'}">
                       </div>
-                      <span>Huycv</span>
-                      <div class="cell" tabIndex = "-1"
+                      <!-- B5_3_1 -->
+                      <img src="../resource/CCG015_1.png" alt="" width="90" height="50" id="B5_3_1"/>
+                    </div>
+                    <div class="inline-row ml-20">
+                      <!-- B5_2_2 -->
+                      <div id="B5_2_2" class="cell" tabIndex = "-1"
                         data-bind="ntsRadioButton: {
                         option: itemList()[1],
                         optionValue: 'code',
-                        optionText: 'name', 
+                        optionText: 'name',
                         checked: selectedId,
                         group: 'enumOption'}">
                       </div>
-                      <!-- <div data-bind="ntsRadioButton: {checked: 1,  option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}">
-                        <span class="box"></span><span class="label" data-bind="text: text"></span>
-                      </div> -->
+                      <!-- B5_3_2 -->
+                      <img src="../resource/CCG015_2.png" alt="" width="90" height="50" id="B5_3_2"/>
+                    </div>
+                    <div class="inline-row ml-20">
+                      <!-- B5_2_3 -->
+                      <div id="B5_2_3" class="cell" tabIndex = "-1"
+                        data-bind="ntsRadioButton: {
+                        option: itemList()[2],
+                        optionValue: 'code',
+                        optionText: 'name',
+                        checked: selectedId,
+                        group: 'enumOption'}">
+                      </div>
+                      <!-- B5_3_3 -->
+                      <img src="../resource/CCG015_3.png" alt="" width="90" height="50" id="B5_3_3"/>
+                    </div>
+                    <div class="inline-row ml-20">
+                      <!-- B5_2_4 -->
+                      <div id="B5_2_4" class="cell" tabIndex = "-1"
+                        data-bind="ntsRadioButton: {
+                        option: itemList()[3],
+                        optionValue: 'code',
+                        optionText: 'name',
+                        checked: selectedId,
+                        group: 'enumOption'}">
+                      </div>
+                      <!-- B5_3_4 -->
+                      <img src="../resource/CCG015_4.png" alt="" width="90" height="50" id="B5_3_4"/>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="fix-margin"></tr>
+                <tr class="w-100">
+                  <td>
+                    <!-- B6_1 -->
+                    <div id="B6_1"
+											data-bind="ntsFormLabel: {}">
+											<label>#{i18n.getText('CCG015_58')}<br /></label>
+										</div>
+                  </td>
+                  <td class="inline-row w-100 pad_left_20">
+                    <div class="inline-row">
+                      <!-- B6_2 -->
+                      <button class="button-fix" id="B6_2" data-bind="click: openDialogCCG015D">
+                        <img src="../resource/CCG015_5.png" alt="" width="20" height="20" class="ml-5 mr-5"/>
+                        #{i18n.getText('CCG015_59')}
+                      </button>
+                      <!-- B6_3 -->
+                      <button class="ml-20 button-fix" id="B6_3">
+                        <img src="../resource/CCG015_5.png" alt="" width="20" height="20" class="ml-5 mr-5"/>
+                        #{i18n.getText('CCG015_59')}
+                      </button>
+                      <!-- B6_4 -->
+                      <button class="ml-20 button-fix" id="B6_4">
+                        <img src="../resource/CCG015_5.png" alt="" width="20" height="20" class="ml-5 mr-5"/>
+                        #{i18n.getText('CCG015_61')}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="fix-margin"></tr>
+                <tr>
+                  <td>
+                    <!-- B7 -->
+                    <span class="ml-15" id="B7">#{i18n.getText('CCG015_26')}</span>
+                  </td>
+                  <td class="inline-row w-100 pad_left_20">
+                    <div class="inline-row">
+                      <!-- B7_1 -->
+                      <span class="fix_span_62" id="B7_1">#{i18n.getText('CCG015_62')}</span>
+                      <!-- B7_2 -->
+                      <span class="fix_span_62 ml-20" id="B7_2">#{i18n.getText('CCG015_62')}</span>
+                      <!-- B7_3 -->
+                      <span class="fix_span_62 ml-20" id="B7_3">#{i18n.getText('CCG015_62')}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="fix-margin"></tr>
+                <tr>
+                  <td>
+                    <button class="ml-15">#{i18n.getText('CCG015_63')}</button>
                   </td>
                 </tr>
 							</table>
