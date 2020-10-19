@@ -1,4 +1,7 @@
 module nts.uk.com.view.cmm049.z {
+  const API = {
+    findByCid: "query/cmm049userinformationsetting/get"
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -8,22 +11,24 @@ module nts.uk.com.view.cmm049.z {
     public selectedTab: KnockoutObservable<string>;
 
     public profileCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public profileSelectedId: KnockoutObservable<number>;
+    public profileSelectedId: KnockoutObservable<number> = ko.observable(1);
 
     public passwordCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public passwordSelectedId: KnockoutObservable<number>;
+    public passwordSelectedId: KnockoutObservable<number> = ko.observable(1);
 
     public noticeCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public noticeSelectedId: KnockoutObservable<number>;
+    public noticeSelectedId: KnockoutObservable<number> = ko.observable(1);
 
     public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public speechSelectedId: KnockoutObservable<number>;
+    public speechSelectedId: KnockoutObservable<number> = ko.observable(1);
 
     public A4_4_33_Value: KnockoutObservable<string> = ko.observable('');
     public A4_4_36_Value: KnockoutObservable<string> = ko.observable('');
     public A4_4_39_Value: KnockoutObservable<string> = ko.observable('');
     public A4_4_42_Value: KnockoutObservable<string> = ko.observable('');
     public A4_4_45_Value: KnockoutObservable<string> = ko.observable('');
+
+    public companyMobilePhone: KnockoutObservable<boolean> = ko.observable(true);
 
     public emailColumns: any[] = [
       {
@@ -209,6 +214,188 @@ module nts.uk.com.view.cmm049.z {
     emailAddress: string;
 
     constructor(init?: Partial<EmailModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class UserInformationSettingDto {
+    infoUseMethodDto: UserInfoUseMethod_Dto;
+    mailFunctionDtos: MailFunctionDto[];
+
+    constructor(init?: Partial<UserInformationSettingDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class UserInfoUseMethod_Dto {
+    /**
+     * お知らせの利用
+     */
+    useOfNotice: number;
+
+    /**
+     * パスワードの利用
+     */
+    useOfPassword: number;
+
+    /**
+     * プロフィールの利用
+     */
+    useOfProfile: number;
+
+    /**
+     * 言語の利用
+     */
+    useOfLanguage: number;
+
+    /**
+     * 会社ID
+     */
+    companyId: string;
+
+     /**
+     * メール送信先機能
+     */
+    emailDestinationFunctions: EmailDestinationFunctionDto[];
+
+    /**
+     * 連絡先情報の設定
+     */
+    settingContactInformation: SettingContactInformationDto;
+
+    constructor(init?: Partial<UserInfoUseMethod_Dto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class MailFunctionDto {
+    //機能ID
+    functionId: number;
+
+    //機能名
+    functionName: string;
+    
+    //メール送信設定可否区分
+    proprietySendMailSettingAtr: boolean;
+    
+    //並び順
+    sortOrder: number;
+
+    constructor(init?: Partial<MailFunctionDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class EmailDestinationFunctionDto {
+    /**
+     * メール分類
+     */
+    emailClassification: number;
+
+    /**
+     * 機能ID
+     */
+    functionIds: number[];
+
+    constructor(init?: Partial<EmailDestinationFunctionDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class SettingContactInformationDto {
+    /**
+     * ダイヤルイン番号
+     */
+    dialInNumber: ContactSettingDto;
+
+    /**
+     * 会社メールアドレス
+     */
+    companyEmailAddress: ContactSettingDto;
+
+    /**
+     * 会社携帯メールアドレス
+     */
+    companyMobileEmailAddress: ContactSettingDto;
+
+    /**
+     * 個人メールアドレス
+     */
+    personalEmailAddress: ContactSettingDto;
+
+    /**
+     * 個人携帯メールアドレス
+     */
+    personalMobileEmailAddress: ContactSettingDto;
+
+    /**
+     * 内線番号
+     */
+    extensionNumber: ContactSettingDto;
+
+    /**
+     * 携帯電話（会社用）
+     */
+    companyMobilePhone: ContactSettingDto;
+
+    /**
+     * 携帯電話（個人用）
+     */
+    personalMobilePhone: ContactSettingDto;
+
+    /**
+     * 緊急電話番号1
+     */
+    emergencyNumber1: ContactSettingDto;
+
+    /**
+     * 緊急電話番号2
+     */
+    emergencyNumber2: ContactSettingDto;
+
+    /**
+     * 他の連絡先
+     */
+    otherContacts: OtherContactDto[];
+
+    constructor(init?: Partial<SettingContactInformationDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class ContactSettingDto {
+     /**
+     * 連絡先利用設定
+     */
+    contactUsageSetting: number;
+
+    /**
+     * 更新可能
+     */
+    updatable: number;
+
+    constructor(init?: Partial<ContactSettingDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class OtherContactDto {
+    /**
+     * NO
+     */
+    no: number;
+
+    /**
+     * 連絡先利用設定
+     */
+    contactUsageSetting: number;
+
+    /**
+     * 連絡先名
+     */
+    contactName: string;
+
+    constructor(init?: Partial<OtherContactDto>) {
       $.extend(this, init);
     }
   }
