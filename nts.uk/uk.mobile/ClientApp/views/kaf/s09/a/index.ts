@@ -500,7 +500,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             inforGoBackCommonDirectDto: self.dataOutput,
             mode: self.mode
         }).then((res: any) => {
-            self.$mask('hide');
+            // self.$mask('hide');
             let isConfirm = true;
             if (!_.isEmpty(res)) {
                 // display list confirm message
@@ -512,7 +512,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     self.registerData(res);
                 }
 
-
+            } else {
+                self.$mask('hide');
             }
 
         }).catch((res: any) => {

@@ -1,5 +1,4 @@
 module nts.uk.at.view.kaf007_ref.c.viewmodel {
-    //import Kaf000BViewModel = nts.uk.at.view.kaf000.b.viewmodel.Kaf000BViewModel;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange;
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;

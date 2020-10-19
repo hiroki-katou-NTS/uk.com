@@ -146,12 +146,6 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             if(params.isEdit) {
                 vm.isEdit = params.isEdit;
             }
-
-            // vm.model().appDispInfoStartupOutput.subscribe(() => {
-            //     if(params.isEdit) {
-            //         vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
-            //     }
-            // });
         }
 
         mounted() {
@@ -171,27 +165,26 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
 
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
                 vm.$window.storage('childData').then(rs => {
-                    console.log(rs);
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-                        vm.appWorkChange.workTypeCode(childData.selectedWorkTypeCode);
-                        vm.model().workTypeCD(childData.selectedWorkTypeCode);
-                        vm.appWorkChange.workTypeName(childData.selectedWorkTypeName);
-                        vm.appWorkChange.workTimeCode(childData.selectedWorkTimeCode);
-                        vm.model().workTimeCD(childData.selectedWorkTimeCode);
-                        vm.appWorkChange.workTimeName(childData.selectedWorkTimeName);
+                    if (rs) {
+                        console.log(rs);
+                        vm.appWorkChange.workTypeCode(rs.selectedWorkTypeCode);
+                        vm.model().workTypeCD(rs.selectedWorkTypeCode);
+                        vm.appWorkChange.workTypeName(rs.selectedWorkTypeName);
+                        vm.appWorkChange.workTimeCode(rs.selectedWorkTimeCode);
+                        vm.model().workTimeCD(rs.selectedWorkTimeCode);
+                        vm.appWorkChange.workTimeName(rs.selectedWorkTimeName);
 
                         if(vm.model().appWorkChangeSet.initDisplayWorktimeAtr !== 1) {
-                            if(childData.first) {
-                                vm.appWorkChange.startTime1(childData.first.start);
-                                vm.appWorkChange.endTime1(childData.first.end)
+                            if(rs.first) {
+                                vm.appWorkChange.startTime1(rs.first.start);
+                                vm.appWorkChange.endTime1(rs.first.end)
                             } else {
                                 vm.appWorkChange.startTime1(null);
                                 vm.appWorkChange.endTime1(null)
                             }
-                            if(childData.second) {
-                                vm.appWorkChange.startTime2(childData.second.start);
-                                vm.appWorkChange.endTime2(childData.second.end)
+                            if(rs.second) {
+                                vm.appWorkChange.startTime2(rs.second.start);
+                                vm.appWorkChange.endTime2(rs.second.end)
                             } else {
                                 vm.appWorkChange.startTime2(null);
                                 vm.appWorkChange.endTime2(null)
@@ -219,17 +212,6 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                 
             });
         }
-
-        // public conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
     }
 
     const API = {

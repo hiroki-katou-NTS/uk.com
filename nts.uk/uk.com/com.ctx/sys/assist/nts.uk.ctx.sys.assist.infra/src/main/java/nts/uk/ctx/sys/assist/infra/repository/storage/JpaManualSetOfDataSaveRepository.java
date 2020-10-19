@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
@@ -28,23 +29,24 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	}
 
 	private ManualSetOfDataSave toDomain(SspmtManualSetOfDataSave entity) {
-		return new ManualSetOfDataSave(entity.cid, entity.storeProcessingId, entity.systemType,
-				entity.passwordAvailability, entity.saveSetName, entity.referenceDate, entity.compressedPassword,
-				entity.executionDateAndTime, entity.daySaveEndDate, entity.daySaveStartDate, entity.monthSaveEndDate,
-				entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear, entity.startYear,
-				entity.presenceOfEmployee, entity.identOfSurveyPre, entity.practitioner);
+		return new ManualSetOfDataSave(entity.cid, entity.storeProcessingId, entity.passwordAvailability,
+				entity.saveSetName, entity.referenceDate, entity.compressedPassword, entity.executionDateAndTime,
+				entity.daySaveEndDate, entity.daySaveStartDate,
+				entity.monthSaveEndDate, entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear,
+				entity.startYear, entity.presenceOfEmployee, entity.practitioner, 1);
 	}
 
 	private SspmtManualSetOfDataSave toEntity(ManualSetOfDataSave dom) {
-		return new SspmtManualSetOfDataSave(dom.getCid(), dom.getStoreProcessingId(), dom.getSystemType().value,
+		return new SspmtManualSetOfDataSave(dom.getCid(), dom.getStoreProcessingId(),
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
 				(dom.getCompressedPassword() != null && dom.getPasswordAvailability() == NotUseAtr.USE)
-						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v()) : null,
+						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v())
+						: null,
 				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(), dom.getDaySaveStartDate(),
-				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(), dom.getSuppleExplanation(),
-				dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
+				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
+				dom.getSuppleExplanation(), dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
 				dom.getStartYear().isPresent() ? dom.getStartYear().get().v() : null, dom.getPresenceOfEmployee().value,
-				dom.getIdentOfSurveyPre().value, dom.getPractitioner());
+				dom.getPractitioner());
 	}
 
 	@Override
