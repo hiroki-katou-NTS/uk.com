@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = {width: 430, height: 320 };</script>
+			<com:stylefile path="./kmp001.i.css" />
+			<com:scriptfile path="./kmp001.i.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" style="display: none; height: 0;"></div>
+			<div class="contents-area">
+				<div class="row">
+					<span class="label title" data-bind="i18n: 'KMP001_151'"></span>
+				</div>
+				<div class="row">
+					<span class="label" data-bind="i18n: 'KMP001_152'"></span>
+					<!-- <input tabindex="1" id="iCCard" data-bind="ntsTextEditor: {value: value, constraint: 'StampNumber', option:{textmode: 'password'}}"/> -->
+					<input tabindex="1" id="iCCard" data-bind="ntsTextEditor: { value: value }"/>
+					<span class="label" data-bind="i18n: model().title, style:{ color: model().color }"></span>
+					<com:ko-if bind="model().connected">
+						<button tabindex="2" class="small" data-bind="click: $vm.mounted, i18n: 'KMP001_158'"></button>
+					</com:ko-if>
+				</div>
+				<div class="row inforAuthent">
+					<pre data-bind="text: model().message"></pre>
+				</div>
+				<div class="divBtn">
+					<button tabindex="3" class="x-large" data-bind="click: $vm.$window.close, i18n: 'KMP001_47'"></button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
