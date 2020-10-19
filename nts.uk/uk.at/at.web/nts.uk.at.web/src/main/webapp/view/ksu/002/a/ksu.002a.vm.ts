@@ -135,7 +135,7 @@ module nts.uk.ui.at.ksu002.a {
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
-											comfirmed: ko.observable($raw.confirmed),
+											confirmed: ko.observable($raw.confirmed),
 											achievement: ko.observable(arch === NO ? null : $raw.achievements),
 											classification: ko.observable($raw.workHolidayCls),
 											need2Work: ko.observable($raw.needToWork),
@@ -190,8 +190,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			// UI-4
 			vm.achievement
-				.subscribe((c) => {
+				.subscribe((arch) => {
 					const { NO } = ACHIEVEMENT;
+					const { IMPRINT } = EDIT_STATE;
 					const undo = vm.schedules.undoAble();
 					const redo = vm.schedules.redoAble();
 
@@ -204,10 +205,11 @@ module nts.uk.ui.at.ksu002.a {
 					_.each(schedules, (sc) => {
 						const { data } = sc;
 						const { $raw, wtype, wtime, value } = data;
+						const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
 
 						// UI-4-1 実績表示を「する」に選択する
 						// UI-4-2 実績表示を「しない」に選択する
-						if (!!$raw.achievements || c === NO) {
+						if (!!$raw.achievements || arch === NO) {
 							wtype.code($raw.workTypeCode);
 							wtype.name($raw.workTypeName);
 
@@ -216,10 +218,21 @@ module nts.uk.ui.at.ksu002.a {
 
 							value.begin($raw.startTime);
 							value.finish($raw.endTime);
+
+							data.confirmed($raw.confirmed);
+							data.achievement(null);
+							data.classification($raw.workHolidayCls);
+							data.need2Work($raw.needToWork);
+
+							data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
+							data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
+
+							data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
+							data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
 						}
 
 						// state of achievement (both data & switch select)
-						data.achievement(c === NO ? null : $raw.achievements);
+						data.achievement(arch === NO ? null : $raw.achievements);
 					});
 				});
 		}
@@ -256,44 +269,45 @@ module nts.uk.ui.at.ksu002.a {
 				const wrap: DayDataRawObsv[] = ko.unwrap(vm.schedules);
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
-				if (current && !current.data.achievement()) {
-					const cloned: DayData = ko.toJS(current);
-					/**
-					 * Required & deferred & wtime exist ?
-					 */
+				if (current) {
+					const { confirmed, achievement } = current.data;
 
-					// UI-5: 不正な勤務情報の貼り付けのチェック
-					if (wtype.type === REQUIRED && (wtime.code === 'none' || (wtime.code === 'deferred' && !cloned.data.wtime.code))) {
-						vm.$dialog.error({ messageId: 'Msg_1809' });
-					} else {
-						// UI-5: エラーがならない場合は、常に勤務情報を勤務予定セルに反映する。
-						$.Deferred()
-							.resolve(true)
-							// change data
-							.then(() => {
-								const { data } = current;
+					if (!ko.unwrap(confirmed) && !ko.unwrap(achievement)) {
+						const cloned: DayData = ko.toJS(current);
 
-								data.wtype.code(wtype.code);
-								data.wtype.name(wtype.name);
-								data.value.required(wtype.type);
+						// UI-5: 不正な勤務情報の貼り付けのチェック
+						if (wtype.type === REQUIRED && (wtime.code === 'none' || (wtime.code === 'deferred' && !cloned.data.wtime.code))) {
+							vm.$dialog.error({ messageId: 'Msg_1809' });
+						} else {
+							// UI-5: エラーがならない場合は、常に勤務情報を勤務予定セルに反映する。
+							$.Deferred()
+								.resolve(true)
+								// change data
+								.then(() => {
+									const { data } = current;
 
-								if (wtime.code === 'none') {
-									data.wtime.code('');
-									data.wtime.name('');
+									data.wtype.code(wtype.code);
+									data.wtype.name(wtype.name);
+									data.value.required(wtype.type);
 
-									data.value.begin(null);
-									data.value.finish(null);
-								} else if (wtime.code !== 'deferred') {
-									data.wtime.code(wtime.code);
-									data.wtime.name(wtime.name);
+									if (wtime.code === 'none') {
+										data.wtime.code('');
+										data.wtime.name('');
 
-									data.value.begin(wtime.value.begin);
-									data.value.finish(wtime.value.finish);
-								}
-							})
-							.then(() => vm.compare(cloned, current))
-							// save to memento after change data
-							.then(() => vm.memento(current, preview));
+										data.value.begin(null);
+										data.value.finish(null);
+									} else if (wtime.code !== 'deferred') {
+										data.wtime.code(wtime.code);
+										data.wtime.name(wtime.name);
+
+										data.value.begin(wtime.value.begin);
+										data.value.finish(wtime.value.finish);
+									}
+								})
+								.then(() => vm.compare(cloned, current))
+								// save to memento after change data
+								.then(() => vm.memento(current, preview));
+						}
 					}
 				}
 			}

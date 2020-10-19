@@ -40,32 +40,26 @@ module nts.uk.ui.calendar {
 		SUNDAY = 'sunday',
 		SATURDAY = 'saturday',
 		CONFIRMED = 'confirmed',
-		SELF_ALTER = 'self-alter',
 		SELF_ALTER_WTYPE = 'self-alter-wtype',
 		SELF_ALTER_WTIME = 'self-alter-wtime',
-		OTHER_ALTER = 'other-alter',
+		SELF_ALTER_WTIME_BEGIN = 'self-alter-wtime-begin',
+		SELF_ALTER_WTIME_FINISH = 'self-alter-wtime-finish',
 		OTHER_ALTER_WTYPE = 'other-alter-wtype',
 		OTHER_ALTER_WTIME = 'other-alter-wtime',
-		SELF_ALTER_WTIME_BEGIN = 'self-alter-wtime-begin',
 		OTHER_ALTER_WTIME_BEGIN = 'other-alter-wtime-begin',
-		SELF_ALTER_WTIME_FINISH = 'self-alter-wtime-finish',
 		OTHER_ALTER_WTIME_FINISH = 'other-alter-wtime-finish',
-		REFLECTED = 'reflected',
 		REFLECTED_WTYPE = 'reflected-wtype',
 		REFLECTED_WTIME = 'reflected-wtime',
 		REFLECTED_WTIME_BEGIN = 'reflected-wtime-begin',
 		REFLECTED_WTIME_FINISH = 'reflected-wtime-finish',
 		DIFF_MONTH = 'diff-month',
 		SAME_MONTH = 'same-month',
-		READONLY = 'readonly',
-		ACHIEVEMENT = 'achievement',
 		NEED2WORK = 'need-2work',
-		CLASSIFICATION = 'classification',
+		ACHIEVEMENT = 'achievement',
 		CLASSIFICATION_FULLTIME = 'classification-fulltime',
 		CLASSIFICATION_MORNING = 'classification-morning',
-		CLASSIFICATION_AFTERNOON = 'classification-afternull',
+		CLASSIFICATION_AFTERNOON = 'classification-afternoon',
 		CLASSIFICATION_HOLIDAY = 'classification-holiday',
-		IMPRINT = 'imprint',
 		IMPRINT_WTYPE = 'imprint-wtype',
 		IMPRINT_WTIME = 'imprint-wtime',
 		IMPRINT_WTIME_BEGIN = 'imprint-wtime-begin',
@@ -246,38 +240,9 @@ module nts.uk.ui.calendar {
             .calendar .calendar-container .month .week .day.same-month .data-info {
                 background-color: #ffffff;
 			}
-            .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
-				background-color: #eccefb;
+			.calendar .calendar-container .month .week .day.diff-month .data-info {
+				background-color: #d9d9d9;
 			}
-            .calendar .calendar-container .month .week .day.same-month.self-alter .data-info {
-				background-color: #94B7FE;
-			}
-            .calendar .calendar-container .month .week .day.same-month.other-alter .data-info {
-				background-color: #CEE6FF;
-			}
-            .calendar .calendar-container .month .week .day.same-month.reflected .data-info {
-				background-color: #BFEA60;
-			}
-            .calendar .calendar-container .month .week .day.diff-month .data-info,
-			.calendar .calendar-container .month .week .day.same-month.readonly .data-info,
-			.calendar .calendar-container .month .week .day.same-month.achievement .data-info {
-                background-color: #d9d9d9;
-            }
-            .calendar .calendar-container .month .week .day.same-month.holiday .data-info {
-                color: #f00;
-            }
-            .calendar .calendar-container .month .week .day.same-month.half-day .data-info {
-                color: #ff7f27;
-            }
-            .calendar .calendar-container .month .week .day.same-month.working .data-info {
-                color: #0000ff;
-            }
-			.calendar .calendar-container .month .week .day.same-month.worked .data-info,
-			.calendar .calendar-container .month .week .day.same-month.achievement .data-info,
-			.calendar .calendar-container .month .week .day.same-month.worked .data-info input,
-			.calendar .calendar-container .month .week .day.same-month.achievement .data-info input {
-                color: #00cc00;
-            }
 			.calendar .event-popper {
 				top: -999px;
 				left: -999px;

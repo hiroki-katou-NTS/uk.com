@@ -44,7 +44,7 @@ module nts.uk.ui.at.ksu002.a {
             required: KnockoutObservable<WORKTYPE_SETTING>;
         };
         state: StateEdit;
-        comfirmed: KnockoutObservable<boolean>;
+        confirmed: KnockoutObservable<boolean>;
         classification: KnockoutObservable<WORK_STYLE | null>;
         achievement: KnockoutObservable<boolean | null>;
         need2Work: KnockoutObservable<boolean>;
@@ -249,6 +249,46 @@ module nts.uk.ui.at.ksu002.a {
                     float: left;
                     display: block;
                 }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtype .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-begin .data-info .work-time .join input,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-finish .data-info .work-time .leave input {
+                    background-color: #bfea60;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtype .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-begin .data-info .work-time .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-finish .data-info .work-time .leave {
+                    background-color: #cee6ff;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtype .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-begin .data-info .work-time .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-finish .data-info .work-time .leave {
+                    background-color: #94b7fe;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
+                    background-color: #eccefb;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.diff-month .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
+                    background-color: #d9d9d9;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info {
+                    color: #f00;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info {
+                    color: #FF7F27;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info {
+                    color: #0000ff;
+                }
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info input {
+                    color: #00cc00;
+                }
                 .scheduler .calendar+.calendar {
                     width: 201px;
                 }
@@ -333,7 +373,7 @@ module nts.uk.ui.at.ksu002.a {
 
                     ko.computed({
                         read: () => {
-                            const comfirmed = ko.unwrap(data.comfirmed);
+                            const comfirmed = ko.unwrap(data.confirmed);
 
                             if (comfirmed) {
                                 className.push(c.COLOR_CLASS.CONFIRMED);
@@ -643,6 +683,23 @@ module nts.uk.ui.at.ksu002.a {
                     text.wtype = wtype.name;
                     text.wtime = wtime.name;
 
+                    vm.enable = ko.computed({
+                        read: () => {
+                            return context.$editable()
+                                && !(data.confirmed() || data.achievement())
+                                && !!data.wtime.code()
+                                && data.value.required() === WORKTYPE_SETTING.REQUIRED;
+                        },
+                        owner: vm
+                    })
+
+                    ko.computed({
+                        read: () => {
+                            model.required(ko.unwrap(value.required) === WORKTYPE_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
+                        },
+                        owner: vm
+                    });
+
                     value.begin
                         .subscribe((b) => {
                             const $begin = $(vm.$el).find('input.begin');
@@ -683,13 +740,6 @@ module nts.uk.ui.at.ksu002.a {
 
                     value.finish.valueHasMutated();
 
-                    ko.computed({
-                        read: () => {
-                            model.required(ko.unwrap(value.required) === WORKTYPE_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
-                        },
-                        owner: vm
-                    });
-
                     model.begin
                         .subscribe((b: number | string | null) => {
                             if (cache.begin !== b && ko.unwrap(value.begin) !== b) {
@@ -716,39 +766,34 @@ module nts.uk.ui.at.ksu002.a {
                                 context.$change.apply(context.$vm, [clone]);
                             }
                         });
-
-                    vm.enable = ko.computed({
-                        read: () => {
-                            return context.$editable()
-                                && !(data.comfirmed() || data.achievement())
-                                && !!data.wtime.code()
-                                && data.value.required() === WORKTYPE_SETTING.REQUIRED;
-                        },
-                        owner: vm
-                    })
                 }
             }
 
             mounted() {
                 const vm = this;
-                const { click, model } = vm;
+                const { click, model, enable } = vm;
                 const $begin = $(vm.$el).find('input.begin');
                 const $finish = $(vm.$el).find('input.finish');
                 const validate = () => {
                     const b = ko.unwrap(model.begin);
                     const f = ko.unwrap(model.finish);
 
-                    if (_.isNumber(b) && _.isNumber(f) && b > f) {
-                        if (!$begin.ntsError('hasError')) {
-                            $begin.ntsError('set', { messageId: MSG_1811 });
-                        }
+                    if (ko.unwrap(enable)) {
+                        if (_.isNumber(b) && _.isNumber(f) && b > f) {
+                            if (!$begin.ntsError('hasError')) {
+                                $begin.ntsError('set', { messageId: MSG_1811 });
+                            }
 
-                        if (!$finish.ntsError('hasError')) {
-                            $finish.ntsError('set', { messageId: MSG_1811 });
+                            if (!$finish.ntsError('hasError')) {
+                                $finish.ntsError('set', { messageId: MSG_1811 });
+                            }
+                        } else {
+                            $begin.ntsError(CLBC, MSG_1811);
+                            $finish.ntsError(CLBC, MSG_1811);
                         }
                     } else {
-                        $begin.ntsError(CLBC, MSG_1811);
-                        $finish.ntsError(CLBC, MSG_1811);
+                        $begin.ntsError('clear');
+                        $finish.ntsError('clear');
                     }
                 };
 
@@ -824,7 +869,7 @@ module nts.uk.ui.at.ksu002.a {
                 const { dayData } = vm.data;
                 const { data } = dayData;
 
-                if (!data || ko.unwrap(data.comfirmed) || ko.unwrap(data.achievement)) {
+                if (!data || ko.unwrap(data.confirmed) || ko.unwrap(data.achievement)) {
                     return;
                 }
 
