@@ -56,12 +56,6 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
     @Column(name = "BASIC_M_ER_TIME")
     public double basicMArlTime;
     /**
-     * 基本設定の1ヶ月上限時間
-     * 分類３６協定時間.３６協定基本設定.1ヶ月.基本設定
-     */
-    @Column(name = "BASIC_M_LIMIT_TIME")
-    public double basicMLimitTime;
-    /**
      * 特例設定の1ヶ月アラーム時間
      * 分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
      */
@@ -170,9 +164,6 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
                 // BASIC_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
                 domain.getSetting().getOneYear().getBasic().getError().v(),
 
-                // BASIC_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定
-                domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
-
                 // SP_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
                 domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
@@ -198,7 +189,7 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtClsPk().getLaborSystemAtr(),LaborSystemtAtr.class);
 
         val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
-        val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
+        val upperLimit = new AgreementOneMonthTime((int) entity.getSpYLimitTime());
 
         val basic =  OneMonthTime.of(erAlTime, upperLimit);
 
