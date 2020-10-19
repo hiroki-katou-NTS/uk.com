@@ -17,8 +17,6 @@ import {
     ICheck,
     ILateOrLeaveEarlies,
     IResDetail,
-    IParamS00C,
-    IParamS00B,
     IResAppDate,
     Params,
 } from './define';
@@ -29,12 +27,7 @@ import {
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {
-        time: {
-            attendanceTime: { required: true },
-            leaveTime: { required: true },
-        }
-    },
+    validations: { },
     components: {
         'kaf-s00-a': KafS00AComponent,
         'kaf-s00-b': KafS00BComponent,
@@ -48,6 +41,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     @Prop({ default: null })
     public readonly params!: Params;
     public title: string = 'KafS04A';
+    public isValidateAll: Boolean = true;
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: KAFS00BParams;
     public kafS00CParams: KAFS00CParams;
@@ -151,16 +145,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             });
             vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, idx) => {
-                if (idx == 0) {
+                if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                     vm.time.attendanceTime = item.timeWithDayAttr;
                 }
-                if (idx == 1) {
+                if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
                     vm.time.leaveTime = item.timeWithDayAttr;
                 }
-                if (idx == 2) {
+                if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
                     vm.time.attendanceTime2 = item.timeWithDayAttr;
                 }
-                if (idx == 3) {
+                if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
                     vm.time.leaveTime2 = item.timeWithDayAttr;
                 }
             });
@@ -538,44 +532,53 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 isIndicated: true
             });
 
-        vm.checkValidAll();
+        vm.$mask('show');
+        vm.infoOutPut.appDispInfoStartupOutput = vm.data.appDispInfoStartupOutput;
+
+        let paramsErrorLst = {
+            agentAtr: true,
+            isNew: true,
+            infoOutput: vm.infoOutPut,
+            application: vm.mode ? vm.application : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application,
+        };
+
+        vm.$mask('show');
+        vm.$http.post('at', API.getMsgList + '/' + AppType.EARLY_LEAVE_CANCEL_APPLICATION, paramsErrorLst).then((res: any) => {
+            vm.mode ? vm.register() : vm.update();
+            vm.$mask('hide');
+        }).catch((err: any) => {
+            vm.$mask('hide');
+
+            return vm.handleErrorMessage(err);
+        });
     }
 
     public checkValidAll() {
         const vm = this;
 
-        Promise
-            .resolve(true)
-            .then(() => {
-                vm.$validate('time.attendanceTime');
-                vm.$validate('time.leaveTime');
-            })
-            .then(() => vm.$children.forEach((v) => v.$validate()))
-            .then(() => {
-                if (vm.validAll) {
-                    vm.$mask('show');
-                    vm.infoOutPut.appDispInfoStartupOutput = vm.data.appDispInfoStartupOutput;
+        let validAll: boolean = true;
 
-                    let paramsErrorLst = {
-                        agentAtr: true,
-                        isNew: true,
-                        infoOutput: vm.infoOutPut,
-                        application: vm.mode ? vm.application : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application,
-                    };
-
-                    vm.$mask('show');
-                    vm.$http.post('at', API.getMsgList + '/' + AppType.EARLY_LEAVE_CANCEL_APPLICATION, paramsErrorLst).then((res: any) => {
-                        vm.mode ? vm.register() : vm.update();
-                        vm.$mask('hide');
-                    }).catch((err: any) => {
-                        vm.$mask('hide');
-
-                        return vm.handleErrorMessage(err);
-                    });
-                } else {
-                    window.scrollTo(500, 0);
-                }
+        vm.$mask('show');
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        vm.isValidateAll = validAll;
+        vm.$validate();
+        if (!vm.$valid || !validAll) {
+            vm.$nextTick(() => {
+                vm.$mask('hide');
             });
+
+            window.scrollTo(500, 0);
+
+            return;
+
+            
+        }
+        vm.checkBeforeRegister();
     }
 
     public register() {
@@ -635,16 +638,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
     }
 
-    get validAll() {
-        const vm = this;
-
-        if (!vm.$valid) {
-            vm.$modal.error('Msg_1681');
-        }
-
-        return vm.$valid && !vm.$children.some((m) => !m.$valid);
-    }
-
     public handleChangeDate(paramsDate) {
         const vm = this;
         let appDatesLst = [];
@@ -664,6 +657,14 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
         if (paramsDate.startDate) {
             vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
+
+                if (vm.application.prePostAtr == 1) {
+                    response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                        if (item.opAchievementDetail == null) {
+                            return vm.$modal.error('Msg_1707');
+                        }
+                    });
+                }
 
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                     if (item.opAchievementDetail) {
@@ -689,27 +690,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
                             vm.check.cbCancelLate.isDisable = false;
                             vm.check.cbCancelEarlyLeave.isDisable = false;
                         }
-                    } else {
-                        if (vm.application.prePostAtr == 0) {
-                            vm.$updateValidator('vm.time.attendanceTime', { required: false });
-                            vm.$updateValidator('vm.time.leaveTime', { required: false });
-                            vm.time.attendanceTime = null;
-                            vm.time.leaveTime = null;
-                        } else {
-                            vm.$updateValidator('vm.time.attendanceTime', { required: false });
-                            vm.$updateValidator('vm.time.leaveTime', { required: false });
-                            vm.time.attendanceTime = null;
-                            vm.time.leaveTime = null;
-                            vm.$modal.error('Msg_1707');
-                            vm.check.cbCancelLate.isDisable = true;
-                            vm.check.cbCancelEarlyLeave.isDisable = true;
-
-                            return;
-                        }
                     }
                 });
             });
         }
+
         if (vm.mode) {
             vm.application.appDate = startDate;
             vm.application.prePostAtr;

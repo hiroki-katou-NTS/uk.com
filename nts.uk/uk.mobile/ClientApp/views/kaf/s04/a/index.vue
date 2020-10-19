@@ -5,7 +5,7 @@
     v-bind:params="kafS00AParams" />
     <!-- error message -->
     <div
-      v-if="!validAll"
+      v-if="!$valid || !isValidateAll"
       class="card bg-danger top-alert uk-text-danger topError">
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -119,14 +119,14 @@
         v-if="mode"
         type="button"
         class="btn btn-primary btn-block"
-        v-on:click="checkBeforeRegister()"
+        v-on:click="checkValidAll()"
       >{{'KAFS04_13' | i18n}}</button>
       <!-- 画面モード = 編集モード -->
       <button
         v-else
         type="button"
         class="btn btn-primary btn-block"
-        v-on:click="checkBeforeRegister()"
+        v-on:click="checkValidAll()"
       >{{'KAFS04_4' | i18n}}</button>
   </div>
 </template>
