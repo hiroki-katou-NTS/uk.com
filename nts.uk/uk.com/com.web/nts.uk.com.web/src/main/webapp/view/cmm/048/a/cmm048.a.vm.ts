@@ -32,7 +32,11 @@ module nts.uk.com.view.cmm048.a {
     B5_2_Value: KnockoutObservable<string> = ko.observable('');
 
     //C
-    C2_6_Options: KnockoutObservableArray<any> = ko.observableArray([
+    C2_2_Value : KnockoutObservable<string> = ko.observable('');
+    C2_3_Value : KnockoutObservable<string> = ko.observable('');
+    C2_4_Value : KnockoutObservable<string> = ko.observable('');
+    C2_6_Value : KnockoutObservable<string> = ko.observable('');
+    C2_6_Options : KnockoutObservableArray<any> = ko.observableArray([
       new ItemCbx(REMIND_DATE.BEFORE_ZERO_DAY, "当日"),
       new ItemCbx(REMIND_DATE.BEFORE_ONE_DAY, "１日前"),
       new ItemCbx(REMIND_DATE.BEFORE_TWO_DAY, "２日前"),
@@ -58,8 +62,8 @@ module nts.uk.com.view.cmm048.a {
     private generateTitleTab(rsCode: string, icon: string): string {
       return (
         `<span>
-            <img class="tab-icon" src="./resource/`+ icon + `.svg" />
-            <span>`+ rsCode + `</span>
+        <img class="tab-icon" src="./resource/`+icon+`.svg" />
+        <span>`+rsCode+`</span>
         </span>`
       )
     }
@@ -92,7 +96,19 @@ module nts.uk.com.view.cmm048.a {
     public save() {
       const vm = this;
       console.log(1)
-      
+
+    public addNewAnniversary() {
+      const vm = this;
+      vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
+    }
+
+    public removeAnniversary(anniversary: AnniversaryNotification) {
+      const vm = this;
+      vm.listAnniversary.remove(anniversary);
+    }
+
+    public save() {
+      const vm = this;
     }
   }
 
@@ -112,6 +128,7 @@ module nts.uk.com.view.cmm048.a {
     BEFORE_SIX_DAY = 6,
     BEFORE_SEVEN_DAY = 7,
   }
+
   class ItemCbx {
     constructor(
       public code: number,
