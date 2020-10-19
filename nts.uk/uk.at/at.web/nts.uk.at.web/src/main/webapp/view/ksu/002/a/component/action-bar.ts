@@ -33,7 +33,7 @@ module nts.uk.ui.at.ksu002.a {
 		<div class="cf">
 			<button class="small btn-undo" data-bind="
 					icon: 44,
-					enable: $component.data.clickable.undo() && $component.$validate.valid(),
+					enable: $component.data.clickable.undo(),
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['undo']); },
 					attr: {
@@ -42,7 +42,7 @@ module nts.uk.ui.at.ksu002.a {
 				"></button>
 			<button class="small btn-redo" data-bind="
 					icon: 154,
-					enable: $component.data.clickable.redo() && $component.$validate.valid(),
+					enable: $component.data.clickable.redo(),
 					timeClick: -1,
 					click: function() { $component.data.clickBtn.apply($vm, ['redo']); },
 					attr: {

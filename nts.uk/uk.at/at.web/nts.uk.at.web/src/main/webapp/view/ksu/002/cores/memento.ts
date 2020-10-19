@@ -16,14 +16,14 @@ module nts.uk.ui.memento {
 		replace: (sources: any, state: StateMemento, act: 'undo' | 'redo') => boolean;
 	}
 
-	interface Memento {
-		undo: KnockoutObservableArray<StateMemento>;
-		redo: KnockoutObservableArray<StateMemento>;
-	}
-
 	export interface StateMemento<T = any> {
 		current: T;
 		preview: T;
+	}
+
+	interface Memento {
+		undo: KnockoutObservableArray<StateMemento>;
+		redo: KnockoutObservableArray<StateMemento>;
 	}
 
 	const memento = function (target: KnockoutObservableArray<any>, options: Options) {
@@ -86,14 +86,14 @@ module nts.uk.ui.memento {
 					const state = $memento.undo.shift();
 
 					// try undo
-					const valid = options.replace.apply(target, [ko.unwrap(target), state, 'undo']);
+					const valid = options.replace.apply(target, [ko.unwrap(target), state]);
 
-					if (valid) {
-						// if success, add state to redo
-						$memento.redo.unshift(state);
-					} else {
-						// orelse rollback sttate to undo
+					if (!valid) {
+						// if not valid, rollback sttate to undo
 						$memento.undo.unshift(state);
+					} else {
+						// orelse, add state to redo
+						$memento.redo.unshift({ current: state.preview, preview: state.current });
 					}
 
 					// remove old record when memory size has large than config
@@ -106,14 +106,14 @@ module nts.uk.ui.memento {
 					const state = $memento.redo.shift();
 
 					// try redo
-					const valid = options.replace.apply(target, [ko.unwrap(target), state, 'redo']);
+					const valid = options.replace.apply(target, [ko.unwrap(target), state]);
 
-					if (valid) {
-						// if success, add state to undo
-						$memento.undo.unshift(state);
-					} else {
-						// orelse rollback sttate to redo
+					if (!valid) {
+						// if not valid, rollback state to redo
 						$memento.redo.unshift(state);
+					} else {
+						// orelse add state to undo
+						$memento.undo.unshift({ current: state.preview, preview: state.current });
 					}
 
 					// remove old record when memory size has large than config

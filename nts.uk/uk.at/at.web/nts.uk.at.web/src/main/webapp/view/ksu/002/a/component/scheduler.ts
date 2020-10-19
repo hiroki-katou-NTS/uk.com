@@ -26,10 +26,6 @@ module nts.uk.ui.at.ksu002.a {
             begin: number | null;
             finish: number | null;
         };
-        valid: {
-            begin: boolean;
-            finish: boolean;
-        };
         state: StateEdit<EDIT_STATE>;
         comfirmed: boolean;
         classification: WORK_STYLE | null;
@@ -44,11 +40,8 @@ module nts.uk.ui.at.ksu002.a {
         value: {
             begin: KnockoutObservable<number | null>;
             finish: KnockoutObservable<number | null>;
+            validate: KnockoutObservable<boolean>;
             required: KnockoutObservable<WORKTYPE_SETTING>;
-        };
-        valid: {
-            begin: KnockoutObservable<boolean>;
-            finish: KnockoutObservable<boolean>;
         };
         state: StateEdit;
         comfirmed: KnockoutObservable<boolean>;
@@ -645,7 +638,7 @@ module nts.uk.ui.at.ksu002.a {
 
                 if (dayData.data) {
                     const { data } = dayData;
-                    const { wtype, wtime, value, valid } = data;
+                    const { wtype, wtime, value } = data;
 
                     text.wtype = wtype.name;
                     text.wtime = wtime.name;
@@ -659,13 +652,12 @@ module nts.uk.ui.at.ksu002.a {
                                 .resolve(true)
                                 .then(() => $begin.ntsError('clear'))
                                 .then(() => model.begin(b))
-                                .then(() => valid.begin(!$begin.ntsError('hasError')))
                                 .then(() => {
                                     if ($finish.ntsError('hasError')) {
                                         $finish.trigger(VALIDATE);
                                     }
                                 })
-                                .then(() => valid.finish(!$finish.ntsError('hasError')));
+                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')));
                         });
 
                     value.begin.valueHasMutated();
@@ -679,13 +671,12 @@ module nts.uk.ui.at.ksu002.a {
                                 .resolve(true)
                                 .then(() => $finish.ntsError('clear'))
                                 .then(() => model.finish(f))
-                                .then(() => valid.finish(!$finish.ntsError('hasError')))
                                 .then(() => {
                                     if ($begin.ntsError('hasError')) {
                                         $begin.trigger(VALIDATE);
                                     }
                                 })
-                                .then(() => valid.begin(!$begin.ntsError('hasError')));
+                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')));
                         });
 
                     value.finish.valueHasMutated();
@@ -704,10 +695,12 @@ module nts.uk.ui.at.ksu002.a {
                             const $finish = $(vm.$el).find('input.finish');
 
                             if (b === null || _.isString(b)) {
-                                valid.begin(false);
+                                value.validate(false);
                                 $finish.ntsError(CLBC, MSG_1811);
                             } else if (_.isNumber(b) && cache.begin !== b && ko.unwrap(value.begin) !== b) {
-                                if (b > f) {
+                                if (_.isNumber(f) && b > f) {
+                                    value.validate(false);
+
                                     if (!$begin.ntsError('hasError')) {
                                         $begin.ntsError('set', { messageId: MSG_1811 });
                                     }
@@ -716,16 +709,13 @@ module nts.uk.ui.at.ksu002.a {
                                         $finish.ntsError('set', { messageId: MSG_1811 });
                                     }
 
-                                    valid.begin(false);
-                                    valid.finish(false);
-
                                     $.Deferred()
                                         .resolve(true)
                                         .then(() => $begin.val(pt(b, true).format()))
                                         .then(() => $finish.val(pt(f, true).format()));
                                 } else {
                                     cache.begin = b;
-                                    valid.begin(true);
+                                    value.validate(true);
 
                                     const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
@@ -745,10 +735,12 @@ module nts.uk.ui.at.ksu002.a {
                             const $finish = $(vm.$el).find('input.finish');
 
                             if (f === null || _.isString(f)) {
-                                valid.finish(false);
+                                value.validate(false);
                                 $begin.ntsError(CLBC, MSG_1811);
                             } else if (_.isNumber(f) && cache.finish !== f && ko.unwrap(value.finish) !== f) {
-                                if (b > f) {
+                                if (_.isNumber(b) && b > f) {
+                                    value.validate(false);
+
                                     if (!$begin.ntsError('hasError')) {
                                         $begin.ntsError('set', { messageId: MSG_1811 });
                                     }
@@ -757,16 +749,13 @@ module nts.uk.ui.at.ksu002.a {
                                         $finish.ntsError('set', { messageId: MSG_1811 });
                                     }
 
-                                    valid.begin(false);
-                                    valid.finish(false);
-
                                     $.Deferred()
                                         .resolve(true)
                                         .then(() => $begin.val(pt(b, true).format()))
                                         .then(() => $finish.val(pt(f, true).format()));
                                 } else {
                                     cache.finish = f;
-                                    valid.finish(true);
+                                    value.validate(true);
 
                                     const clone: c.DayData<ScheduleData> = ko.toJS(dayData);
 
@@ -800,7 +789,7 @@ module nts.uk.ui.at.ksu002.a {
                     const b = ko.unwrap(model.begin);
                     const f = ko.unwrap(model.finish);
 
-                    if (b !== null && f !== null && b > f) {
+                    if (_.isNumber(b) && _.isNumber(f) && b > f) {
                         if (!$begin.ntsError('hasError')) {
                             $begin.ntsError('set', { messageId: MSG_1811 });
                         }
@@ -814,8 +803,6 @@ module nts.uk.ui.at.ksu002.a {
                     }
                 };
 
-                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
-
                 $begin.on(VALIDATE, validate);
 
                 $finish.on(VALIDATE, validate);
@@ -825,10 +812,10 @@ module nts.uk.ui.at.ksu002.a {
                         const readonly = vm.data.context.$editable() ? ko.unwrap(click.begin) < 2 : true;
 
                         if ($begin.length) {
-                            if (!readonly) {
-                                $begin.removeAttr(RO);
-                            } else {
+                            if (readonly) {
                                 $begin.attr(RO, RO);
+                            } else {
+                                $begin.removeAttr(RO);
                             }
                         }
                     },
@@ -841,10 +828,10 @@ module nts.uk.ui.at.ksu002.a {
                         const readonly = vm.data.context.$editable() ? ko.unwrap(click.finish) < 2 : true;
 
                         if ($finish.length) {
-                            if (!readonly) {
-                                $finish.removeAttr(RO);
-                            } else {
+                            if (readonly) {
                                 $finish.attr(RO, RO);
+                            } else {
+                                $finish.removeAttr(RO);
                             }
                         }
                     },
@@ -869,6 +856,8 @@ module nts.uk.ui.at.ksu002.a {
 
                         return true;
                     });*/
+
+                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
             }
 
             hideInput(input: INPUT_TYPE) {

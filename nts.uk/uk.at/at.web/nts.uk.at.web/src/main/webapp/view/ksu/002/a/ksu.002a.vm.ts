@@ -17,30 +17,39 @@ module nts.uk.ui.at.ksu002.a {
 	const memento: m.Options = {
 		size: 20,
 		// callback function raise when undo or redo
-		replace: function (data: DayDataRawObsv[], memento: m.StateMemento<DayData>, act: 'undo' | 'redo') {
-			const exist = _.find(data, f => moment(f.date).isSame(memento.current.date, 'date'));
+		replace: function (data: DayDataRawObsv[], memento: m.StateMemento<DayData>) {
+			const { preview, current } = memento;
+			const exist = _.find(data, f => moment(f.date).isSame(current.date, 'date'));
 
-			if (exist && exist.data.valid.begin() && exist.data.valid.finish()) {
+			if (exist) {
 				const { data } = exist;
-				const { preview, current } = memento;
-				const { wtime, wtype, value, state } = (act === 'undo' ? preview : current).data;
+				const valid = ko.unwrap(data.value.validate);
 
-				data.wtime.code(wtime.code);
-				data.wtime.name(wtime.name);
+				if (valid) {
+					const { wtime, wtype, value, state } = (preview).data;
 
-				data.wtype.code(wtype.code);
-				data.wtype.name(wtype.name);
+					data.wtime.code(wtime.code);
+					data.wtime.name(wtime.name);
 
-				data.value.begin(value.begin);
-				data.value.finish(value.finish);
+					data.wtype.code(wtype.code);
+					data.wtype.name(wtype.name);
 
-				data.state.wtype(state.wtype);
-				data.state.wtime(state.wtime);
+					data.value.begin(value.begin);
+					data.value.finish(value.finish);
 
-				data.state.value.begin(state.value.begin);
-				data.state.value.finish(state.value.finish);
+					data.state.wtype(state.wtype);
+					data.state.wtime(state.wtime);
 
-				return true;
+					data.state.value.begin(state.value.begin);
+					data.state.value.finish(state.value.finish);
+
+					return true;
+				} else {
+					data.value.begin.valueHasMutated();
+					data.value.finish.valueHasMutated();
+					
+					return false;
+				}
 			}
 
 			return false;
@@ -135,11 +144,8 @@ module nts.uk.ui.at.ksu002.a {
 											value: {
 												begin: ko.observable($raw.startTime),
 												finish: ko.observable($raw.endTime),
+												validate: ko.observable(true),
 												required: ko.observable($raw.needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
-											},
-											valid: {
-												begin: ko.observable(true),
-												finish: ko.observable(true)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),

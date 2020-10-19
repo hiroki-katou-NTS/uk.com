@@ -48,7 +48,6 @@ module nts.uk.ui.at.ksu002.a {
 			ntsSwitchButton: {
 				name: $i18n('KSU002_6'),
 				value: $component.achievement,
-				enable: $component.$validate.valid(),
 				options: [
 					{ code: 1, name: $i18n('KSU002_8') },
 					{ code: 0, name: $i18n('KSU002_9') }
