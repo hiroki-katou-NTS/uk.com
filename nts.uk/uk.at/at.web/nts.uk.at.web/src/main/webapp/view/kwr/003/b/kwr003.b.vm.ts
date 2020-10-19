@@ -4,8 +4,10 @@ module nts.uk.at.view.kwr003.b {
   //import common = nts.uk.at.view.kwr003.common; 
 
   const NUM_ROWS = 10;
-  const KWR003_B13 = 'KWR003_B_DATA';
-  const KWR003_C = 'KWR003_C_DATA';
+  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
+  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR003_C_INPUT = 'KWR003_C_DATA';
+  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -16,6 +18,7 @@ module nts.uk.at.view.kwr003.b {
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
     currentSettingCodeList: KnockoutObservableArray<any>;
     settingRules: KnockoutObservableArray<any>;
+    attendance: KnockoutObservable<any> = ko.observable(null);
     attendanceCode: KnockoutObservable<string> = ko.observable(null);
     attendanceName: KnockoutObservable<string> = ko.observable(null);
     settingRuleCode: KnockoutObservable<number> = ko.observable(0);
@@ -46,9 +49,11 @@ module nts.uk.at.view.kwr003.b {
 
     constructor(params: any) {
       super();
+
       let vm = this;
 
       vm.getSettingList();
+
       vm.currentCodeList.subscribe((code: any) => {
         vm.getSettingListForPrint(code);
       });
@@ -104,6 +109,7 @@ module nts.uk.at.view.kwr003.b {
 
       vm.shareParam.attendanceItems = vm.getDiligenceProject();
       vm.shareParam.diligenceProjectList = vm.getDiligenceProject();
+
     }
 
     created(params: any) {
@@ -177,9 +183,9 @@ module nts.uk.at.view.kwr003.b {
         name: vm.attendanceName()
       }
 
-      vm.$window.storage(KWR003_B13, ko.toJS(params)).then(() => {
+      vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_C).then((data) => {
+          vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
             }
@@ -192,7 +198,7 @@ module nts.uk.at.view.kwr003.b {
 
     closeDialog() {
       let vm = this;
-
+      //KWR003_B_OUTPUT
       vm.$window.close();
     }
 
@@ -240,34 +246,48 @@ module nts.uk.at.view.kwr003.b {
       }
     }
 
+    getListItems() {
+      let lisItems: Array<any> = [
+        new ItemModel('0001', '予定勤務種類'),
+        new ItemModel('0003', '予定勤務種類'),
+        new ItemModel('0004', '予定勤務種類'),
+        new ItemModel('0005', '予定勤務種類'),
+        new ItemModel('0002', 'Seoul Korea'),
+        new ItemModel('0006', 'Paris France'),
+        new ItemModel('0007', '予定勤務種類'),
+        new ItemModel('0008', '予定勤務種類'),
+        new ItemModel('0009', '予定勤務種類'),
+        new ItemModel('0010', '予定勤務種類'),
+      ];
+
+      return lisItems;
+
+    }
+
     getSettingList() {
       let vm = this;
-      vm.settingListItems = ko.observableArray(
-        [
-          new ItemModel('0001', '予定勤務種類'),
-          new ItemModel('0003', '予定勤務種類'),
-          new ItemModel('0004', '予定勤務種類'),
-          new ItemModel('0005', '予定勤務種類'),
-          new ItemModel('0002', 'Seoul Korea'),
-          new ItemModel('0006', 'Paris France'),
-          new ItemModel('0007', '予定勤務種類'),
-          new ItemModel('0008', '予定勤務種類'),
-          new ItemModel('0009', '予定勤務種類'),
-          new ItemModel('0010', '予定勤務種類'),
-        ]
-      );
 
-      if (vm.settingListItems().length > 0) {
-        _.orderBy(vm.settingListItems(), ['code'], ['asc']);
-        let firstItem: any = _.head(vm.settingListItems());
-        vm.currentCodeList.push(firstItem.code);
-        vm.getSettingListForPrint(firstItem.code);
-      }
+      let lisItems: Array<any> = vm.getListItems();
+
+      //sort by code with asc
+      lisItems = _.orderBy(lisItems, ['code'], ['asc']);
+      vm.settingListItems(lisItems);
+
+      vm.$window.storage(KWR003_B_INPUT).then((data: any) => {
+        let code = !_.isNil(data) ? data.code : null;
+        if (vm.settingListItems().length > 0) {
+          let firstItem: any = _.head(vm.settingListItems());
+          if( !code ) code = firstItem.code;
+        }
+        
+        vm.currentCodeList.push(code);
+        vm.getSettingListForPrint(code);
+      });
     }
 
     openDialogKDL(data: SettingForPrint) {
       let vm = this;
-
+   
       if (data.setting())
         vm.openDialogKDL048(data);
       else
@@ -276,24 +296,27 @@ module nts.uk.at.view.kwr003.b {
 
     openDialogKDL047(row: any) {
       let vm = this;
+
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        console.log(attendanceItem);
         if (!attendanceItem) {
           return;
         }
-        vm.comboSelected = ko.observable(attendanceItem.attribute);
-        vm.tableSelected = ko.observable(attendanceItem.attendanceId);
-        vm.attendanceItemName(attendanceItem.attendanceItemName);
-        alert('Code selection in combo: ' + vm.comboSelected() + ' and ' + 'Code selection in table ' + vm.tableSelected())
+        
+        //vm.comboSelected = ko.observable(attendanceItem.attribute);
+        //vm.tableSelected = ko.observable(attendanceItem.attendanceId);
+        //vm.attendanceItemName(attendanceItem.attendanceItemName);
+        
+        let index = _.findIndex(vm.settingListItemsDetails(), (o : any) => { return o.id === row.id; });
+        vm.settingListItemsDetails()[index].selectionItem(attendanceItem.attendanceItemName);
       });
     }
 
     openDialogKDL048(row: any) {
       let vm = this;
 
-      vm.shareParam.attribute.attributeList = [       
+      vm.shareParam.attribute.attributeList = [
         new AttendaceType(4, vm.$i18n('KWR002_180')),
         new AttendaceType(5, vm.$i18n('KWR002_181')),
         //new AttendaceType(6, vm.$i18n('KWR002_182')),
@@ -303,14 +326,15 @@ module nts.uk.at.view.kwr003.b {
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/048/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
+        console.log(attendanceItem);
         if (!attendanceItem) {
           return;
         }
-        vm.attendanceItemName(attendanceItem.attendanceItemName);
+        
         //vm.data(attendanceItem.selectedTimeList);
-        vm.shareParam.selectedTimeList = attendanceItem.selectedTimeList;
-        vm.shareParam.attribute.selected = attendanceItem.attribute.selected
-        vm.shareParam.itemNameLine.name =  attendanceItem.itemNameLine.name
+        //vm.shareParam.attribute.selected = attendanceItem.attribute.selected
+        //vm.shareParam.itemNameLine.name = attendanceItem.itemNameLine.name
+        vm.shareParam.selectedTimeList = attendanceItem.selectedTimeList;        
       });
     }
 
@@ -387,7 +411,7 @@ module nts.uk.at.view.kwr003.b {
     isChecked: KnockoutObservable<boolean> = ko.observable(false);
     name: KnockoutObservable<string> = ko.observable(null);
     setting: KnockoutObservable<number> = ko.observable(0);
-    selectionItem: string;
+    selectionItem: KnockoutObservable<string> = ko.observable(null);
     constructor(
       id?: number,
       name?: string,
@@ -397,7 +421,7 @@ module nts.uk.at.view.kwr003.b {
       this.name(name || '');
       this.setting(setting);
       this.isChecked(checked || false);
-      this.selectionItem = selectionItem || '';
+      this.selectionItem(selectionItem || '');
       this.id = id;
     }
   }
@@ -487,14 +511,14 @@ module nts.uk.at.view.kwr003.b {
     attributes: any;
     displayNumbers: any;
     //48
-     // ID
-     id: any;
-     // 名称
-     name: any;
-     // 属性
-     //attributes: any;
-     // 表示番号
-     indicatesNumber: any;
+    // ID
+    id: any;
+    // 名称
+    name: any;
+    // 属性
+    //attributes: any;
+    // 表示番号
+    indicatesNumber: any;
     constructor(id: any, name: any, attributes: any, indicatesNumber: any) {
       this.attendanceItemId = id;
       this.attendanceItemName = name;

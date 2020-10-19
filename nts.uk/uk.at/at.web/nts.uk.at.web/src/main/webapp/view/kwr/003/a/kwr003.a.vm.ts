@@ -4,7 +4,10 @@ module nts.uk.at.view.kwr003.a {
   import common = nts.uk.at.view.kwr003.common;
   import ComponentOption = kcp.share.list.ComponentOption;
 
-  const  WORK_STATUS = 'WorkStatus';
+  const WORK_STATUS = 'WorkStatus';
+  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
+  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+
   @bean()
   class ViewModel extends ko.ViewModel {
 
@@ -24,6 +27,8 @@ module nts.uk.at.view.kwr003.a {
     zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
+    settingListItems: KnockoutObservableArray<any> = ko.observableArray([]);
+
     // start declare KCP005
     listComponentOption: any;
     selectedCode: KnockoutObservable<string>;
@@ -47,6 +52,8 @@ module nts.uk.at.view.kwr003.a {
       super();
       let vm = this;
 
+      vm.getSettingListItems();
+
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
       });
@@ -64,6 +71,7 @@ module nts.uk.at.view.kwr003.a {
       let vm = this;
 
       $('#kcp005 table').attr('tabindex', '-1');
+      $('#btnExportExcel').focus();
     }
 
     CCG001_load() {
@@ -118,7 +126,7 @@ module nts.uk.at.view.kwr003.a {
         }
       }
       // Start component
-      $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);      
+      $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
     }
 
     KCP005_load() {
@@ -189,18 +197,32 @@ module nts.uk.at.view.kwr003.a {
     showDialogScreenB() {
       let vm = this;
 
-      let params = {}
+      let selectedItem = vm.rdgSelectedId();
+      let attendenceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
+      let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
 
-      vm.$window.storage('KWR003_B13', ko.toJS(params)).then(() => {
+      if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
+
+      let params = {
+        code: attendence.code,
+        name: attendence.name,
+      }
+
+      vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
+          //KWR003_B_OUTPUT
         });
       });
     }
 
     initialWorkStatusInformation() {
       let vm = this;
-      vm.$window.storage('WORK_STATUS').then((data: any) => {
-        if( !_.isNil(data)) {
+
+      //パラメータ.就業担当者であるか = true || false
+      vm.isWorker(vm.$user.role.isInCharge.attendance);
+
+      vm.$window.storage(WORK_STATUS).then((data: any) => {
+        if (!_.isNil(data)) {
           vm.rdgSelectedId(data.itemSelection); //項目選択
           vm.standardSelectedCode(data.standardSelectedCode); //定型選択
           vm.freeSelectedCode(data.freeSelectedCode); //自由設定
@@ -208,6 +230,44 @@ module nts.uk.at.view.kwr003.a {
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
       });
+    }
+
+    getSettingListItems() {
+      let vm = this;
+
+      let listItems: any = [
+        new ItemModel('0001', '項目選択'),
+        new ItemModel('0003', '定型選択'),
+        new ItemModel('0004', '自由の選択済みコード'),
+        new ItemModel('0005', '自由設定'),
+        new ItemModel('0002', 'Seoul Korea'),
+        new ItemModel('0006', 'Paris France'),
+        new ItemModel('0007', '改ページ指定'),
+        new ItemModel('0008', '就業担当者'),
+        new ItemModel('0009', 'パラメータ'),
+        new ItemModel('0010', '者であるか'),
+      ];
+
+      listItems = _.orderBy(listItems, 'code', 'asc');
+      vm.settingListItems(listItems);
+    }
+
+    exportExcel() {
+
+    }
+
+    exportPdf() {
+
+    }
+  }
+
+  //=================================================================
+  export class ItemModel {
+    code: string;
+    name: string;
+    constructor(code?: string, name?: string) {
+      this.code = code;
+      this.name = name;
     }
   }
 }
