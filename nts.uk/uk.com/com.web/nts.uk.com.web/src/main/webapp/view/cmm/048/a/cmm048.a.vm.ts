@@ -8,9 +8,9 @@ module nts.uk.com.view.cmm048.a {
 
     //general
     tabs: KnockoutObservableArray<any> = ko.observableArray([
-      { id: 'tab-1', title: this.generateTitleTab(this.$i18n('CMM048_92'), 'profile'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-      { id: 'tab-2', title: this.generateTitleTab(this.$i18n('CMM048_93'), 'password'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-      { id: 'tab-3', title: this.generateTitleTab(this.$i18n('CMM048_94'), 'notification'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+      { id: 'tab-1', title: this.generateTitleTab(this.$i18n('CMM048_92'), 'setting'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+      { id: 'tab-2', title: this.generateTitleTab(this.$i18n('CMM048_93'), 'security'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+      { id: 'tab-3', title: this.generateTitleTab(this.$i18n('CMM048_94'), 'notice'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
       { id: 'tab-4', title: this.generateTitleTab(this.$i18n('CMM048_95'), 'language'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
     ]);
     selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
@@ -32,11 +32,11 @@ module nts.uk.com.view.cmm048.a {
     B5_2_Value: KnockoutObservable<string> = ko.observable('');
 
     //C
-    C2_2_Value : KnockoutObservable<string> = ko.observable('');
-    C2_3_Value : KnockoutObservable<string> = ko.observable('');
-    C2_4_Value : KnockoutObservable<string> = ko.observable('');
-    C2_6_Value : KnockoutObservable<string> = ko.observable('');
-    C2_6_Options : KnockoutObservableArray<any> = ko.observableArray([
+    C2_2_Value: KnockoutObservable<string> = ko.observable('');
+    C2_3_Value: KnockoutObservable<string> = ko.observable('');
+    C2_4_Value: KnockoutObservable<string> = ko.observable('');
+    C2_6_Value: KnockoutObservable<string> = ko.observable('');
+    C2_6_Options: KnockoutObservableArray<any> = ko.observableArray([
       new ItemCbx(REMIND_DATE.BEFORE_ZERO_DAY, "当日"),
       new ItemCbx(REMIND_DATE.BEFORE_ONE_DAY, "１日前"),
       new ItemCbx(REMIND_DATE.BEFORE_TWO_DAY, "２日前"),
@@ -58,12 +58,25 @@ module nts.uk.com.view.cmm048.a {
       new ItemCbx(LANGUAGE.OTHER, "その他"),
     ]);
 
+    mounted() {
+      const vm = this;
+      vm.$blockui('grayout')
+      vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
+      vm.$ajax(API.find).then(data => console.log(data))
+        .fail(error => {
+          vm.$blockui('clear')
+          vm.$dialog.error(error);
+        })
+        .always(() => {
+          vm.$blockui('clear');
+        });
+    }
 
-    private generateTitleTab(rsCode: string, icon: string): string {
+    generateTitleTab(rsCode: string, icon: string): string {
       return (
         `<span>
-        <img class="tab-icon" src="./resource/`+icon+`.svg" />
-        <span>`+rsCode+`</span>
+        <img class="tab-icon" src="./resource/`+ icon + `.png" />
+        <span>`+ rsCode + `</span>
         </span>`
       )
     }
@@ -76,16 +89,7 @@ module nts.uk.com.view.cmm048.a {
 
     public addNewAnniversary() {
       const vm = this;
-      vm.$blockui('grayout')
       vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
-      vm.$ajax(API.find).then(data =>  console.log(data))
-      .fail(error => {
-        vm.$blockui('clear')
-        vm.$dialog.error(error);
-      })
-      .always(() => {
-        vm.$blockui('clear');
-      });
     }
 
     public removeAnniversary(anniversary: AnniversaryNotification) {
@@ -97,21 +101,8 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       console.log(1)
 
-    public addNewAnniversary() {
-      const vm = this;
-      vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
-    }
-
-    public removeAnniversary(anniversary: AnniversaryNotification) {
-      const vm = this;
-      vm.listAnniversary.remove(anniversary);
-    }
-
-    public save() {
-      const vm = this;
     }
   }
-
   enum LANGUAGE {
     JAPANESE = 0,
     ENGLISH = 1,
@@ -154,4 +145,168 @@ module nts.uk.com.view.cmm048.a {
       this.anniversaryNoticeBefore = ko.observable(anniversaryNoticeBefore)
     }
   }
+
+  /**
+   * Dto ユーザ情報の表示
+   */
+  interface UserInformationDto {
+    /**
+  * パスワードポリシー
+  */
+    passwordPolicy: PasswordPolicyDto;
+
+    /**
+     * ログイン者が担当者か
+     */
+    isInCharge: boolean;
+
+    /**
+     * ユーザー情報の使用方法
+     */
+    settingInformation: UserInfoUseMethodDto;
+
+    /**
+     * 入社日
+     */
+    hireDate: string;
+
+    /**
+     * ユーザ
+     */
+    user: UserDto;
+
+    /**
+     * 個人
+     */
+    person: PersonDto;
+
+    /**
+     * 個人連絡先
+     */
+    personalContact: PersonalContactDto;
+
+    /**
+     * 社員データ管理情報
+     */
+    employeeDataMngInfo: EmployeeDataMngInfoDto;
+
+    /**
+     * 社員連絡先
+     */
+    employeeContact: EmployeeContactDto;
+
+    /**
+     * パスワード変更ログ
+     */
+    passwordChangeLog: PasswordChangeLogDto;
+
+    /**
+     * 個人の記念日情報
+     */
+    anniversaryNotices: AnniversaryNoticeDto[];
+
+    /**
+     * 個人の顔写真
+     */
+    userAvatar: UserAvatarDto;
+
+    /**
+     * 職位名称
+     */
+    positionName: string;
+
+    /**
+     * 職場表示名
+     */
+    wkpDisplayName: string;
+  }
+
+  /**
+   * Dto パスワードポリシー
+   */
+  interface PasswordPolicyDto {
+    /**
+     * 契約コード
+     */
+    contractCode: string;
+
+    /**
+     * パスワード変更通知
+     */
+    notificationPasswordChange: number;
+
+    /**
+     * ログイン時にパスワードに従っていない場合変更させる
+     */
+    loginCheck: boolean;
+
+    /**
+     * 最初のパスワード変更
+     */
+    initialPasswordChange: boolean;
+
+    /**
+     * 利用する
+     */
+    isUse: boolean;
+
+    /**
+     * 履歴回数
+     */
+    historyCount: number;
+
+    /**
+     * 最低桁数
+     */
+    lowestDigits: number;
+
+    /**
+     * 有効期間
+     */
+    validityPeriod: number;
+
+    /**
+     * 複雑さ
+     */
+    numberOfDigits: number;
+
+    /**
+     *
+     */
+    symbolCharacters: number;
+
+    /**
+     *
+     */
+    alphabetDigit: number;
+  }
+
+
+  interface UserInfoUseMethodDto { }
+
+
+  interface UserDto { }
+
+
+  interface PersonDto { }
+
+
+  interface PersonalContactDto { }
+
+
+  interface EmployeeDataMngInfoDto { }
+
+
+  interface EmployeeContactDto { }
+
+
+  interface PasswordChangeLogDto { }
+
+
+  interface AnniversaryNoticeDto { }
+
+
+  interface UserAvatarDto { }
+
+
 }
