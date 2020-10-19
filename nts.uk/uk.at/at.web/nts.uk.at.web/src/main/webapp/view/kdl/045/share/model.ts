@@ -118,10 +118,10 @@ module nts.uk.at.view {
 	    
 	    //時間休暇
 	    export class TimeVacationDto {
-	        timeZone: TimeZoneDto; //時間帯リスト
-	        usageTime: DailyAttdTimeVacationDto;//使用時間
-	        constructor(timeZone: TimeZoneDto,
-	            usageTime: DailyAttdTimeVacationDto) {
+	        timeZone: Array<TimeZoneDto>; //時間帯リスト
+	        usageTime: Array<DailyAttdTimeVacationDto>;//使用時間
+	        constructor(timeZone: Array<TimeZoneDto>,
+	            usageTime: Array<DailyAttdTimeVacationDto>) {
 	            this.timeZone = timeZone;
 	            this.usageTime = usageTime;
 	        }
@@ -151,12 +151,19 @@ module nts.uk.at.view {
 	    //日別勤怠の時間休暇使用時間
 	    export class DailyAttdTimeVacationDto {
 	        timeAbbyakLeave: number; //時間年休使用時間
+            timeAbbyakLeaveDisplay: string;
 	        timeOff: number;//時間代休使用時間
+            timeOffDisplay: string;
 	        excessPaidHoliday: number;//超過有休使用時間
+            excessPaidHolidayDisplay: string;
 	        specialHoliday: number;//特別休暇使用時間
+            specialHolidayDisplay: string;
 	        frameNO: number;//特別休暇枠NO
+            textKDL045_63:string;
 	        childNursingLeave: number;//子の看護休暇使用時間
+            childNursingLeaveDisplay: string;
 	        nursingCareLeave: number;//介護休暇使用時間
+            nursingCareLeaveDisplay: string;
 	        constructor(timeAbbyakLeave: number,
 	            timeOff: number,
 	            excessPaidHoliday: number,
@@ -165,13 +172,27 @@ module nts.uk.at.view {
 	            childNursingLeave: number,
 	            nursingCareLeave: number) {
 	            this.timeAbbyakLeave = timeAbbyakLeave;
+                this.timeAbbyakLeaveDisplay = this.showTimeByMinute(timeAbbyakLeave);
 	            this.timeOff = timeOff;
+                this.timeOffDisplay = this.showTimeByMinute(timeOff);
 	            this.excessPaidHoliday = excessPaidHoliday;
+                this.excessPaidHolidayDisplay = this.showTimeByMinute(excessPaidHoliday);
 	            this.specialHoliday = specialHoliday;
+                this.specialHolidayDisplay = this.showTimeByMinute(specialHoliday);
 	            this.frameNO = frameNO;
+                this.textKDL045_63 = getText("KDL045_63",frameNO+'');
 	            this.childNursingLeave = childNursingLeave;
+                this.childNursingLeaveDisplay = this.showTimeByMinute(childNursingLeave);
 	            this.nursingCareLeave = nursingCareLeave;
+                this.nursingCareLeaveDisplay = this.showTimeByMinute(nursingCareLeave);
 	        }
+            private showTimeByMinute(time :number) : string {
+                let timeShow = time != null ? 
+                    (time / 60 >= 10 ? Math.floor(time / 60) + '' : '0' + Math.floor(time / 60)) 
+                    + ':' + (time % 60 > 10 ? time % 60 + '' : '0' + time % 60) : '';
+                return timeShow;   
+            }
+            
 	    }
 	    
 	    //Map<時間休暇種類, 時間休暇>
@@ -300,7 +321,7 @@ module nts.uk.at.view {
 	        etartTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 	        fixBreakTime : number; //休憩時間帯を固定にする (0:false 1:true)
 	        workType :number;//勤務タイプ : WorkTimeForm
-	         constructor(param: FixedWorkInforDto) {
+	         constructor(param: IFixedWorkInforDto) {
 	            let self = this;
 	            self.workTimeName = param.workTimeName;
 	            self.coreStartTime = param.coreStartTime;
