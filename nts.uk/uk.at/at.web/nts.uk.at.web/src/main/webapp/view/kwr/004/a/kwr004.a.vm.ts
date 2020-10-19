@@ -16,9 +16,9 @@ module nts.uk.at.view.kwr004.a {
     // end variable of CCG001
 
     //panel left
-    startDateString:KnockoutObservable<string> = ko.observable("");
-    endDateString:KnockoutObservable<string> = ko.observable("");    
-    dateValue: KnockoutObservable<any> = ko.observable({});
+    startDate: KnockoutObservable<Date> = ko.observable(new Date());
+    endDate: KnockoutObservable<Date> = ko.observable(new Date());
+    periodDate: KnockoutObservable<any> = ko.observable({});
     yearMonth: KnockoutObservable<number> = ko.observable(202010);;
 
     //panel right
@@ -54,6 +54,11 @@ module nts.uk.at.view.kwr004.a {
     constructor(params: any) {
       super();
       let vm = this;
+
+      vm.periodDate({
+        startDate: new Date(),
+        endDate: new Date()
+      });
 
       vm.getSettingListItems();
 
@@ -205,7 +210,7 @@ module nts.uk.at.view.kwr004.a {
       let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
 
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
-      
+
       let params = {
         code: attendence.code,
         name: attendence.name,

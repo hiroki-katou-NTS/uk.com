@@ -31,14 +31,14 @@
             tabindex="1"
             id="btnExportExcel"
             class="proceed"
-            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_101')"
+            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_101'), click: exportExcel"
          />
           <!-- A1_2 -->
           <button
             tabindex="2"
             id="btnExportPdf"
             class="proceed"
-            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_102')"/>
+            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR003_102'), click: exportPdf"/>
         </div>
         <!-- A1_2-->
         <div id="content-area" class="kwr-003">

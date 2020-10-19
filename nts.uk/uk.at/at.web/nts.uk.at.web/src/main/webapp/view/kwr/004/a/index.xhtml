@@ -47,21 +47,12 @@
                 <div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
                   required: true, 
                   enable: true, 
-                  showNextPrevious: true, 
-                  value: dateValue, 
-                  maxRange: 'oneMonth'}"/>
-                <!-- <div
-                  tabindex="3"
-                  data-bind="ntsDateRangePicker: { 
-                  value: yearMonth, 
-                  dateFormat: 'yearmonth', 
-                  valueFormat: 'YYYYMM', 
-                  cssRanger: {}, 
-                  defaultClass: 'round-orange',
-                  name: 'ntsDatePicker',
-                  fiscalMonthsMode: true,
-                  showJumpButtons: true }"
-                  ></div> -->
+                  value: periodDate,
+                  maxRange: 'oneYear', 
+                  type: 'yearmonth', 
+                  jumpUnit: 'year',
+                  showNextPrevious: true
+                }"/>             
               </div>
               <!-- A3_2-->
               <div tabindex="4" id="kcp005" class="panel panel-frame">
