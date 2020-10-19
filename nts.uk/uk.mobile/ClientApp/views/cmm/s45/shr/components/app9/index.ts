@@ -183,16 +183,16 @@ export class CmmS45ComponentsApp9Component extends Vue {
                 if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
 
                     vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, index) => {
-                        if (index == 0) {
+                        if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                             vm.time.attendanceTime = item.timeWithDayAttr;
                         }
-                        if (index == 1) {
+                        if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
                             vm.time.leaveTime = item.timeWithDayAttr;
                         }
-                        if (index == 2) {
+                        if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
                             vm.time.attendanceTime2 = item.timeWithDayAttr;
                         }
-                        if (index == 3) {
+                        if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
                             vm.time.leaveTime2 = item.timeWithDayAttr;
                         }
                     });

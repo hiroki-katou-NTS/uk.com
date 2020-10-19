@@ -661,7 +661,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 if (vm.application.prePostAtr == 1) {
                     response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                         if (item.opAchievementDetail == null) {
+                            vm.time.attendanceTime = null;
+                            vm.time.leaveTime = null;
+                            vm.time.attendanceTime2 = null;
+                            vm.time.leaveTime2 = null;
+
                             return vm.$modal.error('Msg_1707');
+
                         }
                     });
                 }
