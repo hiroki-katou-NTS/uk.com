@@ -349,6 +349,7 @@ module nts.uk.com.view.cmm024.a {
 
 			if (!isAllowEdit) {
 				vm.$dialog.error({ messageId: 'Msg_154' });
+				$('#historyList tr[data-id="' + data.scheduleHistoryUpdate.code + '"]').focus();
 				return;
 			}
 
@@ -397,7 +398,8 @@ module nts.uk.com.view.cmm024.a {
 			data.screen = 'B';
 
 			if (!isAllowEdit) {
-				vm.$dialog.error({ messageId: 'Msg_154' });
+				vm.$dialog.error({ messageId: 'Msg_154' });			
+				$('#historyListB tr[data-id="' + data.scheduleHistoryUpdate.code + '"]').focus();
 				return;
 			}
 
