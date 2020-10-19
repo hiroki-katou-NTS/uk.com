@@ -480,7 +480,7 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
+									$storage().then(($data: any) => jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)));
 								});
 						});
 				} else {
@@ -495,7 +495,7 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
+									$storage().then(($data: any) => jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)));
 								});
 						});
 				}
