@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriod
  * @author tutt
  *
  */
+@Stateless
 public class PresentClosingPeriodFinder {
 	
 	/**

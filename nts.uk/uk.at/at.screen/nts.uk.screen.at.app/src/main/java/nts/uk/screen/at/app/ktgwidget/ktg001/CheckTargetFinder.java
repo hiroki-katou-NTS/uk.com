@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.ktgwidget.ktg001;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
@@ -14,6 +16,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.TopPageDisplayYearMo
  * @author tutt
  *
  */
+@Stateless
 public class CheckTargetFinder {
 	/**
 	 * トップページの設定により対象年月と締めIDを取得する
