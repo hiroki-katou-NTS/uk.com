@@ -507,7 +507,7 @@ module nts.uk.com.view.cmm024.a {
 								);
 							});
 							//sort DECS
-							//tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
+							tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
 						}
 						//create schedule history listing
 						vm.companyScheduleHistoryList(tempScheduleList);
@@ -826,7 +826,7 @@ module nts.uk.com.view.cmm024.a {
 								);
 							});
 							//sort DECS
-							//tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
+							tempScheduleList = _.orderBy(tempScheduleList, 'code', 'desc');
 						}
 
 						//create schedule history listing
