@@ -14,12 +14,12 @@ import lombok.Getter;
 public class CopyTimeEmploymentCommand {
 
 	// 雇用コード
-	private String employmentCD;
+	private String EmpCdSource;
 
 	// 雇用コード
-	private String employmentCDCoppy;
+	private String EmpCdTarget;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 }

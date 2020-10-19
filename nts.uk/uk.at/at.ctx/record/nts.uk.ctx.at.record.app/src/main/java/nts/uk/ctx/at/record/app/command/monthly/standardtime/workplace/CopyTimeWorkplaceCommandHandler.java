@@ -24,17 +24,17 @@ public class CopyTimeWorkplaceCommandHandler extends CommandHandler<CopyTimeWork
         CopyTimeWorkplaceCommand command = context.getCommand();
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
-        Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+        Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceIdSource(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         if(timeOfWorkPlace.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfWorkPlace.get().getSetting();
 
-            Optional<AgreementTimeOfWorkPlace> timeOfWorkPlaceCoppy =  repo.getByWorkplaceId(command.getWorkplaceIdCoppy(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+            Optional<AgreementTimeOfWorkPlace> timeOfWorkPlaceCoppy =  repo.getByWorkplaceId(command.getWorkplaceIdTarget(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
             //2: delete(会社ID,雇用コード)
             timeOfWorkPlaceCoppy.ifPresent(x -> repo.delete(x));
 
             //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
-            AgreementTimeOfWorkPlace agreementTimeOfEmployment = new AgreementTimeOfWorkPlace(command.getWorkplaceIdCoppy(),
+            AgreementTimeOfWorkPlace agreementTimeOfEmployment = new AgreementTimeOfWorkPlace(command.getWorkplaceIdTarget(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),basicAgreementSetting);
             repo.insert(agreementTimeOfEmployment);
         }

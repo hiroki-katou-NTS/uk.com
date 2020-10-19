@@ -16,50 +16,50 @@ public class RegisterTimeWorkPlaceCommand {
 	private  String workplaceId;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 	/** 1ヶ月 (Month) */
 
 	//エラー時間
-	private Integer errorOneMonth;
+	private int errorOneMonth;
 
 	//アラーム時間
-	private Integer alarmOneMonth;
+	private int alarmOneMonth;
 
 	// 上限時間
-	private Integer limitOneMonth;
+	private int limitOneMonth;
 
 	//エラー時間
-	private Integer errorTwoMonths;
+	private int errorTwoMonths;
 
 	//アラーム時間
-	private Integer alarmTwoMonths;
+	private int alarmTwoMonths;
 
 	// 上限時間
-	private Integer limitTwoMonths;
+	private int limitTwoMonths;
 
 	/** 1年間 (Year) */
 
 	//エラー時間
-	private Integer errorOneYear;
+	private int errorOneYear;
 
 	//アラーム時間
-	private Integer alarmOneYear;
+	private int alarmOneYear;
 
 	// 上限時間
-	private Integer limitOneYear;
+	private int limitOneYear;
 
 	//エラー時間
-	private Integer errorTwoYear;
+	private int errorTwoYear;
 
 	//アラーム時間
-	private Integer alarmTwoYear;
+	private int alarmTwoYear;
 
 	// 上限時間
-	private Integer limitTwoYear;
+	private int limitTwoYear;
 
 	/** 超過上限回数  */
 	//超過上限回数
-	private Integer overMaxTimes;
+	private int overMaxTimes;
 
 }

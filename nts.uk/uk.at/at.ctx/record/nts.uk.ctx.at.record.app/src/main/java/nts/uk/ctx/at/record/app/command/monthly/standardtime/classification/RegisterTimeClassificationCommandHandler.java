@@ -2,9 +2,8 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.classification;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Classification36AgreementTimeRepository;
@@ -24,20 +23,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class RegisterTimeClassificationCommandHandler extends CommandHandlerWithResult<RegisterTimeClassificationCommand,List<String>> {
+public class RegisterTimeClassificationCommandHandler extends CommandHandler<RegisterTimeClassificationCommand> {
 
     @Inject
     private Classification36AgreementTimeRepository repo;
 
-    @Inject
-    private AgreementTimeOfClassificationDomainService timeOfClassificationDomainService;
-
     @Override
-    protected List<String> handle(CommandHandlerContext<RegisterTimeClassificationCommand> context) {
+    protected void handle(CommandHandlerContext<RegisterTimeClassificationCommand> context) {
         RegisterTimeClassificationCommand command = context.getCommand();
 
         val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth1())
@@ -70,15 +65,15 @@ public class RegisterTimeClassificationCommandHandler extends CommandHandlerWith
                 command.getClassificationCode(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if (agreementTimeOfClassification.isPresent()) {
-            AgreementTimeOfClassification newAgreementTimeOfClassification= new AgreementTimeOfClassification(AppContexts.user().companyId(),
+            AgreementTimeOfClassification timeOfClassification = new AgreementTimeOfClassification(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), new ClassificationCode(command.getClassificationCode()), basicAgreementSetting);
-            return this.timeOfClassificationDomainService.update(basicAgreementSetting, newAgreementTimeOfClassification);
+            repo.update(timeOfClassification);
         } else {
 
-            AgreementTimeOfClassification agreementTimeOfEmployment = new AgreementTimeOfClassification(AppContexts.user().companyId(),
+            AgreementTimeOfClassification timeOfClassification = new AgreementTimeOfClassification(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), new ClassificationCode(command.getClassificationCode()), basicAgreementSetting);
 
-            return this.timeOfClassificationDomainService.add(agreementTimeOfEmployment,basicAgreementSetting);
+            repo.insert(timeOfClassification);
         }
     }
 }
