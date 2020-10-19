@@ -36,7 +36,7 @@ public class WorkStatusOutputSettings extends AggregateRoot {
     private String employeeId;
 
     // 	定型自由区分
-    private SettingClassificationCommon designateFreeClassing;
+    private SettingClassificationCommon standardFreeDivision;
 
     // 	出力項目リスト
 
