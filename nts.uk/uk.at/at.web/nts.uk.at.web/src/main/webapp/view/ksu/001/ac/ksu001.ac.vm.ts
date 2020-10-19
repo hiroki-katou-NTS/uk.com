@@ -10,7 +10,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         
         palletUnit: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedpalletUnit: KnockoutObservable<number> ;
+        enableSwitchBtn: KnockoutObservable<boolean> = ko.observable(true);
         overwrite: KnockoutObservable<boolean> = ko.observable(true);
+        enableCheckBoxOverwrite: KnockoutObservable<boolean> = ko.observable(true);
+        enableBtnOpenDialogJB1: KnockoutObservable<boolean> = ko.observable(true);
 
         dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
         dataSourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
@@ -36,6 +39,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
         textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([]);
         listShiftWork: any[] = ko.observableArray([]);
+        listPageComIsEmpty: boolean = false;
+        listPageWkpIsEmpty: boolean = false;
+        
         KEY : string = 'USER_INFOR';
 
         constructor() {
@@ -117,6 +123,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
+                        let modeBackGround = __viewContext.viewModel.viewA.backgroundColorSelected(); // 0||1
                         let shiftCode;
                         if(_.isNil(stickOrigData)){
                             shiftCode = data.shiftCode;
@@ -127,20 +134,40 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         if (workInfo.length > 0) {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
-                                return { textColor: "#0000ff", background : "#" + workInfo[0].color }; // color-attendance
+                                if(modeBackGround == 1){
+                                    return { textColor: "#0000ff", background : "#" + workInfo[0].color }; // color-attendance
+                                }else{
+                                    return { textColor: "#0000ff"}; // color-attendance
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING + '') {
-                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                if(modeBackGround == 1){
+                                    return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                }else{
+                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
-                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                if(modeBackGround == 1){
+                                    return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                }else{
+                                    return { textColor: "#FF7F27"};// color-half-day-work
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
-                                return { textColor: "#ff0000", background : "#" + workInfo[0].color };// color-holiday
+                                if(modeBackGround == 1){
+                                    return { textColor: "#ff0000", background : "#" + workInfo[0].color };// color-holiday
+                                }else{
+                                    return { textColor: "#ff0000" };// color-holiday
+                                }
+                                
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                                // デフォルト（黒）  Default (black)
-                                return { textColor: "#000000", background : "#ffffff" }
+                                if(modeBackGround == 1){
+                                    return { textColor: "#000000", background : "#ffffff" } // デフォルト（黒）  Default (black)
+                                }else{
+                                    return { textColor: "#000000" }
+                                }
                             }
                             /**
                              *  1日休日系  ONE_DAY_REST(0)
@@ -195,6 +222,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     
                     // set color for cell
                     $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data, stickOrigData) {
+                        let modeBackGround = __viewContext.viewModel.viewA.backgroundColorSelected(); // 0||1
                         let shiftCode;
                         if (_.isNil(stickOrigData)) {
                             shiftCode = data.shiftCode;
@@ -205,20 +233,39 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         if (workInfo.length > 0) {
                             let workStyle = workInfo[0].workStyle;
                             if (workStyle == AttendanceHolidayAttr.FULL_TIME + '') {
-                                return { textColor: "#0000ff", background : "#" + workInfo[0].color }; // color-attendance
+                                if (modeBackGround == 1) {
+                                    return { textColor: "#0000ff", background: "#" + workInfo[0].color }; // color-attendance
+                                } else {
+                                    return { textColor: "#0000ff" }; // color-attendance
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.MORNING + '') {
-                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                if (modeBackGround == 1) {
+                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                } else {
+                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.AFTERNOON + '') {
-                                return { textColor: "#FF7F27", background : "#" + workInfo[0].color };// color-half-day-work
+                                if (modeBackGround == 1) {
+                                    return { textColor: "#FF7F27", background: "#" + workInfo[0].color };// color-half-day-work
+                                } else {
+                                    return { textColor: "#FF7F27" };// color-half-day-work
+                                }
                             }
                             if (workStyle == AttendanceHolidayAttr.HOLIDAY + '') {
-                                return { textColor: "#ff0000", background : "#" + workInfo[0].color };// color-holiday
+                                if (modeBackGround == 1) {
+                                    return { textColor: "#ff0000", background: "#" + workInfo[0].color };// color-holiday
+                                } else {
+                                    return { textColor: "#ff0000" };// color-holiday
+                                }
                             }
                             if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                                // デフォルト（黒）  Default (black)
-                                return { textColor: "#000000", background : "#ffffff" }
+                                if (modeBackGround == 1) {
+                                    return { textColor: "#000000", background: "#ffffff" } // デフォルト（黒）  Default (black)
+                                } else {
+                                    return { textColor: "#000000" }
+                                }
                             }
                             /**
                            *  1日休日系  ONE_DAY_REST(0)
@@ -285,6 +332,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             self.modeCompany(true);
             self.listPageInfo = listPageInfo;
+            
+            // truowng hop khong co page nao duoc dang ky
+            if (listPageInfo.length == 0) {
+                self.listPageComIsEmpty = true;
+                $("#extable").exTable("stickData", []);
+            } else {
+                self.listPageComIsEmpty = false;
+            }
+
             //set default for listTextButton and dataSource
             self.dataSourceCompany([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArrComPattern([]);
@@ -370,6 +426,15 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let self = this;
             self.modeCompany(false);
             self.listPageInfo = listPageInfo;
+            
+            // truowng hop khong co page nao duoc dang ky
+            if (listPageInfo.length == 0) {
+                self.listPageWkpIsEmpty = true;
+                $("#extable").exTable("stickData", []);
+            } else {
+                self.listPageWkpIsEmpty = false;
+            }
+            
             //set default for listTextButton and dataSource
             self.dataSourceWorkplace([null, null, null, null, null, null, null, null, null, null]);
             self.textButtonArrComPattern([]);
@@ -695,9 +760,17 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             nts.uk.ui.block.grayout();
             service.getShiftPallets(param).done((data) => {
                 self.handleInitCom(
-                    data.listPageInfo,
+                    data.listPageInfo, 
                     data.targetShiftPalette.shiftPalletCom,
                     pageNumber);
+                
+                // truowng hop khong co page nao duoc dang ky
+                if (data.listPageInfo.length == 0) {
+                    $('#tableButton1 button').addClass('disabledShiftControl');
+                } else {
+                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                }
+                
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {
@@ -730,6 +803,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     data.listPageInfo,
                     data.targetShiftPalette.shiftPalletWorkPlace,
                     pageNumber);
+                
+                // truowng hop khong co page nao duoc dang ky
+                if(data.listPageInfo.length == 0){
+                    $('#tableButton2 button').addClass('disabledShiftControl');
+                }else{
+                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                }
+                
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }).fail(function() {

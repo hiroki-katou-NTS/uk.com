@@ -1,9 +1,9 @@
 module nts.uk.at.view.kdw007.b.service {
     var paths = {
-        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
+        getAttendanceItemByCodes: "at/record/divergencetime/setting/AttendanceDivergenceName",
         getAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
         getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
-        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
+        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName",
         getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
         getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
     }
