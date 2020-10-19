@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Optional;
+
 import nts.arc.primitive.TimeClockPrimitiveValue;
 
 /**
@@ -18,6 +20,19 @@ public class LaborContractTime extends TimeClockPrimitiveValue<LaborContractTime
 	 */
 	public LaborContractTime(int minutesFromZeroOClock) {
 		super(minutesFromZeroOClock);
+	}
+	
+	/**
+	 * 1時間単位で切り上げ
+	 * @return
+	 */
+	public LaborContractTime roundUp1Hour(){
+		int time = this.v();
+		if ( time % 60 > 0 ){
+			int timeUpTo1Hour = (time/60)*60 + 60;
+			return new LaborContractTime(timeUpTo1Hour);
+		}
+		return new LaborContractTime(time);
 	}
 
 }
