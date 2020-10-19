@@ -1,46 +1,39 @@
-/**
- * @author hieult
- */
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG034_フローページの作成.A：フローメニューの作成.メニュー別OCD.フローメニュー作成の更新を行う
+ */
 @Stateless
-@Transactional
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuCommand> {
-	
-	@Inject
-	private FlowMenuRepository repository;
 
 	@Inject
-	private FlowMenuService flowMenuService;
-	
+	private CreateFlowMenuRepository createFlowMenuRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
-		String companyId = AppContexts.user().companyId();
 		UpdateFlowMenuCommand command = context.getCommand();
-		
-		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getTopPagePartID());
-		if (!checkFlowMenu.isPresent())
-			throw new RuntimeException("Can't find FlowMenu with ID: " + context.getCommand().getTopPagePartID());
-		
-		// Update FLowMenu
-		FlowMenu flowMenu = checkFlowMenu.get();
-		flowMenu.setName(command.getTopPageName());
-		flowMenu.setSize(command.getWidth(), command.getHeight());
-		flowMenu.setFileID(command.getFileID());
-		flowMenu.setDefClassAtr(command.getDefClassAtr());
-		flowMenuService.updateFlowMenu(flowMenu);
+		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
+				.findByPk(AppContexts.user().companyCode(), command.getFlowMenuCode());
+		if (optCreateFlowMenu.isPresent()) {
+			CreateFlowMenu domain = optCreateFlowMenu.get();
+			domain.setFlowMenuName(new TopPagePartName(command.getFlowMenuName()));
+			createFlowMenuRepository.update(domain);
+		} else throw new BusinessException("Msg_1806");
 	}
 }

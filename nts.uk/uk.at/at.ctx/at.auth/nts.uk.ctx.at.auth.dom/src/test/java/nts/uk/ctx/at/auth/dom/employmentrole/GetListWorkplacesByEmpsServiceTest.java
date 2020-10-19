@@ -118,7 +118,7 @@ public class GetListWorkplacesByEmpsServiceTest {
 		new Expectations() {
 			{
 				require.getCurrentMonthPeriod(closureId.get());
-				result = Optional.of(new ClosureTime(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31)));
+				result = Optional.of(new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9000, 12, 31)));
 			}
 		};
 		

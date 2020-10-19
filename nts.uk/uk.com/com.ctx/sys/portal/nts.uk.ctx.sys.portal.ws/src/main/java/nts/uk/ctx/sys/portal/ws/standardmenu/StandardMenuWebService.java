@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
+import nts.uk.ctx.sys.portal.app.screenquery.standardmenu.StandardMenuScreenQuery;
 
 /**
  * @author tanlv
@@ -27,6 +28,9 @@ public class StandardMenuWebService extends WebService {
 	
 	@Inject
 	private UpdateStandardMenuCommandHandler updateStandardMenu;
+	
+	@Inject
+	private StandardMenuScreenQuery standardMenuScreenQuery;
 
 	@POST
 	@Path("findAll")
@@ -85,5 +89,11 @@ public class StandardMenuWebService extends WebService {
 	public JavaTypeResult<String> getPgNameByQrystr(@PathParam("programID") String programID, @PathParam("screenID") String screenID, 
 			@PathParam("queryString") String queryString) {
 		return new JavaTypeResult<String>(finder.getPgNameByQry(programID, screenID, queryString));
+	}
+	
+	@POST
+	@Path("findByMenuAndWebMenu")
+	public List<StandardMenuDto> findByMenuAndWebMenu() {
+		return standardMenuScreenQuery.getStandardMenus();
 	}
 }

@@ -3,46 +3,34 @@ package nts.uk.ctx.sys.portal.app.command.flowmenu;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.flowmenu.DefClassAtr;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author hieult
+ * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG034_フローページの作成.A：フローメニューの作成.メニュー別OCD.フローメニュー作成の削除を行う
  */
 @Stateless
-@Transactional
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuCommand> {
-
+	
 	@Inject
-	private FlowMenuRepository flowMenuRepository;
-
-	@Inject
-	private FlowMenuService flowMenuService;
+	private CreateFlowMenuRepository createFlowMenuRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
-		String companyID = AppContexts.user().companyId();
-		String topPagePartId = context.getCommand().getToppagePartID();
-		// Check topPagePartId is exit
-		Optional<FlowMenu> getFlowMenu = flowMenuRepository.findByCode(companyID, topPagePartId);
-		if (!getFlowMenu.isPresent()) {
-			throw new RuntimeException("Can't find FlowMenu id: " + topPagePartId);
-		}
-		if (getFlowMenu.get().getDefClassAtr() == DefClassAtr.DEFAULT) {
-			throw new BusinessException(new RawErrorMessage("Msg_76"));
-		}
-
-		flowMenuService.deleteFlowMenu(companyID, topPagePartId);
+		DeleteFlowMenuCommand command = context.getCommand();
+		Optional<CreateFlowMenu> optDomain = this.createFlowMenuRepository
+				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
+		if (optDomain.isPresent()) {
+			this.createFlowMenuRepository.delete(optDomain.get());
+		} else throw new BusinessException("Msg_1807");
 	}
-
 }

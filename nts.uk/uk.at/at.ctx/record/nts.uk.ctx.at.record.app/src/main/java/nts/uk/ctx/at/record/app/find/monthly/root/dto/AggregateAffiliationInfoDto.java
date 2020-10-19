@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,7 +53,8 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 			dto.setEmploymentCode(domain.getEmploymentCd() == null ? null : domain.getEmploymentCd().v());
 			dto.setJobTitle(domain.getJobTitleId() == null ? null : domain.getJobTitleId().v());
 			dto.setWorkPlaceCode(domain.getWorkplaceId() == null ? null : domain.getWorkplaceId().v());
-			dto.setBusinessTypeCode(domain.getBusinessTypeCd() == null ? null : domain.getBusinessTypeCd().v());
+			dto.setBusinessTypeCode(domain.getBusinessTypeCd() == null 
+					? null : domain.getBusinessTypeCd().map(c -> c.v()).orElse(null));
 		}
 		return dto;
 	}
@@ -61,6 +64,6 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 				new WorkplaceId(workPlaceCode),
 				new JobTitleId(jobTitle),
 				new ClassificationCode(classificationCode),
-				new BusinessTypeCode(businessTypeCode));
+				Optional.ofNullable(businessTypeCode == null ? null : new BusinessTypeCode(businessTypeCode)));
 	}
 }

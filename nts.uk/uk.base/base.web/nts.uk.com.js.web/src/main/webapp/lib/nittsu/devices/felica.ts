@@ -19,7 +19,7 @@ module nts.uk.devices {
     class Felica {
         socket!: WebSocket;
 
-        constructor() {
+        constructor(once: boolean = true) {
             const fc = this;
 
             // create socket for connect to c# app
@@ -56,6 +56,10 @@ module nts.uk.devices {
                         callback('disconnect', undefined, undefined);
                         break;
                     case 'R':
+                        if (once) {
+                            fc.socket.close();
+                        }
+
                         callback('read', undefined, json.CardNo);
                         break;
                 }
@@ -64,7 +68,7 @@ module nts.uk.devices {
     }
 
     // export only create method for Felica class
-    export function felica(cb: CALL_BACK) {
+    export function felica(cb: CALL_BACK, once: boolean = true) {
         // if reconnect, close old connect
         if (instance && instance.socket.OPEN) {
             instance.socket.close();
@@ -74,6 +78,6 @@ module nts.uk.devices {
         callback = cb;
 
         // create new instance (and new socket connection)
-        return instance = new Felica();
+        return instance = new Felica(once);
     }
 }
