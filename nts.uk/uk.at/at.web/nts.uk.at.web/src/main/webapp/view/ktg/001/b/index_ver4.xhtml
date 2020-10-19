@@ -8,13 +8,13 @@
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 600, height: 200 };</script>
-			<!-- <com:stylefile path="ktg001.ver4.b.style.css" />
-			<com:scriptfile path="ktg001.ver4.b.vm.js" /> -->
+			<com:stylefile path="ktg001.ver4.b.style.css" />
+			<com:scriptfile path="ktg001.ver4.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<!-- <div class ="title">
+				<div class ="title">
 					<div data-bind="ntsFormLabel: { constraint: 'TitleName', required: true, text: $i18n('KTG001_7')"></div>
 					<input id="title-txt" tabindex="1" data-bind="ntsTextEditor: { value: title, constraint: 'TitleName', required: true }" />
 				</div>
@@ -29,8 +29,11 @@
 						multiple: false,
 						value: currentCode }">
 				</table>
-				</div> -->
-			
+				</div>
+				<div id="functions-area-bottom">
+					<button class="x-large proceed" data-bind="click: submitAndCloseDialog, text: $i18n('KTG001_10')" ></button>
+					<button data-bind="click: closeDialog, text: $i18n('KTG001_11')"></button>	
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

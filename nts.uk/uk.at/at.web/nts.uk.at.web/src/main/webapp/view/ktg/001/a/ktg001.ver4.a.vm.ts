@@ -1,8 +1,8 @@
-module nts.uk.at.view.ktg001 {
+module nts.uk.at.view.ktg001.a {
 
 	import windows = nts.uk.ui.windows;
 
-	const KTG001_API = {
+	export const KTG001_API = {
 		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/display',
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
 	};
@@ -51,12 +51,12 @@ module nts.uk.at.view.ktg001 {
 		closureEndDate: String;
 	}
 
-	interface IResponse {
+	export interface IResponse {
 		approvedDataExecutionResultDto: IApprovedDataExecutionResult;
 		approvalProcessingUseSetting: IApprovalProcessingUseSetting;
 	}
 
-	interface IApprovalProcessingUseSetting {
+	export interface IApprovalProcessingUseSetting {
 		useDayApproverConfirm: Boolean;
 		useMonthApproverConfirm: Boolean;
 	}
