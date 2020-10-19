@@ -153,7 +153,7 @@ public class ExitStampIncorrectOrderCheck {
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+		if (timeLeavingOfDailyPerformance != null &&timeLeavingOfDailyPerformance.getAttendance() !=null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 			List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily
 					.getTimeZone().getAttendanceLeavingGates();
 			// 1回目の入門と出勤．打刻が存在するか確認する(check first stamp attendance has data or
@@ -198,7 +198,8 @@ public class ExitStampIncorrectOrderCheck {
 			TimeWithDayAttr secondAttendanceTime = attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().isPresent()?
 					attendanceLeavingGates.get(0).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondAttendanceTime != null) {
-				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
+				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1
+						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().get()
 								.getStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().get()
@@ -217,7 +218,8 @@ public class ExitStampIncorrectOrderCheck {
 			TimeWithDayAttr secondLeavingTime = attendanceLeavingGates.get(1).getLeaving().get().getTimeDay().getTimeWithDay().isPresent()?
 					attendanceLeavingGates.get(0).getLeaving().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondLeavingTime != null) {
-				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
+				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1 
+						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp()
 								.isPresent()
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp()
