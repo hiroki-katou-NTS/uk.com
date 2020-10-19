@@ -35,8 +35,7 @@ module nts.uk.com.view.ccg034.d {
         appendTo: `#${MENU_CREATION_LAYOUT_ID}`,
         helper: "clone",
         start: (event, ui) => {
-          const partSize = vm.getPartSize(ui.helper.attr("data-part-type"));
-          vm.startDragItemFromMenu(ui, partSize.width, partSize.height);
+          vm.startDragItemFromMenu(ui);
         },
         drag: (event, ui) => {
           const partSize = vm.getPartSize(ui.helper.attr("data-part-type"));
@@ -59,13 +58,9 @@ module nts.uk.com.view.ccg034.d {
      * @param width
      * @param height
      */
-    private startDragItemFromMenu(item: JQueryUI.DraggableEventUIParams, width: number, height: number) {
+    private startDragItemFromMenu(item: JQueryUI.DraggableEventUIParams) {
       // Init size + style for dragging item
-      item.helper
-        .outerWidth(width)
-        .outerHeight(height)
-        .addClass("menu-creation-item ui-selected")
-        .empty();
+      item.helper.css({ 'opacity': '0.7' });
     }
 
     /**
@@ -79,7 +74,7 @@ module nts.uk.com.view.ccg034.d {
       const positionTop: number = part.position.top > 0 ? Math.round(part.position.top / CELL_SIZE) * CELL_SIZE : 0;
       const positionLeft: number = part.position.left > 0 ? Math.round(part.position.left / CELL_SIZE) * CELL_SIZE : 0;
       // Create new part div
-      const newPart: JQuery = $("<div>", { "class": "menu-creation-item" });
+      const newPart: JQuery = vm.getDefaultPart(partType);
       const newPartData = new PartData({
         clientId: vm.partClientId,
         width: partSize.width,
@@ -116,11 +111,9 @@ module nts.uk.com.view.ccg034.d {
             if ($(ui.selected).hasClass('menu-creation-item')) {
               // Only allow dragable + resize on selected menu item
               if ($(ui.selected).hasClass('ui-selected')) {
-                // Init/enable resize
-                if ($(ui.selected).is('.ui-resizable')) {
-                  $(ui.selected).resizable({ disabled: false });
-                } else {
-                  $(ui.selected).resizable({
+                $(ui.selected)
+                  // Init/enable resize
+                  .resizable({
                     disabled: false,
                     resize: (event, ui) => {
                       vm.renderHoveringItemOnResize(ui);
@@ -129,13 +122,9 @@ module nts.uk.com.view.ccg034.d {
                       vm.removeHoveringItem();
                       vm.resizeItem(ui);
                     },
-                  });
-                }
-                // Init/enable dragable
-                if ($(ui.selected).is('.ui-draggable')) {
-                  $(ui.selected).draggable({ disabled: false });
-                } else {
-                  $(ui.selected).draggable({
+                  })
+                  // Init/enable dragable
+                  .draggable({
                     disabled: false,
                     containment: `#${MENU_CREATION_LAYOUT_ID}`,
                     drag: (event, ui) => {
@@ -147,7 +136,6 @@ module nts.uk.com.view.ccg034.d {
                       vm.moveItem(ui);
                     },
                   });
-                }
               } else {
                 // Disable dragable + resize on unselected menu item
                 $(ui.selected)
@@ -354,6 +342,62 @@ module nts.uk.com.view.ccg034.d {
           // 4 x 2 cell
           return new PartSize({ width: 160, height: 80 });
       }
+    }
+
+    /**
+     * Get part class by type
+     * @param partType
+     */
+    private getDefaultPart(partType: string): JQuery {
+      const $partSetting: JQuery = $("<div>", { "class": 'part-setting-container' })
+        .append("<div>", { "class": 'part-setting' });
+      switch (partType) {
+        case MenuPartType.PART_MENU:
+          const aaa = $("<div>", { "class": 'menu-creation-item part-menu' })
+            .append($partSetting);
+          console.log(aaa);
+          return aaa;
+        // .append("<span>", { "class": 'label' })
+        // .text("part-menu");
+        case MenuPartType.PART_LABEL:
+          return $("<div>", { "class": 'menu-creation-item part-label' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-label");
+        case MenuPartType.PART_LINK:
+          return $("<div>", { "class": 'menu-creation-item part-link' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-link");
+        case MenuPartType.PART_ATTACHMENT:
+          return $("<div>", { "class": 'menu-creation-item part-attachment' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-attachment");
+        case MenuPartType.PART_IMAGE:
+          return $("<div>", { "class": 'menu-creation-item part-image' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-image");
+        case MenuPartType.PART_ARROW:
+          return $("<div>", { "class": 'menu-creation-item part-arrow' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-arrow");
+        default:
+          return $("<div>", { "class": 'menu-creation-item part-menu' })
+            .append($partSetting);
+        // .append("<span>", { "class": 'label' })
+        // .text("part-menu");
+      }
+    }
+
+    /**
+     * Close dialog
+     */
+    public closeDialog() {
+      const vm = this;
+      vm.$window.close();
     }
 
     public test() {
