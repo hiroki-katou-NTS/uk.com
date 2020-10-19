@@ -11,6 +11,7 @@
             nts.uk.ctx.pereg.dom.person.layout.LayoutCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeName
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays
         </com:ValidatorScript>
         <script>var dialogSize = {width: 900, height: 700};</script>
         <com:stylefile path="../j/ksm008.j.style.css"/>
@@ -20,9 +21,9 @@
     </ui:define>
     <ui:define name="sidebar" tabindex="1">
         <ul class="navigator">
-            <li><a data-id="0" href="#tabpanel-1" role="tab-navigator" data-bind="selectCom" class="active">#{i18n.getText('Com_Company')}
+            <li data-bind="click: onCompanySelect"><a data-id="0" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}
             </a></li>
-            <li><a data-id="1" href="#tabpanel-2" role="tab-navigator" data-bind="selectOrg">#{i18n.getText('KSM008_184')}
+            <li data-bind="click: onOrganizationSelect"><a data-id="1" href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('KSM008_184')}
             </a></li>
         </ul>
     </ui:define>
@@ -34,7 +35,7 @@
                     <a class="goback" tabindex="2"
                        data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
                     <button tabindex="3" data-bind="click:iScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
-                    <button class="proceed" data-bind="click:iregisterKScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
+                    <button class="proceed" data-bind="click:iregisterScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
                     <button class="danger"  data-bind="click:iScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_188')}</button>
                 </div>
             </div>
@@ -60,7 +61,7 @@
                                           ],
                                 deleteOptions : {visible : false},
                                 multiple: false,
-                                rows: 20,
+                                rows: 12,
                                 value: currentCode
                         }"></table>
                         </div>
@@ -96,12 +97,12 @@
                         </div>
                         <div class="table" style="margin-top: 7px;">
                             <div class="cell valign-center">
-                                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveWorkTimeCode', enable: true, required:true}">#{i18n.getText('KSM008_200')}</div>
+                                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', enable: true, required:true}">#{i18n.getText('KSM008_200')}</div>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_2 -->
                                 <input id="I8_2" tabindex="10" class="input-lead"
-                                       data-bind="ntsTextEditor: {value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_200]'}, style: { width: '25px', marginRight: '5px' ,marginLeft: '67px'}"/>
+                                       data-bind="ntsTextEditor: {value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_200]'}, style: { width: '25px', marginRight: '5px' ,marginLeft: '97px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_3 -->
