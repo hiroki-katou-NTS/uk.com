@@ -32,7 +32,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, Unit.COMPANY, Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
+		        require, Unit.COMPANY, Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
+		        require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
+		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class TimeStartCanAddHistoryTest {
 		}};
 
 		assertThat(TimeStartCanAddHistory.checkAdd(
-		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(true);
+		        require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.today())).isEqualTo(false);
 	}
 
 }
