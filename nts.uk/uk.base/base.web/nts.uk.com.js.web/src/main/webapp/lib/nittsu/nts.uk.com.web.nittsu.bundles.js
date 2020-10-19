@@ -49727,7 +49727,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49741,7 +49741,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || _.keys(localShared).length ? localShared : undefined); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
