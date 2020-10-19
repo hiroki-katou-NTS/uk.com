@@ -140,14 +140,17 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		// create dummy data
 		
-		stampRecordOutput =  new StampRecordOutput(
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList());
+//		stampRecordOutput =  new StampRecordOutput(
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList());
+		if(stampRecordOutput == null) {
+		    return errorStampInfos;
+		}
 		
 		/**
 		 * 介護時間帯
@@ -171,7 +174,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		 */
 		List<TimePlaceOutput> workingTime = Collections.emptyList();
 		if(!CollectionUtil.isEmpty(stampRecordOutput.getWorkingTime())) {
-			breakTime = stampRecordOutput.getWorkingTime();
+			workingTime = stampRecordOutput.getWorkingTime();
 		}
 		
 		/**
@@ -179,7 +182,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		 */		
 		List<TimePlaceOutput> parentingTime = Collections.emptyList();
 		if(!CollectionUtil.isEmpty(stampRecordOutput.getParentingTime())) {
-			breakTime = stampRecordOutput.getParentingTime();
+			parentingTime = stampRecordOutput.getParentingTime();
 		}
 		/**
 		 * 外出時間帯
@@ -187,7 +190,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		List<TimePlaceOutput> outingTime = Collections.emptyList();
 		if(!CollectionUtil.isEmpty(stampRecordOutput.getOutingTime())) {
-			breakTime = stampRecordOutput.getOutingTime();
+			outingTime = stampRecordOutput.getOutingTime();
 		}
 		
 		/**
@@ -196,7 +199,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		List<TimePlaceOutput> supportTime = Collections.emptyList();
 		if(!CollectionUtil.isEmpty(stampRecordOutput.getSupportTime())) {
-			breakTime = stampRecordOutput.getSupportTime();
+			supportTime = stampRecordOutput.getSupportTime();
 		}
 
 		
@@ -206,7 +209,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		List<TimePlaceOutput> extraordinaryTime = Collections.emptyList();
 		if(!CollectionUtil.isEmpty(stampRecordOutput.getExtraordinaryTime())) {
-			breakTime = stampRecordOutput.getExtraordinaryTime();
+			extraordinaryTime = stampRecordOutput.getExtraordinaryTime();
 		}
 		
 		this.addErros(errorStampInfos, StampAtrOther.NURSE, nursing);
@@ -214,8 +217,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		this.addErros(errorStampInfos, StampAtrOther.PARENT, parentingTime);
 		this.addErros(errorStampInfos, StampAtrOther.GOOUT_RETURNING, outingTime);
 		this.addErros(errorStampInfos, StampAtrOther.CHEERING, supportTime);
-		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, extraordinaryTime);
-		this.addErros(errorStampInfos, StampAtrOther.EXTRAORDINARY, workingTime);
+		this.addErros(errorStampInfos, StampAtrOther.ATTEENDENCE_OR_RETIREMENT, workingTime);
+		this.addErros(errorStampInfos, StampAtrOther.EXTRAORDINARY, extraordinaryTime);
 		
 		return errorStampInfos;
 	}
@@ -224,23 +227,24 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		if (!CollectionUtil.isEmpty(list)) {
 			list.stream().forEach(item -> {
 //				「勤怠時間帯」Listに勤務時間１が存在するのをチェックする
-				if(item.getFrameNo().v() == 1) {
-					ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
-					ErrorStampInfo end = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END);
-					errorStampInfos.add(start);
-					errorStampInfos.add(end);
-					
-					
-				}
+				if(item.getFrameNo().v() == 1 && stampAtr.value == 0) {
+				    if(!item.getOpStartTime().isPresent()) {
+				        ErrorStampInfo start = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START);
+				        errorStampInfos.add(start);
+				    }
+				    if(!item.getOpEndTime().isPresent()) {
+				        ErrorStampInfo end = new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END);
+				        errorStampInfos.add(end);
+				    }
+				} else {
 //				「時刻場所」に時刻開始と時刻終了をチェックする。
-				if (!item.getOpStartTime().isPresent() || !item.getOpEndTime().isPresent()) {
-					if (item.getOpStartTime().isPresent()) {
-						errorStampInfos.add(new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END));
-					}else {
-						errorStampInfos.add(new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START));
-					}
-				}
-				
+				    if(!item.getOpStartTime().isPresent() && item.getOpEndTime().isPresent()) {
+				        errorStampInfos.add(new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.START));
+				    }
+				    if(item.getOpStartTime().isPresent() && !item.getOpEndTime().isPresent()) {
+				        errorStampInfos.add(new ErrorStampInfo(stampAtr, item.getFrameNo().v(), StartEndClassification.END));
+				    }
+                }
 			});
 			
 		}

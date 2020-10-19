@@ -1,5 +1,4 @@
 module nts.uk.at.view.kaf007_ref.c.viewmodel {
-    //import Kaf000BViewModel = nts.uk.at.view.kaf000.b.viewmodel.Kaf000BViewModel;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange;
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
@@ -97,7 +96,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
             vm.isEdit(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 1);
 
-            if(appWorkChangeDispInfo.reflectWorkChangeAppDto) {
+            if (appWorkChangeDispInfo.reflectWorkChangeAppDto) {
                 vm.reflectWorkChange.companyId = appWorkChangeDispInfo.reflectWorkChangeAppDto.companyId;
                 vm.reflectWorkChange.whetherReflectAttendance(appWorkChangeDispInfo.reflectWorkChangeAppDto.whetherReflectAttendance);
             }
@@ -109,10 +108,10 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             var time1 = _.filter(lstTimezone, ['workNo', 1]);
             var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
-            vm.appWorkChange.startTime1(time1.length > 0 ? time1[0].timeZone.startTime : null);
-            vm.appWorkChange.endTime1(time1.length > 0 ? time1[0].timeZone.endTime : null);
-            vm.appWorkChange.startTime2(time2.length > 0 ? time2[0].timeZone.startTime : null);
-            vm.appWorkChange.endTime2(time2.length > 0 ? time2[0].timeZone.endTime : null);
+            vm.appWorkChange.startTime1((time1.length > 0) ? time1[0].timeZone.startTime : null);
+            vm.appWorkChange.endTime1((time1.length > 0) ? time1[0].timeZone.endTime : null);
+            vm.appWorkChange.startTime2((time2.length > 0) ? time2[0].timeZone.startTime : null);
+            vm.appWorkChange.endTime2((time2.length > 0) ? time2[0].timeZone.endTime : null);
             vm.isStraightGo(appWorkChangeParam.straightGo == 1);
             vm.isStraightBack(appWorkChangeParam.straightBack == 1);
         }
@@ -124,8 +123,12 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.appWorkChange.workTypeCode(workTypeCode);
             var dataWorkType = _.filter(workTypeLst, (x) => { return workTypeCode === x.workTypeCode });
             vm.appWorkChange.workTypeName(dataWorkType.length > 0 ? dataWorkType[0].name : vm.$i18n('KAF007_79'));
-            var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
-            vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+            if (workTimeCode) {
+                var dataWorktTime = _.filter(workTimeLst, (x) => { return workTimeCode === x.worktimeCode });
+                vm.appWorkChange.workTimeName(dataWorktTime.length > 0 ? dataWorktTime[0].workTimeDisplayName.workTimeName : vm.$i18n('KAF007_79'));
+            } else {
+                vm.appWorkChange.workTimeName(null);
+            }
         }
 
         handleError(err: any) {
@@ -155,118 +158,164 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 
         reload() {
             const vm = this;
-			if(vm.appType() === AppType.WORK_CHANGE_APPLICATION) {
-				vm.createParamKAF007();
-			}
+            if (vm.appType() === AppType.WORK_CHANGE_APPLICATION) {
+                vm.createParamKAF007();
+            }
         }
 
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
 
-            let timeZone1 = {
-				workNo: 1,
-				timeZone: {
-					startTime: vm.appWorkChange.startTime1(),
-					endTime: vm.appWorkChange.endTime1()
-				}
+            let timeZone1 = null;
+            if (vm.appWorkChange.startTime1() !== null && vm.appWorkChange.endTime1() !== null && ko.toJS(vm.appWorkChange.startTime1) !== "" && ko.toJS(vm.appWorkChange.endTime1) !== "") {
+                timeZone1 = {
+                    workNo: 1,
+                    timeZone: {
+                        startTime: vm.appWorkChange.startTime1(),
+                        endTime: vm.appWorkChange.endTime1()
+                    }
+                }
             }
-            
+
             let timeZone2 = null;
-			if(vm.appWorkChange.startTime2() !== null && vm.appWorkChange.endTime2() !== null && ko.toJS(vm.appWorkChange.startTime2) !== "" && ko.toJS(vm.appWorkChange.endTime2) !== "") {
-				timeZone2 = {
-					workNo: 2,
-					timeZone: {
-						startTime: vm.appWorkChange.startTime2(),
-						endTime: vm.appWorkChange.endTime2()
-					}
-				}
-			}
+            if (vm.appWorkChange.startTime2() !== null && vm.appWorkChange.endTime2() !== null && ko.toJS(vm.appWorkChange.startTime2) !== "" && ko.toJS(vm.appWorkChange.endTime2) !== "") {
+                timeZone2 = {
+                    workNo: 2,
+                    timeZone: {
+                        startTime: vm.appWorkChange.startTime2(),
+                        endTime: vm.appWorkChange.endTime2()
+                    }
+                }
+            }
 
             let timeZoneWithWorkNoLst = [];
-            
-            if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
+
+            if (timeZone1 !== null && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.isEdit && vm.model().setupType() === 0) {
                 timeZoneWithWorkNoLst.push(timeZone1);
             }
-			if(timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles) {
-				timeZoneWithWorkNoLst.push(timeZone2);
-			}
+            if (timeZone2 !== null && vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.isEdit
+                && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+                timeZoneWithWorkNoLst.push(timeZone2);
+            }
 
-			let appWorkChangeDto = {
-				straightGo: vm.isStraightGo() ? 1 : 0,
-				straightBack: vm.isStraightBack() ? 1 : 0,
-				opWorkTypeCD: vm.model().workTypeCD(),
-				opWorkTimeCD: vm.model().workTimeCD(),
-				timeZoneWithWorkNoLst: timeZoneWithWorkNoLst
-			}
-			
-			let command = {
-				mode: false,
-				companyId: vm.$user.companyId,
-				applicationDto: ko.toJS(vm.model().appDispInfoStartupOutput().appDetailScreenInfo.application),
-				appWorkChangeDto: ko.toJS(appWorkChangeDto),
-				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
-				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
-			}
-            
-            vm.$blockui( "show" );
-			return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-                .then( isValid => {
-                    if ( isValid ) {
+            let appWorkChangeDto = {
+                straightGo: vm.isStraightGo() ? 1 : 0,
+                straightBack: vm.isStraightBack() ? 1 : 0,
+                opWorkTypeCD: vm.model().workTypeCD(),
+                opWorkTimeCD: vm.model().workTimeCD(),
+                timeZoneWithWorkNoLst: timeZoneWithWorkNoLst
+            }
+
+            let command = {
+                mode: false,
+                companyId: vm.$user.companyId,
+                applicationDto: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
+                appWorkChangeDto: ko.toJS(appWorkChangeDto),
+                isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
+                appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+            }
+
+            command.applicationDto.opAppReason = vm.application().opAppReason();
+            command.applicationDto.opAppStandardReasonCD = vm.application().opAppStandardReasonCD();
+            command.applicationDto.opReversionReason = vm.application().opReversionReason();
+
+            vm.$blockui("show");
+            return vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+                .then(isValid => {
+                    if (isValid) {
+                        if (vm.isEdit && vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
+                            return vm.$validate('.nts-input');
+                        }
                         return true;
                     }
-				} )
-				.then( result => {
-                    if (!result) return;
-                    return vm.$ajax(API.checkBeforeRegister, command); 
-                }).then( res => {
-                    if (res == undefined) return;
-                    if (_.isEmpty( res.confirmMsgLst )) {
-                        return vm.registerData(command);
-                    }else {
-                        let listTemp = _.clone(res.confirmMsgLst);
-                        vm.handleConfirmMessage(listTemp, command);
-                    }
-                }).done(result => {
-                    if (result != undefined) {
-                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => vm.reload());               
+                })
+                .then((isValid) => {
+                    if (isValid) {
+                        if (!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
+                            vm.$errors({ '#time2Start': { messageId: 'Msg_1956' } });
+                            return false;
+                        }
+                        if (_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
+                            vm.$errors({ '#time2End': { messageId: 'Msg_1956' } });
+                            return false;
+                        }
+                        return true;
                     }
                 })
-                .fail( err => {
-                    let messageId, messageParams;
-					if(err.errors) {
-						let errors = err.errors;
-						messageId = errors[0].messageId;
-					} else {
-						messageId = err.messageId;
-						messageParams = [err.parameterIds.join('、')];
-					}
-					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+                .then(result => {
+                    if (result) {
+                        return vm.$ajax(API.checkBeforeRegister, command);
+                    }
+                }).then(res => {
+                    if (res) {
+                        return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), vm);
+                    }
+                }).then((result) => {
+                    if (result) {
+                        let param = {
+                            mode: false,
+                            companyId: vm.$user.companyId,
+                            applicationDto: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
+                            appWorkChangeDto: ko.toJS(appWorkChangeDto),
+                            isMail: vm.model().appDispInfoStartupOutput().appDispInfoNoDateOutput.mailServerSet,
+                            appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+                        };
+                        param.applicationDto.opAppReason = ko.toJS(vm.application().opAppReason);
+                        param.applicationDto.opReversionReason = ko.toJS(vm.application().opReversionReason);
+                        param.applicationDto.opAppStandardReasonCD = ko.toJS(vm.application().opAppStandardReasonCD);
+
+                        return vm.$ajax(API.register, param)
+                    }
+                }).done(result => {
+                    if (result) {
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
+                    }
+                })
+                .fail(err => {
+                    let messageId: any, messageParams: any;
+                    if (err.errors) {
+                        let errors = err.errors;
+                        messageId = errors[0].messageId;
+
+                    } else {
+                        messageId = err.messageId;
+                        messageParams = [err.parameterIds.join('、')];
+                    }
+                    return vm.$dialog.error({ messageId: messageId, messageParams: messageParams })
+                        .then(() => {
+                            if (messageId === "Msg_197") {
+                                location.reload();
+                            }
+                        });
                 })
                 .always(() => vm.$blockui("hide"));
         }
 
-        public handleConfirmMessage(listMes: any, res: any) :any {
-            let vm = this;
-            if (!_.isEmpty(listMes)) {
-                let item = listMes.shift();
-                return vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
-                    if (value == 'yes') {
-                        if (_.isEmpty(listMes)) {
-                            return vm.registerData(res);
-                        } else {
-                            return vm.handleConfirmMessage(listMes, res);
-                        }
+        handleConfirmMessage(listMes: any, vmParam: any): any {
+            const vm = this;
 
-                    }
-                });
-            }
+            return new Promise((resolve: any) => {
+                if (_.isEmpty(listMes)) {
+                    resolve(true);
+                }
+                let msg = listMes[0].value;
+
+                return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+                    .then((value) => {
+                        if (value === 'yes') {
+                            return vm.handleConfirmMessage(listMes, vmParam);
+                        } else {
+                            resolve(false);
+                        }
+                    })
+            });
         }
 
         registerData(params: any) {
             let vm = this;
 
-             return vm.$ajax(API.register, params);
+            return vm.$ajax(API.register, params);
 
         }
 
@@ -274,16 +323,6 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             const vm = this;
 
         }
-        // conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
     }
 
     const API = {

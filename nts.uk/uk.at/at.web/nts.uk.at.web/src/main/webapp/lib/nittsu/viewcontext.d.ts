@@ -117,8 +117,8 @@ interface PrimitiveConstraints {
 
 // Constraint structure
 interface Constraint {
-	min?: number | Date;
-	max?: number | Date;
+	min?: number | Date | string;
+	max?: number | Date | string;
 	maxLength?: number;
 	mantissaMaxLength?: number;
 	isZeroPadded?: boolean;
@@ -195,6 +195,7 @@ interface ComponentViewModel {
 		(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 	};
 	readonly $window: {
+		readonly mode: 'view' | 'modal';
 		readonly size: {
 			(height: string | number, width: string | number): void;
 			readonly width: (width: number | string) => void;
@@ -216,6 +217,17 @@ interface ComponentViewModel {
 			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
+		/** Like:
+		 *  nts.uk.ui.windows.setShared
+		 *  nts.uk.ui.windows.getShared
+		 */
+		readonly shared: {
+			(name: string): JQueryDeferred<any>;
+			(name: string, params: any): JQueryDeferred<any>;
+		};
+		/**
+		 * Storage data to localStorage with encode data
+		 */
 		readonly storage: {
 			(name: string): JQueryDeferred<any>;
 			(name: string, params: any): JQueryDeferred<any>;

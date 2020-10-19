@@ -10,7 +10,7 @@ module nts.uk.at.view.kwr008.b.service{
         getValueOutputFormat: "at/function/annualworkschedule/get/enum/valueoutputformat",
         getOutputAgreementTime : "at/function/annualworkschedule/get/enum/outputagreementtime",
         getListItemOutput : "at/function/annualworkschedule/get/listItemOutput/",
-        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
+        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName",
         getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
         getOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
     }
