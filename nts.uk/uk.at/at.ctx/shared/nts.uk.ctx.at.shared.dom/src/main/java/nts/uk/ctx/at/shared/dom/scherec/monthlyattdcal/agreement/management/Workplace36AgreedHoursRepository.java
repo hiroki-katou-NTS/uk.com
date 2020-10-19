@@ -15,6 +15,5 @@ public interface Workplace36AgreedHoursRepository {
     void delete(AgreementTimeOfWorkPlace domain);
     List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr);
     List<AgreementTimeOfWorkPlace> getByListWorkplaceId(List<String> listWorkplaceId);
-    List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr);
     Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId,LaborSystemtAtr laborSystemAtr);
 }
