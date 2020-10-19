@@ -7,6 +7,7 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
 import org.junit.Test;
@@ -44,8 +45,7 @@ public class GettingApproverDomainServiceTest {
 		new MockUp<GetWorkplaceApproveHistoryDomainService>() {
 			@Mock
 			Optional<ApproverItem> getWorkplaceApproveHistory(
-					GetWorkplaceApproveHistoryDomainService.Require require,
-					String empId) {
+					GetWorkplaceApproveHistoryDomainService.Require require, String empId) {
 
 				return Optional.of(approverItem);
 			}
@@ -64,7 +64,12 @@ public class GettingApproverDomainServiceTest {
 	@Test
 	public void test02() {
 		String empId = "dummyEmp";
-		val approverItem = new ApproverItem(Arrays.asList("approver01"), Arrays.asList("confirmer01"));
+		val approverHist = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/01"), GeneralDate.max()),
+				Arrays.asList("approver01"),
+				Arrays.asList("confirmer01")
+		);
 
 		new Expectations(){{
 			require.getUsageSetting();
@@ -84,11 +89,12 @@ public class GettingApproverDomainServiceTest {
 		val baseDate = GeneralDate.today();
 		new Expectations(){{
 			require.getApproverHistoryItem(baseDate);
-			result = Optional.of(approverItem);
+			result = Optional.of(approverHist);
 		}};
 
 		val result = GettingApproverDomainService.getApprover(require, empId);
-		assertThat(result.get()).isEqualTo(approverItem);
+		assertThat(result.get().getApproverList()).isEqualTo(approverHist.getApproverList());
+		assertThat(result.get().getConfirmerList()).isEqualTo(approverHist.getConfirmerList());
 	}
 
 	/**
@@ -135,8 +141,13 @@ public class GettingApproverDomainServiceTest {
 	@Test
 	public void test04() {
 		String empId = "dummyEmp";
-		val approverItem1 = new ApproverItem(Arrays.asList("approver01"), Arrays.asList("confirmer01"));
-		val approverItem2 = new ApproverItem(Arrays.asList("approver02"), Arrays.asList("confirmer02"));
+		val approverItem = new ApproverItem(Arrays.asList("approver01"), Arrays.asList("confirmer01"));
+		val approverHist = Approver36AgrByCompany.create(
+				"cid",
+				new DatePeriod(Helper.createDate("2020/09/01"), GeneralDate.max()),
+				Arrays.asList("approver02"),
+				Arrays.asList("confirmer02")
+		);
 
 		new Expectations(){{
 			require.getUsageSetting();
@@ -149,18 +160,19 @@ public class GettingApproverDomainServiceTest {
 					GetWorkplaceApproveHistoryDomainService.Require require,
 					String empId) {
 
-				return Optional.of(approverItem1);
+				return Optional.of(approverItem);
 			}
 		};
 
 		val baseDate = GeneralDate.today();
 		new Expectations(){{
 			require.getApproverHistoryItem(baseDate);
-			result = Optional.of(approverItem2);
+			result = Optional.of(approverHist);
 		}};
 
 		val result = GettingApproverDomainService.getApprover(require, empId);
-		assertThat(result.get()).isEqualTo(approverItem2);
+		assertThat(result.get().getApproverList()).isEqualTo(approverHist.getApproverList());
+		assertThat(result.get().getConfirmerList()).isEqualTo(approverHist.getConfirmerList());
 	}
 
 	/**

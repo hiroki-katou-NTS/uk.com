@@ -37,16 +37,12 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public void update(Approver36AgrByCompany domain,GeneralDate startDateBeforeChange){
+	public void update(Approver36AgrByCompany domain){
 
 		val domainData =  Krcmt36AgrApvCmp.fromDomain(domain);
-		val pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(),startDateBeforeChange);
-		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvCmp.class);
+		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(domainData.pk, Krcmt36AgrApvCmp.class);
 		if (findResult.isPresent()) {
-
-			this.commandProxy().remove(Krcmt36AgrApvCmp.class,pk);
-			this.getEntityManager().flush();
-			this.commandProxy().insert(domainData);
+			this.commandProxy().update(domainData);
 		} else {
 			this.commandProxy().insert(domainData);
 		}
@@ -150,6 +146,21 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 			return Optional.of(result.toDomain());
 		} catch (NoResultException e){
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void updateStartDate(Approver36AgrByCompany domain, GeneralDate startDateBeforeChange) {
+		val domainData =  Krcmt36AgrApvCmp.fromDomain(domain);
+		val pk = new Krcmt36AgrApvCmpPK(domain.getCompanyId(),startDateBeforeChange);
+		Optional<Krcmt36AgrApvCmp> findResult = this.queryProxy().find(pk, Krcmt36AgrApvCmp.class);
+		if (findResult.isPresent()) {
+
+			this.commandProxy().remove(Krcmt36AgrApvCmp.class,pk);
+			this.getEntityManager().flush();
+			this.commandProxy().insert(domainData);
+		} else {
+			this.commandProxy().insert(domainData);
 		}
 	}
 }

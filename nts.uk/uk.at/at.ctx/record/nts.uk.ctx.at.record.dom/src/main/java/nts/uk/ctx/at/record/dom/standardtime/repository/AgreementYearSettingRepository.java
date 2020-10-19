@@ -26,6 +26,6 @@ public interface AgreementYearSettingRepository {
 
 	void delete(AgreementYearSetting agreementYearSetting);
 
-
+	Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year);
 
 }
