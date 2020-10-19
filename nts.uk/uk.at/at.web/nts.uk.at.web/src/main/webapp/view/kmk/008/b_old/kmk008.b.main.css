@@ -51,9 +51,9 @@
 	width: 400px;
 }
 
-/*.table-basic-setting-list, th, td {*/
-	/*border: 1px solid gray;*/
-/*}*/
+.table-basic-setting-list, th, td {
+	border: 1px solid gray;
+}
 
 .time-editor-custom-width {
 	width: 75px !important;

@@ -61,11 +61,13 @@ module nts.uk.at.view.kmk008.c {
 			_.extend(window, {kmk008c});
 		}
 
+
 		mounted() {
 			const vm = this;
 
 			vm.startPage();
 		}
+
 
 		startPage(): JQueryPromise<any> {
 			let vm = this;
