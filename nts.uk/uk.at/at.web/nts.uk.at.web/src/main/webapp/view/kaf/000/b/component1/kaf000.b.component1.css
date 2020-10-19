@@ -13,5 +13,6 @@
 #kaf000-b-component1 .message-td {
 	padding-top: 5px;
 	padding-bottom: 5px;
+	word-break: break-all;
 }
 
