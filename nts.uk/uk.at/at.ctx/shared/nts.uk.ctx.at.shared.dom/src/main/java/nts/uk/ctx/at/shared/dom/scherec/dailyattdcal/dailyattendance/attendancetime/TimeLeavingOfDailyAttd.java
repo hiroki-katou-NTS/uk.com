@@ -29,9 +29,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 @NoArgsConstructor
 public class TimeLeavingOfDailyAttd implements DomainObject{
 	// 1 ~ 2
-	// 出退勤
+	/** 出退勤 */
 	private List<TimeLeavingWork> timeLeavingWorks;
-	// 勤務回数
+	/** 勤務回数 */
 	private WorkTimes workTimes;
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
@@ -135,4 +135,50 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 			return false;
 		}).count());
 	}
+	
+	/**
+	 * 出退勤の時間帯を返す
+	 * @return
+	 */
+	public List<TimeSpanForCalc> getTimeOfTimeLeavingAtt(){
+		return this.timeLeavingWorks.stream().map(c -> {
+			return c.getTimespan();
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 勤務開始の休暇時間帯を取得する
+	 * 
+	 * @param workNo 勤務NO
+	 *            
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> getStartTimeVacations(WorkNo workNo) {
+		return this.timeLeavingWorks.stream().filter(c -> c.getWorkNo().equals(workNo)).findFirst().map(c -> {
+			if (c.getAttendanceStamp().isPresent() && c.getAttendanceStamp().get().getTimeVacation().isPresent()) {
+				
+				return new TimeSpanForCalc(c.getAttendanceStamp().get().getTimeVacation().get().getStart(),
+						c.getAttendanceStamp().get().getTimeVacation().get().getEnd());
+			}
+			return null;
+		});
+	}
+	
+	/**
+	 * 勤務終了の休暇時間帯を取得する
+	 * @param workNo 勤務NO
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> getEndTimeVacations(WorkNo workNo){	
+		return this.timeLeavingWorks.stream().filter(c -> c.getWorkNo().equals(workNo)).findFirst().map(c -> {
+			if (c.getLeaveStamp().isPresent() && c.getLeaveStamp().get().getTimeVacation().isPresent()) {
+				
+				return new TimeSpanForCalc(c.getLeaveStamp().get().getTimeVacation().get().getStart(),
+						c.getLeaveStamp().get().getTimeVacation().get().getEnd());
+			}
+			return null;
+		});
+	}
+	
+	
 }
