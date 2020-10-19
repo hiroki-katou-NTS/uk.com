@@ -17,20 +17,20 @@ public class AgreementTimeOfYear implements Serializable {
 	private AgreementOneYearTime targetTime;
 	/** 閾値 */
 	private OneYearTime threshold;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public AgreementTimeOfYear(){
-		
+
 		this.targetTime = new AgreementOneYearTime(0);
-		this.threshold = new OneYearTime(new OneYearErrorAlarmTime(
-												new AgreementOneYearTime(0), 
-												new AgreementOneYearTime(0)), 
+		this.threshold = OneYearTime.from(OneYearErrorAlarmTime.from(
+												new AgreementOneYearTime(0),
+												new AgreementOneYearTime(0)),
 										new AgreementOneYearTime(0));
 	}
-	
-	/**	
+
+	/**
 	 * ファクトリー
 	 * @param agreementTime 36協定時間
 	 * @param threshold 閾値
@@ -39,19 +39,19 @@ public class AgreementTimeOfYear implements Serializable {
 	public static AgreementTimeOfYear of(
 			AgreementOneYearTime agreementTime,
 			OneYearTime threshold){
-		
+
 		AgreementTimeOfYear domain = new AgreementTimeOfYear();
 		domain.targetTime = agreementTime;
 		domain.threshold = threshold;
 		return domain;
 	}
-	
+
 	/**
 	 * 合算する
 	 * @param target 加算対象
 	 */
 	public void sum(AgreementTimeOfYear target){
-		
+
 		this.targetTime = this.targetTime.addMinutes(target.targetTime.v());
 	}
 }

@@ -15,13 +15,14 @@ module nts.uk.request {
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
-    export type WebAppId = 'comjs' | 'com' | 'pr' | 'at' | 'hr';
+    export type WebAppId = 'comjs' | 'com' | 'pr' | 'at' | 'hr' | 'cloud';
     export const WEB_APP_NAME = {
         comjs: 'nts.uk.com.js.web',
         com: 'nts.uk.com.web',
         pr: 'nts.uk.pr.web',
         at: 'nts.uk.at.web',
-        hr: 'nts.uk.hr.web'
+        hr: 'nts.uk.hr.web',
+        cloud: 'nts.uk.cloud.web'
     };
 
     export class QueryString {

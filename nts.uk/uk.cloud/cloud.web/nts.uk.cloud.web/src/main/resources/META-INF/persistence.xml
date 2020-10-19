@@ -12,11 +12,12 @@
 
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter</class>
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter</class>
+		<class>nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName</class>
 
 		<shared-cache-mode>NONE</shared-cache-mode>
 
 		<properties>
-			<!-- Disable weaving change tracking, for entity is always updated with 
+			<!-- Disable weaving change tracking, for entity is always updated with
 				JPA -->
 			<property name="eclipselink.weaving.changetracking" value="false" />
 			<property name="eclipselink.profiler" value="nts.arc.layer.infra.data.log.QueryLogging"/>

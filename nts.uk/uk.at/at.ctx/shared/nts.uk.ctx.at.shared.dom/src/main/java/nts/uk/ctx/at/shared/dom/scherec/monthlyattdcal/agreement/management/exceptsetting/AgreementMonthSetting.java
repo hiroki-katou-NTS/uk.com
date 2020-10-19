@@ -26,7 +26,7 @@ public class AgreementMonthSetting extends AggregateRoot {
 	private OneMonthErrorAlarmTime oneMonthTime;
 
 
-	public AgreementMonthSetting(String employeeId, YearMonth yearMonthValue, 
+	public AgreementMonthSetting(String employeeId, YearMonth yearMonthValue,
 			OneMonthErrorAlarmTime oneMonthTime) {
 		super();
 		this.employeeId = employeeId;
@@ -36,13 +36,13 @@ public class AgreementMonthSetting extends AggregateRoot {
 
 	public static AgreementMonthSetting createFromJavaType(String employeeId, BigDecimal yearMonthValue,
 			int errorOneMonth, int alarmOneMonth) {
-		return new AgreementMonthSetting(employeeId, 
+		return new AgreementMonthSetting(employeeId,
 										new YearMonth(yearMonthValue.intValue()),
-										new OneMonthErrorAlarmTime(
-												new AgreementOneMonthTime(errorOneMonth), 
+										OneMonthErrorAlarmTime.from(
+												new AgreementOneMonthTime(errorOneMonth),
 												new AgreementOneMonthTime(alarmOneMonth)));
 	}
-	
+
 	public void validate(){
 		if(oneMonthTime.getAlarm().v().compareTo(oneMonthTime.getError().v()) > 0){
 			throw new BusinessException("Msg_59", "KMK008_43", "KMK008_42");

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/freelayout.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="cld001.a.css" />
+				<com:stylefile path="cld001.a.start.js" />
+				<com:stylefile path="cld001.a.vm.js" />
+				<com:stylefile path="cld001.a.service.js" />
+			</ui:define>
+			<ui:define name="content">
+				<div id="functions-area">
+				<button id="button-regist"  tabindex="1" class="proceed"
+					data-bind="click: regist">登録</button>
+				</div>
+				<div id="contents-area" class="cf">
+					<div class="left-content fixed-flex-layout-left">
+						<table class="top-content-tbl">
+							<tr>
+								<td width="180">
+									<div data-bind="ntsFormLabel: {required: true, constraint:['TenantCode']}">テナントコード</div>
+								</td>
+								<td width="280">
+									 <input tabindex="2" id="input-name" class="name" data-bind="ntsTextEditor: {value: tenantCode, constraint:'TenantCode', required: true, name: 'テナントコード'}" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="right-content fixed-flex-layout-right">
+						<table class="top-content-tbl">
+							<tr>
+								<td colspan="2">
+									<div tabindex="8" id="contractType" data-bind="ntsSwitchButton: {
+													name: '契約種別',
+													options: contractType ,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: contractType ,
+													required: true ,
+													enable: true }"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

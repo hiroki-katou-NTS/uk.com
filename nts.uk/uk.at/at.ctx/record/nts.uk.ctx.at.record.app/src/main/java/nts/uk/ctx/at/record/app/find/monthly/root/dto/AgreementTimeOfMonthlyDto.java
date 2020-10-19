@@ -41,12 +41,12 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 
 	public AgreementTimeOfMonthly toDomain() {
 		return AgreementTimeOfMonthly.of(new AttendanceTimeMonth(agreementTime),
-										new OneMonthTime(new OneMonthErrorAlarmTime(
-															new AgreementOneMonthTime(errorTime), 
-															new AgreementOneMonthTime(alarmTime)), 
+										OneMonthTime.from(OneMonthErrorAlarmTime.from(
+															new AgreementOneMonthTime(errorTime),
+															new AgreementOneMonthTime(alarmTime)),
 														new AgreementOneMonthTime(exceptionLimitTime)));
 	}
-	
+
 	public static AgreementTimeOfMonthlyDto from(AgreementTimeOfMonthly domain) {
 		AgreementTimeOfMonthlyDto dto = new AgreementTimeOfMonthlyDto();
 		if(domain != null) {
