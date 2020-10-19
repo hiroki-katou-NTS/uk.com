@@ -4,20 +4,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="kcp015.test.start.js" />
-				<com:scriptfile path="kcp015.test.vm.js" />
-				<com:stylefile path="kcp015.test.main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-				</div>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+				
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+			<com:scriptfile path="kcp015.test.start.js" />
+			<com:scriptfile path="kcp015.test.vm.js" />
+			<com:stylefile path="kcp015.test.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
 			<div id="contents-area">
-				<div>
+				<div id="com-ccg001"></div>
+				<div style="margin-left: 100px">
 					<div>
 						<div
 							data-bind="ntsRadioBoxGroup: {
@@ -28,19 +36,41 @@
 								 enable: true}"></div>
 					</div>
 					<div style="margin-top: 15px">
-						<div data-bind="ntsCheckBox: { checked: checkedA3_1 , enable: enable, text: 'A3_1' }"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: checkedA3_2 , enable: enable, text: 'A3_2' }"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: checkedA3_3 , enable: enable, text: 'A3_3' }"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: checkedA3_4 , enable: enable, text: 'A3_4' }"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: checkedA3_5 , enable: enable, text: 'A3_5' }"></div><br/>
-						<div data-bind="ntsCheckBox: { checked: checkedA3_6 , enable: enable, text: 'A3_6' }"></div><br/>
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_1 , enable: enable, text: 'A3_1' }"></div>
+						<br />
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_2 , enable: enable, text: 'A3_2' }"></div>
+						<br />
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_3 , enable: enable, text: 'A3_3' }"></div>
+						<br />
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_4 , enable: enable, text: 'A3_4' }"></div>
+						<br />
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_5 , enable: enable, text: 'A3_5' }"></div>
+						<br />
+						<div
+							data-bind="ntsCheckBox: { checked: checkedA3_6 , enable: enable, text: 'A3_6' }"></div>
+						<br />
 					</div>
+
+					<!-- Datepicker -->
+					<div data-bind="ntsFormLabel: {}">BaseDate</div>
+					<div data-bind="ntsDatePicker: { value: baseDate }"></div>
+					<br />
+					<div style="margin-top: 10px" data-bind="ntsFormLabel: {}">list employee Id</div>
+					<div style="height: 300px; overflow: scroll;" data-bind="text: listEmp"></div>
+
+
 					<div style="margin-top: 15px">
 						<button data-bind="click: openKCP015">Open KCP015</button>
 					</div>
 				</div>
+				
 			</div>
 		</ui:define>
-		</ui:composition>
-   	</body>
+	</ui:composition>
+</body>
 </html>

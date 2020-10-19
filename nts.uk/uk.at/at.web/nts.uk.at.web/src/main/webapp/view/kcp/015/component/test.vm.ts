@@ -13,13 +13,15 @@ module test.viewmodel {
             
             //định nghĩa param truyen vào component
             self.input = { 
-                haveData  : dataShare.haveData, 
+                hasParams : dataShare.hasParams, 
                 visibleA31: dataShare.checkedA3_1, 
                 visibleA32: dataShare.checkedA3_2, 
                 visibleA33: dataShare.checkedA3_3,  
                 visibleA34: dataShare.checkedA3_4, 
                 visibleA35: dataShare.checkedA3_5, 
-                visibleA36: dataShare.checkedA3_6
+                visibleA36: dataShare.checkedA3_6,
+                listEmp   : dataShare.listEmp,
+                baseDate  : dataShare.baseDate
             }
         }
         
