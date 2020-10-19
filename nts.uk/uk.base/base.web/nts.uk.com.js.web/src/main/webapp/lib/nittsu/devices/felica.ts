@@ -17,7 +17,7 @@ module nts.uk.devices {
     }
 
     class Felica {
-        socket!: WebSocket;
+        private socket!: WebSocket;
 
         constructor(once: boolean = true) {
             const fc = this;
@@ -65,13 +65,27 @@ module nts.uk.devices {
                 }
             };
         }
+
+        public status() {
+            const f = this;
+
+            return f.socket.OPEN;
+        }
+
+        public close() {
+            const f = this;
+
+            if (f.status()) {
+                f.socket.close();
+            }
+        }
     }
 
     // export only create method for Felica class
     export function felica(cb: CALL_BACK, once: boolean = true) {
         // if reconnect, close old connect
-        if (instance && instance.socket.OPEN) {
-            instance.socket.close();
+        if (instance && instance.status()) {
+            instance.close();
         }
 
         // register callback function

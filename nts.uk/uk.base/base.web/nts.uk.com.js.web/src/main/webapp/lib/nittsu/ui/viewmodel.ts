@@ -124,6 +124,32 @@ function handler(params: { virtual?: boolean; bindingName: string; validatable?:
 	};
 }
 
+
+// redeclare windows.sub module
+declare module nts {
+	export module uk {
+		export module ui {
+			export module windows {
+				export module sub {
+					interface ModalObject {
+						onClosed: (cb: () => void) => void;
+					}
+
+					export function modal(path: string): ModalObject;
+					export function modal(path: string, options: any): ModalObject;
+					export function modal(webAppId: nts.uk.request.WebAppId, path: string): ModalObject;
+					export function modal(webAppId: nts.uk.request.WebAppId, path: string, options: any): ModalObject;
+
+					export function modeless(path: string): ModalObject;
+					export function modeless(path: string, options: any): ModalObject;
+					export function modeless(webAppId: nts.uk.request.WebAppId, path: string): ModalObject;
+					export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options: any): ModalObject;
+				}
+			}
+		}
+	}
+}
+
 module nts.uk.ui.viewmodel {
 	const prefix = 'nts.uk.storage'
 		, OPENWD = 'OPEN_WINDOWS_DATA'
@@ -398,14 +424,14 @@ module nts.uk.ui.viewmodel {
 			}
 		},
 		modal: {
-			value: function $modal(webapp: string, path: string, params?: any) {
+			value: function $modal(webapp: request.WebAppId, path: any, params?: any, options?: any) {
 				const jdf = $.Deferred<any>();
 				const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
 				if (nowapp) {
 					$storage(path)
 						.then(() => {
-							windows.sub.modal(webapp)
+							windows.sub.modal(webapp, params)
 								.onClosed(() => {
 									const { localShared } = windows.container;
 
@@ -414,13 +440,13 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || localShared));
+									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
 								});
 						});
 				} else {
 					$storage(params)
 						.then(() => {
-							windows.sub.modal(webapp, path)
+							windows.sub.modal(webapp, path, options)
 								.onClosed(() => {
 									const { localShared } = windows.container;
 
@@ -429,7 +455,7 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || localShared));
+									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
 								});
 						});
 				}
@@ -438,14 +464,14 @@ module nts.uk.ui.viewmodel {
 			}
 		},
 		modeless: {
-			value: function $modeless(webapp: string, path: string, params?: any) {
+			value: function $modeless(webapp: request.WebAppId, path: any, params?: any, options?: any) {
 				const jdf = $.Deferred<any>();
 				const nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
 
 				if (nowapp) {
 					$storage(path)
 						.then(() => {
-							windows.sub.modeless(webapp)
+							windows.sub.modeless(webapp, params)
 								.onClosed(() => {
 									const { localShared } = windows.container;
 
@@ -454,13 +480,13 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || localShared));
+									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
 								});
 						});
 				} else {
 					$storage(params)
 						.then(() => {
-							windows.sub.modeless(webapp, path)
+							windows.sub.modeless(webapp, path, options)
 								.onClosed(() => {
 									const { localShared } = windows.container;
 
@@ -469,7 +495,7 @@ module nts.uk.ui.viewmodel {
 										windows.setShared(key, value);
 									});
 
-									$storage().then(($data: any) => jdf.resolve($data || localShared));
+									$storage().then(($data: any) => jdf.resolve($data || _.keys(localShared).length ? localShared : undefined));
 								});
 						});
 				}
