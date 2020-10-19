@@ -99,3 +99,7 @@
 .ksm005a .input-code-name.table .cell:nth-child(3) > .nts-editor-wrapped > input{
 	width: calc(100% - 22px)!important;
 }
+#calendar .fc-day-grid-event {
+	margin-left: 0px;
+	margin-right: 0px;
+}
