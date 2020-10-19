@@ -253,6 +253,18 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
     @Basic(optional = true)
     @Column(name = "OTHER_CONTACT5_USE")
     private Integer otherContact5Use;
+    /**
+     * 記念日の表示
+     */
+    @Basic(optional = true)
+    @Column(name = "ANNIVERSARY_USE")
+    private Integer anniversaryUse;
+    /**
+     * カレンダーの予約の表示
+     */
+    @Basic(optional = true)
+    @Column(name = "CALENDAR_RESERVATION_USE")
+    private Integer calendarReservationUse;
 
     @Override
     protected Object getKey() {

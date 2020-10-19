@@ -38,7 +38,7 @@ import nts.uk.query.app.user.information.password.changelog.PasswordChangeLogDto
 import nts.uk.query.app.user.information.password.policy.PasswordPolicyDto;
 import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
-import nts.uk.query.app.user.information.setting.UserInfoUseMethod_Dto;
+import nts.uk.query.app.user.information.setting.UserInfoUseMethodDto;
 import nts.uk.query.app.user.information.user.UserDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -97,7 +97,7 @@ public class UserInformationScreenQuery {
 
         //SQ1 - get ユーザー情報の使用方法 from CMM049
         Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
-        UserInfoUseMethod_Dto settingInformationDto = UserInfoUseMethod_Dto.builder().build();
+        UserInfoUseMethodDto settingInformationDto = UserInfoUseMethodDto.builder().build();
         userInfoUseMethod_.ifPresent(method -> method.setMemento(settingInformationDto));
 
         //SQ2 - call DomainService 社員情報を取得する

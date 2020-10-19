@@ -60,6 +60,8 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
             updateEntity.setOtherContact1Use(entity.getOtherContact4Use());
             updateEntity.setOtherContact1Name(entity.getOtherContact5Name());
             updateEntity.setOtherContact1Use(entity.getOtherContact5Use());
+            updateEntity.setAnniversaryUse(entity.getAnniversaryUse());
+            updateEntity.setCalendarReservationUse(entity.getCalendarReservationUse());
             this.commandProxy().update(updateEntity);
         }
     }
