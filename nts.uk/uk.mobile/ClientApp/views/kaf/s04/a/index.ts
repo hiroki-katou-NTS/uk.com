@@ -683,6 +683,11 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.kafS00P1Params2.scheduleTime = null;
                         vm.kafS00P1Params3.scheduleTime = null;
                         vm.kafS00P1Params4.scheduleTime = null;
+
+                        vm.time.attendanceTime = null;
+                        vm.time.leaveTime = null;
+                        vm.time.attendanceTime2 = null;
+                        vm.time.leaveTime2 = null;
                     }
                 });
 
