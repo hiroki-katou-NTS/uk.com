@@ -1,0 +1,47 @@
+
+#master-wrapper {
+  height: auto;
+  overflow: hidden;
+}
+
+.kwr-004b #functions-area button.danger {
+  margin-left: 25px;
+  margin-right: 45px;
+}
+.kwr-004b #content-area {
+  padding: 30px 37px;
+  overflow: hidden;
+}
+
+.kwr-004b .nts-searchbbox-wrapper input.ntsSearchBox {
+  width: 250px !important;
+}
+
+.kwr-004b .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr-004b .d-flex:first-child {
+  margin-bottom: 24px;
+}
+.kwr-004b .d-flex .form-label {
+  margin-right: 32px;
+}
+.kwr-004b .d-flex .code {
+  width: 50px;
+}
+
+.kwr-004b .pull-left .panel.ntsPanel {
+  height: 470px;
+}
+
+.kwr-004b .nts-editor-wrapped .nts-editor {
+  width: auto !important;
+}
+.kwr-004b .nts-editor-wrapped .nts-editor.code {
+  max-width: 70px;
+}
+.kwr-004b th.text-center {
+  text-align: center;
+}
