@@ -65,12 +65,4 @@ public class CheckChangePassDto {
 	public static CheckChangePassDto failedToAuthPassword() {
 		return new CheckChangePassDto(false, "Msg_302", false);
 	}
-
-	public static CheckChangePassDto successToAuthSaml() {
-		return new CheckChangePassDto(false, null, false);
-	}
-	
-	public static CheckChangePassDto failedToAuthSaml() {
-		return new CheckChangePassDto(false, "Msg_XXX", false);
-	}
 }

@@ -29,7 +29,7 @@ public class PasswordAuthenticateCommandHandler
 	private UserRepository userRepository;
 
 	@Inject
-	private  SysEmployeeAdapter employeeAdapter;
+	private SysEmployeeAdapter employeeAdapter;
 	
 	
 	// テナント認証失敗時
@@ -51,8 +51,7 @@ public class PasswordAuthenticateCommandHandler
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
-		val require = EmbedStopwatch.embed(new RequireImpl());
-		FindUser.byEmployeeCode(require, companyId, employeeCode);
+		AuthenticateEmployeePassword.Require require = EmbedStopwatch.embed(new RequireImpl());
 		
 		// パスワード認証
 		boolean successPasswordAuth = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
@@ -60,9 +59,11 @@ public class PasswordAuthenticateCommandHandler
 			// パスワード認証失敗
 			return LoginState.failed();
 		}
+		
 		// パスワード認証成功
-		Optional<EmployeeImport> optEmployeeImport = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
-		return LoginState.success(optEmployeeImport.get());
+		Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
+		Optional<User> optUser = FindUser.byEmployeeCode(require, companyId, employeeCode);
+		return LoginState.success(optEmployee.get(), optUser.get());
 	}
 
 	@Override
@@ -100,17 +101,20 @@ public class PasswordAuthenticateCommandHandler
 		
 		private EmployeeImport employeeImport;
 		
-		public LoginState(boolean isSuccess, EmployeeImport employeeImport) {
+		private User user;
+		
+		public LoginState(boolean isSuccess, EmployeeImport employeeImport, User user) {
 			this.isSuccess = isSuccess;
 			this.employeeImport = employeeImport;
+			this.user = user;
 		}
 		
-		public static LoginState success(EmployeeImport employeeImport) {
-			return new LoginState(true, employeeImport);
+		public static LoginState success(EmployeeImport employeeImport, User user) {
+			return new LoginState(true, employeeImport, user);
 		}
 		
 		public static LoginState failed() {
-			return new LoginState(false, null);
+			return new LoginState(false, null, null);
 		}
 		
 		@Override
@@ -121,7 +125,13 @@ public class PasswordAuthenticateCommandHandler
 		@Override
 		public EmployeeImport getEmployee() {
 			return employeeImport;
+		}
+		
+		@Override
+		public User getUser() {
+			return user;
 		}	
+
 	}
 	
 	public class RequireImpl implements AuthenticateEmployeePassword.Require {

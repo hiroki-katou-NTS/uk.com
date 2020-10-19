@@ -9,13 +9,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.gateway.dom.login.Contract;
-import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 
 /**
  * The Class SubmitContractFormCommandHandler.
@@ -25,7 +27,7 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 
 	/** The contract repository. */
 	@Inject
-	private ContractRepository contractRepository;
+	private TenantAuthenticationRepository tenantAuthenticationRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -47,40 +49,24 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param contractCode the contract code
 	 * @param password the password
 	 */
-	private void contractAccAuth(String contractCode, String password) {
-		Optional<Contract> contract = contractRepository.getContract(contractCode);
-		if (contract.isPresent()) {
-			this.checkPassword(contract, password);
-			this.checkTime(contract);
-		} else {
+	private void contractAccAuth(String tenantCode, String password) {
+		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
+		val optTenant = FindTenant.byTenantCode(require, tenantCode);
+		if (!optTenant.isPresent()) {
+			// テナントが取得できない
 			throw new BusinessException("Msg_314");
+		} 
+		val tenant = optTenant.get();
+		if(!tenant.verify(password)) {
+			// テナントパスワードが間違っている
+			throw new BusinessException("Msg_302");
 		}
-	}
-
-	/**
-	 * Check time.
-	 *
-	 * @param contract the contract
-	 */
-	private void checkTime(Optional<Contract> contract) {
-		if (contract.get().getContractPeriod().start().after(GeneralDate.today())
-				|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
+		if(!tenant.isAvailableAt(GeneralDate.today())) {
+			// テナントの有効期限が来てレイル
 			throw new BusinessException("Msg_315");
 		}
 	}
-
-	/**
-	 * Check password.
-	 *
-	 * @param contract the contract
-	 * @param password the password
-	 */
-	private void checkPassword(Optional<Contract> contract, String password) {
-		if (!PasswordHash.verifyThat(password, contract.get().getContractCode().v()).isEqualTo(contract.get().getPassword().v())) {
-			throw new BusinessException("Msg_302");
-		}
-	}
-
+	
 	/**
 	 * Check input.
 	 *
@@ -94,5 +80,17 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 			throw new BusinessException("Msg_310");
 		}
 	}
+	
+	public class RequireImpl implements FindTenant.Require{
 
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepository.find(tenantCode);
+		}
+
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
+			return tenantAuthenticationRepository.find(tenantCode, date);
+		}
+	}
 }

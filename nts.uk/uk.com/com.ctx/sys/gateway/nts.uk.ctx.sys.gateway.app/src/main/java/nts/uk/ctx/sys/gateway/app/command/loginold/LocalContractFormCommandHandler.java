@@ -9,16 +9,16 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckContractDto;
-import nts.uk.ctx.sys.gateway.dom.login.Contract;
-import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstallationType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class LocalContractFormCommandHandler.
@@ -29,7 +29,7 @@ public class LocalContractFormCommandHandler
 
 	/** The contract repository. */
 	@Inject
-	private ContractRepository contractRepository;
+	private TenantAuthenticationRepository tenantAuthenticationRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -46,14 +46,15 @@ public class LocalContractFormCommandHandler
 			InstallationType systemConfig = AppContexts.system().getInstallationType();
 
 			// case Cloud
+			systemConfig.value = InstallationType.CLOUD.value;
 			if (systemConfig.value == InstallationType.CLOUD.value) {
 				if (this.isShowContract(command)) {
-					return new CheckContractDto(true,false);
+					return CheckContractDto.failed();
 				}
-				return new CheckContractDto(false,false);
+				return CheckContractDto.success();
 			}
 			// case OnPre
-			return new CheckContractDto(false,true);
+			return CheckContractDto.onpre();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -68,38 +69,29 @@ public class LocalContractFormCommandHandler
 	 */
 	private boolean isShowContract(LocalContractFormCommand command) {
 		// get contract info
-		String contractCode = command.getContractCode();
-		String contractPassword = command.getContractPassword();
+		String tenantCode = command.getContractCode();
+		String tenantPassword = command.getContractPassword();
 
-		if (contractCode == null || contractCode.isEmpty()) {
+		if (tenantCode == null || tenantCode.isEmpty()) {
 			return true;
 		}
 		// get domain contract
-		Optional<Contract> contract = contractRepository.getContract(contractCode);
-		if (!contract.isPresent()) {
-			return true;
-		}
-		// compare contract pass
-		if ((contractPassword==null)|| !PasswordHash.verifyThat(contractPassword, contractCode).isEqualTo(contract.get().getPassword().v())) {
-			return true;
-		}
-		// check time limit
-		if (this.contractPeriodInvalid(contract.get())) {
-			return true;
-		}
-		return false;
+		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
+		return FindTenant.byTenantCode(require, tenantCode, GeneralDate.today())
+				.map(t -> t.verify(tenantPassword))
+				.orElse(false);
 	}
+	
+	public class RequireImpl implements FindTenant.Require{
 
-	/**
-	 * Contract period invalid.
-	 *
-	 * @param contract
-	 *            the contract
-	 * @return true, if successful
-	 */
-	private boolean contractPeriodInvalid(Contract contract) {
-		DatePeriod period = contract.getContractPeriod();
-		GeneralDate currentDate = GeneralDate.today();
-		return !(period.start().beforeOrEquals(currentDate) && period.end().afterOrEquals(currentDate));
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
+			return tenantAuthenticationRepository.find(tenantCode, date);
+		}
+
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepository.find(tenantCode);
+		}
 	}
 }

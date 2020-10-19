@@ -24,4 +24,16 @@ public class CheckContractDto {
 		this.showContract = showContract;
 		this.onpre = onpre;
 	}
+	
+	public static CheckContractDto success() {
+		return new CheckContractDto(false,false);
+	}
+	
+	public static CheckContractDto failed() {
+		return new CheckContractDto(true,false);
+	}
+	
+	public static CheckContractDto onpre() {
+		return new CheckContractDto(false,true);
+	}
 }

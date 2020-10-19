@@ -7,9 +7,9 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 @Data
 public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.TenantAuth {
 
-	private String tenantCode;
+	private String contractCode;
 
-	private String tenantPassword;
+	private String contractPassword;
 	
 	private String companyCode;
 	
@@ -18,8 +18,12 @@ public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.Tena
 	private String password;
 
 	@Override
-	public String getTenantPasswordPlainText() {
-		return this.tenantPassword;
+	public String getTenantCode() {
+		return this.contractCode;
 	}
 
+	@Override
+	public String getTenantPasswordPlainText() {
+		return this.contractPassword;
+	}
 }

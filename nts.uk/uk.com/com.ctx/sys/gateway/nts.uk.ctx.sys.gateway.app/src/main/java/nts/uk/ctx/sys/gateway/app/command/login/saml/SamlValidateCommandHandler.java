@@ -10,28 +10,45 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.onelogin.saml2.util.Constants;
 
+import lombok.val;
+import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.error.BusinessException;
+import nts.gul.security.saml.RelayState;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
 import nts.gul.security.saml.SamlSetting;
 import nts.gul.security.saml.ValidSamlResponse;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
-import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.FindIdpUserAssociation;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.FindSamlSetting;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
+import nts.uk.ctx.sys.shared.dom.user.FindUser;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SamlValidateCommandHandler 
-extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.LoginState, CheckChangePassDto>{
+extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.LoginState, ValidateInfo>{
 	
 	@Inject
-	private  SysEmployeeAdapter employeeAdapter;
+	private SysEmployeeAdapter employeeAdapter;
 	
+	@Inject
+	private UserRepository userRepository;
+	
+	@Inject
+	private FindIdpUserAssociation findIdpUserAssociation;
+	
+	@Inject
+	private FindSamlSetting findSamlSetting;
+
 	// テナント認証失敗時
 	@Override
-	protected CheckChangePassDto getResultOnFailTenantAuth() {
-		return CheckChangePassDto.failedToAuthTenant();
+	protected ValidateInfo getResultOnFailTenantAuth() {
+		return ValidateInfo.failedToAuthTenant();
 	}
 	
 	// 認証処理
@@ -39,39 +56,40 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 	protected LoginState processBeforeLogin(SamlValidateCommand command) {
 		HttpServletRequest request = command.getRequest();
 
-		SamlSetting samlSetting = new SamlSetting();
-		// クライアント名(UKとかHLとか)
-		samlSetting.SetSpEntityId("sso");
-		// IdpのURL
-		samlSetting.SetIdpEntityId("http://localhost:8180/auth/realms/my_territory");
-		// 署名用アルゴリズム
-		samlSetting.SetSignatureAlgorithm(Constants.RSA_SHA1);
-		// X509証明書のFingerPrint
-		// https://www.samltool.com/fingerprint.php ←ココで作れる
-		samlSetting.SetIdpCertFingerprint("8dfc4a658496a05a3ed44357d97865007071b6e6");
-
-		ValidSamlResponse validateResult;
+		RelayState relayState = RelayState.deserialize(request.getParameter("RelayState"));
 		
+		val optSamlSetting = findSamlSetting.find(relayState.get("tenantCode"));
+		
+		if(!optSamlSetting.isPresent()) {
+			// SAMLSettingが取得できなかった場合
+			throw new BusinessException("Msg_1980");
+		}
 		try {
 			// SAMLResponseの検証処理
-			validateResult = SamlResponseValidator.validate(request, samlSetting);
-			
-			// 認証失敗時
+			ValidSamlResponse validateResult = SamlResponseValidator.validate(request, optSamlSetting.get());
 			if (!validateResult.isValid()) {
+				// 認証失敗時
 				return LoginState.failed();
 				// 通常ログイン画面へ
 			}
 
 			// Idpユーザと社員の紐付けから社員を特定
-			Optional<String> employeeID = IdpUserAssociation.getAssociateEmployee(validateResult.getIdpUser());
-
-			// 社員特定できない
-			if (!employeeID.isPresent()) {
+			Optional<IdpUserAssociation> optAssociation = findIdpUserAssociation.byIdpUser(validateResult.getIdpUser());
+			if (!optAssociation.isPresent()) {
+				// 社員特定できない
 				return LoginState.failed();
-				// 通常紐付処理
 			}
-			Optional<EmployeeImport> optEmployeeImport = employeeAdapter.getCurrentInfoBySid(employeeID.get());
-			return LoginState.success(optEmployeeImport.get());
+			Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoBySid(optAssociation.get().getEmployeeId());
+			if (!optEmployee.isPresent()) {
+				// 社員が存在しない
+				return LoginState.failed();
+			}
+			
+			// 認証成功
+			val employee = optEmployee.get();
+			FindUser.Require require = EmbedStopwatch.embed(new RequireImpl());
+			Optional<User> optUser = FindUser.byEmployeeCode(require, employee.getCompanyId(), employee.getEmployeeCode());
+			return LoginState.success(optEmployee.get(), optUser.get(), relayState.get("RequestUrl"));
 
 		} catch (ValidateException e) {
 			// 認証自体に失敗時
@@ -81,17 +99,17 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 	}
 
 	@Override
-	protected CheckChangePassDto processSuccess(LoginState state) {
+	protected ValidateInfo processSuccess(LoginState state) {
 		/* ログインチェック  */
 		/* ログインログ  */
-		return CheckChangePassDto.successToAuthSaml();
+		
+		return ValidateInfo.successToValidSaml(state.requestUrl);
 	}
 
 	@Override
-	protected CheckChangePassDto processFailure(LoginState state) {
-		return CheckChangePassDto.failedToAuthSaml();
+	protected ValidateInfo processFailure(LoginState state) {
+		return ValidateInfo.failedToValidSaml();
 	}
-
 	
 	static class LoginState implements LoginCommandHandlerBase.LoginState<SamlValidateCommand>{
 		
@@ -99,17 +117,22 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 		
 		private EmployeeImport employeeImport;
 		
-		public LoginState(boolean isSuccess, EmployeeImport employeeImport) {
+		private User user;
+		
+		private String requestUrl;
+		
+		public LoginState(boolean isSuccess, EmployeeImport employeeImport, User user, String requestUrl) {
 			this.isSuccess = isSuccess;
 			this.employeeImport = employeeImport;
+			this.user = user;
 		}
 		
-		public static LoginState success(EmployeeImport employeeImport) {
-			return new LoginState(true, employeeImport);
+		public static LoginState success(EmployeeImport employeeImport, User user, String requestUrl) {
+			return new LoginState(true, employeeImport, user, requestUrl);
 		}
 		
 		public static LoginState failed() {
-			return new LoginState(false, null);
+			return new LoginState(false, null, null, null);
 		}
 		
 		@Override
@@ -121,5 +144,27 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 		public EmployeeImport getEmployee() {
 			return employeeImport;
 		}	
+		
+		@Override
+		public User getUser() {
+			return user;
+		}
+	}
+	
+	public class RequireImpl implements FindUser.Require {
+
+		@Override
+		public Optional<String> getPersonalId(String companyId, String employeeCode) {
+			val empInfo = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
+			if(!empInfo.isPresent()) {
+				return Optional.empty();
+			}
+			return Optional.of(empInfo.get().getPersonalId());
+		}
+
+		@Override
+		public Optional<User> getUser(String personalId) {
+			return userRepository.getByAssociatedPersonId(personalId);
+		}
 	}
 }

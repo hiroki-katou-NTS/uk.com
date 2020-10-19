@@ -1,12 +1,15 @@
 package nts.uk.ctx.sys.gateway.dom.singlesignon.saml;
 
-import java.util.Optional;
-
 import lombok.Getter;
-import lombok.val;
 
 @Getter
 public class IdpUserAssociation {
+
+	//テナントコード
+	private String tenantCode;
+	
+	//会社ID
+	private String companyId;
 	
 	//社員ID
 	private String employeeId;
@@ -15,25 +18,10 @@ public class IdpUserAssociation {
 	private String idpUserName;
 
 	
-	public IdpUserAssociation(String employeeId, String idpUserName) {
+	public IdpUserAssociation(String tenantCode, String companyId, String employeeId, String idpUserName) {
+		this.tenantCode = tenantCode;
+		this.companyId = companyId;
 		this.employeeId = employeeId;
-		this.idpUserName = idpUserName;	
-	}
-	
-	public static Optional<String> getAssociateEmployee(String idpUserName) {
-		val association = IdpUserAssociationRepository.findByIdpUser(idpUserName);
-		if(association.isPresent()) {
-			return Optional.of(association.get().employeeId);
-		}
-		return Optional.empty();
-	}
-	
-	public static Optional<String> getAssociateIdpUserName(String employeeId) {
-		val association = IdpUserAssociationRepository.findByEmployee(employeeId);
-		if(association.isPresent()) {
-			return Optional.of(association.get().idpUserName);
-		}
-		return Optional.empty();
-	}
-	
+		this.idpUserName = idpUserName;
+	}	
 }
