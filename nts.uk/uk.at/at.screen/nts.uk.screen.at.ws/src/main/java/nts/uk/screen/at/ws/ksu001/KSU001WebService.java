@@ -117,4 +117,11 @@ public class KSU001WebService extends WebService{
 	public boolean validWhenPaste(List<ValidDataWhenPasteParam> shiftmasters) {
 		return valid.valid(shiftmasters);
 	}
+	
+	@POST
+	@Path("change-workplace") 
+	public StartKSU001Dto getDataWhenChangeWkp(StartKSU001Param param) {
+		StartKSU001Dto data = startKSU001.getData(param);
+		return data;
+	}
 }

@@ -2843,6 +2843,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
+        /**
+          * open dialog G
+         */
+        openDialogG(): void {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+
+            // listEmpData : {id : '' , code : '', name : ''}
+            setShared('dataShareDialogG', {
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                unit: userInfor.unit,
+                workplaceId: userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId,
+                listEmp: self.listEmpData
+            });
+
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/g/index.xhtml").onClosed(() => {
+                console.log('closed g dialog');
+            });
+        }
+        
         // A1_10_2
         openKDL005() {
             let self = this;
@@ -2908,6 +2931,93 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
+        // A2_1
+        openKDL046() {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+
+            let param = {
+                unit: userInfor.unit == 0 ? '0' : '1',
+                date: moment(self.dateTimeAfter()),
+                workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId
+            }
+            setShared('dataShareDialog046', param);
+            $('#A1_10_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal('/view/kdl/046/a/index.xhtml').onClosed(function(): any {
+                let result = getShared('dataShareKDL046');
+                if (result === undefined || result === null)
+                    return;
+                self.targetOrganizationName(result.unit == 0 ? result.workplaceName : result.workplaceGroupName);
+                // save data to local Storage
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    userInfor.unit = result.unit == 0 ? 0 : 1;
+                    userInfor.workplaceId = result.unit == 0 ? result.workplaceId : ''
+                    userInfor.workplaceGroupId = result.unit == 0 ? '' : result.workplaceGroupID;
+                    userInfor.workPlaceName = result.unit == 0 ? result.workplaceName : result.workplaceGroupName;
+                    userInfor.code = result.unit == 0 ? result.workplaceCode : result.workplaceGroupCode;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
+
+                updateScreen(result);
+                console.log('closed');
+            });
+        }
+        
+        updateScreen(data: any): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            let param = {
+                viewMode: userInfor.disPlayFormat,
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+                shiftPalletUnit: userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
+                pageNumberCom: userInfor.shiftPalettePageNumberCom,
+                pageNumberOrg: userInfor.shiftPalettePageNumberOrg,
+                getActualData: false,
+                listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
+                unit: data.unit,
+                wkpId: data.unit == 0 ? data.workplaceId : data.workplaceGroupID
+            };
+
+            service.changeWokPlace(param).done((data: IDataStartScreen) => {
+
+                self.saveDataGrid(data);
+
+                __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
+
+                self.getSettingDisplayWhenStart(viewMode, true);
+
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                    self.bingdingToShiftPallet(data);
+                }
+
+                // set data Header
+                self.bindingToHeader(data);
+
+                // set data Grid
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
+                self.initExTable(dataBindGrid, viewMode, updateMode);
+
+                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                self.setUpdateMode();
+                self.setDataWorkType(data.listWorkTypeInfo);
+                self.checkEnableCombWTime();
+                self.setPositionButonToRightToLeft();
+                self.flag = false;
+                dfd.resolve();
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
         // A1_12_8
         openQDialog() {
             let self = this;
@@ -2930,6 +3040,30 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml").onClosed(() => {
+            });
+        }
+
+        // A1_12_16
+        openSDialog(): void {
+            let self = this;
+            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
+            setShared("baseDate", ko.observable(self.dateTimeAfter()));
+
+            // listEmpData : {id : '' , code : '', name : ''}
+            setShared('dataShareDialogG', {
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
+                listEmp: self.listEmpData
+            });
+
+            $('#A1_12_1').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+                let dataShare = getShared("ksu001s-result");
+                if (dataShare !== 'Cancel') {
+                    self.stopRequest(false);
+                    self.getListEmpIdSorted().done(() => {
+                        self.stopRequest(true);
+                    });
+                }
             });
         }
         

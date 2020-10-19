@@ -25,7 +25,7 @@ ko.components.register('kcp015-component', {
 
 class KCP015ScreenModel {
 
-    visibleA1: KnockoutObservable<boolean> = ko.observable(true);
+    visibleA1: KnockoutObservable<boolean>  = ko.observable(true);
     visibleA31: KnockoutObservable<boolean> = ko.observable(true);
     visibleA32: KnockoutObservable<boolean> = ko.observable(true);
     visibleA33: KnockoutObservable<boolean> = ko.observable(true);

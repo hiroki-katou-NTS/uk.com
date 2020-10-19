@@ -109,7 +109,7 @@
 							<td style="width: 80%"><span class="label" id="A1_7_3" style="">#{i18n.getText('KSU001_14', ['#Com_Person'])}</span></td>
 						</tr>
 						<tr style="height: 50px">
-							<td style="width: 20%"><button id="A1_7_4" class="substitute">#{i18n.getText('KSU001_15')}</button></td>
+							<td style="width: 20%"><button id="A1_7_4" class="substitute" data-bind="click: openDialogG">#{i18n.getText('KSU001_15')}</button></td>
 							<td style="width: 80%"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
 						</tr>
 					</table>
@@ -150,7 +150,7 @@
 					
 					<div id="sort-order-setting">
 						<div>
-							<button id="A1_12_16">#{i18n.getText('KSU001_31')}</button>
+							<button id="A1_12_16" data-bind="click: openSDialog" >#{i18n.getText('KSU001_31')}</button>
 							<span id="A1_12_17">#{i18n.getText('KSU001_32')}</span>
 						</div>
 						<div>
@@ -346,7 +346,7 @@
 					<div class="right-content">
 						<div id="functon-area-row2">
 							<div id="functon-area-row2-left">
-								<button id="A2_1" data-bind="enable: true ">#{i18n.getText('KSU001_37')}</button>
+								<button id="A2_1" data-bind="enable: true, click : openKDL046 ">#{i18n.getText('KSU001_37')}</button>
 								<span id="A2_2" data-bind="text: targetOrganizationName"></span>
 							</div>
 							<div id="functon-area-row2-center">
