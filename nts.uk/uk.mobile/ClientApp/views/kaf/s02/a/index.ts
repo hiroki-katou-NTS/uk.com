@@ -258,6 +258,30 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.goOutLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.longTermLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.childCareLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.dataSource = _.remove(self.dataSource, (x) => x.id !== item.goOutType + 1);
+                }
+            });
+        }
+
+        if (self.dataSource.length === 0) {
+            self.goOutLst.forEach((item) => {
+                item.swtModel = null;
+                
+                return item;
+            });
+        } else {
+            self.goOutLst.forEach((item) => {
+                item.swtModel = self.dataSource[0].id;
+
+                return item;
+            });
+        }
     }
 
     public fetchDataEdit() {
