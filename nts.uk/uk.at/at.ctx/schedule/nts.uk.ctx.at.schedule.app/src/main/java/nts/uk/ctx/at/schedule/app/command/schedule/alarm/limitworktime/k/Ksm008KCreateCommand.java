@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.command.i;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.limitworktime.k;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 @Data
-public class Ksm008IUpdateCommand {
+public class Ksm008KCreateCommand {
 
     /**
      * コード
@@ -22,15 +22,6 @@ public class Ksm008IUpdateCommand {
     private String name;
 
     /**
-     * 日数
-     */
-    private Ksm008IUpdateMaxDaysOfConsecutiveWorkTime maxDaysContiWorktime;
-}
-
-@Data
-class Ksm008IUpdateMaxDaysOfConsecutiveWorkTime {
-
-    /**
      * 就業時間帯コードリスト
      */
     private List<String> workTimeCodes;
@@ -38,5 +29,6 @@ class Ksm008IUpdateMaxDaysOfConsecutiveWorkTime {
     /**
      * 日数
      */
-    private Integer numberOfDays;
+    private Integer maxDay;
 }
+

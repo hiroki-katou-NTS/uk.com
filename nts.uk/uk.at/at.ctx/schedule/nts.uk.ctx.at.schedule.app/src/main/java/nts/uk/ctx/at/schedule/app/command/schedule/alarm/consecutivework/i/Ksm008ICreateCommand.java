@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.command.i;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i;
 
 import lombok.Data;
 
