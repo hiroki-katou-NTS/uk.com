@@ -114,14 +114,14 @@ export class KafS00BComponent extends Vue {
         if (!self.params) {
             return;
         }
-        if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
-            // self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
-            self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
-        } else {
-            // self.$output.prePostAtr = null;
-            self.prePostAtr = null;
-        }
         if (self.$input.newModeContent) {
+            if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
+                // self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+                self.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
+            } else {
+                // self.$output.prePostAtr = null;
+                self.prePostAtr = null;
+            }
             if (self.$input.newModeContent.initSelectMultiDay) {
                 self.$updateValidator('dateRange', { validate: true });
                 self.$updateValidator('date', { validate: false });
@@ -138,6 +138,7 @@ export class KafS00BComponent extends Vue {
             }
         }
         if (self.$input.detailModeContent) {
+            self.prePostAtr = self.$input.detailModeContent.prePostAtr;
             self.$updateValidator('dateRange', { validate: false });
             self.$updateValidator('date', { validate: false });
             // self.$updateValidator('params.output.prePostAtr', { validate: false });
@@ -188,13 +189,37 @@ export class KafS00BComponent extends Vue {
     @Watch('$input.newModeContent.initSelectMultiDay')
     public initSelectMultiDayWatcher(value: any) {
         const self = this;
-        if (value) {
-            self.$updateValidator('dateRange', { validate: true });
-            self.$updateValidator('date', { validate: false });
-        } else {
-            self.$updateValidator('dateRange', { validate: false });
-            self.$updateValidator('date', { validate: true });
-        }
+        new Promise((resolve) => {
+            self.$validate('clear');
+            setTimeout(() => {
+                resolve(true);
+            }, 300);
+        }).then(() => {
+            if (value) {
+                self.$updateValidator('dateRange', { validate: true });
+                self.$updateValidator('date', { validate: false });
+                self.$validate('dateRange');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.dateRange.start,
+                            endDate: self.dateRange.end
+                        }); 
+                }
+                 
+            } else {
+                self.$updateValidator('dateRange', { validate: false });
+                self.$updateValidator('date', { validate: true });
+                self.$validate('date');
+                if (self.$valid) {
+                    self.$emit('kaf000BChangeDate',
+                        {
+                            startDate: self.date,
+                            endDate: self.date
+                        }); 
+                }
+            }
+        });
     }
 
     @Watch('date')
@@ -237,7 +262,9 @@ export class KafS00BComponent extends Vue {
     public prePostAtrWatcher() {
         const self = this;
         self.params.output.prePostAtr = self.prePostAtr;
-        self.$emit('kaf000BChangePrePost', self.prePostAtr);
+        if (self.displayPrePost) {
+            self.$emit('kaf000BChangePrePost', self.prePostAtr);
+        }
     }
 }
 
@@ -266,7 +293,7 @@ interface NewModeContent {
 // 詳細モード内容
 interface DetailModeContent {
     // 事前事後区分
-    prePostAtr: string;
+    prePostAtr: number;
     // 申請者名
     employeeName: string;
     // 申請開始日

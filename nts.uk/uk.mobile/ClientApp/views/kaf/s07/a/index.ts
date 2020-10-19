@@ -66,12 +66,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
     // data is fetched service
     public data: any = 'data';
 
-    // public kaf000_A_Params: any = null;
-
-    // public kaf000_B_Params: any = null;
-
-    // public kaf000_C_Params: any = null;
-
     public user: any;
     public application: any = {
         version: 1,
@@ -115,8 +109,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
         
 
     }
-
-
 
     get application1() {
         const self = this;
@@ -239,7 +231,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
             },
             output: {
-                prePostAtr: 0,
+                prePostAtr: null,
                 startDate: null,
                 endDate: null
             }
@@ -253,60 +245,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             };
         }
         self.kaf000_B_Params = paramb;
-        if (self.mode) {
-            self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-
-                }
-                self.changeDate(listDate);
-            });
-
-            self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
-
-                self.changeDate(listDate);
-            });
-            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
-            });
-
-        }
+        
 
 
     }
@@ -515,98 +454,91 @@ export class KafS07AComponent extends KafS00ShrComponent {
         this.appDispInfoStartupOutput.appDetailScreenInfo = params.appDispInfoStartupOutput.appDetailScreenInfo;
     }
     public bindAppWorkChangeRegister() {
-        this.appWorkChangeDto.straightGo = this.model.straight == 2 ? 0 : 1;
-        this.appWorkChangeDto.straightBack = this.model.bounce == 2 ? 0 : 1;
-        this.appWorkChangeDto.opWorkTypeCD = this.model.workType.code;
-        this.appWorkChangeDto.opWorkTimeCD = this.model.workTime.code;
-        if (this.isCondition3) {
-            this.appWorkChangeDto.timeZoneWithWorkNoLst = [];
+        const self = this;
+        self.appWorkChangeDto.straightGo = self.model.straight == 2 ? 0 : 1;
+        self.appWorkChangeDto.straightBack = self.model.bounce == 2 ? 0 : 1;
+        self.appWorkChangeDto.opWorkTypeCD = self.model.workType.code;
+        self.appWorkChangeDto.opWorkTimeCD = self.model.workTime.code;
+        if (self.isCondition3) {
+            self.appWorkChangeDto.timeZoneWithWorkNoLst = [];
             let a = null;
             let b = null;
-            if (this.isCondition1) {
+            if (self.isCondition1) {
                 a = {
                     workNo: 1,
                     timeZone: {
-                        startTime: this.valueWorkHours1.start,
-                        endTime: this.valueWorkHours1.end
+                        startTime: self.valueWorkHours1.start,
+                        endTime: self.valueWorkHours1.end
                     }
                 };
-                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
+                self.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
             }
-            if (this.valueWorkHours2) {
+            if (self.valueWorkHours2) {
 
-                if (this.isCondition2 && !(_.isNull(this.valueWorkHours2.start) && _.isNull(this.valueWorkHours2.end))) {
+                if (self.isCondition2 && !(_.isNull(self.valueWorkHours2.start) && _.isNull(self.valueWorkHours2.end))) {
                     b = {
                         workNo: 2,
                         timeZone: {
-                            startTime: this.valueWorkHours2 ? this.valueWorkHours2.start : null,
-                            endTime: this.valueWorkHours2 ? this.valueWorkHours2.end : null
+                            startTime: self.valueWorkHours2 ? self.valueWorkHours2.start : null,
+                            endTime: self.valueWorkHours2 ? self.valueWorkHours2.end : null
                         }
                     };
-                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+                    self.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
                 }
             }
         } else {
-            this.appWorkChangeDto.timeZoneWithWorkNoLst = null;
+            self.appWorkChangeDto.timeZoneWithWorkNoLst = null;
         }
-        if (!this.mode && !this.isCondition3) {
+        if (!self.mode && !self.isCondition3) {
 
-            this.appWorkChangeDto.timeZoneWithWorkNoLst = [];
+            self.appWorkChangeDto.timeZoneWithWorkNoLst = [];
             let a = null;
             let b = null;
-            if (!_.isNull(this.valueWorkHours1)) {
-                if (this.isCondition1 && this.valueWorkHours1.start && this.valueWorkHours1.end) {
+            if (!_.isNull(self.valueWorkHours1)) {
+                if (self.isCondition1 && self.valueWorkHours1.start && self.valueWorkHours1.end) {
                     a = {
                         workNo: 1,
                         timeZone: {
-                            startTime: this.valueWorkHours1.start,
-                            endTime: this.valueWorkHours1.end
+                            startTime: self.valueWorkHours1.start,
+                            endTime: self.valueWorkHours1.end
                         }
                     };
-                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
+                    self.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
                 }
 
             }
-            if (!_.isNull(this.valueWorkHours2)) {
-                if (this.isCondition2 && this.valueWorkHours2.start && this.valueWorkHours2.end) {
+            if (!_.isNull(self.valueWorkHours2)) {
+                if (self.isCondition2 && self.valueWorkHours2.start && self.valueWorkHours2.end) {
                     b = {
                         workNo: 2,
                         timeZone: {
-                            startTime: this.valueWorkHours2.start,
-                            endTime: this.valueWorkHours2.end
+                            startTime: self.valueWorkHours2.start,
+                            endTime: self.valueWorkHours2.end
                         }
                     };
-                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+                    self.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
                 }
             }
         }
-        if (!this.mode) {
-            this.application = this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        if (!self.mode) {
+            let opAppStandardReasonCD =  self.application.opAppStandardReasonCD;
+            let opAppReason = self.application.opAppReason;
+            self.application = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+            self.application.opAppReason = opAppReason;
         }
-        if (this.mode) {
-            this.application.employeeID = this.user.employeeId;
-        }
-
-        if (this.kaf000_B_Params) {
-            if (this.mode) {
-                this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-                } else {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                }
+        if (self.mode) {
+            self.application.employeeID = self.user.employeeId;
+            // ver6 
+            // 「事前事後区分」が表示しない場合
+            let appDispInfoStartupOutput = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput;
+            let isDisplayPre = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr;
+            if (isDisplayPre == 0) {
+                // 「勤務変更申請の表示情報．申請表示情報.申請表示情報(基準日関係あり).事前事後区分」を使用する
+                self.application.prePostAtr = appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr;
             }
-
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-
         }
-
-        if (this.kaf000_C_Params.output) {
-            this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
-            this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
-        }
-        this.application.enteredPerson = this.user.employeeId;
+        self.application.enteredPerson = self.user.employeeId;
 
 
     }
@@ -743,6 +675,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 timeRange: false,
                 required: false
             });
+        } else {
+            if (self.isCondition1) {
+                self.$updateValidator('valueWorkHours1', {
+                    timeRange: true,
+                    required: true
+                });
+            }
         }
         if (self.valueWorkHours1 != null) {
             
@@ -774,7 +713,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     });
                 }
             }
-        }
+        } 
         if (self.valueWorkHours2 != null) {
            
             if (self.valueWorkHours2.start != undefined && self.valueWorkHours2.end == undefined) {
@@ -839,7 +778,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
             appDispInfoStartupDto: self.appDispInfoStartupOutput
         }).then((res: any) => {
-            self.$mask('hide');
+            //self.$mask('hide');
             // confirmMsgLst
             // holidayDateLst
             let isConfirm = true;
@@ -854,6 +793,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
 
 
+            } else {
+                self.$mask('hide');
             }
 
 
@@ -1026,19 +967,33 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
 
     public kaf000BChangeDate(objectDate) {
-        console.log('emit' + objectDate);
+        const self = this;
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
     }
     
     public kaf000BChangePrePost(prePostAtr) {
-        console.log('emit' + prePostAtr);
+        const self = this;
+        self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
-        console.log('emit' + opAppStandardReasonCD);
+        const self = this;
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
-        console.log('emit' + opAppReason);
+        const self = this;
+        self.application.opAppReason = opAppReason;
     }
 }
 export class Work {
