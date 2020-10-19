@@ -64,7 +64,7 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<
                 new AgreementMultiMonthAvg(errorTimeInMonth),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
-        Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+        Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId()/*,EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class)*/);
 
         if (agreementTimeOfCompanyOpt.isPresent()) {
             AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),

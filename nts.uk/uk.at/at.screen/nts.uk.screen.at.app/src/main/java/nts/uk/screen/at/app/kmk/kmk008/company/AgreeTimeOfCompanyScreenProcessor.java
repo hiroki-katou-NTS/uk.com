@@ -21,7 +21,7 @@ public class AgreeTimeOfCompanyScreenProcessor {
 
     public AgreementTimeOfCompanyDto findAgreeTimeOfCompany(RequestCompany requestCompany) {
         Optional<AgreementTimeOfCompany> data = agreementTimeCompanyRepository.getByCid(
-                AppContexts.user().companyId(), EnumAdaptor.valueOf(requestCompany.getLaborSystemAtr(),LaborSystemtAtr.class));
+                AppContexts.user().companyId()/*, EnumAdaptor.valueOf(requestCompany.getLaborSystemAtr(),LaborSystemtAtr.class)*/);
 
         return AgreementTimeOfCompanyDto.setData(data);
     }

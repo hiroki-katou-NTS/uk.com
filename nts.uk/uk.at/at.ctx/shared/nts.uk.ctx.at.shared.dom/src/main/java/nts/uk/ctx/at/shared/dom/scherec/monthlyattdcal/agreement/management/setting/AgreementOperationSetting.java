@@ -115,11 +115,16 @@ public class AgreementOperationSetting extends AggregateRoot {
 			return new DatePeriod(GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1), 
 								  yearMonth.lastGeneralDate());
 		} 
-			
-		YearMonth previousYM = yearMonth.addMonths(-1);
-		int closureDay = this.closureDate.getClosureDay().v() + 1;
-		return new DatePeriod(GeneralDate.ymd(previousYM.year(), previousYM.month(), closureDay + 1), 
-				  		 	  GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay));
+		
+		return new DatePeriod(getClosureNextDate(yearMonth.addMonths(-1)), 
+				  		 	  GeneralDate.ymd(yearMonth.year(), yearMonth.month(), this.closureDate.getClosureDay().v()));
+	}
+	
+	private GeneralDate getClosureNextDate(YearMonth ym) {
+		val closureDay = this.closureDate.getClosureDay().v();
+		val lastDate = ym.lastGeneralDate();
+		return closureDay == lastDate.day() ? lastDate.addDays(1) 
+				: GeneralDate.ymd(ym.year(), ym.month(), closureDay + 1);
 	}
 	
 	/**

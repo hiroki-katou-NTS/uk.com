@@ -1,0 +1,76 @@
+.kaf021a-content{
+    margin-left: 80px;
+    margin-top: 5px;
+}
+
+#A1_2{
+    width: 300px;
+}
+
+#A1_2 .label{
+    white-space: pre-wrap;
+}
+
+#tbl-control{
+    margin-top: 5px;
+    width: 1180px;
+}
+
+#tbl-control .cell:nth-child(1){
+    width: 90px;
+}
+
+#tbl-control .cell:nth-child(2){
+    width: auto;
+}
+
+#tbl-control .cell:nth-child(3){
+    width: 200px;
+    text-align: right;
+    padding-right: 12px;
+}
+
+#grid{
+    margin-top: 5px;
+}
+
+#grid .mgrid-header td{
+    vertical-align: middle !important;
+}
+
+#grid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space), 
+#grid .mgrid-free:not(.mgrid-header) .mgrid-free-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space){
+    height: 39px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.red-text {
+    color: red;
+}
+
+.black-text {
+    color: black;
+}
+
+.bg-alarm{
+    background-color: #f6f636;
+}
+
+.bg-error{
+    background-color: #fd4d4d;
+}
+
+.bg-special{
+    background-color: #eb9152;
+}
