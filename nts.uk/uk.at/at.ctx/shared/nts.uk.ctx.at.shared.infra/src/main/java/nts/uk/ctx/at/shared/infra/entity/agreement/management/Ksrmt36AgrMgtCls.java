@@ -56,6 +56,12 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
     @Column(name = "BASIC_M_ER_TIME")
     public double basicMArlTime;
     /**
+     * 基本設定の1ヶ月上限時間
+     * 分類３６協定時間.３６協定基本設定.1ヶ月.基本設定
+     */
+    @Column(name = "BASIC_M_LIMIT_TIME")
+    public double basicMLimitTime;
+    /**
      * 特例設定の1ヶ月アラーム時間
      * 分類３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
      */
@@ -85,12 +91,6 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
      */
     @Column(name = "BASIC_Y_ER_TIME")
     public double basisYErTime;
-    /**
-     * 基本設定の1年間上限時間
-     * 分類３６協定時間.３６協定基本設定.1年間.基本設定
-     */
-    @Column(name = "BASIC_Y_LIMIT_TIME")
-    public double basisYLimitTime;
     /**
      * 特例設定の1年間アラーム時間
      * 分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
@@ -189,7 +189,7 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtClsPk().getLaborSystemAtr(),LaborSystemtAtr.class);
 
         val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
-        val upperLimit = new AgreementOneMonthTime((int) entity.getSpYLimitTime());
+        val upperLimit = new AgreementOneMonthTime((int) entity.getBasicMLimitTime());
 
         val basic =  OneMonthTime.of(erAlTime, upperLimit);
 
@@ -203,7 +203,7 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
         val basicY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getBasisYErTime()), new AgreementOneYearTime((int) entity.getBasisYAlTime()));
         val erAlTimeSpY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getSpYErlTime()), new AgreementOneYearTime((int) entity.getSpYAlTime()));
 
-        val upperLimitSpY = new AgreementOneYearTime((int) entity.getBasisYLimitTime());
+        val upperLimitSpY = new AgreementOneYearTime((int) entity.getSpYLimitTime());
 
         val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
         val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
