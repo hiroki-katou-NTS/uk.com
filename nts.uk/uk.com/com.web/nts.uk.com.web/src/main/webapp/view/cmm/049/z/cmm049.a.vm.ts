@@ -28,7 +28,21 @@ module nts.uk.com.view.cmm049.z {
     public A4_4_42_Value: KnockoutObservable<string> = ko.observable('');
     public A4_4_45_Value: KnockoutObservable<string> = ko.observable('');
 
-    public companyMobilePhone: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable(true);
+    public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public personalEmailAddress: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobileEmailAddress: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact1: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact2: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact3: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact4: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact5: KnockoutObservable<boolean> = ko.observable(true);
 
     public emailColumns: any[] = [
       {
@@ -189,6 +203,13 @@ module nts.uk.com.view.cmm049.z {
           },
         ],
       })
+
+      vm.$blockui('grayout')
+        .then(() => vm.$ajax(API.findByCid))
+        .then((response: UserInformationSettingDto) => {
+          console.log(response);
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     public closeDialog() {
@@ -199,6 +220,7 @@ module nts.uk.com.view.cmm049.z {
 
       nts.uk.ui.windows.close();
     }
+
   }
 
   export class CheckboxModel {

@@ -47,7 +47,7 @@ public class SevmtMailDestination extends UkJpaEntity {
 
     public static List<SevmtMailDestination> toListEntity(EmailDestinationFunction domain, String cid) {
         List<SevmtMailDestination> sevmtMailDestinations = new ArrayList<>();
-        domain.getFunctionIds().forEach(item -> sevmtMailDestinations.add(new SevmtMailDestination(domain.getEmailClassification().code, item.v(), cid)));
+        domain.getFunctionIds().forEach(item -> sevmtMailDestinations.add(new SevmtMailDestination(domain.getEmailClassification().value, item.v(), cid)));
         return sevmtMailDestinations;
     }
 
