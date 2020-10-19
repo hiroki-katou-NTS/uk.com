@@ -3126,7 +3126,25 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             ProgramIdConsts.KDL047,
             "KDL047_1",
             "/view/kdl/047/a/index.xhtml");
-		
+
+    /**
+     * CMM024
+     */
+    public static final Program CMM024A = new Program(WebAppId.COM,ProgramIdConsts.CMM024A,
+             "CMM024_90"
+            ,"/view/cmm/024/a/index.xhtml");
+    public static final Program CMM024B = new Program(WebAppId.COM,ProgramIdConsts.CMM024B,
+            "CMM024_91"
+            ,"/view/cmm/024/b/index.xhtml");
+    public static final Program CMM024C = new Program(WebAppId.COM,ProgramIdConsts.CMM024C,
+            "CMM024_92"
+            ,"/view/cmm/024/c/index.xhtml");
+    public static final Program CMM024D = new Program(WebAppId.COM,ProgramIdConsts.CMM024D,
+            "CMM024_93"
+            ,"/view/cmm/024/d/index.xhtml");
+    public static final Program CMM024F = new Program(WebAppId.COM,ProgramIdConsts.CMM024F,
+            "CMM024_94"
+            ,"/view/cmm/024/f/index.xhtml");
     /**
      * All programs map.
      */

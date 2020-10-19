@@ -9,8 +9,8 @@ import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificati
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -121,8 +121,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         // 社員IDから個人社員基本情報を取得
         List<String> employeeIds = errorResults.stream().map(ErrorResultDto::getEmployeeId)
                 .distinct().collect(Collectors.toList());
-        Map<String, PersonEmpBasicInfoDto> empInfo = personEmpBasicInfoAdapter.getPerEmpBasicInfo(employeeIds)
-                .stream().collect(Collectors.toMap(PersonEmpBasicInfoDto::getEmployeeId, c -> c));
+        Map<String, EmployeeInfor> empInfo = personEmpBasicInfoAdapter.getPerEmpBasicInfo(employeeIds)
+                .stream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, c -> c));
         errorResults.forEach(x -> x.mappingEmpInfo(empInfo));
 
         return errorResults;

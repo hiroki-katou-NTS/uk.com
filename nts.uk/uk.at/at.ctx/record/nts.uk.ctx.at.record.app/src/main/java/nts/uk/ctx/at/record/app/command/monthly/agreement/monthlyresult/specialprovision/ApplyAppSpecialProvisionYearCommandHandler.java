@@ -6,8 +6,8 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AnnualAppUpdate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppCreationResult;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
@@ -73,8 +73,8 @@ public class ApplyAppSpecialProvisionYearCommandHandler
         // 社員IDから個人社員基本情報を取得
         List<String> employeeIds = errorResults.stream().map(ErrorResultDto::getEmployeeId)
                 .distinct().collect(Collectors.toList());
-        Map<String, PersonEmpBasicInfoDto> empInfo = personEmpBasicInfoAdapter.getPerEmpBasicInfo(employeeIds)
-                .stream().collect(Collectors.toMap(PersonEmpBasicInfoDto::getEmployeeId, c -> c));
+        Map<String, EmployeeInfor> empInfo = personEmpBasicInfoAdapter.getPerEmpBasicInfo(employeeIds)
+                .stream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, c -> c));
         errorResults.forEach(x -> x.mappingEmpInfo(empInfo));
 
         return errorResults;
