@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated;
+package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import lombok.Getter;
 import lombok.Setter;

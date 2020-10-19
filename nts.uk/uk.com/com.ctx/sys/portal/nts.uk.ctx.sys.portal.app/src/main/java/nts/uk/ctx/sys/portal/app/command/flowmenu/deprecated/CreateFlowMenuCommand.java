@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated;
 
 import lombok.Getter;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

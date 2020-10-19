@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FileName;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**

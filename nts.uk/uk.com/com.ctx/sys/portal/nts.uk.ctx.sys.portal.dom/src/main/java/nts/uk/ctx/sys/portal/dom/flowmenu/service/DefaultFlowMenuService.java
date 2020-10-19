@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.service;
+package nts.uk.ctx.sys.portal.dom.flowmenu.service;
 
 import java.util.Optional;
 
@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;

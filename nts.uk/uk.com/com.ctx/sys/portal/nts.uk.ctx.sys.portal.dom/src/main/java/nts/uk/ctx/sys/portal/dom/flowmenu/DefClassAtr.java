@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu.deprecated;
+package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 public enum DefClassAtr {
 	/**0: New	 */

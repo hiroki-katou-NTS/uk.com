@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FileName;
 
 /**
  * 矢印設定

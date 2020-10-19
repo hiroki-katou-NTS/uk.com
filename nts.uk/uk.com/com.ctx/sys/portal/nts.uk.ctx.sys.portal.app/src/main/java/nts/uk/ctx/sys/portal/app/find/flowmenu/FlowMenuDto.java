@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.portal.app.find.flowmenu;
 
 import lombok.Value;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 
 /**
  * @author hieult

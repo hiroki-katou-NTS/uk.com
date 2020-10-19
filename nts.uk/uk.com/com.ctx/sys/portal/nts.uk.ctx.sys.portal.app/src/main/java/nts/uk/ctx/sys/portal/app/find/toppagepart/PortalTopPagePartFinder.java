@@ -10,7 +10,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
-import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.service.TopPagePartService;
