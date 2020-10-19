@@ -124,12 +124,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(2, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
+                        tuple(ErrorClassification.TWO_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
                 );
     }
 
@@ -174,12 +174,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(3, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
+                        tuple(ErrorClassification.THREE_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
                 );
     }
 
@@ -224,12 +224,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(4, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
+                        tuple(ErrorClassification.FOUR_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
                 );
     }
 
@@ -274,12 +274,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(5, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
+                        tuple(ErrorClassification.FIVE_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
                 );
     }
 
@@ -324,12 +324,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(6, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
+                        tuple(ErrorClassification.SIX_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)),Optional.empty(), Optional.empty())
                 );
     }
 
@@ -413,12 +413,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(1,Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty())
+                        tuple(ErrorClassification.ONE_MONTH_MAX_TIME,Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty())
                 );
     }
 
@@ -470,14 +470,14 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(3);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(2, Optional.of(new AgreementOneMonthTime(0)), Optional.empty(), Optional.empty()),
-                        tuple(1, Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty()),
-                        tuple(8, Optional.empty(), Optional.empty(), Optional.of(AgreementOverMaxTimes.ZERO_TIMES))
+                        tuple(ErrorClassification.TWO_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)), Optional.empty(), Optional.empty()),
+                        tuple(ErrorClassification.ONE_MONTH_MAX_TIME, Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty()),
+                        tuple(ErrorClassification.EXCEEDING_MAXIMUM_NUMBER, Optional.empty(), Optional.empty(), Optional.of(AgreementOverMaxTimes.ZERO_TIMES))
                 );
     }
 
@@ -510,12 +510,12 @@ public class CheckErrorApplicationMonthServiceTest {
         assertThat(data.size()).isEqualTo(1);
         assertThat(data)
                 .extracting(
-                        d -> d.getErrorClassification().value,
+                        d -> d.getErrorClassification(),
                         d -> d.getMaximumTimeMonth().get().v(),
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(1, 20, Optional.empty(), Optional.empty()));
+                        tuple(ErrorClassification.ONE_MONTH_MAX_TIME, 20, Optional.empty(), Optional.empty()));
     }
 
 }
