@@ -20,22 +20,18 @@ module nts.uk.com.view.ccg020.a {
     valueHistorySearch: KnockoutObservable<string> = ko.observable('');
     showPopup: KnockoutObservable<boolean> = ko.observable(false);
     searchCategory: KnockoutObservable<number> = ko.observable(0);
-    columns: any;
+    searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
     created() {
       const vm = this;
+      vm.searchCategoryList.push({id: 0, name: nts.uk.resource.getText('CCG002_2')});
+      vm.searchCategoryList.push({id: 1, name: nts.uk.resource.getText('CCG002_3')});
       vm.getListMenu();
       vm.addSearchBar();
       vm.addImgNotice();
       vm.addEventClickWarningBtn();
       vm.addEventClickNoticeBtn();
       vm.eventClickSearch();
-      vm.columns = [
-        {
-          key: "name", 
-          dataType: "string", 
-          template: "<a href='${url}' value='name'/>"
-        }
-      ]
+      vm.openPopupSearchCategory();
     }
 
     private addImgNotice() {
@@ -77,13 +73,18 @@ module nts.uk.com.view.ccg020.a {
 
     private addSearchBar() {
       const vm = this;
-      console.log(vm.treeMenu());
       const $userInfo = $('#user-info');
       const $searchBar =  $userInfo.find('#search-bar');
 
-      $('<i/>')
+      const $searchIcon = $('<i/>')
         .attr('id', 'search-icon')
-        .attr('data-bind', 'ntsIcon: { no: 19, width: 30, height: 30 }')
+        .attr('data-bind', 
+        `ntsIcon: { no: 19, width: 30, height: 30 },
+        `)
+        .appendTo($searchBar);
+
+      $('<div/>')
+        .attr('id', 'popup-search-category')
         .appendTo($searchBar);
 
       const $search = $('<input/>')
@@ -118,7 +119,7 @@ module nts.uk.com.view.ccg020.a {
           at: "left bottom",
           of: "#search"
         }
-      })
+      });
 
       $('#popup-search').ntsPopup({
         showOnStart: false,
@@ -128,22 +129,37 @@ module nts.uk.com.view.ccg020.a {
           at: "left bottom",
           of: "#search"
         }
+      });
+
+      $('#popup-search-category').ntsPopup({
+        showOnStart: false,
+        dismissible: true,
+        position: {
+          my: "right top",
+          at: "right bottom",
+          of: "#search-icon"
+        }
       })
 
       $('#list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       })
-      $('#list-box-search').on('selectionChanging', (event: any) => {
-        debugger
-        vm.valueSearch((<any>event.originalEvent).detail.contents);
-        $("#popup-search").ntsPopup("hide");
-        vm.submit();
-      })
-      $('#list-box-search').on('selectionChanged', (event: any) => {
-        debugger
-        vm.valueSearch((<any>event.originalEvent).detail.contents);
-        $("#popup-search").ntsPopup("hide");
-        vm.submit();
+    }
+
+    private openPopupSearchCategory() {
+      const $checkboxGroup = $('<div/>')
+        .attr('id', 'radio-search-category')
+        .attr('data-bind',
+        `ntsRadioBoxGroup: {
+          options: searchCategoryList,
+          optionsValue: 'id',
+          optionsText: 'name',
+          value: searchCategory,
+          enable: true
+        }`)
+        .appendTo($("#popup-search-category"));
+      $('#search-icon').click(() => {
+        $("#popup-search-category").ntsPopup("show");
       })
     }
 
@@ -181,27 +197,30 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $("#list-box").remove();
       $("#popup-search").ntsPopup("hide");
-      if (vm.valueSearch() !== null) {
+      vm.treeMenuResult([]);
+      if (vm.valueSearch() !== '') {
         vm.addHistoryResult();
         vm.treeMenuResult(vm.filterItems(vm.valueSearch(), vm.treeMenu()));
+        const $tableResult = $('<div/>').attr('id', 'list-box');
+        const list = vm.treeMenuResult();
+        if (list.length > 0) {
+          _.forEach(list, (item) => {
+            const $ul = $('<a/>')
+              .addClass('result-search')
+              .attr('href', item.url)
+              .text(item.name);
+            $tableResult.append($ul);
+          });
+        } else {
+          $tableResult.text(nts.uk.resource.getText('CCG002_9'));
+        }
+        const $popup = $('#popup-result');
+        $popup.append($tableResult);
+        $("#popup-result").ntsPopup("show");
       }
-      const $tableResult = $('<div/>').attr('id', 'list-box');
-      const list = vm.treeMenuResult();
-      if (list.length > 0) {
-        _.forEach(list, (item) => {
-          const $ul = $('<a/>')
-            .addClass('result-search')
-            .attr('href', item.url)
-            .text(item.name);
-          $tableResult.append($ul);
-        });
-      } else {
-        $tableResult.text(nts.uk.resource.getText('CCG002_9'));
-      }
-      const $popup = $('#popup-result');
-      $popup.append($tableResult);
-      $("#popup-result").ntsPopup("show");
     }
+
+
 
     private addHistoryResult() {
       const vm = this;
@@ -238,17 +257,19 @@ module nts.uk.com.view.ccg020.a {
           const list = vm.dataDisplay();
           if (list.length > 0) {
             _.forEach(list, (item) => {
-              const $iconTimer = $('<i/>')
-                .addClass('img-timer')
-                .attr('data-bind', 'ntsIcon: { no: 173, width: 30, height: 30 }');
-              
-              const $ul = $('<li/>')
-                .addClass('result-search')
-                .append('<i data-bind="ntsIcon: { no: 173 }"></i>')
-                .text(item.contents)
-                .append('<i class="icon icon-close" style="float: right;"></i>');
-              $tableSearch.append($ul);
+              const $iconClose = $('<i/>')
+                .addClass('icon icon-close')
+                .attr('style', 'float: right;')
+                .on('click', (event) => vm.removeHistoryResult(item));
+              const $textLi = $('<p/>')
+                .addClass('text-li')
+                .on('click', (event) => vm.selectItemSearch(item))
+                .text(item.contents);
+              const $li = $('<li/>').addClass('result-search').append($textLi).append($iconClose);
+              $tableSearch.append($li);
+
             });
+
           } else {
             $tableSearch.text(nts.uk.resource.getText('CCG002_5'));
           }
@@ -258,9 +279,12 @@ module nts.uk.com.view.ccg020.a {
         .always(() => vm.$blockui('clear'));
     }
 
-    // private addEventChangeListBoxSearch() {
-    //   $('#list-box-search').on()
-    // }
+    private selectItemSearch(data: any) {
+      const vm = this;
+      vm.valueSearch(data.contents);
+      $("#popup-search").ntsPopup("hide");
+      vm.submit();
+    }
 
     // private getByContent(searchCategory: number, valueSearch: string) {
     //   const vm = this;

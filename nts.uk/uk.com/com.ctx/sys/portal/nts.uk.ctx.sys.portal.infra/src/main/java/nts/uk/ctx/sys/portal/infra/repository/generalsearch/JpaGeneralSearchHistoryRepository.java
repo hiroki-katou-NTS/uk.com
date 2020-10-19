@@ -90,7 +90,12 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void delete(GeneralSearchHistory domain) {
-		this.commandProxy().remove(this.toEntity(domain));
+		SptdtGenericSearchHistPK pk = new SptdtGenericSearchHistPK(
+				AppContexts.user().companyId(), 
+				AppContexts.user().userId(), 
+				domain.getSearchCategory().value, 
+				domain.getContents().v());
+		this.commandProxy().remove(SptdtGenericSearchHist.class, pk);
 	}
 
 	/**
@@ -123,13 +128,6 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	@SneakyThrows
 	public List<GeneralSearchHistory> getLast10UsedSearches(String userID, String companyID,
 			int searchCategory) {
-//		return this.queryProxy()
-//				.query(QUERY_SELECT_LAST_10_RESULTS, SptdtGenericSearchHist.class)
-//				.setParameter("companyID", companyID)
-//				.setParameter("userID", userID)
-//				.setParameter("searchCategory", searchCategory)
-//				
-//				.getList(GeneralSearchHistory::createFromMemento);
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = QUERY_SELECT_LAST_10_RESULTS;
 		query = query.replaceAll("companyID", companyID);

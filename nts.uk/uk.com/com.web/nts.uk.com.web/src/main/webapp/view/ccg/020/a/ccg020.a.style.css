@@ -20,19 +20,20 @@
 button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
 }
-/* input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
-  width: 300px;
-} */
+.ntsRadioBox {
+  display: block;
+}
 #search-icon {
   background-size: auto !important;
   top: 10px;
   position: relative;
+  cursor: pointer;
 }
 .result-search {
   display: block;
   line-height: 2;
 }
-#popup-result, #popup-search {
+#popup-result, #popup-search, #popup-search-category {
   width: 173px;
 }
 
@@ -49,11 +50,28 @@ li:hover {
 
 .img-timer {
   width: 30px;
+  background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
+  background-repeat: no-repeat;
+  display: block;  /* may not need this, but I've found I do */
 }
-.icon-close {
-  top: 5px;
-}
+
 .icon-close:hover {
   background-color:	#F2F2F2;
   border-radius: 50%;
+}
+
+.result-search {
+  padding-left: 35px;  /* width of the image plus a little extra padding */
+  background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
+  background-repeat: no-repeat;
+  height: 20px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  background-size: contain;
+  line-height: 20px;
+}
+
+.text-li {
+  width: 80%;
+  display: inline;
 }
