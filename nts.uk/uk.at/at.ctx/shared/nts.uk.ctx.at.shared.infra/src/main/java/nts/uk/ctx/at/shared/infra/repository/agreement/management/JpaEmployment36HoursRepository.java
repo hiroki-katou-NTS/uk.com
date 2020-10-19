@@ -22,20 +22,29 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
 
     private static String FIND_BY_CID_AND_CD;
 
+    private static String FIND_EMPLOYMENT_SETTING;
+
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append("SELECT a");
-        builderString.append("FROM Ksrmt36AgrMgtEmp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
-        builderString.append("AND a.ksrmt36AgrMgtEmpPk.employmentCode = :cd ");
-        builderString.append("AND a.ksrmt36AgrMgtEmpPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtEmp a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
+        builderString.append(" AND a.ksrmt36AgrMgtEmpPk.employmentCode = :cd ");
+        builderString.append(" AND a.ksrmt36AgrMgtEmpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID_AND_CD = builderString.toString();
 
          builderString = new StringBuilder();
-        builderString.append("SELECT a");
-        builderString.append("FROM Ksrmt36AgrMgtEmp a");
-        builderString.append("WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtEmp a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtEmpPk.companyID = :cid ");
         FIND_BY_CID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(" SELECT a ");
+        builderString.append(" FROM Ksrmt36AgrMgtEmp a ");
+        builderString.append(" WHERE a.ksrmt36AgrMgtEmpPk.companyID = :companyId ");
+        builderString.append(" AND a.ksrmt36AgrMgtEmpPk.laborSystemAtr = :laborSystemAtr ");
+        FIND_EMPLOYMENT_SETTING = builderString.toString();
     }
 
     @Override
@@ -64,6 +73,14 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .getList(Ksrmt36AgrMgtEmp::toDomain);
+    }
+
+    @Override
+    public List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr) {
+
+        return this.queryProxy().query(FIND_EMPLOYMENT_SETTING, Ksrmt36AgrMgtEmp.class)
+                .setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+                .getList(f -> f.ksrmt36AgrMgtEmpPk.employmentCode);
     }
 
     @Override
