@@ -22,6 +22,7 @@ import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
 import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -452,8 +453,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// Add monthly data
 		Range monththDataRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
 				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
-		Range dataMonthRange = worksheet.getCells().createRange(String.format(MONTHLY_DATA_ADDR,
-				(startNewPage + MONTHLY_DATA_START_ROW), (startNewPage + MONTHLY_DATA_START_ROW + 1)));
 		
 		// voi TH next page thi copy lai phan monthly header, dau
 		if (startNewPage > 0) {
@@ -503,6 +502,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			approvalCopy.copy(fixApprovalRange);
 			approvalCopy.copyData(fixApprovalRange);
 		} 
+		// fill data monthly column
 		List<AttendanceRecordReportColumnData> monthLyData = employeeData.getEmployeeMonthlyData();
 		for (int i = 0, j = monthLyData.size(); i < j; i++) {
 			monththDataRange.get(0, i * 2).setValue(monthLyData.get(i).getUper());
@@ -548,11 +548,13 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		dataRow.put(REPORT_RIGHT_ROW, startNewPage + START_REPORT_DATA_ROW);
 		dataRow.put(REPORT_ROW_BG, REPORT_ROW_BG_WHITE);
 		dataRow.put(REPORT_ROW_START_RIGHT, REPORT_ROW_START_RIGHT_COUNT);
+		
+		// fill data column 
 		for (AttendanceRecordReportWeeklyData weeklyData : weeklyDatas) {
 			generateWeeklyData(worksheet, weeklyData, dataRow, dailyWTmpl, dailyBTmpl, weeklyRangeTmpl);
 		}
 
-		// trường này cũng cần sửa nếu in tất cả thành 1 sheet
+		// generate display a confirmation mark in month
 		if (employeeData.isApprovalStatus()) {
 			Range approvalRange =  worksheet.getCells().createRange(REPORT_APPROVAL);
 			approvalRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
@@ -623,9 +625,15 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			dailyRange.get(0, 0).setValue(data.getDate());
 			dailyRange.get(0, 1).setValue(data.getDayOfWeek());
 			List<AttendanceRecordReportColumnData> reportColumnDatas = data.getColumnDatas();
+			// fill data to left daily column
 			for (int k = 0, l = reportColumnDatas.size(); k < l; k++) {
 				// set left or right
-//				if()
+				if (reportColumnDatas.get(k).isAlignUper()) {
+					this.setHorizontalLeft(dailyRange.get(0, 2 * (k + 1)));
+				}
+				if (reportColumnDatas.get(k).isAlignLower()) {
+					this.setHorizontalLeft(dailyRange.get(1, 2 * (k + 1)));
+				}
 				dailyRange.get(0, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getUper());
 				dailyRange.get(1, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getLower());
 			}
@@ -651,7 +659,15 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		weeklySumaryRange.get(1, 0).setValue(sumaryData.getDateRange());
 
 		List<AttendanceRecordReportColumnData> summaryColDatas = sumaryData.getColumnDatas();
+		// fill data to right daily column
 		for (int i = 0, j = summaryColDatas.size(); i < j; i++) {
+			// set align left right
+			if (summaryColDatas.get(i).isAlignUper()) {
+				this.setHorizontalLeft(weeklySumaryRange.get(0, 14 + (i * 2)));
+			}
+			if (summaryColDatas.get(i).isAlignLower()) {
+				this.setHorizontalLeft(weeklySumaryRange.get(1, 14 + (i * 2)));
+			}
 			weeklySumaryRange.get(0, 14 + (i * 2)).setValue(summaryColDatas.get(i).getUper());
 			weeklySumaryRange.get(1, 14 + (i * 2)).setValue(summaryColDatas.get(i).getLower());
 		}
@@ -663,9 +679,23 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 						: dataRow.get(REPORT_LEFT_ROW));
 	}
 	
+	/**
+	 * set style font bold to cell
+	 * @param cell
+	 */
 	private void setFontBold(Cell cell) {
 		Style style = cell.getStyle();
 		style.getFont().setBold(true);
+		cell.setStyle(style);
+	}
+	
+	/**
+	 * set style horizontal left
+	 * @param cell
+	 */
+	private void setHorizontalLeft(Cell cell) {
+		Style style = cell.getStyle();
+		style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		cell.setStyle(style);
 	}
 }
