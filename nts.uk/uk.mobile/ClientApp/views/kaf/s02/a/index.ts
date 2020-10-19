@@ -885,7 +885,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             companyId: self.user.companyId,
             appStampOutputDto: self.appStampOutputDto,
             date: dates,
-            recorderFlag: true,
+            recorderFlag: false,
         };
         self.$http.post('at', API.changeDate, command)
             .then((res: any) => {
