@@ -521,12 +521,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		employeeInfoL.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		employeeInfoR.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		employeeYearInfo.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		// set bold for header
 		this.setFontBold(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX));
 		this.setFontBold(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX));
-		this.setFontBold(employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX));
-		this.setFontBold(employeeInfoL.get(0, EMPL_TITLE_INDEX));
-		this.setFontBold(employeeInfoL.get(0, EMPL_WORKTYPE_INDEX));
-		this.setFontBold(employeeInfoL.get(0, EMPL_YEARMONTH_INDEX));
+		this.setFontBold(employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX));
 		
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
