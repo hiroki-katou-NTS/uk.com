@@ -276,6 +276,13 @@ module nts.uk.ui.calendar {
 			.calendar .event-popper>.epc>.data {
 				overflow: hidden;
 			}
+			.calendar .event-popper>.epc>.data table {
+				width: 100%;
+			}
+			.calendar .event-popper>.epc>.data td:first-child {
+				text-align: left;
+    			vertical-align: top;
+			}
 			.calendar .event-popper.show {
 				visibility: visible;
 			}
