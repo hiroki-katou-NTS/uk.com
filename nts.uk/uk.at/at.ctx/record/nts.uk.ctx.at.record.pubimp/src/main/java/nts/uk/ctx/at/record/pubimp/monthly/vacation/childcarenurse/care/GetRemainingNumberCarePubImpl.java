@@ -49,7 +49,7 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCare {
 	 * @return 子の看護介護休暇集計結果
 	 */
 	@Override
-	public List<ChildCareNursePeriodExport> getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
+	public ChildCareNursePeriodExport getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -58,14 +58,12 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCare {
 			Optional<CreateAtr> createAtr,
 			Optional<GeneralDate> periodOverWrite) {
 
-		List<AggrResultOfChildCareNurse> result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+		AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
 				employeeId, period, performReferenceAtr, criteriaDate, isOverWrite, tempCareDataforOverWriteList, prevCareLeave, createAtr, periodOverWrite);
 
 
 		// 固定値を返す（一時対応）
-		 List<ChildCareNursePeriodExport> resultList = result.stream().map(c -> mapToPub(c))
-		 						.collect(Collectors.toList());
-		return resultList;
+		return mapToPub(result);
 	}
 
 	// Exportから変換

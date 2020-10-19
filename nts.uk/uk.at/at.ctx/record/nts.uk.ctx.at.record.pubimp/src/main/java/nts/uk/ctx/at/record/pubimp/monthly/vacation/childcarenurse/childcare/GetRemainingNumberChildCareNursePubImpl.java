@@ -48,7 +48,7 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 	 * @return 子の看護介護休暇集計結果
 	 */
 	@Override
-	public List<ChildCareNursePeriodExport> getChildCareNurseRemNumWithinPeriod(String employeeId,DatePeriod period,
+	public ChildCareNursePeriodExport getChildCareNurseRemNumWithinPeriod(String employeeId,DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -57,13 +57,11 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 			Optional<CreateAtr> createAtr,
 			Optional<GeneralDate> periodOverWrite) {
 
-		List<AggrResultOfChildCareNurse> result = getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+		AggrResultOfChildCareNurse result = getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 				employeeId, period, performReferenceAtr, criteriaDate, isOverWrite, tempChildCareDataforOverWriteList, prevChildCareLeave, createAtr, periodOverWrite);
 
 		// 固定値を返す（一時対応）
-		 List<ChildCareNursePeriodExport> resultList = result.stream().map(c -> mapToPub(c))
-		 						.collect(Collectors.toList());
-		return resultList;
+		return mapToPub(result);
 	}
 
 	// Exportから変換
@@ -79,7 +77,7 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 					c.isStartDateAtr(),
 					ChildCareNurseAggrPeriodDaysInfo.of(
 							mapToPubAggrPeriodInfo(c.getAggrperiodinfo().getThisYear()),
-						c.getAggrperiodinfo().getNextYear().map(ny -> mapToPubAggrPeriodInfo(ny))));
+							c.getAggrperiodinfo().getNextYear().map(ny -> mapToPubAggrPeriodInfo(ny))));
 	}
 
 	//  起算日からの休暇情報
@@ -117,34 +115,4 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 																		c.getYmd()))
 				.collect(Collectors.toList());
 	}
-
-
-//	private ChildCareNursePeriodExport createEmpty(List<ChildCareNurseErrors> childCareNurseErrors) {
-//		return new ChildCareNursePeriodExport(childCareNurseErrors,
-//																			createUseNumber(),
-//																			ChildCareNurseStartdateDaysInfo.of(
-//																					ChildCareNurseStartdateInfo.of(
-//																							createUseNumber(),
-//																							createRemNumber(),
-//																							//new ChildCareNurseUpperLimit(0.0)),
-//																							new Double(0.0)),
-//																					Optional.empty()),
-//																			false,
-//																			ChildCareNurseAggrPeriodDaysInfo.of(
-//																					//ChildCareNurseAggrPeriodInfo.of(new UsedTimes(0), new UsedTimes(0), createUseNumber())
-//																					ChildCareNurseAggrPeriodInfo.of(new Integer(0), new Integer(0), createUseNumber())
-//																					,Optional.empty()));
-//	}
-//
-//	// 子の看護休暇使用数
-//	private ChildCareNurseUsedNumber createUseNumber() {
-//		//return ChildCareNurseUsedNumber.of(new DayNumberOfUse(0d), Optional.empty());
-//		return ChildCareNurseUsedNumber.of(new Double(0d), Optional.empty());
-//	}
-//
-//	// 子の看護休暇残数
-//	private ChildCareNurseRemainingNumber createRemNumber() {
-//		//return ChildCareNurseRemainingNumber.of(new DayNumberOfUse(0d), Optional.empty());
-//		return ChildCareNurseRemainingNumber.of(new Double(0d), Optional.empty());
-//	}
 }
