@@ -124,10 +124,10 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
             );
             infos.add(info);
         });
-        WorkCycle result = WorkCycle.create(
+        WorkCycle result = new WorkCycle(
                 entity.kdpstDailyPatternSetPK.cid,
-                entity.kdpstDailyPatternSetPK.patternCd,
-                entity.patternName,
+                new WorkCycleCode(entity.kdpstDailyPatternSetPK.patternCd),
+                new WorkCycleName(entity.patternName),
                 infos
         );
         return result;
