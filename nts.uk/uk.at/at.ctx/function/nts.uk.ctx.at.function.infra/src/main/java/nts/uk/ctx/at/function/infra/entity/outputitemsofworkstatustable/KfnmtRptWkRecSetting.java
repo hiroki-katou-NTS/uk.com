@@ -59,12 +59,12 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     public static KfnmtRptWkRecSetting fromDomain(WorkStatusOutputSettings domain, String cid){
         return new KfnmtRptWkRecSetting(
                 new KfnmtRptWkRecSettingPk(domain.getSettingId()),
-                AppContexts.user().contractCode(),// TODO
+                AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(domain.getSettingDisplayCode().v()),
                 domain.getSettingName().v(),
                 domain.getEmployeeId(),
-                domain.getDesignateFreeClassing().value
+                domain.getStandardFreeDivision().value
         );
     }
 

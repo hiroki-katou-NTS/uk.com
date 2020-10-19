@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 
 /**
  * DomainService: 勤務状況の設定を複製する
- *
  * @author chinh.hm
  */
 @Stateless
@@ -39,7 +38,7 @@ public class DuplicateWorkStatusSettingDomainService {
         // 6.勤務状況設定の複製
         return AtomTask.of(() ->
                 // 7.設定を複製する(会社ID, GUID, GUID, 勤務状況の設定表示コード, 勤務状況の設定名称)
-                require.duplicateConfigurationDetails(cid, settingId, id.toString(), settingCode, settingName)
+                require.duplicateConfigurationDetails(cid, settingId, id, settingCode, settingName)
         );
     }
 
