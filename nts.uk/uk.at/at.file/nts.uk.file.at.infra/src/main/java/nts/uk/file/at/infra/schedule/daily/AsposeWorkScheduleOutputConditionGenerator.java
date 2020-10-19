@@ -2054,7 +2054,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.DAYMONTH);
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.DAY);
 		} else {
-			headerData.fixedHeaderData.add(TextResource.localize("KWR001_115"));
+			headerData.fixedHeaderData.add(TextResource.localize("KWR001_114"));
 		}
 		headerData.fixedHeaderData.add(WorkScheOutputConstants.REMARK);
 	}
@@ -2527,7 +2527,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					dayCountTag.setValue(WorkScheOutputConstants.DAY_COUNT);
 					
 					// A7_2 -> A7_10
-					for (int i = 0; i < WorkScheOutputConstants.DAY_COUNT_TITLES.length; i++) {
+					for (int i = 0; i < 9; i++) {
 						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
 						dayTypeTag.setValue(WorkScheOutputConstants.DAY_COUNT_TITLES[i]);
 					}
@@ -2538,7 +2538,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					TotalCountDay totalCountDay = employeeReportData.getTotalCountDay();
 					totalCountDay.initAllDayCount();
 					
-					for (int i = 0; i < WorkScheOutputConstants.DAY_COUNT_TITLES.length; i++) {
+					for (int i = 0; i < 9; i++) {
 						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
 						dayTypeTag.setValue(totalCountDay.getAllDayCount().get(i));
 					}
@@ -2712,14 +2712,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int parentHigherEnabledLevel = findWorkplaceHigherEnabledLevel(parentWorkplace, totalHierarchyOption);
 						if (parentHigherEnabledLevel <= level) {
 							if (levelIterator != null && levelIterator.hasNext()) {
-								tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next();
+								tagStr = TextResource.localize("KWR001_116", Integer.toString(levelIterator.next()));
 							}
 							else {
 								tagStr = null;
 							}
 						}
 						else if (totalHierarchyOption.checkLevelEnabled(level)) {
-							tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+							tagStr = TextResource.localize("KWR001_116", Integer.toString(workplaceReportData.getLevel()));
 						}
 						else {
 							tagStr = null;
