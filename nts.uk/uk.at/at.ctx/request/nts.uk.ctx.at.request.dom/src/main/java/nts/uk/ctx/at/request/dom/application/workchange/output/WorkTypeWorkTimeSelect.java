@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange.output;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,6 @@ public class WorkTypeWorkTimeSelect {
 	/**
 	 * 選択する就業時間帯
 	 */
-	private WorkTimeSetting workTime;
+	private Optional<WorkTimeSetting> workTime;
 	
 }

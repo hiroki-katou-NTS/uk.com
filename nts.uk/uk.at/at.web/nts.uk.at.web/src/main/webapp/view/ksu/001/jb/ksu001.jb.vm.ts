@@ -73,21 +73,18 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     var test = _.map(data, "groupName")
 
 
-                    
+
                 });
             } else if (self.selectedTab() === 'workplace') {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpPattern()).done((data) => {
                     self.clickLinkButton(null, self.selectedLinkButton);
-                   
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             } else if (self.selectedTab() === 'workplaceGroup') {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpGrPattern()).done(() => {
-                    self.Jb2_1Name(nts.uk.resource.getText("Com_WorkplaceGroup"));
                     self.clickLinkButton(null, self.selectedLinkButton);
-                    self.workplaceName();
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             }
@@ -347,10 +344,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                         self.isAllowCheckChanged = false;
                         self.handleAfterChangeData();
                         self.isDeleteEnable(true);
-                        setTimeout(() => {
-                            $("#buttonsave").focus();
-                        }, 100);
-                        
                         dfd.resolve();
                     });
                 }).fail(function(error) {
@@ -473,8 +466,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         getDataWkpGrPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataWkpGrPattern(self.workplaceId).done((data) => {
-                self.listPattern(data);
+                self.listPattern(data.listShiftPalletsOrgDto);
+                self.Jb2_1Name(data.displayName);
                 self.handleAfterGetData(self.listPattern());
+                self.Jb2_1Name(data.displayName);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();

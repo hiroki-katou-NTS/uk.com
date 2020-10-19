@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 775 };</script>
+			<script>var dialogSize = { width: 980, height: 775 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName
@@ -40,11 +40,11 @@
 								value: selectedShiftMasterCode,
 								editable:  true,
 								enable: true,
-								width: 444,
+								width: 505,
 								columns: [
 									{ prop: 'shiftMasterCode', length: 3 },
 									{ prop: 'shiftMasterName', length: 5 },
-									{ prop: 'workTime1', length: 12 },
+									{ prop: 'workTime1', length: 9 },
 									{ prop: 'remark', length: 10 }]}">
 					</div>
 				</div>

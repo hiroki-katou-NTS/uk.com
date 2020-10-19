@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,13 +24,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * 排他バージョン
-	 */
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
 
 	@EmbeddedId
     public SspmtResultOfLogPK sspmtResultOfLogPK;
@@ -113,9 +105,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	public static SspmtResultOfLog toEntity(ResultLogSaving domain) {
 		return new SspmtResultOfLog
 				(
-				new SspmtResultOfLogPK(
-				domain.getLogNumber(), 
-				domain.getProcessingId()), 
+				new SspmtResultOfLogPK(domain.getLogNumber(), domain.getProcessingId()), 
 				domain.getContractCd(),
 				domain.getCid(), 
 				domain.getLogTime(), 

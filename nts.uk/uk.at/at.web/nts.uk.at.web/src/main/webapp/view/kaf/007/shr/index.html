@@ -17,9 +17,9 @@
 				<div class="cell col-2" style="margin-bottom: 5px;">
 					<!--A6_2 勤務種類名-->
 					<div class="cell valign-center">
-						<span data-bind="text: appWorkChange.workTypeCode"></span>
+						<span data-bind="text: $vm.appWorkChange.workTypeCode"></span>
 						<span data-bind="text: ' '"></span>
-						<span data-bind="text: appWorkChange.workTypeName"></span>
+						<span data-bind="text: $vm.appWorkChange.workTypeName"></span>
 					</div>
 				</div>
 			</div>
@@ -52,7 +52,7 @@
 											constraint:'TimeWithDayAttr',
 											value: appWorkChange.startTime1, 
 											enable: true, 
-											readonly: false,
+											readonly: false,	
 											required: true,
 											name: $i18n('KAF007_62') }, enable: $vm.conditionA14" />
 		</div>
@@ -68,7 +68,7 @@
 											required: true,
 											name: $i18n('KAF007_63') }, enable: $vm.conditionA14" />
 			<!-- A7_6	 -->
-			<span class="label" data-bind="text: $i18n('KAF007_75')"></span>
+			<span class="label comment2" data-bind="text: $vm.comment2"></span>
 		</div>
 	</div>
 	<div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles">
@@ -98,7 +98,7 @@
 											required: false,
 											name: $i18n('KAF007_65') }, enable: $vm.conditionA14" />
 			<!-- A8_6	 -->
-			<span class="label" data-bind="text: $i18n('KAF007_75'), visible: $vm.reflectWorkChange.whetherReflectAttendance == 1"></span>
+			<span class="label comment2" data-bind="text: $vm.comment2, visible: $vm.reflectWorkChange.whetherReflectAttendance == 1"></span>
 
 		</div>
 	</div>
@@ -107,13 +107,13 @@
 		<!-- A8_4 -->
 		<div class="cell valign-center col-3" style="display: block;" data-bind="ntsCheckBox: {
 			text: $i18n('KAF007_16'),
-			checked: true
+			checked: $vm.isStraightGo
 		}, enable: $vm.setupType === 0"></div>
 		<div class="cell" style="padding-right: 5px;"></div>
 		<!-- A8_5 -->
 		<div class="cell valign-center" data-bind="ntsCheckBox: {
 			text: $i18n('KAF007_18'),
-			checked: true
+			checked: $vm.isStraightBack
 		}, enable: $vm.setupType === 0"></div>
 	</div>
 </div>
