@@ -1,12 +1,12 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kwr003.a {
-  import common = nts.uk.at.view.kwr003.common;
-  import ComponentOption = kcp.share.list.ComponentOption;
+module nts.uk.at.view.kwr004.a {
+  import common = nts.uk.at.view.kwr004.common;
+  //import ComponentOption = kcp.share.list.ComponentOption;
 
   const WORK_STATUS = 'WorkStatus';
-  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
-  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
+  const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -16,6 +16,9 @@ module nts.uk.at.view.kwr003.a {
     // end variable of CCG001
 
     //panel left
+    startDateString:KnockoutObservable<string> = ko.observable("");
+    endDateString:KnockoutObservable<string> = ko.observable("");    
+    dateValue: KnockoutObservable<any> = ko.observable({});
     yearMonth: KnockoutObservable<number> = ko.observable(202010);;
 
     //panel right
@@ -208,9 +211,9 @@ module nts.uk.at.view.kwr003.a {
         name: attendence.name,
       }
 
-      vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
+      vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
-          //KWR003_B_OUTPUT
+          //KWR004_B_OUTPUT
         });
       });
     }

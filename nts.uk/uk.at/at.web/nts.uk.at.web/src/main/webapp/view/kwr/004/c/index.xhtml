@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 640, height: 300 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kwr003.c.main.css" />
+        <!-- <com:scriptfile path="kwr003.a.common.js" /> -->
+        <com:scriptfile path="kwr003.c.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
+          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area" class="kwr-004c">
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR004_301')"></div>
+            <div
+              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_302')}"
+            ></div>            
+            <div class="textEditor">
+              <div class="code" data-bind="text: oldCode"></div>
+              <div data-bind="text: oldName"></div>              
+            </div>
+          </div>
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR004_303')"></div>            
+            <div
+              class="form-label required broken"
+              data-bind="ntsFormLabel: { 
+                    required: true, 
+                    text: $i18n('KWR004_302'), 
+                    constraint: ['ExportSettingCode', 'ExportSettingName']}"
+            ></div>
+            <div class="textEditor">
+              <input
+                id="KWR004_C23"
+                class="code"
+                tabindex="1"
+                data-bind="ntsTextEditor: {
+                      value: newCode, 
+                      required: false,
+                      constraint: 'ExportSettingCode',
+                      name: $i18n('KWR004_210')
+                    }"
+              />
+              <input
+                class="name"
+                tabindex="2"
+                data-bind="ntsTextEditor: {
+                      value: newName,
+                      required: false,
+                      constraint: 'ExportSettingName',
+                      name: $i18n('KWR004_211')
+                    }"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="functions-area-bottom" class="btn-click">
+          <button
+            tabindex="3"
+            data-bind="click: proceed, enable: $root.errors.isEmpty"
+            class="proceed large"
+          >
+            #{i18n.getText('KWR004_304')}
+          </button>
+          <button tabindex="4" data-bind="click: cancel">
+            #{i18n.getText('KWR004_305')}
+          </button>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

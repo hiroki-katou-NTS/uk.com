@@ -1,13 +1,12 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kwr003.b {
-  //import common = nts.uk.at.view.kwr003.common; 
+module nts.uk.at.view.kwr004.b {  
 
   const NUM_ROWS = 10;
-  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
-  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
-  const KWR003_C_INPUT = 'KWR003_C_DATA';
-  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
+  const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
+  const KWR004_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR004_C_INPUT = 'KWR004_C_DATA';
+  const KWR004_C_OUTPUT = 'KWR004_C_RETURN';
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -62,8 +61,8 @@ module nts.uk.at.view.kwr003.b {
       vm.currentSettingCodeList = ko.observableArray([]);
 
       vm.settingRules = ko.observableArray([
-        { code: 0, name: vm.$i18n('KWR003_217') },
-        { code: 1, name: vm.$i18n('KWR003_218') }
+        { code: 0, name: vm.$i18n('KWR004_217') },
+        { code: 1, name: vm.$i18n('KWR004_218') }
       ]);
 
       vm.settingListItemsDetails.subscribe((newList) => {
@@ -153,7 +152,7 @@ module nts.uk.at.view.kwr003.b {
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
 
-      $('#KWR003_B42').focus();
+      $('#KWR004_B42').focus();
     }
 
     registerSetting() {
@@ -183,9 +182,9 @@ module nts.uk.at.view.kwr003.b {
         name: vm.attendanceName()
       }
       console.log(params);
-      vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
+      vm.$window.storage(KWR004_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
-          vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
+          vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
             }
@@ -198,7 +197,7 @@ module nts.uk.at.view.kwr003.b {
 
     closeDialog() {
       let vm = this;
-      //KWR003_B_OUTPUT
+      //KWR004_B_OUTPUT
       vm.$window.close();
     }
 
@@ -273,7 +272,7 @@ module nts.uk.at.view.kwr003.b {
       lisItems = _.orderBy(lisItems, ['code'], ['asc']);
       vm.settingListItems(lisItems);
 
-      vm.$window.storage(KWR003_B_INPUT).then((data: any) => {
+      vm.$window.storage(KWR004_B_INPUT).then((data: any) => {
         let code = !_.isNil(data) ? data.code : null;
         if (vm.settingListItems().length > 0) {
           let firstItem: any = _.head(vm.settingListItems());
