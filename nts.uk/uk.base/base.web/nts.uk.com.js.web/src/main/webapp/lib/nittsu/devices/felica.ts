@@ -75,7 +75,9 @@ module nts.uk.devices {
         public close() {
             const f = this;
 
-            f.socket.close();
+            if (f.status()) {
+                f.socket.close();
+            }
         }
     }
 
