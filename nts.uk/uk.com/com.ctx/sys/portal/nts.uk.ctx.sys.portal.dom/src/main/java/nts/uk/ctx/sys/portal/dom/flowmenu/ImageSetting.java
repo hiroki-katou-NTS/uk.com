@@ -2,12 +2,13 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import java.util.Optional;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FileName;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
@@ -18,7 +19,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageSetting extends DomainObject {
+public class ImageSetting extends ValueObject {
 
 	/**
 	 * 画像ファイルID
@@ -69,7 +70,7 @@ public class ImageSetting extends DomainObject {
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(""));
+		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null));
 		memento.setBold(this.fontSetting.getSizeAndColor().isBold() ? 1 : 0);
 		memento.setColumn(this.sizeAndPosition.getColumn().v());
 		memento.setFontSize(this.fontSetting.getSizeAndColor().getFontSize().v());
@@ -77,7 +78,7 @@ public class ImageSetting extends DomainObject {
 		memento.setHorizontalPosition(this.fontSetting.getPosition().getHorizontalPosition().value);
 		memento.setFileId(this.fileId);
 		memento.setRow(this.sizeAndPosition.getRow().v());
-		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(""));
+		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null));
 		memento.setFileName(this.fileName.v());
 		memento.setVerticalPosition(this.getFontSetting().getPosition().getVerticalPosition().value);
 		memento.setWidth(this.sizeAndPosition.getWidth().v());

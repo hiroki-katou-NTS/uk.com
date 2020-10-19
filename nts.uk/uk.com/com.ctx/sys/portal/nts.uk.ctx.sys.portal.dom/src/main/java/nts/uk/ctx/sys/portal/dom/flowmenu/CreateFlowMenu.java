@@ -50,14 +50,16 @@ public class CreateFlowMenu extends AggregateRoot {
 		this.flowMenuCode = new TopPagePartCode(memento.getFlowMenuCode());
 		this.cid = memento.getCid();
 		this.flowMenuName = new TopPagePartName(memento.getFileId());
-		this.flowMenuLayout = Optional.ofNullable(new FlowMenuLayout(
-				memento.getFileId(),
-				memento.getMenuSettings(),
-				memento.getLabelSettings(),
-				memento.getLinkSettings(),
-				memento.getFileAttachmentSettings(),
-				memento.getImageSettings(),
-				memento.getArrowSettings()));
+		this.flowMenuLayout = memento.getFileId() != null 
+				? Optional.of(new FlowMenuLayout(
+					memento.getFileId(),
+					memento.getMenuSettings(),
+					memento.getLabelSettings(),
+					memento.getLinkSettings(),
+					memento.getFileAttachmentSettings(),
+					memento.getImageSettings(),
+					memento.getArrowSettings()))
+				: Optional.empty();
 	}
 	
 	public void setMemento(MementoSetter memento, String contractCode) {
@@ -65,13 +67,13 @@ public class CreateFlowMenu extends AggregateRoot {
 		memento.setFlowMenuCode(this.flowMenuCode.v());
 		memento.setFlowMenuName(this.flowMenuName.v());
 		memento.setContractCode(contractCode);
-		memento.setArrowSettings(this.flowMenuLayout.map(FlowMenuLayout::getArrowSettings).orElse(null));
-		memento.setFileAttachmentSettings(this.flowMenuLayout.map(FlowMenuLayout::getFileAttachmentSettings).orElse(null));
+		memento.setArrowSettings(this.flowMenuLayout.map(FlowMenuLayout::getArrowSettings).orElse(null), contractCode);
+		memento.setFileAttachmentSettings(this.flowMenuLayout.map(FlowMenuLayout::getFileAttachmentSettings).orElse(null), contractCode);
 		memento.setFileId(this.flowMenuLayout.map(FlowMenuLayout::getFileId).orElse(null));
-		memento.setImageSettings(this.flowMenuLayout.map(FlowMenuLayout::getImageSettings).orElse(null));
-		memento.setLabelSettings(this.flowMenuLayout.map(FlowMenuLayout::getLabelSettings).orElse(null));
-		memento.setLinkSettings(this.flowMenuLayout.map(FlowMenuLayout::getLinkSettings).orElse(null));
-		memento.setMenuSettings(this.flowMenuLayout.map(FlowMenuLayout::getMenuSettings).orElse(null));
+		memento.setImageSettings(this.flowMenuLayout.map(FlowMenuLayout::getImageSettings).orElse(null), contractCode);
+		memento.setLabelSettings(this.flowMenuLayout.map(FlowMenuLayout::getLabelSettings).orElse(null), contractCode);
+		memento.setLinkSettings(this.flowMenuLayout.map(FlowMenuLayout::getLinkSettings).orElse(null), contractCode);
+		memento.setMenuSettings(this.flowMenuLayout.map(FlowMenuLayout::getMenuSettings).orElse(null), contractCode);
 	}
 	
 	public static interface MementoGetter {
@@ -93,11 +95,11 @@ public class CreateFlowMenu extends AggregateRoot {
 		void setContractCode(String contractCode);
 		void setCid(String cid);
 		void setFileId(String fileId);
-		void setMenuSettings(List<MenuSetting> menuSettings);
-		void setArrowSettings(List<ArrowSetting> arrowSettings);
-		void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings);
-		void setImageSettings(List<ImageSetting> imageSettings);
-		void setLabelSettings(List<LabelSetting> labelSettings);
-		void setLinkSettings(List<LinkSetting> linkSettings);
+		void setMenuSettings(List<MenuSetting> menuSettings, String contractCode);
+		void setArrowSettings(List<ArrowSetting> arrowSettings, String contractCode);
+		void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode);
+		void setImageSettings(List<ImageSetting> imageSettings, String contractCode);
+		void setLabelSettings(List<LabelSetting> labelSettings, String contractCode);
+		void setLinkSettings(List<LinkSetting> linkSettings, String contractCode);
 	}
 }

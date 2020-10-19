@@ -5,9 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class SptmtCreateFlowMenuPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 

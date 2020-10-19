@@ -6,6 +6,10 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -111,6 +115,12 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 	@Basic(optional = false)
 	@Column(name = "VERTICAL_PISITION")
 	private int verticalPosition;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "FLOW_MENU_CD", referencedColumnName = "FLOW_MENU_CD", insertable = false, updatable = false) })
+	private SptmtCreateFlowMenu flowMenu;
 	
 	@Override
 	protected Object getKey() {

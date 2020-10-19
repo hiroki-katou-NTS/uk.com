@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.command.flowmenu;
+package nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

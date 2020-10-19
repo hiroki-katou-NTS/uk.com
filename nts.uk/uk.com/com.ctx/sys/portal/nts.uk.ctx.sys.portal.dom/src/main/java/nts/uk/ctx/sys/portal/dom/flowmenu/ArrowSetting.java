@@ -1,10 +1,11 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
+import org.eclipse.persistence.internal.xr.ValueObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FileName;
 
 /**
@@ -14,7 +15,7 @@ import nts.uk.ctx.sys.portal.dom.flowmenu.deprecated.FileName;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArrowSetting extends DomainObject {
+public class ArrowSetting extends ValueObject {
 	
 	/**
 	 * 矢印ファイル名

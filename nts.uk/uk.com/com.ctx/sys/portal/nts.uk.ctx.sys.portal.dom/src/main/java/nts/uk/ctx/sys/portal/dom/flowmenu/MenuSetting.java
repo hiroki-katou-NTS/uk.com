@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 
@@ -18,7 +17,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuSetting extends DomainObject {
+public class MenuSetting {
 	
 	/**
 	 * サイズと位置
@@ -81,14 +80,14 @@ public class MenuSetting extends DomainObject {
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(""));
+		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null));
 		memento.setBold(this.fontSetting.getSizeAndColor().isBold() ? 1 : 0);
 		memento.setColumn(this.sizeAndPosition.getColumn().v());
 		memento.setFontSize(this.fontSetting.getSizeAndColor().getFontSize().v());
 		memento.setHeight(this.sizeAndPosition.getHeight().v());
 		memento.setHorizontalPosition(this.fontSetting.getPosition().getHorizontalPosition().value);
 		memento.setRow(this.sizeAndPosition.getRow().v());
-		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(""));
+		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null));
 		memento.setVerticalPosition(this.getFontSetting().getPosition().getVerticalPosition().value);
 		memento.setWidth(this.sizeAndPosition.getWidth().v());
 		memento.setSystemType(this.systemType.value);

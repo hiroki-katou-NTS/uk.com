@@ -124,61 +124,67 @@ public class SptmtCreateFlowMenu implements Serializable,
 	}
 
 	@Override
-	public void setMenuSettings(List<MenuSetting> menuSettings) {
+	public void setMenuSettings(List<MenuSetting> menuSettings, String contractCode) {
 		this.menuSettings = menuSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutMenu entity = new SptmtFlowLayoutMenu();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setArrowSettings(List<ArrowSetting> arrowSettings) {
+	public void setArrowSettings(List<ArrowSetting> arrowSettings, String contractCode) {
 		this.arrowSettings = arrowSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutArrow entity = new SptmtFlowLayoutArrow();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings) {
+	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode) {
 		this.fileAttachmentSettings = fileAttachmentSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutFileAttachment entity = new SptmtFlowLayoutFileAttachment();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setImageSettings(List<ImageSetting> imageSettings) {
+	public void setImageSettings(List<ImageSetting> imageSettings, String contractCode) {
 		this.imageSettings = imageSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutImage entity = new SptmtFlowLayoutImage();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setLabelSettings(List<LabelSetting> labelSettings) {
+	public void setLabelSettings(List<LabelSetting> labelSettings, String contractCode) {
 		this.labelSettings = labelSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutLabel entity = new SptmtFlowLayoutLabel();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}
 
 	@Override
-	public void setLinkSettings(List<LinkSetting> linkSettings) {
+	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
 		this.linkSettings = linkSettings.stream()
 				.map(domain -> {
 					SptmtFlowLayoutLink entity = new SptmtFlowLayoutLink();
 					domain.setMemento(entity);
+					entity.setContractCode(contractCode);
 					return entity;
 				}).collect(Collectors.toList());
 	}

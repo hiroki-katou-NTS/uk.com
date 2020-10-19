@@ -1,5 +1,5 @@
 
-package nts.uk.ctx.sys.portal.app.command.flowmenu;
+package nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated;
 
 import lombok.Getter;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
