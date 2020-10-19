@@ -181,6 +181,18 @@ export class KafS02CComponent extends KafS00ShrComponent {
     
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType + 1);
+                }
+            });
+        }
+
+        self.selectedOutCD = self.outingTypeAtrs[0].code;
     }
 
     public register() {
