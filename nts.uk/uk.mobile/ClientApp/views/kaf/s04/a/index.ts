@@ -1,6 +1,6 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from '../../s00';
+import { KafS00AComponent, KafS00BComponent, KAFS00BParams, KafS00CComponent, KAFS00CParams } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS00SubP1Component, KAFS00P1Params } from '../../s00/sub/p1';
 
@@ -49,8 +49,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public readonly params!: Params;
     public title: string = 'KafS04A';
     public kafS00AParams: IParamS00A = null;
-    public kafS00BParams: IParamS00B;
-    public kafS00CParams: IParamS00C;
+    public kafS00BParams: KAFS00BParams;
+    public kafS00CParams: KAFS00CParams;
     public kafS00P1Params1: KAFS00P1Params = {
         preAppDisp: false,
         preAppTime: null,
@@ -352,23 +352,15 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const { appDisplaySetting, appTypeSetting } = applicationSetting;
 
         vm.kafS00BParams = {
-            input: {
-                mode: vm.mode ? 0 : 1,
-                appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting,
-                    useMultiDaySwitch: false,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
-
+            mode: vm.mode ? 0 : 1,
+            appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting,
+                useMultiDaySwitch: false,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: null,
-                endDate: null
-            }
+            detailModeContent: null
         };
 
         if (!vm.mode) {
@@ -381,7 +373,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
             const { prePostAtr, opAppStartDate, opAppEndDate } = application;
 
-            vm.kafS00BParams.input.detailModeContent = {
+            vm.kafS00BParams.detailModeContent = {
                 prePostAtr,
                 startDate: opAppStartDate,
                 endDate: opAppEndDate,
@@ -400,30 +392,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const { appLimitSetting } = applicationSetting;
 
         vm.kafS00CParams = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: vm.mode ? '' : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: vm.mode ? '' : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
         };
     }
 
