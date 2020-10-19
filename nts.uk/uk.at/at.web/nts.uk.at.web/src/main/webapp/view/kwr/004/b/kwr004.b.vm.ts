@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kwr004.b {  
+module nts.uk.at.view.kwr004.b {
 
   const NUM_ROWS = 10;
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
@@ -45,7 +45,6 @@ module nts.uk.at.view.kwr004.b {
     comboSelected: KnockoutObservable<any> = ko.observable(null);
     tableSelected: KnockoutObservable<any> = ko.observable(null);
 
-
     constructor(params: any) {
       super();
 
@@ -61,8 +60,8 @@ module nts.uk.at.view.kwr004.b {
       vm.currentSettingCodeList = ko.observableArray([]);
 
       vm.settingRules = ko.observableArray([
-        { code: 0, name: vm.$i18n('KWR004_217') },
-        { code: 1, name: vm.$i18n('KWR004_218') }
+        { code: 0, name: vm.$i18n('KWR004_68') },
+        { code: 1, name: vm.$i18n('KWR004_69') }
       ]);
 
       vm.settingListItemsDetails.subscribe((newList) => {
@@ -118,9 +117,9 @@ module nts.uk.at.view.kwr004.b {
     mounted() {
       let vm = this;
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
-        $("#multiGridList").ntsFixedTable({ height: 368 });
+        $("#multiGridList").ntsFixedTable({ height: 486 });
       else
-        $("#multiGridList").ntsFixedTable({ height: 370 });
+        $("#multiGridList").ntsFixedTable({ height: 488 });
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -183,7 +182,7 @@ module nts.uk.at.view.kwr004.b {
       }
       console.log(params);
       vm.$window.storage(KWR004_C_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
+        vm.$window.modal('/view/kwr/004/c/index.xhtml').then(() => {
           vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
@@ -321,7 +320,7 @@ module nts.uk.at.view.kwr004.b {
         //new AttendaceType(6, vm.$i18n('KWR002_182')),
         new AttendaceType(7, vm.$i18n('KWR002_183'))
       ]
-      
+
       vm.shareParam.itemNameLine.name = row.name();
 
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
@@ -330,11 +329,11 @@ module nts.uk.at.view.kwr004.b {
         console.log(attendanceItem);
         if (!attendanceItem) {
           return;
-        } 
-          
+        }
+
         if (attendanceItem.selectedTimeList.length > 0) {
           let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-          _.forEach(attendanceItem.selectedTimeList, (item, index: number) => {           
+          _.forEach(attendanceItem.selectedTimeList, (item, index: number) => {
             if (index === 0 && item.operator.substring(0, 1) === '+') {
               selectionItem.push(item.name);
             } else {
@@ -422,18 +421,33 @@ module nts.uk.at.view.kwr004.b {
     name: KnockoutObservable<string> = ko.observable(null);
     setting: KnockoutObservable<number> = ko.observable(0);
     selectionItem: KnockoutObservable<string> = ko.observable(null);
+    selectedCode: KnockoutObservable<string> = ko.observable(null);
+    selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
+
     constructor(
       id?: number,
       name?: string,
       setting?: number,
       selectionItem?: string,
-      checked?: boolean) {
+      checked?: boolean,
+      selectedCode?: string,
+      selectedTimeList?: Array<any>
+    ) {
       this.name(name || '');
       this.setting(setting);
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || '');
       this.id = id;
+      this.selectedCode(selectedCode || '');
+      this.selectedTimeList(selectedTimeList || []);
     }
+  }
+
+  export interface selectedTimeList {
+    itemId?: number;
+    operator?: string;
+    name?: string;
+    indicatesNumber?: number
   }
 
   export class Model {

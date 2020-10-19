@@ -45,3 +45,18 @@
 .kwr-004b th.text-center {
   text-align: center;
 }
+.kwr-004b .attribute-selection {
+  width: 80px;
+}
+
+.kwr-004b td .d-flex {
+  margin: 0 !important;
+  justify-content: flex-end;
+}
+.kwr-004b .nts-fixed-table table.fixed-table tbody td {
+  height: 37px;
+}
+.kwr-004b td .btn-B4331 {
+  margin-left: 20px;
+  margin-right: 5px;
+}

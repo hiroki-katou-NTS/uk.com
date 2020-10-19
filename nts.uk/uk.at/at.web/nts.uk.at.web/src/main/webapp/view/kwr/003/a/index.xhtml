@@ -105,14 +105,17 @@
                           name: $i18n('KWR003_105'),
                           options:  settingListItems,
                           optionsValue: 'code',
-                          visibleItemsCount: 50,
+                          visibleItemsCount: 5,
                           value: standardSelectedCode,
                           optionsText: 'name',
                           editable: false,
                           enable: isEnableSelectedCode(),
                           required: false,
-                          selectFirstIfNull: true
-                        }"
+                          selectFirstIfNull: true,
+                          columns: [
+                            { prop: 'code', length: 4 },
+                            { prop: 'name', length: 10 },
+                          ]}"
                       ></div>
                       <!-- A5_3_3-->
                       <button
@@ -130,14 +133,17 @@
                           name: $i18n('KWR003_106'),
                           options:  settingListItems,
                           optionsValue: 'code',
-                          visibleItemsCount: 50,
+                          visibleItemsCount: 5,
                           value: freeSelectedCode,
                           optionsText: 'name',
                           editable: false,
                           enable: !isEnableSelectedCode(),
                           required: false,
-                          selectFirstIfNull: true
-                        }"
+                          selectFirstIfNull: true,
+                            columns: [
+                            { prop: 'code', length: 4 },
+                            { prop: 'name', length: 10 },
+                          ]}"
                       ></div>
                       <!-- A5_3_3-->
                       <button

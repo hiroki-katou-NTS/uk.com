@@ -56,8 +56,8 @@ module nts.uk.at.view.kwr004.a {
       let vm = this;
 
       vm.periodDate({
-        startDate: new Date(),
-        endDate: new Date()
+        startDate: moment(new Date()),
+        endDate: moment(new Date()).add(1, 'year').subtract(1, 'month')
       });
 
       vm.getSettingListItems();
@@ -217,7 +217,7 @@ module nts.uk.at.view.kwr004.a {
       }
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
+        vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
           //KWR004_B_OUTPUT
         });
       });

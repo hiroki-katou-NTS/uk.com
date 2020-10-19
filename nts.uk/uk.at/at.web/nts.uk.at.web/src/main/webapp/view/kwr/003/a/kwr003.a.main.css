@@ -13,6 +13,8 @@
 }
 .kwr-003 .employees-list .date-time-picker-label {
   margin-right: 32px;
+  line-height: 37px;
+  padding-left: 10px !important;
 }
 .kwr-003 .fixed-flex-layout-right {
   width: 600px;
