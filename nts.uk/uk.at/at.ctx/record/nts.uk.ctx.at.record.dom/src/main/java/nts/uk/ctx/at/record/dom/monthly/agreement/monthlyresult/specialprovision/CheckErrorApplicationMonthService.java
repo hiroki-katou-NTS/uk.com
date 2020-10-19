@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
@@ -16,8 +17,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeSt
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +44,7 @@ public class CheckErrorApplicationMonthService {
         // 1:年度指定して36協定基本設定を取得する(会社ID, 社員ID, 年月日, 年度) :３６協定基本設定
         BasicAgreementSetting agreementSet = AgreementDomainService.getBasicSet(require, companyId, monthlyAppContent.getApplicant(),baseDate);
 
-        val errorResult = agreementSet.getOneMonth().checkErrorTimeExceeded(monthlyAppContent.getErrTime());
+        Pair<Boolean, AgreementOneMonthTime> errorResult = agreementSet.getOneMonth().checkErrorTimeExceeded(monthlyAppContent.getErrTime());
 
         if (errorResult.getKey()){
             ExcessErrorContent oneMonthError = ExcessErrorContent.create(ErrorClassification.ONE_MONTH_MAX_TIME,
