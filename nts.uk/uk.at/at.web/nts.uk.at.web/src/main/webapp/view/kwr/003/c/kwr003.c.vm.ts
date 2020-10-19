@@ -4,7 +4,8 @@ module nts.uk.at.view.kwr003.c {
   //import common = nts.uk.at.view.kwr003.common; 
   const KWR003_OUTPUT = 'KWR003_OUTPUT';
   const KWR003_B13 = 'KWR003_B_DATA';
-  const KWR003_C = 'KWR003_C_DATA';
+  const KWR003_C_INPUT = 'KWR003_C_DATA';
+  const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -19,7 +20,7 @@ module nts.uk.at.view.kwr003.c {
       super();
       let vm = this;
 
-      vm.$window.storage(KWR003_B13).then((data) => {        
+      vm.$window.storage(KWR003_C_INPUT).then((data) => {        
         if( !_.isNil(data)) {
           vm.oldCode(data.code);
           vm.oldName(data.name);
@@ -43,13 +44,13 @@ module nts.uk.at.view.kwr003.c {
 
     proceed() {
       let vm = this;
-      vm.$window.storage(KWR003_C, { code: vm.newCode(), name: vm.newName()});
+      vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
       vm.$window.close();
     }
 
     cancel() {
       let vm = this;
-      vm.$window.storage(KWR003_C, null);
+      vm.$window.storage(KWR003_C_OUTPUT, null);
       vm.$window.close();
     }
   }

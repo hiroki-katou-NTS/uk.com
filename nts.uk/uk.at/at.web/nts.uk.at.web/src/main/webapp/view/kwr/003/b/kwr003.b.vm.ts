@@ -182,7 +182,7 @@ module nts.uk.at.view.kwr003.b {
         code: vm.attendanceCode(),
         name: vm.attendanceName()
       }
-
+      console.log(params);
       vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
           vm.$window.storage(KWR003_C_OUTPUT).then((data) => {

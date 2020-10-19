@@ -202,7 +202,7 @@ module nts.uk.at.view.kwr003.a {
       let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
 
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
-
+      
       let params = {
         code: attendence.code,
         name: attendence.name,
