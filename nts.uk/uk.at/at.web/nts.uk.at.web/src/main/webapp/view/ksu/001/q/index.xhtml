@@ -73,7 +73,7 @@
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3705')}</div>
 							<div style="margin-left: 20px; margin-top: 15px">
-
+								
 								<table>
 									<thead>
 										<tr>
@@ -82,9 +82,9 @@
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: listperiods">
-										<tr>
-											<td data-bind="text: date"></td>
-											<td
+										<tr data-bind="if: date() != ''">
+											<td style="background-color: #d9d9d9;" data-bind="text: date"></td>
+											<td  
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input id ="extBudgetTime"
 												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsTimeEditor: {
@@ -96,9 +96,8 @@
 													enable: true,
 													inputFormat: 'time',
 													mode: 'time',
-													readonly: false}" /></td>
-										
-											<td
+													readonly:  $parent.date() == '' }" /></td>										
+											<td 
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input id = "extBudgetMoney"
 												style="text-align: right; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
@@ -108,9 +107,8 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
-													
-											<td
+													readonly: $parent.date() == '' }" /></td>													
+											<td 
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input id = "extBudgetNumberPerson"
 												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
@@ -120,8 +118,8 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
-											<td
+													readonly: $parent.date() == '' }" /></td>
+											<td 
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input id = "extBudgetNumericalVal"
 												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
@@ -131,13 +129,16 @@
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
+													readonly: $parent.date() == '' }" /></td>
 										</tr>
-									</tbody>
+										<tr data-bind="if: date() == ''" >
+											<td style="border: none; background-color: #F1F1F1 !important;" colspan="2"></td>
+											<!-- <td style="border: none; background-color: #F1F1F1;"></td> -->
+										</tr>
+									</tbody>								
 								</table>
 							</div>
-						</div>
-						<div></div>
+						</div>						
 					</div>
 				</div>
 

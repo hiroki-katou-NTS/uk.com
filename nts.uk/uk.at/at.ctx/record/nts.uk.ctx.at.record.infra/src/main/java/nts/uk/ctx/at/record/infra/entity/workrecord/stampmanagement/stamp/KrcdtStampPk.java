@@ -49,8 +49,7 @@ public class KrcdtStampPk implements Serializable {
 	public GeneralDateTime stampDateTime;
 	
 	/**
-	 * 時刻変更区分 0:出勤 1:退勤 2:入門 3:退門 4:応援開始 5:応援終了 6:応援出勤 7:外出 8:戻り 9:臨時+応援出勤 10:臨時出勤
-	 * 11:臨時退勤 12:PCログオン 13:PCログオフ
+	 * 時刻変更区分  (Enum :ChangeClockArt)
 	 */
 	@Basic(optional = false)
 	@Column(name = "CHANGE_CLOCK_ART")

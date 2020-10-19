@@ -1,3 +1,4 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.ksc001.b {
 
 	import NtsWizardStep = service.model.NtsWizardStep;
@@ -722,7 +723,7 @@ module nts.uk.at.view.ksc001.b {
 					if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
 						&& !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers()) {
 						nts.uk.ui.dialog.error({messageId: "Msg_1734"});
-						$('.checkboxSetting').focus();
+						$('.b51checkLists .checkBoxGroup ').focus();
 						return;
 					}
 				}
