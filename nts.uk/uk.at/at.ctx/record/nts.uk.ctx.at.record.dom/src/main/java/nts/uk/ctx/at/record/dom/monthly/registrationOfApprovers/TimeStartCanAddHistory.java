@@ -24,7 +24,7 @@ public class TimeStartCanAddHistory {
         // 1:指定日以降の履歴を取得する(年月日)
         if (unit.value == Unit.COMPANY.value){
             List<Approver36AgrByCompany> agrByCompany = require.getByCompanyIdFromDate(startDate);
-            return agrByCompany.size() != 0;
+            return agrByCompany.size() == 0;
         }
 
         // 1.1:指定日以降の履歴を取得する(職場ID,年月日)
@@ -32,7 +32,7 @@ public class TimeStartCanAddHistory {
         if (workplaceId.isPresent()){
             agrByWorkplaces = require.getByWorkplaceIdFromDate(workplaceId.get(),startDate);
         }
-        return agrByWorkplaces.size() != 0;
+        return agrByWorkplaces.size() == 0;
     }
 
     public interface Require {
