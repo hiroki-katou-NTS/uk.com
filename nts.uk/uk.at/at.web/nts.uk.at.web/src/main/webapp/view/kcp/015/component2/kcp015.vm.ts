@@ -122,35 +122,16 @@ module nts.uk.ui.at.kcp015.shared {
             nts.uk.ui.block.grayout();
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
 
-                if (data.clsOfAnnualHoliday) {
-                    vm.visibleA31Com(true);
-                } else {
-                    vm.visibleA31Com(false);
-                }
+                vm.visibleA31Com(data.clsOfAnnualHoliday);
 
-                if (data.divisionOfAnnualHoliday) {
-                    vm.visibleA32Com(true);
-                } else {
-                    vm.visibleA32Com(false);
-                }
+                vm.visibleA32Com(data.divisionOfAnnualHoliday);
 
-                if (data.overtimeUseCls60H) {
-                    vm.visibleA33Com(true);
-                } else {
-                    vm.visibleA33Com(false);
-                }
+                vm.visibleA33Com(data.overtimeUseCls60H);
 
-                if (data.dvisionOfZhenxiuUse) {
-                    vm.visibleA34Com(true);
-                } else {
-                    vm.visibleA34Com(false);
-                }
+                vm.visibleA34Com(data.dvisionOfZhenxiuUse);
 
-                if (data.subLeaveUseDivision) {
-                    vm.visibleA35Com(true);
-                } else {
-                    vm.visibleA35Com(false);
-                }
+                vm.visibleA35Com(data.subLeaveUseDivision);
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -158,10 +139,6 @@ module nts.uk.ui.at.kcp015.shared {
                 nts.uk.ui.block.clear();
             });
             return dfd.promise();
-        }
-
-        calculateSizePopup() {
-            let vm = this;
         }
 
         // A1_10_2
