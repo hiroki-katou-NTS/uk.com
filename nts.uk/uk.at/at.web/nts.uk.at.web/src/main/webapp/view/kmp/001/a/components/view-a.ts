@@ -19,7 +19,10 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}">
+					params: { model: model, 
+						stampCardEdit: stampCardEdit, 
+						textInput: textInput, 
+						methodEdit: methodEdit}}">
 			</div>
 		<div>
 `;
@@ -48,6 +51,7 @@ module nts.uk.at.view.kmp001.a {
 		public mode: KnockoutObservable<MODE> = ko.observable('new');
 		public stampCardEdit: share.StampCardEdit = new share.StampCardEdit();
 		public textInput: KnockoutObservable<string> = ko.observable('');
+		public methodEdit:KnockoutObservable<boolean> = ko.observable(false);
 
 		created() {
 			const vm = this;

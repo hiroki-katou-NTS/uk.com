@@ -4,20 +4,23 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const templateCardList = `
-	<div
-		data-bind="ntsFormLabel: {
-			constraint: $component.constraint, 
-			required: true,
-			text: $i18n('KMP001_22') }">
+	<div>
+		<div
+			data-bind="ntsFormLabel: {
+				constraint: $component.constraint, 
+				required: true,
+				text: $i18n('KMP001_22')}">
+		</div>
+		<input id="card-input" class="ip-stamp-card"
+			data-bind="ntsTextEditor: {
+				name:'#[KMP001_30]',
+				value: textInput,
+				constraint: $component.constraint,
+				enabled: true,
+				width: 200
+		}"/>
+		<button class="read-card" data-bind="text: $i18n('KMP001_150'), click: showDaiLogI"></button>
 	</div>
-	<input id="card-input" class="ip-stamp-card"
-		data-bind="ntsTextEditor: {
-			name:'#[KMP001_30]',
-			value: textInput,
-			constraint: $component.constraint,
-			enabled: true,
-			width: 200
-	}"/>		
 	<table id="stampcard-list"></table>
 	`;
 
@@ -32,8 +35,10 @@ module nts.uk.at.view.kmp001.a {
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
 		stampCardEdit!: StampCardEdit;
-		textInput: KnockoutObservable<string>;
+		textInputTemporary: String;
+		methodEdit: KnockoutObservable<boolean>;
 
+		public textInput: KnockoutObservable<string> = ko.observable('');
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
 
 		created(params: any) {
@@ -42,13 +47,30 @@ module nts.uk.at.view.kmp001.a {
 			vm.model = params.model;
 			vm.stampCardEdit = params.stampCardEdit;
 			vm.textInput = params.textInput;
+			vm.methodEdit = params.methodEdit;
 
 			vm.reloadSetting();
 
 			vm.stampCardEdit.stampCardDigitNumber
 				.subscribe(() => {
 					vm.reloadSetting();
-				})
+				});
+
+			vm.textInput
+				.subscribe(() => {
+					if (vm.methodEdit) {
+						vm.methodEdit(false);
+					}
+					if (ko.unwrap(vm.textInput) === vm.textInputTemporary) {
+						vm.methodEdit(true);
+					}
+				});
+
+			window.onclick = (() => {
+				if (vm.methodEdit){
+					vm.$errors('clear');
+				}
+			});
 		}
 
 		mounted() {
@@ -161,6 +183,21 @@ module nts.uk.at.view.kmp001.a {
 								}, 50);
 							}
 						});
+				});
+		}
+
+		showDaiLogI() {
+			const vm = this;
+
+			vm.$window
+				.modal('/view/kmp/001/i/index.xhtml')
+				.then((data: string) => {
+					vm.textInput(data);
+					vm.textInputTemporary = data;
+				})
+				.then(() => {
+					vm.$errors('clear');
+					vm.methodEdit(true);
 				});
 		}
 	}

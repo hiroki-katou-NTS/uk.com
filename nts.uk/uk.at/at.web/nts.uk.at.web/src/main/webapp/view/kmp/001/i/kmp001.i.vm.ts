@@ -36,15 +36,15 @@ module nts.uk.at.view.kmp001.i {
                             return {
                                 color: '#ff0',
                                 title: 'KMP001_155',
-                                message: 'KDP005_4',
+                                message: 'KMP001_157',
                                 connected: true
                             };
                         case 'connect':
                             return {
                                 color: '#0033cc',
-                                connected: false,
+                                title: 'KMP001_154',
                                 message: '',
-                                title: 'KMP001_154'
+                                connected: false
                             };
                         case "disconnect":
                         case 'open':
@@ -52,9 +52,9 @@ module nts.uk.at.view.kmp001.i {
                         case 'status':
                             return {
                                 color: '#0033cc',
-                                connected: false,
+                                title: 'KMP001_154',
                                 message: '',
-                                title: 'KMP001_154'
+                                connected: false
                             };
                     }
                 }
@@ -71,6 +71,7 @@ module nts.uk.at.view.kmp001.i {
                 vm.state(command);
 
                 if(command === 'read' && cardNo) {
+                    
                     vm.$window.close(no);
                 }
             });
@@ -115,7 +116,7 @@ module nts.uk.at.view.kmp001.i {
                     default:
                         vm.color('#ff0000');
                         vm.notify(vm.$i18n('KMP001_155'));
-                        vm.inforAuthent(vm.$i18n('KDP005_4'));
+                        vm.inforAuthent(vm.$i18n('KMP001_157'));
                         vm.diplayBtnConnect(true);
                 }
             });
