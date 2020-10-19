@@ -4,12 +4,14 @@ import nts.uk.ctx.workflow.dom.adapter.sys.env.maildestination.MailDestinationAd
 import nts.uk.ctx.workflow.dom.adapter.sys.env.maildestination.MailDestinationImport;
 //import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MailDestinationAdapterImpl implements MailDestinationAdapter {
+@Stateless
+public class MailDestinationWkAdapterImpl implements MailDestinationAdapter {
 //    @Inject
 //    private IMailDestinationPub iMailDestinationPub;
 

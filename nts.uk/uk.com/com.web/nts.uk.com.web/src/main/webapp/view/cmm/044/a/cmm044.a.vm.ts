@@ -3,9 +3,6 @@ module cmm044.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import DirtyChecker = nts.uk.ui.DirtyChecker;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import formatym = nts.uk.time.parseYearMonthDate;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
@@ -283,16 +280,16 @@ module cmm044.a.viewmodel {
          * Add new agent and Update agent
          */
         addAgent() {
-            var self = this;
+            const self = this;
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
 
             nts.uk.ui.block.invisible();
 
-            var agent = ko.toJSON(self.currentItem());
+            const agent = ko.toJSON(self.currentItem());
             // agent["employeeId"] = self.selectedItem();
-            var existsItem = self.findInHistItem(self.currentItem().employeeId(), self.histSelectedItem());
+            const existsItem = self.findInHistItem(self.currentItem().employeeId(), self.histSelectedItem());
 
             if (existsItem) {
                 service.updateAgent(agent).done(function() {
@@ -314,7 +311,11 @@ module cmm044.a.viewmodel {
                         $("#daterangepicker").find(".ntsStartDatePicker").focus();
                     }
                 }).fail(function(error) {
-                    alert(error);
+                    alert(error).then(() => {
+                        if (error.messageId == "Msg_141") {
+                            $("#A3_007").focus();
+                        }
+                    });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })

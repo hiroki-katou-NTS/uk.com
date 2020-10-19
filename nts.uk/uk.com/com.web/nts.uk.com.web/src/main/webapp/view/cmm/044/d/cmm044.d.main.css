@@ -1,28 +1,6 @@
-#contents-area {
-	overflow: visible;
-}
-
-#D_BTN_001 {
-	margin-top: 2px;
-	margin-left: 23px;
-}
-
-#D_BTN_002 {
-	margin-left: 15px;
-}
-
-#label-d1-003 {
-	margin-top: 20px;
-	margin-left: 19px;
-}
-
-.proceed {
-	margin-left: 25px !important;
-}
-
-.ntsDateRange_Container {
-	margin-left: 80px;
-	margin-top: -34px;
+.ntsDateRangeComponent {
+    float: unset !important;
+    display: inline-block;
 }
 
 .caret-bottom {

@@ -28,3 +28,8 @@
 .control-group .form-label {
 	width: 100px;
 }
+
+.ntsDateRangeComponent {
+	float: unset !important;
+	display: inline-block;
+}
