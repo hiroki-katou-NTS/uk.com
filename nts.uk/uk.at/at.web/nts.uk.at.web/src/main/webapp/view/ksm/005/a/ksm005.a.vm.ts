@@ -396,6 +396,7 @@ module nts.uk.at.view.ksm005.a {
                     self.clearValiate();
                 }
                 let dfd = $.Deferred();
+                self.cssRangerYM({});
                 self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
                 self.yearMonthPicked(self.getMonth());
                 self.monthlyPatternModel().resetData();

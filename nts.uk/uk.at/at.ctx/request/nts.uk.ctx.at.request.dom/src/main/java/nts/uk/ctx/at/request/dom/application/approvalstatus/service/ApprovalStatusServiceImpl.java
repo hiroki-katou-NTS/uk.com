@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -37,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -45,6 +48,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
@@ -92,6 +96,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -176,6 +181,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
+	
+	@Inject
+	private ApprovalSttScreenRepository approvalSttScreenRepository;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1197,5 +1205,71 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
 			return true;
 		return false;
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusExecution(List<DisplayWorkplace> wkpInfoLst) {
+		return this.getStatusDisplayData(wkpInfoLst);
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusDisplayData(List<DisplayWorkplace> wkpInfoLst) {
+		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		// アルゴリズム「状況取得_共通処理」を実行する
+		List<ApprSttExecutionOutput> result = getStatusCommonProcess(wkpInfoLst);
+		// 「申請の承認状況を表示する」を判定
+		if(true) {
+			Map<String, Integer> mapUnApprAppCount = getStatusApplicationApproval(period);
+			mapUnApprAppCount.entrySet().stream().forEach(x -> {
+				result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+					z.setCountUnApprApp(x.getValue());
+				});
+			});
+		}
+		// 一時テーブルを削除する
+		approvalSttScreenRepository.deleteTemporaryTable();
+		return result;
+	}
+
+	@Override
+	public List<ApprSttExecutionOutput> getStatusCommonProcess(List<DisplayWorkplace> displayWorkplaceLst) {
+		List<ApprSttExecutionOutput> result = displayWorkplaceLst.stream()
+				.map(x -> new ApprSttExecutionOutput(x.getId(), x.getCode()))
+				.collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		List<String> wkpIDLst = displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList());
+		List<String> wkpCDLst = displayWorkplaceLst.stream().map(x -> x.getCode()).collect(Collectors.toList());
+		// 一時テーブルを削除する
+		// chuyển đến cuối cùng transaction
+		// パラメータをSQLのセッションパラメータにセットする
+		// không cần
+		// クエリモデル「対象職場を一時テーブルへセット」を実行する
+		approvalSttScreenRepository.setWorkPlaceTempTable(wkpIDLst);
+		// クエリモデル「雇用に合致する社員を取得する」を実行する
+		approvalSttScreenRepository.setEmployeeTemp(new DatePeriod(GeneralDate.today(), GeneralDate.today()), wkpCDLst);
+		// 職場別社員のカウント
+		Map<String, Integer> mapWkpEmpCount = approvalSttScreenRepository.getCountEmp();
+		mapWkpEmpCount.entrySet().stream().forEach(x -> {
+			result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+				z.setCountEmp(x.getValue());
+			});
+		});
+		// [No.560]職場IDから職場の情報を全て取得する
+		GeneralDate baseDate = GeneralDate.today();
+		List<WorkplaceInforExport> wkpInforLst = workplaceAdapter.getWorkplaceInforByWkpIds(companyId, wkpIDLst, baseDate);
+		wkpInforLst.stream().forEach(x -> {
+			result.stream().filter(y -> y.getWkpID().equals(x.getWorkplaceId())).findAny().ifPresent(z -> {
+				z.setWkpName(x.getWorkplaceName());
+			});
+		});
+		return result;
+	}
+	
+	@Override
+	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period) {
+		// クエリモデル「期間中の「未承認の申請」の申請者、申請日」を実行する
+		approvalSttScreenRepository.setUnApprApp(period);
+		// クエリモデル「未承認社員を職場別にカウントする」を実行し「未承認社員の職場別カウント」とする
+		return approvalSttScreenRepository.getCountUnApprApp();
 	}
 }

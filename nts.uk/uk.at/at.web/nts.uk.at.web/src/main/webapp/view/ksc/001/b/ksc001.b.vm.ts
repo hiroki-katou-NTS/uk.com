@@ -485,8 +485,8 @@ module nts.uk.at.view.ksc001.b {
 				_.each( dataList,( employeeSearch ) => {
 					let employeeCode = employeeSearch.employeeCode.trim ();
 					let isExistedEmployeeCode = _.find(listSelectedEmpCode, (x) => x === employeeCode);
-					
-					if ( !isExistedEmployeeCode ) {
+
+					if ( _.isNil(isExistedEmployeeCode) ) {
 						employeeIds.push ( employeeSearch.employeeId );
 						employeeSearchs.push ( {
 							code : employeeSearch.employeeCode,

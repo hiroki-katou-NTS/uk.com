@@ -781,9 +781,9 @@ public class ProgramIdConsts {
 	public static final String KAF021D = "KAF021D";
 
 	public static final String KAF022A = "KAF022A";
-	public static final String KAF022L = "KAF022L";
-	public static final String KAF022Z = "KAF022Z";
-	public static final String KAF022X = "KAF022X";
+	public static final String KAF022B = "KAF022B";
+	public static final String KAF022C = "KAF022C";
+	public static final String KAF022D = "KAF022D";
 	public static final String KAF022O = "KAF022O";
 	public static final String KAF022P = "KAF022P";
 	public static final String KAF022S = "KAF022S";
@@ -929,7 +929,10 @@ public class ProgramIdConsts {
 	public static final String CMF004A = "CMF004A";
 	public static final String CMF004B = "CMF004B";
 	public static final String CMF004C = "CMF004C";
-	public static final String CMF004D = "CMF004D";																																		
+	public static final String CMF004D = "CMF004D";
+	public static final String CMF004I = "CMF004I";
+	public static final String CMF004J = "CMF004J";
+	public static final String CMF004K = "CMF004K";
 
 	public static final String KDR001A = "KDR001A";
 	public static final String KDR001B = "KDR001B";
@@ -963,6 +966,8 @@ public class ProgramIdConsts {
 	public static final String CMF005B = "CMF005B";
 	public static final String CMF005C = "CMF005C";
 	public static final String CMF005F = "CMF005F";
+	public static final String CMF005I = "CMF005I";
+	public static final String CMF005K = "CMF005K";
 
 	// CMF001
 	public static final String KMW006A = "KMW006A";
@@ -1016,6 +1021,7 @@ public class ProgramIdConsts {
 	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
 	public static final String CMF003C = "CMF003C";
 	public static final String CMF003F = "CMF003F";
+	public static final String CMF003I = "CMF003I";
 	
 	/**
 	 * KWR002
