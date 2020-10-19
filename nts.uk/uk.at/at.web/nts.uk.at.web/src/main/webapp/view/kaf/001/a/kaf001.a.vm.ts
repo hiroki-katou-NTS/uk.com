@@ -254,17 +254,17 @@ module kaf001.a.viewmodel {
                             switch (mode) {
                                 case 0:
                                     //KAF005-残業申請（早出）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=0", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
                                     break;
 
                                 case 1:
                                     //KAF005-残業申請（通常）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=1", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=1", transfer);
                                     break;
 
                                 case 2:
                                     //KAF005-残業申請（早出・通常）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=2", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
                                     break;
                             }
                         }
@@ -288,7 +288,7 @@ module kaf001.a.viewmodel {
                         break;
                     }
                     case ApplicationType.BREAK_TIME_APPLICATION: {
-                        vm.$jump("/view/kaf_old/010/a/index.xhtml", transfer);
+                        vm.$jump("/view/kaf/010/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
