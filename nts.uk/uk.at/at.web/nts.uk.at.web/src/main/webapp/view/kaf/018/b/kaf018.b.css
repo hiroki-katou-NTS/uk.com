@@ -10,20 +10,52 @@
 } */
 
 .kaf018-b-header-wkpName {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.kaf018-b-column-wkpName {
 	vertical-align: middle !important;
 }
 
 .kaf018-b-header-numberPeople {
-	vertical-align: middle !important;	
+	text-align: center !important;
+	vertical-align: middle !important;
+	white-space: inherit !important;
+}
+
+.kaf018-b-column-numberPeople {
+	text-align: center;
+}
+
+.kaf018-b-column-numberPeople.cell-selected {
+	background-color: inherit;
 }
 
 .kaf018-b-header-appInfo {
 	text-align: center !important;
-	vertical-align: bottom !important;
+	vertical-align: middle !important;
+	white-space: inherit !important;
+}
+
+.kaf018-b-column-appInfo {
+	text-align: center;
+	color: #0066CC;
+	text-decoration: underline;
+}
+
+.kaf018-b-column-appInfo.cell-selected {
+	background-color: red;
 }
 
 .kaf018-b-header-mailButton {
 	vertical-align: middle !important;
 	height: 33px;
 	text-align: inherit !important;
+}
+
+.kaf018-b-mailButton {
+	height: inherit;
+	padding: 0;
+	width: 70px;
 }
