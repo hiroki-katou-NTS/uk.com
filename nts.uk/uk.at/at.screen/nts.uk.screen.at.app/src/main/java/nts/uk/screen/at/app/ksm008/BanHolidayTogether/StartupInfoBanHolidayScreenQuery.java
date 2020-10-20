@@ -41,7 +41,7 @@ public class StartupInfoBanHolidayScreenQuery {
 
         return new StartupInfoBanHolidayDto(
                 codeNameDescription.getConditionName(),
-                codeNameDescription.getExplanation(),
+                codeNameDescription.getExplanationList(),
                 orgInfo.getUnit(),
                 orgInfo.getWorkplaceId(),
                 orgInfo.getWorkplaceGroupId(),

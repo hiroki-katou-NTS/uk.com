@@ -34,7 +34,7 @@ public class StartupInfoComScreenQuery {
         return new ConsecutiveAttendanceComDto(
                 code,
                 codeNameDescription.getConditionName(),
-                codeNameDescription.getExplanation(),
+                codeNameDescription.getExplanationList(),
                 maxConsDays.isPresent() ? maxConsDays.get().getNumberOfDays().getNumberOfDays().v() : null
         );
     }

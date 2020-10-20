@@ -18,7 +18,7 @@ public class StartupInfoBanHolidayDto {
     /**
      * サブ条件リスト.説明
      */
-    private String explanation;
+    private List<String> explanationList;
 
     /**
      * 対象組織情報.単位

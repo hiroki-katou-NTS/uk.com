@@ -8,6 +8,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Stateless
 public class AlarmCheckConditionsQuery {
@@ -28,17 +32,17 @@ public class AlarmCheckConditionsQuery {
         );
 
         String conditionName = "";
-        StringBuilder explanation = new StringBuilder();
+        List<String> explanationList = Collections.emptyList();
         if (alarmCheckConditionSchedule != null) {
             conditionName = alarmCheckConditionSchedule.getConditionName();
 
             if (alarmCheckConditionSchedule.getSubConditions() != null && !alarmCheckConditionSchedule.getSubConditions().isEmpty()) {
-                for (SubCondition subCondition : alarmCheckConditionSchedule.getSubConditions()) {
-                    explanation.append(subCondition.getExplanation());
-                }
+                explanationList = alarmCheckConditionSchedule.getSubConditions().stream().map(item -> {
+                    return item.getExplanation();
+                }).collect(Collectors.toList());
             }
         }
 
-        return new AlarmCheckConditionsQueryDto(conditionName, explanation.toString());
+        return new AlarmCheckConditionsQueryDto(conditionName, explanationList);
     }
 }
