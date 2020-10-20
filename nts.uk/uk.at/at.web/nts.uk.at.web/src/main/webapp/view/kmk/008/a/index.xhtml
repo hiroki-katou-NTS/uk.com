@@ -18,7 +18,7 @@
 				<button data-itemno="A6_1"
                         id="print-button"
                         tabindex="9"
-                        data-bind="click: exportExcel" style="margin-left: 30px;">#{i18n.getText('KMK008_160')}
+                        data-bind="click: openDialogScreenJ" style="margin-left: 30px;">#{i18n.getText('KMK008_160')}
                 </button>
 			</div>
 			<div id="contents-area">
@@ -41,7 +41,7 @@
 					</div>
 					<div class="contents-area-caret-right"><span data-itemno="A5_1" class="master_setting_caret caret-right"></span></div>
 					<div data-itemno="A2_1" class="panel panel-frame contents-area-middle border-style">
-						<div data-itemno="A2_2" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_6')}</div>
+						<div data-itemno="A2_2" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_161')}</div>
 						<div data-itemno="A2_4" class="label lbl-general-labor-explanation">#{i18n.getText('KMK008_7',['#KMK008_8'])}</div>
 						<button data-itemno="A2_5"
                                 class="btn-deformed-labor"
@@ -103,7 +103,7 @@
                         <button data-itemno="A4_16" id="A4_16"
                                 class="btn-deformed-labor"
                                 tabindex="8"
-                                data-bind="click: openDialogScreenG, enable: specialConditionApplicationUse">
+                                data-bind="click: openScreenKMP021, enable: specialConditionApplicationUse">
                             #{i18n.getText('KMK008_159')}
                         </button><span class="setting_caret caret-right"></span>
                     </div>
