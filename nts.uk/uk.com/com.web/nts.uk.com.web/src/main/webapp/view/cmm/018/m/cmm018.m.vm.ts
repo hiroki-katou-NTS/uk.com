@@ -81,6 +81,7 @@ module nts.uk.com.view.cmm018.m {
                 }else{//人事
                     servicebase.settingJnh011().done(function(lstNotice: Array<any>){
                         servicebase.settingJmm018().done(function(lstEvent: Array<any>){
+						   self.lstNameAppType = ko.observableArray([]);
 //                                /**届出*/
 //                                NOTICE(4),
 //                                /**各業務エベント*/
