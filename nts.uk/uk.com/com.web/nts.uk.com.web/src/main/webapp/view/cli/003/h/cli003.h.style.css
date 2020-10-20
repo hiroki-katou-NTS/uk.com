@@ -8,7 +8,7 @@
 }
 
 #contents-area{
-	padding-left: 30px;
+	padding-left: 10px;
 	padding-top:20px;
 }
 
@@ -17,6 +17,7 @@
 }
 
 #condition-set-div {
+	margin-left: 60px;
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
@@ -44,30 +45,15 @@
 	padding-right: 5px;
 }
 #H2_1 td:NTH-CHILD(2) {
-	padding-left: 10px;
-	padding-right: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 #H2_1 th { 
 	background-color: #C7F391;
 }
-#H2_1 tbody tr td:FIRST-CHILD { 
-}
-
-#H2_1 th:FIRST-CHILD, 
-#H2_1 td:FIRST-CHILD {
-	min-width: 50px;
+#H3_1 #H3_2{
 	max-width: 50px;
-}
-#H2_1 th:NTH-CHILD(2), 
-#H2_1 td:NTH-CHILD(2) {
-	width:80px;
-}
-#H2_1 th:LAST-CHILD, 
-#H2_1 td:LAST-CHILD {
-	width: 150px;
-}
-.notUse {
-	background-color:grey;
+	min-width: 50px;
 }
 
 #functions-area-bottom {

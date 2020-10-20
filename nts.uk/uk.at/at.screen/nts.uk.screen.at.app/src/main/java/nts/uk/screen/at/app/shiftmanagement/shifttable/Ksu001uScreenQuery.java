@@ -64,16 +64,15 @@ public class Ksu001uScreenQuery {
 				serviceAdapter);
 
 		/** 2. 組織の表示情報を取得する(Require, 年月日) **/
-		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, request.toDate());
+		DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(require, request.endDate());
 		if (displayInfoOrganization != null) {
-			dto.setDisplayName(displayInfoOrganization.getName());
+			dto.setDisplayName(displayInfoOrganization.getDisplayName());
 		}
 		if (shiftTable.isPresent()) {
-			dto.setPublicDate(shiftTable.get().getEndDatePublicationPeriod().toString());
-
-			if (shiftTable.get().getOptEditStartDate().isPresent()) {
-				dto.setEditDate(shiftTable.get().getOptEditStartDate().get().toString());
-			}
+				dto.setPublicDate(shiftTable.get().getEndDatePublicationPeriod().toString());
+				if (shiftTable.get().getOptEditStartDate().isPresent()) {				
+					dto.setEditDate(shiftTable.get().getOptEditStartDate().get().toString());
+				}	
 		}
 		return dto;
 	}

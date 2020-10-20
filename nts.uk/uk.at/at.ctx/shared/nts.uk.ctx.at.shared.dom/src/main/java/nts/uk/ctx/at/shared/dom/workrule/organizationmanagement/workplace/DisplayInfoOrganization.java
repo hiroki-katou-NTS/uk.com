@@ -31,7 +31,7 @@ public class DisplayInfoOrganization {
 	 * @return
 	 */
 	public static DisplayInfoOrganization createDisplayInforWorkplaceGroup(WorkplaceGroupImport workplaceGroupImport){
-		return new DisplayInfoOrganization(I18NText.getText("#Com_WorkplaceGroup"),
+		return new DisplayInfoOrganization(I18NText.getText("Com_WorkplaceGroup"),
 				workplaceGroupImport.getWorkplaceGroupCode(),
 				workplaceGroupImport.getWorkplaceGroupName(),
 				workplaceGroupImport.getWorkplaceGroupName(),
@@ -43,7 +43,7 @@ public class DisplayInfoOrganization {
 	public static DisplayInfoOrganization createWorkplaceDisplayInformation(WorkplaceInfo workplaceInfo ){
 		
 		return new DisplayInfoOrganization(
-				I18NText.getText("#Com_Workplace"),
+				I18NText.getText("Com_Workplace"),
 				workplaceInfo.getWorkplaceCd().get(),
 				workplaceInfo.getWorkplaceName().get(),
 				workplaceInfo.getWkpDisplayName().get(),

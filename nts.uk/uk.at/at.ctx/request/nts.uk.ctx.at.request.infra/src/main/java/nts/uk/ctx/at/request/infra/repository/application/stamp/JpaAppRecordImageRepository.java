@@ -13,9 +13,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNR;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNRPk;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.AttendanceClock;
 
 @Stateless
 public class JpaAppRecordImageRepository extends JpaRepository implements AppRecordImageRepository {
@@ -80,7 +80,7 @@ public class JpaAppRecordImageRepository extends JpaRepository implements AppRec
 		
 		return new AppRecordImage(
 				EnumAdaptor.valueOf(res.getInt("STAMP_ATR"), EngraveAtr.class),
-				new AttendanceTime(res.getInt("APP_TIME")),
+				new AttendanceClock(res.getInt("APP_TIME")),
 				appStampGoOutAtr);
 	}
 

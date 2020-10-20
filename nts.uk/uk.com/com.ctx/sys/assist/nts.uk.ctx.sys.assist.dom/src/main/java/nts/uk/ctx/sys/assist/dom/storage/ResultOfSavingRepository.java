@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.dom.storage;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -11,6 +12,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public interface ResultOfSavingRepository {
 
 	List<ResultOfSaving> getAllResultOfSaving();
+	
+	List<ResultOfSaving> getResultOfSaving(
+		 String cid,
+		 GeneralDateTime startDateOperator,
+		 GeneralDateTime endDateOperator,
+		 List<String>  listOperatorEmployeeId
+	);
 
 	Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId);
 
@@ -24,4 +32,12 @@ public interface ResultOfSavingRepository {
 	void update(ResultOfSaving data);
 	
 	void update(String storeProcessingId, long fileSize);
+	
+	void update(String fileId);
+	
+	List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds);
+	
+	List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes);
+	
+	List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to);
 }

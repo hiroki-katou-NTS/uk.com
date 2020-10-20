@@ -31,15 +31,16 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 
 	@EmbeddedId
 	public SrcdtLogSettingPK srcdtLogSettingPK;
+	
+	// Column プログラムID
+	@Basic(optional = false)
+	@Column(name = "PROGRAM_ID")
+	public String programId;
 
+	// Column 契約コード
 	@Basic(optional = false)
 	@Column(name = "CONTRACT_CD")
 	public String contractCd;
-	
-	// column メニュー分類
-	@Basic(optional = false)
-	@Column(name = "MENU_ATR")
-	public Integer menuClassification;
 
 	// column ログイン履歴記録
 	@Basic(optional = false)
@@ -70,19 +71,27 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 	}
 
 	@Override
-	public void setProgramId(String programId) {
-		if (this.srcdtLogSettingPK == null) {
-			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
-		}
-		this.srcdtLogSettingPK.setProgramId(programId);
-	}
-
-	@Override
 	public void setCompanyId(String companyId) {
 		if (this.srcdtLogSettingPK == null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}
 		this.srcdtLogSettingPK.setCid(companyId);
+	}
+	
+	@Override
+	public void setProgramCd(String programCd) {
+		if (this.srcdtLogSettingPK == null) {
+			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
+		}
+		this.srcdtLogSettingPK.setProgramCd(programCd);
+	}
+	
+	@Override
+	public void setMenuClassification(Integer menuClassification) {
+		if (this.srcdtLogSettingPK == null) {
+			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
+		}
+		this.srcdtLogSettingPK.setMenuClassification(menuClassification);
 	}
 
 	@Override
@@ -92,19 +101,27 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 		}
 		return 0;
 	}
-
-	@Override
-	public String getProgramId() {
-		if (this.srcdtLogSettingPK != null) {
-			return this.srcdtLogSettingPK.getProgramId();
-		}
-		return null;
-	}
 	
 	@Override
 	public String getCompanyId() {
 		if (this.srcdtLogSettingPK != null) {
 			return this.srcdtLogSettingPK.getCid();
+		}
+		return null;
+	}
+
+	@Override
+	public String getProgramCd() {
+		if (this.srcdtLogSettingPK != null) {
+			return this.srcdtLogSettingPK.getProgramCd();
+		}
+		return null;
+	}
+
+	@Override
+	public Integer getMenuClassification() {
+		if (this.srcdtLogSettingPK != null) {
+			return this.srcdtLogSettingPK.getMenuClassification();
 		}
 		return null;
 	}
