@@ -205,6 +205,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	
 	/** The report seal range copy */
 	private String SEAL_RANGE_COPY = "AD%d:AO%d";
+	
+	private static final int MONTHLY_ACTUAL_DEADLINE_START = 5;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -538,6 +540,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				.setValue(TextResource.localize("KWR002_216") + employeeData.getWorkType());
 		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
 				.setValue(TextResource.localize("KWR002_217") + employeeData.getYearMonth());
+		// ver8 report , print deadline B8_17 B8_18
+		String deadlineDay = employeeData.isLastDayOfMonth() ? TextResource.localize("KWR002_236") : (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString();
+		employeeYearInfo.get(0, MONTHLY_ACTUAL_DEADLINE_START)
+				.setValue(TextResource.localize("KWR002_235") + deadlineDay);
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
 		Map<String, Integer> dataRow = new HashMap<>();

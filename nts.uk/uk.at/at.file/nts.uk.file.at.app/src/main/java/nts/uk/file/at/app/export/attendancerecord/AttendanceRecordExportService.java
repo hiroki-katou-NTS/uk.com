@@ -1026,6 +1026,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 											WorkingSystem.class).nameId));
 							attendanceRecRepEmpData
 									.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
+							// ver8 file report . add deadline B8_17 B8_18
+							attendanceRecRepEmpData.setLastDayOfMonth(closureDate.getLastDayOfMonth());
+							attendanceRecRepEmpData.setClosureDay(closureDate.getClosureDay().v());
+							
 							attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 							realDataOfEmployee++;
 						}

@@ -45,5 +45,11 @@ public class AttendanceRecordReportEmployeeData {
 	
 	/** The approval monthly B9_1 report*/
 	private boolean approvalStatus;
+	
+	/** The last Day Of Month. */
+	private boolean lastDayOfMonth;
+	
+	/** The closure day. deadline day */
+	private int closureDay;
 
 }
