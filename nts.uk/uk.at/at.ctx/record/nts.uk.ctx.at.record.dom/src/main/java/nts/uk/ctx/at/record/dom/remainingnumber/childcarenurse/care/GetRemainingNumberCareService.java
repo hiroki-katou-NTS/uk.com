@@ -43,7 +43,7 @@ public class GetRemainingNumberCareService {
 	 * @param periodOverWrite 上書き対象期間(Optional)
 	 * @return 子の看護介護休暇集計結果
 	 */
-	public List<AggrResultOfChildCareNurse> getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
+	public AggrResultOfChildCareNurse getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -54,9 +54,9 @@ public class GetRemainingNumberCareService {
 
 		// 固定値を返す（一時対応）
 		List<ChildCareNurseErrors> childCareNurseErrors = Arrays.asList(createError());
-		List<AggrResultOfChildCareNurse> resultList = Arrays.asList(createEmpty(childCareNurseErrors));
+		AggrResultOfChildCareNurse result = createEmpty(childCareNurseErrors);
 
-		return resultList;
+		return result;
 	}
 
 	// 介護休暇エラー情報
