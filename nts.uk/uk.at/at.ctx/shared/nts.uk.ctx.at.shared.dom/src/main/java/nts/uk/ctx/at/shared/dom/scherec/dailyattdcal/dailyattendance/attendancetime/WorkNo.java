@@ -19,4 +19,8 @@ public class WorkNo extends IntegerPrimitiveValue<WorkNo>{
 	public WorkNo(Integer rawValue) {
 		super(rawValue);
 	}
+	
+	public static WorkNo converFromOtherWorkNo(nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo workNo) {
+		return new WorkNo(workNo.v());
+	}
 }
