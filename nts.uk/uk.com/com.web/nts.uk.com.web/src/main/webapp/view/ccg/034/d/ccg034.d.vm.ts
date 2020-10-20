@@ -19,6 +19,7 @@ module nts.uk.com.view.ccg034.d {
     $hoverHighlight: JQuery = null;
     $listPart: JQuery[] = [];
     partClientId: number = 0;
+    mapPartData: any = {};
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
 
     mounted() {
@@ -79,13 +80,14 @@ module nts.uk.com.view.ccg034.d {
         clientId: vm.partClientId,
         width: partSize.width,
         height: partSize.height,
-        minWidth: partSize.width,
-        minHeight: partSize.height,
+        minWidth: 40,
+        minHeight: 40,
         partType: partType,
         positionTop: positionTop,
         positionLeft: positionLeft,
       });
-      vm.partClientId++;
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
       newPart
         // Set more attr (highlight width, height, position)
         .outerWidth(partSize.width)
@@ -93,6 +95,7 @@ module nts.uk.com.view.ccg034.d {
         .css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` })
         // Update item data object
         .data(newPartData);
+      vm.partClientId++;
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
       vm.filterOverlappingPart(newPartData);
       // Add new item to origin list
@@ -151,6 +154,9 @@ module nts.uk.com.view.ccg034.d {
             $(ui.unselected)
               .resizable({ disabled: true })
               .draggable({ disabled: true });
+            $(ui.unselected)
+              .find('.part-setting-popup')
+              .css({ 'visibility': 'hidden' });
           }
         }
       });
@@ -235,6 +241,8 @@ module nts.uk.com.view.ccg034.d {
         positionTop: partData.positionTop,
         positionLeft: partData.positionLeft,
       });
+      // Update part data to map
+      vm.mapPartData[partData.clientId] = newPartData;
       item.element
         // Set more attr (highlight width, height, position)
         .outerWidth(width)
@@ -266,6 +274,8 @@ module nts.uk.com.view.ccg034.d {
         positionTop: positionTop,
         positionLeft: positionLeft,
       });
+      // Update part data to map
+      vm.mapPartData[partData.clientId] = newPartData;
       item.helper
         // Set more attr (highlight width, height, position)
         .css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` })
@@ -349,47 +359,104 @@ module nts.uk.com.view.ccg034.d {
      * @param partType
      */
     private getDefaultPart(partType: string): JQuery {
-      const $partSetting: JQuery = $("<div>", { "class": 'part-setting-container' })
-        .append("<div>", { "class": 'part-setting' });
+      const vm = this;
+      let $part: JQuery = null;
       switch (partType) {
         case MenuPartType.PART_MENU:
-          const aaa = $("<div>", { "class": 'menu-creation-item part-menu' })
-            .append($partSetting);
-          console.log(aaa);
-          return aaa;
-        // .append("<span>", { "class": 'label' })
-        // .text("part-menu");
+          $part = $("<div>", { "class": 'menu-creation-item part-menu' });
+          break;
         case MenuPartType.PART_LABEL:
-          return $("<div>", { "class": 'menu-creation-item part-label' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-label");
+          $part = $("<div>", { "class": 'menu-creation-item part-label' });
+          break;
         case MenuPartType.PART_LINK:
-          return $("<div>", { "class": 'menu-creation-item part-link' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-link");
+          $part = $("<div>", { "class": 'menu-creation-item part-link' });
+          break;
         case MenuPartType.PART_ATTACHMENT:
-          return $("<div>", { "class": 'menu-creation-item part-attachment' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-attachment");
+          $part = $("<div>", { "class": 'menu-creation-item part-attachment' });
+          break;
         case MenuPartType.PART_IMAGE:
-          return $("<div>", { "class": 'menu-creation-item part-image' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-image");
+          $part = $("<div>", { "class": 'menu-creation-item part-image' });
+          break;
         case MenuPartType.PART_ARROW:
-          return $("<div>", { "class": 'menu-creation-item part-arrow' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-arrow");
+          $part = $("<div>", { "class": 'menu-creation-item part-arrow' });
+          break;
         default:
-          return $("<div>", { "class": 'menu-creation-item part-menu' })
-            .append($partSetting);
-        // .append("<span>", { "class": 'label' })
-        // .text("part-menu");
+          $part = $("<div>", { "class": 'menu-creation-item part-menu' });
+          break;
       }
+      const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
+        .on('click', (event) => vm.onPartClickSetting($part));
+      const $partSettingPopup: JQuery = $("<div>", { "class": 'part-setting-popup' })
+        .css({ 'visibility': 'hidden' })
+        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_150') })
+          .on('click', (event) => vm.openPartSettingDialog($part)))
+        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_151') })
+          .on('click', (event) => vm.copyPart($part)))
+        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_152') })
+          .on('click', (event) => vm.removePart($part)));
+      const $partSettingContainer: JQuery = $("<div>", { "class": 'part-setting-container' })
+        .append($partSetting)
+        .append($partSettingPopup);
+      $partSettingContainer.appendTo($part);
+      return $part;
+    }
+
+    /**
+     * On click part setting
+     * @param partClientId
+     */
+    private onPartClickSetting($part: JQuery) {
+      const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
+      if ($partSettingPopup) {
+        $partSettingPopup.css('visibility', (i, visibility) => (visibility === 'visible') ? 'hidden' : 'visible');
+      }
+    }
+
+    /**
+     * Open Part Setting Dialog
+     * @param partClientId
+     */
+    private openPartSettingDialog($part: JQuery) {
+      const vm = this;
+      const partClientId = $part.data().clientId;
+      const selectedPartData: PartData = vm.mapPartData[partClientId];
+      if (selectedPartData) {
+        switch (selectedPartData.partType) {
+          case MenuPartType.PART_MENU:
+            break;
+          case MenuPartType.PART_LABEL:
+            vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
+              .then((result: any) => {
+
+              });
+            break;
+          case MenuPartType.PART_LINK:
+            break;
+          case MenuPartType.PART_ATTACHMENT:
+            break;
+          case MenuPartType.PART_IMAGE:
+            break;
+          case MenuPartType.PART_ARROW:
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    /**
+     * Copy part
+     * @param $part
+     */
+    private copyPart($part: JQuery) {
+      // TODO
+    }
+
+    /**
+     * Remove part
+     */
+    private removePart($part: JQuery) {
+      // TODO
     }
 
     /**
