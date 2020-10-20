@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.command;
+package nts.uk.ctx.at.schedulealarm.app.alarmcheck.command;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;

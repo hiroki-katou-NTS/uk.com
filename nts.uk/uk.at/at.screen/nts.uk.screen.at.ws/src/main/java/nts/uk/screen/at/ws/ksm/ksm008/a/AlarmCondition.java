@@ -1,7 +1,5 @@
 package nts.uk.screen.at.ws.ksm.ksm008.a;
 
-import nts.uk.screen.at.app.ksm008.command.RegisterAlarmCheckConditionCommand;
-import nts.uk.screen.at.app.ksm008.command.RegisterAlarmCheckConditionCommandHandler;
 import nts.uk.screen.at.app.ksm008.find.AlarmCheckConditionsFinder;
 import nts.uk.screen.at.app.ksm008.find.AlarmCheckDto;
 
@@ -19,9 +17,6 @@ public class AlarmCondition {
 
     @Inject
     AlarmCheckConditionsFinder alarmCheckConditions;
-
-    @Inject
-    RegisterAlarmCheckConditionCommandHandler commandHandler;
 
     /**
      * 勤務予定のアラームチェック条件一覧を取得する
@@ -42,13 +37,6 @@ public class AlarmCondition {
     }
 
 
-    /**
-     * コードとサブコードを指定してメッセージ内容を取得する
-     */
-    @POST
-    @Path("register")
-    public void register(RegisterAlarmCheckConditionCommand command) {
-        commandHandler.handle(command);
-    }
+
 
 }
