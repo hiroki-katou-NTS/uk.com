@@ -20,16 +20,15 @@ module nts.uk.at.view.kwr003.c {
       super();
       let vm = this;
 
-      vm.$window.storage(KWR003_C_INPUT).then((data) => {        
+      vm.$window.storage(KWR003_C_INPUT).then((data) => {
         if( !_.isNil(data)) {
           vm.oldCode(data.code);
           vm.oldName(data.name);
-
-          vm.newCode(data.code);
-          vm.newName(data.name);
+          let latsCode: any = !_.isNil(data.latsCode) ? parseInt(data.latsCode) + 1 : '0001';
+          vm.newCode(latsCode);
+          vm.newName(data.name + '_' + latsCode);
         }
-      });
-      
+      });      
     }
 
     created(params: any) {
@@ -44,6 +43,9 @@ module nts.uk.at.view.kwr003.c {
 
     proceed() {
       let vm = this;
+     /*  データが先に削除された ＃Msg_1903		
+      コードの重複 ＃Msg_1753	 */	
+
       vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
       vm.$window.close();
     }

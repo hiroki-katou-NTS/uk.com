@@ -30,6 +30,7 @@ module nts.uk.at.view.kwr003.b {
     isEnableAttendanceCode: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDeleteButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
     //KDL 047, 048
     shareParam = new SharedParams();
@@ -144,7 +145,7 @@ module nts.uk.at.view.kwr003.b {
     addNewRow() {
       let vm = this;
       //vm.addRowItem();
-      vm.creatDefaultSettingDetails();
+      vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
@@ -152,14 +153,74 @@ module nts.uk.at.view.kwr003.b {
       vm.attendanceCode(null);
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
-
+      vm.isNewMode(true);
       $('#KWR003_B42').focus();
     }
 
+    /**
+     * Registers setting
+     */
     registerSetting() {
       let vm = this;
+
+      if(vm.isNewMode()) {
+        //コードが重複しているため、登録できません。 Msg_1753
+      } else {
+        //出力項目が削除されています。 ＃Msg_1903
+      }
+      
+      //sort by name with desc
+      let listItemsDetails: Array<any> = [];
+      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      vm.createListItemAfterSorted(listItemsDetails);
+    }
+    /**
+     * Orders list items by field
+     * @param [listItemsDetails] 
+     * @param [field] 
+     * @param [sort_type] 
+     * @returns  
+     */
+    orderListItemsByField(listItemsDetails?: Array<any>, field: string = 'name', sort_type: string = 'desc') {
+      let newListItemsDetails: Array<any> = [];
+      _.forEach(listItemsDetails, (row, index) => {
+        let temp = {
+          id: row.id,
+          isChecked: row.isChecked(),
+          name: row.name(),
+          setting: row.setting(),
+          selectionItem: row.selectionItem(),
+          selectedTimeList: row.selectedTimeList()
+        };
+
+        newListItemsDetails.push(temp);
+      });
+
+      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+
+      return newListItemsDetails;
     }
 
+    /**
+     * Create list item after sorted
+     * @param [listItemsDetails] 
+     */
+    createListItemAfterSorted(listItemsDetails?: Array<any>) {
+      let vm = this;
+
+      vm.settingListItemsDetails([]);
+      _.forEach(listItemsDetails, (x: any) => {
+        let newIitem = new SettingForPrint(
+          x.id, x.name, x.setting,
+          x.selectionItem, x.isChecked,
+          x.selectedTimeList);
+        vm.settingListItemsDetails.push(newIitem);
+      });
+    }
+    
+    /**
+     * Detele setting
+     */
     deteleSetting() {
       let vm = this;
       //get all items that will be remove
@@ -174,49 +235,68 @@ module nts.uk.at.view.kwr003.b {
     /**
      * Duplicate Setting
      * */
-
+    /**
+     * Shows dialog C
+     */
     showDialogC() {
       let vm = this;
+      let lastItem = _.last(vm.settingListItems());
 
       let params = {
         code: vm.attendanceCode(),
-        name: vm.attendanceName()
+        name: vm.attendanceName(),
+        lastCode: !_.isNil(lastItem) ? lastItem.code : null
       }
-      console.log(params);
+     
       vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
           vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
             }
-            vm.attendanceCode(data.code);
-            vm.attendanceName(data.name);
+
+            let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+            if( !_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903'}).then(() => {});
+              return;
+            }
+            
+            vm.settingListItems.push(data);
+            vm.currentCodeList(data.code);
           });
         });
       });
     }
 
+    /**
+     * Close dialog
+     */
     closeDialog() {
       let vm = this;
       //KWR003_B_OUTPUT
       vm.$window.close();
     }
 
+    /**
+     * Get setting list items details
+     */
     getSettingListItemsDetails() {
       let vm = this;
 
-      //vm.creatDefaultSettingDetails();
       for (let i = 0; i < NUM_ROWS; i++) {
         let newIitem = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
-      _.orderBy(vm.settingListItemsDetails(), ['id', 'name'], ['asc', 'asc']);
+      //order by list
+      let listItemsDetails: Array<any> = [];
+      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      vm.createListItemAfterSorted(listItemsDetails);
     }
 
     /**
-     *
-    */
-    creatDefaultSettingDetails() {
+     * Creatsedefault setting details
+     */
+    createDefaultSettingDetails() {
       let vm = this;
       //clear
       vm.settingListItemsDetails([])
@@ -225,7 +305,11 @@ module nts.uk.at.view.kwr003.b {
         vm.addRowItem(newIitem);
       }
     }
-
+    /**
+     * Creates data selection
+     * @param selectedTimeList 
+     * @returns  
+     */
     createDataSelection(selectedTimeList: Array<any>) {
       let vm = this,
         dataSelection: string = '',
@@ -307,6 +391,10 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
+    /**
+     * Opens dialog KDL
+     * @param data 
+     */
     openDialogKDL(data: SettingForPrint) {
       let vm = this;
 
@@ -315,16 +403,17 @@ module nts.uk.at.view.kwr003.b {
       else
         vm.openDialogKDL047(data);
     }
-
+    /**
+     * Opens dialog kdl047
+     * @param row 
+     */
     openDialogKDL047(row: any) {
       let vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
-
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-
         if (_.isNil(attendanceItem)) {
           return;
         }
@@ -347,6 +436,10 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
+    /**
+     * Opens dialog kdl048
+     * @param row 
+     */
     openDialogKDL048(row: any) {
       let vm = this,
         selectionItem: Array<string> = [];
@@ -380,10 +473,6 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
-    checkItem(data: SettingForPrint) {
-      console.log(data);
-      return true
-    }
 
     selectAllChange(newValue: boolean) {
       let vm = this;
