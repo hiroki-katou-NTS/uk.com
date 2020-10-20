@@ -7,6 +7,11 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherName
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.MinNumberEmployeeTogether
+        </com:ValidatorScript>
         <com:scriptfile path="./ksm008.c.vm.js"/>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -28,46 +33,46 @@
         </div>
         <div id="contents-area">
             <!--C2_1-->
-            <div class="label">ntslabel: C2_1</div>
+            <div id="C2_1" class="label" data-bind="text: alarmCheckSet"></div>
             <!--C3-->
-            <div class="panel">背景色も枠線もなし</div>
+            <div id="C3" class="panel panel-gray-bg">
+                <!--C3_1-->
+                <div id="C3_1">背景色も枠線もなし</div>
+                <!--C3_2-->
+                <div data-bind="foreach: alarmCondition">
+                    <div class="label" data-bind="text: $data"></div>
+                </div>
+            </div>
 
-            <!--C3_1-->
-            <div class="label">#{i18n.getText("KSM008_26")}</div>
-            <!--C3_2-->
-            <div class="label">ntslabel</div>
-            <div class="flex valign-center">
+            <div id="C4" class="flex valign-center">
                 <!--C4_1-->
-                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_27")}</div>
-
+                <div id="C4_1" data-bind="ntsFormLabel: {text: $i18n('KSM008_27')}"></div>
                 <!--C4_2-->
-                <button class="">#{i18n.getText("KSM008_28")}</button>
-
+                <button id="C4_2" class="">#{i18n.getText("KSM008_28")}</button>
                 <!--C4_3-->
-                <div class="label">4-3</div>
+                <div id="C4_3" class="label" data-bind="text: workplaceCode"></div>
                 <!--C4_4-->
-                <div class="label">4-4</div>
+                <div id="C4_4" class="label" data-bind="text: workplaceName"></div>
             </div>
             <hr/>
             <div style="display: flex">
                 <div>
                     <!--C6_6-->
-                    <div data-bind="ntsPanel:{width: '365px', height: '505px', direction: 'right', visible: true}">
+                    <div data-bind="ntsPanel:{direction: 'right', visible: true}">
                         <!--C6_1-->
-                        <div class="label" style="display: inline">#{i18n.getText("KSM008_29")}</div>
+                        <div class="label" style="display: inline" data-bind="text: $i18n('KSM008_29')"></div>
                         <!--C6_2-->
-                        <div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText("KSM008_30")}</div>
+                        <div data-bind="ntsCheckBox: { checked: isNightShiftDisplay, text: $i18n('KSM008_30') }">#{i18n.getText("KSM008_30")}</div>
 
                         <!--C6_3-->
                         <table id="single-list" data-bind="ntsGridList: {
-                            height: 350,
-                            dataSource: items,
+                            dataSource: listBanWorkTogether,
                             primaryKey: 'code',
                             columns: columns,
-                            rows: 20,
+                            rows: 15,
                             multiple: false,
                             name: $i18n('KSM008_31'),
-                            value: currentSelected
+                            value: selectedProhibitedCode
                             }">
                         </table>
                     </div>
@@ -77,67 +82,74 @@
                         <tr>
                             <td style="width: 200px">
                                 <!--C7_1-->
-                                <div data-bind="ntsFormLabel: { contraint: 'wait'}">#{i18n.getText("KSM008_35")}</div>
+                                <div data-bind="ntsFormLabel: {
+                                                 constraint: ['BanWorkTogetherCode','BanWorkTogetherName'],
+                                                 required: true,
+                                                 text: $i18n('KSM008_35')
+                                }"></div>
                             </td>
                             <td>
                                 <!--C7_2-->
                                 <input style="width: 50px" class="save-error"
-                                       data-bind="ntsTextEditor: {enable: false, value: code, name: ['#KSM008_36']}"/>
+                                       data-bind="ntsTextEditor: {enable: false, value: selectedProhibitedCode, name: ['#KSM008_36']}"/>
                                 <!--C7_3-->
-                                <input name="#{i18n.getText('KSM008_37')}"
-                                       data-bind="ntsTextEditor: {value: name}"/>
+                                <input data-bind="ntsTextEditor: {value: selectedProhinitedName, name: ['KSM008_37']}"/>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <!--C8_1-->
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_38")}</div>
+                                <div data-bind="ntsFormLabel: {required: true, text: $i18n('KSM008_38') }"></div>
                             </td>
                             <td>
                                 <!--C8_2-->
                                 <div class="cf" data-bind="ntsSwitchButton: {
-                        name: 'Sample Switch',
-                        options: switchOps,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: selectedRuleCode
-                        }"></div>
+                                                            name: 'Sample Switch',
+                                                            options: switchOps,
+                                                            optionsValue: 'code',
+                                                            optionsText: 'name',
+                                                            value: selectedOperatingTime
+                                }"></div>
                             </td>
                         </tr>
                         <tr>
                             <td><!--C9_1-->
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_42")}</div>
+                                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_42'), required: true}"></div>
                             </td>
                             <td><!--C9_2-->
-                                <span class="label">#{i18n.getText("KSM008_43")}</span>
+                                <span class="label" data-bind="text: $i18n('KSM008_43')"></span>
                                 <!--C9_3-->
-                                <input data-bind="ntsTextEditor: {value: code}"/><!--C9_4-->
-                                <span class="label">#{i18n.getText("KSM008_45")}</span></td>
+                                <input id="C9_3" data-bind="ntsTextEditor: {
+                                                    constraint: 'MinNumberEmployeeTogether',
+                                                    value: numOfEmployeeLimit,
+                                                    name: $i18n('KSM008_44')
+                                }"/><!--C9_4-->
+                                <span class="label" data-bind="text: $i18n('KSM008_45')"></span></td>
                         </tr>
                     </table>
-                    <table style="margin-top: 10px">
+                    <table>
                         <tr>
                             <td>
                                 <!--C10_1-->
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_46")}</div>
+                                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
                             </td>
                             <td></td>
                             <td>
                                 <!--C10_2-->
-                                <div data-bind="ntsFormLabel: {}">#{i18n.getText("KSM008_47")}</div>
+                                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
                             </td>
                         </tr>
                         <tr>
                             <td><!--C11_1-->
-                                <div id="sample-component-left"></div>
+                                <div id="kcp005-component-left"></div>
                             </td>
                             <td><!--C11_2-->
-                                <button style="display: block;margin:5px 10px">#{i18n.getText("KSM008_48")}</button>
+                                <button id="C11_2" data-bind="text: $i18n('KSM008_48')"></button>
                                 <!--C11_3-->
-                                <button style="margin:5px 10px">#{i18n.getText("KSM008_49")}</button>
+                                <button id="C11_3" data-bind="text: $i18n('KSM008_49')"></button>
                             </td>
                             <td><!--C11_4-->
-                                <div id="sample-component-right"></div>
+                                <div id="kcp005-component-right"></div>
                             </td>
                         </tr>
                     </table>

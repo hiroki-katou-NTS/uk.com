@@ -1,86 +1,239 @@
 module nts.uk.at.ksm008.c {
     @bean()
     export class KSM008CViewModel extends ko.ViewModel {
-        listComponentOption: any;
-        enable: KnockoutObservable<boolean>;
         enableBtnDel: KnockoutObservable<boolean> = ko.observable(false);
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        code: KnockoutObservable<string> = ko.observable("C7_2");
-        name: KnockoutObservable<string> = ko.observable("C7_222");
-        columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
         switchOps: KnockoutObservableArray<any>;
-        selectedRuleCode: any = ko.observable(2);
-        currentSelected: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        switchOptions: KnockoutObservableArray<any>;
+
+        // transfer data
+        code: string;
+
+        alarmCheckSet: KnockoutObservable<string> = ko.observable(null);
+        alarmCondition: KnockoutObservableArray<string> = ko.observableArray([]);
+
+        //C4_3 C4_4
+        unit: KnockoutObservable<string> = ko.observable(null);
+        workplaceCode: KnockoutObservable<string> = ko.observable(null);
+        workplaceName: KnockoutObservable<string> = ko.observable(null);
+        targetOrganizationInfor: KnockoutObservable<TargetOrgIdenInfor> = ko.observable(null);
+
+        //C6
+        columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
+        listBanWorkTogether: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        selectedProhibitedCode: KnockoutObservable<string> = ko.observable(null);
+        selectedProhinitedName: KnockoutObservable<string> = ko.observable(null);
+
+        //C6_2
+        isNightShiftDisplay: KnockoutObservable<boolean> = ko.observable(true);
+
+        //C8_2
+        selectedOperatingTime: KnockoutObservable<number> = ko.observable(null);
+
+        //C9_3
+        numOfEmployeeLimit: KnockoutObservable<number> = ko.observable(null);
+
+        //C11_1
+        selectableEmployeeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedableCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectableEmployeeComponentOption: any;
+
+        //C11_4
+        targetEmployeeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        targetSelectedCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        targetEmployeeComponentOption: any;
 
         constructor(params: any) {
             super();
+            const vm = this;
+
+            if (params) {
+                vm.code = params;
+            } else {
+                vm.code = "01";
+            }
         }
 
         created() {
             const vm = this;
-            vm.enable = ko.observable(true);
-            vm.items = ko.observableArray([]);
-            for (let i = 1; i < 100; i++) {
-                vm.items.push(new ItemModel('00' + i, "name " + i, vm.$i18n('KSM008_102')));
-            }
+
+            vm.listBanWorkTogether = ko.observableArray([]);
+
             vm.columns = ko.observableArray([
                 {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
                 {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
                 {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
             ]);
 
-            vm.switchOptions = ko.observableArray([
-                {code: "1", name: '四捨五入'},
-                {code: "2", name: '切り上げ'},
-                {code: "3", name: '切り捨て'}
-            ]);
-            vm.currentSelected = ko.observable('001');
-            vm.currentCodeList = ko.observableArray([]);
-
             vm.switchOps = ko.observableArray([
                 {code: '1', name: vm.$i18n("KSM008_40")},
                 {code: '2', name: vm.$i18n("KSM008_41")}
             ]);
 
-            const employeeList = ko.observableArray<UnitModel>([
-                {id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd'},
-                {id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl'},
-                {id: '3c', code: '3', name: 'Park Shin Hye'},
-                {id: '3d', code: '4', name: 'Vladimir Nabokov'}
-            ]);
-
-            vm.listComponentOption = {
-                listType: ListType.EMPLOYEE,
-                employeeInputList: employeeList,
-                isShowAlreadySet: false,
-                isMultiSelect: false,
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: ko.observable('1'),
-                isDialog: true,
-                isShowNoSelectRow: false,
-                isShowWorkPlaceName: false,
-                isShowSelectAllButton: false,
-                disableSelection: false
-            }
-            $("#sample-component-left").ntsListComponent(vm.listComponentOption);
-            $("#sample-component-right").ntsListComponent(vm.listComponentOption);
+            vm.initEmployeeList();
+            vm.initEmployeeTargetList();
         }
 
         mounted() {
             const vm = this;
-            vm.currentSelected.subscribe((value) => {
-                console.log(_.find(vm.items(), {code: value}));
+
+            vm.$blockui("grayout");
+            vm.$ajax(API.init, {code: vm.code}).done((res) => {
+                if (res) {
+
+                    let { alarmCheck, banWorkTogether, orgInfo } = res;
+
+                    if (orgInfo) {
+
+                        vm.targetOrganizationInfor({
+                            unit: orgInfo.unit,
+                            workplaceId: orgInfo.workplaceId,
+                            workplaceGroupId: orgInfo.workplaceGroupId
+                        });
+
+                        vm.workplaceCode(orgInfo.code);
+                        vm.workplaceName(orgInfo.displayName);
+
+                    }
+
+                    if (alarmCheck) {
+                        let lstCondition = alarmCheck.explanationList;
+
+                        vm.alarmCheckSet(vm.code + " " + alarmCheck.conditionName);
+
+                        if (lstCondition && lstCondition.length) {
+                            vm.alarmCondition(lstCondition);
+                        }
+                    }
+
+                    if (banWorkTogether && banWorkTogether.length) {
+                        let lstBanWorkTogether = _.map(banWorkTogether, function (item: any) {
+                           return new ItemModel(
+                               item.code,
+                               item.name,
+                               item.applicableTimeZoneCls == 1 ? vm.$i18n('KSM008_102') : ""
+                           );
+                        });
+                        vm.listBanWorkTogether(lstBanWorkTogether);
+
+
+                    }
+
+                }
+            }).fail((err) => {
+                console.log(err);
+            }).always(() => vm.$blockui('clear'));
+
+            vm.targetOrganizationInfor.subscribe(value => {
+                if (value) {
+                    vm.changeWorkplace();
+                }
             })
+
+        }
+
+        changeWorkplace() {
+            const vm = this;
+
+            vm.$ajax(API.getEmployeeInfo, ko.toJS(vm.targetOrganizationInfor)).done(res => {
+                console.log(res);
+            }).fail(err => {
+                console.log(err);
+            });
+        }
+
+        initEmployeeList() {
+            const vm = this;
+
+            vm.selectableEmployeeComponentOption = {
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.selectableEmployeeList,
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: vm.selectedableCodes,
+                isDialog: true,
+                isShowNoSelectRow: false,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                disableSelection: false,
+                hasPadding: false,
+            };
+
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
+        }
+
+        initEmployeeTargetList() {
+            const vm = this;
+
+            vm.targetEmployeeComponentOption = {
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.targetEmployeeList,
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: vm.targetSelectedCodes,
+                isDialog: true,
+                isShowNoSelectRow: false,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                disableSelection: false,
+                hasPadding: false,
+            };
+
+            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+        }
+
+        moveItemToRight() {
+            const vm = this;
+
+            let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
+            let currentTagretList = ko.toJS(vm.targetEmployeeList);
+
+            _.each(vm.selectedableCodes(), function (item:any) {
+                _.remove(currentSelectableList, (i: any) => i.code == item.code);
+                currentTagretList.put(item);
+
+                vm.selectableEmployeeList(currentSelectableList);
+                vm.targetEmployeeList(currentTagretList)
+            });
+        }
+
+        moveItemToLeft() {
+            const vm = this;
+
+            let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
+            let currentTagretList = ko.toJS(vm.targetEmployeeList());
+
+            _.each(vm.targetSelectedCodes(), function (item:any) {
+                _.remove(currentSelectableList, (i: any) => i.code == item.code);
+                currentSelectableList.put(item);
+
+                vm.selectableEmployeeList(currentSelectableList);
+                vm.targetEmployeeList(currentTagretList)
+            });
+
+        }
+
+        openDialogCDL009() {
+            const vm = this;
+
+            const params = {
+                unit: 0,
+                workplaceID: ""
+            };
+            vm.$window
+                .storage('dataShareDialog046', params)
+                .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))
+                .then(() => vm.$window.storage('dataShareKDL046'))
+                .then((data: string | string[]) => {
+
+                });
         }
 
         newMode(){
             console.log("new mode");
             const vm = this;
-            vm.selectedRuleCode(1);
-            vm.code("");
-            vm.name("");
+
         }
 
         removeData(){
@@ -123,10 +276,21 @@ module nts.uk.at.ksm008.c {
         }
     }
 
+    interface TargetOrgIdenInfor {
+        unit: number;
+        workplaceId: string;
+        workplaceGroupId: string;
+    }
+
     class NtsGridListColumn {
         headerText: string;
         key: string;
         width: number;
+    }
+
+    const API = {
+        init: "screen/at/ksm008/c/init",
+        getEmployeeInfo: "screen/at/ksm008/c/getEmployeeInfo"
     }
 
 }

@@ -7,3 +7,7 @@
     float: left;
     margin-left: 90px;
 }
+
+#kcp005-select div {
+    padding: 0 !important;
+}
