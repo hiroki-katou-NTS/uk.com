@@ -161,6 +161,7 @@ export class CmmS45AComponent extends Vue {
 
             // self.createLstAppType();
             // return service
+            self.$mask('show');
             let dataStorage = storage.local.getItem('CMMS45_DataStorage') as any;
             self.data = dataStorage;
             self.appListExtractCondition = dataStorage.appListExtractConditionDto as AppListExtractCondition;
@@ -176,10 +177,8 @@ export class CmmS45AComponent extends Vue {
                 appListExtractCondition: self.data.appListExtractConditionDto,
                 appListInfo: self.data.appListInfoDto
             };
-            self.$mask('show');
             self.$http.post('at', servicePath.filterByDate, { applicationListCmdMobile: paramCmd })
                 .then((res: any) => {
-                    self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
                     self.appListExtractCondition = res.data.appListExtractConditionDto;
                     self.data = res.data;
@@ -196,7 +195,7 @@ export class CmmS45AComponent extends Vue {
 
                     self.convertAppInfo(self.data.appListInfoDto);
                     // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-
+                    self.$mask('hide');
 
                 }).catch(() => {
                     self.$mask('hide');
@@ -274,7 +273,6 @@ export class CmmS45AComponent extends Vue {
                 }
 
             }).then((res: any) => {
-                self.$mask('hide');
                 // let data = res.data as ApplicationListDtoMobile;
                 self.appListExtractCondition = res.data.appListExtractConditionDto;
                 self.data = res.data;
@@ -294,7 +292,7 @@ export class CmmS45AComponent extends Vue {
                 // self.isDisPreP = 
                 self.convertAppInfo(self.data.appListInfoDto);
                 self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-
+                self.$mask('hide');
 
             }).catch(() => {
                 self.$mask('hide');
