@@ -270,14 +270,24 @@ var nts;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
             function felica(cb, once) {
                 if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
@@ -49717,7 +49727,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49731,7 +49741,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49752,7 +49762,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49766,7 +49776,7 @@ var nts;
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
