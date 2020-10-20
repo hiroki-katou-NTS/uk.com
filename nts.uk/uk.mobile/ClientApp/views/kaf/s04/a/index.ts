@@ -27,7 +27,7 @@ import {
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: { },
+    validations: {},
     components: {
         'kaf-s00-a': KafS00AComponent,
         'kaf-s00-b': KafS00BComponent,
@@ -576,7 +576,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
             return;
 
-            
+
         }
         vm.checkBeforeRegister();
     }
@@ -657,20 +657,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
         };
         if (paramsDate.startDate) {
             vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
+                response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                    if (item.opAchievementDetail == null) {
+                        vm.time.attendanceTime = null;
+                        vm.time.leaveTime = null;
+                        vm.time.attendanceTime2 = null;
+                        vm.time.leaveTime2 = null;
 
-                if (vm.application.prePostAtr == 1) {
-                    response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
-                        if (item.opAchievementDetail == null) {
-                            vm.time.attendanceTime = null;
-                            vm.time.leaveTime = null;
-                            vm.time.attendanceTime2 = null;
-                            vm.time.leaveTime2 = null;
-
-                            return vm.$modal.error('Msg_1707');
-
-                        }
-                    });
-                }
+                        return vm.$modal.error('Msg_1707');
+                    }
+                });
 
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                     if (item.opAchievementDetail) {
