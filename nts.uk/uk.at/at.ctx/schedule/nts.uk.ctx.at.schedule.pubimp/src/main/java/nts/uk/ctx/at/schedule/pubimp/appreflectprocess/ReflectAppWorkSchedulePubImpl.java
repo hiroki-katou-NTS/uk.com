@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -74,7 +74,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	private DailyRecordConverter convertDailyRecordToAd;
 
 	@Inject
-	private CorrectionAttendanceRule correctionAttendanceRule;
+	private ICorrectionAttendanceRule correctionAttendanceRule;
 
 	@Inject
 	private CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenterNew;
@@ -112,7 +112,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		private final DailyRecordConverter convertDailyRecordToAd;
 
-		private final CorrectionAttendanceRule correctionAttendanceRule;
+		private final ICorrectionAttendanceRule correctionAttendanceRule;
 
 		private final CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenterNew;
 
