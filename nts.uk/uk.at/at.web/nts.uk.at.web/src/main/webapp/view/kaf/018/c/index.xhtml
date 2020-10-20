@@ -5,16 +5,85 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 900,
+					height : 600
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/018/c/kaf018.c.css" />
+			<com:scriptfile path="/view/kaf/018/shr/model.js" />
 			<com:scriptfile path="/view/kaf/018/c/kaf018.c.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-			</div>
 			<div id="contents-area">
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell valign-center">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+					</div>
+				</div>
+				<div class="table">
+					<table id="multi-list" data-bind="ntsGridList: {
+														options: items,
+														optionsValue: 'code',
+														columns: ko.observableArray([
+															{ headerText: '#{i18n.getText('KAF018_350')}', key: 'code', width: 100 },
+															{ headerText: '#{i18n.getText('KAF018_351')}', key: 'name', width: 150 }, 
+															{ headerText: '#{i18n.getText('KAF018_351')}#{i18n.getText('KAF018_352')}', key: 'description', width: 150 }
+														]),
+														multiple: true,
+														value: currentCodeList,
+														rows: 10 }"></table>
+				</div>
+				<div class="table">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_353')}</div>
+				</div>
+				<div class="table">
+					<input data-bind="ntsTextEditor: { 
+										name: '#{i18n.getText('KAF018_354')}',
+										value: textEditor }" />
+				</div>
+				<div class="table">
+					<div class="cell">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_355')}</div>
+					</div>
+					<div class="cell">#{i18n.getText('KAF018_356')}</div>
+				</div>
+				<div class="table">
+					<textarea data-bind="ntsMultilineEditor: { 
+										name: '#{i18n.getText('KAF018_357')}',
+										value: textArea }" />
+				</div>
+				<div class="table">
+					<div data-bind="ntsMultiCheckBox: {
+										options: ko.observableArray([
+											{ id: 1, name: '#{i18n.getText('KAF018_362')}'},
+											{ id: 2, name: '#{i18n.getText('KAF018_363')}'},
+											{ id: 3, name: '#{i18n.getText('KAF018_364')}'}
+								        ]),
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedIds }"></div>
+				</div>
+				<div class="table">
+					<div class="cell">
+						<button>#{i18n.getText('KAF018_358')}</button>
+					</div>
+					<div class="cell">#{i18n.getText('KAF018_359')}</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" data-bind="click: sendMail">#{i18n.getText('KDL001_18')}</button>
+				<button data-bind="click: close">#{i18n.getText('KDL001_19')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
