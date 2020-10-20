@@ -6,7 +6,7 @@
 <body>
   <ui:composition template="/master/dialog.xhtml">
     <ui:define name="htmlHead">
-      <script> var dialogSize = { width: 600, height: 550, }; </script>
+      <script> var dialogSize = { width: 630, height: 550, }; </script>
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="cmm048.e.vm.js" />
       <com:stylefile path="cmm048.e.style.css" />
@@ -19,12 +19,12 @@
         <div id="upload" data-bind="ntsImageEditor: {
           editable: true, 
           accept: ['.bmp', '.png', '.jpg', '.jpeg'] ,
-          height: 280,
+          height: 250,
           freeResize : false,
           resizeRatio : 1,
         }" />
       </div>
-      <div id="bottomButton">
+      <div id="functions-area-bottom">
         <button id="E6" class="x-large proceed" tabindex="5" data-bind="">
           #{i18n.getText('CMM048_102')}
         </button>
@@ -35,5 +35,4 @@
     </ui:define>
   </ui:composition>
 </body>
-
 </html>

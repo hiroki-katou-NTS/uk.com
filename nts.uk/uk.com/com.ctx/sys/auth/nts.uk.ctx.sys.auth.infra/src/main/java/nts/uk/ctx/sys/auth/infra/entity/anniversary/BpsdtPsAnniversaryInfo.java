@@ -8,6 +8,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.MonthDay;
 
 
 /**
@@ -15,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "BPSDT_PS _ANNIVERSARY_INFO")
+@Table(name = "BPSDT_PS_ANNIVERSARY_INFO")
 @EqualsAndHashCode(callSuper = true)
 public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNotice.MementoGetter, AnniversaryNotice.MementoSetter, Serializable {
 
@@ -77,7 +78,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     }
 
     @Override
-    public GeneralDate getAnniversary() {
+    public MonthDay getAnniversary() {
         if (this.bpsdtPsAnniversaryInfoPK != null) {
             return this.bpsdtPsAnniversaryInfoPK.getAnniversary();
         }
@@ -85,7 +86,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     }
 
     @Override
-    public void setAnniversary(GeneralDate anniversary) {
+    public void setAnniversary(MonthDay anniversary) {
         if (this.bpsdtPsAnniversaryInfoPK == null) {
             this.bpsdtPsAnniversaryInfoPK = new BpsdtPsAnniversaryInfoPK();
         }

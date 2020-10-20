@@ -74,7 +74,7 @@ public class PersonalContact extends AggregateRoot {
     private List<OtherContact> otherContacts;
 
 
-    public PersonalContact createFromMemento(MementoGetter memento) {
+    public static PersonalContact createFromMemento(MementoGetter memento) {
         PersonalContact domain = new PersonalContact();
         domain.getMemento(memento);
         return domain;
@@ -113,7 +113,7 @@ public class PersonalContact extends AggregateRoot {
 
     }
 
-    public interface MementoSetter {
+    public static interface MementoSetter {
         void setPersonalId(String personalId);
 
         void setMailAddress(String mailAddress);
@@ -139,7 +139,7 @@ public class PersonalContact extends AggregateRoot {
         void setOtherContacts(List<OtherContact> otherContacts);
     }
 
-    public interface MementoGetter {
+    public static interface MementoGetter {
         String getPersonalId();
 
         String getMailAddress();

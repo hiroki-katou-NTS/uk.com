@@ -5,6 +5,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
+import java.time.MonthDay;
+
 /**
  * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
  */
@@ -28,7 +30,7 @@ public class AnniversaryNotice extends AggregateRoot {
     /**
      * 記念日
      */
-    private GeneralDate anniversary;
+    private MonthDay anniversary;
 
     /**
      * 記念日のタイトル
@@ -43,6 +45,14 @@ public class AnniversaryNotice extends AggregateRoot {
     public static AnniversaryNotice createFromMemento(MementoGetter memento) {
         AnniversaryNotice domain = new AnniversaryNotice();
         domain.getMemento(memento);
+        MonthDay anniversary = memento.getAnniversary();
+        int noticeDay = memento.getNoticeDay();
+        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonth().getValue(), anniversary.getDayOfMonth());
+        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
+            domain.seenDate = todayAnniversary;
+        } else {
+            domain.seenDate = todayAnniversary.addYears(-1);
+        }
         return domain;
     }
 
@@ -54,7 +64,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
     // 最後見た記念日をUpdateする
     public void updateSeenDate(GeneralDate date) {
-        GeneralDate todayAnniversary = GeneralDate.ymd(date.year(), this.anniversary.month(), this.anniversary.day());
+        GeneralDate todayAnniversary = GeneralDate.ymd(date.year(), this.anniversary.getMonth().getValue(), this.anniversary.getDayOfMonth());
         GeneralDate checkDate = todayAnniversary.addDays(-this.noticeDay.value);
         if (checkDate.compareTo(date) <= 0) {
             this.seenDate = todayAnniversary;
@@ -88,7 +98,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
         void setSeenDate(GeneralDate seenDate);
 
-        void setAnniversary(GeneralDate anniversary);
+        void setAnniversary(MonthDay anniversary);
 
         void setAnniversaryTitle(String anniversaryTitle);
 
@@ -102,7 +112,7 @@ public class AnniversaryNotice extends AggregateRoot {
 
         GeneralDate getSeenDate();
 
-        GeneralDate getAnniversary();
+        MonthDay getAnniversary();
 
         String getAnniversaryTitle();
 
