@@ -7,13 +7,15 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeRepository;
 import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessage;
+import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessageRead;
+import nts.uk.ctx.sys.portal.infra.entity.notice.SptdtInfoMessageReadPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -55,9 +57,18 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ORDER BY m.startDate DESC, m.endDate DESC, m.inputDate DESC");
 	
 	private static final String GET_NEW_MSG_FOR_DAY = String.join(" "
-			, "SELECT m from SptdtInfoMessage m"
+			, "SELECT m, s.pk.readSid AS readSid"
+			, "FROM SptdtInfoMessage m"
 			, "LEFT JOIN SptdtInfoMessageRead s"
-			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate");
+			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
+			, "AND m.startDate <= :today"
+			, "AND m.endDate >= :today"
+			, "AND m.destination = 0"
+			, "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
+			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid)"
+			, "AND s.pk.readSid = :sid"
+			, "WHERE readSid <> :sid"
+			, "ORDER BY m.destination ASC, m.startDate DESC");
 	
 	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
 			, "SELECT m, s.pk.readSid"
@@ -85,8 +96,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	 * @return MessageNotice
 	 */
 	public static MessageNotice toDomain(Object[] entity) {
-		MessageNotice domain = MessageNotice.createFromMemento((MessageNotice.MementoGetter) entity[0]);
-		return domain;
+		return MessageNotice.createFromMemento((MessageNotice.MementoGetter) entity[0]);
 	}
 	
 	/**
@@ -187,27 +197,48 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		}
 		
 		return entities.stream()
-				.map(entity -> MessageNotice.createFromMemento(entity)).collect(Collectors.toList());
+				.map(obj -> toDomain(obj))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<MessageNotice> getNewMsgForDay(Optional<String> wpId) {
-		// QA 112121
-		// GET_NEW_MSG_FOR_DAY
-		return null;
+		return this.queryProxy()
+				.query(GET_NEW_MSG_FOR_DAY, SptdtInfoMessage.class)
+				.setParameter("today", GeneralDate.today())
+				.setParameter("wpId", wpId.get())
+				.setParameter("sid", AppContexts.user().employeeId())
+				.getList()
+				.stream()
+				.map(obj -> toDomain(obj))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<MessageNotice> getMsgRefBySidForPeriod(DatePeriod period, String sid) {
-		
-		// GET_REF_BY_SID_FOR_PERIOD
-		return null;
+		return this.queryProxy()
+				.query(GET_REF_BY_SID_FOR_PERIOD, SptdtInfoMessage.class)
+				.setParameter("endDate", period.end())
+				.setParameter("startDate", period.start())
+				.setParameter("sid", sid)
+				.getList()
+				.stream()
+				.map(obj -> toDomain(obj))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public void updateInforSawMessage(MessageNotice msg, String sid) {
-		// TODO Auto-generated method stub
-		
+		SptdtInfoMessageReadPK pk = SptdtInfoMessageReadPK.builder()
+										.sid(msg.getCreatorID())
+										.inputDate(msg.getInputDate())
+										.readSid(sid)
+										.build();
+		SptdtInfoMessageRead entity = new SptdtInfoMessageRead();
+		entity.setPk(pk);
+		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCompanyId(AppContexts.user().companyId());
+		this.commandProxy().insert(entity);
 	}
 
 }

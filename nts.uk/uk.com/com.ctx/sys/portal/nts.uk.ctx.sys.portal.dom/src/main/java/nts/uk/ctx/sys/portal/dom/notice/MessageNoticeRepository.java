@@ -13,25 +13,25 @@ import nts.arc.time.calendar.period.DatePeriod;
 public interface MessageNoticeRepository {
 	
 	/**
-	 * Insert(お知らせメッセージ)
+	 * [1]  insert(お知らせメッセージ)
 	 * @param msg
 	 */
 	void insert(MessageNotice msg);
 	
 	/**
-	 * Update(お知らせメッセージ)
+	 * [2]  update(お知らせメッセージ)
 	 * @param msg
 	 */
 	void update(MessageNotice msg);
 	
 	/**
-	 * Delete(お知らせメッセージ)
+	 * [３]  delete(お知らせメッセージ)
 	 * @param msg
 	 */
 	void delete(MessageNotice msg);
 	
 	/**
-	 * 宛先区分で作成したメッセージを取得する
+	 * [4] 宛先区分で作成したメッセージを取得する
 	 * @param period 期間
 	 * @param destination 宛先区分
 	 * @param sid 社員ID
@@ -40,7 +40,7 @@ public interface MessageNoticeRepository {
 	List<MessageNotice> getMsgInDestinationCategory(DatePeriod period, DestinationClassification destination, String sid);
 	
 	/**
-	 * すべて作成したメッセージを取得する
+	 * [5]すべて作成したメッセージを取得する
 	 * @param period 期間
 	 * @param sid 社員ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
@@ -48,7 +48,7 @@ public interface MessageNoticeRepository {
 	List<MessageNotice> getMsgByPeriodAndSid(DatePeriod period, String sid);
 	
 	/**
-	 * 職場IDListからメッセージを取得する
+	 * [6] 職場IDListからメッセージを取得する
 	 * @param period 期間
 	 * @param wpIds 職場ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
@@ -56,7 +56,7 @@ public interface MessageNoticeRepository {
 	List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds);
 	
 	/**
-	 * 期間で参照できるメッセージを取得する
+	 * [7]期間で参照できるメッセージを取得する
 	 * @param period 期間
 	 * @param wpId 職場ID
 	 * @param sid 社員ID
@@ -65,14 +65,14 @@ public interface MessageNoticeRepository {
 	List<MessageNotice> getMsgRefByPeriod(DatePeriod period, Optional<String> wpId, String sid);
 	
 	/**
-	 * 当日の新メッセージを取得する
+	 * [8]当日の新メッセージを取得する
 	 * @param wpId 職場ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
 	 */
 	List<MessageNotice> getNewMsgForDay(Optional<String> wpId);
 	
 	/**
-	 * 期間、社員IDで参照できるメッセージを取得する
+	 * [9]期間、社員IDで参照できるメッセージを取得する
 	 * @param period 期間
 	 * @param sid 社員ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
@@ -80,7 +80,7 @@ public interface MessageNoticeRepository {
 	List<MessageNotice> getMsgRefBySidForPeriod(DatePeriod period, String sid);
 	
 	/**
-	 * メッセージを見た情報をUpdateする
+	 * [10]メッセージを見た情報をUpdateする
 	 * @param msg お知らせメッセージ
 	 * @param sid 社員ID
 	 */
