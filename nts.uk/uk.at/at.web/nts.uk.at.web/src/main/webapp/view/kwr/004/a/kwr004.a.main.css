@@ -10,9 +10,13 @@
 }
 .kwr-004 .employees-list .date-time-picker {
   margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 .kwr-004 .employees-list .date-time-picker-label {
   margin-right: 32px;
+  line-height: 37px;
+  padding-left: 10px !important;
 }
 .kwr-004 .fixed-flex-layout-right {
   width: 600px;

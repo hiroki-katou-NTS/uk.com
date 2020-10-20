@@ -21,9 +21,12 @@ module nts.uk.at.view.kwr003.a {
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
+    isEnableStdBtn: KnockoutObservable<boolean> = ko.observable(true);
+    
     freeSelectedCode: KnockoutObservable<string> = ko.observable(null);
-
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
+    isEnableFreeBtn: KnockoutObservable<boolean> = ko.observable(true);
+
     zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
     isWorker: KnockoutObservable<boolean> = ko.observable(true);
@@ -56,6 +59,17 @@ module nts.uk.at.view.kwr003.a {
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
+
+        vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
+        vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(vm.freeSelectedCode()));
+      });
+
+      vm.standardSelectedCode.subscribe((value) => {
+        vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(value));
+      });
+
+      vm.freeSelectedCode.subscribe((value) => {
+        vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(value));
       });
 
       vm.CCG001_load();
@@ -135,7 +149,7 @@ module nts.uk.at.view.kwr003.a {
       // start define KCP005
       vm.baseDate = ko.observable(new Date());
       vm.selectedCode = ko.observable('1');
-      vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+      vm.multiSelectedCode = ko.observableArray([]);
       vm.isShowAlreadySet = ko.observable(false);
       vm.alreadySettingList = ko.observableArray([
         { code: '1', isAlreadySetting: true },
@@ -175,9 +189,12 @@ module nts.uk.at.view.kwr003.a {
 
     getListEmployees(data: common.Ccg001ReturnedData) {
       let vm = this,
+        multiSelectedCode: Array<string> = [],
         employeeSearchs: Array<common.UnitModel> = [];
 
-      _.forEach(data.listEmployee, function (value: any) {
+      let newListEmployee: Array<any> = vm.removeDuplicateItem(data.listEmployee);
+
+      _.forEach(newListEmployee, function (value: any) {
         var employee: common.UnitModel = {
           id: value.employeeId,
           code: value.employeeCode,
@@ -185,9 +202,11 @@ module nts.uk.at.view.kwr003.a {
           affiliationName: value.affiliationName
         };
         employeeSearchs.push(employee);
+        multiSelectedCode.push(value.employeeCode);
       });
 
       vm.employeeList(employeeSearchs);
+      vm.multiSelectedCode(multiSelectedCode);
     }
 
     /**
@@ -202,7 +221,7 @@ module nts.uk.at.view.kwr003.a {
       let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
 
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
-      
+
       let params = {
         code: attendence.code,
         name: attendence.name,
@@ -236,6 +255,7 @@ module nts.uk.at.view.kwr003.a {
       let vm = this;
 
       let listItems: any = [
+        new ItemModel('', ''),
         new ItemModel('0001', '項目選択'),
         new ItemModel('0003', '定型選択'),
         new ItemModel('0004', '自由の選択済みコード'),
@@ -252,8 +272,69 @@ module nts.uk.at.view.kwr003.a {
       vm.settingListItems(listItems);
     }
 
-    exportExcel() {
+    checkErrorConditions() {
+      let vm = this;
 
+      let hasError: any = {
+        error: false,
+        focusId: ''
+      };
+
+      if (nts.uk.ui.errors.hasError()) {
+        hasError.error = true;
+        hasError.focusId = '';
+        return hasError;
+      }
+
+      //【社員】が選択されていません。
+      if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {    
+        vm.$dialog.error({ messageId: 'Msg_1812'}).then(() => {});        
+        hasError.error = true;
+        hasError.focusId = 'kcp005';
+        return hasError;
+      }
+      //自由設定が選択されていません。 
+      if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
+        vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => {});
+        hasError.error = true;
+        hasError.focusId = 'KWR003_106';
+        return hasError;
+      }
+      //定型選択が選択されていません。 
+      if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
+        vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => {});
+        hasError.error = true;
+        hasError.focusId = 'KWR003_105';
+        return hasError;
+      }      
+
+      //勤務状況表の対象ファイルを出力する | 対象データがありません
+    }
+
+    removeDuplicateItem( listItems: Array<any>) : Array<any> {
+      if( listItems.length <= 0 ) return [];
+ 
+      let newListItems = _.filter(listItems, (element, index, self) => {
+        return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
+      });
+
+      return newListItems;
+    }
+
+    exportExcel() {
+      let vm = this,
+      validateError: any = {}; //not error
+
+      validateError = vm.checkErrorConditions();
+
+      if( validateError.error ) {       
+        if( !_.isNull(validateError.focusId))
+          $('#' + validateError.focusId).focus();
+
+        return;
+      }
+
+      //create an excel file and redirect to download
     }
 
     exportPdf() {

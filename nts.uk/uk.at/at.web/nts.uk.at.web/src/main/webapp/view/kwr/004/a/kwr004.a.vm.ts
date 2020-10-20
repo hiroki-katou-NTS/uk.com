@@ -16,9 +16,9 @@ module nts.uk.at.view.kwr004.a {
     // end variable of CCG001
 
     //panel left
-    startDateString:KnockoutObservable<string> = ko.observable("");
-    endDateString:KnockoutObservable<string> = ko.observable("");    
-    dateValue: KnockoutObservable<any> = ko.observable({});
+    startDate: KnockoutObservable<Date> = ko.observable(new Date());
+    endDate: KnockoutObservable<Date> = ko.observable(new Date());
+    periodDate: KnockoutObservable<any> = ko.observable({});
     yearMonth: KnockoutObservable<number> = ko.observable(202010);;
 
     //panel right
@@ -54,6 +54,11 @@ module nts.uk.at.view.kwr004.a {
     constructor(params: any) {
       super();
       let vm = this;
+
+      vm.periodDate({
+        startDate: moment(new Date()),
+        endDate: moment(new Date()).add(1, 'year').subtract(1, 'month')
+      });
 
       vm.getSettingListItems();
 
@@ -179,8 +184,10 @@ module nts.uk.at.view.kwr004.a {
     getListEmployees(data: common.Ccg001ReturnedData) {
       let vm = this,
         employeeSearchs: Array<common.UnitModel> = [];
+      
+        let newListEmployee: Array<any> = vm.removeDuplicateItem(data.listEmployee);
 
-      _.forEach(data.listEmployee, function (value: any) {
+      _.forEach(newListEmployee, function (value: any) {
         var employee: common.UnitModel = {
           id: value.employeeId,
           code: value.employeeCode,
@@ -193,6 +200,16 @@ module nts.uk.at.view.kwr004.a {
       vm.employeeList(employeeSearchs);
     }
 
+    removeDuplicateItem( listItems: Array<any>) : Array<any> {
+      if( listItems.length <= 0 ) return [];
+ 
+      let newListItems = _.filter(listItems, (element, index, self) => {
+        return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
+      });
+
+      return newListItems;
+    }
+    
     /**
      * Duplicate Setting
      * */
@@ -205,14 +222,14 @@ module nts.uk.at.view.kwr004.a {
       let attendence: any = _.find(vm.settingListItems(), (x) => x.code === attendenceItem);
 
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
-      
+
       let params = {
         code: attendence.code,
         name: attendence.name,
       }
 
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
-        vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
+        vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
           //KWR004_B_OUTPUT
         });
       });

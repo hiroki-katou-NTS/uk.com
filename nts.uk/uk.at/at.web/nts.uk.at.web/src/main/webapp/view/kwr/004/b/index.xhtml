@@ -14,7 +14,7 @@
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr004.b.main.css" />
-        <com:scriptfile path="kwr005.b.vm.js" />
+        <com:scriptfile path="kwr004.b.vm.js" />
 
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
@@ -30,35 +30,35 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR004_201'), click: addNewRow, enable: isEnableAddButton"
+              data-bind="text: $i18n('KWR004_51'), click: addNewRow, enable: isEnableAddButton"
             />
             <!-- B1_2 -->
             <button
               tabindex="2"
               id="btnB12"
               class="proceed"
-              data-bind="text: $i18n('KWR004_203'), click: registerSetting"
+              data-bind="text: $i18n('KWR004_52'), click: registerSetting"
             />
             <!-- B1_2 -->
             <button
               tabindex="3"
               id="btnB13"
               class="normal"
-              data-bind="text: $i18n('KWR004_204'), click: showDialogC, enable: isEnableDuplicateButton"
+              data-bind="text: $i18n('KWR004_53'), click: showDialogC, enable: isEnableDuplicateButton"
             />
             <!-- B1_2 -->
             <button
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR004_205'), click: deteleSetting, enable: isEnableDeleteButton"
+              data-bind="text: $i18n('KWR004_54'), click: deteleSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
               tabindex="5"
               id="btnB15"
               class="normal"
-              data-bind="text: $i18n('KWR004_206'), click: closeDialog"
+              data-bind="text: $i18n('KWR004_55'), click: closeDialog"
             />
           </div>
           <!-- A1_2-->
@@ -86,8 +86,8 @@
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
-                      { headerText: $i18n('KWR004_207'), prop: 'code', width: 90 },
-                      { headerText: $i18n('KWR004_208'), prop: 'name', width: 230 }
+                      { headerText: $i18n('KWR004_56'), prop: 'code', width: 90 },
+                      { headerText: $i18n('KWR004_57'), prop: 'name', width: 230 }
                     ],
                     multiple: false,
                     value: currentCodeList
@@ -101,7 +101,7 @@
                   class="form-label required broken"
                   data-bind="ntsFormLabel: { 
                     required: true, 
-                    text: $i18n('KWR004_209'), 
+                    text: $i18n('KWR004_58'), 
                     constraint: ['ExportSettingCode', 'ExportSettingName']}"
                 ></div>
                 <div class="textEditor">
@@ -113,7 +113,7 @@
                       value: attendanceCode, 
                       required: true,
                       constraint: 'ExportSettingCode',
-                      name: $i18n('KWR004_210'),
+                      name: $i18n('KWR004_59'),
                       enable: isEnableAttendanceCode
                     }"
                   />
@@ -124,24 +124,24 @@
                       value: attendanceName,
                       required: true,
                       constraint: 'ExportSettingName',
-                      name: $i18n('KWR004_211')
+                      name: $i18n('KWR004_60')
                     }"
                   />
                 </div>
               </div>
               <div class="row d-flex">
                 <div
-                  data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_212') }"
+                  data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_61') }"
                 ></div>
               </div>
               <div class="row">
-                <div class="ui-iggrid">
-                  <table id="multiGridList" width="100%">
+                <div class="ui-iggrid" tabindex="9">
+                  <table id="multiGridList" width="100%" tabindex="-1">
                     <colgroup>
                       <col width="35px" />
-                      <col width="190px" />
-                      <col width="160px" />
+                      <col width="150px" />
                       <col width="250px" />
+                      <col width="220px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -154,16 +154,25 @@
                         </th>
                         <th
                           class="ui-widget-header text-center"
-                          data-bind="text: $i18n('KWR004_213')"
+                          data-bind="text: $i18n('KWR004_62')"
                         ></th>
                         <th class="ui-widget-header"></th>
                         <th
                           class="ui-widget-header text-center"
-                          data-bind="text: $i18n('KWR004_214')"
+                          data-bind="text: $i18n('KWR004_63')"
                         ></th>
                       </tr>
                     </thead>
                     <tbody data-bind="foreach: settingListItemsDetails">
+                      <com:ko-if bind="$index() === 0 || $index() === 2">
+                        <tr>
+                          <td
+                            class="bg-hover-none"
+                            colspan="4"
+                            data-bind="text: $index() === 0 ? $i18n('KWR004_64') : $i18n('KWR004_65')"
+                          ></td>
+                        </tr>
+                      </com:ko-if>
                       <tr data-bind="attr: {id: 'row-' + id}">
                         <td>
                           <div
@@ -175,7 +184,7 @@
                         <td>
                           <input
                             tabindex="-1"
-                            size="19"
+                            size="15"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
@@ -185,20 +194,41 @@
                                   }"
                           />
                         </td>
-                        <td>
-                          <div
-                            class="cf"
-                            data-bind="ntsSwitchButton: {
-                              options: $vm.settingRules,
-                              optionsValue: 'code',
-                              optionsText: 'name',
-                              value: setting
-                            }"
-                          ></div>
-                          <button
-                            tabindex="9"
-                            data-bind="text: $i18n('KWR004_216'), click: function(data) { $vm.openDialogKDL(data) }"
-                          />
+                        <td class="text-right">
+                          <div class="d-flex">
+                            <com:ko-if bind="$index() &lt; 2">
+                              <div
+                                class="cf"
+                                data-bind="ntsSwitchButton: {
+                                  options: $vm.settingRules,
+                                  optionsValue: 'code',
+                                  optionsText: 'name',
+                                  value: setting,
+                                  name: $i18n('KWR004_67')
+                                }"
+                              ></div>
+                            </com:ko-if>
+                            <button
+                              tabindex="9"
+                              class="btn-B4331"
+                              data-bind="text: $i18n('KWR004_67'), click: function(data) { $vm.openDialogKDL(data) }"
+                            />
+                            <div
+                              id="combo-box"
+                              class="attribute-selection"
+                              data-bind="ntsComboBox: {
+                                name: $i18n('KWR004_216'),
+                                options: $vm.settingRules,
+                                optionsValue: 'code',
+                                visibleItemsCount: 4,
+                                value: selectedCode,
+                                optionsText: 'name',
+                                editable: false,
+                                enable: true,
+                                selectFirstIfNull: true
+                              }"
+                            ></div>
+                          </div>
                         </td>
                         <td><span data-bind="text: selectionItem"></span></td>
                       </tr>

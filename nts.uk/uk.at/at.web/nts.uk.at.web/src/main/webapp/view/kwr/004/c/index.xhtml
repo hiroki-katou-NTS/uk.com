@@ -13,9 +13,8 @@
           var dialogSize = { width: 640, height: 300 };
         </script>
         <com:scriptfile set="IGNITE" />
-        <com:stylefile path="kwr003.c.main.css" />
-        <!-- <com:scriptfile path="kwr003.a.common.js" /> -->
-        <com:scriptfile path="kwr003.c.vm.js" />
+        <com:stylefile path="kwr004.c.main.css" />        
+        <com:scriptfile path="kwr004.c.vm.js" />
         <com:ValidatorScript>
           nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
           nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
@@ -25,9 +24,9 @@
       <ui:define name="content">
         <div id="contents-area" class="kwr-004c">
           <div class="row d-flex">
-            <div data-bind="text: $i18n('KWR004_301')"></div>
+            <div data-bind="text: $i18n('KWR004_101')"></div>
             <div
-              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_302')}"
+              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_102')}"
             ></div>            
             <div class="textEditor">
               <div class="code" data-bind="text: oldCode"></div>
@@ -35,12 +34,12 @@
             </div>
           </div>
           <div class="row d-flex">
-            <div data-bind="text: $i18n('KWR004_303')"></div>            
+            <div data-bind="text: $i18n('KWR004_103')"></div>            
             <div
               class="form-label required broken"
               data-bind="ntsFormLabel: { 
                     required: true, 
-                    text: $i18n('KWR004_302'), 
+                    text: $i18n('KWR004_102'), 
                     constraint: ['ExportSettingCode', 'ExportSettingName']}"
             ></div>
             <div class="textEditor">
@@ -52,7 +51,7 @@
                       value: newCode, 
                       required: false,
                       constraint: 'ExportSettingCode',
-                      name: $i18n('KWR004_210')
+                      name: $i18n('KWR004_102')
                     }"
               />
               <input
@@ -62,7 +61,7 @@
                       value: newName,
                       required: false,
                       constraint: 'ExportSettingName',
-                      name: $i18n('KWR004_211')
+                      name: $i18n('KWR004_102')
                     }"
               />
             </div>
@@ -71,14 +70,9 @@
         <div id="functions-area-bottom" class="btn-click">
           <button
             tabindex="3"
-            data-bind="click: proceed, enable: $root.errors.isEmpty"
-            class="proceed large"
-          >
-            #{i18n.getText('KWR004_304')}
-          </button>
-          <button tabindex="4" data-bind="click: cancel">
-            #{i18n.getText('KWR004_305')}
-          </button>
+            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR004_104')"
+            class="proceed large"/>
+          <button tabindex="4" data-bind="click: cancel, text: $i18n('KWR004_104')"/>
         </div>
       </ui:define>
     </ui:composition>
