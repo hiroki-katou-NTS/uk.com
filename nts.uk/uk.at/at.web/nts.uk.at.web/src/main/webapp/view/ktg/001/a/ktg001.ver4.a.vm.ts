@@ -159,7 +159,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 		
 		setting(){
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/ktg/001/b/index_ver4.xhtml';
+			nts.uk.ui.windows.sub.modal('at','/view/ktg/001/b/index_ver4.xhtml');
 		}
 
 
