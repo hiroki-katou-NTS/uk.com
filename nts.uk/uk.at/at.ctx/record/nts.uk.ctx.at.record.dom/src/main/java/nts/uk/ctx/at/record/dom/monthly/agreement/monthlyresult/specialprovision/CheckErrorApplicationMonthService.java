@@ -77,7 +77,7 @@ public class CheckErrorApplicationMonthService {
                     annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value ||
                     annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value ||
                     annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY.value ){
-                ExcessErrorContent annualError = ExcessErrorContent.create(ErrorClassification.ONE_MONTH_MAX_TIME,
+                ExcessErrorContent annualError = ExcessErrorContent.create(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR,
                         Optional.empty(),Optional.of(new AgreementOneYearTime(annualTime.getRecordTime().getThreshold().getErAlTime().getError().v())), Optional.empty());
                 excessErrorInformation.add(annualError);
             }
