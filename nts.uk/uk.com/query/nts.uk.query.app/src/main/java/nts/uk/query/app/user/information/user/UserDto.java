@@ -79,6 +79,23 @@ public class UserDto {
      */
     private int language;
 
+    public static UserDto toDto(User domain) {
+        return new UserDto(
+                domain.getUserID(),
+                domain.isDefaultUser(),
+                domain.getPassword() == null ? null : domain.getPassword().v(),
+                domain.getLoginID() == null ? null : domain.getLoginID().v(),
+                domain.getContractCode() == null ? null : domain.getContractCode().v(),
+                domain.getExpirationDate(),
+                domain.getSpecialUser() == null ? null : domain.getSpecialUser().value,
+                domain.getMultiCompanyConcurrent() == null ? null : domain.getMultiCompanyConcurrent().value,
+                domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : null,
+                domain.getUserName().isPresent() ? domain.getUserName().get().v() : null,
+                domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : null,
+                domain.getPassStatus() == null ? null : domain.getPassStatus().value,
+                domain.getLanguage() == null ? null : domain.getLanguage().value
+        );
+    }
 
     public User toDomain() {
         return User.createFromJavatype(
@@ -95,24 +112,6 @@ public class UserDto {
                 associatedPersonID,
                 passStatus,
                 language
-        );
-    }
-
-    public static UserDto toDto(User domain) {
-        return new UserDto(
-                domain.getUserID(),
-                domain.isDefaultUser(),
-                domain.getPassword().v(),
-                domain.getLoginID().v(),
-                domain.getContractCode().v(),
-                domain.getExpirationDate(),
-                domain.getSpecialUser().value,
-                domain.getMultiCompanyConcurrent().value,
-                domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : null,
-                domain.getUserName().isPresent() ? domain.getUserName().get().v() : null,
-                domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : null,
-                domain.getPassStatus().value,
-                domain.getLanguage().value
         );
     }
 }
