@@ -1,12 +1,16 @@
-package nts.uk.query.app.user.information.setting;
+package nts.uk.ctx.sys.env.app.find.mailnoticeset.setting;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactName;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactSetting;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactUsageSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.OtherContact;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingContactInformation;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +18,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Builder
-public class SettingContactInformationDto implements SettingContactInformation.MementoSetter {
+public class SettingContactInformationDto implements SettingContactInformation.MementoSetter, SettingContactInformation.MementoGetter {
 
     /**
      * ダイヤルイン番号
@@ -161,4 +165,96 @@ public class SettingContactInformationDto implements SettingContactInformation.M
                         .build())
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    public ContactSetting getCompanyMobileEmailAddress() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.companyMobileEmailAddress.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.companyMobileEmailAddress.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getPersonalMobilePhone() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.personalMobilePhone.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.personalMobilePhone.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getDialInNumber() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.dialInNumber.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.dialInNumber.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getExtensionNumber() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.extensionNumber.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.extensionNumber.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getCompanyMobilePhone() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.companyMobilePhone.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.companyMobilePhone.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getCompanyEmailAddress() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.companyEmailAddress.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.companyEmailAddress.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getEmergencyNumber1() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.emergencyNumber1.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.emergencyNumber1.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getEmergencyNumber2() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.emergencyNumber2.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.emergencyNumber2.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public List<OtherContact> getOtherContacts() {
+    	return this.otherContacts.stream()
+    			.map(item -> OtherContact.builder()
+    					.no(item.getNo())
+    					.contactUsageSetting(ContactUsageSetting.valueOf(item.getContactUsageSetting()))
+    					.contactName(new ContactName(item.getContactName()))
+    					.build())
+    			.collect(Collectors.toList());
+    }
+    
+    @Override
+    public ContactSetting getPersonalEmailAddress() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.personalEmailAddress.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.personalEmailAddress.getUpdatable())))
+    			.build();
+    }
+    
+    @Override
+    public ContactSetting getPersonalMobileEmailAddress() {
+    	return ContactSetting.builder()
+    			.contactUsageSetting(ContactUsageSetting.valueOf(this.personalMobileEmailAddress.getContactUsageSetting()))
+    			.updatable(Optional.of(NotUseAtr.valueOf(this.personalMobileEmailAddress.getUpdatable())))
+    			.build();
+    }
+  
 }

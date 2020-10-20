@@ -10,14 +10,14 @@ public enum ContactUsageSetting {
     // 個人選択可
     INDIVIDUAL_SELECT(2);
 
-    public final int code;
+    public final int value;
 
     /**
      *
      * @param code
      */
-    private ContactUsageSetting(int code) {
-        this.code = code;
+    private ContactUsageSetting(int value) {
+        this.value = value;
     }
 
     /**
@@ -28,7 +28,7 @@ public enum ContactUsageSetting {
     public static ContactUsageSetting valueOf(int value) {
         // Find value.
         for (ContactUsageSetting val : ContactUsageSetting.values()) {
-            if (val.code == value) {
+            if (val.value == value) {
                 return val;
             }
         }
