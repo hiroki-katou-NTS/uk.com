@@ -17,6 +17,6 @@ public class DeleteTimeClassificationCommand {
 	private  String classificationCode;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 }

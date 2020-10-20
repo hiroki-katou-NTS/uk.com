@@ -28,12 +28,12 @@ public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmp
         val cid = AppContexts.user().companyId();
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
-        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(cid,command.getEmploymentCD(),
+        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(cid,command.getEmpCdSource(),
                 EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         if(timeOfEmployment.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfEmployment.get().getSetting();
 
-            Optional<AgreementTimeOfEmployment> timeOfEmploymentCoppy =  repo.getByCidAndEmployCode(cid,command.getEmploymentCDCoppy(),
+            Optional<AgreementTimeOfEmployment> timeOfEmploymentCoppy =  repo.getByCidAndEmployCode(cid,command.getEmpCdTarget(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
             //2: delete
@@ -41,7 +41,7 @@ public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmp
 
             //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
             AgreementTimeOfEmployment agreementTimeOfEmployment = new AgreementTimeOfEmployment(cid, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-                    new EmploymentCode(command.getEmploymentCDCoppy()),basicAgreementSetting);
+                    new EmploymentCode(command.getEmpCdTarget()),basicAgreementSetting);
             repo.insert(agreementTimeOfEmployment);
         }
     }

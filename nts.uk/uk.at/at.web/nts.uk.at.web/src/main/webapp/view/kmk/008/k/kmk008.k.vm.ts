@@ -152,15 +152,31 @@ module nts.uk.at.view.kmk008.k {
             }
 
             if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+                let param:string;
+                if (vm.isYearMonth) {
+                    param = vm.$i18n("KMK008_25");
+                }
+                else {
+                    param = vm.$i18n("KMK008_28");
+                }
+
                 return vm.$dialog.error({
                     messageId: "Msg_59",
-                    messageParams: [vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185")]
+                    messageParams: [param, vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185", [""])]
                 });
             }
             else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
+                let param:string;
+                if (vm.isYearMonth) {
+                    param = vm.$i18n("KMK008_25");
+                }
+                else {
+                    param = vm.$i18n("KMK008_28");
+                }
+
                 return vm.$dialog.error({
                     messageId: "Msg_59",
-                    messageParams: [vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                    messageParams: [param, vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
                 });
             }
 
@@ -198,15 +214,31 @@ module nts.uk.at.view.kmk008.k {
             }
 
             if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+                let param:string;
+                if (vm.isYearMonth) {
+                    param = vm.$i18n("KMK008_25");
+                }
+                else {
+                    param = vm.$i18n("KMK008_28");
+                }
+
                 return vm.$dialog.error({
                     messageId: "Msg_59",
-                    messageParams: [vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185")]
+                    messageParams: [param, vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185", [""])]
                 });
             }
             else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
+                let param:string;
+                if (vm.isYearMonth) {
+                    param = vm.$i18n("KMK008_25");
+                }
+                else {
+                    param = vm.$i18n("KMK008_28");
+                }
+
                 return vm.$dialog.error({
                     messageId: "Msg_59",
-                    messageParams: [vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                    messageParams: [param, vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
                 });
             }
 

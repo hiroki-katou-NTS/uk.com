@@ -27,20 +27,20 @@ public class CopyTimeClassificationCommandHandler extends CommandHandler<CopyTim
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
         Optional<AgreementTimeOfClassification> timeOfClassification =  repo.getByCidAndClassificationCode(AppContexts.user().companyId(),
-                command.getClassificationCode(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+                command.getClassificationCdSource(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if(timeOfClassification.isPresent()){
             BasicAgreementSetting basicAgreementSetting = timeOfClassification.get().getSetting();
 
             Optional<AgreementTimeOfClassification> timeOfClassificationCoppy =  repo.getByCidAndClassificationCode(AppContexts.user().companyId(),
-                    command.getClassificationCodeCoppy(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
+                    command.getClassificationCdTarget(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
             //2: delete(会社ID,雇用コード)
             timeOfClassificationCoppy.ifPresent(x -> repo.delete(x));
 
             //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
             AgreementTimeOfClassification agreementTimeOfClassification = new AgreementTimeOfClassification(AppContexts.user().companyId(),
-                    EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),new ClassificationCode(command.getClassificationCodeCoppy()),basicAgreementSetting);
+                    EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),new ClassificationCode(command.getClassificationCdTarget()),basicAgreementSetting);
             repo.insert(agreementTimeOfClassification);
         }
 

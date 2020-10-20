@@ -14,12 +14,12 @@ import lombok.Getter;
 public class CopyTimeWorkplaceCommand {
 
 	// 会社ID 1
-	private  String workplaceId;
+	private  String workplaceIdSource;
 
 	// 会社ID 1
-	private  String workplaceIdCoppy;
+	private  String workplaceIdTarget;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 }
