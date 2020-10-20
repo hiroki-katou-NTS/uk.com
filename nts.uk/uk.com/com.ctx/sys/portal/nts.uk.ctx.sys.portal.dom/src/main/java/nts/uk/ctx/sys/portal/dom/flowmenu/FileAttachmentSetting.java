@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 

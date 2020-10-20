@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.フローメニュー作成
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFlowMenu extends AggregateRoot {
@@ -28,11 +27,13 @@ public class CreateFlowMenu extends AggregateRoot {
 	/**
 	 * フローメニュー名称
 	 */
+	@Setter
 	private TopPagePartName flowMenuName;
 	
 	/**
 	 * フローメニューレイアウト
 	 */
+	@Setter
 	private Optional<FlowMenuLayout> flowMenuLayout;
 	
 	/**
@@ -49,7 +50,7 @@ public class CreateFlowMenu extends AggregateRoot {
 	public void getMemento(MementoGetter memento) {
 		this.flowMenuCode = new TopPagePartCode(memento.getFlowMenuCode());
 		this.cid = memento.getCid();
-		this.flowMenuName = new TopPagePartName(memento.getFileId());
+		this.flowMenuName = new TopPagePartName(memento.getFlowMenuName());
 		this.flowMenuLayout = memento.getFileId() != null 
 				? Optional.of(FlowMenuLayout.createFromMemento(memento))
 				: Optional.empty();

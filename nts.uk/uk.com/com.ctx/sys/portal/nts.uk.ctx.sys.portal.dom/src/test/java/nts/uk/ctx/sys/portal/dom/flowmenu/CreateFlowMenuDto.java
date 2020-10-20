@@ -3,11 +3,15 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFlowMenu.MementoGetter {
 	
 	/**
