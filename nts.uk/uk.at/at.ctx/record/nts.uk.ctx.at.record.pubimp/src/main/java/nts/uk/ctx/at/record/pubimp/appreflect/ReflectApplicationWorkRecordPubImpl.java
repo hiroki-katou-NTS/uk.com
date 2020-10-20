@@ -12,8 +12,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.ConvertDailyRecordToAd;
-import nts.uk.ctx.at.record.dom.adapter.application.reflect.RequestSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCRequestSettingAdapter;
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
@@ -44,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
@@ -99,7 +99,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	private DailyRecordShareFinder dailyRecordShareFinder;
 
 	@Inject
-	private ConvertDailyRecordToAd convertDailyRecordToAd;
+	private DailyRecordConverter convertDailyRecordToAd;
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
@@ -108,7 +108,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	private DailyRecordAdUpService dailyRecordAdUpService;
 
 	@Inject
-	private RequestSettingAdapter requestSettingAdapter;
+	private RCRequestSettingAdapter requestSettingAdapter;
 
 	@Override
 	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
@@ -151,13 +151,13 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		private final DailyRecordShareFinder dailyRecordShareFinder;
 
-		private final ConvertDailyRecordToAd convertDailyRecordToAd;
+		private final DailyRecordConverter convertDailyRecordToAd;
 
 		private final CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
 		private final DailyRecordAdUpService dailyRecordAdUpService;
 
-		private final RequestSettingAdapter requestSettingAdapter;
+		private final RCRequestSettingAdapter requestSettingAdapter;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
