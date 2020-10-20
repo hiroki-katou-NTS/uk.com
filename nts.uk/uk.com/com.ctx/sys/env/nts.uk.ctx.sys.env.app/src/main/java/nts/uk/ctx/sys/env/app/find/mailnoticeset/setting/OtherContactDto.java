@@ -9,18 +9,18 @@ import lombok.Data;
 @Data
 @Builder
 public class OtherContactDto {
-    /**
-     * NO
-     */
-    private Integer no;
+	/**
+	 * NO
+	 */
+	private Integer no;
 
-    /**
-     * 連絡先利用設定
-     */
-    private Integer contactUsageSetting;
+	/**
+	 * 連絡先利用設定
+	 */
+	private Integer contactUsageSetting;
 
-    /**
-     * 連絡先名
-     */
-    private String contactName;
+	/**
+	 * 連絡先名
+	 */
+	private String contactName;
 }

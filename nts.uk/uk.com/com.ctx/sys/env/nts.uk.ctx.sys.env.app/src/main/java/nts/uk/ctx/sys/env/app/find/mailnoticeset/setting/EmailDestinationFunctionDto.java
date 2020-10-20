@@ -11,13 +11,13 @@ import java.util.List;
 @Data
 @Builder
 public class EmailDestinationFunctionDto {
-    /**
-     * メール分類
-     */
-    private Integer emailClassification;
+	/**
+	 * メール分類
+	 */
+	private Integer emailClassification;
 
-    /**
-     * 機能ID
-     */
-    private List<Integer> functionIds;
+	/**
+	 * 機能ID
+	 */
+	private List<Integer> functionIds;
 }

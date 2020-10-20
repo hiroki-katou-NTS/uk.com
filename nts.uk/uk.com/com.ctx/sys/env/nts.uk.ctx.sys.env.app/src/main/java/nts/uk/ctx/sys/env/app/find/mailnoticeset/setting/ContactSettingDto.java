@@ -9,13 +9,13 @@ import lombok.Data;
 @Data
 @Builder
 public class ContactSettingDto {
-    /**
-     * 連絡先利用設定
-     */
-    private Integer contactUsageSetting;
+	/**
+	 * 連絡先利用設定
+	 */
+	private Integer contactUsageSetting;
 
-    /**
-     * 更新可能
-     */
-    private Integer updatable;
+	/**
+	 * 更新可能
+	 */
+	private Integer updatable;
 }
