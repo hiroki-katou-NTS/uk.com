@@ -113,7 +113,6 @@ module nts.uk.com.view.cmf004.j {
         to: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD HH:mm:ss").add(1, 'days').subtract(1, 'seconds').toISOString(),
       };
       return service.findData(param).then((data: Array<DataDto>) => {
-        console.log(data);
         const res: DataDto[] = [];
         if (data && data.length) {
           _.each(data, (x, i) => {
