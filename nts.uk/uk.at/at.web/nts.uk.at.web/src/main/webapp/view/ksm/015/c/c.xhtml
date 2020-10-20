@@ -3,26 +3,26 @@
     <span class="title">#{i18n.getText('Com_Workplace')}</span>
     <!-- Go back Style -->
     <!-- B5 -->
-    <a
+    <a tabindex="2"
       class="goback"
       data-bind="ntsLinkButton: { jump: '/view/ksm/015/a/index.xhtml' }, visible: forAttendent"
       >#{i18n.getText('KSM015_11')}</a
     >
     <!-- C1 -->
-    <button tabindex="1" class="proceed" id="register-btn" data-bind="click: registerOrd, enable: $root.errors.isEmpty ,disable: !isEnable()">
+    <button tabindex="3" class="proceed" id="register-btn" data-bind="click: registerOrd, enable: $root.errors.isEmpty ,disable: !isEnable()">
       #{i18n.getText('KSM015_8')}
     </button>
     <!-- C2 -->
     <button
       class="danger"
-      tabindex="3"
+      tabindex="4"
       data-bind="click: deleteShiftMaster, disable: !isWorkplaceAlreadySetting()"
     >
       #{i18n.getText('KSM015_9')}
     </button>
     <!-- C3 -->
     <button
-      tabindex="2"
+      tabindex="5"
       data-bind="click: openDialogCopy, disable: !isWorkplaceAlreadySetting()"
     >
       #{i18n.getText('KSM015_21')}
@@ -31,7 +31,7 @@
   <div class="contents-area">
     <div id="ksm015c" class="cf">
       <div class="grid-container">
-        <div id="tree-grid"></div>
+        <div tabindex="6" id="tree-grid"></div>
       </div>
       <div id="register-form">
         <div id="form-title">
@@ -47,15 +47,15 @@
           </div>
         </div>
         <div class="valign-center control-group">
-          <button id = "add-new-shift" class = "small" data-bind="click: openDialogKDL044, disable: !isEnable()">
+          <button tabindex="7" id = "add-new-shift" class = "small" data-bind="click: openDialogKDL044, disable: !isEnable()">
             #{i18n.getText('KSM015_18')}
           </button>
           <!-- C6_2 -->
-          <button class="small danger" data-bind="click: clearShiftMaster, disable: shiftItems().length == 0 || selectedShiftMaster().length == 0">
+          <button tabindex="8" class="small danger" data-bind="click: clearShiftMaster, disable: shiftItems().length == 0 || selectedShiftMaster().length == 0">
             #{i18n.getText('KSM015_31')}
           </button>
         </div>
-        <table
+        <table tabindex="9"
           id="shift-list"
           data-bind="ntsGridList: {
                 height: 338,

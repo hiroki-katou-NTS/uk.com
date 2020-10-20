@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.RoundingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingGetMemento;
 
 /**
  * The Class RoundingDto.

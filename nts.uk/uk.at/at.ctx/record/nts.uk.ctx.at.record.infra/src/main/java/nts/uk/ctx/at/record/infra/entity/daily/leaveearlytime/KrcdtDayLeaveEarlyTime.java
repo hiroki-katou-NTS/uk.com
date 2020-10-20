@@ -124,6 +124,6 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 										 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyDedctTime), new AttendanceTime(this.calcLeaveEarlyDedctTime)),
 										 new WorkNo(this.krcdtDayLeaveEarlyTimePK == null ? null : this.krcdtDayLeaveEarlyTimePK.workNo),
 										 timeVacation,
-										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)));
+										 new IntervalExemptionTime(new AttendanceTime(0)));
 	}
 }

@@ -9,8 +9,8 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.ReferencePredTimeOfFlex;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -36,8 +36,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDa
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

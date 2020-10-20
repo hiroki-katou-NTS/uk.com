@@ -10,15 +10,24 @@ module nts.uk.at.view.kaf022.d.viewmodel {
             {code: 1, name: text('KAF022_389')},
             {code: 0, name: text('KAF022_390')}
         ]);
+
+        // 勤務時間の初期表示
         selectedIdD15: KnockoutObservable<number>;
+        // 出退勤を反映するか
         selectedIdD13: KnockoutObservable<number>;
 
+        // コメント１．コメント
         texteditorD9: KnockoutObservable<string>;
+        //コメント１．文字色
         valueD10: KnockoutObservable<string>;
+        // コメント１．太字
         enableD11: KnockoutObservable<boolean>;
 
+        // コメント2．コメント
         texteditorD12: KnockoutObservable<string>;
+        // コメント2．文字色
         valueD10_1: KnockoutObservable<string>;
+        // コメント2．太字
         enableD11_1: KnockoutObservable<boolean>;
 
         constructor() {

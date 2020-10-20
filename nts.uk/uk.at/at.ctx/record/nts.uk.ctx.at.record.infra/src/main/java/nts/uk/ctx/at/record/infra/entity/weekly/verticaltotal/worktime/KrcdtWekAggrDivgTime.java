@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
-import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

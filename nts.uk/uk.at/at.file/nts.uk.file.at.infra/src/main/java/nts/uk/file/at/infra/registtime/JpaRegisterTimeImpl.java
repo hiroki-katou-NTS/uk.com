@@ -13,11 +13,11 @@ import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.TargetSettingAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -822,7 +822,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			value = EnumAdaptor.convertToValueName(closingDateType).getLocalizedName();
 			break;
 		case 3:
-			TimeOverLimitType timeOverLimitType = EnumAdaptor.valueOf(type, TimeOverLimitType.class);
+			AgreementOverMaxTimes timeOverLimitType = EnumAdaptor.valueOf(type, AgreementOverMaxTimes.class);
 			value = EnumAdaptor.convertToValueName(timeOverLimitType).getLocalizedName();
 			break;
 		case 4:

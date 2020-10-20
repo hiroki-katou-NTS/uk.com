@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabsTemp: any;
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
-        mode: number = 1;
+        mode: KnockoutObservable<number>;
         created(params) {
 
             const self = this;
@@ -181,15 +181,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             })
             self.isPreAtr.subscribe((value) => {
-               if(!_.isNull(value) && self.mode == 0) {
+               if(!_.isNull(value) && self.mode() == 0) {
                    self.loadAll();
                }
 
             });
             
             
-            
-            self.disableControl();
 
         }
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
@@ -216,6 +214,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.isLinkList[index] = false;
             self.loadGrid(ko.toJS(self.nameGrids)[index], s, s[0].typeStamp);
             self.binding();
+            self.disableControl();                
         }
         binding() {
             let self = this;
@@ -296,7 +295,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         if (_.isNaN(Number(endRequest)) || Number(endRequest) > 4319 || Number(endRequest) < (-720)) {
                             i.endTimeRequest(null);
                         }
-                        if (self.mode == 0) {
+                        if (self.mode() == 0) {
                             if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
                                 i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
                             }
@@ -323,11 +322,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             })
             self.binding();
+            self.disableControl();
         }
 
         disableControl() {
             const self = this;
-            if (self.mode == 2) {
+            if (self.mode() == 2) {
                 var loop = window.setInterval(function () {
                     if ($('.startTime input') && $('.endTime input') && $('.enableFlag input')) {
                         _.forEach($('.startTime input'), i => { $(i).prop('disabled', true)});
@@ -458,7 +458,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             let comboColumns = [
                                 { prop: 'name', length: 6 }];
-            let comboItems = self.mode == 0 ? self.createdReasonItem(self.reasonList)  
+            let comboItems = self.mode() == 0 ? self.createdReasonItem(self.reasonList)  
                             : 
                             [ new ItemModel('0', '私用'),
                                new ItemModel('1', '公用'),
@@ -508,7 +508,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                   }
                   ],
               ntsControls: [
-                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: self.mode != 2 ? true : false, spaceSize: 'small' }
+                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: self.mode() != 2 ? true : false, spaceSize: 'small' }
                               ]
               };
             if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {

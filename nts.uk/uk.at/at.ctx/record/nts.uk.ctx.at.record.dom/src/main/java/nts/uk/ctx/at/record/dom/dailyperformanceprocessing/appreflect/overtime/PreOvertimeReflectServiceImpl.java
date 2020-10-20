@@ -194,7 +194,10 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		List<RemarksOfDailyPerform> remark = remarks.getRemarksBykey(employeeId, dateData);
 		//日別実績の臨時出退勤
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.finds(emps, dates).stream().findFirst();
-		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor != null?workInfor.getWorkInformation():null, 
+		IntegrationOfDaily integration = new IntegrationOfDaily(
+				employeeId,
+				dateData,
+				workInfor != null?workInfor.getWorkInformation():null, 
 				calAtrrOfDailyData != null?calAtrrOfDailyData.getCalcategory():null, 
 				findByKey.isPresent() ? findByKey.get().getAffiliationInfor() : null,
 				// workType,

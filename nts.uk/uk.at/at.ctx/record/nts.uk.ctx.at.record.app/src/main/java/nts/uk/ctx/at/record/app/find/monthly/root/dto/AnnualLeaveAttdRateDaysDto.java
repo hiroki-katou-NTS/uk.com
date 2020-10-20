@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 
 @Data
 /** 年休出勤率日数 */

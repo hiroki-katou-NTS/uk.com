@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.export.param;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.monthly.remain.ReserveLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.RealReserveLeave;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.ReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 
 /**
  * 積立年休情報残数

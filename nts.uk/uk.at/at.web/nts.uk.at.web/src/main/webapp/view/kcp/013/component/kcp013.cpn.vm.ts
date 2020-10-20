@@ -29,7 +29,7 @@ module kcp013.component {
 					{ prop: 'workStyleClassfication', length: 1 },
 					{ prop: 'remark', length: 1 },]}">
 				</div>
-				<div data-bind="ntsCheckBox: { checked: checked, text: nts.uk.resource.getText('KCP013_3')}"></div>
+				<div data-bind="visible: fillter, ntsCheckBox: { checked: checked, text: nts.uk.resource.getText('KCP013_3')}"></div>
 			</div>
 			</div>`
 	});
@@ -40,7 +40,7 @@ module kcp013.component {
 		selectedCode: KnockoutObservable<string>;
 		fillter: boolean;
 		workPlaceId: KnockoutObservable<string>;
-		checked: KnockoutObservable<boolean>
+		checked: KnockoutObservable<boolean> = ko.observable(false);
 		selectItem: any;
 		showNone: KnockoutObservable<string>;
 		showDeferred: KnockoutObservable<string>;
@@ -57,8 +57,8 @@ module kcp013.component {
 			self.showDeferred = param.showDeferred;
 			self.isEnable = ko.observable(param.disable);
             
-			self.checked = ko.observable(param.fillter);
-			if (self.checked()) {
+			//self.checked = ko.observable(param.fillter);
+			if (!param.fillter) {
 				self.loadAllWorkHours(param);
 			} else {
 				self.loadWorkHours(param);
@@ -129,7 +129,7 @@ module kcp013.component {
 			data.forEach((x) => {
 				datas.push(new Input(x.code, x.name, formatById("Clock_Short_HM", x.tzStart1),
 					formatById("Clock_Short_HM", x.tzEnd1), formatById("Clock_Short_HM", x.tzStart2),
-					formatById("Clock_Short_HM", x.tzEnd2), x.workStyleClassfication, x.remark, x.useDistintion, ''));
+					x.tzEnd2 > 0 ? formatById("Clock_Short_HM", x.tzEnd2) : null, x.workStyleClassfication, x.remark, x.useDistintion, ''));
 			})
 			self.listWorkHours(datas);
 
@@ -178,7 +178,7 @@ module kcp013.component {
 				this.tzStart2 = tzStart2;
 				this.tzEnd2 = tzEnd2;
 				this.tzStartToEnd1 = tzStart1 + nts.uk.resource.getText('KCP013_4') + tzEnd1;
-				if (useDistintion == '1') {
+				if (useDistintion == '1' && tzEnd2 != null) {
 					this.tzStartToEnd2 = tzStart2 + nts.uk.resource.getText('KCP013_4') + tzEnd2;
 				} else {
 					this.tzStartToEnd2 = '';

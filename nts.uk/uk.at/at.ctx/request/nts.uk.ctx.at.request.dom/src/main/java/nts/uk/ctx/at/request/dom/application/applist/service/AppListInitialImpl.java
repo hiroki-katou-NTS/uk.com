@@ -791,12 +791,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 							if((approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED) &&
 									Strings.isNotBlank(approver.getAgentID()) &&
 									approver.getAgentID().equals(loginID)) {
-								appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
+								appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
 							}
 							if((approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED) &&
 									Strings.isNotBlank(approver.getAgentID()) &&
 									!approver.getAgentID().equals(loginID)) {
-								appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
+								appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
 							}
 						}
 					}

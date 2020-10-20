@@ -13,15 +13,15 @@ import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundin
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.CalcFormulaSetting;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaName;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaSetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Rounding;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Symbol;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcFormulaSetting;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalculationAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Rounding;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Symbol;
 
 /**
  * The Class JpaFormulaSetMemento.

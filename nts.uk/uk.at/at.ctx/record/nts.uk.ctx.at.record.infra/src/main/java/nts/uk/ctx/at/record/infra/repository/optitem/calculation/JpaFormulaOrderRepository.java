@@ -21,8 +21,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder_;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrder;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
 
 /**
  * The Class JpaFormulaOrderRepository.

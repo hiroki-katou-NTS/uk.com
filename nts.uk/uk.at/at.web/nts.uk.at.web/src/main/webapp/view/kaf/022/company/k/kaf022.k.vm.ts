@@ -32,21 +32,32 @@ module nts.uk.at.view.kaf022.k.viewmodel {
             {code: 0, name: text('KAF022_273')},
         ]);
 
+        // 就業時間帯を反映する
         reflectWorkHour: KnockoutObservable<number>;
+        // 出退勤を反映する
         reflectAttendance: KnockoutObservable<number>;
+        // 1日休暇の場合は出退勤を削除
         oneDayLeaveDeleteAttendance: KnockoutObservable<number>;
 
+        // 同時申請必須
         simultaneousApplyRequired: KnockoutObservable<number>;
         // allowanceForAbsence: KnockoutObservable<number>;
 
+        // 出退勤を反映する
         reflectAttendanceAtr: KnockoutObservable<number>;
 
+        // コメント
         texteditorD9: KnockoutObservable<string>;
+        // 文字色
         valueD10: KnockoutObservable<string>;
+        // 太字
         enableD11: KnockoutObservable<boolean>;
 
+        // コメント
         texteditorD12: KnockoutObservable<string>;
+        // 文字色
         valueD10_1: KnockoutObservable<string>;
+        // 太字
         enableD11_1: KnockoutObservable<boolean>;
 
         constructor() {

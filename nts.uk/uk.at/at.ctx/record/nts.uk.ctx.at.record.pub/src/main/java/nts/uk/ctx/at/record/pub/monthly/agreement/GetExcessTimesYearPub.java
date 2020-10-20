@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 年間超過回数の取得
@@ -40,6 +41,5 @@ public interface GetExcessTimesYearPub {
 	 * @return 年間超過回数
 	 */
 	// RequestList555
-	AgreementExcessInfo andRemainTimes(String employeeId, Year year,
-			Optional<AgreementOperationSetting> agreementOperationSetting);
+	AgreementExcessInfo andRemainTimes(String employeeId, Year year, GeneralDate baseDate);
 }

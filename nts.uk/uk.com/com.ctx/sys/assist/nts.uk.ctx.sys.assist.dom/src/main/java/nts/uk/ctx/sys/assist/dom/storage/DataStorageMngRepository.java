@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
@@ -13,6 +14,13 @@ import java.util.List;
 public interface DataStorageMngRepository {
 
 	List<DataStorageMng> getAllDataStorageMng();
+	
+//	List<DataStorageMng> getDataStorageMng(
+//			 String cid,
+//			 GeneralDateTime startDateOperator,
+//			 GeneralDateTime endDateOperator,
+//			 List<String>  listOperatorEmployeeId
+//		);
 
 	Optional<DataStorageMng> getDataStorageMngById(String storeProcessingId);
 

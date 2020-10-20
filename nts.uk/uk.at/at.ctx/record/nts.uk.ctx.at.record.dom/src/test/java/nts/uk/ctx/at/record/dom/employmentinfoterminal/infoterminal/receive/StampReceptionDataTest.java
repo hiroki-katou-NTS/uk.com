@@ -228,7 +228,7 @@ public class StampReceptionDataTest {
 		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(
-						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(nts.uk.ctx.at.record.dom.workrecord.goout.GoingOutReason.UNION)),
+						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE),
 								Optional.of(new WorkLocationCD("A"))))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
@@ -243,7 +243,7 @@ public class StampReceptionDataTest {
 		ter = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(
-						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(nts.uk.ctx.at.record.dom.workrecord.goout.GoingOutReason.UNION)),
+						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 

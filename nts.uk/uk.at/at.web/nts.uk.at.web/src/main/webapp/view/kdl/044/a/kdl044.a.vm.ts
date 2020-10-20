@@ -84,9 +84,14 @@ module nts.uk.at.view.kdl044.a {
                                 }   
                             }
                             self.listShifuto();
+                            let differentFromCurrents = null;
+                            if (data.isMultiSelect == true) {
+								differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
+							} else {
+								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpel });
+                            }
                             
-							let differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
-							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
+                            self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }

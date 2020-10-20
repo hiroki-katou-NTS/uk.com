@@ -26,14 +26,14 @@ public class ClearAutomaticStamp {
 	public TimeActualStamp clear(String workTypeCode, TimeActualStamp timeActualStamp) {
 
 		// 打刻の時刻変更手段を確認
-		if (!timeActualStamp.getActualStamp().isPresent() || (timeActualStamp.getActualStamp().get().getTimeDay()
+		if (!timeActualStamp.getStamp().isPresent() || (timeActualStamp.getStamp().get().getTimeDay()
 				.getReasonTimeChange().getTimeChangeMeans() != TimeChangeMeans.SPR_COOPERATION
-				&& timeActualStamp.getActualStamp().get().getTimeDay().getReasonTimeChange()
+				&& timeActualStamp.getStamp().get().getTimeDay().getReasonTimeChange()
 						.getTimeChangeMeans() != TimeChangeMeans.DIRECT_BOUNCE)) {
 			return timeActualStamp;
 		}
 
-		if (timeActualStamp.getActualStamp().get().getTimeDay().getReasonTimeChange()
+		if (timeActualStamp.getStamp().get().getTimeDay().getReasonTimeChange()
 				.getTimeChangeMeans() == TimeChangeMeans.SPR_COOPERATION) {
 			Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCode);
 			// 勤務種類に年休or特別休暇が含まっている場合はSPR連携打刻は消さない
@@ -42,7 +42,7 @@ public class ClearAutomaticStamp {
 
 		}
 		// 不要な打刻をクリア
-		return new TimeActualStamp(null, timeActualStamp.getStamp().orElse(null),
+		return new TimeActualStamp(timeActualStamp.getActualStamp().orElse(null), null,
 				timeActualStamp.getNumberOfReflectionStamp());
 	}
 

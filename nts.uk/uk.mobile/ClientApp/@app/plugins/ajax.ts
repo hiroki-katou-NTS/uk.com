@@ -34,7 +34,7 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
-                    let env: { API_URL?: string } = { API_URL: 'http://localhost:8080' },
+                    let env: { API_URL?: string } = { API_URL: 'http://localhost:8080/' },
                         hostName: string = window.location.origin;
 
                     $.extend(opt, {

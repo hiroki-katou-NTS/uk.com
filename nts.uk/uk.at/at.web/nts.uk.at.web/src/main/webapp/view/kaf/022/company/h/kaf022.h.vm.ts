@@ -15,20 +15,43 @@ module nts.uk.at.view.kaf022.h.viewmodel {
             {code: 0, name: getText('KAF022_396')}
         ]);
 
+        // 時間年休
         annualVacationTime: KnockoutObservable<number>;
+
+        // 60H超休
         superHoliday60H: KnockoutObservable<number>;
+
+        //時間代休
         substituteLeaveTime: KnockoutObservable<number>;
+
+        //介護
         nursing: KnockoutObservable<number>;
+
+        // 子看護
         childNursing: KnockoutObservable<number>;
+
+        // 時間特別休暇
         specialVacationTime: KnockoutObservable<number>;
 
+        // 出勤前(1回目勤務)
         firstBeforeWork: KnockoutObservable<number>;
+
+        // 出勤前(2回目勤務)
         secondBeforeWork: KnockoutObservable<number>;
+
+        // 退勤後(1回目勤務)
         firstAfterWork: KnockoutObservable<number>;
+
+        // 退勤後(2回目勤務)
         secondAfterWork: KnockoutObservable<number>;
+
+        // 私用外出
         privateGoingOut: KnockoutObservable<number>;
+
+        // 組合外出
         unionGoingOut: KnockoutObservable<number>;
 
+        // 実績の時間帯へ反映する
         reflectActualTimeZone: KnockoutObservable<number>;
 
         constructor() {

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingsty
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexCalcAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexCalcAtr;
 
 /**
  * 割増時間別半日勤務のフレックス計算方法

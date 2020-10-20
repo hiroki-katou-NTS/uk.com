@@ -54,19 +54,19 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.shared.dom.monthly.erroralarm.ErrorType;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -835,7 +835,7 @@ public class DailyModifyRCommandFacade {
 		switch (displayFormat) {
 		case 0: // person
 			List<Pair<String, GeneralDate>> listEmpDate = checkEditedItems(resultOlds, resultNews);
-			Optional<GeneralDate> closureStartOpt = getClosureStartForEmployee.getDataClosureStart(listEmpDate.get(0).getLeft());
+			Optional<GeneralDate> closureStartOpt = getClosureStartForEmployee.getDataClosureStart(resultOlds.get(0).getEmployeeId());
 			if(!closureStartOpt.isPresent()) break;
 			List<GeneralDate> listDate = listEmpDate.stream().map(x -> x.getRight()).filter(x -> closureStartOpt.get().beforeOrEquals(x)).collect(Collectors.toList());
 			if (!listDate.isEmpty()) {

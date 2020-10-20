@@ -13,10 +13,13 @@ module nts.uk.at.view.kaf022.y.viewmodel {
         ]);
         appTypeLabels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
 
+        // 申請設定.種類別設定
         appTypeSettings: KnockoutObservableArray<AppTypeSetting>;
 
+        // 登録時の手動メール送信の初期値
         manualSendMailAtr: KnockoutObservable<number>;
 
+        // 申請メール設定
         appMailSetting: KnockoutObservable<AppMailSetting>;
 
         constructor() {
@@ -94,7 +97,9 @@ module nts.uk.at.view.kaf022.y.viewmodel {
     class AppTypeSetting {
         appType: number;
         appTypeName: string;
+        // 承認処理時に自動でメールを送信する
         sendMailWhenApproval: KnockoutObservable<boolean>;
+        // 新規登録時に自動でメールを送信する
         sendMailWhenRegister: KnockoutObservable<boolean>;
         constructor(appType:number, appTypeName: string, sendMailWhenApproval: boolean, sendMailWhenRegister: boolean) {
             this.appType = appType;
@@ -105,7 +110,9 @@ module nts.uk.at.view.kaf022.y.viewmodel {
     }
 
     class AppMailSetting {
+        // URL理込
         urlReason: KnockoutObservable<number>;
+        // メールの内容
         emailList: KnockoutObservableArray<EmailContent>;
         constructor(urlReason: number, emailList: Array<EmailContent>) {
             this.urlReason = ko.observable(urlReason);
@@ -116,8 +123,10 @@ module nts.uk.at.view.kaf022.y.viewmodel {
     class EmailContent {
         division: number;
         labelSubject: string;
+        // 件名
         emailSubject: KnockoutObservable<string>;
         labelContent: string;
+        // 本文
         emailText: KnockoutObservable<string>;
 
         constructor(division: number, labelSubject: string, subject: string, labelContent: string, text: string) {

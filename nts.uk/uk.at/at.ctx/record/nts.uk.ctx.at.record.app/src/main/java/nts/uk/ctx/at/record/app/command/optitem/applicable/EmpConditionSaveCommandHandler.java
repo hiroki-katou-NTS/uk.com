@@ -10,8 +10,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepository;
 
 /**
  * The Class EmpConditionSaveCommandHandler.

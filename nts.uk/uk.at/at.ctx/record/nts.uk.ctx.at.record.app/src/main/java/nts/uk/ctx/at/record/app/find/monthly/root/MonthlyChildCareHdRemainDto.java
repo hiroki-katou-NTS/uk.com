@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.Day;
-import nts.uk.ctx.at.shared.dom.monthly.information.childnursing.MonChildHdMinutes;
-import nts.uk.ctx.at.shared.dom.monthly.information.childnursing.MonChildHdNumber;
-import nts.uk.ctx.at.shared.dom.monthly.information.childnursing.MonChildHdRemain;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdMinutes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /** 子の看護月別残数データ */

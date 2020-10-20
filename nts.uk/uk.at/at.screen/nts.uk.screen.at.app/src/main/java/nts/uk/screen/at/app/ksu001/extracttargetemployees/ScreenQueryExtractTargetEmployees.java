@@ -100,6 +100,7 @@ public class ScreenQueryExtractTargetEmployees {
 		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
 
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
+		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
 		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		
 		// step 4 gọi domainSv 社員を並び替える.

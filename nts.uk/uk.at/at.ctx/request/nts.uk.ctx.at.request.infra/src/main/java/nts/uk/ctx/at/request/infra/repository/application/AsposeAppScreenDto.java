@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -55,17 +56,6 @@ public class AsposeAppScreenDto {
 	 * 申請開始日
 	 */
 	private String appStartDate;
-
-	public static AsposeAppScreenDto fromDomain(ListOfApplication domain) {
-		return new AsposeAppScreenDto(EnumAdaptor.valueOf(domain.getPrePostAtr(), PrePostAtr.class).name, 
-				domain.getApplicantName(), 
-				domain.getAppType().name, 
-				domain.getAppContent(), 
-				domain.getInputDate().toString("M/d(E) H:mm"), 
-				domain.getReflectionStatus(), 
-				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
-				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
-	}
 	
 	public static AsposeAppScreenDto fromDomainPrint(ListOfApplication domain, int dispWplName) {
 		return new AsposeAppScreenDto(EnumAdaptor.valueOf(domain.getPrePostAtr(), PrePostAtr.class).name, 
@@ -73,7 +63,7 @@ public class AsposeAppScreenDto {
 				domain.getAppType().name, 
 				domain.getAppContent(), 
 				domain.getInputDate().toString("M/d(E) H:mm"), 
-				domain.getReflectionStatus(), 
+				I18NText.getText(domain.getReflectionStatus()), 
 				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
 				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
 	}

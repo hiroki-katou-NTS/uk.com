@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

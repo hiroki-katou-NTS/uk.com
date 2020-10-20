@@ -26,9 +26,11 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
         /* A19 HolidatOvertimeWorkApplicationReflect Table*/
         itemListA11_12: KnockoutObservableArray<ItemModel>;
+        // 時間外深夜時間を反映する
         nightOvertimeReflect: KnockoutObservable<number>;
 
         /*A12 Table*/
+        // 事前事後区分表示
         prePostDisplayAtr: KnockoutObservable<number>;
         itemListA12_5: KnockoutObservableArray<ItemModel>;
 
@@ -346,10 +348,14 @@ module nts.uk.at.view.kaf022.a.viewmodel {
     }
 
     class DeadlineSetting {
+        // 締めID
         closureId: number;
         closureName: string;
+        // 利用区分
         useAtr: KnockoutObservable<boolean>;
+        // 締切基準
         deadlineCriteria: KnockoutObservable<number>;
+        // 締切日数
         deadline: KnockoutObservable<number>;
         constructor(index: number, closureName: string, useAtr: number, deadlineCriteria: number, deadline: number) {
             this.closureId = index;
@@ -368,13 +374,20 @@ module nts.uk.at.view.kaf022.a.viewmodel {
     class ReceptionRestrictionSetting {
         appType: number;
         appTypeName: string;
+        // 日数
         dateBeforehandRestrictions: KnockoutObservable<number>;
+        // 利用する
         useAtr: KnockoutObservable<boolean>;
+        // 未来日許可しない
         allowFutureDay: KnockoutObservable<boolean>;
 
+        // チェック方法
         methodCheck: KnockoutObservable<number>;
+        // 時刻（早出残業）
         earlyOvertime: KnockoutObservable<number>;
+        // 時刻（通常残業）
         normalOvertime: KnockoutObservable<number>;
+        // 時刻（早出残業・通常残業）
         earlyNormalOvertime: KnockoutObservable<number>;
         requiredA7_23: KnockoutObservable<boolean>;
         constructor(appTypeName: string, appType: number, useAtr: number, dateBeforehandRestrictions: number,
@@ -425,11 +438,15 @@ module nts.uk.at.view.kaf022.a.viewmodel {
     }
 
     class AppLimitSetting {
+        // 月別実績が確認済なら申請できない
         canAppAchievementMonthConfirm: KnockoutObservable<number>;
         canAppAchievementLock: KnockoutObservable<number>;
         canAppFinishWork: KnockoutObservable<number>;
+        // 日別実績が確認済なら申請できない
         canAppAchievementConfirm: KnockoutObservable<number>;
+        // 定型理由が必須
         standardReasonRequired: KnockoutObservable<number>;
+        // 申請理由が必須
         requiredAppReason: KnockoutObservable<number>;
 
         constructor(appLimitSetting: any) {
@@ -443,8 +460,11 @@ module nts.uk.at.view.kaf022.a.viewmodel {
     }
 
     class ItemA17 {
+        // 承認ルートの基準日
         baseDateAtr: KnockoutObservable<number>;
+        // 本人による承認
         approvalByPersonAtr: KnockoutObservable<number>;
+        // 兼務者を含める
         includeConcurrentPersonel: KnockoutObservable<number>;
         constructor(baseDateAtr: number, approvalByPersonAtr: number, includeConcurrentPersonel: number) {
             this.baseDateAtr = ko.observable(baseDateAtr);
@@ -456,7 +476,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
     class AppTypeSetting {
         appType: number;
         appTypeName: string;
+        // 事前事後区分を変更できる
         canClassificationChange: KnockoutObservable<boolean>;
+        // 事前事後区分の初期表示
         displayInitialSegment: KnockoutObservable<number>;
         constructor(appType: number, appName: string, canChangeCls: boolean, displayInitSegment: number) {
             this.appType = appType;
@@ -474,7 +496,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
     class DisplayReasonSetting {
         appType: number;
+        // 定型理由の表示
         displayFixedReason: KnockoutObservable<boolean>;
+        // 申請理由の表示
         displayAppReason: KnockoutObservable<boolean>;
         appTypeName: KnockoutObservable<string>;
         holidayAppType: number;

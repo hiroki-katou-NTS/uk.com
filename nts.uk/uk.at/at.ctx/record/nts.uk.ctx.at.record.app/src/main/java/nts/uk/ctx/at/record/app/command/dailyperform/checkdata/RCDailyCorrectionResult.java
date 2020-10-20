@@ -9,8 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
-import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 
 @Data
 @NoArgsConstructor

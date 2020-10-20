@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 
 @Stateless
 public class AffiliationInfoOfMonthlyCommandHandler extends CommandFacade<AffiliationInfoOfMonthlyCommand> {

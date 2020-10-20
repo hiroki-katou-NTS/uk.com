@@ -21,8 +21,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         constructor() {
             let self = this;
             self.columns = ko.observableArray([
-                {headerText: getText("KAF022_694"), key: 'reasonCode', width: 100, formatter: _.escape},
-                {headerText: getText("KAF022_443"), key: 'reasonTemp', width: 200, formatter: _.escape},
+                {headerText: getText("KAF022_694"), key: 'reasonCode', width: 80, formatter: _.escape},
+                {headerText: getText("KAF022_443"), key: 'reasonTemp', width: 220, formatter: _.escape},
                 {headerText: getText("KAF022_441"), key: 'defaultFlg', width: 50, formatter: makeIcon}
 
             ]);
@@ -172,6 +172,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 }
                 data.forEach((d, i) => {
                     d.dispOrder = i;
+                    if (current.defaultFlg && d.reasonCode != current.reasonCode)
+                        d.defaultFlg = false;
                 });
                 service.saveReason(data).done(() => {
                     dialogInfo({ messageId: "Msg_15" }).then(() => {

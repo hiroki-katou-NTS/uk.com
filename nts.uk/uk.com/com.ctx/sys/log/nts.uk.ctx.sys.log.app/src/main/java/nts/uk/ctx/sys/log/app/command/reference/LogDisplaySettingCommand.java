@@ -46,6 +46,6 @@ public class LogDisplaySettingCommand {
 				, DataTypeEnum.valueOf(dataType)
 				, RecordTypeEnum.valueOf(recordType)
 				, SystemTypeEnum.valueOf(systemType)
-				,logSetOutputItems.stream().map(item -> item.toDomain(logSetId)).collect(Collectors.toList()));			
+				,logSetOutputItems.stream().map(item -> item.toDomain(logSetId,cid)).collect(Collectors.toList()));			
 	}
 }

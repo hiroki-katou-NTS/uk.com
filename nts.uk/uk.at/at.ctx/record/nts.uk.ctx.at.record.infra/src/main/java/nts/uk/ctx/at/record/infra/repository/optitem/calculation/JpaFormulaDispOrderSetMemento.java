@@ -7,10 +7,10 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.DispOrder;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrderSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.DispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderSetMemento;
 
 /**
  * The Class JpaFormulaDispOrderSetMemento.

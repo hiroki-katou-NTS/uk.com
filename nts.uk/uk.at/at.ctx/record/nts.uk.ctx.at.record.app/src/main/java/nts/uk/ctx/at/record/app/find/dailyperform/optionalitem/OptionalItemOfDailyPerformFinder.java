@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 //import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /** 日別実績の任意項目 Finder */

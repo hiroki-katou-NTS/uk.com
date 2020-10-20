@@ -37,13 +37,13 @@ import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem_;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.shared.dom.optitem.export.CalFormulasItemExportData;
-import nts.uk.ctx.at.shared.dom.optitem.export.CalFormulasItemTableExportData;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.export.CalFormulasItemExportData;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.export.CalFormulasItemTableExportData;
 
 /**
  * The Class JpaOptionalItemRepository.

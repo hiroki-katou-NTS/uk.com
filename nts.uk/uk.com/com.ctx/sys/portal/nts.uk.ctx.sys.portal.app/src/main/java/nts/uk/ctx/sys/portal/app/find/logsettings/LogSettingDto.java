@@ -46,6 +46,11 @@ public class LogSettingDto implements LogSetting.MementoGetter, LogSetting.Memen
 	 */
 	private String companyId;
 	
+	/**
+	 * プログラムコード
+	 */
+	private String programCd;
+	
 	public static LogSettingDto fromDomain(LogSetting logSetting) {
 		LogSettingDto logSettingDto = new LogSettingDto();
 		logSetting.setMemento(logSettingDto);

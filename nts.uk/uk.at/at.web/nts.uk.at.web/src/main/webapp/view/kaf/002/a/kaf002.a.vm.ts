@@ -32,7 +32,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
-        mode: number = 0; // 0 ->a, 1->b, 2->b(view)
+        mode: KnockoutObservable<number> = ko.observable(0); // 0 ->a, 1->b, 2->b(view)
         reasonList: Array<GoOutTypeDispControl>;
 
 //    ※M2.1_1

@@ -23,12 +23,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data

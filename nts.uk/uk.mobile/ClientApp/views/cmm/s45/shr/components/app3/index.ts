@@ -41,6 +41,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
     public table: [] = [] ;
     public time: {} = {} ;
 
+
     public $app() {
         return this.businessTrip;
     }
@@ -70,7 +71,21 @@ export class CmmS45ComponentsApp3Component extends Vue {
         })
             .then((res: any) => {
                 vm.time = res.data.businessTripDto;
-                vm.table = res.data.businessTripDto.tripInfos;
+                vm.table = res.data.businessTripDto.tripInfos.map((item: any) => {
+                    const workTime = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
+                    const workType = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
+                    
+                    return {
+                        date: item.date,
+                        wkTypeCd: item.wkTypeCd,
+                        wkTimeCd: item.wkTimeCd,
+                        startWorkTime: item.startWorkTime,
+                        endWorkTime: item.endWorkTime,
+                        workTypeName: workType.name,
+                        workTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null
+                    };
+                });
+                vm.params.appDetail = res.data;
                 //vm.dataFetch = res.data.
                 //vm.bindStart();
                 //vm.params.appDetail = vm.dataFetch;
@@ -90,72 +105,9 @@ export class CmmS45ComponentsApp3Component extends Vue {
                 }
             });
     }
-
-    public bindStart() {
-        let params = this.dataFetch;
-
-        this.bindCodition(params.businessTripInfoOutput);
-
-        let workTypeCode = params.businessTripInfoOutput.opWorkTypeCD;
-        let workType = _.find(params.businessTripInfoOutput.workTypeLst, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.name : this.$i18n('KAFS07_10');
-        this.$app().workType = workTypeCode + '  ' + workTypeName;
-
-        let workTimeCode = params.appWorkChange.opWorkTimeCD;
-        let workTime = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ? workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
-        if (!workTimeCode) {
-            workTimeCode = this.$i18n('KAFS07_9');
-            workTimeName = '';
-        }
-        this.$app().workTime = workTimeCode + '  ' + workTimeName;
-        if (!_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
-            let time1 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
-            let time2 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
-            if (time1) {
-                this.$app().workHours1 = this.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time1.timeZone.endTime);
-            } else {
-                this.$app().workHours1 = this.$i18n('KAFS07_15');
-                this.$app().isWorkHours1 = false;
-            }
-            if (time2) {
-                this.$app().workHours2 = this.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time2.timeZone.endTime);
-            } else {
-                this.$app().workHours2 = this.$i18n('KAFS07_15');
-                this.$app().isWorkHours2 = false;
-            }
-        } else {
-            if (this.isCondition1) {
-                this.$app().workHours1 = this.$i18n('KAFS07_15');
-                this.$app().workHours2 = this.$i18n('KAFS07_15');
-            }
-        }
-        this.$app().straight = params.appWorkChange.straightGo == 1 ? true : false;
-        this.$app().bounce = params.appWorkChange.straightBack == 1 ? true : false;
-    }
-
-    public bindCodition(params: any) {
-        // set condition
-        this.isCondition1 = this.isDisplay1(params);
-        this.isCondition2 = this.isDisplay2(params);
-    }
-
-    public isDisplay1(params: any) {
-        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1;
-        // return true;
-    }
-    // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-    public isDisplay2(params: any) {
-        return params.reflectWorkChangeAppDto.whetherReflectAttendance == 1 && params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-        // return true;
-
-    }
 }
 
-
-
-
-export class BusinessTrip {
+class BusinessTrip {
     constructor() {
 
     }

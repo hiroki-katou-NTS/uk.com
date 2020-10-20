@@ -9,40 +9,28 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSettingsGetter;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementUnitSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.UseClassificationAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmFourWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmThreeMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmTwoMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmTwoWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmWeek;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorFourWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorThreeMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorTwoMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorTwoWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorWeek;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitFourWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitThreeMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitTwoMonths;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitTwoWeeks;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitWeek;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.UseClassificationAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -52,14 +40,84 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 public class AgreementDomainService {
 
 	/**
-	 * 36協定基本設定を取得する
+	 * 年度指定して36協定基本設定を取得する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param year 年度
+	 * @return 36協定基本設定
+	 */
+	public static BasicAgreementSetting getBasicSet(RequireM5 require, String companyId, String employeeId, GeneralDate criteriaDate, Year year) {
+		
+		/** 36協定基本設定を取得する */
+		val basicSetting = getBasicSet(require, companyId, employeeId, criteriaDate);
+		
+		/** 個人の「36協定年間設定」を取得する */
+		val personYearSetting = require.agreementYearSetting(employeeId, year.v());
+
+		personYearSetting.ifPresent(pys -> {
+			
+			/** 取得した「36協定基本設定」。1年間を上書きする */
+			basicSetting.getOneYear().getSpecConditionLimit().setErAlTime(pys.getOneYearTime());
+		});
+		
+		/** 「36協定基本設定」を返す */
+		return basicSetting;
+	}
+	
+	/**
+	 * 年月指定して36協定基本設定を取得する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param ym 年月
+	 * @return 36協定基本設定
+	 */
+	public static BasicAgreementSetting getBasicSet(RequireM6 require, String companyId, String employeeId, GeneralDate criteriaDate, YearMonth ym) {
+		
+		/** 36協定基本設定を取得する */
+		val basicSetting = getBasicSet(require, companyId, employeeId, criteriaDate);
+		
+		/** 個人の「３６協定年月設定」を取得する */
+		val personYMSetting = require.agreementMonthSetting(employeeId, ym);
+
+		personYMSetting.ifPresent(pys -> {
+			
+			/** 取得した36協定基本設定。１ヶ月を上書きする */
+			basicSetting.getOneMonth().getSpecConditionLimit().setErAlTime(pys.getOneMonthTime());
+		});
+		
+		/** 「36協定基本設定」を返す */
+		return basicSetting;
+	}
+	
+	/**
+	 * 年月日指定して36協定基本設定を取得する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @return 36協定基本設定
+	 */
+	public static BasicAgreementSetting getBasicSet(RequireM4 require, String companyId, String employeeId, GeneralDate criteriaDate) {
+		
+		/** ●ドメインモデル「労働契約履歴」を取得する */
+		val workCondition = require.workingConditionItem(employeeId, criteriaDate);
+		if (!workCondition.isPresent()) {
+			return getDefault();
+		}
+		
+		return getBasicSet(require, companyId, employeeId, criteriaDate, workCondition.get().getLaborSystem());
+	}
+	
+	/**
+	 * 年月日指定して36協定基本設定を取得する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
 	 * @param workingSystem 労働制
 	 * @return 36協定基本設定
 	 */
-	public static BasicAgreementSettings getBasicSet(RequireM3 require, String companyId, String employeeId, GeneralDate criteriaDate,
+	public static BasicAgreementSetting getBasicSet(RequireM3 require, String companyId, String employeeId, GeneralDate criteriaDate,
 			WorkingSystem workingSystem) {
 		
 		// 「36協定単位設定」を取得する
@@ -82,12 +140,7 @@ public class AgreementDomainService {
 				val classCd = affClassficationOpt.get().getClassificationCode();
 				val agreementTimeOfCls = require.agreementTimeOfClassification(companyId, laborSystemAtr, classCd);
 				if (agreementTimeOfCls.isPresent()){
-					val basicAgreementSetOpt = require.basicAgreementSetting(
-							agreementTimeOfCls.get().getBasicSettingId());
-					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(
-								basicAgreementSetOpt.get(), agreementTimeOfCls.get().getUpperAgreementSetting());
-					}
+					return agreementTimeOfCls.get().getSetting();
 				}
 			}
 		}
@@ -100,12 +153,7 @@ public class AgreementDomainService {
 				val agreementTimeOfWkp = require.agreementTimeOfWorkPlace(
 						workplaceId, laborSystemAtr);
 				if (agreementTimeOfWkp.isPresent()){
-					val basicAgreementSetOpt = require.basicAgreementSetting(
-							agreementTimeOfWkp.get().getBasicSettingId());
-					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(
-								basicAgreementSetOpt.get(), agreementTimeOfWkp.get().getUpperAgreementSetting());
-					}
+					return agreementTimeOfWkp.get().getSetting();
 				}
 			}
 		}
@@ -118,12 +166,7 @@ public class AgreementDomainService {
 				val agreementTimeOfEmp = require.agreementTimeOfEmployment(
 						companyId, employmentCd, laborSystemAtr);
 				if (agreementTimeOfEmp.isPresent()){
-					val basicAgreementSetOpt = require.basicAgreementSetting(
-							agreementTimeOfEmp.get().getBasicSettingId());
-					if (basicAgreementSetOpt.isPresent()) {
-						return BasicAgreementSettings.of(
-								basicAgreementSetOpt.get(), agreementTimeOfEmp.get().getUpperAgreementSetting());
-					}
+					return agreementTimeOfEmp.get().getSetting();
 				}
 			}
 		}
@@ -131,27 +174,21 @@ public class AgreementDomainService {
 		// 会社36協定時間を取得する
 		val agreementTimeOfCmpOpt = require.agreementTimeOfCompany(companyId, laborSystemAtr);
 		if (agreementTimeOfCmpOpt.isPresent()){
-			val basicAgreementSetOpt = require.basicAgreementSetting(
-					agreementTimeOfCmpOpt.get().getBasicSettingId());
-			if (basicAgreementSetOpt.isPresent()) {
-				return BasicAgreementSettings.of(
-						basicAgreementSetOpt.get(), agreementTimeOfCmpOpt.get().getUpperAgreementSetting());
-			}
+			return agreementTimeOfCmpOpt.get().getSetting();
 		}
 		
 		// 全ての値を0で返す
-		return BasicAgreementSettings.of(getDefault(), null);
+		return getDefault();
 	}
 	
 	public static BasicAgreementSettingsGetter getBasicSet(RequireM2 require, String companyId, List<String> employeeIds, DatePeriod datePeriod) {
 		// 「36協定単位設定」を取得する
-		Map<String, BasicAgreementSetting> basicAgreeSettings = new HashMap<>();
 		List<AffClassificationSidImport> affClassifications = new ArrayList<>();
 		List<AgreementTimeOfClassification> agreeTimeClassifi = new ArrayList<>();
 		Map<GeneralDate, Map<String, List<String>>> empToWorkplaceId = new HashMap<>();
 		Map<String, List<AgreementTimeOfWorkPlace>> agreeTimeWP = new HashMap<>();
 		Map<String, List<SyEmploymentImport>> employments = new HashMap<>();
-		Map<String, List<AgreementTimeOfEmployment>> agreeTimeEmployment = new HashMap<>();
+		Map<EmploymentCode, List<AgreementTimeOfEmployment>> agreeTimeEmployment = new HashMap<>();
 		List<AgreementTimeOfCompany> agreeTimeCompany = new ArrayList<>();
 		
 		AgreementUnitSetting agreementUnitSet = require.agreementUnitSetting(companyId).orElseGet(() -> new AgreementUnitSetting(companyId,
@@ -162,8 +199,6 @@ public class AgreementDomainService {
 			
 			agreeTimeClassifi = require.agreementTimeOfClassification(companyId, affClassifications.stream()
 																.map(c -> c.getClassificationCode()).distinct().collect(Collectors.toList()));
-			
-			basicAgreeSettings.putAll(getBasicSetting(require, agreeTimeClassifi.stream().map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		}
 		
 		if(agreementUnitSet.getWorkPlaceUseAtr() == UseClassificationAtr.USE){
@@ -176,9 +211,6 @@ public class AgreementDomainService {
 			// 職場36協定時間を取得する
 			agreeTimeWP = require.agreementTimeOfWorkPlace(workplaceIds)
 					.stream().collect(Collectors.groupingBy(AgreementTimeOfWorkPlace::getWorkplaceId));
-			
-			basicAgreeSettings.putAll(getBasicSetting(require, agreeTimeWP.values().stream().flatMap(x -> x.stream())
-					.distinct().map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		}
 		
 		if(agreementUnitSet.getEmploymentUseAtr() == UseClassificationAtr.USE){
@@ -190,49 +222,38 @@ public class AgreementDomainService {
 			agreeTimeEmployment = require.agreementTimeOfEmployment(companyId, employmentCodes)
 					.stream().collect(Collectors.groupingBy(AgreementTimeOfEmployment::getEmploymentCategoryCode));
 
-			basicAgreeSettings.putAll(getBasicSetting(require, agreeTimeEmployment.values().stream().flatMap(x -> x.stream())
-					.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		}
 		
 		agreeTimeCompany = require.agreementTimeOfCompany(companyId);
-		basicAgreeSettings.putAll(getBasicSetting(require, agreeTimeCompany.stream()
-																.map(c -> c.getBasicSettingId()).distinct().collect(Collectors.toList())));
 		
 		return new BasicAgreementSettingsGetter(agreementUnitSet, affClassifications, agreeTimeClassifi, empToWorkplaceId, 
-				agreeTimeWP, employments, agreeTimeEmployment, agreeTimeCompany, basicAgreeSettings);
+				agreeTimeWP, employments, agreeTimeEmployment, agreeTimeCompany);
 	}
 	
-	private static Map<String, BasicAgreementSetting> getBasicSetting(RequireM1 require, List<String> setIds){
-		return require.basicAgreementSetting(setIds).stream().collect(Collectors.toMap(c -> c.getBasicSettingId(), c -> c));
-	}
-	
-	private static BasicAgreementSetting getDefault(){
+	public static BasicAgreementSetting getDefault() {
 		// 全ての値を0で返す
 		return new BasicAgreementSetting(
-				new String(),
-				new AlarmWeek(0),
-				new ErrorWeek(0),
-				new LimitWeek(0),
-				new AlarmTwoWeeks(0),
-				new ErrorTwoWeeks(0),
-				new LimitTwoWeeks(0),
-				new AlarmFourWeeks(0),
-				new ErrorFourWeeks(0),
-				new LimitFourWeeks(0),
-				new AlarmOneMonth(0),
-				new ErrorOneMonth(0),
-				new LimitOneMonth(0),
-				new AlarmTwoMonths(0),
-				new ErrorTwoMonths(0),
-				new LimitTwoMonths(0),
-				new AlarmThreeMonths(0),
-				new ErrorThreeMonths(0),
-				new LimitThreeMonths(0),
-				new AlarmOneYear(0),
-				new ErrorOneYear(0),
-				new LimitOneYear(0));
+				new AgreementOneMonth(),
+				new AgreementOneYear(),
+				new AgreementMultiMonthAvg(),
+				AgreementOverMaxTimes.ZERO_TIMES);
 	}
 
+	public static interface RequireM6 extends RequireM4 {
+	
+		Optional<AgreementMonthSetting> agreementMonthSetting(String sid, YearMonth yearMonth);
+	}
+	
+	public static interface RequireM5 extends RequireM4 {
+	
+		Optional<AgreementYearSetting> agreementYearSetting(String sid, int year);
+	}
+	
+	public static interface RequireM4 extends RequireM3 {
+		
+		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
+	}
+	
 	public static interface RequireM3 {
 		
 		Optional<AgreementUnitSetting> agreementUnitSetting(String companyId);
@@ -240,8 +261,6 @@ public class AgreementDomainService {
 		Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId, GeneralDate baseDate);
 		
 		Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode);
-		
-		Optional<BasicAgreementSetting> basicAgreementSetting(String basicSettingId);
 		
 		List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate);
 		
@@ -275,7 +294,7 @@ public class AgreementDomainService {
 		List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		List<BasicAgreementSetting> basicAgreementSetting(List<String> basicSettingId);
 	}

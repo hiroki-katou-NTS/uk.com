@@ -12,22 +12,24 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.TimeConsumpVacationDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
 
 @Data
 @NoArgsConstructor
@@ -50,8 +52,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	private double holidayDays;
 
 	/** 給与用日数: 月別実績の給与用日数 */
-	@AttendanceItemLayout(jpPropertyName = FOR_SALARY, layout = LAYOUT_D)
-	private PayDaysOfMonthlyDto payDays;
+	@AttendanceItemLayout(jpPropertyName = STRAIGHT_GO_BACK, layout = LAYOUT_D)
+	private StraightDaysOfMonthlyDto straightDays;
 
 	/** 勤務回数: 月別実績の勤務回数 */
 	@AttendanceItemValue(type = ValueType.COUNT)
@@ -87,8 +89,13 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 
 	/** 臨時勤務回数: 月別実績の臨時勤務回数 */
 	@AttendanceItemValue(type = ValueType.COUNT)
-	@AttendanceItemLayout(jpPropertyName = TEMPORARY, layout = LAYOUT_L)
+	@AttendanceItemLayout(jpPropertyName = TEMPORARY + COUNT, layout = LAYOUT_L)
 	private int temporaryWorkTimes;
+
+	/** 臨時勤務時間: 月別実績の臨時勤務回数 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = TEMPORARY + TIME, layout = LAYOUT_L)
+	private int temporaryWorkTime;
 	
 	/** 振出日数: 月別実績の振出日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -98,6 +105,16 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 	/** 特別休暇日数: 月別実績の特別休暇日数 */
 	@AttendanceItemLayout(jpPropertyName = SPECIAL + HOLIDAY, layout = LAYOUT_N)
 	private CommonDaysOfMonthlyDto specialHolidays;
+
+	/** 時間消化休暇時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = TIME_DIGESTION + TIME, layout = LAYOUT_O)
+	private int timeDisgestTime;
+	
+	/** 時間消化休暇日数 */
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = TIME_DIGESTION + DAYS, layout = LAYOUT_P)
+	private double timeDisgestDays;
 	
 	public static WorkDaysOfMonthlyDto from(WorkDaysOfMonthly domain) {
 		WorkDaysOfMonthlyDto dto = new WorkDaysOfMonthlyDto();
@@ -107,7 +124,7 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 					? 0 : domain.getHolidayWorkDays().getDays().v());
 			dto.setHolidayDays(domain.getHolidayDays() == null || domain.getHolidayDays().getDays() == null 
 					? 0 : domain.getHolidayDays().getDays().v());
-			dto.setPayDays(PayDaysOfMonthlyDto.from(domain.getPayDays()));
+			dto.setStraightDays(StraightDaysOfMonthlyDto.from(domain.getStraightDays()));
 			dto.setWorkTimes(domain.getWorkTimes() == null || domain.getWorkTimes().getTimes() == null
 					? 0 : domain.getWorkTimes().getTimes().v());
 			dto.setWorkDays(domain.getWorkDays() == null || domain.getWorkDays().getDays() == null 
@@ -121,8 +138,12 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 					? 0 : domain.getTwoTimesWorkTimes().getTimes().v());
 			dto.setTemporaryWorkTimes(domain.getTemporaryWorkTimes() == null || domain.getTemporaryWorkTimes().getTimes() == null 
 					? 0 : domain.getTemporaryWorkTimes().getTimes().v());
+			dto.setTemporaryWorkTime(domain.getTemporaryWorkTimes() == null || domain.getTemporaryWorkTimes().getTime() == null 
+					? 0 : domain.getTemporaryWorkTimes().getTime().v());
 			dto.setTransferdays(domain.getRecruitmentDays().getDays().v());
 			dto.setSpecialHolidays(CommonDaysOfMonthlyDto.from(domain.getSpecialVacationDays()));
+			dto.setTimeDisgestTime(domain.getTimeConsumpDays().getTime().valueAsMinutes());
+			dto.setTimeDisgestDays(domain.getTimeConsumpDays().getDays().v());
 		}
 		return dto;
 	}
@@ -136,14 +157,20 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 						HolidayDaysOfMonthly.of(new AttendanceDaysMonth(holidayDays)), 
 						SpecificDaysOfMonthly.of(ConvertHelper.mapTo(specificDays, c -> c.toDomain())),
 						HolidayWorkDaysOfMonthly.of(new AttendanceDaysMonth(holidayWorkDays)),
-						payDays == null ? new PayDaysOfMonthly() : PayDaysOfMonthly.of(
-								new AttendanceDaysMonth(payDays.getPayAttendanceDays()), 
-								new AttendanceDaysMonth(payDays.getPayAbsenceDays())),
+						straightDays == null ? new StgGoStgBackDaysOfMonthly() : StgGoStgBackDaysOfMonthly.of(
+								new AttendanceDaysMonth(straightDays.getStraightGo()), 
+								new AttendanceDaysMonth(straightDays.getStraightBack()),
+								new AttendanceDaysMonth(straightDays.getStraightGoBack())),
 						WorkTimesOfMonthly.of(new AttendanceTimesMonth(workTimes)),
 						TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(twoTimesWorkTimes)), 
-						TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(temporaryWorkTimes)),
+						TemporaryWorkTimesOfMonthly.of(
+								new AttendanceTimesMonth(temporaryWorkTimes), 
+								new AttendanceTimeMonth(temporaryWorkTime)),
 						leave == null ? new LeaveOfMonthly() : leave.toDomain(),
 						RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(transferdays)),
-						specialHolidays == null ? new SpcVacationDaysOfMonthly() : specialHolidays.toSpcVacationDays());
+						specialHolidays == null ? new SpcVacationDaysOfMonthly() : specialHolidays.toSpcVacationDays(),
+						TimeConsumpVacationDaysOfMonthly.of(
+								new AttendanceDaysMonth(timeDisgestDays), 
+								new AttendanceTimeMonth(timeDisgestTime)));
 	}
 }

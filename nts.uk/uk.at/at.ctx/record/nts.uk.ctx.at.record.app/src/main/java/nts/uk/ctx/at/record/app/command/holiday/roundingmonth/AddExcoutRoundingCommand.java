@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.command.holiday.roundingmonth;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 
 /**
  * Instantiates a new adds the excout rounding command.

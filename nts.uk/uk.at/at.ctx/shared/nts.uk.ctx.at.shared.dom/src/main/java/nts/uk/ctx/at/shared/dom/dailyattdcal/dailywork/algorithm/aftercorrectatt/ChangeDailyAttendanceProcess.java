@@ -43,10 +43,10 @@ public class ChangeDailyAttendanceProcess {
 						newData.getAttendanceStamp().get().getStamp().get());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (checkHasTimeDayAtt(timeLeavOpt.get()) && checkHasTimeDayAtt(newData))
-					timeLeavOpt.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-							.setTimeWithDay(Optional.of(newData.getAttendanceStamp().get().getStamp().get().getTimeDay()
-									.getTimeWithDay().get()));
+				if (timeLeavOpt.get().getAttendanceStamp().isPresent() && newData.getAttendanceStamp().isPresent()) {
+					timeLeavOpt.get().getAttendanceStamp().get()
+							.setStamp(newData.getAttendanceStamp().get().getStamp());
+				}
 			}
 
 			if (checkHasLeav(timeLeavOpt.get())) {
@@ -55,31 +55,20 @@ public class ChangeDailyAttendanceProcess {
 						newData.getLeaveStamp().get().getStamp().get());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (checkHasTimeDayLeav(timeLeavOpt.get()) && checkHasTimeDayLeav(newData))
-					timeLeavOpt.get().getLeaveStamp().get().getStamp().get().getTimeDay().setTimeWithDay(Optional
-							.of(newData.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()));
+				if (timeLeavOpt.get().getLeaveStamp().isPresent() && newData.getLeaveStamp().isPresent()) {
+					timeLeavOpt.get().getLeaveStamp().get().setStamp(newData.getLeaveStamp().get().getStamp());
+				}
 			}
 		}
 
 		return lstTimeLeav;
 	}
 
-	public boolean checkHasAtt(TimeLeavingWork timeLeav) {
-		return checkHasTimeDayAtt(timeLeav)
-				&& timeLeav.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
+	private boolean checkHasAtt(TimeLeavingWork timeLeav) {
+		return timeLeav.getAttendanceStamp().isPresent() && timeLeav.getAttendanceStamp().get().getStamp().isPresent();
 	}
 
-	public boolean checkHasLeav(TimeLeavingWork timeLeav) {
-		return checkHasTimeDayLeav(timeLeav)
-				&& timeLeav.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
-	}
-
-	private boolean checkHasTimeDayAtt(TimeLeavingWork timeLeav) {
-		return timeLeav.getAttendanceStamp().isPresent() && timeLeav.getAttendanceStamp().get().getStamp().isPresent()
-				&& timeLeav.getAttendanceStamp().get().getStamp().isPresent();
-	}
-
-	private boolean checkHasTimeDayLeav(TimeLeavingWork timeLeav) {
+	private boolean checkHasLeav(TimeLeavingWork timeLeav) {
 		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent();
 	}
 }

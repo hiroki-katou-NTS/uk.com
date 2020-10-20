@@ -10,7 +10,11 @@ import nts.uk.ctx.sys.shared.dom.user.User;
  */
 public class CreateTenantAdministrator {
 
-	public static AtomTask create(Require require, String tenantCode, String loginId, String passwordPlainText) {
+	public static AtomTask create(
+			Require require,
+			String tenantCode,
+			String loginId,
+			String passwordPlainText) {
 		
 		if (require.existsUser(tenantCode, loginId)) {
 			throw new BusinessException("Msg_61", loginId);

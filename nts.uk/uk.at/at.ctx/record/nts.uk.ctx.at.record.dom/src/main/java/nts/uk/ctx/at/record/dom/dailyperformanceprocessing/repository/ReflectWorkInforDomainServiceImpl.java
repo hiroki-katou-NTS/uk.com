@@ -1328,10 +1328,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
-		Optional<RecSpecificDateSettingImport> specificDateSettingImport = newMasterLists.get()
-				.getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		Optional<RecSpecificDateSettingImport> specificDateSettingImport = Optional.empty();
+		if (newMasterLists.isPresent()){
+			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		}
 		RecSpecificDateSettingImport data = new RecSpecificDateSettingImport();
-		if (newMasterLists.isPresent() && specificDateSettingImport.isPresent()) {
+		if (specificDateSettingImport.isPresent()) {
 			data = specificDateSettingImport.get();
 		} else {
 			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,

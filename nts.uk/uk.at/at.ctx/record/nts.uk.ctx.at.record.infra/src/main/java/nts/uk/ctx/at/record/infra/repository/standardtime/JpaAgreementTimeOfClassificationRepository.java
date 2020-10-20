@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClass;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClassPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
@@ -117,12 +117,13 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 		val entity = new KmkmtAgeementTimeClass();
 
 		entity.kmkmtAgeementTimeClassPK = new KmkmtAgeementTimeClassPK();
-		entity.kmkmtAgeementTimeClassPK.basicSettingId = agreementTimeOfClassification.getBasicSettingId();
-		entity.kmkmtAgeementTimeClassPK.classificationCode = agreementTimeOfClassification.getClassificationCode();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.kmkmtAgeementTimeClassPK.basicSettingId = agreementTimeOfClassification.getBasicSettingId();
+		entity.kmkmtAgeementTimeClassPK.classificationCode = agreementTimeOfClassification.getClassificationCode().v();
 		entity.kmkmtAgeementTimeClassPK.companyId = agreementTimeOfClassification.getCompanyId();
-		entity.laborSystemAtr = agreementTimeOfClassification.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue();
-		entity.upperMonthAverage = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonthAverage().v().intValue();
+//		entity.laborSystemAtr = agreementTimeOfClassification.getLaborSystemAtr().value;
+//		entity.upperMonth = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonth().v().intValue();
+//		entity.upperMonthAverage = agreementTimeOfClassification.getUpperAgreementSetting().getUpperMonthAverage().v().intValue();
 
 		return entity;
 	}
@@ -134,11 +135,13 @@ public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 	}
 
 	private static AgreementTimeOfClassification toDomain(KmkmtAgeementTimeClass kmkmtAgeementTimeClass) {
-		AgreementTimeOfClassification agreementTimeOfClassification = AgreementTimeOfClassification.createJavaType(
-				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.companyId,
-				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.basicSettingId, kmkmtAgeementTimeClass.laborSystemAtr,
-				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.classificationCode,
-				kmkmtAgeementTimeClass.upperMonth, kmkmtAgeementTimeClass.upperMonthAverage);
-		return agreementTimeOfClassification;
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		AgreementTimeOfClassification agreementTimeOfClassification = AgreementTimeOfClassification.createJavaType(
+//				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.companyId,
+//				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.basicSettingId, kmkmtAgeementTimeClass.laborSystemAtr,
+//				kmkmtAgeementTimeClass.kmkmtAgeementTimeClassPK.classificationCode,
+//				kmkmtAgeementTimeClass.upperMonth, kmkmtAgeementTimeClass.upperMonthAverage);
+//		return agreementTimeOfClassification;
 	}
 }

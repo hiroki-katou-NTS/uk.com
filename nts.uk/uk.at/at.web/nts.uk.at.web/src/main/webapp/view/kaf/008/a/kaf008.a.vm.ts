@@ -252,31 +252,25 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         businessTripOutput: BusinessTripOutput;
     }
 
+    // 出張申請設定
     interface Setting {
         cid: string;
         appComment: any;
-        contractCheck: number;
     }
 
     export interface BusinessTripInfoOutput {
-        setting: Setting;
-        appDispInfoStartup: any;
-        holidays: any;
-        workdays: any;
-        businessTripActualContent: any;
-        infoBeforeChange: any;
-        infoAfterChange: any;
+        setting: Setting; // 出張申請設定
+        appDispInfoStartup: any; // 申請表示情報
+        holidays: any; // 休日勤務種類リスト
+        workdays: any; // 出勤日勤務種類リスト
+        businessTripActualContent: any; // 出張の実績内容
+        infoBeforeChange: any; // 変更前勤務種類
+        infoAfterChange: any; // 変更後勤務種類
     }
 
     interface MessageOutput {
         msgID: string;
         paramLst: Array<string>
-    }
-
-    export interface TripContent {
-        departureTime: KnockoutObservable<number>;
-        returnTime: KnockoutObservable<number>;
-        contentDisp: KnockoutObservableArray<any>;
     }
 
     const API = {

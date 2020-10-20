@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -298,11 +298,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
 			return null;
 		}
-		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
-				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+//				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
 	}
 }

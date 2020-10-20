@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.monthly.remarks.RecordRemarks;
-import nts.uk.ctx.at.shared.dom.monthly.remarks.RemarksMonthlyRecord;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /** 月別実績の備考 */

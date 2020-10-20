@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import lombok.val;
@@ -18,12 +16,13 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegalTimeMSya;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegalTimeMWkp;
+import nts.uk.ctx.at.shared.infra.entity.workrule.week.KsrmtWeekRuleMng;
 import nts.uk.file.at.app.export.setworkinghoursanddays.CompanyColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmployeeColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmploymentColumn;
@@ -40,25 +39,23 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorkingHoursAndDaysExRepository {
 	
 	private static final String LEGAL_TIME_SYA = "SELECT s FROM KshmtLegalTimeMSya s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
+			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " ORDER BY s.pk.ym";
 	private static final String LEGAL_TIME_WKP = "SELECT s FROM KshmtLegalTimeMWkp s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
+			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " ORDER BY s.pk.ym";
 	private static final String LEGAL_TIME_EMP = "SELECT s FROM KshmtLegalTimeMEmp s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
+			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " ORDER BY s.pk.ym";
 	private static final String LEGAL_TIME_COM = "SELECT s FROM KshmtLegalTimeMCom s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
-	@PersistenceContext
-	private EntityManager entityManager;
+			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " ORDER BY s.pk.ym";
+
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String GET_EXPORT_EXCEL = 
 									" SELECT "
 											+" KSHST_COM_REG_LABOR_TIME.DAILY_TIME, KSHST_COM_REG_LABOR_TIME.WEEKLY_TIME, "
-											+" KSHST_COM_REG_LABOR_TIME.WEEK_STR, "
 											+" KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, "
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR , NUll) AS INCLUDE_LEGAL_AGGR, "
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR , NUll) AS INCLUDE_HOLIDAY_AGGR, "
@@ -71,7 +68,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" KRCST_COM_FLEX_M_CAL_SET.INSUFFIC_SET, "
 											+" KSHST_COM_TRANS_LAB_TIME.DAILY_TIME AS REG_DAILY_TIME, "
 											+" KSHST_COM_TRANS_LAB_TIME.WEEKLY_TIME AS REG_WEEKLY_TIME, "
-											+" KSHST_COM_TRANS_LAB_TIME.WEEK_STR AS REG_WEEK_STR, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.STR_MONTH, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.PERIOD, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.REPEAT_ATR, "
@@ -95,7 +91,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
 											+" KSHST_EMP_REG_LABOR_TIME.DAILY_TIME, "
 											+" KSHST_EMP_REG_LABOR_TIME.WEEKLY_TIME, "
-											+" KSHST_EMP_REG_LABOR_TIME.WEEK_STR, "
 											+" KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR AS INCLUDE_EXTRA_AGGR, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR , NUll) AS INCLUDE_LEGAL_AGGR, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR , NUll) AS INCLUDE_HOLIDAY_AGGR, "
@@ -108,7 +103,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" KRCST_EMP_FLEX_M_CAL_SET.INSUFFIC_SET, "
 											+" KSHST_EMP_TRANS_LAB_TIME.DAILY_TIME AS LAR_DAILY_TIME, "
 											+" KSHST_EMP_TRANS_LAB_TIME.WEEKLY_TIME AS LAR_WEEKLY_TIME, "
-											+" KSHST_EMP_TRANS_LAB_TIME.WEEK_STR AS LAR_WEEK_STR, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.STR_MONTH, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.PERIOD, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.REPEAT_ATR, "
@@ -143,7 +137,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     exportSQL.append("             BSYMT_WKP_INFO.WKP_NAME AS WKP_NAME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME .DAILY_TIME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEKLY_TIME,   ");
-	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEK_STR,   ");
 	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR,   ");
@@ -156,7 +149,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.INSUFFIC_SET,   ");
 	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.DAILY_TIME AS LAB_DAILY_TIME,   ");
 	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEKLY_TIME AS LAB_WEEKLY_TIME,   ");
-	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEK_STR AS LAB_WEEK_STR,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.STR_MONTH,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.PERIOD,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.REPEAT_ATR,   ");
@@ -197,7 +189,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			+ " BPSMT_PERSON.BUSINESS_NAME, "
 			+ " KSHST_SHA_REG_LABOR_TIME.DAILY_TIME, "
 			+ " KSHST_SHA_REG_LABOR_TIME.WEEKLY_TIME, " 
-			+ " KSHST_SHA_REG_LABOR_TIME.WEEK_STR, "
 			+ " KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, "
 			+ " IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR, "
 			+ " IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR, " 
@@ -210,7 +201,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			+ " KRCST_SHA_FLEX_M_CAL_SET.INSUFFIC_SET, "
 			+ " KSHST_SHA_TRANS_LAB_TIME.DAILY_TIME AS TRANS_DAILY_TIME, "
 			+ " KSHST_SHA_TRANS_LAB_TIME.WEEKLY_TIME AS TRANS_WEEKLY_TIME, "
-			+ " KSHST_SHA_TRANS_LAB_TIME.WEEK_STR AS TRANS_WEEK_STR, "
 			+ " KRCST_SHA_DEFOR_M_CAL_SET.STR_MONTH, "
 			+ " KRCST_SHA_DEFOR_M_CAL_SET.PERIOD, "
 			+ " KRCST_SHA_DEFOR_M_CAL_SET.REPEAT_ATR, "
@@ -248,7 +238,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	@Override
 	public Object[] getUsage() {
 		String cid = AppContexts.user().companyId();
-		Query usage = entityManager.createNativeQuery(GET_USAGE.toString()).setParameter("cid", cid);
+		Query usage = this.getEntityManager().createNativeQuery(GET_USAGE.toString()).setParameter("cid", cid);
 		List<Object[]> data = usage.getResultList();
 		if (data.size() == 0) {
 			return null;
@@ -259,7 +249,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private int month(){
 		String cid = AppContexts.user().companyId();
 		int month = 1;
-		Query monthQuery = entityManager.createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
+		Query monthQuery = this.getEntityManager().createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
 		List data = monthQuery.getResultList();
 		if (data.size() == 0) {
 			month = 1;
@@ -274,6 +264,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+		String startOfWeek = getStartOfWeek(cid);
+		
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_COM, KshmtLegalTimeMCom.class)
 				.setParameter("cid", cid)
 				.setParameter("start", startDate * 100 + 1)
@@ -281,24 +273,32 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				.getList();
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())) {
-			stmt.setInt(1, startDate);
-			stmt.setInt(2, endDate);
-			stmt.setString(3, cid);
+//			stmt.setInt(1, startDate);
+//			stmt.setInt(2, endDate);
+			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month));
+				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return datas;
 	}
-	private List<MasterData> buildCompanyRow(NtsResultRecord r, List<KshmtLegalTimeMCom> legals, int startDate, int endDate, int month) {
+	
+	private String getStartOfWeek(String cid) {
+		
+		int startOfWeek = this.queryProxy().find(cid, KsrmtWeekRuleMng.class)
+											.map(w -> w.startOfWeek).orElse(0);
+		
+		return getWeekStart(startOfWeek);
+	}
+	
+	private List<MasterData> buildCompanyRow(NtsResultRecord r, List<KshmtLegalTimeMCom> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
-		
 		for (int y = startDate; y <= endDate; y++) {
 			int ym = y *100 + month;
 			
@@ -325,7 +325,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R8_7
 					convertTime(r.getInt(("DAILY_TIME"))), 
 					//R8_9
-					getWeekStart(r.getInt("WEEK_STR")),
+					startOfWeek,
 					//R8_10
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					//R8_11
@@ -361,7 +361,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R8_29
 					convertTime(r.getInt("REG_DAILY_TIME")), 
 					//R8_31
-					getWeekStart(r.getInt("REG_WEEK_STR")),
+					startOfWeek,
 					//R8_32 R8_33
 					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
 					//R8_34 R8_35
@@ -463,8 +463,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					));
 			
 			// buil month remain
-			for (int i = month + 1; i <= month + 10; i++) {
-				int currentYm = y *100 + month + 1;
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y *100 + m;
 				val normalC = legals.stream()
 						.filter(l -> l.pk.ym == currentYm && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
 						.findFirst();
@@ -478,7 +479,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R8_1
 						null,
 						//R8_2 R8_3
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"), 
+						(m) + I18NText.getText("KMK004_176"), 
 						//R8_4
 						convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
 						//R8_6
@@ -502,7 +503,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R8_16
 						null, 
 						//R8_17 R8_18
-						(month + i) % 12 + 1 + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R8_19
 						refPreTime != null && refPreTime == 0 ? (flexC.isPresent() ? String.valueOf(flexC.get().withinTime) : null) : null,
 						// R10_22
@@ -514,7 +515,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R8_23
 						null, 
 						//R8_24 8_25
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R8_26
 						convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
 						//R8_28	
@@ -730,6 +731,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+		String startOfWeek = getStartOfWeek(cid);
+
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
 				.setParameter("start", startDate * 100 + 1)
@@ -737,13 +740,13 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				.getList();
 			
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
-			stmt.setInt(1, startDate);
-			stmt.setInt(2, endDate);
-			stmt.setString(3, cid);
+//			stmt.setInt(1, startDate);
+//			stmt.setInt(2, endDate);
+			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month));
+				datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -752,7 +755,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return datas;
 	}
 	
-	private List<MasterData> buildEmploymentRow(NtsResultRecord r, List<KshmtLegalTimeMEmp> legals, int startDate, int endDate, int month) {
+	private List<MasterData> buildEmploymentRow(NtsResultRecord r, List<KshmtLegalTimeMEmp> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
@@ -789,7 +792,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R12_9
 					convertTime(r.getInt("DAILY_TIME")),
 					//R12_11
-					getWeekStart(r.getInt("WEEK_STR")),
+					startOfWeek,
 					//R12_12
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					//R12_13
@@ -825,7 +828,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R12_31
 					convertTime(r.getInt("LAR_DAILY_TIME")),
 					//R12_33
-					getWeekStart(r.getInt("LAR_WEEK_STR")),
+					startOfWeek,
 					//R12_34
 					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
 					//R12_35
@@ -931,8 +934,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					));
 			
 			// buil month remain
-			for (int i = month + 1; i <= month + 10; i++) {
-				int currentYm = y *100 + month + 1;
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y *100 + m;
 				val normalC = legals.stream()
 						.filter(l -> l.pk.ym == currentYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
 						.findFirst();
@@ -950,7 +954,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R12_3
 						null,
 						//R12_4 R12_5
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"), 
+						(m) + I18NText.getText("KMK004_176"), 
 						//R12_6
 						convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
 						//R12_8
@@ -974,7 +978,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R12_18
 						null,
 						//R12_19 R12_20
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R12_21
 						refPreTime != null && refPreTime == 0 ? (flexC.isPresent() ? String.valueOf(flexC.get().withinTime) : null) : null,
 						// R10_22
@@ -986,7 +990,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R12_25
 						null, 
 						//R12_26 R12_27
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R12_28
 						convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
 						//R12_30
@@ -1212,6 +1216,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public List<MasterData> getWorkPlaceExportData(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
+		
+		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 			.setParameter("cid", cid)
@@ -1220,13 +1226,13 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			.getList();
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
-			stmt.setInt(1, startDate);
-			stmt.setInt(2, endDate);
-			stmt.setString(3, cid);
+//			stmt.setInt(1, startDate);
+//			stmt.setInt(2, endDate);
+			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month));
+				datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -1235,7 +1241,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return datas;
 	}
 
-	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, List<KshmtLegalTimeMWkp> legals, int startDate, int endDate, int month) {
+	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, List<KshmtLegalTimeMWkp> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
@@ -1272,7 +1278,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_9
 					convertTime(r.getInt("DAILY_TIME")),
 					//R14_11
-					getWeekStart(r.getInt("WEEK_STR")),
+					startOfWeek,
 					//R14_12
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					//R14_13
@@ -1308,7 +1314,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_31
 					convertTime(r.getInt("LAB_DAILY_TIME")),
 					//R14_33
-					getWeekStart(r.getInt("LAB_WEEK_STR")),
+					startOfWeek,
 					//R14_34 R14_35
 					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
 					//R14_36 R14_37
@@ -1414,8 +1420,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					));
 			
 			// buil month remain
-			for (int i = month + 1; i <= month + 10; i++) {
-				int currentYm = y *100 + month + 1;
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y *100 + m;
 				val normalC = legals.stream()
 						.filter(l -> l.pk.ym == currentYm && l.pk.wkpId.equals(wid) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
 						.findFirst();
@@ -1433,7 +1440,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R14_3
 						null,
 						//R14_4 R14_5
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"), 
+						(m) + I18NText.getText("KMK004_176"), 
 						//R14_6
 						convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
 						//R14_7
@@ -1457,7 +1464,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R14_18
 						null,
 						//R14_19 R14_20
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R14_21
 						refPreTime != null && refPreTime == 0 ? (flexC.isPresent() ? String.valueOf(flexC.get().withinTime) : null) : null,
 						// R10_22
@@ -1469,7 +1476,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//14_25
 						null,
 						//R14_26 R14_27
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						//R14_28
 						convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
 						//R14_29
@@ -1730,6 +1737,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+		String startOfWeek = getStartOfWeek(cid);
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
 			.setParameter("cid", cid)
 			.setParameter("start", startDate * 100 + 1)
@@ -1737,13 +1745,13 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			.getList();
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
-			stmt.setInt(1, startDate);
-			stmt.setInt(2, endDate);
-			stmt.setString(3, cid);
+//			stmt.setInt(1, startDate);
+//			stmt.setInt(2, endDate);
+			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month));
+				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1751,7 +1759,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return datas;
 	}
 	
-	private List<MasterData> buildEmployeeRow(NtsResultRecord r, List<KshmtLegalTimeMSya> legals, int startDate, int endDate, int month) {
+	private List<MasterData> buildEmployeeRow(NtsResultRecord r, List<KshmtLegalTimeMSya> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
@@ -1788,7 +1796,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					// R10_9
 					convertTime(r.getInt("DAILY_TIME")),
 					// R10_11
-					getWeekStart(r.getInt("WEEK_STR")),
+					startOfWeek,
 					// R10_12
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					// R10_13
@@ -1824,7 +1832,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					// R10_31
 					convertTime(r.getInt("TRANS_DAILY_TIME")),
 					// R10_33
-					getWeekStart(r.getInt("TRANS_WEEK_STR")),
+					startOfWeek,
 					// R10_34 35
 					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"),
 					// R10_36 37
@@ -1880,8 +1888,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				convertTime(r.getInt("TRANS_WEEKLY_TIME"))));
 			
 			// buil month remain
-			for (int i = month + 1; i <= month + 10; i++) {
-				int currentYm = y *100 + month + 1;
+			for (int i = 1; i < 11; i++) {
+				int m = (month + i) % 12 + 1;
+				int currentYm = y *100 + m;
 				val normalC = legals.stream()
 						.filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
 						.findFirst();
@@ -1899,7 +1908,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						// R10_3
 						null,
 						// R10_4 R10_5
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						// R10_6
 						convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
 						// R10_8
@@ -1923,7 +1932,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						// R10_18
 						null,
 						// R10_19 R10_20
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						// R10_21
 						refPreTime != null && refPreTime == 0 ? (flexC.isPresent() ? String.valueOf(flexC.get().withinTime) : null) : null,
 								// R10_22
@@ -1935,7 +1944,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						// R10_25
 						null,
 						// R10_26 R10_27
-						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+						(m) + I18NText.getText("KMK004_176"),
 						// R10_28
 						convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
 						// R10_30
@@ -2457,7 +2466,4 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
     		return null;
     	}
     }
-	
-	
-	
 }

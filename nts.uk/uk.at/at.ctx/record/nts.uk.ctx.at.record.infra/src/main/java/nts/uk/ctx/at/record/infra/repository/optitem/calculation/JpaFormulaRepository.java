@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula_;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
 
 /**
  * The Class JpaFormulaRepository.

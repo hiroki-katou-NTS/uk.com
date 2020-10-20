@@ -20,7 +20,7 @@ export class KafS08CComponent extends Vue {
     public kafS00DParams: any = null;
     public params?: any;
     
-    @Prop({default : true}) public readonly mode!: boolean;
+    @Prop({ }) public readonly mode!: boolean;
 
     @Prop({default : ' '}) public readonly appID!: string;
 
@@ -30,5 +30,10 @@ export class KafS08CComponent extends Vue {
             mode : vm.mode == true ? ScreenMode.NEW : ScreenMode.DETAIL,
             appID : vm.appID
         };
+    }
+
+    public BackToStepOne(res: any) {
+        const vm =this;
+        vm.$emit('backToStepOne', res);
     }
 }

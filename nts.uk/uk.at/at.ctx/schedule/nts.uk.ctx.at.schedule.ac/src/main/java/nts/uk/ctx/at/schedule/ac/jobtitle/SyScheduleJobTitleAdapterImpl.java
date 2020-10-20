@@ -65,7 +65,7 @@ public class SyScheduleJobTitleAdapterImpl implements SyJobTitleAdapter {
 		}
 		return listdata.stream().map(m -> {
 			
-			return new EmployeePosition(m.getEmployeeId(), m.getJobTitleID());
+			return new EmployeePosition(m.getEmployeeId(), m.getJobTitleID(), m.getJobTitleCode());
 		}).collect(Collectors.toList());
 	}
 }

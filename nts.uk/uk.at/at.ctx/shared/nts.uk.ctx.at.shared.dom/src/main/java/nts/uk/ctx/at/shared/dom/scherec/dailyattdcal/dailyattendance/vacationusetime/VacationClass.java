@@ -49,7 +49,8 @@ public class VacationClass {
 						new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 						new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
 						new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
-						new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0))));
+						new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+						new TransferHolidayOfDaily(new AttendanceTime(0))));
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class VacationClass {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 
 		Optional<PredetermineTimeSetForCalc> predSetting = recordReGet.getCalculatable()
-				? Optional.ofNullable(recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc())
+				? Optional.of(recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc())
 				: Optional.empty();
 		//欠勤使用時間
 		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.Absence, predSetting,
@@ -159,7 +160,7 @@ public class VacationClass {
 		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
 
 		return new HolidayOfDaily(absenceOfDaily, timeDigestOfDaily, yearlyReservedOfDaily, substituteOfDaily,
-				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily);
+				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily, new TransferHolidayOfDaily(new AttendanceTime(0)));
 	}
 
 	/**

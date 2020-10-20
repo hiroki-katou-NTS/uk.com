@@ -68,6 +68,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
 			wi.changeCalcState(CalculationState.Calculated);
 			IntegrationOfDaily daily = new IntegrationOfDaily(
+					empId,
+					ymd,
 					wi.getWorkInformation(), //workInformation
 					null, //calAttr
 					null, //affiliationInfor
@@ -84,8 +86,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
 					new ArrayList<>());//remarks
-			daily.setEmployeeId(empId);
-			daily.setYmd(ymd);
 			addAndUpdate(daily);
 		});
 	}

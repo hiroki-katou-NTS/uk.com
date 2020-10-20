@@ -15,7 +15,15 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 @Getter
 public class OthersReflect extends DomainObject {
+    /**
+     * 乖離理由を反映する
+     */
     private NotUseAtr reflectDivergentReasonAtr;
+
 //    private NotUseAtr reflectOptionalItemsAtr;
+
+    /**
+     * 加給時間を反映する
+     */
     private NotUseAtr reflectPaytimeAtr;
 }

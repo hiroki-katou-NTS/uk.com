@@ -15,29 +15,27 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.AnyLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.goout.AggregateGoOut;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -153,17 +151,6 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				excoutList);
 		attendanceTime.setExcessOutsideWork(excessOutsideWork);
 		
-		// 36協定時間追加　2018.3.16
-		monthlyCalculation.setAgreementTime(
-				AgreementTimeOfMonthly.of(
-						new AttendanceTimeMonth(1300 + randomVal),
-						new LimitOneMonth(800 + randomVal),
-						new LimitOneMonth(0),
-						Optional.of(new LimitOneMonth(500 + randomVal)),
-						Optional.empty(),
-						AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR)
-			);
-		
 		// 縦計分追加　2018.2.8
 		val verticalTotal = attendanceTime.getVerticalTotal();
 		val vWorkTime = verticalTotal.getWorkTime();
@@ -173,9 +160,17 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(3110 + randomVal),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrBonusPayTime02 = AggregateBonusPayTime.of(1,
 				new AttendanceTimeMonth(3120 + randomVal),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
@@ -201,9 +196,11 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimesMonth(10 + randomVal),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
 		val aggrGoOut02 = AggregateGoOut.of(GoingOutReason.PUBLIC,
 				new AttendanceTimesMonth(20 + randomVal),
+				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				TimeMonthWithCalculation.ofSameTime(0));
@@ -211,8 +208,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		if (randomVal >= 6) vGoOuts.put(GoingOutReason.PUBLIC, aggrGoOut02);
 		val vPremiumTime = vWorkTime.getPremiumTime();
 		val vPremiumTimeMap = vPremiumTime.getPremiumTime();
-		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal));
-		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal));
+		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal), new AttendanceAmountMonth(0));
+		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal), new AttendanceAmountMonth(0));
 		vPremiumTimeMap.put(1, aggrPremiumTime01);
 		if (randomVal >= 6) vPremiumTimeMap.put(2, aggrPremiumTime02);
 		val medicalTime = vWorkTime.getMedicalTime();

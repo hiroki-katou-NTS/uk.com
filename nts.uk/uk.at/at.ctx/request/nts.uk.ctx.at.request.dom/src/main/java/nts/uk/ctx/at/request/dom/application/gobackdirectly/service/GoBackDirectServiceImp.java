@@ -158,9 +158,8 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	public InforGoBackCommonDirectOutput getDateChangeAlgorithm(String companyId, List<GeneralDate> dates,
 			List<String> sids, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
 		// 申請日を変更する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(companyId, dates,
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
+		// cause KAF000 call service to get AppDispInfoWithDateOutput so do not call this 申請日を変更する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput();
 		inforGoBackCommonDirectOutput.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		InforWorkGoBackDirectOutput inforWorkGoBackDirectOutput = this.getInfoWorkGoBackDirect(companyId,  sids == null ? null : sids.get(0), dates.get(0),
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),

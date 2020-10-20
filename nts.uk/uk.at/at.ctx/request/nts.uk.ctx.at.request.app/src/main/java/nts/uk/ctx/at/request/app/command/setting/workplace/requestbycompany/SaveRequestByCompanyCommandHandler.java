@@ -18,6 +18,10 @@ public class SaveRequestByCompanyCommandHandler extends CommandHandler<List<Appl
     @Inject
     private RequestByCompanyRepository requestByCompanyRepo;
 
+    /**
+     * 登録処理
+     * @param commandHandlerContext
+     */
     @Override
     protected void handle(CommandHandlerContext<List<ApplicationUseSetCommand>> commandHandlerContext) {
         String companyId = AppContexts.user().companyId();

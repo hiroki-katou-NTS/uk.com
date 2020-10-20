@@ -15,6 +15,10 @@ public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
+		}
 		ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = item !=null? new ShortTimeOfDailyPerformance(getEmployeeId(),
 				getWorkDate(), ((ShortTimeOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate())):null;
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 

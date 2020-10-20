@@ -1,26 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.Time36UpLimitMonthDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeAnnual;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 
 /**
  * 時間外時間の詳細
@@ -109,30 +94,32 @@ public class AppOvertimeDetailCommand {
 	public Integer upperLimitTimeAverage;
 
 	public AppOvertimeDetail toDomain(String cid, String appId) {
-		return new AppOvertimeDetail(
-				cid, 
-				appId, 
-				new YearMonth(yearMonth), 
-				new Time36Agree(
-						new AttendanceTimeMonth(applicationTime) , 
-						new Time36AgreeMonth(
-								new AttendanceTimeMonth(actualTime), 
-								new LimitOneMonth(limitAlarmTime), 
-								new LimitOneMonth(limitErrorTime), 
-								new NumberOfMonth(numOfYear36Over), 
-								year36OverMonth.stream().map(x -> new YearMonth(x)).collect(Collectors.toList()), 
-								exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime)), 
-								exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime))), 
-						new Time36AgreeAnnual(
-								new AttendanceTimeYear(actualTimeAnnual), 
-								new LimitOneYear(limitTime))), 
-				new Time36AgreeUpperLimit(
-						new AttendanceTimeMonth(appTimeAgreeUpperLimit), 
-						new Time36AgreeUpperLimitMonth(
-								new AttendanceTimeMonth(overTime), 
-								new LimitOneMonth(upperLimitTimeMonth)), 
-						new Time36AgreeUpperLimitAverage(
-								averageTimeLst.stream().map(x -> new Time36AgreeUpperLimitPerMonth(x.periodYearStart, x.periodYearEnd, x.averageTime, x.totalTime)).collect(Collectors.toList()), 
-								new LimitOneMonth(upperLimitTimeAverage))));
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		return new AppOvertimeDetail(
+//				cid, 
+//				appId, 
+//				new YearMonth(yearMonth), 
+//				new Time36Agree(
+//						new AttendanceTimeMonth(applicationTime) , 
+//						new Time36AgreeMonth(
+//								new AttendanceTimeMonth(actualTime), 
+//								new AgreementOneMonth(limitAlarmTime), 
+//								new AgreementOneMonth(limitErrorTime), 
+//								new NumberOfMonth(numOfYear36Over), 
+//								year36OverMonth.stream().map(x -> new YearMonth(x)).collect(Collectors.toList()), 
+//								exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonth(exceptionLimitAlarmTime)), 
+//								exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonth(exceptionLimitErrorTime))), 
+//						new Time36AgreeAnnual(
+//								new AttendanceTimeYear(actualTimeAnnual), 
+//								new AgreementOneYearTime(limitTime))), 
+//				new Time36AgreeUpperLimit(
+//						new AttendanceTimeMonth(appTimeAgreeUpperLimit), 
+//						new Time36AgreeUpperLimitMonth(
+//								new AttendanceTimeMonth(overTime), 
+//								new AgreementOneMonth(upperLimitTimeMonth)), 
+//						new Time36AgreeUpperLimitAverage(
+//								averageTimeLst.stream().map(x -> new Time36AgreeUpperLimitPerMonth(x.periodYearStart, x.periodYearEnd, x.averageTime, x.totalTime)).collect(Collectors.toList()), 
+//								new AgreementOneMonth(upperLimitTimeAverage))));
 	}
 }

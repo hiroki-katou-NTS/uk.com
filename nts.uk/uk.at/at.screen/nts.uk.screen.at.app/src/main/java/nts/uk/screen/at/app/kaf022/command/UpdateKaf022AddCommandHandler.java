@@ -5,10 +5,14 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.workchange.SaveAppWorkChangeSetCommandHandler;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
@@ -22,6 +26,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
@@ -36,6 +42,7 @@ import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -93,12 +100,20 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private SubstituteHdWorkAppSetRepository substituteHdWorkAppSetRepo;
 
+	@Inject
+	private AppReasonStandardRepository appReasonStandardRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		Kaf022AddCommand kaf022 = context.getCommand();
 		ApplicationSetting applicationSetting = kaf022.getApplicationSetting().toDomain(companyId);
 		List<DisplayReason> reasonDisplaySettings = kaf022.getReasonDisplaySettings().stream().map(r -> r.toDomain(companyId)).collect(Collectors.toList());
+
+		// 登録の前チェック処理
+		checkBeforeRegister(companyId, applicationSetting.getAppLimitSetting().isStandardReasonRequired(), reasonDisplaySettings);
+
+		// 登録処理
 		applicationSettingRepo.save(applicationSetting, reasonDisplaySettings, kaf022.getNightOvertimeReflectAtr());
 		displayReasonRepo.saveHolidayAppReason(companyId, reasonDisplaySettings);
 
@@ -140,6 +155,33 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		timeLeaveAppReflectRepo.save(kaf022.getTimeLeaveApplicationReflect().toDomain(companyId));
 
 		substituteHdWorkAppSetRepo.save(kaf022.getSubstituteHdWorkAppSetting().toDomain(companyId), kaf022.getSubstituteLeaveAppReflect().toDomain(), kaf022.getSubstituteWorkAppReflect().toDomain());
+	}
+
+	/**
+	 * 定型理由必須のチェック
+	 * @param companyId
+	 * @param standardReasonRequired
+	 * @param reasonDisplaySettings
+	 */
+	private void checkBeforeRegister(String companyId, boolean standardReasonRequired, List<DisplayReason> reasonDisplaySettings) {
+		if (standardReasonRequired) {
+			List<DisplayReason> checkTargets = reasonDisplaySettings.stream().filter(i -> i.getDisplayFixedReason() == DisplayAtr.DISPLAY).collect(Collectors.toList());
+			if (checkTargets.size() > 0) {
+				for (DisplayReason target : checkTargets) {
+					if (target.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
+						if (!optionalAppReasonStandard.isPresent()
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
+							throw new BusinessException("Msg_1751", target.getAppType().name);
+					} else {
+						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
+						if (!optionalAppReasonStandard.isPresent()
+								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst()))
+							throw new BusinessException("Msg_1751", target.getAppType().name);
+					}
+				}
+			}
+		}
 	}
 
 }

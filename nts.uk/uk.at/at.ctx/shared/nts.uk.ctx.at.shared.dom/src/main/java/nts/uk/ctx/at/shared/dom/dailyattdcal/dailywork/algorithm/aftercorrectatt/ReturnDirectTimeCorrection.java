@@ -9,7 +9,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 
 /**
@@ -51,8 +53,18 @@ public class ReturnDirectTimeCorrection {
 					.sorted((x, y) -> compareTime(x, y)).findFirst();
 
 			outingTimeSheet.ifPresent(x -> {
-				outingTimeSheets.remove(outingTimeSheet.get());
-				outingTimeSheets.add(setOutTimeSheet(x, leavWork));
+				//outingTimeSheets.set(index, setOutTimeSheet(x, leavWork));
+				//#111712
+				//戻り.打刻.時刻.時刻←退勤.打刻.時刻.時刻
+				//戻り.打刻.時刻.時刻変更理由.時刻変更手段←”自動セット”
+				WorkStamp stampLeav= leavWork.getLeaveStamp().map(y -> y.getStamp().orElse(null)).orElse(null);
+				x.setComeBack(Optional.of(new TimeActualStamp(null,
+						new WorkStamp(stampLeav == null ? null : stampLeav.getAfterRoundingTime(),
+								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+										stampLeav == null ? null
+												: stampLeav.getTimeDay().getTimeWithDay().orElse(null)),
+								Optional.empty()),
+						1)));
 			});
 		}
 		return Optional.ofNullable(outingTimeSheets.isEmpty() ? null : new OutingTimeOfDailyAttd(outingTimeSheets));
@@ -65,15 +77,6 @@ public class ReturnDirectTimeCorrection {
 	private static Integer compareTime(OutingTimeSheet goOut1, OutingTimeSheet goOut2) {
 		return goOut2.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v()
 				- goOut1.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
-	}
-
-	private static OutingTimeSheet setOutTimeSheet(OutingTimeSheet oldValue, TimeLeavingWork leavWork) {
-		OutingTimeSheet result = new OutingTimeSheet(oldValue.getOutingFrameNo(), oldValue.getGoOut(),
-				oldValue.getOutingTimeCalculation(), oldValue.getOutingTime(), oldValue.getReasonForGoOut(),
-				Optional.of(new TimeActualStamp(null,
-						leavWork.getLeaveStamp().map(x -> x.getStamp().orElse(null)).orElse(null), 1)));
-		result.getComeBack().ifPresent(x -> x.setNumberOfReflectionStamp(1));
-		return result;
 	}
 
 	private static boolean hasActualStamp(TimeLeavingWork timeLeav) {

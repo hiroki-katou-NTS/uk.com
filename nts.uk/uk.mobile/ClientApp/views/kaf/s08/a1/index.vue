@@ -2,7 +2,6 @@
   <div class="kafs08a1">
       <div>
         <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
-        <template v-else />
       </div>
       <!-- A2_1 -->
       <div v-if="hidden" class="card bg-danger top-alert uk-text-danger topError">
@@ -12,13 +11,12 @@
         </button>
       </div>
       <div>
-        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" v-on:hungdeptrai="(value) => { }" />
-        <!-- <template v-else /> -->
+        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
       </div>
       <!-- A5 -->
       <div class="field-set">
         <!-- A5_1 -->
-        <div class="card card-label">
+        <div class="card card-label py-3">
           <div class="card-header uk-bg-accordion">
             <span>{{'KAFS08_27' | i18n}}</span>
             <span class="badge badge-info">任意</span>
@@ -29,22 +27,20 @@
           v-model="derpartureTime"
           :name="'KAFS08_28'"
           time-input-type="time-with-day"
-          v-validate="$errors.checked"
-          :columns="{ title: 'col-3', input: 'col-5' }"
+          :columns="{ title: 'col-4', input: 'col-6' }"
         />
-        <v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
         <!-- A5_5 -->
         <nts-time-editor
           v-model="returnTime"
           :name="'KAFS08_29'"
           time-input-type="time-with-day"
-          v-validate="$errors.checked"
-          :columns="{ title: 'col-3', input: 'col-5' }"
+          :columns="{ title: 'col-4', input: 'col-6' }"
         />
-        <v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
         <!-- A_20 -->
         <div>
-          <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />
+          <kafs00-c v-if="kaf000_C_Params != null"
+          v-bind:params="kaf000_C_Params"
+           />
         </div>
         <!-- A50_F1 -->
         <div class="process-button">
