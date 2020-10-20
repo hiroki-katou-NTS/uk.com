@@ -71,11 +71,11 @@
 }
 
 #A1_11 {
-	margin-left: 48px !important;
+	margin-left: 45px !important;
 }
 
 #A1_12 {
-	margin-left: 78px !important;	
+	margin-left: 77px !important;	
 }
 
 .hope {
@@ -99,10 +99,6 @@
 	float: right;
 	margin-top: 23px;
 	width: 80px;
-}
-
-.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
-	width: 105px;
 }
 
 #work-setting, #person-setting, #sort-order-setting {
@@ -164,23 +160,14 @@
 	width: 12px !important;
 }
 
-#button-top {
-	margin-left: 22px;
-}
-
-#button-bot {
-	margin: 15px;
-	margin-left: 22px;
-}
-
 #multi-list_container {
 	margin-left: 7px !important;
 	margin-top: 16px !important;
 }
 
-#A1_10_1 {
-	width: 362px !important;
-	height: 85px;
+#A1_10 {
+	display: inline;
+	margin-left: 0px;
 }
 
 #A1_7_1 {
@@ -188,7 +175,7 @@
 	height: 100px;
 }
 
-#A1_10_1, #A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
+#A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -456,6 +443,10 @@ html {
 
 .marginleft45px {
 	margin-left: 60px !important;
+}
+
+#showPopup {	
+	margin-left: 0px !important;
 }
 
 #A3_1 {

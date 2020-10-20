@@ -133,6 +133,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pathToDown = '';
         pathToUp = '';
         
+        // param kcp015
+        hasParams: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA31: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA32: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA33: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA34: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA35: KnockoutObservable<boolean> = ko.observable(true);
+        visibleA36: KnockoutObservable<boolean> = ko.observable(true);
+        baseDate: KnockoutObservable<string> = ko.observable('');
+        sids: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         constructor() {
             let self = this;
 
@@ -1289,6 +1300,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.arrListCellLock = arrListCellLock;
                 }
             }
+            
+            // truyen sids vao kcp015
+            self.sids(self.listSid());
             
             self.listCellNotEdit = listCellNotEdit;
             self.undoNumberClick = 0;

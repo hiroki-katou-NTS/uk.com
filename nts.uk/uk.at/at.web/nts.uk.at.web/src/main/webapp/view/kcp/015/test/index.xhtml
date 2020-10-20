@@ -19,6 +19,9 @@
 			<com:scriptfile path="kcp015.test.start.js" />
 			<com:scriptfile path="kcp015.test.vm.js" />
 			<com:stylefile path="kcp015.test.main.css" />
+			
+			<com:scriptfile path="/view/kcp/015/component/kcp015.vm.js" />
+            <com:stylefile  path="/view/kcp/015/component/kcp015.main.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -58,15 +61,31 @@
 
 					<!-- Datepicker -->
 					<div data-bind="ntsFormLabel: {}">BaseDate</div>
-					<div data-bind="ntsDatePicker: { value: baseDate }"></div>
+					<div data-bind="ntsDatePicker: { value: baseDate1 }"></div>
 					<br />
 					<div style="margin-top: 10px" data-bind="ntsFormLabel: {}">list employee Id</div>
-					<div style="height: 300px; overflow: scroll;" data-bind="text: listEmp"></div>
+					<div style="height: 218px; overflow: scroll;" data-bind="text: listEmp"></div>
 
 
 					<div style="margin-top: 15px">
 						<button data-bind="click: openKCP015">Open KCP015</button>
 					</div>
+					
+					<div data-bind="component: {
+								name: 'kcp015',
+								params: {
+								hasParams  : hasParams,
+	                            visibleA31 : visibleA31 ,
+	                            visibleA32 : visibleA32 ,
+	                            visibleA33 : visibleA33 ,
+	                            visibleA34 : visibleA34 ,
+	                            visibleA35 : visibleA35 ,
+	                            visibleA36 : visibleA36,
+	                            sids       : sids,
+	                            baseDate   : baseDate
+								}
+							}">
+						</div>
 				</div>
 				
 			</div>

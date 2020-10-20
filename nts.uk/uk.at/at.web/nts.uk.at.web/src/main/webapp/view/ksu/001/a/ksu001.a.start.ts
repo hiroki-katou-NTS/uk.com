@@ -61,19 +61,6 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //A1_10_1 click btn10
-        $('#A1_10_1').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('#A1_10')
-            }
-        });
-
-        $('#A1_10').click(function() {
-            $('#A1_10_1').ntsPopup("toggle");
-        });
-        
         //A1_7_1 click btn7
         $('#A1_7_1').ntsPopup({
             position: {
