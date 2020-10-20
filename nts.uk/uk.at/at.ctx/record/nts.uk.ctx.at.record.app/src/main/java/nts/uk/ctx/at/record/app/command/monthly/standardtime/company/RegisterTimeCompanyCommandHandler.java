@@ -2,9 +2,8 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.company;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfCompanyDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
@@ -23,20 +22,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<RegisterTimeCompanyCommand, List<String>> {
+public class RegisterTimeCompanyCommandHandler extends CommandHandler<RegisterTimeCompanyCommand> {
 
     @Inject
     private Company36AgreedHoursRepository repo;
 
-    @Inject
-    private AgreementTimeOfCompanyDomainService agreementTimeOfCompanyDomainService;
-
     @Override
-    protected List<String> handle(CommandHandlerContext<RegisterTimeCompanyCommand> context) {
+    protected void handle(CommandHandlerContext<RegisterTimeCompanyCommand> context) {
         RegisterTimeCompanyCommand command = context.getCommand();
 
         val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorOneMonth())
@@ -67,13 +62,13 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandlerWithResult<
         Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if (agreementTimeOfCompanyOpt.isPresent()) {
-            AgreementTimeOfCompany newAgreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),
+            AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), basicAgreementSetting);
-            return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting, newAgreementTimeOfCompany);
+            repo.update(agreementTimeOfCompany);
         } else {
             AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), basicAgreementSetting);
-            return this.agreementTimeOfCompanyDomainService.add(basicAgreementSetting, agreementTimeOfCompany);
+            repo.insert(agreementTimeOfCompany);
         }
     }
 }

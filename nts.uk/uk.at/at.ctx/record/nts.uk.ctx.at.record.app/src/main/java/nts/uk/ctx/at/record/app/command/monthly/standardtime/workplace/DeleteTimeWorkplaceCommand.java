@@ -18,6 +18,6 @@ public class DeleteTimeWorkplaceCommand {
 	private  String workplaceId;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 }

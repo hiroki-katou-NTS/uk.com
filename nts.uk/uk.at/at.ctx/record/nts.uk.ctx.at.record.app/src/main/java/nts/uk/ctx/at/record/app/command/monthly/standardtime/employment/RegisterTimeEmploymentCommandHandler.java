@@ -2,9 +2,8 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.employment;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
@@ -24,20 +23,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class RegisterTimeEmploymentCommandHandler extends CommandHandlerWithResult<RegisterTimeEmploymentCommand,List<String>> {
+public class RegisterTimeEmploymentCommandHandler extends CommandHandler<RegisterTimeEmploymentCommand> {
 
     @Inject
     private Employment36HoursRepository repo;
 
-    @Inject
-    private AgreementTimeOfEmploymentDomainService agreementTimeOfEmploymentDomainService;
-
     @Override
-    protected List<String> handle(CommandHandlerContext<RegisterTimeEmploymentCommand> context) {
+    protected void handle(CommandHandlerContext<RegisterTimeEmploymentCommand> context) {
         RegisterTimeEmploymentCommand command = context.getCommand();
 
         val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorOneMonth())
@@ -70,13 +65,13 @@ public class RegisterTimeEmploymentCommandHandler extends CommandHandlerWithResu
         if (agreementTimeOfEmployment.isPresent()) {
             AgreementTimeOfEmployment agreementTimeOfEmployment1 = new AgreementTimeOfEmployment(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), new EmploymentCode(command.getEmploymentCD()), basicAgreementSetting);
-            return this.agreementTimeOfEmploymentDomainService.update(basicAgreementSetting, agreementTimeOfEmployment1);
+            repo.update(agreementTimeOfEmployment1);
         } else {
 
             AgreementTimeOfEmployment agreementTimeOfEmployment1 = new AgreementTimeOfEmployment(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), new EmploymentCode(command.getEmploymentCD()), basicAgreementSetting);
 
-            return this.agreementTimeOfEmploymentDomainService.add(basicAgreementSetting,agreementTimeOfEmployment1);
+            repo.insert(agreementTimeOfEmployment1);
         }
     }
 }

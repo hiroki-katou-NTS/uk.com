@@ -16,50 +16,50 @@ public class RegisterTimeClassificationCommand {
 	private  String classificationCode;
 
 	// 労働制 3
-	private Integer laborSystemAtr;
+	private int laborSystemAtr;
 
 	/** 1ヶ月 (Month) */
 
 	//エラー時間
-	private Integer errorTimeMonth1;
+	private int errorTimeMonth1;
 
 	//アラーム時間
-	private Integer alarmTimeMonth1;
+	private int alarmTimeMonth1;
 
 	// 上限時間
-	private Integer upperLimitTimeMonth1;
+	private int upperLimitTimeMonth1;
 
 	//エラー時間
-	private Integer errorTimeMonth2;
+	private int errorTimeMonth2;
 
 	//アラーム時間
-	private Integer alarmTimeMonth2;
+	private int alarmTimeMonth2;
 
 	// 上限時間
-	private Integer upperLimitTimeMonth2;
+	private int upperLimitTimeMonth2;
 
 	/** 1年間 (Year) */
 
 	//エラー時間
-	private Integer errorTimeYear1;
+	private int errorTimeYear1;
 
 	//アラーム時間
-	private Integer alarmTimeYear1;
+	private int alarmTimeYear1;
 
 	// 上限時間
-	private Integer upperLimitTimeYear1;
+	private int upperLimitTimeYear1;
 
 	//エラー時間
-	private Integer errorTimeYear2;
+	private int errorTimeYear2;
 
 	//アラーム時間
-	private Integer alarmTimeYear2;
+	private int alarmTimeYear2;
 
 	// 上限時間
-	private Integer upperLimitTimeYear2;
+	private int upperLimitTimeYear2;
 
 	/** 超過上限回数  */
 	//超過上限回数
-	private Integer overMaxTimes;
+	private int overMaxTimes;
 
 }

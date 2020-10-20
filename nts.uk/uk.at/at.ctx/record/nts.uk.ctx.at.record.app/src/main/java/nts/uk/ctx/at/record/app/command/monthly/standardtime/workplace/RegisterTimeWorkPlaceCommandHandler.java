@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.monthly.standardtime.workplace;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceDomainService;
@@ -27,16 +28,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class RegisterTimeWorkPlaceCommandHandler extends CommandHandlerWithResult<RegisterTimeWorkPlaceCommand, List<String>> {
+public class RegisterTimeWorkPlaceCommandHandler extends CommandHandler<RegisterTimeWorkPlaceCommand> {
 
     @Inject
     private Workplace36AgreedHoursRepository repo;
 
-    @Inject
-    private AgreementTimeOfWorkPlaceDomainService agreementTimeOfWorkPlaceDomainService;
-
     @Override
-    protected List<String> handle(CommandHandlerContext<RegisterTimeWorkPlaceCommand> context) {
+    protected void handle(CommandHandlerContext<RegisterTimeWorkPlaceCommand> context) {
         RegisterTimeWorkPlaceCommand command = context.getCommand();
 
         val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorOneMonth())
@@ -68,13 +66,13 @@ public class RegisterTimeWorkPlaceCommandHandler extends CommandHandlerWithResul
         if (agreementTimeOfWorkPlace.isPresent()) {
             AgreementTimeOfWorkPlace agreementTimeOfEmployment1 = new AgreementTimeOfWorkPlace(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), basicAgreementSetting);
-            return this.agreementTimeOfWorkPlaceDomainService.update(basicAgreementSetting, agreementTimeOfEmployment1);
+            repo.update(agreementTimeOfEmployment1);
         } else {
 
             AgreementTimeOfWorkPlace agreementTimeOfWorkPlace1 = new AgreementTimeOfWorkPlace(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class), basicAgreementSetting);
 
-            return this.agreementTimeOfWorkPlaceDomainService.add(agreementTimeOfWorkPlace1,basicAgreementSetting);
+            repo.insert(agreementTimeOfWorkPlace1);
         }
 
     }
