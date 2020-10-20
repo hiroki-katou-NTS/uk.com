@@ -82,7 +82,7 @@ module nts.uk.at.view.kmk008.k {
 
 
             vm.listItemDataGrid([]);
-            if (dto.itemData && dto.itemData.length) {
+            if (!_.isEmpty(dto.itemData)) {
                 _.forEach(dto.itemData, item => {
                     vm.listItemDataGrid.push(new ShowListModel(Number(item.year), Number(item.error), Number(item.alarm)));
                 });
@@ -330,7 +330,7 @@ module nts.uk.at.view.kmk008.k {
                 vm.listItemDataGrid.remove(
                     vm.listItemDataGrid()[oldSelectIndex]
                 );
-                if (vm.listItemDataGrid().length) {
+                if (!_.isEmpty(vm.listItemDataGrid())) {
                     vm.currentCodeSelect(vm.getNewSelectRemove(oldSelectIndex));
                 }
                 else {
