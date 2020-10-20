@@ -92,6 +92,14 @@ module nts.uk.ui.at.kcp015.shared {
                 !vm.data.visibleA34() && !vm.data.visibleA35() && !vm.data.visibleA36()) {
                 vm.visibleA1(false);
             }
+            
+            if (vm.data.hasParams() && !vm.data.visibleA31() && !vm.data.visibleA33() && !vm.data.visibleA35()) {
+               $('#button-bot').css("margin-top", "0px");
+            }
+            
+            if (vm.data.hasParams() && !vm.data.visibleA32() && !vm.data.visibleA34() && !vm.data.visibleA36()) {
+               $('#button-bot').css("margin-top", "0px");
+            }
 
             const { hasPrams, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
 

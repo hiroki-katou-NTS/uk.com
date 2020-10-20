@@ -78,7 +78,7 @@ module nts.uk.at.view.kcp015.test {
                 $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
                 
                 self.itemList = ko.observableArray([
-                    new BoxModel(1, 'has parameters'),
+                    new BoxModel(1, 'have parameters'),
                     new BoxModel(2, 'no parameters')
                 ]);
                 self.selectedId = ko.observable(1);
