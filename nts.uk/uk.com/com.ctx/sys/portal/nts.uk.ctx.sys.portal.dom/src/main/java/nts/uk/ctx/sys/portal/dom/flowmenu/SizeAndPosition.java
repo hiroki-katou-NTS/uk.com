@@ -1,15 +1,13 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
- * サイズと位置
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.サイズと位置
  */
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class SizeAndPosition {
 
 	/**

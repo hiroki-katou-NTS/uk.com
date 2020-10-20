@@ -2,18 +2,12 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
- * 矢印設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.矢印設定
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class ArrowSetting extends ValueObject {
 	
 	/**

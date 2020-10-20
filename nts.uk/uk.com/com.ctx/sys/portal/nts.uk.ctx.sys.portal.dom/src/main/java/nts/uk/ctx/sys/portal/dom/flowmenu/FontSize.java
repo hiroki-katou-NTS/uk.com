@@ -4,7 +4,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 文字のサイズ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.文字のサイズ
  */
 @IntegerRange(min = 1, max = 99)
 public class FontSize extends IntegerPrimitiveValue<FontSize> {

@@ -11,12 +11,12 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CopyFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CopyFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteCreateFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteFlowMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.RegisterFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.RegisterFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateCreateFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuLayoutCommandHandler;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.CreateFlowMenuDto;
@@ -37,10 +37,10 @@ public class CreateFlowMenuWebService extends WebService {
 	private RegisterFlowMenuCommandHandler registerFlowMenuCommandHandler;
 	
 	@Inject
-	private DeleteFlowMenuCommandHandler deleteFlowMenuCommandHandler;
+	private DeleteCreateFlowMenuCommandHandler deleteFlowMenuCommandHandler;
 	
 	@Inject
-	private UpdateFlowMenuCommandHandler updateFlowMenuCommandHandler;
+	private UpdateCreateFlowMenuCommandHandler updateFlowMenuCommandHandler;
 	
 	@Inject
 	private UpdateFlowMenuLayoutCommandHandler updateFlowMenuLayoutCommandHandler;

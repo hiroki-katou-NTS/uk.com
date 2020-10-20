@@ -4,7 +4,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 横縦サイズ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.横縦サイズ
  */
 @IntegerRange(min = 1, max = 999)
 public class HorizontalAndVerticalSize extends IntegerPrimitiveValue<HorizontalAndVerticalSize> {

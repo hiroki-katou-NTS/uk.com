@@ -1,12 +1,12 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
- * 文字の設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.文字の設定
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class FontSetting {
 

@@ -1,12 +1,12 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
- * 横縦の位置
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.横縦の位置
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class HorizontalAndVerticalPosition {
 	

@@ -2,20 +2,14 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
- * リンク設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.リンク設定
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class LinkSetting {
 
 	/**
@@ -47,6 +41,7 @@ public class LinkSetting {
 	public void getMemento(MementoGetter memento) {
 		this.fontSetting = new FontSetting(
 				new SizeAndColor(
+						memento.getBold() == SizeAndColor.BOLD,
 						memento.getBackgroundColor() != null 
 							? Optional.of(new ColorCode(memento.getBackgroundColor()))
 							: Optional.empty(),

@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 /**
- * メニュー分類
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.Webメニュー.メニュー.メニュー分類
  */
 public enum MenuClassification {
 

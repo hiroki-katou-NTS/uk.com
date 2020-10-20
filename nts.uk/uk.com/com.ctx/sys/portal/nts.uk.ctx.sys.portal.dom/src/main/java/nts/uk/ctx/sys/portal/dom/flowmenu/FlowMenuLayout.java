@@ -3,16 +3,16 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu.MementoGetter;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu.MementoSetter;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.フローメニューレイアウト
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FlowMenuLayout extends DomainObject {
@@ -68,33 +68,13 @@ public class FlowMenuLayout extends DomainObject {
 		this.menuSettings = memento.getMenuSettings();
 	}
 	
-	public void setMemento(MementoSetter memento) {
+	public void setMemento(MementoSetter memento, String contractCode) {
 		memento.setFileId(this.fileId);
-		memento.setArrowSettings(this.arrowSettings);
-		memento.setFileAttachmentSettings(this.fileAttachmentSettings);
-		memento.setImageSettings(this.imageSettings);
-		memento.setLabelSettings(this.labelSettings);
-		memento.setLinkSettings(this.linkSettings);
-		memento.setMenuSettings(this.menuSettings);
-	}
-	
-	public static interface MementoGetter {
-		String getFileId();
-		List<MenuSetting> getMenuSettings();
-		List<LabelSetting> getLabelSettings();
-		List<LinkSetting> getLinkSettings();
-		List<FileAttachmentSetting> getFileAttachmentSettings();
-		List<ImageSetting> getImageSettings();
-		List<ArrowSetting> getArrowSettings();
-	}
-	
-	public static interface MementoSetter {
-		void setFileId(String fileId);
-		void setMenuSettings(List<MenuSetting> menuSettings);
-		void setLabelSettings(List<LabelSetting> labelSettings);
-		void setLinkSettings(List<LinkSetting> linkSettings);
-		void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings);
-		void setImageSettings(List<ImageSetting> imageSettings);
-		void setArrowSettings(List<ArrowSetting> arrowSettings);
+		memento.setArrowSettings(this.arrowSettings, contractCode);
+		memento.setFileAttachmentSettings(this.fileAttachmentSettings, contractCode);
+		memento.setImageSettings(this.imageSettings, contractCode);
+		memento.setLabelSettings(this.labelSettings, contractCode);
+		memento.setLinkSettings(this.linkSettings, contractCode);
+		memento.setMenuSettings(this.menuSettings, contractCode);
 	}
 }

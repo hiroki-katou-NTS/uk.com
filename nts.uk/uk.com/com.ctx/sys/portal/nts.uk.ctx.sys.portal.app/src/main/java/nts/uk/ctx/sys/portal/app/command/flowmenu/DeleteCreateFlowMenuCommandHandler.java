@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuCommand> {
+public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuCommand> {
 	
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;

@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuCommand> {
+public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuCommand> {
 
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;

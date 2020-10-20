@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
@@ -14,8 +14,8 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.フローメニュー作成
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFlowMenu extends AggregateRoot {
@@ -51,14 +51,7 @@ public class CreateFlowMenu extends AggregateRoot {
 		this.cid = memento.getCid();
 		this.flowMenuName = new TopPagePartName(memento.getFileId());
 		this.flowMenuLayout = memento.getFileId() != null 
-				? Optional.of(new FlowMenuLayout(
-					memento.getFileId(),
-					memento.getMenuSettings(),
-					memento.getLabelSettings(),
-					memento.getLinkSettings(),
-					memento.getFileAttachmentSettings(),
-					memento.getImageSettings(),
-					memento.getArrowSettings()))
+				? Optional.of(FlowMenuLayout.createFromMemento(memento))
 				: Optional.empty();
 	}
 	
@@ -67,13 +60,7 @@ public class CreateFlowMenu extends AggregateRoot {
 		memento.setFlowMenuCode(this.flowMenuCode.v());
 		memento.setFlowMenuName(this.flowMenuName.v());
 		memento.setContractCode(contractCode);
-		memento.setArrowSettings(this.flowMenuLayout.map(FlowMenuLayout::getArrowSettings).orElse(null), contractCode);
-		memento.setFileAttachmentSettings(this.flowMenuLayout.map(FlowMenuLayout::getFileAttachmentSettings).orElse(null), contractCode);
-		memento.setFileId(this.flowMenuLayout.map(FlowMenuLayout::getFileId).orElse(null));
-		memento.setImageSettings(this.flowMenuLayout.map(FlowMenuLayout::getImageSettings).orElse(null), contractCode);
-		memento.setLabelSettings(this.flowMenuLayout.map(FlowMenuLayout::getLabelSettings).orElse(null), contractCode);
-		memento.setLinkSettings(this.flowMenuLayout.map(FlowMenuLayout::getLinkSettings).orElse(null), contractCode);
-		memento.setMenuSettings(this.flowMenuLayout.map(FlowMenuLayout::getMenuSettings).orElse(null), contractCode);
+		this.flowMenuLayout.ifPresent(layout -> layout.setMemento(memento, contractCode));
 	}
 	
 	public static interface MementoGetter {

@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * ラベル内容
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.ラベル内容
  */
 @StringMaxLength(100)
 public class LabelContent extends StringPrimitiveValue<LabelContent> {

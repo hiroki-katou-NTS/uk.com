@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 /**
- * 縦の位置
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.縦の位置
  */
 public enum VerticalPosition {
 

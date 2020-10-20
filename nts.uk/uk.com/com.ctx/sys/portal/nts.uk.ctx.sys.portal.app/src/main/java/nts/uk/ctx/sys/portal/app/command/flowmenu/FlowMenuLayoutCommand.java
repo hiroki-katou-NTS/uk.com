@@ -11,15 +11,15 @@ import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.LabelSettingDto;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.LinkSettingDto;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.MenuSettingDto;
 import nts.uk.ctx.sys.portal.dom.flowmenu.ArrowSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FileAttachmentSetting;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuLayout;
 import nts.uk.ctx.sys.portal.dom.flowmenu.ImageSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.LabelSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.LinkSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.MenuSetting;
 
 @Value
-public class FlowMenuLayoutCommand implements FlowMenuLayout.MementoGetter {
+public class FlowMenuLayoutCommand implements CreateFlowMenu.MementoGetter {
 	
 	/**
 	 * ファイルID
@@ -84,5 +84,23 @@ public class FlowMenuLayoutCommand implements FlowMenuLayout.MementoGetter {
 	@Override
 	public List<ArrowSetting> getArrowSettings() {
 		return this.arrowSettings.stream().map(ArrowSetting::createFromMemento).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getFlowMenuCode() {
+		//NOT USED
+		return null;
+	}
+
+	@Override
+	public String getFlowMenuName() {
+		//NOT USED
+		return null;
+	}
+
+	@Override
+	public String getCid() {
+		//NOT USED
+		return null;
 	}
 }

@@ -2,19 +2,23 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import java.util.Optional;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
- * サイズと色
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.サイズと色
  */
-@Data
+@Getter
+@AllArgsConstructor
 public class SizeAndColor {
+	
+	public static final int BOLD = 1;
 	
 	/**
 	 * 太字
 	 */
-	private boolean isBold = false;
+	private boolean isBold;
 	
 	/**
 	 * 背景の色
@@ -30,11 +34,4 @@ public class SizeAndColor {
 	 * 文字のサイズ
 	 */
 	private FontSize fontSize;
-
-	public SizeAndColor(Optional<ColorCode> backgroundColor, Optional<ColorCode> fontColor, FontSize fontSize) {
-		super();
-		this.backgroundColor = backgroundColor;
-		this.fontColor = fontColor;
-		this.fontSize = fontSize;
-	}
 }

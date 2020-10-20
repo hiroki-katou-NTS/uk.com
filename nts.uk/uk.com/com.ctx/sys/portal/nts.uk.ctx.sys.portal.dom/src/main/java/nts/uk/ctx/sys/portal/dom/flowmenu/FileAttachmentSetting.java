@@ -4,20 +4,14 @@ import java.util.Optional;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
- * 添付ファイル設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.添付ファイル設定
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class FileAttachmentSetting extends ValueObject {
 
 	/**
@@ -49,6 +43,7 @@ public class FileAttachmentSetting extends ValueObject {
 	public void getMemento(MementoGetter memento) {
 		this.fontSetting = new FontSetting(
 				new SizeAndColor(
+						memento.getBold() == SizeAndColor.BOLD,
 						memento.getBackgroundColor() != null 
 							? Optional.of(new ColorCode(memento.getBackgroundColor()))
 							: Optional.empty(),
