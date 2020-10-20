@@ -31,7 +31,7 @@ public interface GetRemainingNumberCare {
 		 * @return 子の看護介護休暇集計結果
 		 */
 		 // RequestList207
-		List<ChildCareNursePeriodExport> getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
+		ChildCareNursePeriodExport getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
