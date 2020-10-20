@@ -270,14 +270,24 @@ var nts;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
             function felica(cb, once) {
                 if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
@@ -49704,34 +49714,34 @@ var nts;
                         }
                     },
                     modal: {
-                        value: function $modal(webapp, path, params) {
+                        value: function $modal(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modal(webapp)
+                                    windows.sub.modal(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modal(webapp, path)
+                                    windows.sub.modal(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49739,34 +49749,34 @@ var nts;
                         }
                     },
                     modeless: {
-                        value: function $modeless(webapp, path, params) {
+                        value: function $modeless(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modeless(webapp)
+                                    windows.sub.modeless(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modeless(webapp, path)
+                                    windows.sub.modeless(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }

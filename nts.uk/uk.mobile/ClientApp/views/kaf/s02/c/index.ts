@@ -22,10 +22,13 @@ import { ScreenMode } from '../shr';
             required: true
         },
         timeDuration: {
-            required: true
-        }
+            required: true,
+            constraint: 'AttendanceClock'
+        },
     },
-    constraints: [],
+    constraints: [
+        'nts.uk.shr.com.time.AttendanceClock',
+    ],
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-c': KafS00CComponent,
@@ -154,6 +157,7 @@ export class KafS02CComponent extends KafS00ShrComponent {
             if (data) {
                 console.log(data);
                 self.bindData(data.data);
+                self.$updateValidator('timeDuration', { constraint: 'TimeWithDayAttr' });
             }
         }).then(() => self.$mask('hide'));
     }
@@ -177,6 +181,18 @@ export class KafS02CComponent extends KafS00ShrComponent {
     
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType + 1);
+                }
+            });
+        }
+
+        self.selectedOutCD = self.outingTypeAtrs[0].code;
     }
 
     public register() {
@@ -348,9 +364,13 @@ export class KafS02CComponent extends KafS00ShrComponent {
             recorderFlag: true,
         };
         self.$http.post('at', API.changeDate, command)
-            .then((result) => {
+            .then((result: any) => {
                 if (result) {
                     console.log(result);
+
+                    self.createParamA(result.data);
+                    self.createParamC(result.data);
+                    self.data = result.data;
                 }
                 self.$mask('hide');
             }).catch((error) => {
@@ -393,36 +413,28 @@ export class KafS02CComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
