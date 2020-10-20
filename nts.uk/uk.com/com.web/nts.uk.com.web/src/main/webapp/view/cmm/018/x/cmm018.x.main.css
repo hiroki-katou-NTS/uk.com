@@ -61,6 +61,7 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
+    word-break: keep-all;
 }
 .textFormat {
 	text-align: left;
@@ -68,6 +69,7 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
+    word-break: keep-all;
 }
 
 .textFormat2 {
@@ -76,4 +78,5 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
+    word-break: keep-all;
 }
