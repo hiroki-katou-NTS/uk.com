@@ -76,7 +76,7 @@
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
-                            rows: 20,
+                            rows: 12,
                             value: currentCode
                         }"></table>
                         </div>
@@ -107,7 +107,7 @@
                                       "/>
                             </div>
                         </div>
-                        <div class="table">
+                        <div class="table" style="margin-top: 7px">
                             <!-- K7_1 -->
                             <div class="cell valign-center" style="width: 155px">
                                 <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_161')}</div>
@@ -115,7 +115,7 @@
                             <!-- K7_2 -->
                             <div class="cell valign-center">
                                 <button tabindex="9" data-bind="click: openModal" id="K7_2"
-                                        style="margin-right: 5px;margin-left: 24px">#{i18n.getText('KSM008_162')}</button>
+                                        style="margin-right: 5px;margin-left: 28px">#{i18n.getText('KSM008_162')}</button>
                             </div>
                             <!-- K7_3-->
                             <div class="cell valign-center">
@@ -123,7 +123,7 @@
                                        data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,name: '#[KSM008_163]'}"/>
                             </div>
                         </div>
-                        <div class="table" style="margin-top: 6px">
+                        <div class="table" style="margin-top: 7px">
                             <!-- K8_1 -->
                             <div class="cell valign-center" style="width: 155px">
                                 <!--TODO 制約表示	K8_2-->
@@ -132,7 +132,7 @@
                             <!-- K8_2 -->
                             <div class="cell valign-center">
                                 <input tabindex="10" id="K8_2"
-                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '5px', marginLeft: '24px'}"/>
+                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '5px', marginLeft: '28px'}"/>
                             </div>
                             <!-- K8_3 -->
                             <div class="cell valign-center">

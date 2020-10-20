@@ -54,7 +54,7 @@
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
-                            rows: 20,
+                            rows: 12,
                             value: lScreencurrentCode
                         }"></table>
                 </div>
@@ -76,7 +76,7 @@
                                data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.name, required: true, name: '#[KSM008_175]'}"/>
                     </div>
                 </div>
-                <div class="table">
+                <div class="table" style="margin-top: 7px">
                     <!-- L4_1 -->
                     <div class="cell valign-center" style="width: 155px">
                         <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_176')}</div>
@@ -90,7 +90,7 @@
                         <input id="L4_3" data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.workHour,name: '#[KSM008_178]'}"/>
                     </div>
                 </div>
-                <div class="table" style="margin-top: 6px">
+                <div class="table" style="margin-top: 7px">
                     <!-- L5_1 -->
                     <div class="cell valign-center" style="width: 155px">
                         <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_179')}</div>

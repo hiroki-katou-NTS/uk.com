@@ -75,21 +75,21 @@
                                data-bind="ntsTextEditor: {value: jScreenWorkingHour.name, required: true, name: '#[KSM008_211]'}"/>
                     </div>
                 </div>
-                <div class="table">
+                <div class="table" style="margin-top: 7px;">
                     <!-- J4_1 -->
                     <div class="cell valign-center" style="width: 155px">
                         <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_212')}</div>
                     </div>
                     <!-- J4_2 -->
                     <div class="cell valign-center">
-                        <button  id="J4_2" tabindex="5" data-bind="click: openModalJScreen" style="margin-right: 5px;margin-left: 24px;">#{i18n.getText('KSM008_213')}</button>
+                        <button  id="J4_2" tabindex="5" data-bind="click: openModalJScreen" style="margin-right: 5px;margin-left: 28px;">#{i18n.getText('KSM008_213')}</button>
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">
                         <input id="J4_3" data-bind="ntsTextEditor: {value: jScreenWorkingHour.workHour,name: '#[KSM008_214]'}"/>
                     </div>
                 </div>
-                <div class="table" style="margin-top: 6px">
+                <div class="table" style="margin-top: 7px">
                     <!-- J5_1 -->
                     <div class="cell valign-center" style="width: 155px">
                         <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', enable: true, required:true}">#{i18n.getText('KSM008_215')}</div>
@@ -97,7 +97,7 @@
                     <!-- J5_2 -->
                     <div class="cell valign-center">
                         <input tabindex="6" id="J5_2"
-                               data-bind="ntsTextEditor: {value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '25px', marginRight: '5px',marginLeft: '24px'}"/>
+                               data-bind="ntsTextEditor: {value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '25px', marginRight: '5px',marginLeft: '28px'}"/>
                     </div>
                     <!-- J5_3 -->
                     <div class="cell valign-center">
