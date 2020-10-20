@@ -144,7 +144,7 @@ module nts.uk.at.view.kwr003.b {
     addNewRow() {
       let vm = this;
       //vm.addRowItem();
-      vm.creatDefaultSettingDetails();
+      vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
@@ -274,13 +274,12 @@ module nts.uk.at.view.kwr003.b {
       let listItemsDetails: Array<any> = [];
       listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
       vm.createListItemAfterSorted(listItemsDetails);
-
     }
 
     /**
-     *
-    */
-    creatDefaultSettingDetails() {
+     * Creatsedefault setting details
+     */
+    createDefaultSettingDetails() {
       let vm = this;
       //clear
       vm.settingListItemsDetails([])
@@ -289,7 +288,11 @@ module nts.uk.at.view.kwr003.b {
         vm.addRowItem(newIitem);
       }
     }
-
+    /**
+     * Creates data selection
+     * @param selectedTimeList 
+     * @returns  
+     */
     createDataSelection(selectedTimeList: Array<any>) {
       let vm = this,
         dataSelection: string = '',
@@ -371,6 +374,10 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
+    /**
+     * Opens dialog KDL
+     * @param data 
+     */
     openDialogKDL(data: SettingForPrint) {
       let vm = this;
 
@@ -379,7 +386,10 @@ module nts.uk.at.view.kwr003.b {
       else
         vm.openDialogKDL047(data);
     }
-
+    /**
+     * Opens dialog kdl047
+     * @param row 
+     */
     openDialogKDL047(row: any) {
       let vm = this;
 
@@ -409,6 +419,10 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
+    /**
+     * Opens dialog kdl048
+     * @param row 
+     */
     openDialogKDL048(row: any) {
       let vm = this,
         selectionItem: Array<string> = [];
@@ -442,10 +456,6 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
-    checkItem(data: SettingForPrint) {
-      console.log(data);
-      return true
-    }
 
     selectAllChange(newValue: boolean) {
       let vm = this;
