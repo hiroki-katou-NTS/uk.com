@@ -18,8 +18,8 @@
         <kaf-s00-p1 class="col-4"
         v-bind:params="kafS00P1Params2" 
         />
-        <span class="col-8" v-if="cond2">{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}</span>
-        <span class="col-8" v-else-if="cond2 == false">{{time.leaveTime | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
+        <span class="col-8" v-if="cond2">{{time.leaveTime | timewd}} {{'KAFS04_20' | i18n}}</span>
+        <span class="col-8" v-else-if="cond2 == false">{{time.leaveTime | timewd}} {{'KAFS04_20' | i18n}}{{'KAFS04_14' | i18n}}</span>
         <span v-else class="col-8">{{'KAFS04_18' | i18n}}</span>
     </div>
     <!-- B2 -->
@@ -41,8 +41,8 @@
           <kaf-s00-p1 class="col-4"
           v-bind:params="kafS00P1Params4" 
           />
-          <span class="col-8" v-if="cond4">{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}</span>
-          <span class="col-8" v-else-if="cond4 == false">{{time.leaveTime2 | timewd}} {{'KAFS04_19' | i18n}}{{'KAFS04_14' | i18n}}</span>
+          <span class="col-8" v-if="cond4">{{time.leaveTime2 | timewd}} {{'KAFS04_20' | i18n}}</span>
+          <span class="col-8" v-else-if="cond4 == false">{{time.leaveTime2 | timewd}} {{'KAFS04_20' | i18n}}{{'KAFS04_14' | i18n}}</span>
           <span v-else class="col-8">{{'KAFS04_18' | i18n}}</span>
       </div>
     </div>
