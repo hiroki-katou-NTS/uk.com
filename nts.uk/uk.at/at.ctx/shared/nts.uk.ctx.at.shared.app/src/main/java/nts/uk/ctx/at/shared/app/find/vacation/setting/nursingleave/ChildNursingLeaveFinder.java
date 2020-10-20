@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave;
+package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave;
 
 import java.util.List;
 import java.util.stream.Collectors;
