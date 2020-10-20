@@ -23,6 +23,7 @@
       <div id="functions-area">
         <button id="button-save" tabindex="1" class="proceed"
           data-bind="click : save">#{i18n.getText('CMM048_3')}</button>
+          <button id="btn-open-cmm049" data-bind="click : save"><i data-bind="ntsIcon : {no: 5,  width: 30, height: 30}"></i></button>
       </div>
       <div id="contents-area">
         <div class="tabs-user" id="tab-panel" style="box-shadow: none; outline: none;"
@@ -85,7 +86,7 @@
 												textalign: 'left'
 											}
 										}" />
-                  <span id="A9_2">#{i18n.getText('CMM048_81')}</span>
+                  <span class="no-cb" id="A9_2">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -102,7 +103,7 @@
 												textalign: 'left'
 											}
 										}" />
-                  <span id="A9_4">#{i18n.getText('CMM048_81')}</span>
+									<span id="A9_4">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -118,8 +119,9 @@
 												width: '150px',
 												textalign: 'left'
 											}
-										}" />
-                  <span id="A9_6">#{i18n.getText('CMM048_81')}</span>
+                    }" />
+                  <div class="cb" id="A9_6" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                    #{i18n.getText('CMM048_81')}</div>
                 </td>
               </tr>
               <tr>
@@ -135,8 +137,9 @@
 												width: '150px',
 												textalign: 'left'
 											}
-										}" />
-                  <span id="A9_8">#{i18n.getText('CMM048_81')}</span>
+                    }" />
+                    <div class="cb" id="A9_8" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}</div>
                 </td>
               </tr>
               <tr>
@@ -152,7 +155,7 @@
 											textalign: 'left'
 										}
 									}" />
-                  <span id="A9_10">#{i18n.getText('CMM048_81')}</span>
+                  <span class="no-cb" id="A9_10">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -167,8 +170,9 @@
 											width: '150px',
 											textalign: 'left'
 										}
-									}" />
-                  <span id="A9_12">#{i18n.getText('CMM048_81')}</span>
+                  }" />
+                  <div class="cb" id="A9_12" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                    #{i18n.getText('CMM048_81')}</div>
                 </td>
               </tr>
               <tr>
@@ -184,7 +188,7 @@
 											textalign: 'left'
 										}
 									}" />
-                  <span id="A9_14">#{i18n.getText('CMM048_81')}</span>
+                  <span class="no-cb" id="A9_14">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -200,7 +204,7 @@
 											textalign: 'left'
 										}
 									}" />
-                  <span id="A9_16">#{i18n.getText('CMM048_81')}</span>
+                  <span class="no-cb" id="A9_16">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -216,7 +220,7 @@
 											textalign: 'left'
 										}
 									}" />
-                  <span id="A9_18">#{i18n.getText('CMM048_81')}</span>
+                  <span class="no-cb" id="A9_18">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
@@ -231,8 +235,9 @@
 											width: '250px',
 											textalign: 'left'
 										}
-									}" />
-                  <span id="A9_20">#{i18n.getText('CMM048_81')}</span>
+                  }" />
+                  <div class="cb" id="A9_20" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                    #{i18n.getText('CMM048_81')}</div>
                 </td>
               </tr>
               <!-- A7 end -->
@@ -249,20 +254,20 @@
             <table class="tab-password">
               <!-- B1 start -->
               <tr>
-                <td class="password-title" colspan="3"><span id="B1">#{i18n.getText('CMM048_70')}</span>
+                <td class="pw password-title" colspan="3"><span id="B1">#{i18n.getText('CMM048_70')}</span>
                 </td>
               </tr>
               <!-- B1 end -->
               <!-- B2 start -->
               <tr>
-                <td class="password-information" id="B2_1">#{i18n.getText('CMM048_71')}</td>
-                <td><span id="B2_2">約１か月前に変化されまして</span></td>
+                <td class="pw password-information" id="B2_1">#{i18n.getText('CMM048_71')}</td>
+                <td class="pw"><span id="B2_2">約１か月前に変化されまして</span></td>
               </tr>
               <!-- B2 end -->
               <!-- B3 start -->
               <tr>
-                <td class="password-information" id="B3_1">#{i18n.getText('CMM048_8')}</td>
-                <td><input id="B3_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B3_1">#{i18n.getText('CMM048_8')}</td>
+                <td class="pw"><input id="B3_2" data-bind="ntsTextEditor: {
 										name: '#[CMM048_8]',
 										constraint: 'RawPassword',
 										value: B3_2_Value,
@@ -272,55 +277,62 @@
 										}
 									}" /></td>
                 <!-- B6 start -->
-                <td rowspan="3">
-                  <!-- <div class="tab-block" style="width: 75%;">
-										<com:ko tag="if" bind="mainModel.passwordPolicy.isUse">				
-											<div class="panel panel-gray-bg">
-												<table class="table-panel">
-													<tr>
-														<td colspan="2">
-															<div class="label">#{i18n.getText('CMM048_11')}</div>
-															<div><hr/></div>
-														</td>
-													</tr>
-													<tr data-bind="visible: passwordPolicy.haveLowestDigitsSetting">
-														<td class="left-column"><div class="label">#{i18n.getText('CMM048_12')}</div></td>
-														<td>
-															<div class="label" data-bind="text: passwordPolicy.textLowestDigits"></div>
-														</td>
-													</tr>
-													<tr data-bind="visible: passwordPolicy.complexity.haveComplexitySetting">
-														<td class="left-column"><div class="label">#{i18n.getText('CMM048_14')}</div></td>
-														<td>
-															<div class="label" data-bind="text: passwordPolicy.complexity.textAlphabetDigit ,visible: passwordPolicy.complexity.alAhabetDigitSetting"></div>
-															<div class="label" data-bind="text: passwordPolicy.complexity.textNumberOfDigits,visible: passwordPolicy.complexity.numberOfDigitsSetting"></div>
-															<div class="label" data-bind="text: passwordPolicy.complexity.textNumberOfChar,visible: passwordPolicy.complexity.numberOfCharSetting"></div>
-														</td>
-													</tr>
-													<tr data-bind="visible: passwordPolicy.historyCountSetting">
-														<td class="left-column"><div class="label">#{i18n.getText('CMM048_18')}</div></td>
-														<td>
-															<div class="label" data-bind="text: passwordPolicy.textHistoryCount"></div>
-														</td>
-													</tr>
-													<tr data-bind="visible: passwordPolicy.validityPeriodSetting">
-														<td class="left-column"><div class="label">#{i18n.getText('CMM048_20')}</div></td>
-														<td>
-															<div class="label" data-bind="text: passwordPolicy.textValidityPeriod"></div>
-														</td>
-													</tr>
-												</table>
-											</div>
-										</com:ko>
-									</div>		 -->
+                <td class="pw" rowspan="3">
+                  <div class="password-policy">
+                    <h6 class="pp-context pp-h6">パスワードポリシーの内容</h6>
+                    <table class="pp-table">
+                      <tr>
+                        <td class="pp-title">
+                          <h6 class="pp-h6">パスワード最低桁数</h6>
+                        </td>
+                        <td>
+                          <h6 class="pp-h6">7桁</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td rowspan="3" class="pp-title">
+                          <h6 class="pp-h6">パスワード複雑条件</h6>
+                        </td>
+                        <td>
+                          <h6 class="pp-h6">英字1桁</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <h6 class="pp-h6">数字3桁</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <h6 class="pp-h6">記号2桁</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="pp-title">
+                          <h6 class="pp-h6">パスワード履歴回数</h6>
+                        </td>
+                        <td>
+                          <h6 class="pp-h6"> 2回前までと同じパスワードは設定できません。</h6>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="pp-title">
+                          <h6 class="pp-h6">パスワードの有効期間</h6>
+                        </td>
+                        <td>
+                          <h6 class="pp-h6"> 3日</h6>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </td>
                 <!-- B6 end -->
               </tr>
               <!-- B3 end -->
               <!-- B4 start -->
               <tr>
-                <td class="password-information" id="B4_1">#{i18n.getText('CMM048_9')}</td>
-                <td><input id="B4_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B4_1">#{i18n.getText('CMM048_9')}</td>
+                <td class="pw"><input id="B4_2" data-bind="ntsTextEditor: {
 									name: '#[CMM048_9]',
 									constraint: 'RawPassword',
 									value: B4_2_Value,
@@ -333,8 +345,8 @@
               <!-- B4 end -->
               <!-- B5 start -->
               <tr>
-                <td class="password-information" id="B5_1">#{i18n.getText('CMM048_10')}</td>
-                <td><input id="B5_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B5_1">#{i18n.getText('CMM048_10')}</td>
+                <td class="pw"><input id="B5_2" data-bind="ntsTextEditor: {
 										name: '#[CMM048_10]',
 										constraint: 'RawPassword',
 										value: B5_2_Value,
@@ -345,8 +357,8 @@
 									}" /></td>
               </tr>
               <tr>
-                <td class="password-information"></td>
-                <td><span id="B5_3">#{i18n.getText('CMM048_57')}</span></td>
+                <td class="pw password-information"></td>
+                <td class="pw"><span id="B5_3">#{i18n.getText('CMM048_57')}</span></td>
               </tr>
               <!-- B5 end -->
             </table>

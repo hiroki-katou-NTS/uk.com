@@ -253,18 +253,6 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
     @Basic(optional = true)
     @Column(name = "OTHER_CONTACT5_USE")
     private Integer otherContact5Use;
-    /**
-     * 記念日の表示
-     */
-    @Basic(optional = true)
-    @Column(name = "ANNIVERSARY_USE")
-    private Integer anniversaryUse;
-    /**
-     * カレンダーの予約の表示
-     */
-    @Basic(optional = true)
-    @Column(name = "CALENDAR_RESERVATION_USE")
-    private Integer calendarReservationUse;
 
     @Override
     protected Object getKey() {
@@ -324,23 +312,23 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
         ContactSetting companyMobilePhone = settingContactInformation.getCompanyMobilePhone();
         ContactSetting emergencyNumber1 = settingContactInformation.getEmergencyNumber1();
         ContactSetting emergencyNumber2 = settingContactInformation.getEmergencyNumber2();
-        this.dialInNumberUse = dialInNumber.getContactUsageSetting().code;
+        this.dialInNumberUse = dialInNumber.getContactUsageSetting().value;
         this.dialInNumberUpdatable = dialInNumber.getUpdatable().isPresent() ? dialInNumber.getUpdatable().get().value : null;
-        this.mailComUse = companyEmailAddress.getContactUsageSetting().code;
+        this.mailComUse = companyEmailAddress.getContactUsageSetting().value;
         this.mailComUpdatable = companyEmailAddress.getUpdatable().isPresent() ? companyEmailAddress.getUpdatable().get().value : null;
-        this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().code;
+        this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().value;
         this.phoneMailComUpdatable = companyMobileEmailAddress.getUpdatable().isPresent() ? companyMobileEmailAddress.getUpdatable().get().value : null;
-        this.mailPsUse = personalEmailAddress.getContactUsageSetting().code;
+        this.mailPsUse = personalEmailAddress.getContactUsageSetting().value;
         this.mailComUpdatable = personalEmailAddress.getUpdatable().isPresent() ? personalEmailAddress.getUpdatable().get().value : null;
-        this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().code;
+        this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().value;
         this.phoneMailPsUpdatable = personalMobileEmailAddress.getUpdatable().isPresent() ? personalMobileEmailAddress.getUpdatable().get().value : null;
-        this.extensionNumberUse = extensionNumber.getContactUsageSetting().code;
+        this.extensionNumberUse = extensionNumber.getContactUsageSetting().value;
         this.extensionNumberUpdatable = extensionNumber.getUpdatable().isPresent() ? extensionNumber.getUpdatable().get().value : null;
-        this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().code;
+        this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().value;
         this.phoneNumberComUpdatable = companyMobilePhone.getUpdatable().isPresent() ? companyMobilePhone.getUpdatable().get().value : null;
-        this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().code;
+        this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().value;
         this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent() ? emergencyNumber1.getUpdatable().get().value : null;
-        this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().code;
+        this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().value;
         this.urgentPhoneNumber1Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
     }
 
@@ -354,7 +342,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setDialInNumber(ContactSetting dialInNumber) {
-        this.dialInNumberUse = dialInNumber.getContactUsageSetting().code;
+        this.dialInNumberUse = dialInNumber.getContactUsageSetting().value;
         this.dialInNumberUpdatable = dialInNumber.getUpdatable().isPresent() ? dialInNumber.getUpdatable().get().value : null;
     }
 
@@ -368,7 +356,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setCompanyEmailAddress(ContactSetting companyEmailAddress) {
-        this.mailComUse = companyEmailAddress.getContactUsageSetting().code;
+        this.mailComUse = companyEmailAddress.getContactUsageSetting().value;
         this.mailComUpdatable = companyEmailAddress.getUpdatable().isPresent() ? companyEmailAddress.getUpdatable().get().value : null;
     }
 
@@ -382,7 +370,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setCompanyMobileEmailAddress(ContactSetting companyMobileEmailAddress) {
-        this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().code;
+        this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().value;
         this.phoneMailComUpdatable = companyMobileEmailAddress.getUpdatable().isPresent() ? companyMobileEmailAddress.getUpdatable().get().value : null;
     }
 
@@ -396,7 +384,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setPersonalEmailAddress(ContactSetting personalEmailAddress) {
-        this.mailPsUse = personalEmailAddress.getContactUsageSetting().code;
+        this.mailPsUse = personalEmailAddress.getContactUsageSetting().value;
         this.mailComUpdatable = personalEmailAddress.getUpdatable().isPresent() ? personalEmailAddress.getUpdatable().get().value : null;
     }
 
@@ -410,7 +398,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setPersonalMobileEmailAddress(ContactSetting personalMobileEmailAddress) {
-        this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().code;
+        this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().value;
         this.phoneMailPsUpdatable = personalMobileEmailAddress.getUpdatable().isPresent() ? personalMobileEmailAddress.getUpdatable().get().value : null;
     }
 
@@ -424,7 +412,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setExtensionNumber(ContactSetting extensionNumber) {
-        this.extensionNumberUse = extensionNumber.getContactUsageSetting().code;
+        this.extensionNumberUse = extensionNumber.getContactUsageSetting().value;
         this.extensionNumberUpdatable = extensionNumber.getUpdatable().isPresent() ? extensionNumber.getUpdatable().get().value : null;
     }
 
@@ -438,7 +426,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setCompanyMobilePhone(ContactSetting companyMobilePhone) {
-        this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().code;
+        this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().value;
         this.phoneNumberComUpdatable = companyMobilePhone.getUpdatable().isPresent() ? companyMobilePhone.getUpdatable().get().value : null;
     }
 
@@ -452,7 +440,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setPersonalMobilePhone(ContactSetting personalMobilePhone) {
-        this.phoneNumberPsUse = personalMobilePhone.getContactUsageSetting().code;
+        this.phoneNumberPsUse = personalMobilePhone.getContactUsageSetting().value;
         this.phoneNumberComUpdatable = personalMobilePhone.getUpdatable().isPresent() ? personalMobilePhone.getUpdatable().get().value : null;
     }
 
@@ -466,7 +454,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setEmergencyNumber1(ContactSetting emergencyNumber1) {
-        this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().code;
+        this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().value;
         this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent() ? emergencyNumber1.getUpdatable().get().value : null;
     }
 
@@ -480,7 +468,7 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setEmergencyNumber2(ContactSetting emergencyNumber2) {
-        this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().code;
+        this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().value;
         this.urgentPhoneNumber1Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
     }
 
@@ -532,23 +520,23 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
         switch (otherContact.getNo()) {
             case 1:
                 this.otherContact1Name = otherContact.getContactName().v();
-                this.otherContact1Use = otherContact.getContactUsageSetting().code;
+                this.otherContact1Use = otherContact.getContactUsageSetting().value;
                 return true;
             case 2:
                 this.otherContact2Name = otherContact.getContactName().v();
-                this.otherContact2Use = otherContact.getContactUsageSetting().code;
+                this.otherContact2Use = otherContact.getContactUsageSetting().value;
                 return true;
             case 3:
                 this.otherContact3Name = otherContact.getContactName().v();
-                this.otherContact3Use = otherContact.getContactUsageSetting().code;
+                this.otherContact3Use = otherContact.getContactUsageSetting().value;
                 return true;
             case 4:
                 this.otherContact4Name = otherContact.getContactName().v();
-                this.otherContact4Use = otherContact.getContactUsageSetting().code;
+                this.otherContact4Use = otherContact.getContactUsageSetting().value;
                 return true;
             case 5:
                 this.otherContact5Name = otherContact.getContactName().v();
-                this.otherContact5Use = otherContact.getContactUsageSetting().code;
+                this.otherContact5Use = otherContact.getContactUsageSetting().value;
                 return true;
             default:
                 return false;

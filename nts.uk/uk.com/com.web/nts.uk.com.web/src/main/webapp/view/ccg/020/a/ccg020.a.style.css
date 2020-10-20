@@ -1,0 +1,95 @@
+#message {
+  display: inline-block;
+}
+
+.img {
+  width: 20px;
+  position: relative;
+  top: 5px;
+  padding-left: 20px;
+}
+
+#search-bar {
+  display: inline-block;
+}
+
+#header #menu-header #logo-area > #user-info {
+  top: -10px;
+}
+
+button.search-btn.caret-bottom.ntsSearchBox_Component {
+  display: none;
+}
+
+.ntsRadioBox {
+  display: block;
+}
+
+#search-icon {
+  background-size: auto !important;
+  top: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.result-search {
+  display: block;
+  line-height: 2;
+}
+
+#popup-result, #popup-search {
+  min-width: 173px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  cursor: context-menu;
+}
+
+li:hover {
+  background-color: #F2F2F2;
+}
+
+.img-timer {
+  width: 30px;
+  background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
+  background-repeat: no-repeat;
+  display: block;  /* may not need this, but I've found I do */
+}
+
+.icon-close:hover {
+  background-color:	#F2F2F2;
+  border-radius: 50%;
+}
+
+.result-search-history {
+  height: 25px;
+  margin: auto;
+}
+
+.text-li {
+  width: 80%;
+  padding-left: 35px;  /* width of the image plus a little extra padding */
+  background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
+  background-repeat: no-repeat;
+  height: 20px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  background-size: contain;
+  line-height: 20px;
+  display: inline;
+}
+
+.ntsControl .nts-input.enterkey {
+  background-image: none;
+}
+
+label.ntsRadioBox {
+  padding: 5px;
+}
+
+#popup-search-category {
+  width: 150px;
+}

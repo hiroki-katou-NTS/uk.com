@@ -1,14 +1,7 @@
-#bottomButton {
-  text-align: center;
-  border-top: solid 1px #b1b1b1;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  bottom: 0;
-}
 
-.image-preview-container {
-  padding-right: 10px;
-  padding-left: 10px;
+.image-preview-container, .image-editor-component {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 .crop-icon {
   width: 6px !important;
@@ -33,3 +26,20 @@
 .cropper-line {
   display: none !important;
 }
+
+.upload-webcam {
+  margin-left: 15px;
+}
+
+#E1 {
+  padding-left: 10px;
+}
+
+#content-area {
+  padding-top: 10px;
+}
+
+#upload{
+  padding-top: 10px;
+}
+
