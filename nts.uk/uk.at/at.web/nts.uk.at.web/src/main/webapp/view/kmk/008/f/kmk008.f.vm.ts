@@ -99,26 +99,6 @@ module nts.uk.at.view.kmk008.f {
                     if (!_.isEmpty(vm.employeeList())) {
                         vm.initData().done(() => {
                             vm.selectedEmpCode(vm.employeeList()[0].code);
-
-                            //re-init
-                            vm.$blockui("invisible");
-                            vm.listComponentOption = {
-                                isShowAlreadySet: true,
-                                alreadySettingList: vm.alreadySettingList,
-                                isMultiSelect: false,
-                                listType: 4,
-                                employeeInputList: vm.employeeList,
-                                selectType: 1,
-                                selectedCode: vm.selectedEmpCode,
-                                isDialog: false,
-                                isShowNoSelectRow: false,
-                                isShowWorkPlaceName: true,
-                                isShowSelectAllButton: false,
-                                disableSelection: false,
-                                maxRows: 12
-                            };
-                            $('#component-items-list').ntsListComponent(vm.listComponentOption);
-                            vm.$blockui("clear")
                         });
                     }
                 }
