@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk008.a {
 
 			// Call init API
 			vm.specialConditionApplicationUse(true);
-			
+
 			vm.$ajax(API.START).done((data) => {
 				vm.specialConditionApplicationUse(
 					data.agreementOperationSettingDetailDto.specialConditionApplicationUse
@@ -101,7 +101,11 @@ module nts.uk.at.view.kmk008.a {
 		}
 
 		openDialogScreenG():void {
-			nts.uk.ui.windows.sub.modal("/view/kmk/008/g/index.xhtml").onClosed(() => {});
+            const vm = this;
+            vm.$window.modal('/view/kmk/008/g/index.xhtml')
+                .then((result: any) => {
+                    vm.specialConditionApplicationUse(result.specialConditionApplicationUse);
+                });
 		}
 
 		openDialogScreenH():void {
