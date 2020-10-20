@@ -488,6 +488,15 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
+  class PartDataMenu extends PartData {
+    listMenu: any;
+
+    constructor(init?: Partial<PartDataMenu>) {
+      super(init);
+      $.extend(this, init);
+    }
+  }
+
   class PartSize {
     width: number;
     height: number;

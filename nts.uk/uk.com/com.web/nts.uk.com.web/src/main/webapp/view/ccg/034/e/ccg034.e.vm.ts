@@ -13,6 +13,10 @@ module nts.uk.com.view.ccg034.e {
     fontSizeValue: KnockoutObservable<number> = ko.observable(11);
     isBoldValue: KnockoutObservable<boolean> = ko.observable(false);
 
+    created(params: any) {
+
+    }
+
     mounted() {
       const vm = this;
 
