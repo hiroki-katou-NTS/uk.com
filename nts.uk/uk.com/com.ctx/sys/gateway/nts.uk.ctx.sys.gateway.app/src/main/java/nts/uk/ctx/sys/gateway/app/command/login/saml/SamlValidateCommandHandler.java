@@ -16,7 +16,6 @@ import nts.arc.error.BusinessException;
 import nts.gul.security.saml.RelayState;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
-import nts.gul.security.saml.SamlSetting;
 import nts.gul.security.saml.ValidSamlResponse;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
@@ -55,18 +54,22 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 	@Override
 	protected LoginState processBeforeLogin(SamlValidateCommand command) {
 		HttpServletRequest request = command.getRequest();
-
+		
+		// RelayStateをクラスに変換
 		RelayState relayState = RelayState.deserialize(request.getParameter("RelayState"));
 		
+		// RelayStateのテナント情報からSAMLSettingを取得
 		val optSamlSetting = findSamlSetting.find(relayState.get("tenantCode"));
-		
 		if(!optSamlSetting.isPresent()) {
 			// SAMLSettingが取得できなかった場合
 			throw new BusinessException("Msg_1980");
 		}
 		try {
 			// SAMLResponseの検証処理
-			ValidSamlResponse validateResult = SamlResponseValidator.validate(request, optSamlSetting.get());
+			val samlSetting = optSamlSetting.get();
+			samlSetting.SetSignatureAlgorithm(Constants.RSA_SHA1);
+			
+			ValidSamlResponse validateResult = SamlResponseValidator.validate(request, samlSetting);
 			if (!validateResult.isValid()) {
 				// 認証失敗時
 				return LoginState.failed();

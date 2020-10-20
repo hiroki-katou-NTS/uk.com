@@ -11,7 +11,8 @@ module nts.uk.pr.view.ccg007.d {
             account: "ctx/sys/gateway/login/account",
             ver: "ctx/sys/gateway/login/build_info_time", 
             
-            submitLogin: "ctx/sys/gateway/login/password"
+            submitLogin: "ctx/sys/gateway/login/password",
+            samlLogin: "ctx/sys/gateway/singlesignon/saml/authenticate"
         }
 
         /**
@@ -31,6 +32,11 @@ module nts.uk.pr.view.ccg007.d {
         export function submitLogin(data: any): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
+
+        export function samlLogin(data: any): JQueryPromise<AuthenticateInfo> {
+            return nts.uk.request.ajax(servicePath.samlLogin, data);
+        }
+
         
         export function account(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.account);
@@ -62,5 +68,11 @@ module nts.uk.pr.view.ccg007.d {
             msgErrorId: string;
             showContract: boolean;
         }
+
+        export interface AuthenticateInfo {
+            useSamlSso: boolean;
+            authenUrl: string;
+        }
+    
     }
 }

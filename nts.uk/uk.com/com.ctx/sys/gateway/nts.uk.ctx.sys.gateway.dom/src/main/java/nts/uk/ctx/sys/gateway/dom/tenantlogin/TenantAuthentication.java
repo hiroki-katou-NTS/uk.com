@@ -10,7 +10,7 @@ import nts.gul.security.hash.password.PasswordHash;
  * テナント認証
  */
 public class TenantAuthentication {
-
+	
 	/** テナントコード（契約コード） */
 	@Getter
 	private final String tenantCode;
@@ -45,11 +45,20 @@ public class TenantAuthentication {
 	
 	/**
 	 * パスワードを照合する
-	 * @param passwordToAttempt
+	 * @param String password
 	 * @return
 	 */
 	public boolean verify(String passwordToBeVerified) {
 		return PasswordHash.verifyThat(passwordToBeVerified, tenantCode)
 				.isEqualTo(hashedPassword);
+	}
+	
+	/**
+	 * 有効期限をチェックする
+	 * @param GeneralDate
+	 * @return
+	 */
+	public boolean isAvailableAt(GeneralDate date) {
+		return this.availablePeriod.contains(date);
 	}
 }

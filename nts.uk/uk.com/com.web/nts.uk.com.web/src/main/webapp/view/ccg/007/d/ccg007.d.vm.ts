@@ -57,7 +57,8 @@ module nts.uk.pr.view.ccg007.d {
                             //check ShowContract
                             if (showContractData.onpre) {
                                 nts.uk.characteristics.remove("contractInfo");
-                                nts.uk.characteristics.save("contractInfo", { contractCode:defaultContractCode, contractPassword: self.contractPassword() });
+                                nts.uk.characteristics.save("contractInfo", { 
+                                    contractCode:defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
                                 self.contractPassword(null);
                                 self.getEmployeeLoginSetting(defaultContractCode);
@@ -199,6 +200,25 @@ module nts.uk.pr.view.ccg007.d {
                     }
                 });
             }
+
+            private SamlLogin() {
+                var self = this;
+                var samlData: any = {};
+                samlData.tenantCode = _.escape(self.contractCode());
+                samlData.tenantPassword = _.escape(self.contractPassword());
+                samlData.issueUrl = location.href;
+                samlData.requestUrl = "";
+
+                service.samlLogin(samlData).done(authenticateInfo => {
+                    if(authenticateInfo.useSamlSso){
+                        // SSO運用している場合
+                        location.href = authenticateInfo.authenUrl;
+                    } else {
+                        // SSO運用していない場合
+                    }
+                })
+            }
+
             
             private doSuccessLogin(messError){
                 var self = this;

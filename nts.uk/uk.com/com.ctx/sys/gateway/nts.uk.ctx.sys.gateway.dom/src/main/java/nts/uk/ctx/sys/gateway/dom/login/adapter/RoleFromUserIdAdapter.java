@@ -19,8 +19,6 @@ public interface RoleFromUserIdAdapter {
 	
 	String getRoleFromUser(String userId,Integer roleType,GeneralDate baseDate, String comId);
 	
-	//Optional<RoleInfoImport> getRoleInfoFromUser(String userId, int roleType, GeneralDate baseDate);
-	
 	Optional<RoleInfoImport> getRoleInfoFromUser(String userId, int roleType, GeneralDate baseDate, String comId);
 	
     /**

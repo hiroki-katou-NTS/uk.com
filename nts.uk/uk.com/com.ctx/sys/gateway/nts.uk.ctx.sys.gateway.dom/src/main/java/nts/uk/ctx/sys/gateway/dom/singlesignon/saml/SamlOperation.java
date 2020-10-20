@@ -1,31 +1,18 @@
+
 package nts.uk.ctx.sys.gateway.dom.singlesignon.saml;
 
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Getter
 public class SamlOperation {
 	
-	private int contractCode;
+	private String tenantCode;
 	
 	private boolean useSingleSignOn;
 	
-	private boolean addIdpAccountAuto;
+	private String realmName;
 	
-	private SamlOperation(int contractCode, boolean useSingleSignOn, boolean addIdpAccountAuto) {
-		this.contractCode = contractCode;
-		this.useSingleSignOn = useSingleSignOn;
-		this.addIdpAccountAuto = addIdpAccountAuto;
-	}
-	
-	public void employeeCreated(String companyCode, String employeeId, String employeeCode) {
-		if(this.useSingleSignOn && this.addIdpAccountAuto) {
-			String idpUserName = generateIdpUserName(companyCode, employeeCode);
-			IdpUserAssociation association = new IdpUserAssociation(employeeId, idpUserName);
-		}
-	}
-	
-	private String generateIdpUserName(String companyCode, String employeeCode) {
-		return "";
-	}
-
+	private String idpRedirectUrl;
 }

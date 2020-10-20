@@ -45,13 +45,18 @@ public class PasswordAuthenticateCommandHandler
 		// 入力チェック
 		checkInput(command);
 		
+		Require require = EmbedStopwatch.embed(new RequireImpl());
+		
+		return passwordAuthenticate(require, command);
+	}
+
+	LoginState passwordAuthenticate(AuthenticateEmployeePassword.Require require, PasswordAuthenticateCommand command) {
 		String companyCode = command.getCompanyCode();
 		String tenantCode = command.getTenantCode();
 		String companyId = tenantCode + "-" + companyCode;
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
-		AuthenticateEmployeePassword.Require require = EmbedStopwatch.embed(new RequireImpl());
 		
 		// パスワード認証
 		boolean successPasswordAuth = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
@@ -134,7 +139,11 @@ public class PasswordAuthenticateCommandHandler
 
 	}
 	
-	public class RequireImpl implements AuthenticateEmployeePassword.Require {
+	public static interface Require extends AuthenticateEmployeePassword.Require {
+		
+	}
+	
+	public class RequireImpl implements Require {
 
 		@Override
 		public Optional<String> getPersonalId(String companyId, String employeeCode) {

@@ -51,7 +51,7 @@ module common.error.system {
                     this.contractAuthentication(contract);
                 } else {
                     // localstrageにテナント情報がない場合
-                    //this.gotoLogin();
+                    this.openContractAuthDialog();
                 }
             })
         }
@@ -98,6 +98,25 @@ module common.error.system {
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
+        
+        private openContractAuthDialog() {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
+                height: 300,
+                width: 400,
+                title: nts.uk.resource.getText("CCG007_9"),
+                dialogClass: 'no-close'
+            }).onClosed(() => {
+                var contract: ContractInfo = {
+                    contractCode: nts.uk.ui.windows.getShared('contractCode'),
+                    password: nts.uk.ui.windows.getShared('contractPassword'),
+                    issueUrl: location.href,
+                    requestUrl: this.getParam("requestUrl", location.href)
+                };
+                this.contractAuthentication(contract);
+            });
+        }
+
     }
 }
 

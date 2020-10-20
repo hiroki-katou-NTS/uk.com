@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.GeneralDate;
+
 @Stateless
 public class FindTenant {
 	
@@ -11,9 +13,14 @@ public class FindTenant {
 		return require.getTenantAuthentication(tenantCode);
 	}
 	
-	public static interface Require{
-		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
+	public static Optional<TenantAuthentication> byTenantCode(Require require, String tenantCode, GeneralDate date){
+		return require.getTenantAuthentication(tenantCode, date);
 	}
 
-
+	
+	public static interface Require{
+		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
+		
+		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date);
+	}
 }

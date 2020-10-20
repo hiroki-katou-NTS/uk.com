@@ -6,6 +6,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.AuthenticateInfo;
@@ -13,12 +16,14 @@ import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.login.saml.ValidateInfo;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
 
 /**
  * The Class SamlWs.
  */
 @Path("ctx/sys/gateway/singlesignon/saml")
-@Produces("application/json")
+@Produces(MediaType.APPLICATION_JSON)
 public class SamlWs extends WebService {
 
 	/** The submit contract with sso. */
@@ -47,7 +52,19 @@ public class SamlWs extends WebService {
 	 */
 	@POST
 	@Path("validateandlogin")
-	public void validateAndLogin(@Context final HttpServletRequest request) {
-		this.validate.handle(new SamlValidateCommand(request));
+	public Response validateAndLogin(@Context final HttpServletRequest request) {
+		ValidateInfo validateInfo = this.validate.handle(new SamlValidateCommand(request));
+		// 認証成功の場合
+		if(validateInfo.isSamlValid()) {
+			return Response.status(Status.FOUND)
+					.header("Location", validateInfo.getRequestUrl())
+					.build();
+		}
+		// 認証失敗の場合
+		return Response
+				.status(Status.OK)
+				.type(MediaType.TEXT_HTML)
+				.entity("<html>" + validateInfo.getErrorMessage() + "</html>")
+				.build();
 	}
 }

@@ -56,6 +56,11 @@ public abstract class LoginCommandHandlerBase<
 	protected R handle(CommandHandlerContext<C> context) {
 		
 		C command = context.getCommand();
+		
+
+		/* テナントロケーター処理 */
+		
+		
 
 		// テナント認証
 		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
@@ -70,25 +75,15 @@ public abstract class LoginCommandHandlerBase<
 		}
 		val tenant = opTenant.get();
 		
-		val successTenantAuth = tenant.verify(command.getTenantPasswordPlainText());
 		
+		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
+		val available = tenant.isAvailableAt(GeneralDate.today());
 		
-		if(!successTenantAuth) {
+		if(!passwordVerify || !available) {
 			// テナント認証失敗
+			/* テナントロケーターのdisconnect処理 */
 			return getResultOnFailTenantAuth();
 		}
-		
-		val successTenantAuth1 = tenant.isAvailableAt(GeneralDate.today());
-		
-		
-		if(!successTenantAuth1) {
-			// テナント認証失敗
-			return getResultOnFailTenantAuth();
-		}
-
-
-		
-		/* テナントロケーター処理 */
 		
 		S state = processBeforeLogin(command);
 		

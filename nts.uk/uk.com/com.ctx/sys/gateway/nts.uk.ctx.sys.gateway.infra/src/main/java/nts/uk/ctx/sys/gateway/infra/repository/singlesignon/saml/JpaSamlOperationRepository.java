@@ -1,0 +1,50 @@
+package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
+
+import java.util.Optional;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperation;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
+import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwmtTenantAuthenticate;
+
+public class JpaSamlOperationRepository extends JpaRepository implements SamlOperationRepository {
+	
+	private final String BASIC_SELECT 
+					= "select INS_DATE, INS_CCD, INS_SCD, INS_PG, UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG, "
+							+ "TENANT_CD, USE_SAML_SSO, REALM_NAME, IDP_REDIRECT_URL "
+					+ "from SGWMT_SAML_OPERATION ";
+	
+	private SgwmtSamlOperation fromDomain(SamlOperation domain) {
+		return new SgwmtSamlOperation(
+				domain.getTenantCode(), 
+				domain.isUseSingleSignOn(),
+				domain.getRealmName(), 
+				domain.getIdpRedirectUrl());
+	}
+
+	@Override
+	public void insert(SamlOperation domain) {
+		this.commandProxy().insert(fromDomain(domain));
+	}
+
+	@Override
+	public void update(SamlOperation domain) {
+		this.commandProxy().update(fromDomain(domain));
+	}
+
+	@Override
+	public void delete(SamlOperation domain) {
+		this.commandProxy().remove(fromDomain(domain));
+	}
+
+	@Override
+	public Optional<SamlOperation> find(String tenantCode) {
+		String query = BASIC_SELECT 
+				+ "where TENANT_CD = @tenantCode ";
+		return new NtsStatement(query, this.jdbcProxy())
+				.paramString("tenantCode", tenantCode)
+				.getSingle(rec -> SgwmtSamlOperation.MAPPER.toEntity(rec).toDomain());
+	}
+}

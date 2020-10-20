@@ -442,6 +442,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -450,6 +451,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -508,6 +510,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws') {
 project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -516,6 +519,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
