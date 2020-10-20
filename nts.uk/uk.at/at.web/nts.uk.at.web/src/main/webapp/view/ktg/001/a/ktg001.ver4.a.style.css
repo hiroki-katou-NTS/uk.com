@@ -21,7 +21,7 @@
 }
 
 .widget-table td {
-	padding: 1px;
+	padding: 2px;
 	overflow: hidden;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .widget-table tr {
-	border-bottom: 1px dotted #B1B1B1;
+	border-bottom: 1px solid #B1B1B1;
 }
 
 .parent{
@@ -50,7 +50,7 @@
 .row {
 	width: 225px;
 	max-width: 200px;
-	margin-bottom: 13px;
+	margin-bottom: 124px;
 }
 
 .row .child-row {

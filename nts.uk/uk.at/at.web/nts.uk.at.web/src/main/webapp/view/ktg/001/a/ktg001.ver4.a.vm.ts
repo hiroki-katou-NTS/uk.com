@@ -65,31 +65,29 @@ module nts.uk.at.view.ktg001.a {
 	@bean()
 	class ViewModel extends ko.ViewModel {
 
-		title: KnockoutObservable<string> = ko.observable('');
-		appText: KnockoutObservable<string> = ko.observable('');
-		dayText: KnockoutObservable<string> = ko.observable('');
-		monText: KnockoutObservable<string> = ko.observable('');
-		aggrText: KnockoutObservable<string> = ko.observable('');
+		title: KnockoutObservable<string> = ko.observable('あなたの承認状況');
+		appText: KnockoutObservable<string> = ko.observable('あり');
+		dayText: KnockoutObservable<string> = ko.observable('あり');
+		monText: KnockoutObservable<string> = ko.observable('あり');
+		aggrText: KnockoutObservable<string> = ko.observable('あり');
 		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
 		
-		appRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		monRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		appRowVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		dayRowVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		monRowVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(true);
 		
-		appIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		appIconVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		monIconVisible: KnockoutObservable<Boolean> = ko.observable(true);
+		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(true);
 
 		created() {
 
 		}
 		
-		setting(){}
-
 		mounted() {
-			let vm = this;
+			/*let vm = this;
 			let cacheCcg008 = windows.getShared("cache");
 			let closureId = 1;
 
@@ -104,9 +102,9 @@ module nts.uk.at.view.ktg001.a {
 			} else {
 				vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
 				closureId = cacheCcg008.closureId;
-			}
+			}*/
 			
-			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
+			/*vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
 				if (data) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
@@ -141,7 +139,7 @@ module nts.uk.at.view.ktg001.a {
 					})
 				}
 
-			}).always(() => vm.$blockui("clear"));
+			}).always(() => vm.$blockui("clear"));*/
 
 		}
 
@@ -158,6 +156,10 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		aggrementApproval() {
+		}
+		
+		setting(){
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/ktg/001/b/index_ver4.xhtml';
 		}
 
 

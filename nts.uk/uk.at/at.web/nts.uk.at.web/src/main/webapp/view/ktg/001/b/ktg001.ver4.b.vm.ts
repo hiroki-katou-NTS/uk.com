@@ -11,7 +11,7 @@ module nts.uk.at.view.ktg001.b {
 
 		columns: KnockoutObservableArray<NtsGridListColumn>;
 		items: KnockoutObservableArray<Item>;
-		title: KnockoutObservable<string> = ko.observable('');
+		title: KnockoutObservable<string> = ko.observable('あなたの承認状況');
 		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
 
 
@@ -24,7 +24,7 @@ module nts.uk.at.view.ktg001.b {
 		}
 
 		mounted() {
-			let vm = this;
+			/*let vm = this;
 			let cacheCcg008 = windows.getShared("cache");
 			let closureId = 1;
 
@@ -55,9 +55,9 @@ module nts.uk.at.view.ktg001.b {
 
 				}
 			}).always(() => vm.$blockui("clear"));
+		
+		*/
 		}
-		
-		
 		submitAndCloseDialog() {
 
 		}

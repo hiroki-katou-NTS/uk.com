@@ -1,4 +1,44 @@
-#functions-area-bottom > button {
-	margin-right: 10px;
+#contents-area {
+	margin: 0 10px 0 10px;
 }
 
+#functions-area-bottom>button {
+	margin-right: 8pxpx;
+}
+
+.table td {
+	padding: 1px;
+}
+
+.table th {
+	padding: 1px 1px 1px 1px;
+	text-align: left;
+	background-color: #CFF1A5;
+	color: black;
+	font-weight: bold;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table td, .table th {
+	border: 1px solid #ddd;
+}
+
+.table tr td:nth-child(2) {
+	text-align: center;
+}
+
+.title {
+	height:50px;
+	padding-top: 8px;
+}
+
+#title-txt {
+	height: 24px;
+    position: relative;
+    top: -10px;
+    width: 218px !important;
+}
