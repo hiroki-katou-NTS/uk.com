@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+            <!--<com:ValidatorScript>-->
+                <!--nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;-->
+            <!--</com:ValidatorScript>-->
+
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:stylefile path="kmk008.b.main.css" />
@@ -28,9 +32,7 @@
                 <div class="sidebar-content-header">
                     <span class="title" data-bind="text: vm.textOvertimeName"></span>
                     <a id="B2_1" class="goback" tabindex="5" data-bind="ntsLinkButton:{jump: '/view/kmk/008/a/index.xhtml'}">#{i18n.getText('KMK008_13')}</a>
-                    <button id="B2_2" class="proceed" tabindex="6" data-bind="click: saveEmpSetting, enable: true">#{i18n.getText('KMK008_14')}</button>
-                    <button id="B2_3" class="test" tabindex="6" data-bind="click: copyEmpSetting, enable: true">#{i18n.getText('KMK008_15')}</button>
-                    <button id="B2_4" class="danger register-button" tabindex="7" data-bind="click: deleteEmpSetting, enable: true">#{i18n.getText('KMK008_16')}</button>
+                    <button id="B2_2" class="proceed" tabindex="6" data-bind="click: addUpdateData, enable: true">#{i18n.getText('KMK008_14')}</button>
                 </div>
                 <div class="contents-area">
                     <table id="contents-left-right-b">
@@ -66,10 +68,9 @@
                                                     ],
                                                     optionsValue: 'code',
                                                     visibleItemsCount: 13,
-                                                    value: vm.selectedLimit,
+                                                    value: vm.timeOfCompany().overMaxTimes,
                                                     optionsText: 'name',
                                                     editable: false,
-                                                    enable: true,
                                                     option: {width: '64px'},
                                                     columns: [{ prop: 'name', length: 4 }]}">
                                             </div>
@@ -84,7 +85,7 @@
                                         <col width="140"/>
                                         <col width="100"/>
                                         <col width="100"/>
-                                        <col width="250"/>
+                                        <col width="230"/>
                                     </colgroup>
                                     <thead>
                                     <tr id="B3_6_header" class="tr-common-height">
@@ -101,26 +102,29 @@
                                         <td class="cell-with-background" >
                                             <input id="B3_13" style="width: auto;" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'LimitOneMonth',
+                                                value: vm.timeOfCompany().limitOneMonth,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             <span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span>
                                         </td>
                                         <td>
                                             <input id="B3_14" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'ErrorOneMonth',
+                                                value: vm.timeOfCompany().errorOneMonth,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
                                             <input id="B3_15" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'AlarmOneMonth',
+                                                value: vm.timeOfCompany().alarmOneMonth,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="B3_16" data-bind="text: $i18n('KMK008_165')"></td>
@@ -131,26 +135,29 @@
                                         <td class="cell-with-background vertical-align-bottom">
                                             <input id="B3_18" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'LimitTwoMonths',
+                                                value: vm.timeOfCompany().limitTwoMonths,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             <span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span>
                                         </td>
                                         <td>
                                             <input id="B3_19" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'AlarmOneMonth',
+                                                value: vm.timeOfCompany().alarmOneMonth,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
                                             <input id="B3_20" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'AlarmTwoMonths',
+                                                value: vm.timeOfCompany().alarmTwoMonths,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="B3_21" data-bind="text: $i18n('KMK008_166')"></td>
@@ -161,17 +168,19 @@
                                         <td>
                                             <input id="B3_23" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'AgreementOneYearTime',
+                                                value: vm.timeOfCompany().errorOneYear,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
                                             <input id="B3_24" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'AlarmOneYear',
+                                                value: vm.timeOfCompany().alarmOneYear,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="B3_25" data-bind="text: $i18n('KMK008_165')"></td>
@@ -182,9 +191,10 @@
                                         <td class="cell-with-background vertical-align-bottom">
                                             <input id="B3_27" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-                                                constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                constraint: 'LimitOneYear',
+                                                value: vm.timeOfCompany().limitOneYear,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             <span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span>
                                         </td>
@@ -192,16 +202,18 @@
                                             <input id="B3_28" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                value: vm.timeOfCompany().errorTwoYear,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
                                             <input id="B3_29" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                value:  vm.timeOfCompany().alarmTwoYear,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="B3_30" data-bind="text: $i18n('KMK008_167')"></td>
@@ -214,7 +226,7 @@
                                         <col width="140"/>
                                         <col width="100"/>
                                         <col width="100"/>
-                                        <col width="250"/>
+                                        <col width="230"/>
                                     </colgroup>
                                     <thead></thead>
                                     <tbody>
@@ -224,8 +236,9 @@
                                             <input id="B3_33" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                value: vm.timeOfCompany().limitMonthAverage,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             <span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span>
                                         </td>
@@ -233,16 +246,18 @@
                                             <input id="B3_34" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                value: vm.timeOfCompany().errorMonthAverage,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
                                             <input id="B3_35" data-bind="ntsTimeEditor: {
                                                 name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
                                                 constraint: 'PrimitiveValue',
-                                                value: theTime,
+                                                value: vm.timeOfCompany().alarmMonthAverage,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="B3_36" data-bind="text: $i18n('KMK008_165')"></td>
@@ -398,7 +413,7 @@
                                         <col width="140"/>
                                         <col width="100"/>
                                         <col width="100"/>
-                                        <col width="250"/>
+                                        <col width="230"/>
                                     </colgroup>
                                     <thead>
                                         <tr id="C4_6_header-c" class="tr-common-height">
@@ -418,6 +433,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                                 <span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span>
                                             </td>
@@ -427,6 +443,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td>
@@ -435,6 +452,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td class="wrap-white-space-pre-line" id="C4_16" data-bind="text: $i18n('KMK008_165')"></td>
@@ -448,6 +466,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                                 <span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span>
                                             </td>
@@ -457,6 +476,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td>
@@ -465,6 +485,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td class="wrap-white-space-pre-line" id="C4_21" data-bind="text: $i18n('KMK008_166')"></td>
@@ -478,6 +499,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td>
@@ -486,6 +508,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td class="wrap-white-space-pre-line" id="C4_25" data-bind="text: $i18n('KMK008_165')"></td>
@@ -499,6 +522,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                                 <span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span>
                                             </td>
@@ -508,6 +532,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td>
@@ -516,6 +541,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             </td>
                                             <td class="wrap-white-space-pre-line" id="C4_30" data-bind="text: $i18n('KMK008_167')"></td>
@@ -528,7 +554,7 @@
                                         <col width="140"/>
                                         <col width="100"/>
                                         <col width="100"/>
-                                        <col width="250"/>
+                                        <col width="230"/>
                                     </colgroup>
                                     <thead></thead>
                                     <tbody>
@@ -540,6 +566,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                             <span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span>
                                         </td>
@@ -549,6 +576,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td>
@@ -557,6 +585,7 @@
                                                 constraint: 'PrimitiveValue',
                                                 value: theTime,
                                                 option: {width: '60px'},
+                                                mode: 'time',
                                                 inputFormat: 'time'}" />
                                         </td>
                                         <td class="wrap-white-space-pre-line" id="C4_36" data-bind="text: $i18n('KMK008_165')"></td>
