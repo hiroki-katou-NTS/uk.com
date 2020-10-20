@@ -2,7 +2,7 @@ import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
 import { KafS00AComponent, KafS00BComponent, KAFS00BParams, KafS00CComponent, KAFS00CParams } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from '../../s00/sub/p1';
+import { KafS00SubP1Component, KAFS00P1Params } from '../../s00/sub/p1';
 
 
 import {
@@ -664,7 +664,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.time.attendanceTime2 = null;
                         vm.time.leaveTime2 = null;
 
-                        return vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
+                        return vm.$modal.error('Msg_1707');
                     }
                 });
 
