@@ -59,8 +59,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		cellButtonDisplay: KnockoutObservable<boolean>;
 		workplaceName: KnockoutObservable<string>;
 		dateValue: KnockoutObservable<any> = ko.observable({
-			startDate: formatDate(new Date(), 'yyyy/MM'),
-			endDate: formatDate(new Date(), 'yyyy/MM')
+			startDate: formatDate(new Date(), 'yyyyMM'),
+			endDate: formatDate(new Date(), 'yyyyMM')
 		});
 
 		listPubHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
@@ -418,7 +418,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		public onBtnApplySettingClicked(): void {
 			const vm = this;
 			vm.slideDays(0);
-			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate.replace('/', '')));
+
+			if (nts.uk.ui.errors.hasError()) {
+
+				return;
+			}
+
+			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
 			vm.onBtnApplySetting(vm.slideDays());
 		}
 
@@ -515,16 +521,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				refOrder = [WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE];
 			}
 
-			let perStart: number = vm.yearMonthPicked();
-			let perEnd: number = vm.yearMonthPicked();
+			let perStart: string = '' + vm.yearMonthPicked();
+			let perEnd: string = '' + vm.yearMonthPicked();
 			if (vm.isExecMode()) {
 				perStart = vm.dateValue().startDate;
 				perEnd = vm.dateValue().endDate;
 			}
 
 			vm.reflectionParam({
-				creationPeriodStartDate: moment(perStart, "YYYY-MM").startOf("month").format(CONST.MOMENT_DATE_FORMAT),
-				creationPeriodEndDate: moment(perEnd, "YYYY-MM").endOf("month").format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodStartDate: moment(perStart, "YYYYMM").startOf("month").format(CONST.MOMENT_DATE_FORMAT),
+				creationPeriodEndDate: moment(perEnd, "YYYYMM").endOf("month").format(CONST.MOMENT_DATE_FORMAT),
 				workCycleCode: vm.reflectionSetting().selectedPatternCd(),
 				refOrder: refOrder,
 				numOfSlideDays: slideDay,
@@ -533,13 +539,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				holidayCd: holidayCd
 			});
 
-			if (nts.uk.ui.errors.hasError()) {
-				dfd.reject();
-				return dfd.promise();
-			}
 			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done((val) => {
 				vm.refImageEachDayDto(val);
-				vm.setCalendarData(val);
+				vm.setCalendarData(vm.refImageEachDayDto());
 				vm.promise(false);
 			}).always(() => {
 				vm.$blockui('clear');
@@ -766,8 +768,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				self.calendarEndDate = moment(self.shared.calendarEndDate, CONST.MOMENT_DATE_FORMAT);
 
 				self.dateValue({
-					startDate: self.calendarStartDate.format('YYYY/MM'),
-					endDate: self.calendarEndDate.format('YYYY/MM')
+					startDate: self.calendarStartDate.format('YYYYMM'),
+					endDate: self.calendarEndDate.format('YYYYMM')
 				});
 
 				// Date range must <= 31 days
@@ -821,12 +823,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 		private setCalendarData(data: Array<RefImageEachDayDto>) {
 			const self = this;
-			let temp: Array<OptionDate> = ([]);
+			let temp: Array<OptionDate> = [];
 			data.forEach((item) => {
 				temp.push(self.setOptionDate(item));
 			});
+
 			self.optionDates(temp);
-			let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
+			console.log(self.optionDates());
+			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
 			if (self.isExecMode()) {
 				data.forEach((item) => {
 					workMonthlySettingTemp.push(self.setMonthlySetting(item));
@@ -845,7 +849,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			} else if (refImage.workStyles === 3) {
 				textColor = '#0000ff';
 			} else {
-				textColor = '#FF7F27';
+				textColor = '#ff7f27';
 			}
 
 			let workTypeStr: string = '';
