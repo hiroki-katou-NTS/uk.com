@@ -30,6 +30,7 @@ module nts.uk.at.view.kwr003.b {
     isEnableAttendanceCode: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDeleteButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
     //KDL 047, 048
     shareParam = new SharedParams();
@@ -152,7 +153,7 @@ module nts.uk.at.view.kwr003.b {
       vm.attendanceCode(null);
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
-
+      vm.isNewMode(true);
       $('#KWR003_B42').focus();
     }
 
@@ -161,6 +162,13 @@ module nts.uk.at.view.kwr003.b {
      */
     registerSetting() {
       let vm = this;
+
+      if(vm.isNewMode()) {
+        //コードが重複しているため、登録できません。 Msg_1753
+      } else {
+        //出力項目が削除されています。 ＃Msg_1903
+      }
+      
       //sort by name with desc
       let listItemsDetails: Array<any> = [];
       listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
@@ -232,20 +240,29 @@ module nts.uk.at.view.kwr003.b {
      */
     showDialogC() {
       let vm = this;
+      let lastItem = _.last(vm.settingListItems());
 
       let params = {
         code: vm.attendanceCode(),
-        name: vm.attendanceName()
+        name: vm.attendanceName(),
+        lastCode: !_.isNil(lastItem) ? lastItem.code : null
       }
-      console.log(params);
+     
       vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
           vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
             if (_.isNil(data)) {
               return;
             }
-            vm.attendanceCode(data.code);
-            vm.attendanceName(data.name);
+
+            let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+            if( !_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903'}).then(() => {});
+              return;
+            }
+            
+            vm.settingListItems.push(data);
+            vm.currentCodeList(data.code);
           });
         });
       });
