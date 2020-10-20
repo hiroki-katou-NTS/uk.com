@@ -8,14 +8,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		closureName: string = '対象締め';
 		maxItemDisplay: KnockoutObservable<number> = ko.observable(100);
 		statesTable: any = [];
-		dataSource: any = [
-			new model.TableItem('wkp1', 1, 1),
-			new model.TableItem('wkp2', 2, 2),
-			new model.TableItem('wkp3', 3, 3)
-		];
+		dataSource: any = [];
 		
 		created(params: any) {
 			const vm = this;
+			for(let i = 1; i <= 10000; i++) {
+				vm.dataSource.push(new model.TableItem('wkp'+i, i, i));
+			}
 			window.onresize = function(event: any) {
 				$("#gridB_scrollContainer").height(window.innerHeight - 269);
 				$("#gridB_displayContainer").height(window.innerHeight - 269);
@@ -39,8 +38,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		createMGrid() {
 			const vm = this;
 			let buttonHtml = `<button class="kaf018-b-mailButton" data-bind="click: buttonMailAction, text: $i18n('KAF018_346')"></button>`;
-			$("#dpGrid").ntsGrid({
-				height: 300,
+			$("#dpGrid").igGrid({
+				width: screen.availWidth - 24 < 1000 ? 1000 : screen.availWidth - 24,
+				height: screen.availHeight - 260,
 				dataSource: vm.dataSource,
 				primaryKey: 'wkpName',
 				primaryKeyDataType: 'string',
@@ -59,7 +59,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						headerText: vm.$i18n('KAF018_331'), 
 						key: 'wkpName', 
 						dataType: 'string',
-						width: '500px',
 						headerCssClass: 'kaf018-b-header-wkpName',
 						columnCssClass: 'kaf018-b-column-wkpName'
 					},
@@ -87,7 +86,19 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				features: [
 					{
 						name: 'MultiColumnHeaders'
-					}
+					},
+					{
+						name: "Paging",
+						defaultDropDownWidth: 80,
+						pageCountLimit : 1,
+						pageSize: 100,
+						pageSizeList: [100, 200, 500, 1000, 3000],
+						locale: {
+							pagerRecordsLabelTooltip: "Current records",
+							pageSizeDropDownLabel: vm.$i18n('KAF018_325'),
+							pageSizeDropDownTrailingLabel: ""
+						}
+					},
 				],
 			});
 		}
@@ -101,7 +112,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		buttonMailAction() {
 			const vm = this;
-			vm.$window.modal('/view/kaf/018/c/index.xhtml');
+			let height = screen.availHeight;
+			if(screen.availHeight > 820) {
+				height = 820
+			}
+			if(screen.availHeight < 600) {
+				height = 600;
+			}
+			let dialogSize = {
+				width: 900,
+				height: height
+			}
+			vm.$window.modal('/view/kaf/018/c/index.xhtml', {}, dialogSize);
 		}
 		
 		goBackA() {

@@ -78,7 +78,18 @@ module nts.uk.at.view.kaf018.a.viewmodel {
         
 		emailSetting() {
 			const vm = this;
-			vm.$window.modal('/view/kaf/018/i/index.xhtml');
+			let height = screen.availHeight;
+			if(screen.availHeight > 450) {
+				height = 450
+			}
+			if(screen.availHeight < 400) {
+				height = 400;
+			}
+			let dialogSize = {
+				width: 850,
+				height: height
+			}
+			vm.$window.modal('/view/kaf/018/i/index.xhtml', {}, dialogSize);
 		}
     }
 
