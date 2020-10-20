@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 420 };</script>
+			<script>var dialogSize = { width: 500, height: 350 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm018.q.main.css" />
 			<com:scriptfile path="cmm018.q.vm.js" />
@@ -19,8 +19,8 @@
 				<!-- Q1_1 -->
 				<div class="label labelFirst">#{i18n.getText('CMM018_112')}</div>
 				<!-- Q1_2 -->
-				<div data-bind="if: param.systemAtr == 0" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Workplace')])}</div>
-				<div data-bind="if: param.systemAtr == 1" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Department')])}</div>
+				<div data-bind="visible: param.systemAtr == 0" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Workplace')])}</div>
+				<div data-bind="visible: param.systemAtr == 1" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Department')])}</div>
 				
 				<!-- Q1_3 -->
 				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.companyUnit, enable: true, text: $i18n('CMM018_75')}"></div>
