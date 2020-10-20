@@ -20,21 +20,25 @@
 button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
 }
+
 .ntsRadioBox {
   display: block;
 }
+
 #search-icon {
   background-size: auto !important;
   top: 10px;
   position: relative;
   cursor: pointer;
 }
+
 .result-search {
   display: block;
   line-height: 2;
 }
-#popup-result, #popup-search, #popup-search-category {
-  width: 173px;
+
+#popup-result, #popup-search {
+  min-width: 173px;
 }
 
 ul {
@@ -60,7 +64,13 @@ li:hover {
   border-radius: 50%;
 }
 
-.result-search {
+.result-search-history {
+  height: 25px;
+  margin: auto;
+}
+
+.text-li {
+  width: 80%;
   padding-left: 35px;  /* width of the image plus a little extra padding */
   background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/173.png");
   background-repeat: no-repeat;
@@ -69,9 +79,17 @@ li:hover {
   margin-top: 5px;
   background-size: contain;
   line-height: 20px;
+  display: inline;
 }
 
-.text-li {
-  width: 80%;
-  display: inline;
+.ntsControl .nts-input.enterkey {
+  background-image: none;
+}
+
+label.ntsRadioBox {
+  padding: 5px;
+}
+
+#popup-search-category {
+  width: 150px;
 }

@@ -80,7 +80,7 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void update(GeneralSearchHistory domain) {
-		this.commandProxy().update(this.toEntity(domain));
+		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain));
 	}
 
 	/**
