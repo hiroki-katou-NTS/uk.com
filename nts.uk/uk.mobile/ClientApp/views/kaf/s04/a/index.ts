@@ -664,7 +664,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.time.attendanceTime2 = null;
                         vm.time.leaveTime2 = null;
 
-                        return vm.$modal.error('Msg_1707');
+                        return vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
                     }
                 });
 
