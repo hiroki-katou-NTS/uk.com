@@ -92,7 +92,7 @@ public class MonthlyPatternScreenProcessor {
 
             // 4. set work time name
             // 4:就業時間帯名称を取得する(ログイン会社ID、List<就業時間帯コード>)
-            x.setWorkTypeName(workTimeAll.getOrDefault(x.getWorkingCode(), null));
+            x.setWorkingName(workTimeAll.getOrDefault(x.getWorkingCode(), null));
         });
 
         // 6.get yearMonth
