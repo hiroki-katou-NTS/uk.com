@@ -2362,7 +2362,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					                		+ "　" + TextResource.localize("KWR001_92")
 					                		+ "　" + employeeReportData.employmentCode
 					                		+ "　" + employeeReportData.employmentName
-					                		+ "　" + WorkScheOutputConstants.POSITION
+					                		+ "　" + TextResource.localize("KWR001_93")
 					                		+ "　" + employeeReportData.jobTitleCode
 					                		+ "　" + employeeReportData.position;
 					                departmentCode.add(workplaceReportData.getWorkplaceCode());
