@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.kmk.kmk008.basicAgrSetting;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
@@ -20,14 +22,14 @@ public class InitialDisplayYearScreenProcessor {
 
     public BasicAgrYearSettingDto findYear(RequestParam request) {
 
-        BasicAgreementSetting data = AgreementDomainService.getBasicSet(requireService.createRequire(),AppContexts.user().companyId(),request.getEmployeeId(), GeneralDate.today());
+        BasicAgreementSetting data = AgreementDomainService.getBasicSet(requireService.createRequire(),AppContexts.user().companyId(),request.getEmployeeId(),GeneralDate.today(), new Year(GeneralDate.today().year()));
 
         return BasicAgrYearSettingDto.setData(data);
     }
 
     public BasicAgrYearMonthSettingDto findYearMonth(RequestParam request) {
 
-        BasicAgreementSetting data = AgreementDomainService.getBasicSet(requireService.createRequire(),AppContexts.user().companyId(),request.getEmployeeId(), GeneralDate.today());
+        BasicAgreementSetting data = AgreementDomainService.getBasicSet(requireService.createRequire(),AppContexts.user().companyId(),request.getEmployeeId(), GeneralDate.today(), GeneralDate.today().yearMonth());
 
         return BasicAgrYearMonthSettingDto.setData(data);
     }
