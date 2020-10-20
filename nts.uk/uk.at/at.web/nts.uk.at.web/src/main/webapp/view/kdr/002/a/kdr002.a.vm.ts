@@ -214,11 +214,21 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 if (closure) {
                     //  取得した「締め.当月」の前月を指定年月へ移送
                     //社員範囲選択の締め日(締めID)の「当月」を使用する。
-                    //また、全締めの場合は、登録されている先頭の締め日の「当月」を使用する。
+                    //また、全締めの場合は、登録されている先頭の締め日の「当月」を使用する。.
+
                     let currentMonth = moment(closure.closureMonth.toString()).format('YYYYMM');
                     let closureDay = closure.closureHistories[0].closureDate.closureDay;
-                    let startDateRange = moment(currentMonth).subtract(closureDay, 'day').format("YYYYMMDD");
-                    let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+                    let startDateRange: any;
+                    let endDateRange: any;
+                    // 締め日:末日 - if closure date is last day of month
+                    if(closure.closureHistories[0].closureDate.lastDayOfMonth) {
+                        startDateRange = moment(currentMonth).format("YYYYMMDD");
+                        endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+                    } else {
+                        // 締め日: n 日
+                        startDateRange = moment(currentMonth).add(closureDay + 1 , 'day').format("YYYYMMDD");
+                        endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+                    }
 
                     self.printDate(closure.closureMonth);
                     //取得した「締め.当月」より期間へ移送
