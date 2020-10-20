@@ -32,9 +32,6 @@ module nts.uk.at.view.kmk008.f {
         ccg001ComponentOption: any;
         showInfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(false);
 
-        // Options
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
-
         constructor() {
             super();
             const vm = this;
@@ -97,9 +94,8 @@ module nts.uk.at.view.kmk008.f {
 
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    vm.selectedEmployee(data.listEmployee);
                     vm.showInfoSelectedEmployee(true);
-                    vm.employeeList([]);
+                    vm.employeeList.removeAll();
                     vm.employeeList(_.map(data.listEmployee, item => {
                         return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
                     }));
@@ -120,34 +116,29 @@ module nts.uk.at.view.kmk008.f {
                 return item.employeeId;
             });
 
-            vm.alreadySettingList([]);
-
-            let oldUnitModel: UnitModel;
-            let newUnitModel: UnitModel;
-            let monthData: Array<ItemModel> = [];
-            let yearData: Array<ItemModel> = [];
-            let monthData2: Array<ItemModel2> = [];
-            let yearData2: Array<ItemModel2> = [];
-            let settingDtos: Array<any> = [];
-
             let monthQuery = vm.$ajax(PATH_API.getAllMonth, {employeeIds: employeeIds});
             let yearQuery = vm.$ajax(PATH_API.getAllYear, {employeeIds: employeeIds});
 
             vm.$blockui("invisible");
             $.when(monthQuery, yearQuery)
                 .done((monthDataList: any, yearDataList: any) => {
-                    _.forEach(employeeIds, (value) => {
+                    let newUnitModel: UnitModel;
+                    let monthData: Array<ItemModel> = [];
+                    let yearData: Array<ItemModel> = [];
+                    let monthData2: Array<ItemModel2> = [];
+                    let yearData2: Array<ItemModel2> = [];
+                    let settingDtos: Array<any> = [];
+                    let newEmployeeList: Array<UnitModel> = [];
+                    let newAlreadySettingList: Array<UnitAlreadySettingModel> = [];
+
+                    _.forEach(vm.employeeList(), (oldUnitModel) => {
                         monthData = [];
                         yearData = [];
                         monthData2 = [];
                         yearData2 = [];
 
-                        oldUnitModel = _.find(vm.employeeList(), item => {
-                            return item.employeeId === value;
-                        });
-
                         settingDtos = _.find(monthDataList, item => {
-                            return item.employeeId === value;
+                            return item.employeeId === oldUnitModel.employeeId;
                         }).settingDtos;
                         settingDtos = _.orderBy(settingDtos, ['yearMonthValue'], ['desc']);
                         if (settingDtos && settingDtos.length) {
@@ -162,7 +153,7 @@ module nts.uk.at.view.kmk008.f {
                         }
 
                         settingDtos = _.find(yearDataList, item => {
-                            return item.employeeId === value;
+                            return item.employeeId === oldUnitModel.employeeId;
                         }).settingDtos;
                         settingDtos = _.orderBy(settingDtos, ['yearValue'], ['desc']);
                         if (settingDtos && settingDtos.length) {
@@ -187,10 +178,12 @@ module nts.uk.at.view.kmk008.f {
                             yearData2
                         );
 
-                        vm.employeeList.replace(oldUnitModel, newUnitModel);
-                        vm.alreadySettingList.push(new UnitAlreadySettingModel(oldUnitModel.code, monthData2.length > 0 || yearData2.length > 0));
+                        newEmployeeList.push(newUnitModel);
+                        newAlreadySettingList.push(new UnitAlreadySettingModel(oldUnitModel.code, monthData2.length > 0 || yearData2.length > 0));
                     });
 
+                    vm.employeeList(newEmployeeList);
+                    vm.alreadySettingList(newAlreadySettingList);
                     dfd.resolve();
                 })
                 .fail((err1: any, err2: any) => {
@@ -254,7 +247,7 @@ module nts.uk.at.view.kmk008.f {
             vm.$window.modal('../../../kmk/008/k/index.xhtml', data).then(() => {
                 vm.initData().done(() => {
                     if (vm.selectedEmpCode()) {
-                    vm.getDetail(vm.selectedEmpCode());
+                        vm.getDetail(vm.selectedEmpCode());
                     }
                 });
             });
