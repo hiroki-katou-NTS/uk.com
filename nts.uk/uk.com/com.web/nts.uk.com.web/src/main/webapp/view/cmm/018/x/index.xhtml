@@ -26,15 +26,15 @@
 							<!-- X2_2 -->
 							<button data-bind="click: openDialogQ" class="large btnInPanel">#{i18n.getText('CMM018_116')}</button>
 							<!-- X2_3 -->
-							<div data-bind="if: ko.toJS(systemAtr) == 0" class="label">#{i18n.getText('CMM018_117', [i18n.getText('Com_Workplace')])}</div>
-							<div data-bind="if: ko.toJS(systemAtr) == 1" class="label">#{i18n.getText('CMM018_117', [i18n.getText('Com_Department')])}</div>
+							<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat">#{i18n.getText('CMM018_117', [i18n.getText('Com_Workplace')])}</div>
+							<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat">#{i18n.getText('CMM018_117', [i18n.getText('Com_Department')])}</div>
 							
 							
-							<div data-bind="if: ko.toJS(systemAtr) == 0">
+							<div data-bind="visible: ko.toJS(systemAtr) == 0">
 								<!-- X2_4 -->
 								<button data-bind="click: jumpToCmm013H" class="large btnInPanel">#{i18n.getText('CMM018_118')}</button>
 								<!-- X2_5 -->
-								<div class="label">#{i18n.getText('CMM018_119')}</div>
+								<div class="label textFormat">#{i18n.getText('CMM018_119')}</div>
 							</div>	
 						</div>
 					   <!-- X3 -->
@@ -46,8 +46,8 @@
 							<!-- X3_2 -->
 							<button data-bind="click: jumpToA"  class="large caret-right btnInPanel">#{i18n.getText('CMM018_121')}</button>
 							<!-- X3_3 -->
-							<div data-bind="if: ko.toJS(systemAtr) == 0" class="label">#{i18n.getText('CMM018_120', [i18n.getText('Com_Workplace')])}</div>
-							<div data-bind="if: ko.toJS(systemAtr) == 1" class="label">#{i18n.getText('CMM018_120', [i18n.getText('Com_Department')])}</div>
+							<div data-bind="visible: ko.toJS(systemAtr) == 0" class="label textFormat2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Workplace')])}</div>
+							<div data-bind="visible: ko.toJS(systemAtr) == 1" class="label textFormat2">#{i18n.getText('CMM018_120', [i18n.getText('Com_Department')])}</div>
 						</div>
 				
 			</div>	

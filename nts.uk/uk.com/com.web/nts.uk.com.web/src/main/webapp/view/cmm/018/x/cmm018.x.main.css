@@ -2,7 +2,7 @@
     border-style: solid;
     border-width: 1px;
     border-radius: 5px;
-    box-shadow: 0 5px rgb(192, 192, 192);
+    box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
     margin-top:20px;
@@ -20,7 +20,7 @@
 	 border-style: solid;
     border-width: 1px;
     border-radius: 5px;
-    box-shadow: 0 5px rgb(192, 192, 192);
+    box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
     margin-top:20px;
@@ -34,22 +34,46 @@
 	border-style: solid;
     border-width: 1px;
     border-radius: 5px;
-    box-shadow: 0 5px rgb(192, 192, 192);
+    box-shadow: 0 0px rgb(192, 192, 192);
 	display: inline-table; 
 	background-color: white; 
-	margin-top:20px; 
-	margin-left:20px; 
-	width:350px !important; 
-	height:250px !important;
+	margin-top: 20px; 
+	margin-left: 60px; 
+	width: 350px !important; 
+	height: 250px !important;
 	text-align: center;
-	border-color: rgb(192, 192, 192)
+	border-color: rgb(192, 192, 192);
+	position: absolute;
+    top: 10px;
+    left: 415px;
 }
 button.caret-right:after {
     color: #92D050;
     margin-left: 3px;
 }
 .textTitlePanel {
-	font-weight: 400;
+	font-weight: 550;
     font-size: 25px;
     text-align: start;
+}
+.textFormatSystem1{
+	text-align: left;
+    line-height: 25px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.textFormat {
+	text-align: left;
+    padding-top: 5px;
+    line-height: 25px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.textFormat2 {
+	text-align: left;
+    padding-top: 20px;
+    line-height: 25px;
+    padding-right: 10px;
+    padding-left: 10px;
 }
