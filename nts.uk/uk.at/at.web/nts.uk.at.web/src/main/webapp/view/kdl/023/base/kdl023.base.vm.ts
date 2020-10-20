@@ -197,6 +197,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 					vm.reflectionOrder1.subscribe(val => {
 						vm.reCheckEmptyHoliday();
+						vm.clearRefOrderErrors();
 						vm.promise(true);
 
 						let array2 = ([
@@ -242,6 +243,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					vm.reflectionOrder2.subscribe(val => {
 						vm.promise(true);
 						vm.reCheckEmptyHoliday();
+						vm.clearRefOrderErrors();
 
 						if (val === WorkCreateMethod.NON) {
 							vm.reflectionOrder3(WorkCreateMethod.NON);
@@ -284,6 +286,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					vm.reflectionOrder3.subscribe(val => {
 						vm.promise(true);
 						vm.reCheckEmptyHoliday();
+						vm.clearRefOrderErrors();
 						let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
 						vm.checkReflectionOrder(arrCheck);
 					});
@@ -534,7 +537,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				dfd.reject();
 				return dfd.promise();
 			}
-
 			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done((val) => {
 				vm.refImageEachDayDto(val);
 				vm.setCalendarData(val);
