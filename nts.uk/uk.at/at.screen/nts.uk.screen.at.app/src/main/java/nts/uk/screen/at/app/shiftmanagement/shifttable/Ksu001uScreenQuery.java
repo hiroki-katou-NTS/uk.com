@@ -69,12 +69,10 @@ public class Ksu001uScreenQuery {
 			dto.setDisplayName(displayInfoOrganization.getDisplayName());
 		}
 		if (shiftTable.isPresent()) {
-			if(shiftTable.get().getEndDatePublicationPeriod().beforeOrEquals(request.endDate()) && shiftTable.get().getEndDatePublicationPeriod().after(request.startDate())) {
 				dto.setPublicDate(shiftTable.get().getEndDatePublicationPeriod().toString());
 				if (shiftTable.get().getOptEditStartDate().isPresent()) {				
 					dto.setEditDate(shiftTable.get().getOptEditStartDate().get().toString());
-				}
-			}			
+				}	
 		}
 		return dto;
 	}
