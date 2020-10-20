@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class KDL051ProcessDto {
-	private List<AggrResultOfChildCareNurseDto> aggrResultOfChildCareNurse;
-	private InterimRemainDto interimRemain;
+	private AggrResultOfChildCareNurseDto aggrResultOfChildCareNurse;
+	private List<InterimRemainDto> interimRemain;
 }
+ 

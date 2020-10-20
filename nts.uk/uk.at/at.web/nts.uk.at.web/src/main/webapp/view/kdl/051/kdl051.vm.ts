@@ -6,6 +6,7 @@ module nts.uk.at.view.kdl051.screenModel {
 
   const API = {
     startPage: "at/shared/holidaysetting/employee/startPage",
+    changeId: "at/record/monthly/nursingleave/changeId"
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -40,7 +41,6 @@ module nts.uk.at.view.kdl051.screenModel {
         baseDate: shareParam.baseDate,
         employeeIds: shareParam.employeeIds
       }
-
       // call API startPage
       vm.$ajax(API.startPage, startParam).then((res: any)=>{
         if(res && res.lstEmp) {
@@ -80,12 +80,21 @@ module nts.uk.at.view.kdl051.screenModel {
       vm.selectedCode.subscribe(value =>{
         if(value){
           vm.selectedName(_.find(vm.employeeList(), ['code', value]).name);
+          vm.onChangeId(value);
         }
       });
       $('#component-items-list').ntsListComponent(vm.listComponentOption);
       
     }
-
+    public onChangeId(sId : string) {
+      const vm = this;
+      let changeIDparam = {
+        employeeId: sId
+      }
+      // call API changeId
+      vm.$ajax(API.changeId, changeIDparam).then((res: any)=>{
+      });
+    }
     public genDateTime(date: number, time: number) {
       if(time) {
         return date + text('KDL051_17') + '  ' + formatById("Clock_Short_HM", time);
