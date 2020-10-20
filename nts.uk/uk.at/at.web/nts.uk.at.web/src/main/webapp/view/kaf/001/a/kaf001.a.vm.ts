@@ -192,6 +192,7 @@ module kaf001.a.viewmodel {
                             case ApplicationScreenID.ANNUAL_HOLIDAY_APPLICATION : {
                                 self.isVisiableAnnualHolidayApp(true);
                                 obj.annualHd = app.displayName;
+                                break;
                             }
                             case ApplicationScreenID.EARLY_LEAVE_CANCEL_APPLICATION : {
                                 self.isVisiableEarlyLeaveCanceApp(true);
