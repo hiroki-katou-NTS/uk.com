@@ -1,8 +1,8 @@
-module nts.uk.at.view.ktg001 {
+module nts.uk.at.view.ktg001.a {
 
 	import windows = nts.uk.ui.windows;
 
-	const KTG001_API = {
+	export const KTG001_API = {
 		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/display',
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
 	};
@@ -51,12 +51,12 @@ module nts.uk.at.view.ktg001 {
 		closureEndDate: String;
 	}
 
-	interface IResponse {
+	export interface IResponse {
 		approvedDataExecutionResultDto: IApprovedDataExecutionResult;
 		approvalProcessingUseSetting: IApprovalProcessingUseSetting;
 	}
 
-	interface IApprovalProcessingUseSetting {
+	export interface IApprovalProcessingUseSetting {
 		useDayApproverConfirm: Boolean;
 		useMonthApproverConfirm: Boolean;
 	}
@@ -66,13 +66,21 @@ module nts.uk.at.view.ktg001 {
 	class ViewModel extends ko.ViewModel {
 
 		title: KnockoutObservable<string> = ko.observable('');
-		appText: KnockoutObservable<string> = ko.observable('あり');
-		dayText: KnockoutObservable<string> = ko.observable('あり');
-		monText: KnockoutObservable<string> = ko.observable('あり');
-		aggrText: KnockoutObservable<string> = ko.observable('あり');
+		appText: KnockoutObservable<string> = ko.observable('');
+		dayText: KnockoutObservable<string> = ko.observable('');
+		monText: KnockoutObservable<string> = ko.observable('');
+		aggrText: KnockoutObservable<string> = ko.observable('');
 		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
-		param: KnockoutObservable<IParam> = ko.observable(null);
-		visible: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		appRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		monRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		appIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
 		created() {
 
@@ -107,23 +115,27 @@ module nts.uk.at.view.ktg001 {
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
 						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
+							vm.appRowVisible(true);
 							vm.appText = approvedDataExecution.appDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvedDataExecution.appDisplayAtr);
+							vm.appIconVisible(approvedDataExecution.appDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true) {
+							vm.dayRowVisible(true);
 							vm.dayText = approvedDataExecution.dayDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvedDataExecution.dayDisplayAtr);
+							vm.dayIconVisible(approvedDataExecution.dayDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true) {
+							vm.monRowVisible(true);
 							vm.monText = approvedDataExecution.monthDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvedDataExecution.monthDisplayAtr);
+							vm.monIconVisible(approvedDataExecution.monthDisplayAtr);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
+							vm.aggrRowVisible(true);
 							vm.aggrText = approvedDataExecution.aggrDisplayAtr == true ? ko.observable(vm.$i18n('KTG001_5')) : ko.observable(vm.$i18n('KTG001_6'));
-							vm.visible(approvedDataExecution.aggrDisplayAtr);
+							vm.aggrIconVisible(approvedDataExecution.aggrDisplayAtr);
 						}
 
 					})

@@ -35,36 +35,36 @@
 					<tr>
 						<td>
 							<table class="widget-table row">
-								<tr>
+								<tr data-bind="visible: appRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_1')"></td>
-									<td class="go-button" data-bind="visible: true">
+									<td class="go-button" data-bind="visible: appIconVisible">
 										<button data-bind=" click : applicationList">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
 									<td data-bind="text: appText"></td>
 								</tr>
-								<tr>
+								<tr data-bind="visible: dayRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_2')"></td>
-									<td class="go-button" data-bind="visible: true">
+									<td class="go-button" data-bind="visible: dayIconVisible">
 										<button data-bind=" click : dayPerformanceConfirm">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
 									<td data-bind="text: dayText"></td>
 								</tr>
-								<tr>
+								<tr data-bind="visible: monRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_3')"></td>
-									<td class="go-button" data-bind="visible: true">
+									<td class="go-button" data-bind="visible: monIconVisible">
 										<button data-bind=" click : monPerformanceConfirm">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
 									<td data-bind="text: monText"></td>
 								</tr>
-								<tr>
+								<tr data-bind="visible: aggrRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_4')"></td>
-									<td class="go-button" data-bind="visible: true">
+									<td class="go-button" data-bind="visible: aggrIconVisible">
 										<button data-bind=" click : aggrementApproval">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>

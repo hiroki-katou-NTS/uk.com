@@ -10,31 +10,33 @@ public enum ApplicationStatusWidgetItem {
 	/**
 	 * 0 - 承認された件数
 	 */
-	APPROVED_NUMBER(0),
+	APPROVED_NUMBER(0, "承認された件数"),
 
 	/**
 	 * 1 - 未承認件数
 	 */
-	UNAPPROVED_NUMBER(1),
+	UNAPPROVED_NUMBER(1, "未承認件数"),
 
 	/**
 	 * 2 - 否認された件数
 	 */
-	DENIED_NUMBER(2),
+	DENIED_NUMBER(2, "否認された件数"),
 
 	/**
 	 * 3 - 差し戻し件数
 	 */
-	REMAND_NUMBER(3),
+	REMAND_NUMBER(3, "差し戻し件数"),
 
 	/**
 	 * 4 - 今月の申請締め切り日
 	 */
-	MONTH_APP_DEADLINE(4);
+	MONTH_APP_DEADLINE(4, "今月の申請締め切り日");
 
-	ApplicationStatusWidgetItem(int type) {
+	ApplicationStatusWidgetItem(int type, String name) {
 		this.value = type;
+		this.name = name;
 	}
 
 	public final int value;
+	public final String name;
 }

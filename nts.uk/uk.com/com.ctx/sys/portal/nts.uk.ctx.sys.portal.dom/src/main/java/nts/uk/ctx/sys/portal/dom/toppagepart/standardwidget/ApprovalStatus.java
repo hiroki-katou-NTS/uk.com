@@ -9,18 +9,20 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 public enum ApprovalStatus {
 
 	// 未承認
-	UNAPPROVED(1),
+	UNAPPROVED(1, "未承認"),
 
 	// 承認
-	APPROVAL(2),
+	APPROVAL(2, "承認"),
 
 	// 否認
-	DENY(3);
+	DENY(3, "否認");
 
-	ApprovalStatus(int status) {
+	ApprovalStatus(int status, String name) {
 		this.value = status;
+		this.name = name;
 	}
 
 	public final int value;
+	public final String name;
 
 }
