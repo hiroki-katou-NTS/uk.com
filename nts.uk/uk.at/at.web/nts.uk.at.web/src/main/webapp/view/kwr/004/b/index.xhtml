@@ -135,13 +135,13 @@
                 ></div>
               </div>
               <div class="row">
-                <div class="ui-iggrid">
-                  <table id="multiGridList" width="100%">
+                <div class="ui-iggrid" tabindex="9">
+                  <table id="multiGridList" width="100%" tabindex="-1">
                     <colgroup>
                       <col width="35px" />
                       <col width="150px" />
                       <col width="250px" />
-                      <col width="250px" />
+                      <col width="220px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -167,8 +167,9 @@
                       <com:ko-if bind="$index() === 0 || $index() === 2">
                         <tr>
                           <td
+                            class="bg-hover-none"
                             colspan="4"
-                            data-bind="text: $i18n('KWR004_64')"
+                            data-bind="text: $index() === 0 ? $i18n('KWR004_64') : $i18n('KWR004_65')"
                           ></td>
                         </tr>
                       </com:ko-if>

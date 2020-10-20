@@ -332,8 +332,7 @@ module nts.uk.at.view.kwr003.b {
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
         vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
 
-        let findAttedenceName = _.find(vm.shareParam.attendanceItems,
-          (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
+        let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
         if (!_.isNil(findAttedenceName)) {
           vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
 

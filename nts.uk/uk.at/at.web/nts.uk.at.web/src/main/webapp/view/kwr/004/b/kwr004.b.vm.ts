@@ -205,7 +205,8 @@ module nts.uk.at.view.kwr004.b {
 
       //vm.creatDefaultSettingDetails();
       for (let i = 0; i < NUM_ROWS; i++) {
-        let newIitem = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
+        let setting = i < 2 ? 0 : null;
+        let newIitem = new SettingForPrint(i + 1, '予定勤務種類', setting, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
       _.orderBy(vm.settingListItemsDetails(), ['id', 'name'], ['asc', 'asc']);
@@ -218,12 +219,35 @@ module nts.uk.at.view.kwr004.b {
       let vm = this;
       //clear
       vm.settingListItemsDetails([])
-      for (let i = 0; i < NUM_ROWS; i++) {
-        let newIitem = new SettingForPrint(i + 1, null, 0, null, false);
+      for (let i = 0; i < NUM_ROWS; i++) {        
+        let setting = i < 2 ? 0 : 9999;
+        let newIitem = new SettingForPrint(i + 1, null, setting , null, false);
         vm.addRowItem(newIitem);
       }
     }
 
+    createDataSelection(selectedTimeList: Array<any>) {
+      let vm = this,
+        dataSelection: string = '',
+        selectionItem: Array<string> = [];
+
+      _.forEach(selectedTimeList, (item, index: number) => {
+        if (index === 0 && item.operator.substring(0, 1) === '+') {
+          selectionItem.push(item.name);
+        } else {
+          selectionItem.push(item.operator + ' ' + item.name);
+        }
+      });
+
+      if (selectionItem.length > 0) {
+        dataSelection = _.join(selectionItem, ' ');
+        if (dataSelection.length > 20) {
+          dataSelection = dataSelection.substring(0, 19) + vm.$i18n('KWR003_219');
+        }
+      }
+
+      return dataSelection;
+    }
 
     getSettingListForPrint(code: string) {
       let vm = this;
@@ -286,7 +310,7 @@ module nts.uk.at.view.kwr004.b {
     openDialogKDL(data: SettingForPrint) {
       let vm = this;
 
-      if (data.setting())
+      if (data.setting() === 1 || _.isNull(data.setting()))
         vm.openDialogKDL048(data);
       else
         vm.openDialogKDL047(data);
@@ -300,13 +324,25 @@ module nts.uk.at.view.kwr004.b {
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-        if (!attendanceItem) {
+        if (_.isNil(attendanceItem)) {
           return;
         }
-        let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === attendanceItem.attendanceId; });
+
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
         vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
-        vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
+
+        let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
+        if (!_.isNil(findAttedenceName)) {
+          vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
+
+          let listItem: selectedTimeList = {};
+          listItem.itemId = attendanceItem.attendanceId;
+          listItem.name = findAttedenceName.attendanceItemName;
+          vm.settingListItemsDetails()[index].selectedTimeList.push(listItem);
+        } else {
+          vm.settingListItemsDetails()[index].selectionItem(null);
+          vm.settingListItemsDetails()[index].selectedTimeList([]);
+        }
       });
     }
 
@@ -333,16 +369,12 @@ module nts.uk.at.view.kwr004.b {
 
         if (attendanceItem.selectedTimeList.length > 0) {
           let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-          _.forEach(attendanceItem.selectedTimeList, (item, index: number) => {
-            if (index === 0 && item.operator.substring(0, 1) === '+') {
-              selectionItem.push(item.name);
-            } else {
-              selectionItem.push(item.operator + ' ' + item.name);
-            }
-          });
-
-          vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
-          vm.settingListItemsDetails()[index].selectionItem(_.join(selectionItem, ' '));
+          let dataSelection: string = vm.createDataSelection(attendanceItem.selectedTimeList);
+          if (index > -1) {
+            vm.settingListItemsDetails()[index].name(attendanceItem.itemNameLine.name);
+            vm.settingListItemsDetails()[index].selectionItem(dataSelection);
+            vm.settingListItemsDetails()[index].selectedTimeList(attendanceItem.selectedTimeList);
+          }
         }
       });
     }
@@ -406,6 +438,7 @@ module nts.uk.at.view.kwr004.b {
   }
 
   //=================================================================
+  
   export class ItemModel {
     code: string;
     name: string;

@@ -71,14 +71,10 @@
         <div id="functions-area-bottom" class="btn-click">
           <button
             tabindex="3"
-            data-bind="click: proceed, enable: $root.errors.isEmpty"
+            data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR003_304')"
             class="proceed large"
-          >
-            #{i18n.getText('KWR003_304')}
-          </button>
-          <button tabindex="4" data-bind="click: cancel">
-            #{i18n.getText('KWR003_305')}
-          </button>
+          />
+          <button tabindex="4" data-bind="click: cancel, text: $i18n('KWR003_305')" />
         </div>
       </ui:define>
     </ui:composition>
