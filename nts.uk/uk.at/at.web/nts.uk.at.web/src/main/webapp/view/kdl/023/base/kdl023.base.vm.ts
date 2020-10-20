@@ -1264,7 +1264,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
             service.registerMonthlyPattern(param).done(() => {
                 nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                nts.uk.ui.windows.setShared("endYearMonth", vm.dateValue().endDate);
                 vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                     vm.closeDialog();
                 });
