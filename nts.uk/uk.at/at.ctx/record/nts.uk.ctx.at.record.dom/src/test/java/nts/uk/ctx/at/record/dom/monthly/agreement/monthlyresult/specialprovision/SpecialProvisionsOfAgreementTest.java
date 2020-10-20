@@ -47,7 +47,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),Arrays.asList(),listConfirmSID,new ScreenDisplayInfo());
 
-		assertThat(target.getInputDate()).isEqualTo(GeneralDate.ymd(2020,10,19));
+		assertThat(target.getInputDate()).isEqualTo(GeneralDate.today());
 		assertThat(target.getApprovalStatusDetails()).isEqualToComparingFieldByField(approvalStatusDetails);
 		assertThat(target.getConfirmationStatusDetails().size()).isEqualTo(2);
 		assertThat(target.getConfirmationStatusDetails())
@@ -74,7 +74,7 @@ public class SpecialProvisionsOfAgreementTest {
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
 		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.UNAPPROVED,
-				Optional.of("approverSID"),Optional.of(new AgreementApprovalComments("approvalComment")),Optional.of(GeneralDate.ymd(2020,10,19)));
+				Optional.of("approverSID"),Optional.of(new AgreementApprovalComments("approvalComment")),Optional.of(GeneralDate.today()));
 
 		target.approveApplication(approvalStatusDetails.getApproveSID().get(),approvalStatusDetails.getApprovalStatus(),
 				approvalStatusDetails.getApprovalComment());
@@ -107,7 +107,7 @@ public class SpecialProvisionsOfAgreementTest {
 						d -> d.getConfirmDate(),
 						d -> d.getConfirmationStatus())
 				.containsExactly(
-						tuple(Optional.of(GeneralDate.ymd(2020,10,19)),ConfirmationStatus.RECOGNITION)
+						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.RECOGNITION)
 				);
 
 	}
