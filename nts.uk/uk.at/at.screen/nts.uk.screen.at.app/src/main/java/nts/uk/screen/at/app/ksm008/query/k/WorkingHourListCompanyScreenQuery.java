@@ -33,10 +33,8 @@ public class WorkingHourListCompanyScreenQuery {
     private MaxDayOfWorkTimeCompanyRepo maxDayOfWorkTimeCompanyRepo;
 
     public MaxDaysOfWorkTimeComListDto get(String code) {
-
         /*就業時間帯情報リストを取得する*/
         Optional<MaxDayOfWorkTimeCompany> maxDayOfWorkTimeCompany = maxDayOfWorkTimeCompanyRepo.get(AppContexts.user().companyId(), new MaxDayOfWorkTimeCode(code));
-
         /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
         if (maxDayOfWorkTimeCompany.isPresent() && !maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
@@ -53,9 +51,10 @@ public class WorkingHourListCompanyScreenQuery {
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
         // working hours list
-        List<WorkingHoursDTO> workhourList = workTimeSettingList.stream().map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
-
-
+        List<WorkingHoursDTO> workhourList = workTimeSettingList
+                .stream()
+                .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
+                .collect(Collectors.toList());
         MaxDaysOfWorkTimeComListDto dto = new MaxDaysOfWorkTimeComListDto(
                 maxDayOfWorkTimeCompany.orElseGet(null).getCode().v(),
                 maxDayOfWorkTimeCompany.orElseGet(null).getName().v(),
@@ -67,10 +66,13 @@ public class WorkingHourListCompanyScreenQuery {
 
     public List<MaxDayOfWorkTimeCompanyDto> getWortimeList() {
         List<MaxDayOfWorkTimeCompany> list = maxDayOfWorkTimeCompanyRepo.getAll(AppContexts.user().companyId());
-        return list.stream().map(item -> new MaxDayOfWorkTimeCompanyDto(
-                item.getCode().v(),
-                item.getName().v(),
-                item.getMaxDayOfWorkTime().getMaxDay().v()
-        )).collect(Collectors.toList());
+        return list
+                .stream()
+                .map(item -> new MaxDayOfWorkTimeCompanyDto(
+                        item.getCode().v(),
+                        item.getName().v(),
+                        item.getMaxDayOfWorkTime().getMaxDay().v()
+                ))
+                .collect(Collectors.toList());
     }
 }

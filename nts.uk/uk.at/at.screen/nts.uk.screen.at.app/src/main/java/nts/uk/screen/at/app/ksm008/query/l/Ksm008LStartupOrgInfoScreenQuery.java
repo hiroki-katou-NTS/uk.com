@@ -1,12 +1,10 @@
-package nts.uk.screen.at.app.ksm008.query.j;
+package nts.uk.screen.at.app.ksm008.query.l;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecutiveattendance.ConsecutiveAttendanceOrgQuery;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsAttOrgRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganization;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganizationRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -20,7 +18,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportServic
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
-import nts.uk.screen.at.app.ksm008.query.i.MaxDaysOfContinuousWorkTimeDto;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkListRequestParam;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -32,15 +30,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Screen KSM008I : 初期起動の情報を取得する
+ * Screen KSM008L : 初期起動の情報を取得する
  *
  * @author rafiqul.islam
  */
 @Stateless
-public class Ksm008JStartupOrgInfoScreenQuery {
-
-    @Inject
-    private ConsecutiveAttendanceOrgQuery consecutiveAttendanceOrgQuery;
+public class Ksm008LStartupOrgInfoScreenQuery {
 
     @Inject
     private EmpOrganizationPub empOrganizationPub;
@@ -55,29 +50,25 @@ public class Ksm008JStartupOrgInfoScreenQuery {
     private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
 
     @Inject
-    MaxDaysOfConsAttOrgRepository maxDaysOfConsAttOrgRepository;
-
-    @Inject
-    MaxDaysOfContinuousWorkTimeOrganizationRepository maxDaysOfContinuousWorkTimeOrganizationRepository;
+    MaxDayOfWorkTimeOrganizationRepo maxDayOfWorkTimeOrganizationRepo;
 
     /**
      * Get startup info
      *
-     * @return Ksm008JStartOrgInfoDto
+     * @return Ksm008LStartOrgInfoDto
      * @author rafiqul.islam
      */
 
-    public Ksm008JStartOrgInfoDto getOrgInfo() {
+    public Ksm008LStartOrgInfoDto getOrgInfo() {
         //1: 取得する(Require, 年月日, 社員ID): 対象組織識別情報
-        Ksm008JStartupOrgInfoScreenQuery.RequireImpl require = new Ksm008JStartupOrgInfoScreenQuery.RequireImpl(empOrganizationPub);
+        Ksm008LStartupOrgInfoScreenQuery.RequireImpl require = new Ksm008LStartupOrgInfoScreenQuery.RequireImpl(empOrganizationPub);
         GeneralDate systemDate = GeneralDate.today();
         String employeeId = AppContexts.user().employeeId();
         TargetOrgIdenInfor targeOrg = GetTargetIdentifiInforService.get(require, systemDate, employeeId);
-
         //2: 組織の表示情報を取得する(Require, 年月日): 組織の表示情報
-        Ksm008JStartupOrgInfoScreenQuery.RequireWorkPlaceImpl requireWorkPlace = new Ksm008JStartupOrgInfoScreenQuery.RequireWorkPlaceImpl(workplaceGroupAdapter, workplaceExportService, affWorkplaceGroupRepo);
+        Ksm008LStartupOrgInfoScreenQuery.RequireWorkPlaceImpl requireWorkPlace = new Ksm008LStartupOrgInfoScreenQuery.RequireWorkPlaceImpl(workplaceGroupAdapter, workplaceExportService, affWorkplaceGroupRepo);
         DisplayInfoOrganization displayInfoOrganization = targeOrg.getDisplayInfor(requireWorkPlace, systemDate);
-        return new Ksm008JStartOrgInfoDto(
+        return new Ksm008LStartOrgInfoDto(
                 targeOrg.getUnit().value,
                 targeOrg.getWorkplaceId().orElse(null),
                 targeOrg.getWorkplaceGroupId().orElse(null),
@@ -89,14 +80,14 @@ public class Ksm008JStartupOrgInfoScreenQuery {
     }
 
     /**
-     * 組織の就業時間帯の連続勤務できる上限日数リストを取得する
+     * 組織の就業時間帯の上限一覧を選択する
      *
      * @param Ksm008GetWkListRequestParam
      * @return List<MaxDayOfWorkTimeCompanyDto>
      * @author rafiqul.islam
      */
 
-    public List<MaxDaysOfContinuousWorkTimeDto> getWorkTimeList(Ksm008GetWkListRequestParam requestParam) {
+    public List<MaxDaysOfWorkTimeDto> getWorkTimeList(Ksm008GetWkListRequestParam requestParam) {
         TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == 0
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(requestParam.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(requestParam.getWorkPlaceGroup());
@@ -104,26 +95,25 @@ public class Ksm008JStartupOrgInfoScreenQuery {
     }
 
     /**
-     * 組織の就業時間帯の連続勤務できる上限日数リストを取得する
+     * 組織の就業時間帯の上限一覧を選択する
      *
      * @param TargetOrgIdenInfor
-     * @return List<MaxDayOfWorkTimeCompanyDto>
+     * @return List<MaxDaysOfWorkTimeDto>
      * @author rafiqul.islam
      */
 
-    private List<MaxDaysOfContinuousWorkTimeDto> getWorkTimeListLocal(TargetOrgIdenInfor targeOrg) {
-        List<MaxDaysOfContinuousWorkTimeOrganization> workTimeOrganizations = maxDaysOfContinuousWorkTimeOrganizationRepository.getAll(AppContexts.user().companyId(), targeOrg);
-        List<MaxDaysOfContinuousWorkTimeDto> workTimeList = workTimeOrganizations
+    private List<MaxDaysOfWorkTimeDto> getWorkTimeListLocal(TargetOrgIdenInfor targeOrg) {
+        List<MaxDayOfWorkTimeOrganization> workTimeOrganizations = maxDayOfWorkTimeOrganizationRepo.getAll(AppContexts.user().companyId(), targeOrg);
+        List<MaxDaysOfWorkTimeDto> workTimeList = workTimeOrganizations
                 .stream()
-                .map(wrkTime -> new MaxDaysOfContinuousWorkTimeDto(
+                .map(wrkTime -> new MaxDaysOfWorkTimeDto(
                         wrkTime.getCode().v(),
                         wrkTime.getName().v(),
-                        wrkTime.getMaxDaysContiWorktime().getNumberOfDays().v()
+                        wrkTime.getMaxDayOfWorkTime().getMaxDay().v()
                 )).collect(Collectors.toList());
         Collections.sort(workTimeList);
         return workTimeList;
     }
-
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -169,18 +159,15 @@ public class Ksm008JStartupOrgInfoScreenQuery {
             if (data1.isEmpty()) {
                 return new ArrayList<WorkplaceInfo>();
             }
-            List<WorkplaceInfo> data = data1
-                    .stream()
-                    .map(item -> {
-                        return new WorkplaceInfo(item.getWorkplaceId(),
-                                item.getWorkplaceCode() == null ? Optional.empty() : Optional.of(item.getWorkplaceCode()),
-                                item.getWorkplaceName() == null ? Optional.empty() : Optional.of(item.getWorkplaceName()),
-                                item.getHierarchyCode() == null ? Optional.empty() : Optional.of(item.getHierarchyCode()),
-                                item.getGenericName() == null ? Optional.empty() : Optional.of(item.getGenericName()),
-                                item.getDisplayName() == null ? Optional.empty() : Optional.of(item.getDisplayName()),
-                                item.getExternalCode() == null ? Optional.empty() : Optional.of(item.getExternalCode()));
-                    })
-                    .collect(Collectors.toList());
+            List<WorkplaceInfo> data = data1.stream().map(item -> {
+                return new WorkplaceInfo(item.getWorkplaceId(),
+                        item.getWorkplaceCode() == null ? Optional.empty() : Optional.of(item.getWorkplaceCode()),
+                        item.getWorkplaceName() == null ? Optional.empty() : Optional.of(item.getWorkplaceName()),
+                        item.getHierarchyCode() == null ? Optional.empty() : Optional.of(item.getHierarchyCode()),
+                        item.getGenericName() == null ? Optional.empty() : Optional.of(item.getGenericName()),
+                        item.getDisplayName() == null ? Optional.empty() : Optional.of(item.getDisplayName()),
+                        item.getExternalCode() == null ? Optional.empty() : Optional.of(item.getExternalCode()));
+            }).collect(Collectors.toList());
             return data;
         }
 

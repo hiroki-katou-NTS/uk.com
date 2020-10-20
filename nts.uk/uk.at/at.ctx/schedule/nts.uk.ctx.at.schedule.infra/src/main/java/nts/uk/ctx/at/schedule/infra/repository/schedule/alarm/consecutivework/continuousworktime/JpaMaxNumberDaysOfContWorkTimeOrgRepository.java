@@ -7,7 +7,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutivework
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganizationRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrg;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrgDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmOrgDtlPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -51,6 +53,22 @@ public class JpaMaxNumberDaysOfContWorkTimeOrgRepository extends JpaRepository i
         KscmtAlchkConsecutiveWktmOrg entity = KscmtAlchkConsecutiveWktmOrg.of(companyId, domain);
         entity.contractCd = AppContexts.user().contractCode();
         List<KscmtAlchkConsecutiveWktmOrgDtl> detilsEntity = KscmtAlchkConsecutiveWktmOrgDtl.toDetailEntityList(companyId, domain);
+        List<WorkTimeCode> codeList = get(companyId, domain.getTargeOrg(), new ConsecutiveWorkTimeCode(domain.getCode().v())).orElseGet(null).getMaxDaysContiWorktime().getWorkTimeCodes();
+        for (WorkTimeCode codeDB : codeList) {
+            boolean isExist = false;
+            for (KscmtAlchkConsecutiveWktmOrgDtl dtl : detilsEntity) {
+                if (codeDB.v().equals(dtl.pk.wktmCode)) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                this.commandProxy().remove(KscmtAlchkConsecutiveWktmOrgDtl.class, new KscmtAlchkConsecutiveWktmOrgDtlPk(companyId,
+                        domain.getTargeOrg().getUnit().value,
+                        domain.getTargeOrg().getTargetId(),
+                        entity.pk.code, codeDB.v()));
+            }
+        }
         detilsEntity.forEach(item -> item.setContractCd(AppContexts.user().contractCode()));
         this.commandProxy().update(entity);
         this.commandProxy().updateAll(detilsEntity);

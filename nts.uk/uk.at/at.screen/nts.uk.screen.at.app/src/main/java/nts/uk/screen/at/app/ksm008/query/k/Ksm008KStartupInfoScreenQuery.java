@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Stateless
 public class Ksm008KStartupInfoScreenQuery {
+
     @Inject
     private AlarmCheckConditionScheduleRepository alarmCheckConditionScheduleRepo;
 
@@ -35,7 +36,6 @@ public class Ksm008KStartupInfoScreenQuery {
         StringBuilder explanation = new StringBuilder();
         if (alarmCheckConditionSchedule != null) {
             conditionName = alarmCheckConditionSchedule.getConditionName();
-
             for (SubCondition subCondition : alarmCheckConditionSchedule.getSubConditions()) {
                 explanation.append(subCondition.getExplanation());
             }
@@ -55,7 +55,6 @@ public class Ksm008KStartupInfoScreenQuery {
      */
     public AlarmCheckConditionSchedule getComInfo(AlarmCheckConditionScheduleCode code) {
         AlarmCheckConditionSchedule alarmCheckConditionSchedule = alarmCheckConditionScheduleRepo.get(AppContexts.user().contractCode(), AppContexts.user().companyId(), code);
-
         return alarmCheckConditionSchedule;
     }
 }

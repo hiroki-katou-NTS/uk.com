@@ -7,7 +7,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.M
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCompanyRepo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmpDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmpDtlPk;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmpPk;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -49,6 +51,19 @@ public class JpaMaxDayOfWorkTimeCompany extends JpaRepository implements MaxDayO
         KscmtAlchkMaxdaysWktmCmp maxDaysWktm = KscmtAlchkMaxdaysWktmCmp.fromDomain(companyId, domain);
         maxDaysWktm.contractCd = AppContexts.user().contractCode();
         List<KscmtAlchkMaxdaysWktmCmpDtl> maxDaysWktmDtlList = KscmtAlchkMaxdaysWktmCmpDtl.fromDomain(companyId, domain);
+        List<WorkTimeCode> codeList = get(companyId, new MaxDayOfWorkTimeCode(maxDaysWktm.pk.code)).get().getMaxDayOfWorkTime().getWorkTimeCodeList();
+        for (WorkTimeCode codeDB : codeList) {
+            boolean isExist = false;
+            for (KscmtAlchkMaxdaysWktmCmpDtl dtl : maxDaysWktmDtlList) {
+                if (codeDB.v().equals(dtl.pk.workTimeCode)) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                this.commandProxy().remove(KscmtAlchkMaxdaysWktmCmpDtl.class, new KscmtAlchkMaxdaysWktmCmpDtlPk(companyId, maxDaysWktm.pk.code, codeDB.v()));
+            }
+        }
         maxDaysWktmDtlList.forEach(item -> {
             item.setContractCd(AppContexts.user().contractCode());
         });

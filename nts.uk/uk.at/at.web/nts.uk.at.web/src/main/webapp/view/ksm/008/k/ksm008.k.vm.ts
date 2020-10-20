@@ -186,6 +186,7 @@ module nts.uk.at.ksm008.i {
                         .then(() => {
                             vm.loadKScreenListData();
                             vm.currentCode(vm.kScreenWorkingHour.code());
+                            vm.getDetailsKScreen(vm.kScreenWorkingHour.code());
                             $("#K6_3").focus();
                             vm.kScreenFoucs.isNameFocus = true;
                         });

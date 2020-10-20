@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.ksm008.query.k;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ksm008.query.i.MaxDaysOfContinuousWorkTimeDto;
 
 import java.util.List;
 

@@ -3,14 +3,13 @@ package nts.uk.screen.at.app.ksm008.query.i;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceCom.ConsecutiveAttendanceComDto;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ksm008IStartInfoDto  {
+public class Ksm008IStartInfoDto {
 
     /**
      * 勤務予定のアラームチェック条件.コード

@@ -1,11 +1,12 @@
-package nts.uk.screen.at.app.ksm008.query.j;
+package nts.uk.screen.at.app.ksm008.query.l;
 
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganization;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeOrganizationRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkDetaislRequestParam;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -18,36 +19,34 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * KSM008 J : 会社の就業時間帯の連続勤務上限明細を取得する
+ * KSM008 L : 組織の就業時間帯の上限一覧を選択する
  *
  * @author rafiqul.islam
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class Ksm008JWorkingHourListOrgScreenQuery {
+public class Ksm008LWorkingHourListOrgScreenQuery {
 
     @Inject
     private WorkTimeSettingRepository workTimeRepo;
 
     @Inject
-    MaxDaysOfContinuousWorkTimeOrganizationRepository maxDaysOfContinuousWorkTimeOrganizationRepository;
+    MaxDayOfWorkTimeOrganizationRepo maxDayOfWorkTimeOrganizationRepo;
 
-
-    public MaxDaysOfContinuousWorkTimeListOrgDto get(Ksm008GetWkDetaislRequestParam requestParam) {
+    public MaxDaysOfWorkTimeListOrgDto get(Ksm008GetWkDetaislRequestParam requestParam) {
         TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == 0
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(requestParam.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(requestParam.getWorkPlaceGroup());
         /*就業時間帯情報リストを取得する*/
-        Optional<MaxDaysOfContinuousWorkTimeOrganization> maxDaysOfContinuousWorkTimeCompany = maxDaysOfContinuousWorkTimeOrganizationRepository.get(AppContexts.user().companyId(),
+        Optional<MaxDayOfWorkTimeOrganization> maxDayOfWorkTimeOrganization = maxDayOfWorkTimeOrganizationRepo.getWithCode(AppContexts.user().companyId(),
                 targetOrgIdenInfor,
-                new ConsecutiveWorkTimeCode(requestParam.getCode()));
-        /*就業時間帯コードリスト */
+                new MaxDayOfWorkTimeCode(requestParam.getCode()));        /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
-            workHourCodeList = maxDaysOfContinuousWorkTimeCompany
+        if (maxDayOfWorkTimeOrganization.isPresent() && !maxDayOfWorkTimeOrganization.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
+            workHourCodeList = maxDayOfWorkTimeOrganization
                     .get()
-                    .getMaxDaysContiWorktime()
-                    .getWorkTimeCodes()
+                    .getMaxDayOfWorkTime()
+                    .getWorkTimeCodeList()
                     .stream()
                     .map(item -> item.v())
                     .collect(Collectors.toList());
@@ -60,10 +59,10 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                 .stream()
                 .map(item -> new WorkingHoursOrgDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
-        MaxDaysOfContinuousWorkTimeListOrgDto dto = new MaxDaysOfContinuousWorkTimeListOrgDto(
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getCode().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getName().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getMaxDaysContiWorktime().getNumberOfDays().v(),
+        MaxDaysOfWorkTimeListOrgDto dto = new MaxDaysOfWorkTimeListOrgDto(
+                maxDayOfWorkTimeOrganization.orElseGet(null).getCode().v(),
+                maxDayOfWorkTimeOrganization.orElseGet(null).getName().v(),
+                maxDayOfWorkTimeOrganization.orElseGet(null).getMaxDayOfWorkTime().getMaxDay().v(),
                 workhourList
         );
         return dto;

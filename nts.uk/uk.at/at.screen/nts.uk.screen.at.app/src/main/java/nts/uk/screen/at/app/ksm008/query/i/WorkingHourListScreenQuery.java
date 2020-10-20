@@ -31,14 +31,11 @@ public class WorkingHourListScreenQuery {
     private MaxDaysOfContinuousWorkTimeCompanyRepository maxDaysOfContinuousWorkTimeCompanyRepository;
 
     public MaxDaysOfContinuousWorkTimeListDto get(String code) {
-
         /*就業時間帯情報リストを取得する*/
         Optional<MaxDaysOfContinuousWorkTimeCompany> maxDaysOfContinuousWorkTimeCompany = maxDaysOfContinuousWorkTimeCompanyRepository.get(AppContexts.user().companyId(), new ConsecutiveWorkTimeCode(code));
-
         /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
         if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
-
             workHourCodeList = maxDaysOfContinuousWorkTimeCompany
                     .get()
                     .getMaxDaysContiWorktime()
@@ -51,29 +48,28 @@ public class WorkingHourListScreenQuery {
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
         // working hours list
-        List<WorkingHoursDTO> workhourList = workTimeSettingList.stream().map(item->new WorkingHoursDTO(item.getWorktimeCode().v(),item.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
-
-
-
+        List<WorkingHoursDTO> workhourList = workTimeSettingList
+                .stream()
+                .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
+                .collect(Collectors.toList());
         MaxDaysOfContinuousWorkTimeListDto dto = new MaxDaysOfContinuousWorkTimeListDto(
                 maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getCode().v(),
                 maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getName().v(),
                 maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getMaxDaysContiWorktime().getNumberOfDays().v(),
                 workhourList
-                );
-
-        /*
-         *会社の就業時間帯の連続勤務できる上限日数
-         */
+        );
         return dto;
     }
 
     public List<MaxDaysOfContinuousWorkTimeDto> getWortimeList() {
         List<MaxDaysOfContinuousWorkTimeCompany> list = maxDaysOfContinuousWorkTimeCompanyRepository.getAll(AppContexts.user().companyId());
-        return list.stream().map(item -> new MaxDaysOfContinuousWorkTimeDto(
-                item.getCode().v(),
-                item.getName().v(),
-                item.getMaxDaysContiWorktime().getNumberOfDays().v()
-        )).collect(Collectors.toList());
+        return list
+                .stream()
+                .map(item -> new MaxDaysOfContinuousWorkTimeDto(
+                        item.getCode().v(),
+                        item.getName().v(),
+                        item.getMaxDaysContiWorktime().getNumberOfDays().v()
+                ))
+                .collect(Collectors.toList());
     }
 }

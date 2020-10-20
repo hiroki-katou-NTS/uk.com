@@ -31,10 +31,11 @@ public class MaxDaysOfContinuousWorkTimeListDto {
     private List<WorkingHoursOrgDTO> workingHours;
 
 }
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
- class WorkingHoursDTO {
+class WorkingHoursDTO {
     /**
      * code
      */

@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.query.i;
+package nts.uk.screen.at.app.ksm008.query.l;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MaxDaysOfContinuousWorkTimeListDto {
+public class MaxDaysOfWorkTimeListOrgDto {
     /**
      * コード
      */
@@ -27,19 +27,19 @@ public class MaxDaysOfContinuousWorkTimeListDto {
     /**
      * 日数
      */
-    private Integer maxDaysContiWorktime;
+    private Integer maxDays;
 
     /**
      * 就業時間帯名称
      */
-    private List<WorkingHoursDTO> workingHours;
+    private List<WorkingHoursOrgDTO> workingHours;
 
 }
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-class WorkingHoursDTO {
+class WorkingHoursOrgDTO {
     /**
      * code
      */
@@ -50,4 +50,3 @@ class WorkingHoursDTO {
      */
     private String name;
 }
-

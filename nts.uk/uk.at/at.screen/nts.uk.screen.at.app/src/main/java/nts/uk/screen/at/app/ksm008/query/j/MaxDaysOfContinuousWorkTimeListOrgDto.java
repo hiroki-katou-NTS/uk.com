@@ -39,7 +39,7 @@ public class MaxDaysOfContinuousWorkTimeListOrgDto {
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
- class WorkingHoursOrgDTO {
+class WorkingHoursOrgDTO {
     /**
      * code
      */

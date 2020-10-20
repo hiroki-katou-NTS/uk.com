@@ -5,8 +5,13 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeCompany;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.MaxDaysOfContinuousWorkTimeCompanyRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmpDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.continuousworktime.KscmtAlchkConsecutiveWktmCmpDtlPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmpDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmCmpDtlPk;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -48,6 +53,19 @@ public class JpaMaxNumberDaysOfContWorkTimeComRepository extends JpaRepository i
         entity.contractCd = AppContexts.user().contractCode();
         List<KscmtAlchkConsecutiveWktmCmpDtl> toDetailEntityLis = KscmtAlchkConsecutiveWktmCmpDtl
                 .toDetailEntityList(companyId, domain);
+        List<WorkTimeCode> codeList = get(companyId, new ConsecutiveWorkTimeCode(entity.pk.code)).get().getMaxDaysContiWorktime().getWorkTimeCodes();
+        for (WorkTimeCode codeDB : codeList) {
+            boolean isExist = false;
+            for (KscmtAlchkConsecutiveWktmCmpDtl dtl : toDetailEntityLis) {
+                if (codeDB.v().equals(dtl.pk.wktmCode)) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                this.commandProxy().remove(KscmtAlchkConsecutiveWktmCmpDtl.class, new KscmtAlchkConsecutiveWktmCmpDtlPk(companyId, entity.pk.code, codeDB.v()));
+            }
+        }
         toDetailEntityLis.forEach(item -> item.setContractCd(AppContexts.user().contractCode()));
         this.commandProxy().update(entity);
         this.commandProxy().updateAll(toDetailEntityLis);
