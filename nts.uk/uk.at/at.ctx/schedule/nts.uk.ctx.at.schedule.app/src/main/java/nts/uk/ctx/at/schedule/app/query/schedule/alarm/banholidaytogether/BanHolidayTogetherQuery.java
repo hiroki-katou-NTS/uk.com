@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogether;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -48,5 +49,29 @@ public class BanHolidayTogetherQuery {
         }
 
         return data;
+    }
+
+    /**
+     * 同日休日禁止明細を表示する
+     * コードを指定して同日休日禁止を取得する
+     *
+     * @param unit                   対象組織.単位
+     * @param workplaceId            対象組織.職場ID
+     * @param workplaceGroupId       対象組織.職場グループID
+     * @param banHolidayTogetherCode 同日休日禁止コード
+     * @return List<同時休日禁止>
+     */
+    public void getBanHolidayByCode(int unit, String workplaceId, String workplaceGroupId, String banHolidayTogetherCode) {
+        String companyId = AppContexts.user().companyId();
+
+        TargetOrgIdenInfor targeOrg = new TargetOrgIdenInfor(
+                EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class),
+                Optional.ofNullable(workplaceId),
+                Optional.ofNullable(workplaceGroupId)
+        );
+
+        BanHolidayTogetherCode code = new BanHolidayTogetherCode(banHolidayTogetherCode);
+
+        Optional<BanHolidayTogether> banHolidayTogether = BanHolidayTogetherRepo.get(companyId, targeOrg, code);
     }
 }
