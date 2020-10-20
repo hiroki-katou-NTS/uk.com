@@ -2,7 +2,7 @@ import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
 import { KafS00AComponent, KafS00BComponent, KAFS00BParams, KafS00CComponent, KAFS00CParams } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { KafS00SubP1Component, KAFS00P1Params } from '../../s00/sub/p1';
+import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from '../../s00/sub/p1';
 
 
 import {
@@ -687,15 +687,31 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     }
                 });
 
-                response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((i) => {
-                    if (i.opAchievementDetail) {
-                        if (i.opAchievementDetail.opWorkTime != null && i.opAchievementDetail.opLeaveTime != null) {
-                            vm.time.attendanceTime = i.opAchievementDetail.opWorkTime;
-                            vm.time.leaveTime = i.opAchievementDetail.opLeaveTime;
-                            vm.time.attendanceTime2 = i.opAchievementDetail.opWorkTime2;
-                            vm.time.leaveTime2 = i.opAchievementDetail.opDepartureTime2;
+                response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
+                    if (item.opAchievementDetail) {
+                        if (item.opAchievementDetail.opWorkTime != null) {
+                            vm.time.attendanceTime = item.opAchievementDetail.opWorkTime;
                             vm.check.cbCancelLate.isDisable = false;
+                        } else {
+                            vm.check.cbCancelLate.isDisable = true;
+                        }
+                        if (item.opAchievementDetail.opLeaveTime != null) {
+                            vm.time.leaveTime = item.opAchievementDetail.opLeaveTime;
                             vm.check.cbCancelEarlyLeave.isDisable = false;
+                        } else {
+                            vm.check.cbCancelEarlyLeave.isDisable = true;
+                        }
+                        if (item.opAchievementDetail.opWorkTime2 != null) {
+                            vm.time.attendanceTime2 = item.opAchievementDetail.opWorkTime2;
+                            vm.check.cbCancelLate2.isDisable = false;
+                        } else {
+                            vm.check.cbCancelLate2.isDisable = true;
+                        }
+                        if (item.opAchievementDetail.opDepartureTime2 != null) {
+                            vm.time.leaveTime2 = item.opAchievementDetail.opDepartureTime2;
+                            vm.check.cbCancelEarlyLeave2.isDisable = false;
+                        } else {
+                            vm.check.cbCancelEarlyLeave2.isDisable = true;
                         }
                     }
                 });
