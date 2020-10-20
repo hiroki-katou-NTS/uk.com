@@ -238,7 +238,7 @@ module nts.uk.com.view.cmm049.z {
   }
 
   export class UserInformationSettingDto {
-    infoUseMethodDto: UserInfoUseMethod_Dto;
+    UserInfoUseMethod_Dto: UserInfoUseMethod_Dto;
     mailFunctionDtos: MailFunctionDto[];
 
     constructor(init?: Partial<UserInformationSettingDto>) {

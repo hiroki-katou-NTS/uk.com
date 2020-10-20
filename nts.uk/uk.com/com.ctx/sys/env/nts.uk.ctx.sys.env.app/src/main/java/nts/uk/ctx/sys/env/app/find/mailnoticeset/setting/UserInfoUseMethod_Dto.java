@@ -53,7 +53,7 @@ public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, 
 	 */
 	private SettingContactInformationDto settingContactInformation;
 
-	@Override
+	@Override 
 	public void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions) {
 		this.emailDestinationFunctions = emailDestinationFunctions.stream()
 				.map(item -> EmailDestinationFunctionDto.builder()
