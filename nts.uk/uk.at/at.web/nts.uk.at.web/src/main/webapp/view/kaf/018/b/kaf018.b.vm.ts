@@ -112,7 +112,18 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		buttonMailAction() {
 			const vm = this;
-			vm.$window.modal('/view/kaf/018/c/index.xhtml');
+			let height = screen.availHeight;
+			if(screen.availHeight > 820) {
+				height = 820
+			}
+			if(screen.availHeight < 600) {
+				height = 600;
+			}
+			let dialogSize = {
+				width: 900,
+				height: height
+			}
+			vm.$window.modal('/view/kaf/018/c/index.xhtml', {}, dialogSize);
 		}
 		
 		goBackA() {
