@@ -51,6 +51,14 @@ export module viewmodel {
                 });
                 self.loadGrid();
             }
+			self.selectedEmployee.subscribe(value => {
+				if (value) {
+					self.initKCP005();
+					if (!ko.toJS(self.isShow)) {
+						self.isShow(true);
+					}
+				}
+			});
         }
 		initKCP005() {
 			const self = this;
@@ -160,15 +168,7 @@ export module viewmodel {
                     self.loadGrid();
                 });
                 dfd.resolve();
-            });
-			self.selectedEmployee.subscribe(value => {
-				if (value) {
-					self.initKCP005();
-					if (!ko.toJS(self.isShow)) {
-						self.isShow(true);
-					}
-				}
-			});
+            });	
             return dfd.promise();
         }
         //閉じるボタン
