@@ -3,20 +3,12 @@ package nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 /**
- * 特別休暇付与日数テーブル　PK
+ * 特別休暇経過付与日数テーブル PK
  * @author masaaki_jinno
- *
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Embeddable
-public class KshstGrantDateTblPK implements Serializable {
+public class KshstGrantDateElapseYearsTblPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社ID */

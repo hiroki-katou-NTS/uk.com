@@ -113,6 +113,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
 	 * @param remNumShiftListWork 複数の付与残数の消化処理を行う一時変数
 	 * @param leaveUsedNumber 休暇使用数
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param baseDate　基準日
 	 * @param isForcibly　強制的に消化するか
@@ -122,6 +123,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			List<LeaveGrantRemainingData> targetRemainingDatas,
 			RemNumShiftListWork remNumShiftListWork,
 			LeaveUsedNumber leaveUsedNumber,
+			String companyId,
 			String employeeId,
 			GeneralDate baseDate,
 			boolean isForcibly){
@@ -134,7 +136,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			
 			// 休暇使用数を消化できるかチェック
 			if ( !remNumShiftListWork.canDigest(
-					require, leaveUsedNumber, employeeId, baseDate) ){
+					require, leaveUsedNumber, companyId, employeeId, baseDate) ){
 				// 消化できないときはループ
 				continue;
 			}
@@ -142,7 +144,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 		
 		// 休暇使用数を消化する
 		remNumShiftListWork.digest(
-				require, leaveUsedNumber, employeeId, baseDate);
+				require, leaveUsedNumber, companyId, employeeId, baseDate);
 		
 		// 残数不足で一部消化できなかったとき
 		if ( !remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){

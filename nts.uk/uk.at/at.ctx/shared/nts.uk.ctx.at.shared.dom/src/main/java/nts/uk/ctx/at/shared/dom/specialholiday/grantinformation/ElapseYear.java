@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacation
 
 /**
  * 特別休暇付与経過年数テーブル
- *
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,37 +38,23 @@ public class ElapseYear extends AggregateRoot {
 	private Optional<GrantCycleAfterTbl> grantCycleAfterTbl;
 	
 	
-//	/** 会社ID */
-//	private String companyId;
-//	
-//	/** 特別休暇コード */
-//	private int specialHolidayCode;
-//	
-//	/** 付与テーブルコード */
-//	private String grantDateCode;
-//	
-//	/** 付与回数 */
-//	private int elapseNo;
-//	
-//	/** 特別休暇付与日数 */
-//	private GrantedDays grantedDays;
-//	
-//	/**  */
-//	private SpecialVacationMonths months;
-//	
-//	/**  */
-//	private GrantedYears years;
-	
 	@Override
 	public void validate() {
 		super.validate();
 	}
 
-//	public static ElapseYear createFromJavaType(String companyId, int specialHolidayCode, String grantDateCode, int elapseNo, int grantedDays, int months, int years) {
-//		return new ElapseYear(companyId, specialHolidayCode, grantDateCode, elapseNo, 
-//				new GrantedDays(grantedDays),
-//				new SpecialVacationMonths(months),
-//				new GrantedYears(years));
-//	}
+	public static ElapseYear createFromJavaType(
+			String companyId, 
+			int specialHolidayCode, 
+			boolean fixedAssign, 
+			int months, int years) {
+		return new ElapseYear(
+				companyId, 
+				new SpecialHolidayCode(specialHolidayCode), 
+				new ArrayList<ElapseYearMonthTbl>(),
+				fixedAssign, 
+				Optional.of(GrantCycleAfterTbl.createFromJavaType(years, months))
+				);
+	}
 	
 }

@@ -250,14 +250,14 @@ public class LeaveRemainingNumber {
 	 * @param baseDate 基準日
 	 * @return
 	 */
-	static public Optional<LeaveTime> getContractTime(
+	static public Optional<LaborContractTime> getContractTime(
 		RequireM3 require,
 		String companyID,
 		String employeeId,
 		GeneralDate baseDate){
 		
 		// 契約時間
-		Optional<LeaveTime> contractTime = Optional.empty();
+		Optional<LaborContractTime> contractTime = Optional.empty();
 		
 		// ドメインモデル「年休設定」を取得する
 		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
@@ -278,8 +278,8 @@ public class LeaveRemainingNumber {
 		if ( annualTimePerDay.getAnnualTimePerDayRefer().equals(AnnualTimePerDayRefer.CompanyUniform)){ 
 
 			// １日の時間をセット
-			contractTime = Optional.of(new LeaveTime(annualTimePerDay.getLeaveTime().v()));
-				
+			contractTime = Optional.of(new LaborContractTime(annualTimePerDay.getlaborContractTime().v()));
+	
 		} else { // 社員の契約時間により算定
 			
 			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
@@ -287,16 +287,13 @@ public class LeaveRemainingNumber {
 				= require.workingConditionItem(employeeId, baseDate);
 	
 			if (workCond.isPresent()) {
-				contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
-						: Optional.ofNullable(new LeaveTime(workCond.get().getContractTime().v()));
+				contractTime = Optional.ofNullable(workCond.get().getContractTime()));
 				
 				// 丸め処理
-				// 取得した契約時間を1時間単位で切り上げる
-				if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.RoundUpTo1Hour) ){
-					int time = contractTime.get().v();
-					if ( time % 60 > 0 ){
-						int timeUpTo1Hour = (time/60)*60 + 60;
-						contractTime = Optional.of(new LeaveTime(timeUpTo1Hour));
+				if ( contractTime.isPresent()){
+					// 取得した契約時間を1時間単位で切り上げる
+					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.RoundUpTo1Hour) ){
+							contractTime = Optional.of(contractTime.get().roundUp1Hour());
 					}
 				}
 			}

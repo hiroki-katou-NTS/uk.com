@@ -77,12 +77,14 @@ public class RemNumShiftListWork {
 	 * 休暇使用数を消化できるかチェックする
 	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
 	 * @param leaveUsedNumber 休暇使用数
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 */
 	public boolean canDigest(
 			LeaveRemainingNumber.RequireM3 require,
 			LeaveUsedNumber leaveUsedNumber,
+			String companyId,
 			String employeeId,
 			GeneralDate baseDate){
 		
@@ -99,7 +101,7 @@ public class RemNumShiftListWork {
 		// 結果をメンバー変数へセット（メンバ変数.消化できなかった休暇使用数← 消化できなかった休暇使用数）
 		unusedNumber
 			= leaveRemainingNumberOpt.get().digestLeaveUsedNumber(
-					require, leaveUsedNumber, employeeId, baseDate);
+					require, leaveUsedNumber, companyId, employeeId, baseDate);
 		
 		if ( unusedNumber.isZero() ){ // 消化できなかった休暇使用数が０のとき
 			return true;
@@ -112,12 +114,14 @@ public class RemNumShiftListWork {
 	 * 休暇使用数を消化する
 	 * @param repositoriesRequiredByRemNum ロードデータ
 	 * @param leaveUsedNumber 休暇使用数
+	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
 	 */
 	public void digest(
 			LeaveRemainingNumber.RequireM3 require,
 			LeaveUsedNumber leaveUsedNumber,
+			String companyId,
 			String employeeId,
 			GeneralDate baseDate){
 		
@@ -135,7 +139,7 @@ public class RemNumShiftListWork {
 		// 結果をメンバー変数へセット（メンバ変数.消化できなかった休暇使用数← 消化できなかった休暇使用数）
 		unusedNumber
 			= leaveRemainingNumberOpt.get().digestLeaveUsedNumber(
-					require, leaveUsedNumber, employeeId, baseDate);
+					require, leaveUsedNumber, companyId, employeeId, baseDate);
 		
 		// 休暇残数をすべて消化する
 		digestAll();

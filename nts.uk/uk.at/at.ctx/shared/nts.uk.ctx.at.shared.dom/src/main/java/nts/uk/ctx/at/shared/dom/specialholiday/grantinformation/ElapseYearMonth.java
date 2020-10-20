@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
 
 /**
  * 経過年数
@@ -26,4 +27,9 @@ public class ElapseYearMonth {
         ElapseYearMonth mdc = (ElapseYearMonth) obj;
         return mdc.year == this.year && mdc.month == this.month;
     }
+    
+    public static ElapseYearMonth createFromJavaType(
+			int year, int month) {
+		return new ElapseYearMonth(year, month);
+	}
 }
