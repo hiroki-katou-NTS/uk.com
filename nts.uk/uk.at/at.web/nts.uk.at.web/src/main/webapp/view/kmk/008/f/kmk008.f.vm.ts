@@ -88,6 +88,7 @@ module nts.uk.at.view.kmk008.f {
 
                 /** Advanced search properties */
                 showEmployment: true, // 雇用条件
+                showDepartment: false, // 部門条件
                 showWorkplace: true, // 職場条件
                 showClassification: true, // 分類条件
                 showJobTitle: true, // 職位条件

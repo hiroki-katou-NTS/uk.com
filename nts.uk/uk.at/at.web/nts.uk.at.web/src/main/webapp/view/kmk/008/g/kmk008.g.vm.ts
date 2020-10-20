@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk008.g {
         operationSetting: KnockoutObservable<OperationSettingModel> = ko.observable(new OperationSettingModel(null));
         specialConditionList: KnockoutObservableArray<RadioModel>;
         yearSpecialConditionList: KnockoutObservableArray<RadioModel>;
+        isUpdate: boolean = false;
 
         constructor() {
             super();
@@ -62,6 +63,7 @@ module nts.uk.at.view.kmk008.g {
             vm.$ajax(PATH_API.registerData, new OperationSettingModelUpdate(vm.operationSetting()))
                 .done(() => {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.isUpdate = true;
                         vm.closeDialog();
                     });
                 })
@@ -73,7 +75,14 @@ module nts.uk.at.view.kmk008.g {
 
         closeDialog() {
             const vm = this;
-            vm.$window.close();
+            if (vm.isUpdate) {
+                vm.isUpdate = false;
+                vm.$window.close({
+                    specialConditionApplicationUse: vm.operationSetting().specialConditionApplicationUse()
+                })
+            } else {
+                vm.$window.close()
+            }
         }
     }
 

@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk008.b {
                 addAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/addAgreementTimeOfCompany",
                 updateAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/updateAgreementTimeOfCompany",
 				GET_B: "screen/at/kmk008/b/get",
+				saveCpnAgrTime: 'monthly/estimatedtime/company/add',
             }
             
             constructor() {
@@ -16,10 +17,14 @@ module nts.uk.at.view.kmk008.b {
                 let _path = nts.uk.text.format(this.paths.getAgreementTimeOfCompany, laborSystemAtr);
                 return nts.uk.request.ajax("at", _path);
             };
-            
-            addAgreementTimeOfCompany(UpdateInsertTimeOfCompanyModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfCompany, UpdateInsertTimeOfCompanyModel);
+
+			saveCpnAgrTime(data: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", 'monthly/estimatedtime/company/add', data);
             };
+
+			addAgreementTimeOfCompany(UpdateInsertTimeOfCompanyModel: any): JQueryPromise<any> {
+				return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfCompany, UpdateInsertTimeOfCompanyModel);
+			};
                 
             updateAgreementTimeOfCompany(UpdateInsertTimeOfCompanyModel: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.updateAgreementTimeOfCompany, UpdateInsertTimeOfCompanyModel);

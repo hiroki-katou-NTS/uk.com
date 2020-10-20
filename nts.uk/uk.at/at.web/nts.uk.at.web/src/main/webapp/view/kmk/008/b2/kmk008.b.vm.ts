@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk008.b {
 	import getText = nts.uk.resource.getText;
 	import alertError = nts.uk.ui.dialog.alertError;
+	import AgreementTimeOfCompanyDto = nts.uk.at.view.kmk008.b.service.AgreementTimeOfCompanyDto;
 
 	@bean()
 	export class ScreenModel extends ko.ViewModel {
-		timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
+		timeOfCompany: KnockoutObservable<TimeOfCompanyModel> = ko.observable(new TimeOfCompanyModel(null));
 		isUpdate: boolean;
 		laborSystemAtr: number = 0;
 		deleteEnable = true;
@@ -48,8 +49,11 @@ module nts.uk.at.view.kmk008.b {
 			vm.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
 			vm.empListCmp = new EmpListCmp();
 
-			vm.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
-			alert(vm.laborSystemAtr);
+			if (__viewContext.transferred.value.laborSystemAtr) {
+				vm.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
+			} else {
+				vm.laborSystemAtr = 0;
+			}
 		}
 
 		created() {
@@ -72,33 +76,17 @@ module nts.uk.at.view.kmk008.b {
 			let vm = this;
 			let dfd = $.Deferred();
 
-			nts.uk.ui.errors.clearAll();
-			if (vm.laborSystemAtr == 0) {
-				vm.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
-			} else {
-				vm.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
-			}
-
-			// new service.Service().getAgreementTimeOfCompany(vm.laborSystemAtr).done(data => {
-			// 	vm.timeOfCompany(new TimeOfCompanyModel(data));
-			// 	if (data.updateMode) {
-			// 		vm.isUpdate = true;
-			// 	} else {
-			// 		vm.isUpdate = false;
-			// 	}
-			// 	$("#errorCheckInput").focus();
-			// 	dfd.resolve();
-			// }).fail(error => {
-			//
-			// }); TODO
+			$("#B3_3").ntsFixedTable({});
+			$("#B3_6").ntsFixedTable({});
+			$("#B3_31").ntsFixedTable({});
 
 			$('#empt-list-setting').ntsListComponent(vm.empListCmp.listComponentOption);
-			$("#B4_3").ntsFixedTable({});
-			$("#B4_6").ntsFixedTable({});
-			$("#B4_31").ntsFixedTable({});
 			$("#C4_3").ntsFixedTable({});
 			$("#C4_6").ntsFixedTable({});
 			$("#C4_31").ntsFixedTable({});
+
+			vm.initB().done(()=>{
+			});
 
 			return dfd.promise();
 		}
@@ -115,36 +103,35 @@ module nts.uk.at.view.kmk008.b {
 			alert(2);
 		}
 
+		private validateTimes(): void {
+			// TODO
+		}
+
 		addUpdateData() {
-			let self = this;
-			let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
+			let vm = this;
+
+			vm.validateTimes();
+			// let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(vm.timeOfCompany(), vm.laborSystemAtr);
+			let timeOfCompanyNew = ko.unwrap(vm.timeOfCompany());
+			timeOfCompanyNew.laborSystemAtr = vm.laborSystemAtr;
 			nts.uk.ui.block.invisible();
-			if (self.isUpdate) {
-				new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
-					if (listError.length > 0) {
-						self.showDialogError(listError);
-						nts.uk.ui.block.clear();
-						return;
-					}
-					nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
-						self.startPage();
-					});
-				});
-				nts.uk.ui.block.clear();
-				return;
-			}
-			new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function (listError) {
+			new service.Service().saveCpnAgrTime(timeOfCompanyNew).done(function (listError) {
 				if (listError.length > 0) {
-					self.showDialogError(listError);
+					vm.showDialogError(listError);
 					nts.uk.ui.block.clear();
 					return;
 				}
-				nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
-					self.startPage();
-				});
-				nts.uk.ui.block.clear();
+
+				// // Msg_59
+				// nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function (data) {
+				// 	vm.initB();
+				// });
+			}).fail(()=>{
+				alert(1);
 			});
 			nts.uk.ui.block.clear();
+
+				return;
 		}
 
 		showDialogError(listError: any) {
@@ -181,6 +168,8 @@ module nts.uk.at.view.kmk008.b {
 			}
 
 			new service.Service().getB(vm.laborSystemAtr).done(data => {
+				vm.timeOfCompany(data);
+
 				// self.timeOfCompany(new TimeOfCompanyModel(data));
 				// if (data.updateMode) {
 				//     self.isUpdate = true;
@@ -188,6 +177,7 @@ module nts.uk.at.view.kmk008.b {
 				//     self.isUpdate = false;
 				// }
 				// $("#errorCheckInput").focus();
+
 				vm.$blockui("clear");
 				dfd.resolve();
 			}).fail(error => {
@@ -197,119 +187,104 @@ module nts.uk.at.view.kmk008.b {
 
 			return dfd.promise();
 		}
-
-
 	}
 
 	export class TimeOfCompanyModel {
-			alarmWeek: KnockoutObservable<string> = ko.observable(null);
-			errorWeek: KnockoutObservable<string> = ko.observable(null);
-			limitWeek: KnockoutObservable<string> = ko.observable(null);
-			alarmTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-			errorTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-			limitTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-			alarmFourWeeks: KnockoutObservable<string> = ko.observable(null);
-			errorFourWeeks: KnockoutObservable<string> = ko.observable(null);
-			limitFourWeeks: KnockoutObservable<string> = ko.observable(null);
-			alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
-			errorOneMonth: KnockoutObservable<string> = ko.observable(null);
-			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
-			alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
-			errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
-			limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
-			alarmThreeMonths: KnockoutObservable<string> = ko.observable(null);
-			errorThreeMonths: KnockoutObservable<string> = ko.observable(null);
-			limitThreeMonths: KnockoutObservable<string> = ko.observable(null);
-			alarmOneYear: KnockoutObservable<string> = ko.observable(null);
-			errorOneYear: KnockoutObservable<string> = ko.observable(null);
-			limitOneYear: KnockoutObservable<string> = ko.observable(null);
-			upperMonth: KnockoutObservable<string> = ko.observable(null);
-			upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
+		alarmWeek: KnockoutObservable<string> = ko.observable(null);
+		errorWeek: KnockoutObservable<string> = ko.observable(null);
+		limitWeek: KnockoutObservable<string> = ko.observable(null);
+		alarmTwoWeeks: KnockoutObservable<string> = ko.observable(null);
+		errorTwoWeeks: KnockoutObservable<string> = ko.observable(null);
+		limitTwoWeeks: KnockoutObservable<string> = ko.observable(null);
+		alarmFourWeeks: KnockoutObservable<string> = ko.observable(null);
+		errorFourWeeks: KnockoutObservable<string> = ko.observable(null);
+		limitFourWeeks: KnockoutObservable<string> = ko.observable(null);
+		alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
+		errorOneMonth: KnockoutObservable<string> = ko.observable(null);
+		limitOneMonth: KnockoutObservable<string> = ko.observable(null);
+		alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
+		errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
+		limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
+		alarmThreeMonths: KnockoutObservable<string> = ko.observable(null);
+		errorThreeMonths: KnockoutObservable<string> = ko.observable(null);
+		limitThreeMonths: KnockoutObservable<string> = ko.observable(null);
+		alarmOneYear: KnockoutObservable<string> = ko.observable(null);
+		errorOneYear: KnockoutObservable<string> = ko.observable(null);
+		limitOneYear: KnockoutObservable<string> = ko.observable(null);
+		upperMonth: KnockoutObservable<string> = ko.observable(null);
+		upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
-			constructor(data: any) {
-				let self = this;
-				if (!data) return;
-				self.alarmWeek(data.alarmWeek);
-				self.errorWeek(data.errorWeek);
-				self.limitWeek(data.limitWeek);
-				self.alarmTwoWeeks(data.alarmTwoWeeks);
-				self.errorTwoWeeks(data.errorTwoWeeks);
-				self.limitTwoWeeks(data.limitTwoWeeks);
-				self.alarmFourWeeks(data.alarmFourWeeks);
-				self.errorFourWeeks(data.errorFourWeeks);
-				self.limitFourWeeks(data.limitFourWeeks);
-				self.alarmOneMonth(data.alarmOneMonth);
-				self.errorOneMonth(data.errorOneMonth);
-				self.limitOneMonth(data.limitOneMonth);
-				self.alarmTwoMonths(data.alarmTwoMonths);
-				self.errorTwoMonths(data.errorTwoMonths);
-				self.limitTwoMonths(data.limitTwoMonths);
-				self.alarmThreeMonths(data.alarmThreeMonths);
-				self.errorThreeMonths(data.errorThreeMonths);
-				self.limitThreeMonths(data.limitThreeMonths);
-				self.alarmOneYear(data.alarmOneYear);
-				self.errorOneYear(data.errorOneYear);
-				self.limitOneYear(data.limitOneYear);
-				self.upperMonth(data.upperMonth);
-				self.upperMonthAverage(data.upperMonthAverage);
-			}
+		errorTwoYear: KnockoutObservable<string> = ko.observable(null);
+		alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
+		limitTwoYear: KnockoutObservable<string> = ko.observable(null);
+		overMaxTimes : KnockoutObservable<number> = ko.observable(Limit.LIMIT_6_TIME);
+
+		constructor(data: any) {
+			let self = this;
+			if (!data) return;
+			self.alarmWeek(data.alarmWeek);
+			self.errorWeek(data.errorWeek);
+			self.limitWeek(data.limitWeek);
+			self.alarmTwoWeeks(data.alarmTwoWeeks);
+			self.errorTwoWeeks(data.errorTwoWeeks);
+			self.limitTwoWeeks(data.limitTwoWeeks);
+			self.alarmFourWeeks(data.alarmFourWeeks);
+			self.errorFourWeeks(data.errorFourWeeks);
+			self.limitFourWeeks(data.limitFourWeeks);
+			self.alarmOneMonth(data.alarmOneMonth);
+			self.errorOneMonth(data.errorOneMonth);
+			self.limitOneMonth(data.limitOneMonth);
+			self.alarmTwoMonths(data.alarmTwoMonths);
+			self.errorTwoMonths(data.errorTwoMonths);
+			self.limitTwoMonths(data.limitTwoMonths);
+			self.alarmThreeMonths(data.alarmThreeMonths);
+			self.errorThreeMonths(data.errorThreeMonths);
+			self.limitThreeMonths(data.limitThreeMonths);
+			self.alarmOneYear(data.alarmOneYear);
+			self.errorOneYear(data.errorOneYear);
+			self.limitOneYear(data.limitOneYear);
+			self.upperMonth(data.upperMonth);
+			self.upperMonthAverage(data.upperMonthAverage);
+			self.overMaxTimes(parseInt(data.overMaxTimes));
 		}
+	}
 
 	export class UpdateInsertTimeOfCompanyModel {
-			laborSystemAtr: number = 0;
-			alarmWeek: number = 0;
-			errorWeek: number = 0;
-			limitWeek: number = 0;
-			alarmTwoWeeks: number = 0;
-			errorTwoWeeks: number = 0;
-			limitTwoWeeks: number = 0;
-			alarmFourWeeks: number = 0;
-			errorFourWeeks: number = 0;
-			limitFourWeeks: number = 0;
-			alarmOneMonth: number = 0;
-			errorOneMonth: number = 0;
-			limitOneMonth: number = 0;
-			alarmTwoMonths: number = 0;
-			errorTwoMonths: number = 0;
-			limitTwoMonths: number = 0;
-			alarmThreeMonths: number = 0;
-			errorThreeMonths: number = 0;
-			limitThreeMonths: number = 0;
-			alarmOneYear: number = 0;
-			errorOneYear: number = 0;
-			limitOneYear: number = 0;
-			upperMonth: number = 0;
-			upperMonthAverage: number = 0;
+		laborSystemAtr: number = 0;
+		alarmOneMonth: number = 0;
+		errorOneMonth: number = 0;
+		limitOneMonth: number = 0;
+		alarmTwoMonths: number = 0;
+		errorTwoMonths: number = 0;
+		limitTwoMonths: number = 0;
+		alarmOneYear: number = 0;
+		errorOneYear: number = 0;
+		limitOneYear: number = 0;
+		errorTwoYear: number = 0;
+		alarmTwoYear: number = 0;
+		limitTwoYear: number = 0;
+		overMaxTimes: number = 0;
 
-			constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
-				let self = this;
-				self.laborSystemAtr = laborSystemAtr;
-				if (!data) return;
-				self.alarmWeek = +data.alarmWeek() || 0;
-				self.errorWeek = +data.errorWeek() || 0;
-				self.limitWeek = +data.limitWeek() || 0;
-				self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
-				self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
-				self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
-				self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
-				self.errorFourWeeks = +data.errorFourWeeks() || 0;
-				self.limitFourWeeks = +data.limitFourWeeks() || 0;
-				self.alarmOneMonth = +data.alarmOneMonth() || 0;
-				self.errorOneMonth = +data.errorOneMonth() || 0;
-				self.limitOneMonth = +data.limitOneMonth() || 0;
-				self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
-				self.errorTwoMonths = +data.errorTwoMonths() || 0;
-				self.limitTwoMonths = +data.limitTwoMonths() || 0;
-				self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
-				self.errorThreeMonths = +data.errorThreeMonths() || 0;
-				self.limitThreeMonths = +data.limitThreeMonths() || 0;
-				self.alarmOneYear = +data.alarmOneYear() || 0;
-				self.errorOneYear = +data.errorOneYear() || 0;
-				self.limitOneYear = +data.limitOneYear() || 0;
-				self.upperMonth = +data.upperMonth() || 0;
-				self.upperMonthAverage = +data.upperMonthAverage() || 0;
-			}
+		constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
+			let self = this;
+			self.laborSystemAtr = laborSystemAtr;
+			if (!data) return;
+			self.alarmOneMonth 	= parseInt(data.alarmOneMonth());
+			self.errorOneMonth 	= parseInt(data.errorOneMonth());
+			self.limitOneMonth 	= parseInt(data.limitOneMonth());
+			self.alarmTwoMonths = parseInt(data.alarmTwoMonths());
+			self.errorTwoMonths = parseInt(data.errorTwoMonths());
+			self.limitTwoMonths = parseInt(data.limitTwoMonths());
+			self.alarmOneYear 	= parseInt(data.alarmOneYear());
+			self.errorOneYear 	= parseInt(data.errorOneYear());
+			self.limitOneYear 	= parseInt(data.limitOneYear());
+
+			self.errorTwoYear = parseInt(data.errorTwoYear());
+			self.alarmTwoYear = parseInt(data.alarmTwoYear());
+			self.limitTwoYear = parseInt(data.limitTwoYear());
+			self.overMaxTimes = data.overMaxTimes();
 		}
+	}
 
 
 	class EmpListCmp {
