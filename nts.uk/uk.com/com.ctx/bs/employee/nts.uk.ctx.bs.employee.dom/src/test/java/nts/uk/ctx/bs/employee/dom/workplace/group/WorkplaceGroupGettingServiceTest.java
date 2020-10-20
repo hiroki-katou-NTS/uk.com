@@ -1,14 +1,11 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import javax.enterprise.inject.Any;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +34,11 @@ public class WorkplaceGroupGettingServiceTest {
 			{
 				require.getAffWkpHistItemByEmpDate(anyString, date);
 				result = wkp;
-				
+
 				require.getWGInfo(Arrays.asList(wkp));
 			}
 		};
-		
+
 		List<EmployeeAffiliation> datas = WorkplaceGroupGettingService.get(require, date, employeeIDs);
 		assertThat(datas)
 		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
@@ -51,7 +48,7 @@ public class WorkplaceGroupGettingServiceTest {
 				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp,Optional.empty())
 				);
 	}
-	
+
 	/**
 	 *  require.職場グループ所属情報を取得する( $職場IDリスト ) is not empty
 	 */
@@ -68,29 +65,29 @@ public class WorkplaceGroupGettingServiceTest {
 		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
 				new AffWorkplaceGroup(wkpGroup1, wkp1) ,
 				new AffWorkplaceGroup(wkpGroup2, wkp2),
-				new AffWorkplaceGroup(wkpGroup1, wkp3) 
+				new AffWorkplaceGroup(wkpGroup1, wkp3)
 				);
-		
+
 		new Expectations() {
 			{
 				require.getAffWkpHistItemByEmpDate("emp1", date);
 				result = wkp1;
-				
+
 				require.getAffWkpHistItemByEmpDate("emp2", date);
 				result = wkp2;
-				
+
 				require.getAffWkpHistItemByEmpDate("emp3", date);
 				result = wkp3;
-				
+
 				require.getAffWkpHistItemByEmpDate("emp4", date);
 				result = wkp4;
-				
+
 				require.getWGInfo(withAny(new ArrayList<>()));
 				result = listAffWorkplaceGroup;
 			}
 		};
-		
-		
+
+
 		List<EmployeeAffiliation> datas = WorkplaceGroupGettingService.get(require, date, employeeIDs);
 		assertThat(datas)
 		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
