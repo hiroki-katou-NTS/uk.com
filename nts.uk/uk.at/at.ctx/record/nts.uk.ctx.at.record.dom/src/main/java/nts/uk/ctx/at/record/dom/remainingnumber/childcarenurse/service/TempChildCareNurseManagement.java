@@ -12,15 +12,15 @@ public class TempChildCareNurseManagement {
 
 	/** 使用数 */
 	private ChildCareNurseUsedNumber usedNumber;
-	/** 時間休暇種類 */
-	private  Optional<Timedigestion> timezoneToUseHourlyHoliday; //一時対応　Timedigestion:時間休暇種類及び時間消化
+//	/** 時間休暇種類 */
+//	private  Optional<Timedigestion> timezoneToUseHourlyHoliday; //一時対応　「時間休暇種類及び時間消化」共通処理出来次第変更する
 
 	/**
 	 * コンストラクタ
 	 */
 	public TempChildCareNurseManagement(){
 		this.usedNumber = new ChildCareNurseUsedNumber();
-		this.timezoneToUseHourlyHoliday = Optional.empty();
+//		this.timezoneToUseHourlyHoliday = Optional.empty();
 	}
 	/**
 	 * ファクトリー
@@ -29,12 +29,12 @@ public class TempChildCareNurseManagement {
 	 * @return 暫定子の看護管理データ
 	 */
 	public static TempChildCareNurseManagement of(
-			ChildCareNurseUsedNumber usedNumber,
-			Optional<Timedigestion>  timezoneToUseHourlyHoliday) {
+			ChildCareNurseUsedNumber usedNumber){
+			//Optional<Timedigestion>  timezoneToUseHourlyHoliday)
 
 		TempChildCareNurseManagement domain = new TempChildCareNurseManagement();
 		domain.usedNumber = usedNumber;
-		domain.timezoneToUseHourlyHoliday = timezoneToUseHourlyHoliday;
+		//domain.timezoneToUseHourlyHoliday = timezoneToUseHourlyHoliday;
 		return domain;
 	}
 }

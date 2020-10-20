@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.inter
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ChildNursingRemainInforExport;
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;
+import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -54,13 +55,13 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 
 	@Inject
 	private ChildCareLeaveRemaiDataRepo childCareLeaveRemaiDataRepo;
-	
+
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo;
 
 	@Inject
 	private TempCareDataRepository tempCareDataRepository;
-	
+
 	@Inject
 	private ChildTempCareDataRepository childTempCareDataRepository;
 
@@ -68,19 +69,20 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period,
 			NursingMode mode) {
-		
+
 		ChildNursingRemainExport childNursingRemainExport = ChildNursingRemainExport.builder().build();
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged()) || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())
+				|| (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged())) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {
 			// do something
 			return getAggrChildNursingRemainPeriod(companyId, employeeId, period.start(), period.end(), mode, _nursingLeaveSetting.get());
 		}
-		
+
 	}
 
 	private ChildNursingRemainExport getAggrChildNursingRemainPeriod(String companyId, String employeeId,
@@ -89,22 +91,22 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		childNursingRemainExport.setGrantPeriodFlag(false);
 		Output1 out1 = this.calculationUsagePeriod(nursingLeaveSetting.getStartMonthDay(), startDate, endDate);
 		childNursingRemainExport.setGrantPeriodFlag(out1.isPeriodGrantFlag());
-		
+
 		// algorithm 個人情報の上限と使用の取得, once in params: useEndDateBeforeGrant, endDate
 		Output2 out2 = this.getPersonalChildInfor(employeeId, startDate, endDate, out1.getUseEndDateBefore(),
 				out1.getUseStartDateAfter(), nursingLeaveSetting, childNursingRemainExport);
 		if(out2 == null)
 			return childNursingRemainExport;
-		
+
 		PeriodOfOverlap out3 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateBefore(),
 				out1.getUseEndDateBefore());
-		
+
 		if(out3 == null)
 			return childNursingRemainExport;
-		
+
 		double useNumberNursing = this.getChildNursingUsedNumber(companyId, employeeId, out3.getStartDateOverlap(),
 				out3.getEndDateOverlap(), mode);
-		
+
 		ChildNursingRemainInforExport preGrantStatement = ChildNursingRemainInforExport.builder().build();
 		preGrantStatement.setNumberOfUse(useNumberNursing);
 
@@ -112,16 +114,16 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		preGrantStatement.setResidual(residual);
 
 		childNursingRemainExport.setPreGrantStatement(preGrantStatement);
-		
+
 		if (out1.isPeriodGrantFlag()) {
 			PeriodOfOverlap out4 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateAfter().get(),
 					out1.getUseEndDateAfter().get());
 			if(out4 == null)
 				return childNursingRemainExport;
-			
+
 			double useNumberNursing2 = this.getChildNursingUsedNumber(companyId, employeeId, out4.getStartDateOverlap(),
 					out4.getEndDateOverlap(), mode);
-			
+
 			ChildNursingRemainInforExport afterGrantStatement = ChildNursingRemainInforExport.builder().build();
 			afterGrantStatement.setNumberOfUse(useNumberNursing2);
 
@@ -132,7 +134,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		}else {
 			childNursingRemainExport.setAfterGrantStatement(Optional.empty());
 		}
-		
+
 		return childNursingRemainExport;
 	}
 
@@ -144,7 +146,8 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())  || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())
+				|| (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged())) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {
@@ -158,7 +161,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	 *
 	 * @param companyId
 	 * @param nursingCategory
-	 * 
+	 *
 	 * @return the nursing leave setting
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -182,10 +185,10 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 
 		if(out2 == null)
 			return childNursingRemainExport;
-		
+
 		PeriodOfOverlap out3 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateBefore(),
 				out1.getUseEndDateBefore());
-		
+
 		if(out3 == null)
 			return childNursingRemainExport;
 
@@ -203,13 +206,13 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		if (out1.isPeriodGrantFlag()) {
 			PeriodOfOverlap out4 = this.getPeriodOfOverlap(startDate, endDate, out1.getUseStartDateAfter().get(),
 					out1.getUseEndDateAfter().get());
-			
+
 			if(out4 == null)
 				return childNursingRemainExport;
-			
+
 			double useNumberNursing2 = this.getNursingUsedNumber(companyId, employeeId, out4.getStartDateOverlap(),
 					out4.getEndDateOverlap(), mode);
-			
+
 			ChildNursingRemainInforExport afterGrantStatement = ChildNursingRemainInforExport.builder().build();
 			afterGrantStatement.setNumberOfUse(useNumberNursing2);
 
@@ -220,15 +223,16 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		}else {
 			childNursingRemainExport.setAfterGrantStatement(Optional.empty());
 		}
-		 
+
 		return childNursingRemainExport;
 	}
 
-	private Output1 calculationUsagePeriod(Integer startMonthDay, GeneralDate startDate, GeneralDate endDate) {
+	private Output1 calculationUsagePeriod(MonthDay startMonthDay, GeneralDate startDate, GeneralDate endDate) {
 		Output1 output = new Output1();
 		// startMonthDay không thể null. nếu null. sai data. gửi cho anh Thành newways
-		int dayStartMonthDay = startMonthDay % 100;
-		int monthStartMonthDay = startMonthDay / 100;
+		int dayStartMonthDay = startMonthDay.getDay();
+		int monthStartMonthDay = startMonthDay.getMonth();
+
 		GeneralDate commencementDate = GeneralDate.ymd(startDate.year(), monthStartMonthDay, dayStartMonthDay);
 		GeneralDate useStartDateBeforeGrant;
 
@@ -254,7 +258,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 
 		return output;
 	}
-	
+
 	private Output2 getPersonalChildInfor(String employeeId, GeneralDate startDate, GeneralDate endDate,
 			GeneralDate useEndDateBeforeGrant, Optional<GeneralDate> useStartDateAfterGrant,
 			NursingLeaveSetting nursingLeaveSetting, ChildNursingRemainExport childNursingRemainExport) {
@@ -346,7 +350,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			return ouput;
 		}
 		return null;
-		
+
 	}
 
 	private PeriodOfOverlap getPeriodOfOverlap(GeneralDate startDate, GeneralDate endDate, GeneralDate useStartDate,
@@ -363,7 +367,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		} else {
 			out3.setEndDateOverlap(useEndDate);
 		}
-		
+
 		if(out3.getStartDateOverlap().beforeOrEquals(out3.getEndDateOverlap())) {
 			return out3;
 		}
@@ -381,14 +385,14 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			tempCareDataList = tempCareDataRepository.findByEmpIdInPeriod(employeeId,
 					startDate, endDate);
 		}
-		
+
 		for (TempCareData domain : tempCareDataList) {
 			usedNumber += domain.getUsedDays().v();
 		}
 
 		return usedNumber;
 	}
-	
+
 	private double getChildNursingUsedNumber(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate,
 			NursingMode mode) {
 		double usedNumber = 0;
@@ -400,7 +404,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 			childTempCareDataList = childTempCareDataRepository.findByEmpIdInPeriod(employeeId,
 					startDate, endDate);
 		}
-		
+
 		for (ChildTempCareData domain : childTempCareDataList) {
 			usedNumber += domain.getUsedDays().v();
 		}
