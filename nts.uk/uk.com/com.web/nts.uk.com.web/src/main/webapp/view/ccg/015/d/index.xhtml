@@ -7,22 +7,64 @@
 <head>
 </head>
 <body>
-	<ui:composition template="../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
       <com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg015.d.style.css" />
 			<com:scriptfile path="ccg015.d.vm.js" />
-			<script>var dialogSize = { width: 930 , height: 550};</script>
+			<script>var dialogSize = { width: 1100 , height: 700};</script>
 		</ui:define>
 		<ui:define name="content">
       <div class="ccg015-d-content">
-        <div class="float-left">
-          <button ></button>
+        <div class="float-left pl-20 pt-10 pb-10 w_100_layout">
+          <button class="proceed btnStyle">#{i18n.getText('CCG015_64')}</button>
+          <button class="ml-20" data-bind="click: close">#{i18n.getText('CCG015_65')}</button>
         </div>
       </div>
-      <div id="functions-area-bottom">
-        <!-- btn close dialog -->
-        <button class="large" data-bind="click: close">#{i18n.getText('KDL052_15')}</button>
+      <div class="w-100">
+        <hr/>
+        <div class="w_100_layout fix_items_center pl-20">
+          <!-- D2_1 -->
+          <div id="D2_1"
+            data-bind="ntsFormLabel: {required: true}">
+            <label>#{i18n.getText('CCG015_66')}<br /></label>
+          </div>
+          <!-- D2_2 -->
+          <div class="ml-40" id="combo-box"
+            data-bind="ntsComboBox: {
+              name: 'Sample List',
+              options: itemList,
+              optionsValue: 'code',
+              visibleItemsCount: 5,
+              value: selectedCode,
+              optionsText: 'name',
+              editable: false,
+              enable: true,
+              required: isRequired }">
+          </div>
+        </div>
+        <div class="inline-row">
+          <div class="contents_left pl-20 mt-40">
+            <com:ko-if bind="contentUrlDisabled()">
+              <!-- D4 -->
+              <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+                <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+                  items: listTopPage, selectedKey: toppageSelectedCode, fields: ['name', 'code'], mode: 'listbox'}" />																																														
+                <table id="multi-list2" data-bind="ntsGridList: {
+                    options: listTopPage,
+                    optionsValue: 'code',
+                    rows: 10,
+                    columns: columns,
+                    multiple: false,
+                    value: toppageSelectedCode
+                  }"></table>
+              </div>
+            </com:ko-if>
+          </div>
+          <div class="contents_right mt-40">
+            <iframe id="preview-iframe"></iframe>
+          </div>
+        </div>
       </div>
     </ui:define>
   </ui:composition>
