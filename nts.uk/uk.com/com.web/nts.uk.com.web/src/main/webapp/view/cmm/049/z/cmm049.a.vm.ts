@@ -29,22 +29,80 @@ module nts.uk.com.view.cmm049.z {
     public A4_4_45_Value: KnockoutObservable<string> = ko.observable('');
 
     public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
     public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
     public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber1Updatable: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber1Individual: KnockoutObservable<boolean> = ko.observable(true);
+
     public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber2Updatable: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber2Individual: KnockoutObservable<boolean> = ko.observable(true);
+
     public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public dialInNumberUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public dialInNumberIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
     public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public extensionNumberUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public extensionNumberIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
     public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public companyEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public companyEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
     public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public personalEmailAddress: KnockoutObservable<boolean> = ko.observable(true);
-    public personalMobileEmailAddress: KnockoutObservable<boolean> = ko.observable(true);
-    public otherContact1: KnockoutObservable<boolean> = ko.observable(true);
-    public otherContact2: KnockoutObservable<boolean> = ko.observable(true);
-    public otherContact3: KnockoutObservable<boolean> = ko.observable(true);
-    public otherContact4: KnockoutObservable<boolean> = ko.observable(true);
-    public otherContact5: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public personalEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public personalEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public personalEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    
+    public personalMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public otherContact1Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact1ContactName: KnockoutObservable<string> = ko.observable('');
+    public otherContact1Individual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public otherContact2Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact2ContactName: KnockoutObservable<string> = ko.observable('');
+    public otherContact2Individual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public otherContact3Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact3ContactName: KnockoutObservable<string> = ko.observable('');
+    public otherContact3Individual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public otherContact4Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact4ContactName: KnockoutObservable<string> = ko.observable('');
+    public otherContact4Individual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public otherContact5Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact5ContactName: KnockoutObservable<string> = ko.observable('');
+    public otherContact5Individual: KnockoutObservable<boolean> = ko.observable(true);
+
+    public mailFunctionDataSource: KnockoutObservableArray<MailFunctionData> = ko.observableArray([
+      // new MailFunctionData({index: 1, dataAvailable: false, targetMenu: "Hi"}),
+      // new MailFunctionData({index: 2, dataAvailable: true, targetMenu: "Hi"}),
+      // new MailFunctionData({index: 3, dataAvailable: false, targetMenu: "Hi"}),
+      // new MailFunctionData({index: 4, dataAvailable: false, targetMenu: "Hi"})
+    ]);
+    public selectedEmailAddress: KnockoutObservable<number> = ko.observable(0);
 
     public emailColumns: any[] = [
+      {
+        headerText: "",
+        prop: "index",
+        width: 160,
+        hidden: true,
+      },
       {
         headerText: this.$i18n("CMM049_66"),
         prop: "emailAddress",
@@ -53,13 +111,11 @@ module nts.uk.com.view.cmm049.z {
     ]
 
     public emailDataSource: KnockoutObservableArray<EmailModel> = ko.observableArray([
-      new EmailModel({emailAddress: this.$i18n("CMM049_49"),}),
-      new EmailModel({emailAddress: this.$i18n("CMM049_50"),}),
-      new EmailModel({emailAddress: this.$i18n("CMM049_51"),}),
-      new EmailModel({emailAddress: this.$i18n("CMM049_52"),})
+      new EmailModel({index: 0, emailAddress: this.$i18n("CMM049_49"),}),
+      new EmailModel({index: 1, emailAddress: this.$i18n("CMM049_50"),}),
+      new EmailModel({index: 2, emailAddress: this.$i18n("CMM049_51"),}),
+      new EmailModel({index: 3, emailAddress: this.$i18n("CMM049_52"),})
     ]);
-
-    public selectedEmailAddress: KnockoutObservable<string> = ko.observable();
 
     constructor() {
       super();
@@ -67,35 +123,35 @@ module nts.uk.com.view.cmm049.z {
       vm.tabs = ko.observableArray([
         {
           id: "tab-1",
-          title: this.$i18n("CMM049_24"),
+          title: vm.$i18n("CMM049_24"),
           content: "#A4",
           enable: ko.observable(true),
           visible: ko.observable(true),
         },
         {
           id: "tab-2",
-          title: this.$i18n("CMM049_25"),
+          title: vm.$i18n("CMM049_25"),
           content: "#A5",
           enable: ko.observable(true),
           visible: ko.observable(true),
         },
         {
           id: "tab-3",
-          title: this.$i18n("CMM049_26"),
+          title: vm.$i18n("CMM049_26"),
           content: "#A6",
           enable: ko.observable(true),
           visible: ko.observable(true),
         },
         {
           id: "tab-4",
-          title: this.$i18n("CMM049_27"),
+          title: vm.$i18n("CMM049_27"),
           content: "#A7",
           enable: ko.observable(true),
           visible: ko.observable(true),
         },
         {
           id: "tab-5",
-          title: this.$i18n("CMM049_28"),
+          title: vm.$i18n("CMM049_28"),
           content: "#A8",
           enable: ko.observable(true),
           visible: ko.observable(true),
@@ -107,11 +163,11 @@ module nts.uk.com.view.cmm049.z {
       vm.profileCheckList = ko.observableArray([
         new CheckboxModel({
           id: 1,
-          name: this.$i18n("CMM049_31"),
+          name: vm.$i18n("CMM049_31"),
         }),
         new CheckboxModel({
           id: 2,
-          name: this.$i18n("CMM049_32"),
+          name: vm.$i18n("CMM049_32"),
         }),
       ]);
       vm.profileSelectedId = ko.observable(1);
@@ -120,11 +176,11 @@ module nts.uk.com.view.cmm049.z {
       vm.passwordCheckList = ko.observableArray([
         new CheckboxModel({
           id: 1,
-          name: this.$i18n("CMM049_31"),
+          name: vm.$i18n("CMM049_31"),
         }),
         new CheckboxModel({
           id: 2,
-          name: this.$i18n("CMM049_32"),
+          name: vm.$i18n("CMM049_32"),
         }),
       ]);
       vm.passwordSelectedId = ko.observable(1);
@@ -133,11 +189,11 @@ module nts.uk.com.view.cmm049.z {
       vm.noticeCheckList = ko.observableArray([
         new CheckboxModel({
           id: 1,
-          name: this.$i18n("CMM049_31"),
+          name: vm.$i18n("CMM049_31"),
         }),
         new CheckboxModel({
           id: 2,
-          name: this.$i18n("CMM049_32"),
+          name: vm.$i18n("CMM049_32"),
         }),
       ]);
       vm.noticeSelectedId = ko.observable(1);
@@ -146,27 +202,109 @@ module nts.uk.com.view.cmm049.z {
       vm.speechCheckList = ko.observableArray([
         new CheckboxModel({
           id: 1,
-          name: this.$i18n("CMM049_31"),
+          name: vm.$i18n("CMM049_31"),
         }),
         new CheckboxModel({
           id: 2,
-          name: this.$i18n("CMM049_32"),
+          name: vm.$i18n("CMM049_32"),
         }),
       ]);
       vm.speechSelectedId = ko.observable(1);
+
+      // vm.mailFunctionSelected.subscribe
     }
 
     mounted() {
       const vm = this;
+
       vm.$grid = $("#A8_4");
+      
+      vm.selectedEmailAddress.subscribe((newValue) => {
+        console.log(newValue);
+        if (vm.$grid.data("igGrid")) {
+          vm.$grid.ntsGrid("destroy");
+        }
+        vm.$nextTick(() => vm.getMailFunctionData(newValue));
+      })
+      vm.selectedEmailAddress.valueHasMutated();
+
+      vm.companyMobilePhoneDisplay.subscribe((value) => {
+        console.log(value);
+      })
+    }
+
+    public getMailFunctionData(newValue: number) {
+      const vm = this;
+      vm.$blockui('grayout')
+        .then(() => vm.$ajax(API.findByCid))
+        .then((response: UserInformationSettingDto) => {
+          console.log(response);
+
+          // binding button group (tab-1-2-3-4)
+          vm.profileSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfProfile);
+          vm.passwordSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfPassword);
+          vm.noticeSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfNotice);
+          vm.speechSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfLanguage);
+
+          // binding data (tab-1)
+          // line 1
+          const companyMobilePhone = response.userInfoUseMethod_Dto
+            .settingContactInformation.companyMobilePhone.contactUsageSetting;
+          switch (companyMobilePhone) {
+            case 0: {
+              vm.companyMobilePhoneDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.companyMobilePhoneDisplay(true);
+              vm.companyMobilePhoneIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.companyMobilePhoneDisplay(true);
+              vm.companyMobilePhoneIndividual(true);
+              break;
+            }
+          }
+          vm.companyMobilePhoneUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.companyMobilePhone.updatable === 1);
+
+          // binding mail function data source (tab-5)
+          const listMailFunction: MailFunctionData[] = _.map(
+            response.mailFunctionDtos,
+            ({functionId, functionName}) => {
+              const data = response.userInfoUseMethod_Dto.emailDestinationFunctions
+                .filter(item => item.emailClassification == newValue)[0]
+                .functionIds.indexOf(functionId) !== -1;
+              return new MailFunctionData({
+                functionId: functionId,
+                dataAvailable: data,
+                targetMenu: functionName
+              })}
+          );
+          vm.mailFunctionDataSource(listMailFunction);
+          vm.initGrid();
+          console.log(vm.mailFunctionDataSource());
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    private initGrid() {
+      const vm = this;
       vm.$grid.ntsGrid({
-        primaryKey: 'dataAvailable',
+        primaryKey: 'functionId',
         height: "270px",
-        dataSource: [],
+        dataSource: vm.mailFunctionDataSource(),
         rowVirtualization: true,
         virtualization: true,
         virtualizationMode: "continuous",
         columns: [
+          {
+            headerText: '',
+            key: "functionId",
+            dataType: "number",
+            hidden: true
+          },
           {
             headerText: '',
             key: "dataAvailable",
@@ -176,10 +314,10 @@ module nts.uk.com.view.cmm049.z {
             showHeaderCheckbox: true,
           },
           {
-            headerText: this.$i18n("CMM049_21"),
+            headerText: vm.$i18n("CMM049_21"),
             key: "targetMenu",
             dataType: "string",
-            width: "200x",
+            width: "300x",
           }
         ],
         features: [
@@ -199,17 +337,10 @@ module nts.uk.com.view.cmm049.z {
             optionsValue: "value",
             optionsText: "text",
             controlType: "CheckBox",
-            enable: true
+            enable: true,
           },
         ],
       })
-
-      vm.$blockui('grayout')
-        .then(() => vm.$ajax(API.findByCid))
-        .then((response: UserInformationSettingDto) => {
-          console.log(response);
-        })
-        .always(() => vm.$blockui('clear'));
     }
 
     public closeDialog() {
@@ -233,6 +364,7 @@ module nts.uk.com.view.cmm049.z {
   }
 
   export class EmailModel {
+    index: number;
     emailAddress: string;
 
     constructor(init?: Partial<EmailModel>) {
@@ -241,7 +373,7 @@ module nts.uk.com.view.cmm049.z {
   }
 
   export class UserInformationSettingDto {
-    UserInfoUseMethod_Dto: UserInfoUseMethod_Dto;
+    userInfoUseMethod_Dto: UserInfoUseMethod_Dto;
     mailFunctionDtos: MailFunctionDto[];
 
     constructor(init?: Partial<UserInformationSettingDto>) {
@@ -418,6 +550,16 @@ module nts.uk.com.view.cmm049.z {
     contactName: string;
 
     constructor(init?: Partial<OtherContactDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class MailFunctionData {
+    functionId: number;
+    dataAvailable: boolean;
+    targetMenu: string;
+
+    constructor(init?: Partial<MailFunctionData>) {
       $.extend(this, init);
     }
   }

@@ -39,7 +39,7 @@ public class UserInformationSettingScreenQuery {
 				.collect(Collectors.toList());
 		
 		return UserInformationSettingDto.builder()
-				.infoUseMethodDto(userInfoUseMethodDto)
+				.userInfoUseMethod_Dto(userInfoUseMethodDto == null ? UserInfoUseMethod_Dto.builder().build() : userInfoUseMethodDto)
 				.mailFunctionDtos(mailFunctionDtos)
 				.build();
 	}

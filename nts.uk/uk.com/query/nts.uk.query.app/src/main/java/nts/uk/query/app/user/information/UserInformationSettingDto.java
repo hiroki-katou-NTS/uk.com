@@ -18,7 +18,7 @@ public class UserInformationSettingDto {
 	/**
 	 * ユーザー情報の使用方法
 	 */
-	private UserInfoUseMethod_Dto infoUseMethodDto;
+	private UserInfoUseMethod_Dto userInfoUseMethod_Dto;
 	
 	/**
 	 * メール機能

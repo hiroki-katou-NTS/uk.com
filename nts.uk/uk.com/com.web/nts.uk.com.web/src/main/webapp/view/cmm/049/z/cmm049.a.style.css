@@ -34,3 +34,17 @@ table#A4_2 tr td {
   vertical-align: top;
   text-align: left;
 }
+
+#A1_2 {
+  float: right;
+  margin-right: 220px;
+}
+
+#master-wrapper {
+  overflow: hidden;
+}
+
+#A4 {
+  overflow-y: scroll;
+  height: 460px;
+}
