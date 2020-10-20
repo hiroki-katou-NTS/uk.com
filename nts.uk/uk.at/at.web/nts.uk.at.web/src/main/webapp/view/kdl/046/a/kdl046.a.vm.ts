@@ -8,6 +8,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
         target: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').unit == 1 ? true : false);
         baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').date);
         workplaceID: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceId);
+        workplaceGroupId: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceGroupId);
 
         //KCP004
         treeGrid: TreeComponentOption;
@@ -56,6 +57,9 @@ module nts.uk.at.view.kdl046.a.viewmodel {
             if (self.target() == true) {
                 $('#gplG').show();
                 $('#gpl').hide();
+                if(self.currentCodes == []){
+                    nts.uk.ui.dialog.error({ messageId: "Msg_218"});
+                    }
             }
             self.kcp011Options = {
                 itemList: self.workplaceGroupList,
@@ -69,7 +73,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
                 height: 373,
-                selectedMode: 1
+                selectedMode: 0
             };
 
         }
@@ -86,12 +90,14 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (self.target() == false) {
                     $('#gplG').hide();
                     $('#gpl').show();
+                    
                 }
                 if (self.target() == true) {
                     $('#gplG').show();
                     $('#gpl').hide();
                 }
             });
+            
             let dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
@@ -131,8 +137,9 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                     request.workplaceGroupName = data.workplaceGroupName;
                     nts.uk.ui.dialog.confirmDanger({ messageId: "Msg_1769", messageParams: [request.workplaceGroupCode, request.workplaceGroupName] }).ifYes(() => {
                         nts.uk.ui.windows.setShared('dataShareKDL046', request);
-                    }).ifNo(() => {
                         nts.uk.ui.windows.close();
+                    }).ifNo(() => {
+
                     });
 
                 }
@@ -144,14 +151,15 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                         request.workplaceName = item[0].name;
                         nts.uk.ui.dialog.confirmDanger({ messageId: "Msg_1769", messageParams: [data.workplaceGroupCode, data.workplaceGroupName] }).ifYes(() => {
                             nts.uk.ui.windows.setShared('dataShareKDL046', request);
-                        }).ifNo(() => {
                             nts.uk.ui.windows.close();
+                        }).ifNo(() => {
+
                         });
                     }
                 }
                 if (self.target() == 0 && data.present == false) {
-                    request.unit = 1;
                     if (!_.isNil(item)) {
+                        request.unit = 0;
                         request.workplaceCode = item[0].code;
                         request.workplaceId = item[0].id;
                         request.workplaceName = item[0].name;
