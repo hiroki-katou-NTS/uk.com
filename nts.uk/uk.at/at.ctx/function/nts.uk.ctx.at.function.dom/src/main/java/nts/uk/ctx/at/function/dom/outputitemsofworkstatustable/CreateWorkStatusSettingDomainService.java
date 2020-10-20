@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
-import jdk.nashorn.internal.objects.annotations.Setter;
+import java.util.List;
+
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -10,9 +13,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.Independent
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import java.util.List;
 
 /**
  * DomainService : 勤務状況の設定を作成する
