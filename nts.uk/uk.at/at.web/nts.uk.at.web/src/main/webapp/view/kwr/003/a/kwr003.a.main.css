@@ -30,22 +30,25 @@
   margin-bottom: 35px;
 }
 .kwr-003 .panel .panel-row .row-left {
-  flex: 1;
+  width: 140px;
 }
 .kwr-003 .panel .panel-row .row-left .label {
   display: flex;
   align-items: center;
 }
-.kwr-003 .panel .panel-row .row-right {
-  flex: 2;
+.kwr-003 .panel .panel-row .row-right {  
   display: flex;
+  width: calc(100% - 140px);
 }
 .kwr-003 .panel .row-right .radios-group {
-  flex: 1;
   padding-top: 10px;
+  flex: 1;
 }
 .kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
   margin-bottom: 16px;
+}
+.kwr-003 .panel .row-right .text-box-button {
+  flex: 2;
 }
 .kwr-003 .panel .text-box-button .item {
   margin-bottom: 10px;
@@ -54,6 +57,7 @@
 }
 .kwr-003 .panel .text-box-button .item .ui-igcombo-wrapper {
   margin-right: 10px;
+  width: calc(100% - 30px);
 }
 
 .kwr-003 .panel .row-switch-button {

@@ -184,8 +184,10 @@ module nts.uk.at.view.kwr004.a {
     getListEmployees(data: common.Ccg001ReturnedData) {
       let vm = this,
         employeeSearchs: Array<common.UnitModel> = [];
+      
+        let newListEmployee: Array<any> = vm.removeDuplicateItem(data.listEmployee);
 
-      _.forEach(data.listEmployee, function (value: any) {
+      _.forEach(newListEmployee, function (value: any) {
         var employee: common.UnitModel = {
           id: value.employeeId,
           code: value.employeeCode,
@@ -198,6 +200,16 @@ module nts.uk.at.view.kwr004.a {
       vm.employeeList(employeeSearchs);
     }
 
+    removeDuplicateItem( listItems: Array<any>) : Array<any> {
+      if( listItems.length <= 0 ) return [];
+ 
+      let newListItems = _.filter(listItems, (element, index, self) => {
+        return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
+      });
+
+      return newListItems;
+    }
+    
     /**
      * Duplicate Setting
      * */
